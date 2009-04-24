@@ -159,10 +159,10 @@
 			[directoryArray addObject:objectData];
 			
 			// Log the object.
-			logInfo(@"Found '%@' of type '%@' in file '%@'...", 
-					objectName, 
-					objectKind,
-					filename);
+			logVerbose(@"Found '%@' of type '%@' in file '%@'...", 
+					   objectName, 
+					   objectKind,
+					   filename);
 		}
 		@catch (NSException* e)
 		{
