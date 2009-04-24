@@ -229,8 +229,6 @@ template files.
 - (void) postProcessCommandLineArguments
 {
 	// Use default values if not supplied from the command line.
-	if (!inputPath) inputPath = @"";
-	if (!outputPath) outputPath = @"";
 	if (!doxygenConfigFilename) doxygenConfigFilename = [inputPath stringByAppendingPathComponent:@"Doxyfile"];
 	if (!doxygenCommandLine) doxygenCommandLine = @"/opt/local/bin/doxygen";
 	if (!docsetutilCommandLine) docsetutilCommandLine = @"/Developer/usr/bin/docsetutil";
@@ -263,10 +261,8 @@ template files.
 		createDocSet = NO;		
 	}
 	
-	// Make sure remove output files is reset if output path is current directory.
-	NSString* fullInputPath = [inputPath stringByStandardizingPath];
-	NSString* fullOutputPath = [outputPath stringByStandardizingPath];
-	if (removeOutputFiles && [fullOutputPath isEqualToString:fullInputPath])
+	// Make sure remove output files is reset if output path is the same as input.
+	if (removeOutputFiles && [outputPath isEqualToString:inputPath])
 	{
 		logNormal(@"Disabling --clearoutput because output path is equal to input path!");
 		removeOutputFiles = NO;
@@ -276,10 +272,18 @@ template files.
 //----------------------------------------------------------------------------------------
 - (void) validateCommandLineArguments
 {
-	// Project name is required.
+	// Make sure all required parameters are there.
 	if (!self.projectName)
 		@throw [NSException exceptionWithName:kTKCommandLineException
 									   reason:@"Project name is missing" 
+									 userInfo:nil];
+	if (!self.inputPath)
+		@throw [NSException exceptionWithName:kTKCommandLineException
+									   reason:@"Input path is missing" 
+									 userInfo:nil];
+	if (!self.outputPath)
+		@throw [NSException exceptionWithName:kTKCommandLineException
+									   reason:@"Output path is missing" 
 									 userInfo:nil];
 	
 	// If templates path is not provided through command line, check default locations.
@@ -344,11 +348,10 @@ template files.
 	printf("\n");
 	printf("OPTIONS - Required\n");
 	printf("-p --project <name>  The project name.\n");
+	printf("-i --input <path>    Source files path.\n");
+	printf("-o --output <path>   Path in which to create documentation.\n");
 	printf("\n");
 	printf("OPTIONS - Input and output paths\n");
-	printf("-i --input <path>    Source files path. Defaults to current directory.\n");
-	printf("-o --output <path>   Path in which to create documentation. Defaults to current\n");
-	printf("                     directory (this will prevent --cleanoutput even if used).\n");
 	printf("-t --templates <path>Full path to template files. If not provided, templates are'.\n");
 	printf("                     searched in ~/.objcdoc or ~/Library/Application Support/objcdoc\n");
 	printf("                     directories in the given order.\n");
