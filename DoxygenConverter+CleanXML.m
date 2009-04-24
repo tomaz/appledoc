@@ -489,8 +489,9 @@
 		NSScanner* scanner = [NSScanner scannerWithString:[textNode stringValue]];
 		while ([scanner scanUpToCharactersFromSet:whitespaceSet intoString:&word])
 		{
-			// Fix members that are declared with two colons.
-			if ([word hasPrefix:@"::"] && ![replacements objectForKey:word])
+			// Fix members that are declared with two colons. Skip words which are composed
+			// from double colons only so that users can still use that in documentation.
+			if ([word hasPrefix:@"::"] && [word length] > 2 && ![replacements objectForKey:word])
 			{
 				NSString* member = [word substringFromIndex:2];
 				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
@@ -498,8 +499,9 @@
 				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
 			}
 			
-			// Fix members that are declated with parenthesis.
-			if ([word hasSuffix:@"()"] && ![replacements objectForKey:word])
+			// Fix members that are declated with parenthesis. Skip words which are composed
+			// from parenthesis only so that users can still use that in documentation.
+			if ([word hasSuffix:@"()"] && [word length] > 2 && ![replacements objectForKey:word])
 			{
 				NSString* member = [word substringToIndex:[word length] - 2];
 				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];

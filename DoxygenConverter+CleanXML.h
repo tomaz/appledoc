@@ -143,7 +143,7 @@ This will actually check all description paragraphs and scan word by word to see
 known object is being addressed. If so, it will convert the word to the proper @c <ref>
 tag. Therefore all links to classes, protocols and categories are properly handled.
  
-In addition, the code will also convert any word that starts with @c : : or ends with @c ( )
+In addition, the code will also convert any word that starts with @c :: or ends with @c ()
 to a @c <ref> for the given member. The code will not check if a member with that name
 exists or not though, so some care needs to be taken when documenting code...
  
