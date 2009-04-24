@@ -59,18 +59,24 @@ and @c saveCleanObjectDocumentationFiles().
 */
 - (void) createCleanIndexDocumentationFile;
 
-/** Fixes all links in the clean object XML files.￼
+/** Fixes the clean object XML documentation.￼
 
-This method will scan the clean XML and will fix all links to class members, the class
-and inter-classes and their members properly.
+This method will scan through all XML files generated in @c createCleanObjectDocumentationMarkup()
+and will fix all things cannot be (easily) treated by the xslt. Note that this method
+will not do any fixing or convertion itself. Instead it will scan through all documented
+objects and will pass each one to the "child" methods that will do the actual work. The
+methods that get called are:
+- @c fixInheritanceForObject:objectData:document:objects:().
+- @c fixReferencesForObject:objectData:document:objects:().
+- @c fixParaLinksForObject:objectData:document:objects:().
  
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
 See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumentationFile()
 and @c saveCleanObjectDocumentationFiles().
 
-@exception ￼￼￼￼￼NSException Thrown if fixing links fails.
+@exception ￼￼￼￼￼NSException Thrown if fixing XML fails.
 */
-- (void) fixCleanObjectDocumentationLinks;
+- (void) fixCleanObjectDocumentation;
 
 /** Saved clean object XML markups to proper files.￼
 
@@ -80,9 +86,81 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumentationFile()
 and @c fixCleanObjectDocumentationLinks().
 
-@exception ￼￼￼￼￼NSException Thrown if fixing links fails.
+@exception ￼￼￼￼￼NSException Thrown if saving fails.
 */
 - (void) saveCleanObjectDocumentationFiles;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Clean XML "makeup" handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Fixes inheritance links for the given object.
+
+This fixes base class and protocols links. If the base class or protocol is one of the 
+known objects, the link reference is added to the clean document. Additionally, all
+protocol @c <base> nodes are renamed to @c <conforms> so that the html creation is
+easier later on.
+ 
+This message is sent automatically from @c fixCleanObjectDocumentation() and should not
+be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
+method.
+
+@param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
+@param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
+@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
+@param objects The dictionary of all objects.
+@exception ￼￼￼￼￼NSException Thrown if fixing fails.
+*/
+- (void) fixInheritanceForObject:(NSString*) objectName
+					  objectData:(NSMutableDictionary*) objectData
+						document:(NSXMLDocument*) cleanDocument
+						 objects:(NSDictionary*) objects;
+
+/** Fixes doxygen references links for the given object.
+
+This updates all doxygen created references specified by @c <ref> tag so that their
+reference points to the correct file and/or member. The result is that all @c <ref>
+nodes now have correct references prepared for the html generation later on.
+ 
+This message is sent automatically from @c fixCleanObjectDocumentation() and should not
+be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
+method.
+
+@param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
+@param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
+@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
+@param objects The dictionary of all objects.
+@exception ￼￼￼￼￼NSException Thrown if fixing fails.
+*/
+- (void) fixReferencesForObject:(NSString*) objectName
+					 objectData:(NSMutableDictionary*) objectData
+					   document:(NSXMLDocument*) cleanDocument
+						objects:(NSDictionary*) objects;
+
+/** Fixes all objective-c links ignored by doxygen for the given object.
+
+This will actually check all description paragraphs and scan word by word to see if a
+known object is being addressed. If so, it will convert the word to the proper @c <ref>
+tag. Therefore all links to classes, protocols and categories are properly handled.
+ 
+In addition, the code will also convert any word that starts with @c : : or ends with @c ( )
+to a @c <ref> for the given member. The code will not check if a member with that name
+exists or not though, so some care needs to be taken when documenting code...
+ 
+This message is sent automatically from @c fixCleanObjectDocumentation() and should not
+be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
+method.
+
+@param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
+@param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
+@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
+@param objects The dictionary of all objects.
+@exception ￼￼￼￼￼NSException Thrown if fixing fails.
+*/
+- (void) fixParaLinksForObject:(NSString*) objectName
+					objectData:(NSMutableDictionary*) objectData
+					  document:(NSXMLDocument*) cleanDocument
+					   objects:(NSDictionary*) objects;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper methods

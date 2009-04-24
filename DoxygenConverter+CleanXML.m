@@ -226,14 +226,11 @@
 }
 
 //----------------------------------------------------------------------------------------
-- (void) fixCleanObjectDocumentationLinks
+- (void) fixCleanObjectDocumentation
 {
 	logNormal(@"Fixing clean objects documentation links...");
 	
 	// Prepare common variables to optimize loop a bit.
-	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
-	NSCharacterSet* classStartSet = [NSCharacterSet characterSetWithCharactersInString:@"("];
-	NSCharacterSet* classEndSet = [NSCharacterSet characterSetWithCharactersInString:@")"];
 	NSAutoreleasePool* loopAutoreleasePool = nil;
 	
 	// Handle all files in the database.
@@ -252,231 +249,9 @@
 		NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 		logVerbose(@"Handling '%@'...", objectName);
 		
-		// Fix the base class link. If the base class is one of the known objects,
-		// add the id attribute so we can link to it when creating xhtml. Note that
-		// we need to handle protocols here too - if a class conforms to protocols,
-		// we should change the name of the node from <base> to <conforms> so that we
-		// have easier job while generating html. We should also create the link to
-		// the known protoocol.
-		NSArray* baseNodes = [cleanDocument nodesForXPath:@"/object/base" error:nil];
-		for (NSXMLElement* baseNode in baseNodes)
-		{
-			NSString* refValue = [baseNode stringValue];
-			if ([objects objectForKey:refValue])
-			{
-				NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
-				NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
-				[baseNode addAttribute:idAttribute];
-				logVerbose(@"- Found base class reference to '%@' at '%@'.", refValue, linkReference);
-			}
-			else
-			{
-				refValue = [refValue stringByTrimmingCharactersInSet:whitespaceSet];
-				if ([refValue hasPrefix:@"<"] && [refValue hasSuffix:@">"])
-				{					
-					NSRange protocolNameRange = NSMakeRange(1, [refValue length] - 2);
-					refValue = [refValue substringWithRange:protocolNameRange];
-					refValue = [refValue stringByTrimmingCharactersInSet:whitespaceSet];
-					
-					NSXMLElement* protocolNode = [NSXMLNode elementWithName:@"protocol"];
-					[protocolNode setStringValue:refValue];
-
-					if ([objects objectForKey:refValue])
-					{
-						NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
-						NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
-						[protocolNode addAttribute:idAttribute];
-						logVerbose(@"- Found protocol reference to '%@' at '%@'.", refValue, linkReference);
-					}
-					else
-					{
-						logVerbose(@"- Found protocol reference to '%@'.", refValue);
-					}
-					
-					NSUInteger index = [baseNode index];
-					NSXMLElement* parentNode = (NSXMLElement*)[baseNode parent];
-					[parentNode replaceChildAtIndex:index withNode:protocolNode];
-				}
-			}
-		}
-		
-		// Now look for all <ref> nodes. Then determine the type of link from the link
-		// text. The link can either be internal, within the same object or it can be
-		// to a member of another object.
-		NSArray* refNodes = [cleanDocument nodesForXPath:@"//ref" error:nil];
-		for (NSXMLElement* refNode in refNodes)
-		{
-			// Get the reference (link) object and member components. The links from
-			// doxygen have the format "memberName (ClassName)". The member name includes
-			// all the required objective-c colons for methods. Note that some links may 
-			// only contain member and some only object components! The links that only
-			// contain object component don't encapsulate the object name within the
-			// parenthesis! However these are all links to the current object, so we can
-			// easily determine the type by comparing to the current object name.
-			NSString* refValue = [refNode stringValue];
-			if ([refValue length] > 0)
-			{
-				NSString* refObject = nil;
-				NSString* refMember = nil;
-				NSScanner* scanner = [NSScanner scannerWithString:refValue];
-				
-				// If we cannot parse the value of the tag, write the error and continue
-				// with next one. Although this should not really happen since we only
-				// come here if some text is found, it's still nice to obey the framework...
-				if (![scanner scanUpToCharactersFromSet:classStartSet intoString:&refMember])
-				{
-					logNormal(@"Skipping reference '%@' for object '%@' because tag value was invalid!",
-							  refValue,
-							  refMember);
-					continue;
-				}
-				refMember = [refMember stringByTrimmingCharactersInSet:whitespaceSet];
-				
-				// Find and parse the object name part if it exists.
-				if ([scanner scanCharactersFromSet:classStartSet intoString:NULL])
-				{
-					if ([scanner scanUpToCharactersFromSet:classEndSet intoString:&refObject])
-					{
-						refObject = [refObject stringByTrimmingCharactersInSet:whitespaceSet];
-					}
-				}
-								
-				// If we only have one component, we should first determine if it
-				// represents an object name or member name. In the second case, the
-				// reference is alredy setup properly. In the first case, however, we
-				// need to swapt the object and member reference.
-				if (!refObject && [objects objectForKey:refMember])
-				{
-					refObject = refMember;
-					refMember = nil;
-				}
-
-				// If we have both components and the object part points to current
-				// object, we should discard it and only use member component.
-				if (refObject && refMember && [refObject isEqualToString:objectName])
-				{
-					refObject = nil;
-				}
-				
-				// Prepare the reference description. Again it depends on the components
-				// of the reference value. If both components are present, we should
-				// combine them. Otherwise just use the one that is available. Note that
-				// in case this is inter-file link we should check if we need to link to
-				// another sub-directory.
-				NSString* linkDescription = nil;
-				NSString* linkReference = nil;
-				if (refObject && refMember)
-				{
-					linkDescription = [NSString stringWithFormat:@"[%@ %@]", refObject, refMember];
-					linkReference = [NSString stringWithFormat:@"#%@", refMember];
-				}
-				else if (refObject)
-				{
-					linkDescription = refObject;
-					linkReference = @"";
-				}
-				else
-				{
-					linkDescription = refMember;
-					linkReference = [NSString stringWithFormat:@"#%@", refMember];
-				}
-				
-				// Check if we need to link to another directory.
-				if (refObject && ![refObject isEqualToString:objectName])
-				{
-					NSString* linkPath = [self objectReferenceFromObject:objectName toObject:refObject];
-					linkReference = [NSString stringWithFormat:@"%@%@", linkPath, linkReference];
-				}
-				
-				// Update the <ref> tag. First we need to remove any existing id
-				// attribute otherwise the new one will not be used. Then we need to
-				// replace the value with the new description.
-				NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
-				[refNode removeAttributeForName:@"id"];
-				[refNode addAttribute:idAttribute];
-				[refNode setStringValue:linkDescription];
-				logVerbose(@"- Found reference to %@ at '%@'.", linkDescription, linkReference);
-			}
-		}
-		
-		// We also need to handle broken doxygen member links handling. This is especially
-		// evident in categories where the links to member functions are not properly
-		// handled at all. At the moment we only handle members which are expressed either
-		// as ::<membername> or <membername>() notation. Since doxygen skips these, and
-		// leaves the format as it was written in the original documentation, we can
-		// easily find them in the source text without worrying about breaking the links
-		// we fixed in the above loop.
-		NSMutableDictionary* replacements = [NSMutableDictionary dictionary];
-		NSArray* textNodes = [cleanDocument nodesForXPath:@"//para/text()|//para/*/text()" error:nil];
-		for (NSXMLNode* textNode in textNodes)
-		{
-			// Scan the text word by word and check the words for possible member links.
-			// For each detected member link, add the original and replacement text to
-			// the replacements dictionary. We'll use it later on to replace all occurences
-			// of the text node string and then replace the whole text node string value.
-			NSString* word = nil;			
-			NSScanner* scanner = [NSScanner scannerWithString:[textNode stringValue]];
-			while ([scanner scanUpToCharactersFromSet:whitespaceSet intoString:&word])
-			{
-				// Fix members that are declared with two colons.
-				if ([word hasPrefix:@"::"] && ![replacements objectForKey:word])
-				{
-					NSString* member = [word substringFromIndex:2];
-					NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
-					[replacements setObject:link forKey:word];
-					logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
-				}
-				
-				// Fix members that are declated with parenthesis.
-				if ([word hasSuffix:@"()"] && ![replacements objectForKey:word])
-				{
-					NSString* member = [word substringToIndex:[word length] - 2];
-					NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
-					[replacements setObject:link forKey:word];
-					logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
-				}
-				
-				// Fix known category links.
-				NSDictionary* linkedObjectData = [objects objectForKey:word];
-				if (linkedObjectData && [[linkedObjectData objectForKey:kTKDataObjectKindKey] isEqualToString:@"category"])
-				{
-					NSString* link = [self objectReferenceFromObject:objectName toObject:word];
-					NSString* linkReference = [NSString stringWithFormat:@"<ref id=\"%@\">%@</ref>", link, word];
-					[replacements setObject:linkReference forKey:word];
-					logVerbose(@"- Found reference to %@ at '%@'.", word, link);
-				}
-			}			
-		}
-		
-		// We should replace all found references with correct ones. Note that we
-		// must also wrap the replaced string within the <ref> tag. So for example
-		// instead of 'work()' we would end with '<ref id="#work">work</ref>'. In order
-		// for this to work, we have to export the whole XML, replace all occurences and
-		// then re-import the new XML. If we would change text nodes directly, the <ref>
-		// tags would be imported as &lt; and similar...
-		if ([replacements count] > 0)
-		{
-			// Replace all occurences of the found member links with the fixed notation.
-			NSString* xmlString = [cleanDocument XMLString];
-			for (NSString* word in replacements)
-			{
-				NSString* replacement = [replacements objectForKey:word];
-				xmlString = [xmlString stringByReplacingOccurrencesOfString:word withString:replacement];
-			}
-			
-			// Reload the XML from the updated string and replace the old one in the
-			// object data. A bit inefficient, but works...
-			NSError* error = nil;
-			cleanDocument = [[NSXMLDocument alloc] initWithXMLString:xmlString 
-															 options:0 
-															   error:&error];
-			if (!cleanDocument)
-			{
-				[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-			}
-			[objectData setObject:cleanDocument forKey:kTKDataObjectMarkupKey];
-			[cleanDocument release];
-		}		
+		[self fixInheritanceForObject:objectName objectData:objectData document:cleanDocument objects:objects];
+		[self fixReferencesForObject:objectName objectData:objectData document:cleanDocument objects:objects];
+		[self fixParaLinksForObject:objectName objectData:objectData document:cleanDocument objects:objects];
 	}
 	
 	// Release last iteration pool.
@@ -515,6 +290,269 @@
 	
 	logInfo(@"Finished saving clean object documentation files...");
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Clean XML "makeup" handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) fixInheritanceForObject:(NSString*) objectName
+					  objectData:(NSMutableDictionary*) objectData
+						document:(NSXMLDocument*) cleanDocument
+						 objects:(NSDictionary*) objects
+{
+	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
+	
+	// Fix the base class link. If the base class is one of the known objects,
+	// add the id attribute so we can link to it when creating xhtml. Note that
+	// we need to handle protocols here too - if a class conforms to protocols,
+	// we should change the name of the node from <base> to <conforms> so that we
+	// have easier job while generating html. We should also create the link to
+	// the known protoocol.
+	NSArray* baseNodes = [cleanDocument nodesForXPath:@"/object/base" error:nil];
+	for (NSXMLElement* baseNode in baseNodes)
+	{
+		NSString* refValue = [baseNode stringValue];
+		if ([objects objectForKey:refValue])
+		{
+			NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
+			NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
+			[baseNode addAttribute:idAttribute];
+			logVerbose(@"- Found base class reference to '%@' at '%@'.", refValue, linkReference);
+		}
+		else
+		{
+			refValue = [refValue stringByTrimmingCharactersInSet:whitespaceSet];
+			if ([refValue hasPrefix:@"<"] && [refValue hasSuffix:@">"])
+			{					
+				NSRange protocolNameRange = NSMakeRange(1, [refValue length] - 2);
+				refValue = [refValue substringWithRange:protocolNameRange];
+				refValue = [refValue stringByTrimmingCharactersInSet:whitespaceSet];
+				
+				NSXMLElement* protocolNode = [NSXMLNode elementWithName:@"protocol"];
+				[protocolNode setStringValue:refValue];
+				
+				if ([objects objectForKey:refValue])
+				{
+					NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
+					NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
+					[protocolNode addAttribute:idAttribute];
+					logVerbose(@"- Found protocol reference to '%@' at '%@'.", refValue, linkReference);
+				}
+				else
+				{
+					logVerbose(@"- Found protocol reference to '%@'.", refValue);
+				}
+				
+				NSUInteger index = [baseNode index];
+				NSXMLElement* parentNode = (NSXMLElement*)[baseNode parent];
+				[parentNode replaceChildAtIndex:index withNode:protocolNode];
+			}
+		}
+	}	
+}
+
+//----------------------------------------------------------------------------------------
+- (void) fixReferencesForObject:(NSString*) objectName
+					 objectData:(NSMutableDictionary*) objectData
+					   document:(NSXMLDocument*) cleanDocument
+						objects:(NSDictionary*) objects
+{
+	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
+	NSCharacterSet* classStartSet = [NSCharacterSet characterSetWithCharactersInString:@"("];
+	NSCharacterSet* classEndSet = [NSCharacterSet characterSetWithCharactersInString:@")"];
+	
+	// Now look for all <ref> nodes. Then determine the type of link from the link
+	// text. The link can either be internal, within the same object or it can be
+	// to a member of another object.
+	NSArray* refNodes = [cleanDocument nodesForXPath:@"//ref" error:nil];
+	for (NSXMLElement* refNode in refNodes)
+	{
+		// Get the reference (link) object and member components. The links from
+		// doxygen have the format "memberName (ClassName)". The member name includes
+		// all the required objective-c colons for methods. Note that some links may 
+		// only contain member and some only object components! The links that only
+		// contain object component don't encapsulate the object name within the
+		// parenthesis! However these are all links to the current object, so we can
+		// easily determine the type by comparing to the current object name.
+		NSString* refValue = [refNode stringValue];
+		if ([refValue length] > 0)
+		{
+			NSString* refObject = nil;
+			NSString* refMember = nil;
+			NSScanner* scanner = [NSScanner scannerWithString:refValue];
+			
+			// If we cannot parse the value of the tag, write the error and continue
+			// with next one. Although this should not really happen since we only
+			// come here if some text is found, it's still nice to obey the framework...
+			if (![scanner scanUpToCharactersFromSet:classStartSet intoString:&refMember])
+			{
+				logNormal(@"Skipping reference '%@' for object '%@' because tag value was invalid!",
+						  refValue,
+						  refMember);
+				continue;
+			}
+			refMember = [refMember stringByTrimmingCharactersInSet:whitespaceSet];
+			
+			// Find and parse the object name part if it exists.
+			if ([scanner scanCharactersFromSet:classStartSet intoString:NULL])
+			{
+				if ([scanner scanUpToCharactersFromSet:classEndSet intoString:&refObject])
+				{
+					refObject = [refObject stringByTrimmingCharactersInSet:whitespaceSet];
+				}
+			}
+			
+			// If we only have one component, we should first determine if it
+			// represents an object name or member name. In the second case, the
+			// reference is alredy setup properly. In the first case, however, we
+			// need to swapt the object and member reference.
+			if (!refObject && [objects objectForKey:refMember])
+			{
+				refObject = refMember;
+				refMember = nil;
+			}
+			
+			// If we have both components and the object part points to current
+			// object, we should discard it and only use member component.
+			if (refObject && refMember && [refObject isEqualToString:objectName])
+			{
+				refObject = nil;
+			}
+			
+			// Prepare the reference description. Again it depends on the components
+			// of the reference value. If both components are present, we should
+			// combine them. Otherwise just use the one that is available. Note that
+			// in case this is inter-file link we should check if we need to link to
+			// another sub-directory.
+			NSString* linkDescription = nil;
+			NSString* linkReference = nil;
+			if (refObject && refMember)
+			{
+				linkDescription = [NSString stringWithFormat:@"[%@ %@]", refObject, refMember];
+				linkReference = [NSString stringWithFormat:@"#%@", refMember];
+			}
+			else if (refObject)
+			{
+				linkDescription = refObject;
+				linkReference = @"";
+			}
+			else
+			{
+				linkDescription = refMember;
+				linkReference = [NSString stringWithFormat:@"#%@", refMember];
+			}
+			
+			// Check if we need to link to another directory.
+			if (refObject && ![refObject isEqualToString:objectName])
+			{
+				NSString* linkPath = [self objectReferenceFromObject:objectName toObject:refObject];
+				linkReference = [NSString stringWithFormat:@"%@%@", linkPath, linkReference];
+			}
+			
+			// Update the <ref> tag. First we need to remove any existing id
+			// attribute otherwise the new one will not be used. Then we need to
+			// replace the value with the new description.
+			NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
+			[refNode removeAttributeForName:@"id"];
+			[refNode addAttribute:idAttribute];
+			[refNode setStringValue:linkDescription];
+			logVerbose(@"- Found reference to %@ at '%@'.", linkDescription, linkReference);
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) fixParaLinksForObject:(NSString*) objectName
+					objectData:(NSMutableDictionary*) objectData
+					  document:(NSXMLDocument*) cleanDocument
+					   objects:(NSDictionary*) objects
+{
+	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
+	NSMutableDictionary* replacements = [NSMutableDictionary dictionary];
+	
+	// We also need to handle broken doxygen member links handling. This is especially
+	// evident in categories where the links to member functions are not properly
+	// handled at all. At the moment we only handle members which are expressed either
+	// as ::<membername> or <membername>() notation. Since doxygen skips these, and
+	// leaves the format as it was written in the original documentation, we can
+	// easily find them in the source text without worrying about breaking the links
+	// we fixed in the above loop.
+	NSArray* textNodes = [cleanDocument nodesForXPath:@"//para/text()|//para/*/text()" error:nil];
+	for (NSXMLNode* textNode in textNodes)
+	{
+		// Scan the text word by word and check the words for possible member links.
+		// For each detected member link, add the original and replacement text to
+		// the replacements dictionary. We'll use it later on to replace all occurences
+		// of the text node string and then replace the whole text node string value.
+		NSString* word = nil;			
+		NSScanner* scanner = [NSScanner scannerWithString:[textNode stringValue]];
+		while ([scanner scanUpToCharactersFromSet:whitespaceSet intoString:&word])
+		{
+			// Fix members that are declared with two colons.
+			if ([word hasPrefix:@"::"] && ![replacements objectForKey:word])
+			{
+				NSString* member = [word substringFromIndex:2];
+				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
+				[replacements setObject:link forKey:word];
+				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+			}
+			
+			// Fix members that are declated with parenthesis.
+			if ([word hasSuffix:@"()"] && ![replacements objectForKey:word])
+			{
+				NSString* member = [word substringToIndex:[word length] - 2];
+				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
+				[replacements setObject:link forKey:word];
+				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+			}
+			
+			// Fix known category links.
+			NSDictionary* linkedObjectData = [objects objectForKey:word];
+			if (linkedObjectData && [[linkedObjectData objectForKey:kTKDataObjectKindKey] isEqualToString:@"category"])
+			{
+				NSString* link = [self objectReferenceFromObject:objectName toObject:word];
+				NSString* linkReference = [NSString stringWithFormat:@"<ref id=\"%@\">%@</ref>", link, word];
+				[replacements setObject:linkReference forKey:word];
+				logVerbose(@"- Found reference to %@ at '%@'.", word, link);
+			}
+		}			
+	}
+	
+	// We should replace all found references with correct ones. Note that we
+	// must also wrap the replaced string within the <ref> tag. So for example
+	// instead of 'work()' we would end with '<ref id="#work">work</ref>'. In order
+	// for this to work, we have to export the whole XML, replace all occurences and
+	// then re-import the new XML. If we would change text nodes directly, the <ref>
+	// tags would be imported as &lt; and similar...
+	if ([replacements count] > 0)
+	{
+		// Replace all occurences of the found member links with the fixed notation.
+		NSString* xmlString = [cleanDocument XMLString];
+		for (NSString* word in replacements)
+		{
+			NSString* replacement = [replacements objectForKey:word];
+			xmlString = [xmlString stringByReplacingOccurrencesOfString:word withString:replacement];
+		}
+		
+		// Reload the XML from the updated string and replace the old one in the
+		// object data. A bit inefficient, but works...
+		NSError* error = nil;
+		cleanDocument = [[NSXMLDocument alloc] initWithXMLString:xmlString 
+														 options:0 
+														   error:&error];
+		if (!cleanDocument)
+		{
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}
+		[objectData setObject:cleanDocument forKey:kTKDataObjectMarkupKey];
+		[cleanDocument release];
+	}		
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (NSString*) objectReferenceFromObject:(NSString*) source 

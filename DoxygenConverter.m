@@ -97,7 +97,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	
 	[self createCleanObjectDocumentationMarkup];
 	[self createCleanIndexDocumentationFile];
-	[self fixCleanObjectDocumentationLinks];
+	[self fixCleanObjectDocumentation];
 	[self saveCleanObjectDocumentationFiles];
 	
 	if (cmd.createCleanXHTML)
