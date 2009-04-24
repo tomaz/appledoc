@@ -99,7 +99,7 @@ and @c fixCleanObjectDocumentationLinks().
 
 This fixes base class and protocols links. If the base class or protocol is one of the 
 known objects, the link reference is added to the clean document. Additionally, all
-protocol @c <base> nodes are renamed to @c <conforms> so that the html creation is
+protocol @c &lt;base&gt; nodes are renamed to @c &lt;conforms&gt; so that the html creation is
 easier later on.
  
 This message is sent automatically from @c fixCleanObjectDocumentation() and should not
@@ -117,8 +117,8 @@ method.
 
 /** Fixes doxygen references links for the given object.
 
-This updates all doxygen created references specified by @c <ref> tag so that their
-reference points to the correct file and/or member. The result is that all @c <ref>
+This updates all doxygen created references specified by @c &lt;ref&gt; tag so that their
+reference points to the correct file and/or member. The result is that all @c &lt;ref&gt;
 nodes now have correct references prepared for the html generation later on.
  
 This message is sent automatically from @c fixCleanObjectDocumentation() and should not
@@ -137,11 +137,11 @@ method.
 /** Fixes all objective-c links ignored by doxygen for the given object.
 
 This will actually check all description paragraphs and scan word by word to see if a
-known object is being addressed. If so, it will convert the word to the proper @c <ref>
+known object is being addressed. If so, it will convert the word to the proper @c &lt;ref&gt;
 tag. Therefore all links to classes, protocols and categories are properly handled.
  
 In addition, the code will also convert any word that starts with @c :: or ends with @c ()
-to a @c <ref> for the given member. The code will not check if a member with that name
+to a @c &lt;ref&gt; for the given member. The code will not check if a member with that name
 exists or not though, so some care needs to be taken when documenting code...
  
 This message is sent automatically from @c fixCleanObjectDocumentation() and should not
