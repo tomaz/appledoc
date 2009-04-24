@@ -211,6 +211,7 @@ template files.
 	docsetBundleFeed =		[self parseStringWithShortcut:nil andName:@"--docfeed"];
 	docsetSourcePlistPath = [self parseStringWithShortcut:nil andName:@"--docplist"];
 	docsetutilCommandLine = [self parseStringWithShortcut:nil andName:@"--docutil"];
+	removeEmptyParagraphs = ![self parseBooleanWithShortcut:nil andName:@"--no-empty-para"];
 	createCleanXHTML =		![self parseBooleanWithShortcut:nil andName:@"--no-xhtml"];
 	createDocSet =			![self parseBooleanWithShortcut:nil andName:@"--no-docset"];
 	removeOutputFiles =		[self parseBooleanWithShortcut:nil andName:@"--cleanoutput"];
@@ -323,6 +324,7 @@ template files.
 	docsetutilCommandLine = nil;
 	verboseLevel = kTKVerboseLevelNormal;
 	removeOutputFiles = NO;
+	removeEmptyParagraphs = YES;
 	createCleanXHTML = YES;
 	createDocSet = YES;
 	
@@ -367,6 +369,7 @@ template files.
 	printf("\n");
 	printf("OPTIONS - Miscellaneous\n");
 	printf("-v --verbose <level> The verbose level (1-4). Defaults to 2.\n");
+	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --cleanoutput     Remove output files before starting. This option should\n");
 	printf("                     only be used if output is generated in a separate directory.\n");
 	printf("                     It will remove the whole directory structure starting with\n");
@@ -416,7 +419,9 @@ template files.
 		{
 			if (i == [commandLineArguments count] - 1)
 			{
-				NSString* reason = [NSString stringWithFormat:@"Missing parameter value for %@ / %@ switch!", shortcut, name];
+				NSString* reason = [NSString stringWithFormat:@"Missing parameter value for %@ / %@ switch!", 
+									shortcut, 
+									name];
 				@throw [NSException exceptionWithName:kTKCommandLineException
 											   reason:reason
 											 userInfo:nil];
@@ -442,7 +447,9 @@ template files.
 		{
 			if (i == [commandLineArguments count] - 1)
 			{
-				NSString* reason = [NSString stringWithFormat:@"Missing parameter value for %@ / %@ switch!", shortcut, name];
+				NSString* reason = [NSString stringWithFormat:@"Missing parameter value for %@ / %@ switch!", 
+									shortcut, 
+									name];
 				@throw [NSException exceptionWithName:kTKCommandLineException
 											   reason:reason
 											 userInfo:nil];
@@ -553,6 +560,7 @@ template files.
 @synthesize docsetutilCommandLine;
 @synthesize verboseLevel;
 @synthesize removeOutputFiles;
+@synthesize removeEmptyParagraphs;
 @synthesize createCleanXHTML;
 @synthesize createDocSet;
 

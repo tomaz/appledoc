@@ -160,7 +160,8 @@ method.
 /** Fixes all empty paragraphs in the documentation for the given object.
 
 Doxygen leaves some paragraphs with only spaces inside. We will delete all such "hanging"
-paragraps to get nicer looking documentation.
+paragraps to get nicer looking documentation. If the user prevented deletion through
+@c --no-empty-para command line, this method will not do anything.
  
 This message is sent automatically from @c fixCleanObjectDocumentation() and should not
 be sent otherwise. It is used to simplify otherwise large and difficult to manage parent

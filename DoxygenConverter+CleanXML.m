@@ -552,6 +552,47 @@
 	}		
 }
 
+//----------------------------------------------------------------------------------------
+- (void) fixEmptyParaForObject:(NSString*) objectName
+					objectData:(NSMutableDictionary*) objectData
+					   objects:(NSDictionary*) objects
+{
+	if (cmd.removeEmptyParagraphs)
+	{
+		// Note that 0xFFFC chars are added during clean XML xstl phase, so these have to be
+		// removed too - if the paragraph only contains those, we should delete it... Why
+		// this happens I don't know, but this fixes it (instead of only deleting the 0xFFFC
+		// we are deleting the last 16 unicode chars). If this creates problems in other
+		// languages, we should make this code optional.
+		NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
+		NSCharacterSet* customSet = [NSCharacterSet characterSetWithRange:NSMakeRange(0xFFF0, 16)];
+		
+		// Find all paragraphs that only contain empty text and remove them. This will result
+		// in better looking documentation. Although these are left because spaces or such
+		// were used in the documentation, in most cases they are not desired. For example,
+		// Xcode automatically appends a space for each empty documentation line in my style
+		// of documenting; since I don't want to deal with this, I will fix it after the
+		// documentation has been created.	
+		NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
+		NSArray* paraNodes = [cleanDocument nodesForXPath:@"//para" error:nil];
+		for (NSXMLElement* paraNode in paraNodes)
+		{
+			NSString* paragraph = [paraNode stringValue];
+			paragraph = [paragraph stringByTrimmingCharactersInSet:whitespaceSet];
+			paragraph = [paragraph stringByTrimmingCharactersInSet:customSet];
+			if ([paraNode childCount] == 0 || [paragraph length] == 0)
+			{
+				NSXMLElement* parent = (NSXMLElement*)[paraNode parent];
+				logVerbose(@"- Removing empty paragraph '%@' index %d from '%@'...",
+						   paraNode,
+						   [paraNode index],
+						   [parent name]);
+				[parent removeChildAtIndex:[paraNode index]];
+			}
+		}		
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////

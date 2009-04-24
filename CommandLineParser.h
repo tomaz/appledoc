@@ -49,6 +49,7 @@ as a singleton.
 	
 	int verboseLevel;
 	BOOL removeOutputFiles;
+	BOOL removeEmptyParagraphs;
 	BOOL createCleanXHTML;
 	BOOL createDocSet;
 }
@@ -117,6 +118,7 @@ are reset and then the given command line parsed.
 @property(readonly) NSString* docsetutilCommandLine;
 @property(readonly) int verboseLevel;
 @property(readonly) BOOL removeOutputFiles;
+@property(readonly) BOOL removeEmptyParagraphs;
 @property(readonly) BOOL createCleanXHTML;
 @property(readonly) BOOL createDocSet;
 
