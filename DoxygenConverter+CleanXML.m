@@ -246,12 +246,12 @@
 		
 		// Get the required object data.
 		NSMutableDictionary* objectData = [objects objectForKey:objectName];
-		NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 		logVerbose(@"Handling '%@'...", objectName);
 		
-		[self fixInheritanceForObject:objectName objectData:objectData document:cleanDocument objects:objects];
-		[self fixReferencesForObject:objectName objectData:objectData document:cleanDocument objects:objects];
-		[self fixParaLinksForObject:objectName objectData:objectData document:cleanDocument objects:objects];
+		[self fixInheritanceForObject:objectName objectData:objectData objects:objects];
+		[self fixReferencesForObject:objectName objectData:objectData objects:objects];
+		[self fixParaLinksForObject:objectName objectData:objectData objects:objects];
+		[self fixEmptyParaForObject:objectName objectData:objectData objects:objects];
 	}
 	
 	// Release last iteration pool.
@@ -298,7 +298,6 @@
 //----------------------------------------------------------------------------------------
 - (void) fixInheritanceForObject:(NSString*) objectName
 					  objectData:(NSMutableDictionary*) objectData
-						document:(NSXMLDocument*) cleanDocument
 						 objects:(NSDictionary*) objects
 {
 	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
@@ -309,6 +308,7 @@
 	// we should change the name of the node from <base> to <conforms> so that we
 	// have easier job while generating html. We should also create the link to
 	// the known protoocol.
+	NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 	NSArray* baseNodes = [cleanDocument nodesForXPath:@"/object/base" error:nil];
 	for (NSXMLElement* baseNode in baseNodes)
 	{
@@ -355,7 +355,6 @@
 //----------------------------------------------------------------------------------------
 - (void) fixReferencesForObject:(NSString*) objectName
 					 objectData:(NSMutableDictionary*) objectData
-					   document:(NSXMLDocument*) cleanDocument
 						objects:(NSDictionary*) objects
 {
 	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
@@ -365,6 +364,7 @@
 	// Now look for all <ref> nodes. Then determine the type of link from the link
 	// text. The link can either be internal, within the same object or it can be
 	// to a member of another object.
+	NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 	NSArray* refNodes = [cleanDocument nodesForXPath:@"//ref" error:nil];
 	for (NSXMLElement* refNode in refNodes)
 	{
@@ -465,7 +465,6 @@
 //----------------------------------------------------------------------------------------
 - (void) fixParaLinksForObject:(NSString*) objectName
 					objectData:(NSMutableDictionary*) objectData
-					  document:(NSXMLDocument*) cleanDocument
 					   objects:(NSDictionary*) objects
 {
 	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
@@ -478,6 +477,7 @@
 	// leaves the format as it was written in the original documentation, we can
 	// easily find them in the source text without worrying about breaking the links
 	// we fixed in the above loop.
+	NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 	NSArray* textNodes = [cleanDocument nodesForXPath:@"//para/text()|//para/*/text()" error:nil];
 	for (NSXMLNode* textNode in textNodes)
 	{

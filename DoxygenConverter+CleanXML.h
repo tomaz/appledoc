@@ -66,9 +66,10 @@ and will fix all things cannot be (easily) treated by the xslt. Note that this m
 will not do any fixing or convertion itself. Instead it will scan through all documented
 objects and will pass each one to the "child" methods that will do the actual work. The
 methods that get called are:
-- @c fixInheritanceForObject:objectData:document:objects:().
-- @c fixReferencesForObject:objectData:document:objects:().
-- @c fixParaLinksForObject:objectData:document:objects:().
+- @c fixInheritanceForObject:objectData:objects:().
+- @c fixReferencesForObject:objectData:objects:().
+- @c fixParaLinksForObject:objectData:objects:().
+- @c fixEmptyParaForObject:objectData:objects:().
  
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
 See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumentationFile()
@@ -107,13 +108,11 @@ method.
 
 @param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
-@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 */
 - (void) fixInheritanceForObject:(NSString*) objectName
 					  objectData:(NSMutableDictionary*) objectData
-						document:(NSXMLDocument*) cleanDocument
 						 objects:(NSDictionary*) objects;
 
 /** Fixes doxygen references links for the given object.
@@ -128,13 +127,11 @@ method.
 
 @param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
-@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 */
 - (void) fixReferencesForObject:(NSString*) objectName
 					 objectData:(NSMutableDictionary*) objectData
-					   document:(NSXMLDocument*) cleanDocument
 						objects:(NSDictionary*) objects;
 
 /** Fixes all objective-c links ignored by doxygen for the given object.
@@ -153,13 +150,29 @@ method.
 
 @param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
-@param cleanDocument ￼￼￼￼￼￼The XML document of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 */
 - (void) fixParaLinksForObject:(NSString*) objectName
 					objectData:(NSMutableDictionary*) objectData
-					  document:(NSXMLDocument*) cleanDocument
+					   objects:(NSDictionary*) objects;
+
+/** Fixes all empty paragraphs in the documentation for the given object.
+
+Doxygen leaves some paragraphs with only spaces inside. We will delete all such "hanging"
+paragraps to get nicer looking documentation.
+ 
+This message is sent automatically from @c fixCleanObjectDocumentation() and should not
+be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
+method.
+
+@param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
+@param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
+@param objects The dictionary of all objects.
+@exception ￼￼￼￼￼NSException Thrown if fixing fails.
+*/
+- (void) fixEmptyParaForObject:(NSString*) objectName
+					objectData:(NSMutableDictionary*) objectData
 					   objects:(NSDictionary*) objects;
 
 //////////////////////////////////////////////////////////////////////////////////////////
