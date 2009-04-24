@@ -38,7 +38,10 @@
 //----------------------------------------------------------------------------------------
 - (void) logNormal:(NSString*) message
 {
-	[self logMessage:message type:@"NORMAL "];
+	if ([self isNormalEnabled])
+	{
+		[self logMessage:message type:@"NORMAL "];
+	}
 }
 
 //----------------------------------------------------------------------------------------
@@ -66,6 +69,12 @@
 	{
 		[self logMessage:message type:@"DEBUG  "];
 	}
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) isNormalEnabled
+{
+	return ([CommandLineParser sharedInstance].verboseLevel >= kTKVerboseLevelNormal);
 }
 
 //----------------------------------------------------------------------------------------

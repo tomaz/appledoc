@@ -326,7 +326,7 @@ template files.
 	docsetBundleFeed = nil;
 	docsetSourcePlistPath = nil;
 	docsetutilCommandLine = nil;
-	verboseLevel = kTKVerboseLevelNormal;
+	verboseLevel = kTKVerboseLevelError;
 	removeOutputFiles = NO;
 	removeEmptyParagraphs = YES;
 	createCleanXHTML = YES;
@@ -371,7 +371,7 @@ template files.
 	printf("   --no-docset       Don't create DocSet.\n");
 	printf("\n");
 	printf("OPTIONS - Miscellaneous\n");
-	printf("-v --verbose <level> The verbose level (1-4). Defaults to 2.\n");
+	printf("-v --verbose <level> The verbose level (1-4). Defaults to 0 (only errors).\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --cleanoutput     Remove output files before starting. This option should\n");
 	printf("                     only be used if output is generated in a separate directory.\n");

@@ -56,6 +56,12 @@ Debug messages are only logged if verbosed level is used.
 */
 - (void) logDebug:(NSString*) message;
 
+/** Determines if normal logging is enabled or not.￼
+ 
+@return ￼￼￼￼Returns @c YES if normal logging is enabled, @c NO otherwise.
+*/
+- (BOOL) isNormalEnabled;
+
 /** Determines if info logging is enabled or not.￼
  
 @return ￼￼￼￼Returns @c YES if info logging is enabled, @c NO otherwise.
@@ -142,7 +148,7 @@ NSString* FormatLogMessage(char* file, const char* method, int line, NSString* m
 
 #define logError(m, ...) [[self logger] logError:FormatLogMessage(logargs(m), ##__VA_ARGS__)]
 
-#define logNormal(m, ...) [[self logger] logNormal:FormatLogMessage(logargs(m), ##__VA_ARGS__)]
+#define logNormal(m, ...) if ([[self logger] isNormalEnabled]) [[self logger] logNormal:FormatLogMessage(logargs(m), ##__VA_ARGS__)]
 
 #define logInfo(m, ...) if ([[self logger] isInfoEnabled]) [[self logger] logInfo:FormatLogMessage(logargs(m), ##__VA_ARGS__)]
 
