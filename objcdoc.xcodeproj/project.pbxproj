@@ -83,6 +83,8 @@
 		738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+DocSet.m"; sourceTree = "<group>"; };
 		738FE80F0FA1965F00711038 /* DoxygenConverter+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+Helpers.h"; sourceTree = "<group>"; };
 		738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+Helpers.m"; sourceTree = "<group>"; };
+		73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DocSet-Info.plist"; sourceTree = "<group>"; };
+		73AB8B120FA1CDB300B96D8A /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* objcdoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = objcdoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -103,6 +105,7 @@
 			children = (
 				738FE7E40FA195E700711038 /* Templates */,
 				08FB7795FE84155DC02AAC07 /* Source */,
+				73AB8B100FA1CDA100B96D8A /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -187,6 +190,15 @@
 				738FE7FF0FA1965700711038 /* NSObject+Logging.m */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		73AB8B100FA1CDA100B96D8A /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				73AB8B120FA1CDB300B96D8A /* Doxyfile */,
+				73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */,
+			);
+			name = Documentation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

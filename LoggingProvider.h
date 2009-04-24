@@ -105,19 +105,19 @@ levels.
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** This is only used for testing double protocols handling... */
+/** This is only used for testing double protocols handling. */
 @protocol Blabla1
 @optional
 - (void) doNothing1;
 @end
 
-/** This is only used for testing double protocols handling... */
+/** This is only used for testing double protocols handling. */
 @protocol Blabla2
 @optional
 - (void) doNothing2;
 @end
 
-/* This is not documented on purpose so that link is not created... */
+/* This is not documented on purpose so that link is not created. */
 @protocol Blabla3
 @optional
 - (void) doNothing3;
