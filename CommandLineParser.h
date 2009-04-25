@@ -25,33 +25,8 @@ as a singleton.
 @interface CommandLineParser : NSObject
 {
 	NSMutableArray* commandLineArguments;
-	NSString* commandLine;
-	
-	NSString* projectName;
-	NSString* inputPath;
-	NSString* outputPath;
-	NSString* templatesPath;
-	NSString* outputCleanXMLPath;
-	NSString* outputCleanXHTMLPath;
-	NSString* outputDocSetPath;
-	NSString* outputDocSetContentsPath;
-	NSString* outputDocSetResourcesPath;
-	NSString* outputDocSetDocumentsPath;
-	
-	NSString* doxygenCommandLine;
-	NSString* doxygenConfigFilename;
-	
-	NSString* docsetBundleID;
-	NSString* docsetBundleFeed;
-	NSString* docsetSourcePlistPath;
-	NSString* docsetInstallPath;
-	NSString* docsetutilCommandLine;
-	
-	int verboseLevel;
-	BOOL removeOutputFiles;
-	BOOL removeEmptyParagraphs;
-	BOOL createCleanXHTML;
-	BOOL createDocSet;
+	NSMutableDictionary* parameters;
+	NSString* globalTemplatesPath;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

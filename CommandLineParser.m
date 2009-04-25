@@ -8,8 +8,38 @@
 
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
+#import "Systemator.h"
 
 #define kTKCommandLineException @"TKCommandLineException"
+
+#define kTKCmdGlobalTemplatesPathKey		@"GlobalTemplatesPath"			// NSString
+#define kTKCmdTemplatesPathKey				@"TemplatesPath"				// NSString
+#define kTKCmdCommandLineKey				@"CommandLine"					// NSString
+#define kTKCmdProjectNameKey				@"ProjectName"					// NSString
+
+#define kTKCmdInputPathKey					@"InputPath"					// NSString
+#define kTKCmdOutputPathKey					@"OutputPath"					// NSString
+#define kTKCmdOutputCleanXMLPathKey			@"OutputCleanXMLPath"			// NSString
+#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanXHTMLPath"			// NSString
+#define kTKCmdOutputDocSetPathKey			@"OutputDocSetPath"				// NSString
+#define kTKCmdOutputDocSetContentsPathKey	@"OutputDocSetContentsPath"		// NSString
+#define kTKCmdOutputDocSetResourcesPathKey	@"OutputDocSetResourcesPath"	// NSString
+#define kTKCmdOutputDocSetDocumentsPathKey	@"OutputDocSetDocumentsPath"	// NSString
+
+#define kTKCmdDoxygenCommandLineKey			@"DoxygenCommandLine"			// NSString
+#define kTKCmdDoxygenConfigFileKey			@"DoxygenConfigFile"			// NSString
+
+#define kTKCmdDocSetBundleIDKey				@"DocSetBundleID"				// NSString
+#define kTKCmdDocSetBundleFeedKey			@"DocSetBundleFeed"				// NSString
+#define kTKCmdDocSetSourcePlistKey			@"DocSetSourcePlist"			// NSString
+#define kTKCmdDocSetUtilCommandLinKey		@"DocSetUtilCommandLine"		// NSString
+#define kTKCmdDocSetInstallPathKey			@"DocSetInstallPath"			// NSString
+
+#define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
+#define kTKCmdRemoveOutputFilesKey			@"RemoveOutputFiles"			// NSNumber / BOOL
+#define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
+#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanXHTML"				// NSNumber / BOOL
+#define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -17,87 +47,163 @@
 */
 @interface CommandLineParser (ClassPrivateAPI)
 
-/** Post-processes command line arguments.￼
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Global templates handling
+//////////////////////////////////////////////////////////////////////////////////////////
 
-This message is sent after parsing the command line is finished. It will assign default
-values to optional parameters if not specified by the command line and will prepare
-all dependent values. The message is automatically sent from 
-@c CommandLineParser::parseCommandLineArguments:ofCount:() before @c validateCommandLineArguments().
+/** Setups the templates path.￼
+
+This method checks if template files are found on one of the known locations. It searches
+the following paths in this order:
+- <tt>~/.objcdoc/</tt>
+- <tt>~/Library/Application Support/objcdoc/</tt>
+If all required template files are found in one of these paths, the template path is
+automatically set to it.
+ 
+This will sent @c parseTemplatesPath:() message for each known location.
 */
-- (void) postProcessCommandLineArguments;
+- (void) setupGlobalTemplates;
+
+/** Determines if the given path is a valid templates path or not.￼
+
+A path is considered valid templates path if it exists and contains all required
+template files. If the detected templates path also contains global parameters file 
+@c Globals.plist, the file defaults are automatically read. These are all overriden by 
+command line as expected. 
+ 
+If parsing global parameters fails, error is logged but the execution continues.
+
+@param path ￼￼￼￼￼￼The path to test.
+@return ￼￼￼￼Returns @c YES if the given path is valid templates path, @c NO otherwise.
+*/
+- (BOOL) parseTemplatesPath:(NSString*) path;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Command line parsing
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /** Validates command line arguments after parsing.￼
 
 This function will make sure all required arguments and their values were correctly
-passed to the utility through the command line. This message should be sent after the
-whole parsing is finished. If invalid arguments are detected and exception is thrown.
-This message is automatically sent from @c CommandLineParser::parseCommandLineArguments:ofCount:()
-immediately after postProcessCommandLineArguments().
+passed to the utility through the command line. This message is automatically sent from 
+@c CommandLineParser::parseCommandLineArguments:ofCount:() immediately after parsing
+the command line.
  
 @exception ￼￼￼￼￼NSException Thrown if validation fails.
 */
 - (void) validateCommandLineArguments;
 
+/** Post-processes command line arguments.￼
+
+This message is sent after parsing the command line is finished. It will replace all
+template parameters (either from factory defaults or from globals plist) with the actual
+values and will prepare all dependent values. The message is automatically sent from 
+@c CommandLineParser::parseCommandLineArguments:ofCount:().
+ 
+@see
+	replaceTemplatePlaceholdersForKey:()
+	validateCommandLineArguments()
+	setupFactoryDefaults()
+	setupGlobalTemplates()
+*/
+- (void) postProcessCommandLineArguments;
+
 /** Resets all parsed properties and variables required for parsing.￼
 */
-- (void) resetParsingData;
+- (void) setupFactoryDefaults;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Replaces template placeholders for the given @c parameters key.￼
+
+This is where template placeholders from globals plist or factory defaults are replaced
+with the actual values from command line. Allowed placeholders are:
+- @c $PROJECT is replaced by the value from the @c --project switch.
+- @c $INPUT is replaced by the value from the @c --input switch.
+- @c $OUTPUT is replaced by the value from the @c --output switch.
+
+@param key ￼￼￼￼￼￼The parameters key to update.
+*/
+- (void) replaceTemplatePlaceholdersForKey:(NSString*) key;
+
+/** Standardizes the path for the given @c parameters key.￼
+
+This will simply replace the @c NSString value of the given key with the existing value
+to which it will send @c NSString::stringByStandardizingPath() message. It is just a
+convenience method that makes paths handling code simpler.
+
+@param key ￼￼￼￼￼￼The parameters key to update.
+*/
+- (void) standardizePathForKey:(NSString*) key;
 
 /** Parses the assigned command line for the string￼ with the given name or shortcut.
 
-If the argument is found, it's value is returned, otherwise @c nil is returned. If
-the argument is found, but value is missing, exception is thrown. For each argument,
-only one value is possible. The value should be separated by a whitespace. The argument 
-may either consist of a long name (ussually started with double minus), shortcut
+If the argument is found, it's value is set to the @c parameters dictionary to the given
+@c key. If the argument is found, but value is missing, exception is thrown. For each 
+argument, only one value is possible. The value should be separated by a whitespace. The
+argument may either consist of a long name (ussually started with double minus), shortcut
 (ussually started with a single minus) or both. However, at least one must be passed;
 the method will thrown exception if both, name and shortcut, are @c nil.
  
-See also @c parseIntegerWithShortcut:andName:() and @c parseBooleanWithShortcut:andName:().
- 
-@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not found.
-@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not found.
-@return ￼￼￼￼Returns the value of the given argument, @c nil if not found.
+@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
+@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
+@param key The key for which to set the value if found.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
-	argument is found, but it doesn't have a value associated.
+	argument is found, but it doesn't have a value associated. Also thrown if the given
+	@c key is @c nil.
+@see
+	parseIntegerWithShortcut:andName:forKey:()
+	parseBooleanWithShortcut:andName:forKey:withValue:()
 */
-- (NSString*) parseStringWithShortcut:(NSString*) shortcut 
-							  andName:(NSString*) name;
+- (void) parseStringWithShortcut:(NSString*) shortcut 
+						 andName:(NSString*) name
+						  forKey:(NSString*) key;
 
 /** Parses the assigned command line for the integer￼ with the given name or shortcut.
 
-If the argument is found, it's value is returned, otherwise @c -1 is returned. If
-the argument is found, but value is missing, exception is thrown. For each argument,
-only one value is possible. The value should be separated by a whitespace. The argument 
-may either consist of a long name (ussually started with double minus), shortcut
+If the argument is found, it's value is set to the @c parameters dictionary to the given
+key. If the argument is found, but value is missing, exception is thrown. For each 
+argument, only one value is possible. The value should be separated by a whitespace. The 
+argument may either consist of a long name (ussually started with double minus), shortcut
 (ussually started with a single minus) or both. However, at least one must be passed;
 the method will thrown exception if both, name and shortcut, are @c nil.
  
-See also @c parseStringWithShortcut:andName:() and @c parseBooleanWithShortcut:andName:().
-
-@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not found.
-@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not found.
-@return ￼￼￼￼Returns the value of the given argument, @c -1 if not found.
+@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
+@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
+@param key The key for which to set the value if found.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
-	argument is found, but it doesn't have a value associated.
+	argument is found, but it doesn't have a value associated. Also thrown if the given
+	@c key is @c nil.
+@see
+	parseStringWithShortcut:andName:forKey:()
+	parseBooleanWithShortcut:andName:forKey:withValue:()
 */
-- (int) parseIntegerWithShortcut:(NSString*) shortcut
-						 andName:(NSString*) name;
+- (void) parseIntegerWithShortcut:(NSString*) shortcut
+						  andName:(NSString*) name
+						   forKey:(NSString*) key;
 
 /** Parses the assigned command line for the switch￼ with the given name or shortcut.
 
-If the switch is found, @c YES is returned, otherwise @c NO is returned. The switch
-may either consist of a long name (ussually started with double minus), shortcut
-(ussually started with a single minus) or both. However, at least one must be passed;
-the method will thrown exception if both, name and shortcut, are @c nil.
+If the switch is found, the given @c value is set to the @c parameters dictionary for the
+given key. The switch may either consist of a long name (ussually started with double minus), 
+shortcut (ussually started with a single minus) or both. However, at least one must be 
+passed; the method will thrown exception if both, name and shortcut, are @c nil.
  
-See also @c parseStringWithShortcut:andName:() and @c parseIntegerWithShortcut:andName:().
-
 @param shortcut ￼￼￼￼￼￼Optional shortcut of the switch ir @c nil if not used.
 @param name ￼￼￼￼￼￼Optional long name of the switch or @c nil if not used.
-@return ￼￼￼￼Returns @c YES if the given switch is found, @c NO otherwise.
-@exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil.
+@param key The key for which to set the value if found.
+@param value The desired value to set for the given @c key if the switch is found.
+@exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or @c key is @c nil.
+@see
+	parseStringWithShortcut:andName:forKey:()
+	parseIntegerWithShortcut:andName:forKey:()
 */
-- (BOOL) parseBooleanWithShortcut:(NSString*) shortcut 
-						  andName:(NSString*) name;
+- (void) parseBooleanWithShortcut:(NSString*) shortcut 
+						  andName:(NSString*) name
+						withValue:(BOOL) value
+						   forKey:(NSString*) key;
 
 /** Logs the given command line switch usage as debug log entry.￼
 
@@ -112,16 +218,6 @@ instead.
 - (void) logCmdLineSwitch:(NSString*) shortcut
 				  andName:(NSString*) name
 				 andValue:(NSString*) value;
-
-/** Determines if the given path is a valid templates path or not.￼
-
-A path is considered valid templates path if it exists and contains all required
-template files.
-
-@param path ￼￼￼￼￼￼The path to test.
-@return ￼￼￼￼Returns @c YES if the given path is valid templates path, @c NO otherwise.
-*/
-- (BOOL) testTemplatesPath:(NSString*) path;
 
 @end
 
@@ -150,9 +246,7 @@ template files.
 	if (self)
 	{
 		commandLineArguments = [[NSMutableArray alloc] init];
-		docsetInstallPath = [[NSHomeDirectory() 
-							  stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"] 
-							 retain];
+		parameters = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -160,9 +254,9 @@ template files.
 //----------------------------------------------------------------------------------------
 - (void) dealloc
 {
-	[self resetParsingData];
+	[globalTemplatesPath release], globalTemplatesPath = nil;
 	[commandLineArguments release], commandLineArguments = nil;
-	[docsetInstallPath release], docsetInstallPath = nil;
+	[parameters release], parameters = nil;
 	[super dealloc];
 }
 
@@ -179,93 +273,114 @@ template files.
 	
 	logNormal(@"Parsing command line arguments...");
 	
-	// Reset the parsing data.
-	[self resetParsingData];
-	
 	// Copy the command line arguments to internal array. Note that since the array
 	// will retain all strings, we don't have to retain for each option separately.
+	[commandLineArguments removeAllObjects];
 	for (int i=0; i<argc; i++)
 	{
 		NSString* arg = [NSString stringWithCString:argv[i]];
 		[commandLineArguments addObject:arg];
 	}
-	
+
 	// Parse the verbose level first, so that we will correctly log as soon as possible.
-	// Note that we parse the level two times, so that we output the correct level for
-	// this setting too.
-	verboseLevel =			[self parseIntegerWithShortcut:@"-v" andName:@"--verbose"];
+	// Then log the utility command line.
+	[self parseIntegerWithShortcut:@"-v" andName:@"--verbose" forKey:kTKCmdVerboseLevelKey];
+	logVerbose([commandLineArguments objectAtIndex:0]);
 	
-	// The first argument is always the command line.
-	commandLine = [commandLineArguments objectAtIndex:0];
-	logVerbose(commandLine);
+	// Reset the parsing data and read the data from the global templates. This has to
+	// be done after handling verbose switch, so that everything is correctly logged.
+	[self setupFactoryDefaults];
+	[self setupGlobalTemplates];
+	
+	// After factory defaults and globals are set, setup the command line (this would be
+	// removed during factory defaults handling if set before) and again parse the verbose
+	// switch so that it also gets properly logged...
+	[parameters setObject:[commandLineArguments objectAtIndex:0] forKey:kTKCmdCommandLineKey];	
+	[self parseIntegerWithShortcut:@"-v" andName:@"--verbose" forKey:kTKCmdVerboseLevelKey];
 	
 	// Parse the rest of the parameters.
-	verboseLevel =			[self parseIntegerWithShortcut:@"-v" andName:@"--verbose"];
-	projectName =			[self parseStringWithShortcut:@"-p" andName:@"--project"];
-	inputPath =				[self parseStringWithShortcut:@"-i" andName:@"--input"];
-	outputPath =			[self parseStringWithShortcut:@"-o" andName:@"--output"];
-	templatesPath =			[self parseStringWithShortcut:@"-t" andName:@"--templates"];
-	doxygenCommandLine =	[self parseStringWithShortcut:@"-d" andName:@"--doxygen"];
-	doxygenConfigFilename =	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile"];	
-	docsetBundleID =		[self parseStringWithShortcut:nil andName:@"--docid"];
-	docsetBundleFeed =		[self parseStringWithShortcut:nil andName:@"--docfeed"];
-	docsetSourcePlistPath = [self parseStringWithShortcut:nil andName:@"--docplist"];
-	docsetutilCommandLine = [self parseStringWithShortcut:nil andName:@"--docutil"];
-	removeEmptyParagraphs = ![self parseBooleanWithShortcut:nil andName:@"--no-empty-para"];
-	createCleanXHTML =		![self parseBooleanWithShortcut:nil andName:@"--no-xhtml"];
-	createDocSet =			![self parseBooleanWithShortcut:nil andName:@"--no-docset"];
-	removeOutputFiles =		[self parseBooleanWithShortcut:nil andName:@"--cleanoutput"];
+	[self parseStringWithShortcut:@"-p" andName:@"--project" forKey:kTKCmdProjectNameKey];
+	[self parseStringWithShortcut:@"-i" andName:@"--input" forKey:kTKCmdInputPathKey];
+	[self parseStringWithShortcut:@"-o" andName:@"--output" forKey:kTKCmdOutputPathKey];
+	[self parseStringWithShortcut:@"-t" andName:@"--templates" forKey:kTKCmdTemplatesPathKey];
 	
-	// Post process and validate the command line arguments.
-	[self postProcessCommandLineArguments];
-	[self validateCommandLineArguments];
+	[self parseStringWithShortcut:@"-d" andName:@"--doxygen" forKey:kTKCmdDoxygenCommandLineKey];
+	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile" forKey:kTKCmdDoxygenConfigFileKey];
+	
 
-	// Make a gap in the logger.
+	[self parseStringWithShortcut:nil andName:@"--docid" forKey:kTKCmdDocSetBundleIDKey];
+	[self parseStringWithShortcut:nil andName:@"--docfeed" forKey:kTKCmdDocSetBundleFeedKey];
+	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
+	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
+
+	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
+	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
+	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
+	[self parseBooleanWithShortcut:nil andName:@"--cleanoutput" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
+	
+	// Validate and post process the command line arguments.
+	[self validateCommandLineArguments];
+	[self postProcessCommandLineArguments];
+
+	// Log finish, write all used parameter values and make a gap if verbose settings 
+	// are desired.
 	logInfo(@"Finished parsing command line arguments.");
+	if ([[self logger] isDebugEnabled])
+	{
+		logDebug(@"Settings that will be used for this run are:");
+		for (NSString* key in parameters)
+		{
+			logDebug(@"- '%@' = '%@'", key, [parameters objectForKey:key]);
+		}
+	}
 	logVerbose(@"");
 }
 
 //----------------------------------------------------------------------------------------
 - (void) postProcessCommandLineArguments
-{
-	// Use default values if not supplied from the command line.
-	if (!doxygenConfigFilename) doxygenConfigFilename = [inputPath stringByAppendingPathComponent:@"Doxyfile"];
-	if (!doxygenCommandLine) doxygenCommandLine = @"/opt/local/bin/doxygen";
-	if (!docsetutilCommandLine) docsetutilCommandLine = @"/Developer/usr/bin/docsetutil";
-
+{	
 	// Standardize all paths.
-	inputPath = [inputPath stringByStandardizingPath];
-	outputPath = [outputPath stringByStandardizingPath];
-	templatesPath = [templatesPath stringByStandardizingPath];
-	doxygenConfigFilename = [doxygenConfigFilename stringByStandardizingPath];
-	doxygenCommandLine = [doxygenCommandLine stringByStandardizingPath];
-	docsetutilCommandLine = [docsetutilCommandLine stringByStandardizingPath];
-	docsetSourcePlistPath = [docsetSourcePlistPath stringByStandardizingPath];
+	[self standardizePathForKey:kTKCmdInputPathKey];
+	[self standardizePathForKey:kTKCmdOutputPathKey];
+	[self standardizePathForKey:kTKCmdTemplatesPathKey];
+	[self standardizePathForKey:kTKCmdDoxygenCommandLineKey];
+	[self standardizePathForKey:kTKCmdDoxygenConfigFileKey];
+	[self standardizePathForKey:kTKCmdDocSetSourcePlistKey];
+	[self standardizePathForKey:kTKCmdDocSetUtilCommandLinKey];
+
+	// Replace template placeholders for all possible parameters.
+	[self replaceTemplatePlaceholdersForKey:kTKCmdDoxygenConfigFileKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdDocSetBundleIDKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdDocSetBundleFeedKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdDocSetSourcePlistKey];
 	
-	// Setup all dependent objects.
-	outputCleanXMLPath = [[outputPath stringByAppendingPathComponent:@"cxml"] retain];
-	outputCleanXHTMLPath = [[outputPath stringByAppendingPathComponent:@"cxhtml"] retain];
-	outputDocSetPath = [[outputPath stringByAppendingPathComponent:@"docset"] retain];
-	outputDocSetContentsPath = [[outputDocSetPath stringByAppendingPathComponent:@"Contents"] retain];
-	outputDocSetResourcesPath = [[outputDocSetContentsPath stringByAppendingPathComponent:@"Resources"] retain];
-	outputDocSetDocumentsPath = [[outputDocSetResourcesPath stringByAppendingPathComponent:@"Documents"] retain];
+	// Replace template placeholders for all dependent parameters.
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputCleanXMLPathKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputCleanXHTMLPathKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetPathKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetContentsPathKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetResourcesPathKey];
+	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetDocumentsPathKey];
 	
-	// Setup DocSet related parameters.
-	if (!docsetBundleID) docsetBundleID = [NSString stringWithFormat:@"com.customdocset.%@.docset", projectName];
-	if (!docsetBundleFeed) docsetBundleFeed = @"Custom documentation";
-	if (!docsetSourcePlistPath) docsetSourcePlistPath = [inputPath stringByAppendingPathComponent:@"DocSet-Info.plist"];
-	if (![docsetBundleID hasSuffix:@".docset"]) docsetBundleID = [docsetBundleID stringByAppendingString:@".docset"];
-	if (createDocSet && !createCleanXHTML)
+	// Make sure the documentation set bundle ID ends with .docset.
+	if (![self.docsetBundleID hasSuffix:@".docset"])
+	{
+		NSString* docsetBundleID = [self.docsetBundleID stringByAppendingPathExtension:@"docset"];
+		[parameters setObject:docsetBundleID forKey:kTKCmdDocSetBundleIDKey];
+	}
+		
+	// If html output is disabled, disable also documentation set generation.
+	if (self.createDocSet && !self.createCleanXHTML)
 	{
 		logNormal(@"Disabling DocSet creation because --no-xhtml is used!");
-		createDocSet = NO;		
+		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
 	}
 	
 	// Make sure remove output files is reset if output path is the same as input.
-	if (removeOutputFiles && [outputPath isEqualToString:inputPath])
+	if (self.removeOutputFiles && [self.outputPath isEqualToString:self.inputPath])
 	{
-		logNormal(@"Disabling --clearoutput because output path is equal to input path!");
-		removeOutputFiles = NO;
+		logNormal(@"Disabling --cleanoutput because output path is equal to input path!");
+		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
 	}
 }
 
@@ -274,71 +389,14 @@ template files.
 {
 	// Make sure all required parameters are there.
 	if (!self.projectName)
-		@throw [NSException exceptionWithName:kTKCommandLineException
-									   reason:@"Project name is missing" 
-									 userInfo:nil];
+		[Systemator throwExceptionWithName:kTKCmdCommandLineKey 
+						   withDescription:@"Project name is required parameter"];
 	if (!self.inputPath)
-		@throw [NSException exceptionWithName:kTKCommandLineException
-									   reason:@"Input path is missing" 
-									 userInfo:nil];
+		[Systemator throwExceptionWithName:kTKCmdCommandLineKey 
+						   withDescription:@"Input path is required parameter"];
 	if (!self.outputPath)
-		@throw [NSException exceptionWithName:kTKCommandLineException
-									   reason:@"Output path is missing" 
-									 userInfo:nil];
-	
-	// If templates path is not provided through command line, check default locations.
-	// First check the user home then application support directory. If neither exists, 
-	// report error.
-	if (!self.templatesPath) 
-	{
-		templatesPath = [NSHomeDirectory() stringByAppendingPathComponent:@".objcdoc"];
-		logVerbose(@"Testing '%@' for templates...", templatesPath);
-		if ([self testTemplatesPath:templatesPath]) return;
-		
-		NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-		for (NSString* path in paths)
-		{
-			templatesPath = [path stringByAppendingPathComponent:@"objcdoc"];
-			logVerbose(@"Testing '%@' for templates...", templatesPath);
-			if ([self testTemplatesPath:templatesPath]) return;
-		}
-		
-		logError(@"Templates not found on standard paths and custom path was not provided!");
-		@throw [NSException exceptionWithName:kTKCommandLineException 
-									   reason:@"Templates path not found"
-									 userInfo:nil];
-	}	
-}
-
-//----------------------------------------------------------------------------------------
-- (void) resetParsingData
-{
-	// Cleanup the command line arguments array and nil-lify the links.
-	[commandLineArguments removeAllObjects];
-	commandLine = nil;
-	projectName = nil;
-	inputPath = nil;
-	outputPath = nil;
-	templatesPath = nil;
-	doxygenCommandLine = nil;
-	doxygenConfigFilename = nil;
-	docsetBundleID = nil;
-	docsetBundleFeed = nil;
-	docsetSourcePlistPath = nil;
-	docsetutilCommandLine = nil;
-	verboseLevel = kTKVerboseLevelError;
-	removeOutputFiles = NO;
-	removeEmptyParagraphs = YES;
-	createCleanXHTML = YES;
-	createDocSet = YES;
-	
-	// Cleanup all composed objects.
-	[outputCleanXMLPath release], outputCleanXMLPath = nil;
-	[outputCleanXHTMLPath release], outputCleanXHTMLPath = nil;
-	[outputDocSetPath release], outputDocSetPath = nil;
-	[outputDocSetContentsPath release], outputDocSetContentsPath = nil;
-	[outputDocSetResourcesPath release], outputDocSetResourcesPath = nil;
-	[outputDocSetDocumentsPath release], outputDocSetDocumentsPath = nil;
+		[Systemator throwExceptionWithName:kTKCmdCommandLineKey 
+						   withDescription:@"Output path is required parameter"];
 }
 
 //----------------------------------------------------------------------------------------
@@ -354,7 +412,9 @@ template files.
 	printf("OPTIONS - Input and output paths\n");
 	printf("-t --templates <path>Full path to template files. If not provided, templates are'.\n");
 	printf("                     searched in ~/.objcdoc or ~/Library/Application Support/objcdoc\n");
-	printf("                     directories in the given order.\n");
+	printf("                     directories in the given order. The templates path is also checked\n");
+	printf("                     for 'globals.plist' file that contains default global parameters.\n");
+	printf("                     Global parameters are overriden by command line arguments.\n");
 	printf("   --no-xhtml        Don't create clean XHTML files (this will also disable DocSet!).\n");
 	printf("\n");
 	printf("OPTIONS - Doxygen\n");
@@ -410,11 +470,165 @@ template files.
 	printf("files in these two cases sicer the --output path is different from source files.\n");
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Global templates handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
 //----------------------------------------------------------------------------------------
-- (NSString*) parseStringWithShortcut:(NSString*) shortcut 
-							  andName:(NSString*) name
+- (void) setupFactoryDefaults
+{
+	// Remove all parameters.
+	[parameters removeAllObjects];
+	
+	// Setup the default documentation set installation path.
+	[parameters setObject:[NSHomeDirectory() 
+						   stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"] 
+				   forKey:kTKCmdDocSetInstallPathKey];
+	
+	// Setup default doxygen parameters.
+	[parameters setObject:@"/opt/local/bin/doxygen" forKey:kTKCmdDoxygenCommandLineKey];
+	[parameters setObject:@"$INPUT/Doxyfile" forKey:kTKCmdDoxygenConfigFileKey];
+	
+	// Setup default documentation set parameters.
+	[parameters setObject:@"com.custom.$PROJECT.docset" forKey:kTKCmdDocSetBundleIDKey];
+	[parameters setObject:@"Custom documentation" forKey:kTKCmdDocSetBundleFeedKey];
+	[parameters setObject:@"$INPUT/DocSet-Info.plist" forKey:kTKCmdDocSetSourcePlistKey];
+	[parameters setObject:@"/Developer/usr/bin/docsetutil" forKey:kTKCmdDocSetUtilCommandLinKey];
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateDocSetKey];
+	
+	// Setup dependencies, note that we use template placeholders...
+	[parameters setObject:@"$OUTPUT/cxml" forKey:kTKCmdOutputCleanXMLPathKey];
+	[parameters setObject:@"$OUTPUT/cxhtml" forKey:kTKCmdOutputCleanXHTMLPathKey];
+	[parameters setObject:@"$OUTPUT/docset" forKey:kTKCmdOutputDocSetPathKey];
+	[parameters setObject:@"$OUTPUT/docset/Contents" forKey:kTKCmdOutputDocSetContentsPathKey];
+	[parameters setObject:@"$OUTPUT/docset/Contents/Resources" forKey:kTKCmdOutputDocSetResourcesPathKey];
+	[parameters setObject:@"$OUTPUT/docset/Contents/Resources/Documents" forKey:kTKCmdOutputDocSetDocumentsPathKey];
+	
+	// Setup the default verbose level and switches. Note that we would only need to
+	// initialize those which default value is YES since NO is returned by default if
+	// a boolValue is sent to nil object, but to make future changes more meaningful, 
+	// all are included.
+	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) setupGlobalTemplates
+{
+	// Check user's root.
+	globalTemplatesPath = [NSHomeDirectory() stringByAppendingPathComponent:@".objcdoc"];
+	logVerbose(@"Testing '%@' for templates...", globalTemplatesPath);
+	if ([self parseTemplatesPath:globalTemplatesPath])
+	{
+		[globalTemplatesPath retain];
+		return;
+	}
+	
+	// Check application support.
+	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	for (NSString* path in paths)
+	{
+		globalTemplatesPath = [path stringByAppendingPathComponent:@"objcdoc"];
+		logVerbose(@"Testing '%@' for templates...", globalTemplatesPath);
+		if ([self parseTemplatesPath:globalTemplatesPath])
+		{
+			[globalTemplatesPath retain];
+			return;
+		}		
+	}
+	
+	// Set the global templates to nil if neither location is valid.
+	globalTemplatesPath = nil;
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) parseTemplatesPath:(NSString*) path
+{
+	NSFileManager* manager = [NSFileManager defaultManager];
+	
+	// First make sure the given path exists. Then check for all the required templates.
+	if ([manager fileExistsAtPath:path] &&
+		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"object.xslt"]] &&
+		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"object2xhtml.xslt"]] &&
+		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"index2xhtml.xslt"]] &&
+		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"screen.css"]])
+	{
+		// If the path contains all required template files, check if it also contains
+		// global parameters. If so, read them into the program.
+		NSString* globalParametersFile = [path stringByAppendingPathComponent:@"Globals.plist"];
+		if ([manager fileExistsAtPath:globalParametersFile])
+		{
+			logVerbose(@"Reading global parameters from '%@'...", globalParametersFile);
+			
+			// Read the contents of the global parameters file into the NSData, exit if
+			// this fails, but return YES since templates path is still valid.
+			NSError* error = nil;
+			NSData* data = [NSData dataWithContentsOfFile:globalParametersFile options:0 error:&error];
+			if (!data)
+			{
+				logError(@"Failed reading global templates, error was %@!", [error localizedDescription]);
+				return YES;
+			}
+			
+			// Convert the NSData into the dictionary. Exit if this fails, but return YES
+			// since templates path is still valid.
+			NSString* errorString = nil;
+			NSDictionary* globals = [NSPropertyListSerialization propertyListFromData:data
+																	 mutabilityOption:NSPropertyListImmutable
+																			   format:NULL
+																	 errorDescription:&errorString];
+			if (!globals)
+			{
+				logError(@"Failed parsing global templates, error was %@!", errorString);
+				[errorString release];
+				return YES;
+			}
+			
+			// Copy the global parameters into the parameters dictionary. Note that this
+			// will override factory settings.
+			[parameters addEntriesFromDictionary:globals];
+		}
+		return YES;
+	}
+	
+	return NO;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) replaceTemplatePlaceholdersForKey:(NSString*) key
+{
+	NSString* value = [parameters objectForKey:key];
+	
+	value = [value stringByReplacingOccurrencesOfString:@"$PROJECT" 
+											 withString:[parameters objectForKey:kTKCmdProjectNameKey]];
+	value = [value stringByReplacingOccurrencesOfString:@"$INPUT" 
+											 withString:[parameters objectForKey:kTKCmdInputPathKey]];
+	value = [value stringByReplacingOccurrencesOfString:@"$OUTPUT" 
+											 withString:[parameters objectForKey:kTKCmdOutputPathKey]];
+	
+	[parameters setObject:value forKey:key];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) standardizePathForKey:(NSString*) key
+{
+	NSString* value = [parameters objectForKey:key];
+	[parameters setObject:[value stringByStandardizingPath] forKey:key];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) parseStringWithShortcut:(NSString*) shortcut 
+						 andName:(NSString*) name
+						  forKey:(NSString*) key
 {
 	NSParameterAssert(name != nil || shortcut != nil);
+	NSParameterAssert(key != nil);
 	for (int i=1; i<[commandLineArguments count]; i++)
 	{
 		NSString* arg = [commandLineArguments objectAtIndex:i];
@@ -432,17 +646,19 @@ template files.
 			
 			NSString* value = [commandLineArguments objectAtIndex:i+1];
 			[self logCmdLineSwitch:shortcut andName:name andValue:value];
-			return value;
+			[parameters setObject:value forKey:key];
+			return;
 		}
 	}
-	return nil;
 }
 
 //----------------------------------------------------------------------------------------
-- (int) parseIntegerWithShortcut:(NSString*) shortcut
-						 andName:(NSString*) name
+- (void) parseIntegerWithShortcut:(NSString*) shortcut 
+						  andName:(NSString*) name
+						   forKey:(NSString*) key
 {
 	NSParameterAssert(name != nil || shortcut != nil);
+	NSParameterAssert(key != nil);
 	for (int i=1; i<[commandLineArguments count]; i++)
 	{
 		NSString* arg = [commandLineArguments objectAtIndex:i];
@@ -460,26 +676,29 @@ template files.
 			
 			NSString* value = [commandLineArguments objectAtIndex:i+1];			
 			[self logCmdLineSwitch:shortcut andName:name andValue:value];
-			return [value intValue];
+			[parameters setObject:[NSNumber numberWithInt:[value intValue]] forKey:key];
+			return;
 		}
 	}
-	return -1;
 }
 
 //----------------------------------------------------------------------------------------
-- (BOOL) parseBooleanWithShortcut:(NSString*) shortcut 
+- (void) parseBooleanWithShortcut:(NSString*) shortcut 
 						  andName:(NSString*) name
+						withValue:(BOOL) value
+						   forKey:(NSString*) key
 {
 	NSParameterAssert(name != nil || shortcut != nil);	
+	NSParameterAssert(key != nil);
 	for (NSString* arg in commandLineArguments)
 	{
 		if ([arg isEqualToString:name] || [arg isEqualToString:shortcut])
 		{
 			[self logCmdLineSwitch:shortcut andName:name andValue:nil];
-			return YES;
+			[parameters setObject:[NSNumber numberWithBool:value] forKey:key];
+			return;
 		}
 	}
-	return NO;
 }
 
 //----------------------------------------------------------------------------------------
@@ -521,50 +740,146 @@ template files.
 	}
 }
 
-//----------------------------------------------------------------------------------------
-- (BOOL) testTemplatesPath:(NSString*) path
-{
-	NSFileManager* manager = [NSFileManager defaultManager];
-	
-	// First make sure the given path exists. Then check for all the required templates.
-	if ([manager fileExistsAtPath:path] &&
-		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"object.xslt"]] &&
-		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"object2xhtml.xslt"]] &&
-		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"index2xhtml.xslt"]] &&
-		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"screen.css"]])
-	{
-		return YES;
-	}
-	
-	return NO;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Properties
 //////////////////////////////////////////////////////////////////////////////////////////
 
-@synthesize commandLine;
-@synthesize projectName;
-@synthesize inputPath;
-@synthesize outputPath;
-@synthesize templatesPath;
-@synthesize outputCleanXMLPath;
-@synthesize outputCleanXHTMLPath;
-@synthesize outputDocSetPath;
-@synthesize outputDocSetContentsPath;
-@synthesize outputDocSetResourcesPath;
-@synthesize outputDocSetDocumentsPath;
-@synthesize doxygenCommandLine;
-@synthesize doxygenConfigFilename;
-@synthesize docsetBundleID;
-@synthesize docsetBundleFeed;
-@synthesize docsetInstallPath;
-@synthesize docsetSourcePlistPath;
-@synthesize docsetutilCommandLine;
-@synthesize verboseLevel;
-@synthesize removeOutputFiles;
-@synthesize removeEmptyParagraphs;
-@synthesize createCleanXHTML;
-@synthesize createDocSet;
+//----------------------------------------------------------------------------------------
+- (NSString*) commandLine
+{
+	return [parameters objectForKey:kTKCmdCommandLineKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) projectName
+{
+	return [parameters objectForKey:kTKCmdProjectNameKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) inputPath
+{
+	return [parameters objectForKey:kTKCmdInputPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputPath
+{
+	return [parameters objectForKey:kTKCmdOutputPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) templatesPath
+{
+	return [parameters objectForKey:kTKCmdTemplatesPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputCleanXMLPath
+{
+	return [parameters objectForKey:kTKCmdOutputCleanXMLPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputCleanXHTMLPath
+{
+	return [parameters objectForKey:kTKCmdOutputCleanXHTMLPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputDocSetPath
+{
+	return [parameters objectForKey:kTKCmdOutputDocSetPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputDocSetContentsPath
+{
+	return [parameters objectForKey:kTKCmdOutputDocSetContentsPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputDocSetResourcesPath
+{
+	return [parameters objectForKey:kTKCmdOutputDocSetResourcesPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputDocSetDocumentsPath
+{
+	return [parameters objectForKey:kTKCmdOutputDocSetDocumentsPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) doxygenCommandLine
+{
+	return [parameters objectForKey:kTKCmdDoxygenCommandLineKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) doxygenConfigFilename
+{
+	return [parameters objectForKey:kTKCmdDoxygenConfigFileKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetBundleID
+{
+	return [parameters objectForKey:kTKCmdDocSetBundleIDKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetBundleFeed
+{
+	return [parameters objectForKey:kTKCmdDocSetBundleFeedKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetInstallPath
+{
+	return [parameters objectForKey:kTKCmdDocSetInstallPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetSourcePlistPath
+{
+	return [parameters objectForKey:kTKCmdDocSetSourcePlistKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetutilCommandLine
+{
+	return [parameters objectForKey:kTKCmdDocSetUtilCommandLinKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (int) verboseLevel
+{
+	return [[parameters objectForKey:kTKCmdVerboseLevelKey] intValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeOutputFiles
+{
+	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeEmptyParagraphs
+{
+	return [[parameters objectForKey:kTKCmdRemoveEmptyParaKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) createCleanXHTML
+{
+	return [[parameters objectForKey:kTKCmdCreateCleanXHTMLKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) createDocSet
+{
+	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
+}
 
 @end
