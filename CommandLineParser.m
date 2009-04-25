@@ -587,8 +587,9 @@ instead.
 			}
 			
 			// Copy the global parameters into the parameters dictionary. Note that this
-			// will override factory settings.
+			// will override factory settings. Then set the path to the templates folder.
 			[parameters addEntriesFromDictionary:globals];
+			[parameters setObject:path forKey:kTKCmdTemplatesPathKey];
 		}
 		return YES;
 	}
