@@ -190,9 +190,11 @@
 	[document setVersion:@"1.0"];
 	[document addChild:projectElement];
 	
-	// Enumerate through all the enumerated objects and create the markup.
+	// Enumerate through all the enumerated objects and create the markup. Note that
+	// we use directory structure so that we get proper enumeration.
 	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
-	for (NSString* objectName in objects)
+	NSArray* sortedObjectNames = [[objects allKeys] sortedArrayUsingSelector:@selector(compare:)];
+	for (NSString* objectName in sortedObjectNames)
 	{
 		NSDictionary* objectData = [objects valueForKey:objectName];
 		NSString* objectKind = [objectData valueForKey:kTKDataObjectKindKey];
