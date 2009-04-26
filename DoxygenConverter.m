@@ -112,7 +112,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 		}
 	}
 
-	logInfo(@"Finished documentation creation.");
+	logNormal(@"Succesfully finished documentation creation.");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
