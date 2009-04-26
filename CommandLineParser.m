@@ -102,11 +102,10 @@ template parameters (either from factory defaults or from globals plist) with th
 values and will prepare all dependent values. The message is automatically sent from 
 @c CommandLineParser::parseCommandLineArguments:ofCount:().
  
-@see
-	replaceTemplatePlaceholdersForKey:()
-	validateCommandLineArguments()
-	setupFactoryDefaults()
-	setupGlobalTemplates()
+@see replaceTemplatePlaceholdersForKey:
+@see validateCommandLineArguments
+@see setupFactoryDefaults
+@see setupGlobalTemplates
 */
 - (void) postProcessCommandLineArguments;
 
@@ -155,9 +154,8 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
-@see
-	parseIntegerWithShortcut:andName:forKey:()
-	parseBooleanWithShortcut:andName:forKey:withValue:()
+@see parseIntegerWithShortcut:andName:forKey:
+@see parseBooleanWithShortcut:andName:withValue:forKey:
 */
 - (void) parseStringWithShortcut:(NSString*) shortcut 
 						 andName:(NSString*) name
@@ -178,9 +176,8 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
-@see
-	parseStringWithShortcut:andName:forKey:()
-	parseBooleanWithShortcut:andName:forKey:withValue:()
+@see parseStringWithShortcut:andName:forKey:
+@see parseBooleanWithShortcut:andName:withValue:forKey:
 */
 - (void) parseIntegerWithShortcut:(NSString*) shortcut
 						  andName:(NSString*) name
@@ -198,9 +195,8 @@ passed; the method will thrown exception if both, name and shortcut, are @c nil.
 @param key The key for which to set the value if found.
 @param value The desired value to set for the given @c key if the switch is found.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or @c key is @c nil.
-@see
-	parseStringWithShortcut:andName:forKey:()
-	parseIntegerWithShortcut:andName:forKey:()
+@see parseStringWithShortcut:andName:forKey:
+@see parseIntegerWithShortcut:andName:forKey:
 */
 - (void) parseBooleanWithShortcut:(NSString*) shortcut 
 						  andName:(NSString*) name
