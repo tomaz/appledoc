@@ -42,8 +42,37 @@ See also @c createCleanIndexDocumentationFile(), @c fixCleanObjectDocumentationL
 and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if convertion fails.
+@see mergeCategoriesToKnownObjects
+@see createCleanIndexDocumentationFile
+@see fixCleanObjectDocumentation
+@see saveCleanObjectDocumentationFiles
 */
 - (void) createCleanObjectDocumentationMarkup;
+
+/** Creates clean object XML markups.￼
+
+This method will scan the doxygen XML output. For each file it will check if it contains
+a known object (by testing the file name) and that the file is documented. For each
+known documented file, it will add the original markup in the form of the @c NSXMLParser
+to the @c data dictionary. The key of the dictionary will be the name of the described
+object.
+ 
+Note that this method will not save the clean XML file yet, it will only prepare the
+proper name including full path and will add all the data, including cleaned XML tree
+into the database. Until the utility finishes working, it will work on in-memory XML
+representation and only save after all steps are finished.
+
+This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
+See also @c createCleanIndexDocumentationFile(), @c fixCleanObjectDocumentationLinks()
+and @c saveCleanObjectDocumentationFiles().
+
+@exception ￼￼￼￼￼NSException Thrown if convertion fails.
+@see createCleanObjectDocumentationMarkup
+@see createCleanIndexDocumentationFile
+@see fixCleanObjectDocumentation
+@see saveCleanObjectDocumentationFiles
+*/
+- (void) mergeCategoriesToKnownObjects;
 
 /** Creates clean index XML file.￼
 
@@ -56,6 +85,10 @@ See also @c createCleanObjectDocumentationMarkup(), @c fixCleanObjectDocumentati
 and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if index file creation fails.
+@see createCleanObjectDocumentationMarkup
+@see mergeCategoriesToKnownObjects
+@see fixCleanObjectDocumentation
+@see saveCleanObjectDocumentationFiles
 */
 - (void) createCleanIndexDocumentationFile;
 
@@ -76,6 +109,10 @@ See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumenta
 and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if fixing XML fails.
+@see createCleanObjectDocumentationMarkup
+@see mergeCategoriesToKnownObjects
+@see createCleanIndexDocumentationFile
+@see saveCleanObjectDocumentationFiles
 */
 - (void) fixCleanObjectDocumentation;
 
@@ -88,6 +125,10 @@ See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumenta
 and @c fixCleanObjectDocumentationLinks().
 
 @exception ￼￼￼￼￼NSException Thrown if saving fails.
+@see createCleanObjectDocumentationMarkup
+@see mergeCategoriesToKnownObjects
+@see createCleanIndexDocumentationFile
+@see fixCleanObjectDocumentation
 */
 - (void) saveCleanObjectDocumentationFiles;
 
@@ -110,6 +151,9 @@ method.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixReferencesForObject:objectData:objects:
+@see fixParaLinksForObject:objectData:objects:
+@see fixEmptyParaForObject:objectData:objects:
 */
 - (void) fixInheritanceForObject:(NSString*) objectName
 					  objectData:(NSMutableDictionary*) objectData
@@ -129,6 +173,9 @@ method.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixInheritanceForObject:objectData:objects:
+@see fixParaLinksForObject:objectData:objects:
+@see fixEmptyParaForObject:objectData:objects:
 */
 - (void) fixReferencesForObject:(NSString*) objectName
 					 objectData:(NSMutableDictionary*) objectData
@@ -152,6 +199,9 @@ method.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixInheritanceForObject:objectData:objects:
+@see fixReferencesForObject:objectData:objects:
+@see fixEmptyParaForObject:objectData:objects:
 */
 - (void) fixParaLinksForObject:(NSString*) objectName
 					objectData:(NSMutableDictionary*) objectData
@@ -171,6 +221,9 @@ method.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixInheritanceForObject:objectData:objects:
+@see fixReferencesForObject:objectData:objects:
+@see fixParaLinksForObject:objectData:objects:
 */
 - (void) fixEmptyParaForObject:(NSString*) objectName
 					objectData:(NSMutableDictionary*) objectData
