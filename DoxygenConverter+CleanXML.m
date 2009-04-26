@@ -120,13 +120,26 @@
 			}
 			
 			// (E) Prepare the object relative directory and relative path to the index.
+			// Also set the class "link" for categories.
+			NSString* objectClass = nil;
 			NSString* objectRelativeDirectory = nil;
-			if ([objectKind isEqualToString:@"protocol"])
-				objectRelativeDirectory = kTKDirProtocols;
-			else if ([objectKind isEqualToString:@"category"])
+			if ([objectKind isEqualToString:@"category"])
+			{
 				objectRelativeDirectory = kTKDirCategories;
+				NSRange categoryNameRange = [objectName rangeOfString:@"("];
+				if (categoryNameRange.location != NSNotFound)
+				{
+					objectClass = [objectName substringToIndex:categoryNameRange.location];
+				}
+			}
+			else if ([objectKind isEqualToString:@"protocol"])
+			{
+				objectRelativeDirectory = kTKDirProtocols;
+			}
 			else
+			{
 				objectRelativeDirectory = kTKDirClasses;
+			}
 			
 			NSString* objectRelativePath = [objectRelativeDirectory stringByAppendingPathComponent:objectName];
 			objectRelativePath = [objectRelativePath stringByAppendingPathExtension:@"html"];
@@ -143,6 +156,7 @@
 			[objectData setObject:objectRelativeDirectory forKey:kTKDataObjectRelDirectoryKey];
 			[objectData setObject:objectRelativePath forKey:kTKDataObjectRelPathKey];
 			[objectData setObject:inputFilename forKey:kTKDataObjectDoxygenFilenameKey];
+			if (objectClass) [objectData setObject:objectClass forKey:kTKDataObjectClassKey];
 			
 			// Add the object to the object's dictionary.
 			NSMutableDictionary* objectsDict = [database objectForKey:kTKDataMainObjectsKey];
@@ -176,6 +190,107 @@
 	// Release the last iteration pool.
 	[loopAutoreleasePool drain];	
 	logInfo(@"Finished creating clean object documentation files.");
+}
+
+//----------------------------------------------------------------------------------------
+- (void) mergeCleanCategoriesToKnownObjects
+{
+	if (cmd.mergeKnownCategoriesToClasses)
+	{
+		logNormal(@"Merging categories documentation to known classes...");
+		
+		// Go through all categories and check if they belong to a known class. If so
+		// merge the documentation as a new section at the end of the class documentation.
+		// Then remember the category name so we can later remove it from the database. 
+		NSMutableArray* removedCategories = [NSMutableArray array];
+		NSMutableDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
+		NSDictionary* directoriesDict = [database objectForKey:kTKDataMainDirectoriesKey];
+		NSMutableArray* categoriesArray = [directoriesDict objectForKey:kTKDirCategories];
+		for (NSDictionary* categoryData in categoriesArray)
+		{
+			NSString* categoryName = [categoryData objectForKey:kTKDataObjectNameKey];
+			NSString* className = [categoryData objectForKey:kTKDataObjectClassKey];
+			if (!className)
+			{
+				logVerbose(@"Skipping '%@' because it belongs to unknown class.", categoryName);
+				continue;
+			}
+			
+			logVerbose(@"Merging category '%@' documentation to class '%@'...",
+					   categoryName,
+					   className);
+			
+			// Get the main class XML.
+			NSDictionary* classData = [objects objectForKey:className];
+			NSXMLDocument* classDocument = [classData objectForKey:kTKDataObjectMarkupKey];
+			
+			// Get the main class <sections> container element. If not found, exit.
+			// (this should not really happen, since the xslt adds "Others" node by
+			// default, but let's keep it safe). If there's more than one sections node,
+			// use the first one (also should not happen).
+			NSXMLElement* classSectionsNode = nil;
+			NSArray* classSectionsNodes = [classDocument nodesForXPath:@"/object/sections" error:nil];
+			if ([classSectionsNodes count] == 0) 
+			{
+				logInfo(@"Skipping '%@' because class doesn't contain sections node!", categoryName);
+				continue;					
+			}
+			classSectionsNode = (NSXMLElement*)[classSectionsNodes objectAtIndex:0];
+			
+			// Get the array of all category sections and append them in the same
+			// order to the main class. The new sectio name should have the category
+			// name prepended.
+			NSXMLDocument* categoryDocument = [categoryData objectForKey:kTKDataObjectMarkupKey];
+			NSArray* categorySectionNodes = [categoryDocument nodesForXPath:@"/object/sections/section" error:nil];
+			for (NSXMLElement* categorySectionNode in categorySectionNodes)
+			{
+				// Get category section name. Use empty string by default just in case...
+				NSString* categorySectionName = @"";
+				NSArray* categorySectionNameNodes = [categorySectionNode nodesForXPath:@"name" error:nil];
+				if ([categorySectionNameNodes count] > 0)
+				{
+					NSXMLNode* nameNode = [categorySectionNameNodes objectAtIndex:0];
+					categorySectionName = [nameNode stringValue];
+				}
+				
+				// Merge the section data to the main class document. We need to prepend
+				// the category name before the section description before...
+				logDebug(@"- Merging documentation for section '%@'...");
+				NSXMLElement* classSectionNode = [categorySectionNode copy];
+				NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
+				if ([classSectionNameNodes count] > 0)
+				{					
+					NSString* extensionName = [categoryName substringFromIndex:[className length]];
+					extensionName = [extensionName substringWithRange:NSMakeRange(1, [extensionName length]-2)];
+					NSString* classSectionName = [NSString stringWithFormat:@"%@ / %@", 
+												  extensionName,
+												  categorySectionName];
+					NSXMLNode* nameNode = [classSectionNameNodes objectAtIndex:0];
+					[nameNode setStringValue:classSectionName];
+				}
+				[classSectionsNode addChild:classSectionNode];
+			}
+			
+			// Remember the category name which was removed. Note that we use category
+			// data because we can get all information from there and we need the
+			// instance to properly remove from the directories array.
+			[removedCategories addObject:categoryData];
+		}
+		
+		
+		// Remove all category "stand alone" documentation from the database. We'll
+		// lose the category description this way, but this usually doesn't provide
+		// much information (at least not in my documentation... ;-)).
+		for (NSDictionary* categoryData in removedCategories)
+		{
+			NSString* categoryName = [categoryData objectForKey:kTKDataObjectNameKey];
+			logDebug(@"- Removing category '%@' documentation...", categoryName);
+			[categoriesArray removeObject:categoryData];
+			[objects removeObjectForKey:categoryName];
+		}
+				
+		logInfo(@"Finished merging categories documentation to known classes...");
+	}
 }
 
 //----------------------------------------------------------------------------------------

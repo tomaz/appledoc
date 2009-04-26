@@ -22,6 +22,7 @@
 
 #define kTKDataObjectNameKey @"ObjectName"
 #define kTKDataObjectKindKey @"ObjectKind"
+#define kTKDataObjectClassKey @"ObjectClass"
 #define kTKDataObjectMarkupKey @"CleanedMarkup"
 #define kTKDataObjectRelDirectoryKey @"RelativeDirectory"
 #define kTKDataObjectRelPathKey @"RelativePath"
@@ -60,6 +61,12 @@ is a standard @c NSDictionary of the following layout:
 		  - @c "ObjectKind" key: an @c NSString which has the value @c "class" if the
 			object is a class, @c "category" if the object is category and @c "protocol"
 			if the object is a protocol.
+		  - @c "ObjectClass key: an @c NSString which contains the name of the class to
+			which the object "belongs". At the moment this is only used for categories
+			to map to the class that the category extends. This is key is missing for 
+			other objects. Note that the key is also missing for categories which
+			"parent" class cannot be determined (not likely, but be prepared just in
+			case).
 		  - @c "CleanedMarkup" key: contains an @c NSXMLDocument with clean XML. This
 			document is updated through different steps and always contains the last
 			object data.

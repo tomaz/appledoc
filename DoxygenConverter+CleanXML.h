@@ -42,7 +42,7 @@ See also @c createCleanIndexDocumentationFile(), @c fixCleanObjectDocumentationL
 and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if convertion fails.
-@see mergeCategoriesToKnownObjects
+@see mergeCleanCategoriesToKnownObjects
 @see createCleanIndexDocumentationFile
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
@@ -72,7 +72,7 @@ and @c saveCleanObjectDocumentationFiles().
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
 */
-- (void) mergeCategoriesToKnownObjects;
+- (void) mergeCleanCategoriesToKnownObjects;
 
 /** Creates clean index XML file.￼
 
@@ -86,7 +86,7 @@ and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if index file creation fails.
 @see createCleanObjectDocumentationMarkup
-@see mergeCategoriesToKnownObjects
+@see mergeCleanCategoriesToKnownObjects
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
 */
@@ -110,7 +110,7 @@ and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if fixing XML fails.
 @see createCleanObjectDocumentationMarkup
-@see mergeCategoriesToKnownObjects
+@see mergeCleanCategoriesToKnownObjects
 @see createCleanIndexDocumentationFile
 @see saveCleanObjectDocumentationFiles
 */
@@ -126,7 +126,7 @@ and @c fixCleanObjectDocumentationLinks().
 
 @exception ￼￼￼￼￼NSException Thrown if saving fails.
 @see createCleanObjectDocumentationMarkup
-@see mergeCategoriesToKnownObjects
+@see mergeCleanCategoriesToKnownObjects
 @see createCleanIndexDocumentationFile
 @see fixCleanObjectDocumentation
 */

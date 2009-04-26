@@ -38,6 +38,7 @@
 #define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
 #define kTKCmdRemoveOutputFilesKey			@"RemoveOutputFiles"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
+#define kTKCmdMergeCategories				@"MergeCategories"				// NSNumber / BOOL
 #define kTKCmdCreateCleanXHTMLKey			@"CreateCleanXHTML"				// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
@@ -311,6 +312,7 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
 
+	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategories];
 	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
@@ -434,6 +436,7 @@ instead.
 	printf("OPTIONS - Miscellaneous\n");
 	printf("-v --verbose <level> The verbose level (1-4). Defaults to 0 (only errors).\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
+	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
 	printf("   --cleanoutput     Remove output files before starting. This option should\n");
 	printf("                     only be used if output is generated in a separate directory.\n");
 	printf("                     It will remove the whole directory structure starting with\n");
@@ -510,6 +513,7 @@ instead.
 	// a boolValue is sent to nil object, but to make future changes more meaningful, 
 	// all are included.
 	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategories];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
@@ -873,6 +877,12 @@ instead.
 - (BOOL) removeEmptyParagraphs
 {
 	return [[parameters objectForKey:kTKCmdRemoveEmptyParaKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) mergeKnownCategoriesToClasses
+{
+	return [[parameters objectForKey:kTKCmdMergeCategories] boolValue];
 }
 
 //----------------------------------------------------------------------------------------
