@@ -41,6 +41,8 @@
 #define kTKCmdCreateCleanXHTMLKey			@"CreateCleanXHTML"				// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
+#define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
+
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Defines the methods private for the @c CommandLineParser class.
@@ -318,6 +320,9 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
 	[self parseBooleanWithShortcut:nil andName:@"--cleanoutput" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
 	
+	// Parse undocumented options. These are used to debug the script.
+	[self parseBooleanWithShortcut:nil andName:@"--no-util-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
+	
 	// Validate and post process the command line arguments.
 	[self validateCommandLineArguments];
 	[self postProcessCommandLineArguments];
@@ -512,6 +517,9 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+	
+	// Setup undocumented properties.
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdEmitUtilityOutputKey];
 }
 
 //----------------------------------------------------------------------------------------
@@ -881,6 +889,16 @@ instead.
 - (BOOL) createDocSet
 {
 	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Undocumented properties
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) emitUtilityOutput
+{
+	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
 }
 
 @end

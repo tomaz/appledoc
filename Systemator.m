@@ -8,6 +8,7 @@
 
 #import "Systemator.h"
 #import "LoggingProvider.h"
+#import "CommandLineParser.h"
 
 #define kTKSystemError @"TKSystemError"
 
@@ -71,7 +72,7 @@ get the path from the shell.
 
 	// If debug output is desired, we should show task output, otherwise we should
 	// redirect it to a temporary pipe so that it doesn't "garbage" the output.
-	BOOL showOutput = [[self logger] isDebugEnabled];
+	BOOL showOutput = [[CommandLineParser sharedInstance] emitUtilityOutput];
 	NSPipe* outputPipe = showOutput ? nil : [[NSPipe alloc] init];
 	
 	// Setup and run the task.
