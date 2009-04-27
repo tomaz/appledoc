@@ -316,7 +316,7 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
-	[self parseBooleanWithShortcut:nil andName:@"--cleanoutput" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--cleanbuild" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
 	
 	// Parse undocumented options. These are used to debug the script.
 	[self parseBooleanWithShortcut:nil andName:@"--no-util-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
@@ -437,12 +437,11 @@ instead.
 	printf("-v --verbose <level> The verbose level (1-4). Defaults to 0 (only errors).\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
-	printf("   --cleanoutput     Remove output files before starting. This option should\n");
-	printf("                     only be used if output is generated in a separate directory.\n");
-	printf("                     It will remove the whole directory structure starting with\n");
-	printf("                     the <output> path! BE CAREFUL!!! Note that this option is automatically\n");
-	printf("                     disabled if --output directory is not specified or is set to.\n");
-	printf("                     current directory.\n");
+	printf("   --cleanbuild      Remove output files before build. This option should only be used if\n");
+	printf("                     output is generated in a separate directory. It will remove the whole\n");
+	printf("                     directory structure starting with the <output> path! BE CAREFUL!!!\n");
+	printf("                     Note that this option is automatically disabled if <output> and\n");
+	printf("                     <input> directories are the same.\n");
 	printf("\n");
 	printf("EXAMPLES:\n");
 	printf("Note that the examples below show each option in it's own line to make the\n");
