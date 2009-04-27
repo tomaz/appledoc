@@ -16,7 +16,8 @@
 //----------------------------------------------------------------------------------------
 - (void) createDocSetSourcePlistFile
 {
-	// If the docset source plist doesn't yet exist, create it.
+	// If the docset source plist doesn't yet exist, create it, otherwise read the data
+	// from it in case the user changes it.
 	if (![manager fileExistsAtPath:cmd.docsetSourcePlistPath])
 	{
 		logNormal(@"Creating DocSet info plist...");
@@ -38,6 +39,45 @@
 		}
 		
 		logInfo(@"Finished creating DocSet info plist.");
+	}
+	
+	// If the plist already exists, read the data from it and set it to command line
+	// parser so the rest of the code execute after this already uses it. Note that we
+	// don't have to handle this if the file doesn't exists - we just created it and
+	// populated with default options in such case.
+	else
+	{
+		logNormal(@"Reading DocSet info plist data...");
+		
+		@try
+		{
+			// Read the property list from the file and extract the properties.
+			NSString* value = nil;
+			NSDictionary* docsetInfo = [Systemator readPropertyListFromFile:cmd.docsetSourcePlistPath];
+			
+			value = [docsetInfo objectForKey:(NSString*)kCFBundleIdentifierKey];
+			if (value)
+			{
+				logVerbose(@"- Updating DocSet bundle ID '%@' from info plist...", value);
+				cmd.docsetBundleID = value;
+			}
+			
+			value = [docsetInfo objectForKey:@"DocSetFeedName"];
+			if (value)
+			{
+				logVerbose(@"- Updating DocSet bundle feed '%@' from info plist...", value);
+				cmd.docsetBundleFeed = value;
+			}
+			
+		}
+		@catch (NSException* e)
+		{
+			logError(@"Failed readong DocSet info plist data from '%@', error was %@!",
+					 cmd.docsetSourcePlistPath,
+					 [e reason]);
+			@throw;
+		}
+		logInfo(@"Finished reading DocSet info plist data.");
 	}
 }
 

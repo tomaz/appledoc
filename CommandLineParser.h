@@ -106,8 +106,8 @@ are reset and then the given command line parsed.
 /// @name Properties - documentation set creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
-@property(readonly) NSString* docsetBundleID;
-@property(readonly) NSString* docsetBundleFeed;
+@property(assign) NSString* docsetBundleID;
+@property(assign) NSString* docsetBundleFeed;
 @property(readonly) NSString* docsetSourcePlistPath;
 @property(readonly) NSString* docsetutilCommandLine;
 @property(readonly) NSString* docsetInstallPath;

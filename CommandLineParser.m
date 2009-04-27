@@ -830,11 +830,19 @@ instead.
 {
 	return [parameters objectForKey:kTKCmdDocSetBundleIDKey];
 }
+- (void) setDocsetBundleID:(NSString*) value
+{
+	[parameters setObject:value forKey:kTKCmdDocSetBundleIDKey];
+}
 
 //----------------------------------------------------------------------------------------
 - (NSString*) docsetBundleFeed
 {
 	return [parameters objectForKey:kTKCmdDocSetBundleFeedKey];
+}
+- (void) setDocsetBundleFeed:(NSString*) value
+{
+	[parameters setObject:value forKey:kTKCmdDocSetBundleFeedKey];
 }
 
 //----------------------------------------------------------------------------------------
