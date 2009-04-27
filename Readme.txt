@@ -2,7 +2,7 @@
 1. Purpose
 ----------
 
-The main purpose of objcdoc utility is to generate Apple like source code documentation. 
+The main purpose of appledoc utility is to generate Apple like source code documentation. 
 It uses doxygen for parsing the source files and creating intermediate XML files. These 
 are then eventually converted to XHTML and optionally fully indexed and browsable 
 documentation set. The utility can also install the documentation set into the Xcode 
@@ -13,14 +13,14 @@ of using doxygen XML was developed from his utility. He was also kind enough for
 me to use his xslt and css files which do the hard work, so all credit goes to him. Check 
 his work on http://github.com/mattball/doxyclean/.
 
-You can find the latest objcdoc build on http://github.com/tomaz/objcdoc/.
+You can find the latest appledoc build on http://github.com/tomaz/appledoc/.
 
 
 ---------------------
 2. Command line usage
 ---------------------
 
-USAGE: objcdoc [options]
+USAGE: appledoc [options]
 
 OPTIONS - required
 -p --project <name>  The project name.
@@ -58,7 +58,7 @@ OPTIONS - miscellaneous
 					 Note that this option is automatically disabled if <output> and
 					 <input> directories are the same.
 -t --templates <path>Full path to template files. If not provided, templates are'.
-					 searched in ~/.objcdoc or ~/Library/Application Support/objcdoc
+					 searched in ~/.appledoc or ~/Library/Application Support/appledoc
 					 directories in the given order. The templates path is also checked
 					 for 'globals.plist' file that contains default global parameters.
 					 Global parameters are overriden by command line arguments.
@@ -74,13 +74,13 @@ in cases where the 'Place Build Products In' option is set to 'Customized locati
 It will create a directory named 'Help' alongside 'Debug' and 'Release' in the
 specified custom location. Inside it will create a sub directory named after the
 project name in which all documentation files will be created:
-objcdoc -p "$PROJECT_NAME" -i "$SRCROOT" -o "$BUILD_DIR/Help/$PROJECT_NAME" --cleanoutput
+appledoc -p "$PROJECT_NAME" -i "$SRCROOT" -o "$BUILD_DIR/Help/$PROJECT_NAME" --cleanoutput
 
 The followinfg command line is useful as the script within custom Xcode run script phase
 in cases where the 'Place Build Products In' option is set to 'Project directory'.
 It will create a directory named 'Help' inside the project source directory in
 which all documentation files will be created:
-objcdoc -p "$PROJECT_NAME" -i "$SRCROOT" -o "$SRCROOT/Help" --cleanoutput
+appledoc -p "$PROJECT_NAME" -i "$SRCROOT" -o "$SRCROOT/Help" --cleanoutput
 
 Note that in both examples --cleanoutput is used. It is safe to remove documentation.
 files in these two cases since the --output path is different from source files.
@@ -236,7 +236,7 @@ exit 0;
 
 Copyright (c) 2009 Tomaz Kragelj.
 
-The objcdoc software and associated documentation (from now, the “Software”) is freeware. 
+The appledoc software and associated documentation (from now, the “Software”) is freeware. 
 You may use, copy, modify and/or merge copies of the Software free of charge in 
 non-commercial solutions. The redistribution of this Software as part of or merged in 
 commercial solutions is forbidden without prior authorization of the author. However, 

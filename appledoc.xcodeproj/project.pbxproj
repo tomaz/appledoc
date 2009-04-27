@@ -35,7 +35,7 @@
 		738FE8150FA1965F00711038 /* DoxygenConverter+CleanHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80C0FA1965F00711038 /* DoxygenConverter+CleanHTML.m */; };
 		738FE8160FA1965F00711038 /* DoxygenConverter+DocSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */; };
 		738FE8170FA1965F00711038 /* DoxygenConverter+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */; };
-		8DD76F9A0486AA7600D96B5E /* objcdoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* objcdoc.m */; settings = {ATTRIBUTES = (); }; };
+		8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* appledoc.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -56,9 +56,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* objcdoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = objcdoc.m; sourceTree = "<group>"; };
+		08FB7796FE84155DC02AAC07 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32A70AAB03705E1F00C91783 /* objcdoc_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objcdoc_Prefix.pch; sourceTree = "<group>"; };
+		32A70AAB03705E1F00C91783 /* appledoc_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_Prefix.pch; sourceTree = "<group>"; };
 		738FE7E50FA195E700711038 /* index2xhtml.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index2xhtml.xslt; sourceTree = "<group>"; };
 		738FE7E60FA195E700711038 /* object.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = object.xslt; sourceTree = "<group>"; };
 		738FE7E70FA195E700711038 /* object2xhtml.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = object2xhtml.xslt; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 		73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DocSet-Info.plist"; sourceTree = "<group>"; };
 		73AB8B120FA1CDB300B96D8A /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
 		73EDC6D60FA555680020B94A /* Readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
-		8DD76FA10486AA7600D96B5E /* objcdoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = objcdoc; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +101,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		08FB7794FE84155DC02AAC07 /* objcdoc */ = {
+		08FB7794FE84155DC02AAC07 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
 				738FE7E40FA195E700711038 /* Templates */,
@@ -110,7 +110,7 @@
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
-			name = objcdoc;
+			name = appledoc;
 			sourceTree = "<group>";
 		};
 		08FB7795FE84155DC02AAC07 /* Source */ = {
@@ -134,7 +134,7 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76FA10486AA7600D96B5E /* objcdoc */,
+				8DD76FA10486AA7600D96B5E /* appledoc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -153,8 +153,8 @@
 		738FE7F70FA1963700711038 /* Startup */ = {
 			isa = PBXGroup;
 			children = (
-				32A70AAB03705E1F00C91783 /* objcdoc_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* objcdoc.m */,
+				32A70AAB03705E1F00C91783 /* appledoc_Prefix.pch */,
+				08FB7796FE84155DC02AAC07 /* appledoc.m */,
 			);
 			name = Startup;
 			sourceTree = "<group>";
@@ -206,9 +206,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		8DD76F960486AA7600D96B5E /* objcdoc */ = {
+		8DD76F960486AA7600D96B5E /* appledoc */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "objcdoc" */;
+			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
@@ -217,10 +217,10 @@
 			);
 			dependencies = (
 			);
-			name = objcdoc;
+			name = appledoc;
 			productInstallPath = "$(HOME)/bin";
-			productName = objcdoc;
-			productReference = 8DD76FA10486AA7600D96B5E /* objcdoc */;
+			productName = appledoc;
+			productReference = 8DD76FA10486AA7600D96B5E /* appledoc */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -228,14 +228,14 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "objcdoc" */;
+			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "appledoc" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
-			mainGroup = 08FB7794FE84155DC02AAC07 /* objcdoc */;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* appledoc */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F960486AA7600D96B5E /* objcdoc */,
+				8DD76F960486AA7600D96B5E /* appledoc */,
 				738FE7EA0FA195F300711038 /* Install */,
 			);
 		};
@@ -246,7 +246,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76F9A0486AA7600D96B5E /* objcdoc.m in Sources */,
+				8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */,
 				738FE8000FA1965700711038 /* Systemator.m in Sources */,
 				738FE8010FA1965700711038 /* LoggingProvider.m in Sources */,
 				738FE8020FA1965700711038 /* NSObject+Logging.m in Sources */,
@@ -273,9 +273,9 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = objcdoc_Prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = objcdoc;
+				PRODUCT_NAME = appledoc;
 			};
 			name = Debug;
 		};
@@ -286,9 +286,9 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = objcdoc_Prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
-				PRODUCT_NAME = objcdoc;
+				PRODUCT_NAME = appledoc;
 			};
 			name = Release;
 		};
@@ -342,7 +342,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "objcdoc" */ = {
+		1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927508733DD40010E9CD /* Debug */,
@@ -351,7 +351,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "objcdoc" */ = {
+		1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "appledoc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,

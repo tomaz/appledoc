@@ -1,6 +1,6 @@
 //
 //  NSObject+Logging.h
-//  objcdoc
+//  appledoc
 //
 //  Created by Tomaz Kragelj on 12.4.09.
 //  Copyright 2009 Tomaz Kragelj. All rights reserved.

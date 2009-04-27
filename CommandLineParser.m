@@ -1,6 +1,6 @@
 //
 //  CommandLineParser.m
-//  objcdoc
+//  appledoc
 //
 //  Created by Tomaz Kragelj on 12.4.09.
 //  Copyright 2009 Tomaz Kragelj. All rights reserved.
@@ -60,8 +60,8 @@
 
 This method checks if template files are found on one of the known locations. It searches
 the following paths in this order:
-- <tt>~/.objcdoc/</tt>
-- <tt>~/Library/Application Support/objcdoc/</tt>
+- <tt>~/.appledoc/</tt>
+- <tt>~/Library/Application Support/appledoc/</tt>
 If all required template files are found in one of these paths, the template path is
 automatically set to it.
  
@@ -409,7 +409,7 @@ instead.
 //----------------------------------------------------------------------------------------
 - (void) printUsage
 {
-	printf("USAGE: objcdoc [options]\n");
+	printf("USAGE: appledoc [options]\n");
 	printf("\n");
 	printf("OPTIONS - required\n");
 	printf("-p --project <name>  The project name.\n");
@@ -447,7 +447,7 @@ instead.
 	printf("                     Note that this option is automatically disabled if <output> and\n");
 	printf("                     <input> directories are the same.\n");
 	printf("-t --templates <path>Full path to template files. If not provided, templates are'.\n");
-	printf("                     searched in ~/.objcdoc or ~/Library/Application Support/objcdoc\n");
+	printf("                     searched in ~/.appledoc or ~/Library/Application Support/appledoc\n");
 	printf("                     directories in the given order. The templates path is also checked\n");
 	printf("                     for 'globals.plist' file that contains default global parameters.\n");
 	printf("                     Global parameters are overriden by command line arguments.\n");
@@ -463,7 +463,7 @@ instead.
 	printf("It will create a directory named 'Help' alongside 'Debug' and 'Release' in the\n");
 	printf("specified custom location. Inside it will create a sub directory named after the\n");
 	printf("project name in which all documentation files will be created:\n");
-	printf("objcdoc\n");
+	printf("appledoc\n");
 	printf("--project \"$PROJECT_NAME\"\n");
 	printf("--input \"$SRCROOT\"\n");
 	printf("--output \"$BUILD_DIR/Help/$PROJECT_NAME\"\n");
@@ -473,7 +473,7 @@ instead.
 	printf("in cases where the 'Place Build Products In' option is set to 'Project directory'.\n");
 	printf("It will create a directory named 'Help' inside the project source directory in\n");
 	printf("which all documentation files will be created:\n");
-	printf("objcdoc\n");
+	printf("appledoc\n");
 	printf("--project \"$PROJECT_NAME\"\n");
 	printf("--input \"$SRCROOT\"\n");
 	printf("--output \"$SRCROOT/Help\"\n");
@@ -537,7 +537,7 @@ instead.
 - (void) setupGlobalTemplates
 {
 	// Check user's root.
-	globalTemplatesPath = [NSHomeDirectory() stringByAppendingPathComponent:@".objcdoc"];
+	globalTemplatesPath = [NSHomeDirectory() stringByAppendingPathComponent:@".appledoc"];
 	logVerbose(@"Testing '%@' for templates...", globalTemplatesPath);
 	if ([self parseTemplatesPath:globalTemplatesPath])
 	{
@@ -549,7 +549,7 @@ instead.
 	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 	for (NSString* path in paths)
 	{
-		globalTemplatesPath = [path stringByAppendingPathComponent:@"objcdoc"];
+		globalTemplatesPath = [path stringByAppendingPathComponent:@"appledoc"];
 		logVerbose(@"Testing '%@' for templates...", globalTemplatesPath);
 		if ([self parseTemplatesPath:globalTemplatesPath])
 		{
