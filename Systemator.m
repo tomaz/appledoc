@@ -92,6 +92,67 @@ get the path from the shell.
 }
 
 //----------------------------------------------------------------------------------------
++ (void) runShellTaskWithCommand:(NSString*) command
+{
+	NSParameterAssert(command != nil);
+	logDebug(@"Running shell task '%@'", command);
+
+	// Get the user's default shell. Throw exception if this fails.
+	NSDictionary* environment = [[NSProcessInfo processInfo] environment];
+	NSString* shell = [environment objectForKey:@"SHELL"];
+	if (!shell)
+	{
+		[self throwExceptionWithName:kTKSystemError withDescription:@"Failed retreiving system shell!"];
+	}
+	
+	// Prepare the temporary file contents.
+	NSMutableArray* lines = [NSMutableArray array];
+	[lines addObject:[NSString stringWithFormat:@"#!%@", shell]];
+	[lines addObject:command];
+	
+	// Prepare the temporary file name and save it.
+	NSString* filename = [NSTemporaryDirectory() stringByAppendingPathComponent:@"appledoc-temp-script.sh"];
+	[self writeLines:lines toFile:filename];
+	
+	// Change the file permissions to execute, otherwise shell will reject it.
+	NSFileManager* manager = [NSFileManager defaultManager];
+	NSDictionary* attributes = [NSDictionary dictionaryWithObject:[NSNumber numberWithUnsignedLong:S_IRWXU|S_IRWXG|S_IRWXO] 
+														   forKey:NSFilePosixPermissions];
+	NSError* error = nil;
+	[manager setAttributes:attributes
+			  ofItemAtPath:filename 
+					 error:&error];
+	if (error)
+	{
+		[manager removeItemAtPath:filename error:nil];
+		[self throwExceptionWithName:kTKSystemError basedOnError:error];
+	}
+	
+	// Prepare shell script arguments.
+	NSMutableArray* arguments = [NSMutableArray array];
+	[arguments addObject:@"-c"];
+	[arguments addObject:filename];
+	
+	// If debug output is desired, we should show task output, otherwise we should
+	// redirect it to a temporary pipe so that it doesn't "garbage" the output.
+	BOOL showOutput = [[CommandLineParser sharedInstance] emitUtilityOutput];
+	NSPipe* outputPipe = showOutput ? nil : [[NSPipe alloc] init];
+	
+	// Execute the shell script.
+	NSTask* task = [[NSTask alloc] init];
+	if (outputPipe) [task setStandardOutput:outputPipe];
+	[task setLaunchPath:shell];
+	[task setArguments:arguments];
+	[task launch];
+	[task waitUntilExit];
+	
+	// Release temporary objects and remove the temporary file.
+	[outputPipe release];
+	[task release];
+	[manager removeItemAtPath:filename error:nil];
+}
+
+//----------------------------------------------------------------------------------------
 + (void) createDirectory:(NSString*) path
 {
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path])

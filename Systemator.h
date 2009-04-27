@@ -27,8 +27,21 @@ list must end with @c nil otherwise @c SIGSEGV error will be raised.
 
 @param command ￼￼￼￼￼￼The command line of the task.
 @exception ￼￼￼￼￼NSException Thrown if running the task fails.
+@see runShellTaskWithCommand:
 */
 + (void) runTask:(NSString*) command, ...;
+
+/** Runs the given command with the user's shell.￼
+
+This will first get the user's default shell and will use it to execute the given command.
+The given command will first be saved to the temporary path then it will be executed and
+temporary file removed. This command allows the clients to properly handle shell path.
+
+@param command ￼￼￼￼￼￼The command to execute.
+@exception ￼￼￼￼￼NSException Thrown if running task fails.
+@see runTask:
+*/
++ (void) runShellTaskWithCommand:(NSString*) command;
 
 /** Creates the given directory.￼
 
