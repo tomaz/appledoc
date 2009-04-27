@@ -236,39 +236,67 @@
 				continue;					
 			}
 			classSectionsNode = (NSXMLElement*)[classSectionsNodes objectAtIndex:0];
-			
-			// Get the array of all category sections and append them in the same
-			// order to the main class. The new sectio name should have the category
-			// name prepended.
+
+			// Get the category clean document markup. Next step depends on the category
+			// merging optios. If sections need to be preserved, we should copy all
+			// sections. Otherwise we should create one section for each category which
+			// includes members from all sections.
 			NSXMLDocument* categoryDocument = [categoryData objectForKey:kTKDataObjectMarkupKey];
-			NSArray* categorySectionNodes = [categoryDocument nodesForXPath:@"/object/sections/section" error:nil];
-			for (NSXMLElement* categorySectionNode in categorySectionNodes)
+			if (cmd.keepCategorySections)
 			{
-				// Get category section name. Use empty string by default just in case...
-				NSString* categorySectionName = @"";
-				NSArray* categorySectionNameNodes = [categorySectionNode nodesForXPath:@"name" error:nil];
-				if ([categorySectionNameNodes count] > 0)
+				// Get the array of all category sections and append them in the same
+				// order to the main class. The new section name should have the category
+				// name prepended.
+				NSArray* categorySectionNodes = [categoryDocument nodesForXPath:@"/object/sections/section" error:nil];
+				for (NSXMLElement* categorySectionNode in categorySectionNodes)
 				{
-					NSXMLNode* nameNode = [categorySectionNameNodes objectAtIndex:0];
-					categorySectionName = [nameNode stringValue];
+					// Get category section name. Use empty string by default just in case...
+					NSString* categorySectionName = @"";
+					NSArray* categorySectionNameNodes = [categorySectionNode nodesForXPath:@"name" error:nil];
+					if ([categorySectionNameNodes count] > 0)
+					{
+						NSXMLNode* nameNode = [categorySectionNameNodes objectAtIndex:0];
+						categorySectionName = [nameNode stringValue];
+					}
+					
+					// Merge the section data to the main class document. We need to prepend
+					// the category name before the section description before...
+					logDebug(@"- Merging documentation for section '%@'...");
+					NSXMLElement* classSectionNode = [categorySectionNode copy];
+					NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
+					if ([classSectionNameNodes count] > 0)
+					{					
+						NSString* extensionName = [categoryName substringFromIndex:[className length]];
+						extensionName = [extensionName substringWithRange:NSMakeRange(1, [extensionName length]-2)];
+						NSString* classSectionName = [NSString stringWithFormat:@"%@ / %@", 
+													  extensionName,
+													  categorySectionName];
+						NSXMLNode* nameNode = [classSectionNameNodes objectAtIndex:0];
+						[nameNode setStringValue:classSectionName];
+					}
+					[classSectionsNode addChild:classSectionNode];
+				}
+			}
+			else
+			{
+				logDebug(@"- Merging all sections to '%@'...", categoryName);
+				
+				// Create the class section element.
+				NSXMLElement* sectionNode = [NSXMLNode elementWithName:@"section"];
+				NSXMLElement* sectionNameNode = [NSXMLNode elementWithName:@"name" stringValue:categoryName];
+				[sectionNode addChild:sectionNameNode];
+				
+				// Get all member documentation for all sections and add each one to the
+				// class section element.
+				NSArray* memberNodes = [categoryDocument nodesForXPath:@"/object/sections/section/member" error:nil];
+				for (NSXMLElement* memberNode in memberNodes)
+				{
+					NSXMLElement* classMemberNode = [memberNode copy];
+					[sectionNode addChild:classMemberNode];
 				}
 				
-				// Merge the section data to the main class document. We need to prepend
-				// the category name before the section description before...
-				logDebug(@"- Merging documentation for section '%@'...");
-				NSXMLElement* classSectionNode = [categorySectionNode copy];
-				NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
-				if ([classSectionNameNodes count] > 0)
-				{					
-					NSString* extensionName = [categoryName substringFromIndex:[className length]];
-					extensionName = [extensionName substringWithRange:NSMakeRange(1, [extensionName length]-2)];
-					NSString* classSectionName = [NSString stringWithFormat:@"%@ / %@", 
-												  extensionName,
-												  categorySectionName];
-					NSXMLNode* nameNode = [classSectionNameNodes objectAtIndex:0];
-					[nameNode setStringValue:classSectionName];
-				}
-				[classSectionsNode addChild:classSectionNode];
+				// Append the section data to the main class document.
+				[classSectionsNode addChild:sectionNode];
 			}
 			
 			// Remember the category name which was removed. Note that we use category

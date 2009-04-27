@@ -39,7 +39,8 @@
 #define kTKCmdRemoveTempFilesKey			@"RemoveTempFiles"				// NSNumber / BOOL
 #define kTKCmdRemoveOutputFilesKey			@"RemoveOutputFiles"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
-#define kTKCmdMergeCategories				@"MergeCategories"				// NSNumber / BOOL
+#define kTKCmdMergeCategoriesKey			@"MergeCategories"				// NSNumber / BOOL
+#define kTKCmdKeepCatSectionsKey			@"KeepCatSections"				// NSNumber / BOOL
 #define kTKCmdCreateCleanXHTMLKey			@"CreateCleanXHTML"				// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
@@ -313,7 +314,8 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
 
-	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategories];
+	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategoriesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepCatSectionsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
@@ -421,6 +423,8 @@ instead.
 	printf("OPTIONS - clean XML creation\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
+	printf("   --keep-cat-sec    When merging category documentation preserve all category sections.\n");
+	printf("                     By default each category is merged into a since section within the class.\n");
 	printf("\n");
 	printf("OPTIONS - clean HTML creation\n");
 	printf("   --no-xhtml        Don't create clean XHTML files (this will also disable DocSet!).\n");
@@ -518,7 +522,8 @@ instead.
 	// a boolValue is sent to nil object, but to make future changes more meaningful, 
 	// all are included.
 	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
-	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategories];
+	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategoriesKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepCatSectionsKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
@@ -894,7 +899,13 @@ instead.
 //----------------------------------------------------------------------------------------
 - (BOOL) mergeKnownCategoriesToClasses
 {
-	return [[parameters objectForKey:kTKCmdMergeCategories] boolValue];
+	return [[parameters objectForKey:kTKCmdMergeCategoriesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) keepCategorySections
+{
+	return [[parameters objectForKey:kTKCmdKeepCatSectionsKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------

@@ -96,6 +96,7 @@ are reset and then the given command line parsed.
 @property(readonly) BOOL removeOutputFiles;
 @property(readonly) BOOL removeEmptyParagraphs;
 @property(readonly) BOOL mergeKnownCategoriesToClasses;
+@property(readonly) BOOL keepCategorySections;
 @property(readonly) BOOL createCleanXHTML;
 @property(readonly) BOOL createDocSet;
 
