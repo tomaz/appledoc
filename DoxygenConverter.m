@@ -150,11 +150,14 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirClasses]];
 	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirCategories]];
 	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirProtocols]];
-	[Systemator createDirectory:cmd.outputCleanXHTMLPath];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirClasses]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCategories]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirProtocols]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS]];
+	if (cmd.createCleanXHTML)
+	{
+		[Systemator createDirectory:cmd.outputCleanXHTMLPath];
+		[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirClasses]];
+		[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCategories]];
+		[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirProtocols]];
+		[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS]];
+	}
 	if (cmd.createDocSet)
 	{
 		[Systemator createDirectory:cmd.outputDocSetPath];
