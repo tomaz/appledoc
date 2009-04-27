@@ -36,6 +36,7 @@
 #define kTKCmdDocSetInstallPathKey			@"DocSetInstallPath"			// NSString
 
 #define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
+#define kTKCmdRemoveTempFilesKey			@"RemoveTempFiles"				// NSNumber / BOOL
 #define kTKCmdRemoveOutputFilesKey			@"RemoveOutputFiles"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
 #define kTKCmdMergeCategories				@"MergeCategories"				// NSNumber / BOOL
@@ -316,6 +317,7 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
+	[self parseBooleanWithShortcut:nil andName:@"--cleantemp" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
 	[self parseBooleanWithShortcut:nil andName:@"--cleanbuild" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
 	
 	// Parse undocumented options. These are used to debug the script.
@@ -437,6 +439,10 @@ instead.
 	printf("-v --verbose <level> The verbose level (1-4). Defaults to 0 (only errors).\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
+	printf("   --cleantemp       Remove all temporary build files. Note that this is dynamic and will\n");
+	printf("                     delete generated files based on what is build. If html is created, all\n");
+	printf("                     doxygen and clean xml is removed. If doc set is installed, the whole\n");
+	printf("                     output path is removed.\n");
 	printf("   --cleanbuild      Remove output files before build. This option should only be used if\n");
 	printf("                     output is generated in a separate directory. It will remove the whole\n");
 	printf("                     directory structure starting with the <output> path! BE CAREFUL!!!\n");
@@ -515,6 +521,7 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategories];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
 	
 	// Setup undocumented properties.
@@ -864,6 +871,12 @@ instead.
 - (int) verboseLevel
 {
 	return [[parameters objectForKey:kTKCmdVerboseLevelKey] intValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeTemporaryFiles
+{
+	return [[parameters objectForKey:kTKCmdRemoveTempFilesKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------

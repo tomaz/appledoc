@@ -101,6 +101,17 @@
 		}
 	}
 	
+	// If cleantemp is used, remove clean XML temporary files.
+	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXMLPath])
+	{
+		logInfo(@"Removing temporary clean XML files at '%@'...", cmd.outputCleanXMLPath);
+		NSError* error = nil;
+		if (![manager removeItemAtPath:cmd.outputCleanXMLPath error:&error])
+		{
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}
+	}
+	
 	[loopAutoreleasePool drain];
 	logInfo(@"Finished creating clean XHTML documentation.");
 }

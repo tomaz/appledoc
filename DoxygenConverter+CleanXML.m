@@ -381,6 +381,7 @@
 {
 	logNormal(@"Saving clean object documentation files...");
 	
+	// Save all objects.
 	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
 	for (NSString* objectName in objects)
 	{
@@ -403,6 +404,17 @@
 		}
 		
 		[loopAutoreleasePool drain];
+	}
+	
+	// If cleantemp is used, remove doxygen temporary files.
+	if (cmd.removeTemporaryFiles && doxygenXMLOutputPath && [manager fileExistsAtPath:doxygenXMLOutputPath])
+	{
+		logInfo(@"Removing temporary doxygen files at '%@'...", doxygenXMLOutputPath);
+		NSError* error = nil;
+		if (![manager removeItemAtPath:doxygenXMLOutputPath error:&error])
+		{
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}
 	}
 	
 	logInfo(@"Finished saving clean object documentation files...");

@@ -319,6 +319,28 @@
 						   withDescription:message];
 	}
 	[installScript release];
+		
+	// If cleantemp is used, remove clean html and docset temporary files.
+	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXHTMLPath])
+	{
+		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputCleanXHTMLPath);
+		NSError* error = nil;
+		if (![manager removeItemAtPath:cmd.outputCleanXHTMLPath error:&error])
+		{
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}		
+	}
+	
+	// If cleantemp is used, remove docset temporary files.
+	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputDocSetPath])
+	{
+		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputDocSetPath);
+		NSError* error = nil;
+		if (![manager removeItemAtPath:cmd.outputDocSetPath error:&error])
+		{
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}		
+	}
 	
 	logInfo(@"Finished creating DocSet bundle.");
 }
