@@ -143,6 +143,57 @@ get the path from the shell.
 }
 
 //----------------------------------------------------------------------------------------
++ (id) readPropertyListFromFile:(NSString*) filename
+{
+	// Read the plist data into NSData. Exit if this fails.
+	NSError* error = nil;
+	NSData* infoPlistData = [NSData dataWithContentsOfFile:filename
+												   options:0
+													 error:&error];
+	if (!infoPlistData)
+	{
+		[Systemator throwExceptionWithName:kTKSystemError basedOnError:error];
+	}
+	
+	// Convert the data into the object that will represent the property list.
+	NSString* errorDescription = nil;
+	id docsetInfo = [NSPropertyListSerialization propertyListFromData:infoPlistData
+													 mutabilityOption:NSPropertyListImmutable
+															   format:NULL
+													 errorDescription:&errorDescription];
+	if (!docsetInfo)
+	{
+		[Systemator throwExceptionWithName:kTKSystemError withDescription:errorDescription];
+	}
+	
+	return docsetInfo;
+}
+
+//----------------------------------------------------------------------------------------
++ (void) writePropertyList:(id) plist toFile:(NSString*) filename
+{
+	// Convert the dictionary to property list.
+	NSString* errorDescription = nil;
+	NSData* infoPlistData = [NSPropertyListSerialization dataFromPropertyList:plist
+																	   format:NSPropertyListXMLFormat_v1_0
+															 errorDescription:&errorDescription];
+	if (!infoPlistData)
+	{
+		[errorDescription autorelease];
+		[Systemator throwExceptionWithName:kTKSystemError withDescription:errorDescription];
+	}
+	
+	// Save the data to the file.
+	NSError* error = nil;
+	if (![infoPlistData writeToFile:filename
+							options:0
+							  error:&error])
+	{
+		[Systemator throwExceptionWithName:kTKSystemError basedOnError:error];
+	}
+}
+
+//----------------------------------------------------------------------------------------
 + (void) throwExceptionWithName:(NSString*) name basedOnError:(NSError*) error;
 {
 	@throw [NSException exceptionWithName:name

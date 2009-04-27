@@ -16,6 +16,7 @@
 //----------------------------------------------------------------------------------------
 - (void) createDocSetSourcePlistFile
 {
+	// If the docset source plist doesn't yet exist, create it.
 	if (![manager fileExistsAtPath:cmd.docsetSourcePlistPath])
 	{
 		logNormal(@"Creating DocSet info plist...");
@@ -26,29 +27,16 @@
 		[docsetInfo setObject:cmd.projectName forKey:(NSString*)kCFBundleNameKey];
 		[docsetInfo setObject:cmd.docsetBundleFeed forKey:@"DocSetFeedName"];
 		
-		// Convert the dictionary to property list.
-		NSString* errorDescription = nil;
-		NSData* infoPlistData = [NSPropertyListSerialization dataFromPropertyList:docsetInfo
-																		   format:NSPropertyListXMLFormat_v1_0
-																 errorDescription:&errorDescription];
-		if (!infoPlistData)
+		// Convert the dictionary to property list. Exit if anything goes wrong.
+		@try
 		{
-			[errorDescription release];
+			[Systemator writePropertyList:docsetInfo toFile:cmd.docsetSourcePlistPath];
+		}
+		@finally
+		{			
 			[docsetInfo release];
-			[Systemator throwExceptionWithName:kTKConverterException withDescription:errorDescription];
 		}
 		
-		// Save the data to the file.
-		NSError* error = nil;
-		if (![infoPlistData writeToFile:cmd.docsetSourcePlistPath
-								options:0
-								  error:&error])
-		{
-			[docsetInfo release];
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}
-		
-		[docsetInfo release];
 		logInfo(@"Finished creating DocSet info plist.");
 	}
 }

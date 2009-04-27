@@ -581,34 +581,19 @@ instead.
 		{
 			logVerbose(@"Reading global parameters from '%@'...", globalParametersFile);
 			
-			// Read the contents of the global parameters file into the NSData, exit if
-			// this fails, but return YES since templates path is still valid.
-			NSError* error = nil;
-			NSData* data = [NSData dataWithContentsOfFile:globalParametersFile options:0 error:&error];
-			if (!data)
+			@try
 			{
-				logError(@"Failed reading global templates, error was %@!", [error localizedDescription]);
-				return YES;
+				// Copy the global parameters into the parameters dictionary. Note that this
+				// will override factory settings. Then set the path to the templates folder.
+				NSDictionary* globals = [Systemator readPropertyListFromFile:globalParametersFile];
+				[parameters addEntriesFromDictionary:globals];
+				[parameters setObject:path forKey:kTKCmdTemplatesPathKey];
 			}
-			
-			// Convert the NSData into the dictionary. Exit if this fails, but return YES
-			// since templates path is still valid.
-			NSString* errorString = nil;
-			NSDictionary* globals = [NSPropertyListSerialization propertyListFromData:data
-																	 mutabilityOption:NSPropertyListImmutable
-																			   format:NULL
-																	 errorDescription:&errorString];
-			if (!globals)
+			@catch (NSException* e)
 			{
-				logError(@"Failed parsing global templates, error was %@!", errorString);
-				[errorString release];
-				return YES;
+				logError(@"Failed reading global templates, error was %@!", [e reason]);
+				return NO;
 			}
-			
-			// Copy the global parameters into the parameters dictionary. Note that this
-			// will override factory settings. Then set the path to the templates folder.
-			[parameters addEntriesFromDictionary:globals];
-			[parameters setObject:path forKey:kTKCmdTemplatesPathKey];
 		}
 		return YES;
 	}

@@ -64,6 +64,28 @@ array of lines, you can use @c linesFromContentsOfFile:().
 */
 + (void) writeLines:(NSArray*) lines toFile:(NSString*) filename;
 
+/** Reads the property list from the given filename.￼
+
+If the file doesn't exist or reading fails, exception is thrown.
+
+@param filename ￼￼￼￼￼￼The name of the plist file.
+@return ￼￼￼￼Returns the object that represents the property list data or @c nil if not possible.
+@exception ￼￼￼￼￼NSException Thrown if reading fails.
+@see writePropertyList:toFile:
+*/
++ (id) readPropertyListFromFile:(NSString*) filename;
+
+/** Writes the given property list to the given filename.￼
+
+If writting fails, exception is thrown.
+
+@param plist ￼￼￼￼￼￼The property list object to be serialized.
+@param filename ￼￼￼￼￼￼The name of the file to write to.
+@exception ￼￼￼￼￼NSException Thrown if writting fails.
+@see readPropertyListFromFile:
+*/
++ (void) writePropertyList:(id) plist toFile:(NSString*) filename;
+
 /** Throws an @c NSException with description from the given @c NSError;￼
  
 See also @c throwExceptionWithName:withDescription:().
