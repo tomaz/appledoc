@@ -30,8 +30,11 @@ doesn't exist yet. If it exists, this method will exit without doing anything. T
 allows the user to change the data in the file as he see fit after it was created.
 
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDocSetNodesFile(), @c createDocSetTokesFile() and 
-@c createDocSetBundle().
+ 
+@exception NSException Thrown if creating the plist file fails.
+@see createDocSetNodesFile
+@see createDocSetTokesFile
+@see createDocSetBundle
 */
 - (void) createDocSetSourcePlistFile;
 
@@ -42,10 +45,11 @@ create a table of contents that users see in the Xcode documentation window. Thi
 is required when compiling the documentation set.
 
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDocSetSourcePlistFile(), @c createDocSetTokesFile() and 
-@c createDocSetBundle().
 
 @exception ￼￼￼￼￼NSException Thrown if creation fails.
+@see createDocSetSourcePlistFile
+@see createDocSetTokesFile
+@see createDocSetBundle
 */
 - (void) createDocSetNodesFile;
 
@@ -55,10 +59,11 @@ The Tokens.xml file associate symbol names with locations in the documentation f
 This file is used for creating the symbol index for the documentation set.
 
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDocSetSourcePlistFile(), @c createDocSetNodesFile() and 
-@c createDocSetBundle().
 
 @exception ￼￼￼￼￼NSException Thrown if creation fails.
+@see createDocSetSourcePlistFile
+@see createDocSetNodesFile
+@see createDocSetBundle
 */
 - (void) createDocSetTokesFile;
 
@@ -70,10 +75,11 @@ to the DocSet output directory and will invoke the indexing of the files with th
 nodes and tokes files.
  
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDocSetSourcePlistFile(), @c createDocSetNodesFile() and 
-@c createDocSetTokesFile().
 
 @exception ￼￼￼￼￼NSException Thrown if creation fails.
+@see createDocSetSourcePlistFile
+@see createDocSetNodesFile
+@see createDocSetTokesFile
 */
 - (void) createDocSetBundle;
 

@@ -30,8 +30,6 @@ This method will convert all clean XML markups in the database to XHTML files in
 proper output directory.
  
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDocSetSourcePlistFile(), @c createDocSetNodesFile(), 
-@c createDocSetTokesFile() and @c createDocSetBundle().
 
 @exception ￼￼￼￼￼NSException Thrown if creation fails.
 */

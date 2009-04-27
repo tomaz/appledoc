@@ -29,9 +29,10 @@ create it by asking doxygen itself to generate the default file. Then it will ch
 options as necessary.
  
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c updateDoxygenConfigFile() and @c createDoxygenDocumentation().
 
 @exception ￼￼￼￼￼NSException Thrown if creation of the file fails.
+@see updateDoxygenConfigFile
+@see createDoxygenDocumentation
 */
 - (void) createDoxygenConfigFile;
 
@@ -45,10 +46,11 @@ Note that this method will also remember the xml output path, so that we can use
 later on.
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDoxygenConfigFile() and @c createDoxygenDocumentation().
 
 @exception ￼￼￼￼￼NSException Thrown if doxygen configuration file doesn't exist or cannot be
 	parsed or changed.
+@see createDoxygenConfigFile
+@see createDoxygenDocumentation
 */
 - (void) updateDoxygenConfigFile;
 
@@ -59,10 +61,11 @@ doxygen so that documentation is created. If the file doesn't exist, an exceptio
 be thrown.
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createDoxygenConfigFile() and @c updateDoxygenConfigFile().
 
 @exception ￼￼￼￼￼NSException Thrown if doxygen configuration file doesn't exist or documentation
 	creation fails (probably due to corrupted or invalid file).
+@see createDoxygenConfigFile
+@see updateDoxygenConfigFile
 */
 - (void) createDoxygenDocumentation;
 

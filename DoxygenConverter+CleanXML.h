@@ -38,8 +38,6 @@ into the database. Until the utility finishes working, it will work on in-memory
 representation and only save after all steps are finished.
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createCleanIndexDocumentationFile(), @c fixCleanObjectDocumentationLinks()
-and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if convertion fails.
 @see mergeCleanCategoriesToKnownObjects
@@ -63,8 +61,6 @@ into the database. Until the utility finishes working, it will work on in-memory
 representation and only save after all steps are finished.
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createCleanIndexDocumentationFile(), @c fixCleanObjectDocumentationLinks()
-and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if convertion fails.
 @see createCleanObjectDocumentationMarkup
@@ -81,8 +77,6 @@ create the index file, so it is required that @c createCleanObjectDocumentationM
 to the received before sending this message!
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createCleanObjectDocumentationMarkup(), @c fixCleanObjectDocumentationLinks()
-and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if index file creation fails.
 @see createCleanObjectDocumentationMarkup
@@ -105,8 +99,6 @@ methods that get called are:
 - @c fixEmptyParaForObject:objectData:objects:().
  
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumentationFile()
-and @c saveCleanObjectDocumentationFiles().
 
 @exception ￼￼￼￼￼NSException Thrown if fixing XML fails.
 @see createCleanObjectDocumentationMarkup
@@ -121,8 +113,6 @@ and @c saveCleanObjectDocumentationFiles().
 This method will save all clean XML markups in the database to proper files.
  
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
-See also @c createCleanObjectDocumentationMarkup(), @c createCleanIndexDocumentationFile()
-and @c fixCleanObjectDocumentationLinks().
 
 @exception ￼￼￼￼￼NSException Thrown if saving fails.
 @see createCleanObjectDocumentationMarkup
