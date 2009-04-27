@@ -480,7 +480,7 @@ instead.
 	printf("--cleanoutput\n");
 	printf("\n");
 	printf("Note that in both examples --cleanoutput is used. It is safe to remove documentation.\n");
-	printf("files in these two cases sicer the --output path is different from source files.\n");
+	printf("files in these two cases since the --output path is different from source files.\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
