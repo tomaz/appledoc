@@ -61,49 +61,82 @@ are reset and then the given command line parsed.
 @param argv ￼￼￼￼￼￼The array of zero terminated c strings.
 @param argc ￼￼￼￼￼￼The number of items in the @c argv array.
 @exception NSException Thrown if parsing fails.
+@see printUsage
 */
 - (void) parseCommandLineArguments:(const char**) argv 
 						   ofCount:(int) argc;
 
 /** Outputs the utility usage to the standard output.￼
+
+@see parseCommandLineArguments:ofCount:
 */
 - (void) printUsage;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties
+/// @name Properties - required
 //////////////////////////////////////////////////////////////////////////////////////////
 
 @property(readonly) NSString* commandLine;
 @property(readonly) NSString* projectName;
 @property(readonly) NSString* inputPath;
 @property(readonly) NSString* outputPath;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - doxygen
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@property(readonly) NSString* doxygenCommandLine;
+@property(readonly) NSString* doxygenConfigFilename;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - clean XML creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@property(readonly) BOOL removeEmptyParagraphs;
+@property(readonly) BOOL mergeKnownCategoriesToClasses;
+@property(readonly) BOOL keepCategorySections;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - clean HTML creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@property(readonly) BOOL createCleanXHTML;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - documentation set creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@property(readonly) NSString* docsetBundleID;
+@property(readonly) NSString* docsetBundleFeed;
+@property(readonly) NSString* docsetSourcePlistPath;
+@property(readonly) NSString* docsetutilCommandLine;
+@property(readonly) NSString* docsetInstallPath;
+@property(readonly) BOOL createDocSet;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - miscellaneous
+//////////////////////////////////////////////////////////////////////////////////////////
+
 @property(readonly) NSString* templatesPath;
+@property(readonly) BOOL removeTemporaryFiles;
+@property(readonly) BOOL removeOutputFiles;
+@property(readonly) int verboseLevel;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - undocumented
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@property(readonly) BOOL emitUtilityOutput;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - internal
+//////////////////////////////////////////////////////////////////////////////////////////
+
 @property(readonly) NSString* outputCleanXMLPath;
 @property(readonly) NSString* outputCleanXHTMLPath;
 @property(readonly) NSString* outputDocSetPath;
 @property(readonly) NSString* outputDocSetContentsPath;
 @property(readonly) NSString* outputDocSetResourcesPath;
 @property(readonly) NSString* outputDocSetDocumentsPath;
-@property(readonly) NSString* doxygenCommandLine;
-@property(readonly) NSString* doxygenConfigFilename;
-@property(readonly) NSString* docsetBundleID;
-@property(readonly) NSString* docsetBundleFeed;
-@property(readonly) NSString* docsetInstallPath;
-@property(readonly) NSString* docsetSourcePlistPath;
-@property(readonly) NSString* docsetutilCommandLine;
-@property(readonly) int verboseLevel;
-@property(readonly) BOOL removeTemporaryFiles;
-@property(readonly) BOOL removeOutputFiles;
-@property(readonly) BOOL removeEmptyParagraphs;
-@property(readonly) BOOL mergeKnownCategoriesToClasses;
-@property(readonly) BOOL keepCategorySections;
-@property(readonly) BOOL createCleanXHTML;
-@property(readonly) BOOL createDocSet;
-
-//////////////////////////////////////////////////////////////////////////////////////////
-/// @name Nondocumented properties
-//////////////////////////////////////////////////////////////////////////////////////////
-
-@property(readonly) BOOL emitUtilityOutput;
 
 @end

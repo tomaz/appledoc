@@ -65,7 +65,7 @@ the following paths in this order:
 If all required template files are found in one of these paths, the template path is
 automatically set to it.
  
-This will sent @c parseTemplatesPath:() message for each known location.
+This will send @c parseTemplatesPath:() message for each known location.
 */
 - (void) setupGlobalTemplates;
 
@@ -761,7 +761,7 @@ instead.
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Properties
+#pragma mark Properties - required
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
@@ -788,11 +788,135 @@ instead.
 	return [parameters objectForKey:kTKCmdOutputPathKey];
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - doxygen
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) doxygenCommandLine
+{
+	return [parameters objectForKey:kTKCmdDoxygenCommandLineKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) doxygenConfigFilename
+{
+	return [parameters objectForKey:kTKCmdDoxygenConfigFileKey];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - clean XML creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeEmptyParagraphs
+{
+	return [[parameters objectForKey:kTKCmdRemoveEmptyParaKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) mergeKnownCategoriesToClasses
+{
+	return [[parameters objectForKey:kTKCmdMergeCategoriesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) keepCategorySections
+{
+	return [[parameters objectForKey:kTKCmdKeepCatSectionsKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - clean HTML creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) createCleanXHTML
+{
+	return [[parameters objectForKey:kTKCmdCreateCleanXHTMLKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - documentation set creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetBundleID
+{
+	return [parameters objectForKey:kTKCmdDocSetBundleIDKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetBundleFeed
+{
+	return [parameters objectForKey:kTKCmdDocSetBundleFeedKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetSourcePlistPath
+{
+	return [parameters objectForKey:kTKCmdDocSetSourcePlistKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetutilCommandLine
+{
+	return [parameters objectForKey:kTKCmdDocSetUtilCommandLinKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) docsetInstallPath
+{
+	return [parameters objectForKey:kTKCmdDocSetInstallPathKey];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) createDocSet
+{
+	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - miscellaneous
+//////////////////////////////////////////////////////////////////////////////////////////
+
 //----------------------------------------------------------------------------------------
 - (NSString*) templatesPath
 {
 	return [parameters objectForKey:kTKCmdTemplatesPathKey];
 }
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeTemporaryFiles
+{
+	return [[parameters objectForKey:kTKCmdRemoveTempFilesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) removeOutputFiles
+{
+	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (int) verboseLevel
+{
+	return [[parameters objectForKey:kTKCmdVerboseLevelKey] intValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - undocumented
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) emitUtilityOutput
+{
+	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - internal
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (NSString*) outputCleanXMLPath
@@ -828,106 +952,6 @@ instead.
 - (NSString*) outputDocSetDocumentsPath
 {
 	return [parameters objectForKey:kTKCmdOutputDocSetDocumentsPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) doxygenCommandLine
-{
-	return [parameters objectForKey:kTKCmdDoxygenCommandLineKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) doxygenConfigFilename
-{
-	return [parameters objectForKey:kTKCmdDoxygenConfigFileKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) docsetBundleID
-{
-	return [parameters objectForKey:kTKCmdDocSetBundleIDKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) docsetBundleFeed
-{
-	return [parameters objectForKey:kTKCmdDocSetBundleFeedKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) docsetInstallPath
-{
-	return [parameters objectForKey:kTKCmdDocSetInstallPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) docsetSourcePlistPath
-{
-	return [parameters objectForKey:kTKCmdDocSetSourcePlistKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) docsetutilCommandLine
-{
-	return [parameters objectForKey:kTKCmdDocSetUtilCommandLinKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (int) verboseLevel
-{
-	return [[parameters objectForKey:kTKCmdVerboseLevelKey] intValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) removeTemporaryFiles
-{
-	return [[parameters objectForKey:kTKCmdRemoveTempFilesKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) removeOutputFiles
-{
-	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) removeEmptyParagraphs
-{
-	return [[parameters objectForKey:kTKCmdRemoveEmptyParaKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) mergeKnownCategoriesToClasses
-{
-	return [[parameters objectForKey:kTKCmdMergeCategoriesKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) keepCategorySections
-{
-	return [[parameters objectForKey:kTKCmdKeepCatSectionsKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) createCleanXHTML
-{
-	return [[parameters objectForKey:kTKCmdCreateCleanXHTMLKey] boolValue];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) createDocSet
-{
-	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Undocumented properties
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (BOOL) emitUtilityOutput
-{
-	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
 }
 
 @end
