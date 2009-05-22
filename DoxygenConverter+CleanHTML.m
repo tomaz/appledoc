@@ -93,10 +93,11 @@
 		
 		// Save the data.
 		logDebug(@"Saving '%@' to '%@'...", objectName, filename);
-		NSData* documentData = [cleanDocument XMLDataWithOptions:NSXMLDocumentTidyHTML];
-		if (![documentData writeToFile:filename atomically:NO])
+		NSString* documentString = [cleanDocument XMLStringWithOptions:NSXMLDocumentTidyHTML];
+		documentString = [documentString stringByReplacingOccurrencesOfString:@"%LastUpdatedDate%" withString:lastUpdatedString];
+		if (![documentString writeToFile:filename atomically:NO encoding:NSUTF8StringEncoding error:&error])
 		{
-			logError(@"Failed saving '%@' to '%@'!", objectName, filename);
+			logError(@"Failed saving '%@' to '%@', error was %@!", objectName, filename, &error);
 			continue;
 		}
 	}
