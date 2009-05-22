@@ -95,6 +95,7 @@ are reset and then the given command line parsed.
 @property(readonly) BOOL removeEmptyParagraphs;
 @property(readonly) BOOL mergeKnownCategoriesToClasses;
 @property(readonly) BOOL keepCategorySections;
+@property(readonly) NSString* objectReferenceStyle;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - clean HTML creation

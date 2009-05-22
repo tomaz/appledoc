@@ -45,6 +45,7 @@
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
 #define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
+#define kTKCmdObjectRefStyle				@"ObjectReferenceStyle"			// NSString
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -306,13 +307,14 @@ instead.
 	[self parseStringWithShortcut:@"-t" andName:@"--templates" forKey:kTKCmdTemplatesPathKey];
 	
 	[self parseStringWithShortcut:@"-d" andName:@"--doxygen" forKey:kTKCmdDoxygenCommandLineKey];
-	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile" forKey:kTKCmdDoxygenConfigFileKey];
-	
+	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile" forKey:kTKCmdDoxygenConfigFileKey];	
 
 	[self parseStringWithShortcut:nil andName:@"--docid" forKey:kTKCmdDocSetBundleIDKey];
 	[self parseStringWithShortcut:nil andName:@"--docfeed" forKey:kTKCmdDocSetBundleFeedKey];
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
+	
+	[self parseStringWithShortcut:nil andName:@"--objrefstyle" forKey:kTKCmdObjectRefStyle];
 
 	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategoriesKey];
 	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepCatSectionsKey];
@@ -437,6 +439,7 @@ instead.
 	printf("   --no-docset       Don't create DocSet.\n");
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
+	printf("   --objrefstyle     Object reference generation style. Defaults to '[$OBJECT $MEMBER]'.\n");
 	printf("   --cleantemp       Remove all temporary build files. Note that this is dynamic and will\n");
 	printf("                     delete generated files based on what is build. If html is created, all\n");
 	printf("                     doxygen and clean xml is removed. If doc set is installed, the whole\n");
@@ -529,7 +532,8 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
 	
-	// Setup undocumented properties.
+	// Setup other properties.
+	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefStyle];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdEmitUtilityOutputKey];
 }
 
@@ -809,6 +813,12 @@ instead.
 - (BOOL) keepCategorySections
 {
 	return [[parameters objectForKey:kTKCmdKeepCatSectionsKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) objectReferenceStyle
+{
+	return [parameters objectForKey:kTKCmdObjectRefStyle];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

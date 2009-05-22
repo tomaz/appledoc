@@ -586,7 +586,9 @@
 			NSString* linkReference = nil;
 			if (refObject && refMember)
 			{
-				linkDescription = [NSString stringWithFormat:@"[%@ %@]", refObject, refMember];
+				linkDescription = cmd.objectReferenceStyle;
+				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$OBJECT" withString:refObject];
+				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$MEMBER" withString:refMember];
 				linkReference = [NSString stringWithFormat:@"#%@", refMember];
 			}
 			else if (refObject)
