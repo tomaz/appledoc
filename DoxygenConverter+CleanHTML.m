@@ -55,6 +55,12 @@
 												toDocument:[database objectForKey:kTKDataMainIndexKey]
 												 arguments:xsltArgumentsDict
 													 error:&error];
+	if (!cleanIndexDoc)
+	{
+		logError(@"Skipping index because creating clean XHTML index failed with error %@!", 
+				 [error localizedDescription]);
+	}
+	
 	logDebug(@"Saving index to '%@'...", indexFilename);
 	NSData* indexData = [cleanIndexDoc XMLDataWithOptions:NSXMLDocumentTidyHTML];
 	if (![indexData writeToFile:indexFilename atomically:NO])
