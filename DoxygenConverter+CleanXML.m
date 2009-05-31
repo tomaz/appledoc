@@ -517,6 +517,7 @@
 	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
 	NSCharacterSet* classStartSet = [NSCharacterSet characterSetWithCharactersInString:@"("];
 	NSCharacterSet* classEndSet = [NSCharacterSet characterSetWithCharactersInString:@")"];
+	NSCharacterSet* invalidSet = [NSCharacterSet characterSetWithCharactersInString:@" -+"];
 	
 	// Now look for all <ref> nodes. Then determine the type of link from the link
 	// text. The link can either be internal, within the same object or it can be
@@ -575,6 +576,12 @@
 			if (refObject && refMember && [refObject isEqualToString:objectName])
 			{
 				refObject = nil;
+			}
+			
+			// Validate member reference.
+			if (refMember)
+			{
+				refMember = [refMember stringByTrimmingCharactersInSet:invalidSet];
 			}
 			
 			// Prepare the reference description. Again it depends on the components
