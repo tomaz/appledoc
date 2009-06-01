@@ -21,29 +21,29 @@
 /** Appends the given member title.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberTitleToData:(NSMutableData*) data
-						fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberTitleToData:(NSMutableData*) data
+							  fromItem:(id) item;
 
 /** Appends the given member overview description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberOverviewToData:(NSMutableData*) data
-						   fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberOverviewToData:(NSMutableData*) data
+								 fromItem:(id) item;
 
 /** Appends the given member prototype description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberPrototypeToData:(NSMutableData*) data
-							fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberPrototypeToData:(NSMutableData*) data
+								  fromItem:(id) item;
 
 /** Appends the given member section type description.￼
 
@@ -52,69 +52,69 @@ The type should be one of the following:
 - @c kTKMemberSectionExceptions: The array of all exceptions will be returned.
  
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @param type The member section type.
 @param title The desired section title.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberSectionToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node
-							  type:(int) type
-							 title:(NSString*) title;
+- (void) appendObjectMemberSectionToData:(NSMutableData*) data
+								fromItem:(id) item
+									type:(int) type
+								   title:(NSString*) title;
 
 /** Appends the given member return description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberReturnToData:(NSMutableData*) data
-						 fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberReturnToData:(NSMutableData*) data
+							   fromItem:(id) item;
 
 /** Appends the given member discussion description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberDiscussionToData:(NSMutableData*) data
-							 fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberDiscussionToData:(NSMutableData*) data
+								   fromItem:(id) item;
 
 /** Appends the given member warning description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberWarningToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberWarningToData:(NSMutableData*) data
+								fromItem:(id) item;
 
 /** Appends the given member bug description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberBugToData:(NSMutableData*) data
-					  fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberBugToData:(NSMutableData*) data
+							fromItem:(id) item;
 
 /** Appends the given member see also section description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberSeeAlsoToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberSeeAlsoToData:(NSMutableData*) data
+								fromItem:(id) item;
 
 /** Appends the given member declaration file description.￼
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The member node to get information from.
+@param item ￼￼￼￼￼￼The member item to get information from.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
 */
-- (void) appendMemberFileToData:(NSMutableData*) data
-					   fromNode:(NSXMLElement*) node;
+- (void) appendObjectMemberFileToData:(NSMutableData*) data
+							 fromItem:(id) item;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Description helpers
@@ -127,12 +127,12 @@ retreived nodes is converted to a proper XHTML format and is then appended to th
 of the given data.
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The description node which brief subcsection to append.
+@param item ￼￼￼￼￼￼The description item which brief subcsection to append.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
-@see appendDetailedDescriptionToData:fromNode:
+@see appendDetailedDescriptionToData:fromItem:
 */
 - (void) appendBriefDescriptionToData:(NSMutableData*) data 
-							 fromNode:(NSXMLElement*) node;
+							 fromItem:(id) item;
 
 /** Appends the detailed description to the given data.￼
 
@@ -141,24 +141,25 @@ retreived nodes is converted to a proper XHTML format and is then appended to th
 of the given data.
 
 @param data ￼￼￼￼￼￼The data to append to.
-@param node ￼￼￼￼￼￼The description node which detailed subcsection to append.
+@param item ￼￼￼￼￼￼The description item which detailed subcsection to append.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
-@see appendBriefDescriptionToData:fromNode:
+@see appendBriefDescriptionToData:fromItem:
 */
 - (void) appendDetailedDescriptionToData:(NSMutableData*) data 
-								fromNode:(NSXMLElement*) node;
+								fromItem:(id) item;
 
-/** Converts the description XML from the given node to proper XHTML format and appends
-it to the given data.￼
+/** Converts the description data from the given paragraph to proper XHTML format and 
+appends it to the given data.￼
 
-This method will take care of converting the XML nodes to proper XHTML tags, including
-computer code, paragraphs, links etc.
+This method will take care of converting the source data to proper XHTML tags, including
+computer code, paragraphs, links etc. Note that this is the only place where the original
+data XML structure is exposed to the class.
  
 @param data The data to append to.
-@param node ￼￼￼￼￼￼The description subnode which data to convert.
+@param item ￼￼￼￼￼￼The description paragraph which data to convert.
 @exception ￼￼￼￼￼NSException Thrown if convertion fails.
 */
 - (void) appendDescriptionToData:(NSMutableData*) data 
-						fromNode:(NSXMLElement*) node;
+				   fromParagraph:(id) item;
 
 @end

@@ -7,25 +7,32 @@
 //
 
 #import "GeneratorBase.h"
-#import "GeneratorBase+PrivateAPI.h"
+#import "GeneratorBase+GeneralParsingAPI.h"
+#import "GeneratorBase+ObjectParsingAPI.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Defines private methods for use within @c GeneratorBase class only.
 
-￼￼These are helper methods to make the main @c generateOutput() less cluttered.
+￼￼These are helper methods to make the main @c generateOutput() less cluttered. The methods
+should only be used internaly by the @c GeneratorBase, they are not intended to be used
+by the subclasses. Therefore the parameters are closely coupled to the underlying clean
+object markup which is XML.
 */
 @interface GeneratorBase ()
 
 /** Generates the object info section if necessary.￼
  
 From here the following messages are sent to the subclass:
-- @c appendInfoHeaderToData:()
-- @c appendInfoFooterToData:()
+- @c appendObjectInfoHeaderToData:()
+- @c appendObjectInfoFooterToData:()
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
 @see generateOutput
+@see generateOverviewSectionToData:
+@see generateTasksSectionToData:
+@see generateMembersSectionToData:
 @see generateInfoSectionToData:fromNodes:index:type:
 */
 - (void) generateInfoSectionToData:(NSMutableData*) data;
@@ -34,7 +41,7 @@ From here the following messages are sent to the subclass:
  
 This is sent from @c generateInfoSectionToData:() for each info section item. From here 
 the following message is sent to the subclass.
-- @c appendInfoItemToData:fromNodes:index:type:()
+- @c appendObjectInfoItemToData:fromItems:index:type:()
  
 The message is only send if the given @c nodes array is not empty. The @c type parameter 
 can be one of the following:
@@ -43,7 +50,7 @@ can be one of the following:
 - @c kTKInfoItemDeclared: The @c nodex contain declared in information.
  
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@param nodes ￼￼￼￼￼￼The array of nodes to append to.
+@param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances to append to.
 @param index ￼￼￼￼￼￼Pointer to zero based index of the section item. The method will increment
 	if the given @c nodes is not empty.
 @param type ￼￼￼￼￼￼Type of the section item.
@@ -58,39 +65,48 @@ can be one of the following:
 /** Generates the object overview data if necessary.￼
 
 This is where the following messages are sent to the subclass:
-- @c appendOverviewToData:()
+- @c appendObjectOverviewToData:()
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
 @see generateOutput
+@see generateInfoSectionToData:
+@see generateTasksSectionToData:
+@see generateMembersSectionToData:
 */
 - (void) generateOverviewSectionToData:(NSMutableData*) data;
 
 /** Generates the tasks section data if necessary.￼
 
 This is where the following messages are sent to the subclass:
-- @c appendSectionsHeaderToData:()
-- @c appendSectionHeaderToData:fromNode:index()
-- @c appendSectionMemberToData:fromNode:index:()
-- @c appendSectionFooterToData:fromNode:index()
-- @c appendSectionsFooterToData:()
+- @c appendObjectTasksHeaderToData:()
+- @c appendObjectTaskHeaderToData:fromItem:index()
+- @c appendObjectTaskMemberToData:fromItem:index:()
+- @c appendObjectTaskFooterToData:fromItem:index()
+- @c appendObjectTasksFooterToData:()
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
 @see generateOutput
+@see generateInfoSectionToData:
+@see generateOverviewSectionToData:
+@see generateMembersSectionToData:
 */
 - (void) generateTasksSectionToData:(NSMutableData*) data;
 
 /** Generates the main members documentation section if necessary.￼
 
 This is where the following messages are sent to the subclass:
-- @c appendMembersHeaderToData:()
-- @c appendMembersFooterToData:()
+- @c appendObjectMembersHeaderToData:()
+- @c appendObjectMembersFooterToData:()
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
 @see generateOutput
-@see generateMemberSectionToData:fromNodes:type:
+@see generateInfoSectionToData:
+@see generateOverviewSectionToData:
+@see generateTasksSectionToData:
+@see generateMemberSectionToData:fromItems:type:
 */
 - (void) generateMembersSectionToData:(NSMutableData*) data;
 
@@ -99,9 +115,9 @@ This is where the following messages are sent to the subclass:
 This is sent from @c generateMembersSectionToData:() for each group of members that
 has at least one documented entry. This is where the following messages are sent to the 
 subclass:
-- @c appendMemberGroupHeaderToData:type:() **
-- @c appendMemberToData:fromNode:index:() **
-- @c appendMemberGroupFooterToData:() **
+- @c appendObjectMemberGroupHeaderToData:type:() **
+- @c appendObjectMemberToData:fromItem:index:() **
+- @c appendObjectMemberGroupFooterToData:() **
 
 The @c type parameter can be one of the following:￼
 - @c kTKMemberTypeClass: The @c nodes describes class members.
@@ -112,7 +128,6 @@ The @c type parameter can be one of the following:￼
 @param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances representing individual members.
 @param type ￼￼￼￼￼￼The type of the instances.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateOutput
 @see generateMembersSectionToData:
 */
 - (void) generateMemberSectionToData:(NSMutableData*) data 
@@ -162,12 +177,12 @@ The @c type parameter can be one of the following:￼
 - (NSData*) outputDataForObject
 {
 	NSMutableData* result = [NSMutableData data];	
-	[self appendHeaderToData:result];
+	[self appendObjectHeaderToData:result];
 	[self generateInfoSectionToData:result];
 	[self generateOverviewSectionToData:result];
 	[self generateTasksSectionToData:result];
 	[self generateMembersSectionToData:result];
-	[self appendFooterToData:result];	
+	[self appendObjectFooterToData:result];	
 	return result;
 }
 
@@ -183,26 +198,23 @@ The @c type parameter can be one of the following:￼
 	if ([baseNodes count] > 0 || [protocolNodes count] > 0 || [fileNodes count] > 0)
 	{
 		int index = 0;
-		[self appendInfoHeaderToData:data];
+		[self appendObjectInfoHeaderToData:data];
 		[self generateInfoSectionToData:data fromNodes:baseNodes index:&index type:kTKSectionItemInherits];
 		[self generateInfoSectionToData:data fromNodes:protocolNodes index:&index type:kTKSectionItemConforms];
 		[self generateInfoSectionToData:data fromNodes:fileNodes index:&index type:kTKSectionItemDeclared];
-		[self appendInfoFooterToData:data];
+		[self appendObjectInfoFooterToData:data];
 	}
 }
 
 //----------------------------------------------------------------------------------------
 - (void) generateInfoSectionToData:(NSMutableData*) data 
-						 fromNodes:(NSArray*) nodes 
-							 index:(int*) index
-							  type:(int) type
+					  fromNodes:(NSArray*) items 
+						  index:(int*) index
+						   type:(int) type;
 {	
-	if ([nodes count] > 0)
+	if ([items count] > 0)
 	{
-		[self appendInfoItemToData:data 
-						 fromNodes:nodes 
-							 index:*index 
-							  type:type];
+		[self appendObjectInfoItemToData:data fromItems:items index:*index type:type];
 		(*index)++;
 	}
 }
@@ -216,7 +228,7 @@ The @c type parameter can be one of the following:￼
 	if ([overviewNodes count] > 0)
 	{
 		NSXMLElement* overviewNode = [overviewNodes objectAtIndex:0];
-		[self appendOverviewToData:data fromNode:overviewNode];
+		[self appendObjectOverviewToData:data fromItem:overviewNode];
 	}
 }
 
@@ -240,33 +252,27 @@ The @c type parameter can be one of the following:￼
 				// Append the sections header if not yet.
 				if (!sectionsHandled)
 				{
-					[self appendSectionsHeaderToData:data];
+					[self appendObjectTasksHeaderToData:data];
 					sectionsHandled = YES;
 				}
 				
 				// Append section header.
-				[self appendSectionHeaderToData:data
-									   fromNode:sectionNode
-										  index:i];				
+				[self appendObjectTaskHeaderToData:data fromItem:sectionNode index:i];				
 				
 				// Process all section members.
 				for (int n = 0; n < [memberNodes count]; n++)
 				{
 					NSXMLElement* memberNode = [memberNodes objectAtIndex:n];
-					[self appendSectionMemberToData:data
-										   fromNode:memberNode
-											  index:n];
+					[self appendObjectTaskMemberToData:data fromItem:memberNode index:n];
 				}
 				
 				// Append section footer.
-				[self appendSectionFooterToData:data 
-									   fromNode:sectionNode
-										  index:i];
+				[self appendObjectTaskFooterToData:data fromItem:sectionNode index:i];
 			}
 		}
 		
 		// Append sections footer.
-		if (sectionsHandled) [self appendSectionsFooterToData:data];
+		if (sectionsHandled) [self appendObjectTasksFooterToData:data];
 	}
 }
 
@@ -291,7 +297,7 @@ The @c type parameter can be one of the following:￼
 		[propertyNodes count] > 0)
 	{
 		// Ask the subclass to append members documentation header.
-		[self appendMembersHeaderToData:data];
+		[self appendObjectMembersHeaderToData:data];
 		
 		// Process all lists.
 		[self generateMemberSectionToData:data fromNodes:classMethodNodes type:kTKMemberTypeClass];
@@ -299,7 +305,7 @@ The @c type parameter can be one of the following:￼
 		[self generateMemberSectionToData:data fromNodes:propertyNodes type:kTKMemberTypeProperty];
 		
 		// Ask the subclass to append members documentation footer.
-		[self appendMembersFooterToData:data];
+		[self appendObjectMembersFooterToData:data];
 	}
 }
 
@@ -311,17 +317,17 @@ The @c type parameter can be one of the following:￼
 	if ([nodes count] > 0)
 	{
 		// Ask the subclass to append members group header.
-		[self appendMemberGroupHeaderToData:data type:type];
+		[self appendObjectMemberGroupHeaderToData:data type:type];
 		
 		// Ask the subclass to document all members of this group.
 		for (int i = 0; i < [nodes count]; i++)
 		{
 			NSXMLElement* node = [nodes objectAtIndex:i];
-			[self appendMemberToData:data fromNode:node index:i];
+			[self appendObjectMemberToData:data fromItem:node index:i];
 		}
 		
 		// Ask the subclass to append members group footer.
-		[self appendMemberGroupFooterToData:data type:type];
+		[self appendObjectMemberGroupFooterToData:data type:type];
 	}
 }
 
@@ -330,12 +336,12 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendHeaderToData:(NSMutableData*) data
+- (void) appendObjectHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendFooterToData:(NSMutableData*) data
+- (void) appendObjectFooterToData:(NSMutableData*) data
 {	
 }
 
@@ -344,20 +350,20 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendInfoHeaderToData:(NSMutableData*) data
+- (void) appendObjectInfoHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendInfoFooterToData:(NSMutableData*) data
+- (void) appendObjectInfoFooterToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendInfoItemToData:(NSMutableData*) data
-					fromNodes:(NSArray*) nodes
-						index:(int) index
-						 type:(int) type
+- (void) appendObjectInfoItemToData:(NSMutableData*) data
+						  fromItems:(NSArray*) items
+							  index:(int) index
+							   type:(int) type
 {
 }
 
@@ -366,8 +372,8 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendOverviewToData:(NSMutableData*) data 
-					 fromNode:(NSXMLElement*) node
+- (void) appendObjectOverviewToData:(NSMutableData*) data 
+						   fromItem:(id) item;
 {
 }
 
@@ -376,33 +382,33 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendSectionsHeaderToData:(NSMutableData*) data
+- (void) appendObjectTasksHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendSectionsFooterToData:(NSMutableData*) data
+- (void) appendObjectTasksFooterToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendSectionHeaderToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node
-							 index:(int) index
+- (void) appendObjectTaskHeaderToData:(NSMutableData*) data
+							 fromItem:(id) item
+								index:(int) index
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendSectionFooterToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node
-							 index:(int) index
+- (void) appendObjectTaskFooterToData:(NSMutableData*) data
+							 fromItem:(id) item
+								index:(int) index
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendSectionMemberToData:(NSMutableData*) data
-						  fromNode:(NSXMLElement*) node
-							 index:(int) index
+- (void) appendObjectTaskMemberToData:(NSMutableData*) data
+							 fromItem:(id) item
+								index:(int) index
 {
 }
 
@@ -411,31 +417,31 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendMembersHeaderToData:(NSMutableData*) data
+- (void) appendObjectMembersHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendMembersFooterToData:(NSMutableData*) data
+- (void) appendObjectMembersFooterToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendMemberGroupHeaderToData:(NSMutableData*) data 
-								  type:(int) type
+- (void) appendObjectMemberGroupHeaderToData:(NSMutableData*) data 
+										type:(int) type
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendMemberGroupFooterToData:(NSMutableData*) data 
-								  type:(int) type
+- (void) appendObjectMemberGroupFooterToData:(NSMutableData*) data 
+										type:(int) type
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendMemberToData:(NSMutableData*) data 
-				   fromNode:(NSXMLElement*) node 
-					  index:(int) index
+- (void) appendObjectMemberToData:(NSMutableData*) data 
+						 fromItem:(id) item 
+							index:(int) index
 {
 }
 
