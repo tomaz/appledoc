@@ -8,30 +8,37 @@
 
 #import <Foundation/Foundation.h>
 
-enum TKGeneratorSectionItemTypes
+/** Defines different object info item types. */
+enum TKGeneratorObjectInfoItemTypes
 {
-	kTKSectionItemInherits,
-	kTKSectionItemConforms,
-	kTKSectionItemDeclared,
+	kTKObjectInfoItemInherits,
+	kTKObjectInfoItemConforms,
+	kTKObjectInfoItemDeclared,
 };
 
-enum TKGeneratorMemberTypes
+/** Defines different object main member group types. */
+enum TKGeneratorObjectMemberTypes
 {
-	kTKMemberTypeClass,
-	kTKMemberTypeInstance,
-	kTKMemberTypeProperty,
+	kTKObjectMemberTypeClass,
+	kTKObjectMemberTypeInstance,
+	kTKObjectMemberTypeProperty,
 };
 
-enum TKGeneratorPrototypeTypes
+/** Defines different object member prototype item types. These values define the type
+of the item which can either be value or parameter name. */
+enum TKGeneratorObjectPrototypeTypes
 {
-	kTKMemberPrototypeValue,
-	kTKMemberPrototypeParameter,
+	kTKObjectMemberPrototypeValue,
+	kTKObjectMemberPrototypeParameter,
 };
 
-enum TKGeneratorMemberSectionTypes
+/** Defines different object common member section types. These are used mainly to
+simplify the code and avoid repetition since many member sections use the same layout
+for different types of sections. */
+enum TKGeneratorObjectMemberSectionTypes
 {
-	kTKMemberSectionParameters,
-	kTKMemberSectionExceptions,
+	kTKObjectMemberSectionParameters,
+	kTKObjectMemberSectionExceptions,
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +79,8 @@ objects by simply sending the instance @c generateOutputForObject:() message and
 @interface GeneratorBase : NSObject
 {
 	NSDictionary* objectData;
+	NSDictionary* indexData;
+	NSString* projectName;
 	NSString* lastUpdated;
 }
 
@@ -125,7 +134,7 @@ The messages are sent in the following order:
 - @c appendObjectHeaderToData:()
  
 - @c appendObjectInfoHeaderToData:() @a *
-- @c appendObjectInfoItemToData:fromItem:index:type:() @a **
+- @c appendObjectInfoItemToData:fromItems:index:type:() @a **
 - @c appendObjectInfoFooterToData:() @a *
  
 - @c appendObjectOverviewToData:fromItem:() @a *
@@ -201,11 +210,19 @@ on the object data. Messages marked with @a * are optional, while messages marke
 /// @name Properties
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Sets or returns the project name.￼
+
+Clients should set this value prior to sending @c generateOutputForObject:() or
+@c generateOutputForIndex:() messages. If the value is non @c nil and is not an empty 
+string, the value can be used by the concrete generators to indicate the project name.
+*/
+@property(copy) NSString* projectName;
+
 /** Sets or returns the last updated date.￼
 
-Clients should set this value prior to sending @c generateOutputForObject:() 
-message. If the value is non @c nil and is not an empty string, the value can be used by 
-the concrete generators to indicate the time of the last update.
+Clients should set this value prior to sending @c generateOutputForObject:() or
+@c generateOutputForIndex:() messages. If the value is non @c nil and is not an empty,
+the value can be used by the concrete generators to indicate the time of the last update.
 */
 @property(copy) NSString* lastUpdated;
 

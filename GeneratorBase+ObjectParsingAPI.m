@@ -53,11 +53,11 @@
 	if (kindAttr)
 	{
 		if ([[kindAttr stringValue] isEqualToString:@"class-method"])
-			return kTKMemberTypeClass;
+			return kTKObjectMemberTypeClass;
 		if ([[kindAttr stringValue] isEqualToString:@"instance-method"])
-			return kTKMemberTypeInstance;
+			return kTKObjectMemberTypeInstance;
 	}
-	return kTKMemberTypeProperty;
+	return kTKObjectMemberTypeProperty;
 }
 
 //----------------------------------------------------------------------------------------
@@ -75,10 +75,10 @@
 	NSString* prefix = nil;
 	switch ([self extractObjectMemberType:node])
 	{
-		case kTKMemberTypeClass:
+		case kTKObjectMemberTypeClass:
 			prefix = @"+ ";
 			break;
-		case kTKMemberTypeInstance:
+		case kTKObjectMemberTypeInstance:
 			prefix = @"- ";
 			break;
 		default:
@@ -117,7 +117,7 @@
 	NSString* query = nil;
 	switch (type)
 	{
-		case kTKMemberSectionExceptions:
+		case kTKObjectMemberSectionExceptions:
 			query = @"exceptions/param";
 			break;
 		default:
@@ -169,8 +169,8 @@
 - (int) extractObjectMemberPrototypeItemType:(id) item
 {
 	NSXMLNode* node = (NSXMLNode*)item;
-	if ([node kind] == NSXMLElementKind) return kTKMemberPrototypeParameter;
-	return kTKMemberPrototypeValue;
+	if ([node kind] == NSXMLElementKind) return kTKObjectMemberPrototypeParameter;
+	return kTKObjectMemberPrototypeValue;
 }
 
 //----------------------------------------------------------------------------------------

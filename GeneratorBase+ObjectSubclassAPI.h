@@ -269,9 +269,9 @@ This is ussually the place to "close" sections open tags or similar.
 This message is sent from @c outputDataForObject() for each main member 
 documentation group. The group is specified with the @c type parameter and can be one of 
 the following:￼
-- @c kTKMemberTypeClass: The group describes class members.
-- @c kTKMemberTypeInstance: The group describes instance members.
-- @c kTKMemberTypeProperty: The group describes properties.
+- @c kTKObjectMemberTypeClass: The group describes class members.
+- @c kTKObjectMemberTypeInstance: The group describes instance members.
+- @c kTKObjectMemberTypeProperty: The group describes properties.
 
 Subclasses should append any desired data for the given group type. The message is only
 sent if at least one member of the given type is documented for the object. After this
@@ -296,9 +296,9 @@ each documented member of the given group and after all members output is genera
 This message is sent from @c outputDataForObject() for each main member 
 documentation group. The group is specified by the @c type parameter and can be one of 
 the following:
-- @c kTKMemberTypeClass: The group describes class members.
-- @c kTKMemberTypeInstance: The group describes instance members.
-- @c kTKMemberTypeProperty: The group describes properties.
+- @c kTKObjectMemberTypeClass: The group describes class members.
+- @c kTKObjectMemberTypeInstance: The group describes instance members.
+- @c kTKObjectMemberTypeProperty: The group describes properties.
  
 Subclasses should append any desired data for the given group type. In most cases this
 is the place to close any open tags or similar. The message is only sent if the

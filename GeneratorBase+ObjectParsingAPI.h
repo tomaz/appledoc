@@ -54,9 +54,9 @@ help parsing object related documentation.
 /** Extracts the member type fromt he given item.￼
 
 The result is one of the following:
-- @c kTKMemberTypeClass: The member is a class method.
-- @c kTKMemberTypeInstance: The member is an instance method.
-- @c kTKMemberTypeProperty: The member is a property.
+- @c kTKObjectMemberTypeClass: The member is a class method.
+- @c kTKObjectMemberTypeInstance: The member is an instance method.
+- @c kTKObjectMemberTypeProperty: The member is a property.
 
 @param item ￼￼￼￼￼￼The member item which type to return.
 @return ￼￼￼￼Returns the member kind.
@@ -173,8 +173,8 @@ individual description components.
 /** Extracts the member section items from the given mem￼ber item.
  
 The type can be one of the following:
-- @c kTKMemberSectionParameters: The array of all parameters will be returned.
-- @c kTKMemberSectionExceptions: The array of all exceptions will be returned.
+- @c kTKObjectMemberSectionParameters: The array of all parameters will be returned.
+- @c kTKObjectMemberSectionExceptions: The array of all exceptions will be returned.
  
 Since all sections have the same layout, all section helpers can be used. The section
 helpers are:
