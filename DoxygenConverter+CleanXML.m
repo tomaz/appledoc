@@ -552,12 +552,15 @@
 			}
 			refMember = [refMember stringByTrimmingCharactersInSet:whitespaceSet];
 			
-			// Find and parse the object name part if it exists.
+			// Find and parse the object name part if it exists. Note that we need to be
+			// able to handle categories here which should include the ending parenthesis.
+			// This is stripped out by the scanner.
 			if ([scanner scanCharactersFromSet:classStartSet intoString:NULL])
 			{
 				if ([scanner scanUpToCharactersFromSet:classEndSet intoString:&refObject])
 				{
 					refObject = [refObject stringByTrimmingCharactersInSet:whitespaceSet];
+					if ([refValue hasSuffix:@"))"]) refObject = [refObject stringByAppendingString:@")"];
 				}
 			}
 			
@@ -571,6 +574,15 @@
 				refMember = nil;
 			}
 			
+			// If the link represents a reference to a merged category, we should change
+			// the reference object to the main class.
+			if (cmd.mergeKnownCategoriesToClasses &&
+				[refObject hasSuffix:@")"] && 
+				[refObject hasPrefix:objectName])
+			{
+				refObject = objectName;
+			}
+		
 			// If we have both components and the object part points to current
 			// object, we should discard it and only use member component.
 			if (refObject && refMember && [refObject isEqualToString:objectName])
