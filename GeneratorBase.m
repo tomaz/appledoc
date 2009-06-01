@@ -9,6 +9,7 @@
 #import "GeneratorBase.h"
 #import "GeneratorBase+GeneralParsingAPI.h"
 #import "GeneratorBase+ObjectParsingAPI.h"
+#import "GeneratorBase+ObjectSubclassAPI.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -165,8 +166,8 @@ The @c type parameter can be one of the following:￼
 	// the generation), then ask the subclass to generate the data, cleanup and return.
 	objectData = data;
 	NSData* result = [self outputDataForObject];
-	objectData = nil;	
-	return result;
+	objectData = nil;
+	return ([result length] > 0) ? result : nil;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -329,120 +330,6 @@ The @c type parameter can be one of the following:￼
 		// Ask the subclass to append members group footer.
 		[self appendObjectMemberGroupFooterToData:data type:type];
 	}
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark File header and footer handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectHeaderToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectFooterToData:(NSMutableData*) data
-{	
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Object info section handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectInfoHeaderToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectInfoFooterToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectInfoItemToData:(NSMutableData*) data
-						  fromItems:(NSArray*) items
-							  index:(int) index
-							   type:(int) type
-{
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Object overview section handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectOverviewToData:(NSMutableData*) data 
-						   fromItem:(id) item;
-{
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Object sections handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectTasksHeaderToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectTasksFooterToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectTaskHeaderToData:(NSMutableData*) data
-							 fromItem:(id) item
-								index:(int) index
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectTaskFooterToData:(NSMutableData*) data
-							 fromItem:(id) item
-								index:(int) index
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectTaskMemberToData:(NSMutableData*) data
-							 fromItem:(id) item
-								index:(int) index
-{
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Object members main documentation handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectMembersHeaderToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectMembersFooterToData:(NSMutableData*) data
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectMemberGroupHeaderToData:(NSMutableData*) data 
-										type:(int) type
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectMemberGroupFooterToData:(NSMutableData*) data 
-										type:(int) type
-{
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendObjectMemberToData:(NSMutableData*) data 
-						 fromItem:(id) item 
-							index:(int) index
-{
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

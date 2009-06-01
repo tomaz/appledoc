@@ -126,37 +126,4 @@ Note that this method always returns the first subitem if more than one exists.
 */
 - (void) appendString:(NSString*) string toData:(NSMutableData*) data;
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties
-//////////////////////////////////////////////////////////////////////////////////////////
-
-/** Returns current output title. */
-@property(readonly) NSString* title;
-
-/** Returns current object name. */
-@property(readonly) NSString* objectName;
-
-/** Returns current object kind. */
-@property(readonly) NSString* objectKind;
-
-/** Returns the names of the class, the current object belongs to.
- 
-At the moment this is only applicable for categories. */
-@property(readonly) NSString* objectClass;
-
-/** Returns current object cleaned XML document. */
-@property(readonly) NSXMLDocument* objectMarkup;
-
-/** Returns current object relative directory within the generated output.
-
-This is only the directory and nothing else, in contrary to @c objectRelativePath()
-which also returns the file name. */
-@property(readonly) NSString* objectRelativeDir;
-
-/** Returns current object relative path within the generated output.
- 
-This returns the directory and the object name without the extension (the extension should
-be specified by each concrete @c GeneratorBase class). See also @c objectRelativeDir(). */
-@property(readonly) NSString* objectRelativePath;
-
 @end

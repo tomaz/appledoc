@@ -9,6 +9,7 @@
 #import "XHTMLGenerator.h"
 #import "GeneratorBase+GeneralParsingAPI.h"
 #import "GeneratorBase+ObjectParsingAPI.h"
+#import "GeneratorBase+ObjectSubclassAPI.h"
 
 @implementation XHTMLGenerator
 
@@ -26,7 +27,7 @@
 	[self appendLine:@"<head>" toData:data];
 	
 	[self appendString:@"  <title>" toData:data];
-	[self appendString:self.title toData:data];
+	[self appendString:self.objectTitle toData:data];
 	[self appendLine:@"</title>" toData:data];
 	
 	[self appendLine:@"  <meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml;charset=utf-8\" />" 
@@ -40,7 +41,7 @@
 	[self appendLine:@"  <div id=\"mainContainer\">" toData:data];
 
 	[self appendString:@"    <h1>" toData:data];
-	[self appendString:self.title toData:data];
+	[self appendString:self.objectTitle toData:data];
 	[self appendLine:@"</h1>" toData:data];
 }
 
