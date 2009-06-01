@@ -687,6 +687,27 @@
 		}			
 	}
 	
+	// Fix member links within the see also section. We should add the reference for each
+	// item which doesn't contain the <ref> tag already. This happens for all references
+	// to other classes or categories for which doxygen cannot find the target. Note that
+	// we need to add the parenthesis (or any other unique identifier) to these items,
+	// since replacing method names will also replace all valid <ref>s which will result
+	// in exceptions when parsing the updated XML later on. This is especially important
+	// when fixing inter-file links.
+	NSArray* testNodes = [cleanDocument nodesForXPath:@"//seeAlso/item" error:nil];
+	for (NSXMLNode* testNode in testNodes)
+	{
+		if ([[testNode nodesForXPath:@"ref" error:nil] count] == 0)
+		{
+			NSString* itemValue = [[testNode stringValue] stringByTrimmingCharactersInSet:whitespaceSet];
+			NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", itemValue, itemValue];
+			NSString* fixedValue = [itemValue stringByAppendingString:@"()"];
+			[replacements setObject:link forKey:fixedValue];
+			[testNode setStringValue:fixedValue];
+			logVerbose(@"- Found broken see also reference to '%@'.", itemValue);
+		}
+	}
+		
 	// We should replace all found references with correct ones. Note that we
 	// must also wrap the replaced string within the <ref> tag. So for example
 	// instead of 'work()' we would end with '<ref id="#work">work</ref>'. In order
