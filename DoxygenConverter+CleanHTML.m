@@ -11,6 +11,7 @@
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
+#import "XHTMLGenerator.h"
 
 @implementation DoxygenConverter (CleanHTML)
 
@@ -82,28 +83,22 @@
 		// Prepare the file name.
 		NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
 		NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
-		
-		// Convert the file.
-		NSString* stylesheetFile = [cmd.templatesPath stringByAppendingPathComponent:@"object2xhtml.xslt"];
-		NSXMLDocument* cleanDocument = [self applyXSLTFromFile:stylesheetFile 
-													toDocument:[objectData objectForKey:kTKDataObjectMarkupKey]
-													 arguments:xsltArgumentsDict
-														 error:&error];
-		if (!cleanDocument)
+
+		// Generate the object data.
+		XHTMLGenerator* generator = [[[XHTMLGenerator alloc] init] autorelease];
+		generator.lastUpdated = lastUpdatedString;		
+		NSData* data = [generator generateOutputForObject:objectData];
+		if (!data)
 		{
-			logError(@"Skipping '%@' because creating clean XHTML failed with error %@!", 
-					 objectName, 
-					 [error localizedDescription]);
+			logError(@"Skipping '%@' because creating clean XHTML failed!", objectName);
 			continue;
 		}
 		
 		// Save the data.
 		logDebug(@"Saving '%@' to '%@'...", objectName, filename);
-		NSString* documentString = [cleanDocument XMLStringWithOptions:NSXMLDocumentTidyHTML];
-		documentString = [documentString stringByReplacingOccurrencesOfString:@"%LastUpdatedDate%" withString:lastUpdatedString];
-		if (![documentString writeToFile:filename atomically:NO encoding:NSUTF8StringEncoding error:&error])
+		if (![data writeToFile:filename atomically:NO])
 		{
-			logError(@"Failed saving '%@' to '%@', error was %@!", objectName, filename, &error);
+			logError(@"Failed saving '%@' to '%@'!", objectName, filename);
 			continue;
 		}
 	}
