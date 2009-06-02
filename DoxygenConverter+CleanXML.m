@@ -299,6 +299,36 @@
 				[classSectionsNode addChild:sectionNode];
 			}
 			
+			// After the category was added, add it's <file> tag to the end of the 
+			// last one. This will be used in actual output generation to show all
+			// source files from which documentation was extracted. Note that we skip
+			// all files which were already added.
+			NSArray* categoryFileNodes = [categoryDocument nodesForXPath:@"object/file" error:nil];
+			if ([categoryFileNodes count] > 0)
+			{
+				NSArray* classFileNodes = [classDocument nodesForXPath:@"object/file" error:nil];
+				if ([classFileNodes count] > 0)
+				{
+					NSXMLElement* lastClassFileNode = [classFileNodes lastObject];
+					NSXMLElement* parentNode = (NSXMLElement*)[lastClassFileNode parent];
+					NSUInteger index = [lastClassFileNode index];
+					for (NSXMLElement* categoryFileNode in categoryFileNodes)
+					{
+						NSString* testQuery = [NSString stringWithFormat:@"object/file[%@]", 
+											   [categoryFileNode stringValue]];
+						if ([[classDocument nodesForXPath:testQuery error:nil] count] == 0)
+						{
+							logDebug(@"- Inserting file '%@' from category to index %d...",
+									 [categoryFileNode stringValue],
+									 index);						
+							NSXMLElement* insertedNode = [categoryFileNode copy];
+							[parentNode insertChild:insertedNode atIndex:index + 1];
+							index++;
+						}
+					}
+				}
+			}
+			
 			// Remember the category name which was removed. Note that we use category
 			// data because we can get all information from there and we need the
 			// instance to properly remove from the directories array.
