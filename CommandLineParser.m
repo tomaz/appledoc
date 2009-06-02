@@ -12,41 +12,43 @@
 
 #define kTKCommandLineException @"TKCommandLineException"
 
-#define kTKCmdGlobalTemplatesPathKey		@"GlobalTemplatesPath"			// NSString
-#define kTKCmdTemplatesPathKey				@"TemplatesPath"				// NSString
-#define kTKCmdCommandLineKey				@"CommandLine"					// NSString
-#define kTKCmdProjectNameKey				@"ProjectName"					// NSString
+#define kTKCmdGlobalTemplatesPathKey			@"GlobalTemplatesPath"			// NSString
+#define kTKCmdTemplatesPathKey					@"TemplatesPath"				// NSString
+#define kTKCmdCommandLineKey					@"CommandLine"					// NSString
+#define kTKCmdProjectNameKey					@"ProjectName"					// NSString
 
-#define kTKCmdInputPathKey					@"InputPath"					// NSString
-#define kTKCmdOutputPathKey					@"OutputPath"					// NSString
-#define kTKCmdOutputCleanXMLPathKey			@"OutputCleanXMLPath"			// NSString
-#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanXHTMLPath"			// NSString
-#define kTKCmdOutputDocSetPathKey			@"OutputDocSetPath"				// NSString
-#define kTKCmdOutputDocSetContentsPathKey	@"OutputDocSetContentsPath"		// NSString
-#define kTKCmdOutputDocSetResourcesPathKey	@"OutputDocSetResourcesPath"	// NSString
-#define kTKCmdOutputDocSetDocumentsPathKey	@"OutputDocSetDocumentsPath"	// NSString
+#define kTKCmdInputPathKey						@"InputPath"					// NSString
+#define kTKCmdOutputPathKey						@"OutputPath"					// NSString
+#define kTKCmdOutputCleanXMLPathKey				@"OutputCleanXMLPath"			// NSString
+#define kTKCmdOutputCleanXHTMLPathKey			@"OutputCleanXHTMLPath"			// NSString
+#define kTKCmdOutputDocSetPathKey				@"OutputDocSetPath"				// NSString
+#define kTKCmdOutputDocSetContentsPathKey		@"OutputDocSetContentsPath"		// NSString
+#define kTKCmdOutputDocSetResourcesPathKey		@"OutputDocSetResourcesPath"	// NSString
+#define kTKCmdOutputDocSetDocumentsPathKey		@"OutputDocSetDocumentsPath"	// NSString
 
-#define kTKCmdDoxygenCommandLineKey			@"DoxygenCommandLine"			// NSString
-#define kTKCmdDoxygenConfigFileKey			@"DoxygenConfigFile"			// NSString
+#define kTKCmdDoxygenCommandLineKey				@"DoxygenCommandLine"			// NSString
+#define kTKCmdDoxygenConfigFileKey				@"DoxygenConfigFile"			// NSString
 
-#define kTKCmdDocSetBundleIDKey				@"DocSetBundleID"				// NSString
-#define kTKCmdDocSetBundleFeedKey			@"DocSetBundleFeed"				// NSString
-#define kTKCmdDocSetSourcePlistKey			@"DocSetSourcePlist"			// NSString
-#define kTKCmdDocSetUtilCommandLinKey		@"DocSetUtilCommandLine"		// NSString
-#define kTKCmdDocSetInstallPathKey			@"DocSetInstallPath"			// NSString
+#define kTKCmdCreateCleanXHTMLKey				@"CreateXHTML"					// NSNumber / BOOL
+#define kTKCmdCreateDocSetKey					@"CreateDocSet"					// NSNumber / BOOL
 
-#define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
-#define kTKCmdRemoveTempFilesKey			@"RemoveTempFiles"				// NSNumber / BOOL
-#define kTKCmdRemoveOutputFilesBeforeStartingKey	@"RemoveOutputFiles"	// NSNumber / BOOL
-#define kTKCmdFixClassLocationsKey			@"FixClassLocations"			// NSNumber / BOOL
-#define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
-#define kTKCmdMergeCategoriesKey			@"MergeCategories"				// NSNumber / BOOL
-#define kTKCmdKeepMergedCategoriesSectionsKey		@"KeepCatSections"		// NSNumber / BOOL
-#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanOutput"			// NSNumber / BOOL
-#define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
+#define kTKCmdDocSetBundleIDKey					@"DocSetBundleID"				// NSString
+#define kTKCmdDocSetBundleFeedKey				@"DocSetBundleFeed"				// NSString
+#define kTKCmdDocSetSourcePlistKey				@"DocSetSourcePlist"			// NSString
+#define kTKCmdDocSetUtilCommandLinKey			@"DocSetUtilCommandLine"		// NSString
+#define kTKCmdDocSetInstallPathKey				@"DocSetInstallPath"			// NSString
 
-#define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
-#define kTKCmdObjectRefTemplate				@"ObjectReferenceStyle"			// NSString
+#define kTKCmdFixClassLocationsKey				@"FixClassLocations"			// NSNumber / BOOL
+#define kTKCmdRemoveEmptyParaKey				@"RemoveEmptyPara"				// NSNumber / BOOL
+#define kTKCmdMergeCategoriesKey				@"MergeCategories"				// NSNumber / BOOL
+#define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepCatSections"				// NSNumber / BOOL
+
+#define kTKCmdObjectRefTemplate					@"ObjectReferenceStyle"			// NSString
+#define kTKCmdRemoveTempFilesKey				@"RemoveTempFiles"				// NSNumber / BOOL
+#define kTKCmdRemoveOutputFilesBeforeStartingKey	@"RemoveOutputFiles"		// NSNumber / BOOL
+#define kTKCmdVerboseLevelKey					@"VerboseLevel"					// NSNumber / int
+
+#define kTKCmdEmitUtilityOutputKey				@"EmitUtilityOutput"			// NSNumber / BOOL
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -156,13 +158,14 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 @param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
 @param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
 @param key The key for which to set the value if found.
+@return Returns @c YES if the given option was found, @c NO otherwise.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
 @see parseIntegerWithShortcut:andName:forKey:
 @see parseBooleanWithShortcut:andName:withValue:forKey:
 */
-- (void) parseStringWithShortcut:(NSString*) shortcut 
+- (BOOL) parseStringWithShortcut:(NSString*) shortcut 
 						 andName:(NSString*) name
 						  forKey:(NSString*) key;
 
@@ -178,13 +181,14 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 @param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
 @param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
 @param key The key for which to set the value if found.
+@return Returns @c YES if the given option was found, @c NO otherwise.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
 @see parseStringWithShortcut:andName:forKey:
 @see parseBooleanWithShortcut:andName:withValue:forKey:
 */
-- (void) parseIntegerWithShortcut:(NSString*) shortcut
+- (BOOL) parseIntegerWithShortcut:(NSString*) shortcut
 						  andName:(NSString*) name
 						   forKey:(NSString*) key;
 
@@ -199,11 +203,12 @@ passed; the method will thrown exception if both, name and shortcut, are @c nil.
 @param name ￼￼￼￼￼￼Optional long name of the switch or @c nil if not used.
 @param key The key for which to set the value if found.
 @param value The desired value to set for the given @c key if the switch is found.
+@return Returns @c YES if the given option was found, @c NO otherwise.
 @exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or @c key is @c nil.
 @see parseStringWithShortcut:andName:forKey:
 @see parseIntegerWithShortcut:andName:forKey:
 */
-- (void) parseBooleanWithShortcut:(NSString*) shortcut 
+- (BOOL) parseBooleanWithShortcut:(NSString*) shortcut 
 						  andName:(NSString*) name
 						withValue:(BOOL) value
 						   forKey:(NSString*) key;
@@ -301,11 +306,25 @@ instead.
 	[parameters setObject:[commandLineArguments objectAtIndex:0] forKey:kTKCmdCommandLineKey];	
 	[self parseIntegerWithShortcut:@"-v" andName:@"--verbose" forKey:kTKCmdVerboseLevelKey];
 	
+	// Parse custom templates path parameters, then make sure all required files are found
+	// there if specified. Note that this will override global parameters if globals.plist
+	// is found on the custom path...
+	if ([self parseStringWithShortcut:@"-t" andName:@"--templates" forKey:kTKCmdTemplatesPathKey])
+	{
+		if (![self parseTemplatesPath:self.templatesPath])
+		{
+			NSString* message = [NSString stringWithFormat:
+								 @"Custom templates path '%@' doesn't contain all required files!",
+								 self.templatesPath];
+			[Systemator throwExceptionWithName:kTKCommandLineException
+							   withDescription:message];
+		}
+	}
+
 	// Parse the rest of the parameters.
 	[self parseStringWithShortcut:@"-p" andName:@"--project" forKey:kTKCmdProjectNameKey];
 	[self parseStringWithShortcut:@"-i" andName:@"--input" forKey:kTKCmdInputPathKey];
 	[self parseStringWithShortcut:@"-o" andName:@"--output" forKey:kTKCmdOutputPathKey];
-	[self parseStringWithShortcut:@"-t" andName:@"--templates" forKey:kTKCmdTemplatesPathKey];
 	
 	[self parseStringWithShortcut:@"-d" andName:@"--doxygen" forKey:kTKCmdDoxygenCommandLineKey];
 	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile" forKey:kTKCmdDoxygenConfigFileKey];	
@@ -633,7 +652,7 @@ instead.
 }
 
 //----------------------------------------------------------------------------------------
-- (void) parseStringWithShortcut:(NSString*) shortcut 
+- (BOOL) parseStringWithShortcut:(NSString*) shortcut 
 						 andName:(NSString*) name
 						  forKey:(NSString*) key
 {
@@ -657,13 +676,14 @@ instead.
 			NSString* value = [commandLineArguments objectAtIndex:i+1];
 			[self logCmdLineSwitch:shortcut andName:name andValue:value];
 			[parameters setObject:value forKey:key];
-			return;
+			return YES;
 		}
 	}
+	return NO;
 }
 
 //----------------------------------------------------------------------------------------
-- (void) parseIntegerWithShortcut:(NSString*) shortcut 
+- (BOOL) parseIntegerWithShortcut:(NSString*) shortcut 
 						  andName:(NSString*) name
 						   forKey:(NSString*) key
 {
@@ -687,13 +707,14 @@ instead.
 			NSString* value = [commandLineArguments objectAtIndex:i+1];			
 			[self logCmdLineSwitch:shortcut andName:name andValue:value];
 			[parameters setObject:[NSNumber numberWithInt:[value intValue]] forKey:key];
-			return;
+			return YES;
 		}
 	}
+	return NO;
 }
 
 //----------------------------------------------------------------------------------------
-- (void) parseBooleanWithShortcut:(NSString*) shortcut 
+- (BOOL) parseBooleanWithShortcut:(NSString*) shortcut 
 						  andName:(NSString*) name
 						withValue:(BOOL) value
 						   forKey:(NSString*) key
@@ -706,9 +727,10 @@ instead.
 		{
 			[self logCmdLineSwitch:shortcut andName:name andValue:nil];
 			[parameters setObject:[NSNumber numberWithBool:value] forKey:key];
-			return;
+			return YES;
 		}
 	}
+	return NO;
 }
 
 //----------------------------------------------------------------------------------------
