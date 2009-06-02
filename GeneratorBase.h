@@ -169,10 +169,10 @@ indeed created.
 
 /** Generates the output data from the data contained in the class properties.￼
 
-This message is sent from @c generateOutputForObject:toFile:() after the passed object data is 
-stored in the class properties. The concrete subclasses that require full control over the 
-generated data, can override this method and return the desired output. If overriden, the 
-subclass can get the XML document through the @c objectMarkup property.
+This message is sent from @c generateOutputForObject:toFile:() after the passed object data 
+is stored in the class properties. The concrete subclasses that require full control over 
+the generated data, can override this method and return the desired output. If overriden, 
+the subclass can get the XML document through the @c objectMarkup property.
  
 By default, this will send several higher level messages which can be overriden instead.
 The messages are sent in the following order:
@@ -193,7 +193,7 @@ The messages are sent in the following order:
 - @c appendObjectMembersHeaderToData:() @a *
 - @c appendObjectMemberGroupHeaderToData:type:() @a **
 - @c appendObjectMemberToData:fromItem:index:() @a **
-- @c appendObjectMemberGroupFooterToData:() @a **
+- @c appendObjectMemberGroupFooterToData:type:() @a **
 - @c appendObjectMembersFooterToData:() @a *
  
 - @c appendObjectFooterToData:()
@@ -211,34 +211,20 @@ on the object data. Messages marked with @a * are optional, while messages marke
 
 /** Generates the output data from the data contained in the class properties.￼
 
-This message is sent from @c generateOutputForObject:toFile:() after the passed object data is 
-stored in the class properties. The concrete subclasses that require full control over the 
-generated data, can override this method and return the desired output. If overriden, the 
-subclass can get the XML document through the @c objectMarkup property.
+This message is sent from @c generateOutputForIndex:toFile:() after the passed object data
+is stored in the class properties. The concrete subclasses that require full control over 
+the generated data, can override this method and return the desired output. If overriden, 
+the subclass can get the XML document through the @c objectMarkup property.
  
 By default, this will send several higher level messages which can be overriden instead.
 The messages are sent in the following order:
-- @c appendObjectHeaderToData:()
+- @c appendIndexHeaderToData:()
  
-- @c appendObjectInfoHeaderToData:() @a *
-- @c appendObjectInfoItemToData:fromItem:index:type:() @a **
-- @c appendObjectInfoFooterToData:() @a *
+- @c appendIndexGroupHeaderToData:type:() **
+- @c appendIndexGroupItemToData:fromItem:index:type:() **
+- @c appendIndexGroupFooterToData:type:() **
  
-- @c appendObjectOverviewToData:fromItem:() @a *
-
-- @c appendObjectTasksHeaderToData:() @a *
-- @c appendObjectTaskHeaderToData:fromItem:index:() @a **
-- @c appendObjectTaskMemberToData:fromItem:index:() @a **
-- @c appendObjectTaskFooterToData:fromItem:index:() @a **
-- @c appendObjectTasksFooterToData:() @a *
- 
-- @c appendObjectMembersHeaderToData:() @a *
-- @c appendObjectMemberGroupHeaderToData:type:() @a **
-- @c appendObjectMemberToData:fromItem:index:() @a **
-- @c appendObjectMemberGroupFooterToData:() @a **
-- @c appendObjectMembersFooterToData:() @a *
- 
-- @c appendObjectFooterToData:()
+- @c appendIndexFooterToData:()
  
 Note that only a subset of above messages may be sent for a particular object, depending
 on the object data. Messages marked with @a * are optional, while messages marked with 
