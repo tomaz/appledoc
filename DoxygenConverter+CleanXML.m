@@ -427,6 +427,7 @@
 		logVerbose(@"Handling '%@'...", objectName);
 		
 		[self fixInheritanceForObject:objectName objectData:objectData objects:objects];
+		[self fixLocationForObject:objectName objectData:objectData objects:objects];
 		[self fixReferencesForObject:objectName objectData:objectData objects:objects];
 		[self fixParaLinksForObject:objectName objectData:objectData objects:objects];
 		[self fixEmptyParaForObject:objectName objectData:objectData objects:objects];
@@ -497,7 +498,7 @@
 	// we need to handle protocols here too - if a class conforms to protocols,
 	// we should change the name of the node from <base> to <conforms> so that we
 	// have easier job while generating html. We should also create the link to
-	// the known protoocol.
+	// the known protocols.
 	NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 	NSArray* baseNodes = [cleanDocument nodesForXPath:@"/object/base" error:nil];
 	for (NSXMLElement* baseNode in baseNodes)
@@ -539,7 +540,44 @@
 				[parentNode replaceChildAtIndex:index withNode:protocolNode];
 			}
 		}
-	}	
+	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) fixLocationForObject:(NSString*) objectName
+				   objectData:(NSMutableDictionary*) objectData
+					  objects:(NSDictionary*) objects
+{
+	// We only need to check this for classes and only if this is enabled.
+	if (cmd.fixClassLocations && [[objectData objectForKey:kTKDataObjectKindKey] isEqualToString:@"class"])
+	{
+		NSXMLDocument* cleanDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
+		NSArray* fileNodes = [cleanDocument nodesForXPath:@"object/file" error:nil];
+		if ([fileNodes count] > 0)
+		{
+			for (NSXMLElement* fileNode in fileNodes)
+			{
+				// If path extension is not .h, check further.
+				NSString* path = [fileNode stringValue];
+				NSString* extension = [path pathExtension];
+				if ([extension isEqualToString:@"m"] ||
+					[extension isEqualToString:@"mm"])
+				{
+					// If the path contains other parts, besides extension and file name,
+					// or it doesn't start with the object name, replace it...
+					if (![path hasPrefix:objectName] ||
+						[path length] != [extension length] + [objectName length] + 1)
+					{
+						NSString* newPath = [NSString stringWithFormat:@"%@.h", objectName];
+						logVerbose(@"- Fixing strange looking class file '%@' to '%@'...",
+								   path,
+								   newPath);
+						[fileNode setStringValue:newPath];
+					}
+				}
+			}
+		}
+	}
 }
 
 //----------------------------------------------------------------------------------------

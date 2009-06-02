@@ -20,7 +20,7 @@
 #define kTKCmdInputPathKey					@"InputPath"					// NSString
 #define kTKCmdOutputPathKey					@"OutputPath"					// NSString
 #define kTKCmdOutputCleanXMLPathKey			@"OutputCleanXMLPath"			// NSString
-#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanOutputPath"			// NSString
+#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanXHTMLPath"			// NSString
 #define kTKCmdOutputDocSetPathKey			@"OutputDocSetPath"				// NSString
 #define kTKCmdOutputDocSetContentsPathKey	@"OutputDocSetContentsPath"		// NSString
 #define kTKCmdOutputDocSetResourcesPathKey	@"OutputDocSetResourcesPath"	// NSString
@@ -37,11 +37,12 @@
 
 #define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
 #define kTKCmdRemoveTempFilesKey			@"RemoveTempFiles"				// NSNumber / BOOL
-#define kTKCmdRemoveOutputFilesBeforeStartingKey			@"RemoveOutputFiles"			// NSNumber / BOOL
+#define kTKCmdRemoveOutputFilesBeforeStartingKey	@"RemoveOutputFiles"	// NSNumber / BOOL
+#define kTKCmdFixClassLocationsKey			@"FixClassLocations"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
 #define kTKCmdMergeCategoriesKey			@"MergeCategories"				// NSNumber / BOOL
-#define kTKCmdKeepMergedCategoriesSectionsKey			@"KeepCatSections"				// NSNumber / BOOL
-#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanOutput"				// NSNumber / BOOL
+#define kTKCmdKeepMergedCategoriesSectionsKey		@"KeepCatSections"		// NSNumber / BOOL
+#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanOutput"			// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
 #define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
@@ -319,6 +320,7 @@ instead.
 	
 	[self parseStringWithShortcut:nil andName:@"--objrefstyle" forKey:kTKCmdObjectRefStyle];
 
+	[self parseBooleanWithShortcut:nil andName:@"--fix-class-loc" withValue:YES forKey:kTKCmdFixClassLocationsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategoriesKey];
 	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
@@ -424,6 +426,8 @@ instead.
 	printf("-d --doxygen <path>  Full path to doxgen command. Defaults to '/opt/local/bin/doxygen'.\n");
 	printf("\n");
 	printf("OPTIONS - clean XML creation\n");
+	printf("   --fix-class-loc   Fix class locations if they seem invalid. This fixes doxygen\n");
+	printf("                     paths for cases where categories are defined in different files.\n");
 	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
 	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
 	printf("   --keep-cat-sec    When merging category documentation preserve all category sections.\n");
@@ -514,6 +518,7 @@ instead.
 	// a boolValue is sent to nil object, but to make future changes more meaningful, 
 	// all are included.
 	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdFixClassLocationsKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategoriesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
@@ -784,6 +789,12 @@ instead.
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Properties - clean XML creation
 //////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) fixClassLocations
+{
+	return [[parameters objectForKey:kTKCmdFixClassLocationsKey] boolValue];
+}
 
 //----------------------------------------------------------------------------------------
 - (BOOL) removeEmptyParagraphs

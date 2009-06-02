@@ -102,6 +102,9 @@ are reset and then the given command line parsed.
 /// @name Properties - clean XML creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** If @c YES, class locations are fixed if (possibly) invalid location is detected. */
+@property(readonly) BOOL fixClassLocations;
+
 /** If @c YES, empty paragraphs should be removed from clean XML. */
 @property(readonly) BOOL removeEmptyParagraphs;
 

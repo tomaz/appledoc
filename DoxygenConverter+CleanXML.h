@@ -141,6 +141,7 @@ method.
 @param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixLocationForObject:objectData:objects:
 @see fixReferencesForObject:objectData:objects:
 @see fixParaLinksForObject:objectData:objects:
 @see fixEmptyParaForObject:objectData:objects:
@@ -148,6 +149,29 @@ method.
 - (void) fixInheritanceForObject:(NSString*) objectName
 					  objectData:(NSMutableDictionary*) objectData
 						 objects:(NSDictionary*) objects;
+
+/** Fixes location for classes if necessary.
+
+For some reason doxygen uses a location of one of the class categories for the class
+itself if the categories are defined in separate files. This is where we fix such links.
+Note that this should optionally be enabled in @c CommandLineParser.
+ 
+This message is sent automatically from @c fixCleanObjectDocumentation() and should not
+be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
+method.
+
+@param objectName ￼￼￼￼￼￼The name of the object that should be fixed.
+@param objectData ￼￼￼￼￼￼The data of the object that should be fixed.
+@param objects The dictionary of all objects.
+@exception ￼￼￼￼￼NSException Thrown if fixing fails.
+@see fixInheritanceForObject:objectData:objects:
+@see fixReferencesForObject:objectData:objects:
+@see fixParaLinksForObject:objectData:objects:
+@see fixEmptyParaForObject:objectData:objects:
+*/
+- (void) fixLocationForObject:(NSString*) objectName
+				   objectData:(NSMutableDictionary*) objectData
+					  objects:(NSDictionary*) objects;
 
 /** Fixes doxygen references links for the given object.
 
@@ -164,6 +188,7 @@ method.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 @see fixInheritanceForObject:objectData:objects:
+@see fixLocationForObject:objectData:objects:
 @see fixParaLinksForObject:objectData:objects:
 @see fixEmptyParaForObject:objectData:objects:
 */
@@ -190,6 +215,7 @@ method.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 @see fixInheritanceForObject:objectData:objects:
+@see fixLocationForObject:objectData:objects:
 @see fixReferencesForObject:objectData:objects:
 @see fixEmptyParaForObject:objectData:objects:
 */
@@ -212,6 +238,7 @@ method.
 @param objects The dictionary of all objects.
 @exception ￼￼￼￼￼NSException Thrown if fixing fails.
 @see fixInheritanceForObject:objectData:objects:
+@see fixLocationForObject:objectData:objects:
 @see fixReferencesForObject:objectData:objects:
 @see fixParaLinksForObject:objectData:objects:
 */
