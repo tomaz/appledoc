@@ -260,7 +260,9 @@
 					}
 					
 					// Merge the section data to the main class document. We need to prepend
-					// the category name before the section description before...
+					// the category name before the section description before... Note that
+					// we handle the cases where no category name is defined by simply using
+					// the category section name.
 					logDebug(@"- Merging documentation for section '%@'...");
 					NSXMLElement* classSectionNode = [categorySectionNode copy];
 					NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
@@ -268,9 +270,11 @@
 					{					
 						NSString* extensionName = [categoryName substringFromIndex:[className length]];
 						extensionName = [extensionName substringWithRange:NSMakeRange(1, [extensionName length]-2)];
-						NSString* classSectionName = [NSString stringWithFormat:@"%@ / %@", 
-													  extensionName,
-													  categorySectionName];
+						NSString* classSectionName = categorySectionName;
+						if ([extensionName length] > 0)
+							classSectionName = [NSString stringWithFormat:@"%@ / %@", 
+												extensionName,
+												categorySectionName];
 						NSXMLNode* nameNode = [classSectionNameNodes objectAtIndex:0];
 						[nameNode setStringValue:classSectionName];
 					}
