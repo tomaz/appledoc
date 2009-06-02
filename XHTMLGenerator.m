@@ -10,60 +10,29 @@
 #import "GeneratorBase+GeneralParsingAPI.h"
 #import "GeneratorBase+ObjectParsingAPI.h"
 #import "GeneratorBase+ObjectSubclassAPI.h"
+#import "GeneratorBase+IndexParsingAPI.h"
+#import "GeneratorBase+IndexSubclassAPI.h"
 
 @implementation XHTMLGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark General output handling
+#pragma mark Object file header and footer handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (void) appendObjectHeaderToData:(NSMutableData*) data
 {
-	[self appendLine:@"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 STRICT//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" 
-			  toData:data];
-	[self appendLine:@"<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">"
-			  toData:data];
-	[self appendLine:@"<head>" toData:data];
-	
-	[self appendString:@"  <title>" toData:data];
-	[self appendString:self.objectTitle toData:data];
-	[self appendLine:@"</title>" toData:data];
-	
-	[self appendLine:@"  <meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml;charset=utf-8\" />" 
-			  toData:data];
-	[self appendLine:@"  <link rel=\"stylesheet\" type=\"text/css\" href=\"../css/screen.css\" />" 
-			  toData:data];
-	[self appendLine:@"  <meta name=\"generator\" content=\"appledoc\" />" 
-			  toData:data];
-	[self appendLine:@"</head>" toData:data];
-	[self appendLine:@"<body>" toData:data];
-	[self appendLine:@"  <div id=\"mainContainer\">" toData:data];
-
-	[self appendString:@"    <h1>" toData:data];
-	[self appendString:self.objectTitle toData:data];
-	[self appendLine:@"</h1>" toData:data];
+	[self appendFileHeaderToData:data 
+					   withTitle:self.objectTitle 
+				   andStylesheet:@"../css/screen.css"];
 }
 
 //----------------------------------------------------------------------------------------
 - (void) appendObjectFooterToData:(NSMutableData*) data
 {
-	[self appendLine:@"    <hr />" toData:data];
-	[self appendString:@"    <p id=\"lastUpdated\">" toData:data];
-	
-	if (self.lastUpdated && [self.lastUpdated length] > 0)
-	{
-		[self appendString:@"Last updated: " toData:data];
-		[self appendString:self.lastUpdated toData:data];
-		[self appendLine:@"      <br />" toData:data];
-	}
-	
-	[self appendLine:@"Back to <a href=\"../Index.html\">index</a>." toData:data];
-	[self appendLine:@"    </p>" toData:data];
-	
-	[self appendLine:@"  </div>" toData:data];
-	[self appendLine:@"</body>" toData:data];
-	[self appendLine:@"</html>" toData:data];
+	[self appendFileFooterToData:data
+				 withLastUpdated:YES
+					andIndexLink:YES];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -92,15 +61,15 @@
 	NSString* delimiter = nil;
 	switch (type)
 	{
-		case kTKSectionItemInherits:
+		case kTKObjectInfoItemInherits:
 			description = @"Inherits from";
 			delimiter = @" : ";
 			break;
-		case kTKSectionItemConforms:
+		case kTKObjectInfoItemConforms:
 			description = @"Conforms to";
 			delimiter = @"<br />";
 			break;
-		case kTKSectionItemDeclared:
+		case kTKObjectInfoItemDeclared:
 			description = @"Declared in";
 			delimiter = @"<br />";
 			break;
@@ -206,7 +175,7 @@
 	[self appendLine:@"</code>" toData:data];
 	
 	// Append property data.
-	if ([self extractObjectMemberType:item] == kTKMemberTypeProperty)
+	if ([self extractObjectMemberType:item] == kTKObjectMemberTypeProperty)
 	{
 		[self appendLine:@"            <span class=\"specialType\">property</span>" toData:data];
 	}
@@ -239,10 +208,10 @@
 	NSString* description = nil;
 	switch (type)
 	{
-		case kTKMemberTypeClass:
+		case kTKObjectMemberTypeClass:
 			description = @"Class methods";
 			break;
-		case kTKMemberTypeInstance:
+		case kTKObjectMemberTypeInstance:
 			description = @"Instance methods";
 			break;
 		default:
@@ -262,8 +231,8 @@
 	[self appendObjectMemberTitleToData:data fromItem:item];
 	[self appendObjectMemberOverviewToData:data fromItem:item];
 	[self appendObjectMemberPrototypeToData:data fromItem:item];
-	[self appendObjectMemberSectionToData:data fromItem:item type:kTKMemberSectionParameters title:@"Parameters"];
-	[self appendObjectMemberSectionToData:data fromItem:item type:kTKMemberSectionExceptions title:@"Exceptions"];
+	[self appendObjectMemberSectionToData:data fromItem:item type:kTKObjectMemberSectionParameters title:@"Parameters"];
+	[self appendObjectMemberSectionToData:data fromItem:item type:kTKObjectMemberSectionExceptions title:@"Exceptions"];
 	[self appendObjectMemberReturnToData:data fromItem:item];
 	[self appendObjectMemberDiscussionToData:data fromItem:item];
 	[self appendObjectMemberWarningToData:data fromItem:item];
@@ -315,7 +284,7 @@
 		{
 			for (id item in items)
 			{
-				if ([self extractObjectMemberPrototypeItemType:item] == kTKMemberPrototypeParameter)
+				if ([self extractObjectMemberPrototypeItemType:item] == kTKObjectMemberPrototypeParameter)
 				{
 					[self appendString:@"        <span class=\"parameter\">" toData:data];
 					[self appendString:[self extractObjectMemberPrototypeItemValue:item] toData:data];
@@ -445,6 +414,127 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Index file header and footer handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) appendIndexHeaderToData:(NSMutableData*) data
+{
+	indexProtocolsGroupAppended = NO;
+	indexCategoriesGroupAppended = NO;
+	[self appendFileHeaderToData:data 
+					   withTitle:self.indexTitle 
+				   andStylesheet:@"css/screen.css"];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendIndexFooterToData:(NSMutableData*) data
+{
+	// Finish the protocols and categories column if we started one. Note that this code
+	// assumes that protocols and categories are handled last, so it may break if this
+	// changes in the future...
+	if (indexProtocolsGroupAppended || indexCategoriesGroupAppended)
+	{
+		[self appendLine:@"    </div>" toData:data];
+	}
+	
+	// Finish the rest of the markup.
+	[self appendLine:@"    <div class=\"clear\"></div>" toData:data];
+	[self appendFileFooterToData:data
+				 withLastUpdated:NO
+					andIndexLink:NO];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Index groups handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) appendIndexGroupHeaderToData:(NSMutableData*) data
+								 type:(int) type
+{
+	// Classes are embedded in their own column, while protocols and categories are
+	// grouped together. For classes the handling is straightforward while for the other
+	// two we need some ivars to make sure the column is started only once.
+	BOOL startColumn = NO;
+	NSString* title = nil;
+	switch (type) 
+	{
+		case kTKIndexGroupClasses:
+			title = @"Class references";
+			startColumn = YES;
+			break;
+		case kTKIndexGroupProtocols:
+			title = @"Protocol references";
+			indexProtocolsGroupAppended = YES;
+			if (!indexCategoriesGroupAppended) startColumn = YES;
+			break;
+		default:
+			title = @"Categories references";
+			indexCategoriesGroupAppended = YES;
+			if (!indexProtocolsGroupAppended) startColumn = YES;
+			break;
+	}
+
+	// Start the column if necessary.
+	if (startColumn)
+	{
+		[self appendLine:@"    <div class=\"column\">" toData:data];
+	}
+	
+	// Append the title.
+	[self appendString:@"      <h5>" toData:data];
+	[self appendString:title toData:data];
+	[self appendLine:@"</h5>" toData:data];
+	
+	// Start the list.
+	[self appendLine:@"      <ul>" toData:data];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendIndexGroupFooterToData:(NSMutableData*) data
+								 type:(int) type
+{
+	// End the list.
+	[self appendLine:@"      </ul>" toData:data];
+	
+	// If we are handling the classes group, end the column now. For the other two, we'll
+	// handle it when processing index ends because at this point we have no indication
+	// on whether there's additional group to put in the second column or not.
+	if (type == kTKIndexGroupClasses)
+	{
+		[self appendLine:@"    </div>" toData:data];
+	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendIndexGroupItemToData:(NSMutableData*) data
+						   fromItem:(id) item
+							  index:(int) index
+							   type:(int) type
+{
+	NSString* reference = [self extractIndexGroupItemRef:item];
+	NSString* name = [self extractIndexGroupItemName:item];
+	
+	[self appendLine:@"        <li>" toData:data];
+	
+	if (reference)
+	{
+		[self appendString:@"          <a href=\"" toData:data];
+		[self appendString:reference toData:data];
+	}
+	
+	[self appendString:name toData:data];
+
+	if (reference)
+	{
+		[self appendString:@"</a>" toData:data];
+	}
+	
+	[self appendLine:@"        </li>" toData:data];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Description helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -490,6 +580,78 @@
 	result = [result stringByReplacingOccurrencesOfString:@"<item>" withString:@"<li>"];
 	result = [result stringByReplacingOccurrencesOfString:@"</item>" withString:@"</li>"];
 	[self appendLine:result toData:data];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) appendFileHeaderToData:(NSMutableData*) data
+					  withTitle:(NSString*) title
+				  andStylesheet:(NSString*) stylesheet
+{
+	[self appendString:@"<!DOCTYPE html PUBLIC " toData:data];
+	[self appendString:@"\"-//W3C//DTD XHTML 1.0 STRICT//EN\" " toData:data];
+	[self appendString:@"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">" toData:data];
+	[self appendLine:@"" toData:data];
+	
+	[self appendString:@"<html " toData:data];
+	[self appendString:@"xmlns=\"http://www.w3.org/1999/xhtml\" " toData:data];
+	[self appendString:@"xml:lang=\"en\" lang=\"en\">" toData:data];
+	[self appendLine:@"" toData:data];
+	
+	[self appendLine:@"<head>" toData:data];
+	
+	[self appendString:@"  <title>" toData:data];
+	[self appendString:title toData:data];
+	[self appendLine:@"</title>" toData:data];
+	
+	[self appendLine:@"  <meta http-equiv=\"Content-Type\" content=\"application/xhtml+xml;charset=utf-8\" />" 
+			  toData:data];
+	[self appendString:@"  <link rel=\"stylesheet\" type=\"text/css\" href=\"" toData:data];
+	[self appendString:stylesheet toData:data];
+	[self appendLine:@"\" />" toData:data];
+	
+	[self appendLine:@"  <meta name=\"generator\" content=\"appledoc\" />" 
+			  toData:data];
+	[self appendLine:@"</head>" toData:data];
+	[self appendLine:@"<body>" toData:data];
+	[self appendLine:@"  <div id=\"mainContainer\">" toData:data];
+	
+	[self appendString:@"    <h1>" toData:data];
+	[self appendString:title toData:data];
+	[self appendLine:@"</h1>" toData:data];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendFileFooterToData:(NSMutableData*) data
+				withLastUpdated:(BOOL) showLastUpdate
+				   andIndexLink:(BOOL) showBackToIndex
+{	
+	if (showLastUpdate || showBackToIndex)
+	{
+		[self appendLine:@"    <hr />" toData:data];
+		[self appendString:@"    <p id=\"lastUpdated\">" toData:data];
+	
+		if (showLastUpdate && self.lastUpdated && [self.lastUpdated length] > 0)
+		{
+			[self appendString:@"Last updated: " toData:data];
+			[self appendString:self.lastUpdated toData:data];
+			[self appendLine:@"      <br />" toData:data];
+		}
+		
+		if (showBackToIndex)
+		{
+			[self appendLine:@"Back to <a href=\"../Index.html\">index</a>." toData:data];
+		}
+		
+		[self appendLine:@"    </p>" toData:data];
+	}
+	
+	[self appendLine:@"  </div>" toData:data];
+	[self appendLine:@"</body>" toData:data];
+	[self appendLine:@"</html>" toData:data];
 }
 
 @end

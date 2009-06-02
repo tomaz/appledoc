@@ -44,77 +44,55 @@
 		}
 	}
 	
-	// Prepare the arguments for the XSLT.
+	// Prepare the argument values.
 	NSCalendarDate* now = [NSCalendarDate date];
 	NSString* lastUpdatedString = [now descriptionWithCalendarFormat:@"%Y-%B-%d"];
-	NSDictionary* xsltArgumentsDict = [NSDictionary dictionaryWithObject:lastUpdatedString forKey:@"lastUdatedDate"];
 	
-	// Convert the index file.
-	NSString* indexFilename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index.html"];
-	NSString* indexStylsheetFilename = [cmd.templatesPath stringByAppendingPathComponent:@"index2xhtml.xslt"];
-	NSXMLDocument* cleanIndexDoc = [self applyXSLTFromFile:indexStylsheetFilename
-												toDocument:[database objectForKey:kTKDataMainIndexKey]
-												 arguments:xsltArgumentsDict
-													 error:&error];
-	if (!cleanIndexDoc)
+	// Prepare the output generators.
+	XHTMLGenerator* generator = [[XHTMLGenerator alloc] init];
+	@try
 	{
-		logError(@"Skipping index because creating clean XHTML index failed with error %@!", 
-				 [error localizedDescription]);
-	}
-	
-	logDebug(@"Saving index to '%@'...", indexFilename);
-	NSData* indexData = [cleanIndexDoc XMLDataWithOptions:NSXMLDocumentTidyHTML];
-	if (![indexData writeToFile:indexFilename atomically:NO])
-	{
-		@throw [NSException exceptionWithName:kTKConverterException 
-									   reason:@"Failed saving index XHTML file to '%@'!"
-									 userInfo:nil];
-	}
+		generator.lastUpdated = lastUpdatedString;
+		generator.projectName = cmd.projectName;
 
-	// Convert the object files.
-	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
-	for (NSString* objectName in objects)
+		// Convert the index file.
+		NSString* indexFilename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index.html"];
+		[generator generateOutputForIndex:database toFile:indexFilename];
+
+		// Convert the object files.
+		NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
+		for (NSString* objectName in objects)
+		{
+			[loopAutoreleasePool drain];
+			loopAutoreleasePool = [[NSAutoreleasePool alloc] init];
+			
+			NSDictionary* objectData = [objects objectForKey:objectName];
+			
+			// Prepare the file name.
+			NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
+			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
+
+			// Generate the object data.
+			[generator generateOutputForObject:objectData toFile:filename];
+		}
+		
+		// If cleantemp is used, remove clean XML temporary files.
+		if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXMLPath])
+		{
+			logInfo(@"Removing temporary clean XML files at '%@'...", cmd.outputCleanXMLPath);
+			NSError* error = nil;
+			if (![manager removeItemAtPath:cmd.outputCleanXMLPath error:&error])
+			{
+				[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+			}
+		}
+	}
+	@finally
 	{
+		[generator release];
 		[loopAutoreleasePool drain];
-		loopAutoreleasePool = [[NSAutoreleasePool alloc] init];
-		
-		NSDictionary* objectData = [objects objectForKey:objectName];
-		
-		// Prepare the file name.
-		NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
-		NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
-
-		// Generate the object data.
-		XHTMLGenerator* generator = [[[XHTMLGenerator alloc] init] autorelease];
-		generator.lastUpdated = lastUpdatedString;		
-		NSData* data = [generator generateOutputForObject:objectData];
-		if (!data)
-		{
-			logError(@"Skipping '%@' because creating clean XHTML failed!", objectName);
-			continue;
-		}
-		
-		// Save the data.
-		logDebug(@"Saving '%@' to '%@'...", objectName, filename);
-		if (![data writeToFile:filename atomically:NO])
-		{
-			logError(@"Failed saving '%@' to '%@'!", objectName, filename);
-			continue;
-		}
 	}
 	
-	// If cleantemp is used, remove clean XML temporary files.
-	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXMLPath])
-	{
-		logInfo(@"Removing temporary clean XML files at '%@'...", cmd.outputCleanXMLPath);
-		NSError* error = nil;
-		if (![manager removeItemAtPath:cmd.outputCleanXMLPath error:&error])
-		{
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}
-	}
-	
-	[loopAutoreleasePool drain];
 	logInfo(@"Finished creating clean XHTML documentation.");
 }
 

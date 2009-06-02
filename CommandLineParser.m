@@ -574,7 +574,6 @@ instead.
 	// First make sure the given path exists. Then check for all the required templates.
 	if ([manager fileExistsAtPath:path] &&
 		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"object.xslt"]] &&
-		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"index2xhtml.xslt"]] &&
 		[manager fileExistsAtPath:[path stringByAppendingPathComponent:@"screen.css"]])
 	{
 		// If the path contains all required template files, check if it also contains

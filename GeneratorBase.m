@@ -10,6 +10,11 @@
 #import "GeneratorBase+GeneralParsingAPI.h"
 #import "GeneratorBase+ObjectParsingAPI.h"
 #import "GeneratorBase+ObjectSubclassAPI.h"
+#import "GeneratorBase+IndexParsingAPI.h"
+#import "GeneratorBase+IndexSubclassAPI.h"
+#import "DoxygenConverter.h"
+#import "LoggingProvider.h"
+#import "Systemator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +27,10 @@ object markup which is XML.
 */
 @interface GeneratorBase ()
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Object generation helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
 /** Generates the object info section if necessary.￼
  
 From here the following messages are sent to the subclass:
@@ -30,25 +39,25 @@ From here the following messages are sent to the subclass:
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateOutput
+@see generateOutputForObject
 @see generateOverviewSectionToData:
 @see generateTasksSectionToData:
 @see generateMembersSectionToData:
-@see generateInfoSectionToData:fromNodes:index:type:
+@see generateObjectInfoSectionToData:fromNodes:index:type:
 */
-- (void) generateInfoSectionToData:(NSMutableData*) data;
+- (void) generateObjectInfoSectionToData:(NSMutableData*) data;
 
 /** Generates the given object info section if necessary.￼
  
-This is sent from @c generateInfoSectionToData:() for each info section item. From here 
+This is sent from @c generateObjectInfoSectionToData:() for each info section item. From here 
 the following message is sent to the subclass.
 - @c appendObjectInfoItemToData:fromItems:index:type:()
  
 The message is only send if the given @c nodes array is not empty. The @c type parameter 
 can be one of the following:
-- @c kTKInfoItemInherits: The @c nodes contain inherit from information.
-- @c kTKInfoItemConforms: The @c nodes contain conforms to information.
-- @c kTKInfoItemDeclared: The @c nodex contain declared in information.
+- @c kTKObjectInfoItemInherits: The @c nodes contain inherit from information.
+- @c kTKObjectInfoItemConforms: The @c nodes contain conforms to information.
+- @c kTKObjectInfoItemDeclared: The @c nodex contain declared in information.
  
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances to append to.
@@ -56,12 +65,12 @@ can be one of the following:
 	if the given @c nodes is not empty.
 @param type ￼￼￼￼￼￼Type of the section item.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateInfoSectionToData:
+@see generateObjectInfoSectionToData:
 */
-- (void) generateInfoSectionToData:(NSMutableData*) data 
-						 fromNodes:(NSArray*) nodes 
-							 index:(int*) index
-							  type:(int) type;
+- (void) generateObjectInfoSectionToData:(NSMutableData*) data 
+							   fromNodes:(NSArray*) nodes 
+								   index:(int*) index
+									type:(int) type;
 
 /** Generates the object overview data if necessary.￼
 
@@ -70,12 +79,12 @@ This is where the following messages are sent to the subclass:
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateOutput
-@see generateInfoSectionToData:
+@see generateOutputForObject
+@see generateObjectInfoSectionToData:
 @see generateTasksSectionToData:
 @see generateMembersSectionToData:
 */
-- (void) generateOverviewSectionToData:(NSMutableData*) data;
+- (void) generateObjectOverviewSectionToData:(NSMutableData*) data;
 
 /** Generates the tasks section data if necessary.￼
 
@@ -88,12 +97,12 @@ This is where the following messages are sent to the subclass:
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateOutput
-@see generateInfoSectionToData:
+@see generateOutputForObject
+@see generateObjectInfoSectionToData:
 @see generateOverviewSectionToData:
 @see generateMembersSectionToData:
 */
-- (void) generateTasksSectionToData:(NSMutableData*) data;
+- (void) generateObjectTasksSectionToData:(NSMutableData*) data;
 
 /** Generates the main members documentation section if necessary.￼
 
@@ -103,27 +112,27 @@ This is where the following messages are sent to the subclass:
 
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
-@see generateOutput
-@see generateInfoSectionToData:
+@see generateOutputForObject
+@see generateObjectInfoSectionToData:
 @see generateOverviewSectionToData:
 @see generateTasksSectionToData:
 @see generateMemberSectionToData:fromItems:type:
 */
-- (void) generateMembersSectionToData:(NSMutableData*) data;
+- (void) generateObjectMembersSectionToData:(NSMutableData*) data;
 
 /** Generates the given main members documentation section.￼
 
 This is sent from @c generateMembersSectionToData:() for each group of members that
 has at least one documented entry. This is where the following messages are sent to the 
 subclass:
-- @c appendObjectMemberGroupHeaderToData:type:() **
-- @c appendObjectMemberToData:fromItem:index:() **
-- @c appendObjectMemberGroupFooterToData:() **
+- @c appendIndexGroupHeaderToData:type:()
+- @c appendIndexGroupItemToData:fromItem:index:type:()
+- @c appendIndexGroupFooterToData:type:()
 
 The @c type parameter can be one of the following:￼
-- @c kTKMemberTypeClass: The @c nodes describes class members.
-- @c kTKMemberTypeInstance: The @c nodes describes instance members.
-- @c kTKMemberTypeProperty: The @c nodes describes properties.
+- @c kTKIndexGroupClasses: This group will append all classes.
+- @c kTKIndexGroupProtocols: This group will append all protocols.
+- @c kTKIndexGroupCategories: This group will append all categories.
  
 @param data ￼￼￼￼￼￼The @c NSMutableData to append to.
 @param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances representing individual members.
@@ -131,9 +140,49 @@ The @c type parameter can be one of the following:￼
 @exception ￼￼￼￼￼NSException Thrown if generation fails.
 @see generateMembersSectionToData:
 */
-- (void) generateMemberSectionToData:(NSMutableData*) data 
-						   fromNodes:(NSArray*) nodes 
-								type:(int) type;
+- (void) generateObjectMemberSectionToData:(NSMutableData*) data 
+								 fromNodes:(NSArray*) nodes 
+									  type:(int) type;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Index generation helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Generates the index groups documentation sections.
+
+This is sent from @c generateIndexGroupSectionsToData:(). It collects the group data
+and then sends @c generateIndexGroupSectionToData:fromNodes:type:() for each detected
+group.
+ 
+@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
+@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@see generateOutputForIndex
+@see generateIndexGroupSectionToData:fromNodes:type:
+*/
+- (void) generateIndexGroupSectionsToData:(NSMutableData*) data;
+
+/** Generates the given main members documentation section.￼
+
+This is sent from @c generateIndexGroupSectionsToData:() for each group that has at
+least one member. This is where the following messages are sent to the subclass:
+- @c appendIndexHeaderToData:type:()
+- @c appendindexGroup()
+- @c appendIndexFooterToData:type:()
+
+The @c type parameter can be one of the following:￼
+- @c kTKObjectMemberTypeClass: The @c nodes describes class members.
+- @c kTKObjectMemberTypeInstance: The @c nodes describes instance members.
+- @c kTKObjectMemberTypeProperty: The @c nodes describes properties.
+ 
+@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
+@param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances representing individual members.
+@param type ￼￼￼￼￼￼The type of the instances.
+@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@see generateMembersSectionToData:
+*/
+- (void) generateIndexGroupSectionToData:(NSMutableData*) data 
+							   fromNodes:(NSArray*) nodes 
+									type:(int) type;
 
 @end
 
@@ -149,6 +198,7 @@ The @c type parameter can be one of the following:￼
 //----------------------------------------------------------------------------------------
 - (void) dealloc
 {
+	self.projectName = nil;
 	self.lastUpdated = nil;
 	[super dealloc];
 }
@@ -158,16 +208,57 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (NSData*) generateOutputForObject:(NSDictionary*) data
+- (void) generateOutputForObject:(NSDictionary*) data
+						  toFile:(NSString*) filename
 {
 	NSParameterAssert(data != nil);
+	NSParameterAssert(filename != nil);
+	NSParameterAssert([filename length] > 0);
 
-	// Setup the object data (only weak reference since this can't be changed in between
-	// the generation), then ask the subclass to generate the data, cleanup and return.
+	// Generate the data.
 	objectData = data;
+	logDebug(@"Generating output for object '%@'...", self.objectName);
 	NSData* result = [self outputDataForObject];
 	objectData = nil;
-	return ([result length] > 0) ? result : nil;
+	
+	// Save the data.
+	if (result && [result length] > 0)
+	{
+		logDebug(@"Saving object output to '%@'...", filename);
+		if (![result writeToFile:filename atomically:NO])
+		{
+			NSString* message = [NSString stringWithFormat:@"Failed saving object output to '%@'!", filename];
+			logError(message);
+			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generateOutputForIndex:(NSDictionary*) data
+							toFile:(NSString*) filename
+{
+	NSParameterAssert(data != nil);
+	NSParameterAssert(filename != nil);
+	NSParameterAssert([filename length] > 0);
+
+	// Generate the data.
+	indexData = data;
+	logDebug(@"Generating output for index...");
+	NSData* result = [self outputDataForIndex];
+	indexData = nil;
+	
+	// Save the data.
+	if (result && [result length] > 0)
+	{
+		logDebug(@"Saving index output to '%@'...", filename);
+		if (![result writeToFile:filename atomically:NO])
+		{
+			NSString* message = [NSString stringWithFormat:@"Failed saving index output to '%@'!", filename];
+			logError(message);
+			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -179,16 +270,16 @@ The @c type parameter can be one of the following:￼
 {
 	NSMutableData* result = [NSMutableData data];	
 	[self appendObjectHeaderToData:result];
-	[self generateInfoSectionToData:result];
-	[self generateOverviewSectionToData:result];
-	[self generateTasksSectionToData:result];
-	[self generateMembersSectionToData:result];
+	[self generateObjectInfoSectionToData:result];
+	[self generateObjectOverviewSectionToData:result];
+	[self generateObjectTasksSectionToData:result];
+	[self generateObjectMembersSectionToData:result];
 	[self appendObjectFooterToData:result];	
 	return result;
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateInfoSectionToData:(NSMutableData*) data
+- (void) generateObjectInfoSectionToData:(NSMutableData*) data
 {
 	// Get all nodes that describe the object information.
 	NSArray* baseNodes = [self.objectMarkup nodesForXPath:@"object/base" error:nil];
@@ -200,18 +291,18 @@ The @c type parameter can be one of the following:￼
 	{
 		int index = 0;
 		[self appendObjectInfoHeaderToData:data];
-		[self generateInfoSectionToData:data fromNodes:baseNodes index:&index type:kTKSectionItemInherits];
-		[self generateInfoSectionToData:data fromNodes:protocolNodes index:&index type:kTKSectionItemConforms];
-		[self generateInfoSectionToData:data fromNodes:fileNodes index:&index type:kTKSectionItemDeclared];
+		[self generateObjectInfoSectionToData:data fromNodes:baseNodes index:&index type:kTKObjectInfoItemInherits];
+		[self generateObjectInfoSectionToData:data fromNodes:protocolNodes index:&index type:kTKObjectInfoItemConforms];
+		[self generateObjectInfoSectionToData:data fromNodes:fileNodes index:&index type:kTKObjectInfoItemDeclared];
 		[self appendObjectInfoFooterToData:data];
 	}
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateInfoSectionToData:(NSMutableData*) data 
-					  fromNodes:(NSArray*) items 
-						  index:(int*) index
-						   type:(int) type;
+- (void) generateObjectInfoSectionToData:(NSMutableData*) data 
+							   fromNodes:(NSArray*) items 
+								   index:(int*) index
+									type:(int) type;
 {	
 	if ([items count] > 0)
 	{
@@ -221,7 +312,7 @@ The @c type parameter can be one of the following:￼
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateOverviewSectionToData:(NSMutableData*) data
+- (void) generateObjectOverviewSectionToData:(NSMutableData*) data
 {
 	// Append the object overview if the object is documented. Note that we only take
 	// the first description node if there are more (shouldn't happen, but just in case).
@@ -234,7 +325,7 @@ The @c type parameter can be one of the following:￼
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateTasksSectionToData:(NSMutableData*) data
+- (void) generateObjectTasksSectionToData:(NSMutableData*) data
 {
 	// Appends the tasks with short method descriptions if at least one section is
 	// found with at least one member. Note that the sections are only handled if there's
@@ -278,7 +369,7 @@ The @c type parameter can be one of the following:￼
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateMembersSectionToData:(NSMutableData*) data
+- (void) generateObjectMembersSectionToData:(NSMutableData*) data
 {
 	// Get the lists of all member nodes for each member type.
 	NSArray* classMethodNodes = [self.objectMarkup 
@@ -301,9 +392,9 @@ The @c type parameter can be one of the following:￼
 		[self appendObjectMembersHeaderToData:data];
 		
 		// Process all lists.
-		[self generateMemberSectionToData:data fromNodes:classMethodNodes type:kTKMemberTypeClass];
-		[self generateMemberSectionToData:data fromNodes:instanceMethodNodes type:kTKMemberTypeInstance];
-		[self generateMemberSectionToData:data fromNodes:propertyNodes type:kTKMemberTypeProperty];
+		[self generateObjectMemberSectionToData:data fromNodes:classMethodNodes type:kTKObjectMemberTypeClass];
+		[self generateObjectMemberSectionToData:data fromNodes:instanceMethodNodes type:kTKObjectMemberTypeInstance];
+		[self generateObjectMemberSectionToData:data fromNodes:propertyNodes type:kTKObjectMemberTypeProperty];
 		
 		// Ask the subclass to append members documentation footer.
 		[self appendObjectMembersFooterToData:data];
@@ -311,9 +402,9 @@ The @c type parameter can be one of the following:￼
 }
 
 //----------------------------------------------------------------------------------------
-- (void) generateMemberSectionToData:(NSMutableData*) data 
-						   fromNodes:(NSArray*) nodes 
-								type:(int) type
+- (void) generateObjectMemberSectionToData:(NSMutableData*) data 
+								 fromNodes:(NSArray*) nodes 
+									  type:(int) type
 {
 	if ([nodes count] > 0)
 	{
@@ -333,9 +424,62 @@ The @c type parameter can be one of the following:￼
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Index output generation handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSData*) outputDataForIndex
+{
+	NSMutableData* result = [NSMutableData data];	
+	[self appendIndexHeaderToData:result];
+	[self generateIndexGroupSectionsToData:result];
+	[self appendIndexFooterToData:result];	
+	return result;
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generateIndexGroupSectionsToData:(NSMutableData*) data
+{
+	NSArray* classNodes = [self.indexMarkup nodesForXPath:@"project/object[@kind='class']" error:nil];
+	NSArray* categoryNodes = [self.indexMarkup nodesForXPath:@"project/object[@kind='category']" error:nil];
+	NSArray* protocolNodes = [self.indexMarkup nodesForXPath:@"project/object[@kind='protocol']" error:nil];
+	
+	[self generateIndexGroupSectionToData:data 
+								fromNodes:classNodes
+									 type:kTKIndexGroupClasses];
+	[self generateIndexGroupSectionToData:data 
+								fromNodes:protocolNodes
+									 type:kTKIndexGroupProtocols];
+	[self generateIndexGroupSectionToData:data 
+								fromNodes:categoryNodes
+									 type:kTKIndexGroupCategories];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generateIndexGroupSectionToData:(NSMutableData*) data 
+							   fromNodes:(NSArray*) nodes 
+									type:(int) type
+{
+	if ([nodes count] > 0)
+	{
+		[self appendIndexGroupHeaderToData:data type:type];
+		for (int i = 0; i < [nodes count]; i++)
+		{
+			NSXMLElement* node = [nodes objectAtIndex:i];
+			[self appendIndexGroupItemToData:data
+									fromItem:node
+									   index:i
+										type:type];
+		}
+		[self appendIndexGroupFooterToData:data type:type];
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Properties
 //////////////////////////////////////////////////////////////////////////////////////////
 
+@synthesize projectName;
 @synthesize lastUpdated;
 
 @end

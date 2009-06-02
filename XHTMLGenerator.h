@@ -13,9 +13,13 @@
 /** Defines a concrete @c GeneratorBase that generates XHTML output.
 */
 @interface XHTMLGenerator : GeneratorBase
+{
+	BOOL indexProtocolsGroupAppended;
+	BOOL indexCategoriesGroupAppended;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Member helpers
+/// @name Object member helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** Appends the given member title.￼
@@ -48,8 +52,8 @@
 /** Appends the given member section type description.￼
 
 The type should be one of the following:
-- @c kTKMemberSectionParameters: The array of all parameters will be returned.
-- @c kTKMemberSectionExceptions: The array of all exceptions will be returned.
+- @c kTKObjectMemberSectionParameters: The array of all parameters will be returned.
+- @c kTKObjectMemberSectionExceptions: The array of all exceptions will be returned.
  
 @param data ￼￼￼￼￼￼The data to append to.
 @param item ￼￼￼￼￼￼The member item to get information from.
@@ -161,5 +165,38 @@ data XML structure is exposed to the class.
 */
 - (void) appendDescriptionToData:(NSMutableData*) data 
 				   fromParagraph:(id) item;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Appends HTML file header to the given data.￼
+
+The senders should provide the desired title and path and name of the linked stylesheet
+file.
+
+@param data ￼￼￼￼￼￼The data to append to.
+@param title ￼￼￼￼￼￼The title to use for the header.
+@param stylesheet ￼￼￼￼￼￼The path and name of the linked stylesheet file.
+@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@see appendFileFooterToData:withLastUpdated:andIndexLink:
+*/
+- (void) appendFileHeaderToData:(NSMutableData*) data
+					  withTitle:(NSString*) title
+				  andStylesheet:(NSString*) stylesheet;
+
+/** Appends￼ HTML file footer to the given data.
+
+The senders can optionally include last update time and back to index link.
+
+@param data ￼￼￼￼￼￼The data to append to.
+@param showLastUpdate ￼￼￼￼￼￼If @c YES, last updated time should be inserted.
+@param showBackToIndex ￼￼￼￼￼￼If @c YES, the link back to index should be inserted.
+@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@see appendFileHeaderToData:withTitle:andStylesheet:
+*/
+- (void) appendFileFooterToData:(NSMutableData*) data
+				withLastUpdated:(BOOL) showLastUpdate
+				   andIndexLink:(BOOL) showBackToIndex;
 
 @end

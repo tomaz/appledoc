@@ -56,7 +56,7 @@ generated. This is ussually the place to "close" open tags or similar.
 The message is sent from the @c outputDataForObject() just before object info 
 items are generated. It gives subclasses a chance to append data to the output before the 
 generation for secion items starts. After this message is sent, at least one 
-@c appendObjectInfoItemToData:fromItem:index:() messages is sent and then 
+@c appendObjectInfoItemToData:fromItem:index:() message is sent and then 
 @c appendObjectInfoHeaderToData:() is sent at the end.
 
 @param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
@@ -69,10 +69,9 @@ generation for secion items starts. After this message is sent, at least one
 
 /** Appends any object info footer text after the object info items generation ends.￼
 
-The message is sent from the @c outputDataForObject() as the first message. It 
-gives subclasses a chance to append data to the output before the generation for secion 
-items starts. After this message is sent, at least one @c appendObjectInfoItemToData:fromItem:index:() 
-messages is sent and then @c appendObjectInfoHeaderToData:() is sent at the end.
+The message is sent from the @c outputDataForObject() as the last info generation message.
+It gives subclasses a chance to append data to the output after the info items generation
+is finished. This is ussually the place to "close" open tags or similar.
 
 @param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
 @exception ￼￼￼￼￼NSException Thrown if appending fails.
