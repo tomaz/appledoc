@@ -242,7 +242,7 @@
 			// sections. Otherwise we should create one section for each category which
 			// includes members from all sections.
 			NSXMLDocument* categoryDocument = [categoryData objectForKey:kTKDataObjectMarkupKey];
-			if (cmd.keepCategorySections)
+			if (cmd.keepMergedCategorySections)
 			{
 				// Get the array of all category sections and append them in the same
 				// order to the main class. The new section name should have the category
@@ -676,7 +676,7 @@
 			NSString* linkReference = nil;
 			if (refObject && refMember)
 			{
-				linkDescription = cmd.objectReferenceStyle;
+				linkDescription = cmd.objectReferenceTemplate;
 				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$OBJECT" withString:refObject];
 				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$MEMBER" withString:refMember];
 				linkReference = [NSString stringWithFormat:@"#%@", refMember];

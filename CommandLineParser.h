@@ -116,12 +116,12 @@ class documentation. */
  
 @warning This option can create cluttered class documentation, so experiment to see if
 	if works for you or not. */
-@property(readonly) BOOL keepCategorySections;
+@property(readonly) BOOL keepMergedCategorySections;
 
 /** The template for creating references to members of another objects.
  
 This is used to generate the actual reference name and is visible on the final output. */
-@property(readonly) NSString* objectReferenceStyle;
+@property(readonly) NSString* objectReferenceTemplate;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - clean output creation
@@ -130,14 +130,14 @@ This is used to generate the actual reference name and is visible on the final o
 /** If @c YES, clean XHTML documentation is created. */
 @property(readonly) BOOL createCleanXHTML;
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties - documentation set creation
-//////////////////////////////////////////////////////////////////////////////////////////
-
 /** If @c YES, documentation set is created.
  
 Note That @c createCleanXHTML() is a prerequisite for documentation set. */
 @property(readonly) BOOL createDocSet;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - documentation set creation
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /** The documentation set unique bundle ID. */
 @property(assign) NSString* docsetBundleID;

@@ -46,7 +46,7 @@
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
 #define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
-#define kTKCmdObjectRefStyle				@"ObjectReferenceStyle"			// NSString
+#define kTKCmdObjectRefTemplate				@"ObjectReferenceStyle"			// NSString
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -318,17 +318,17 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
 	
-	[self parseStringWithShortcut:nil andName:@"--objrefstyle" forKey:kTKCmdObjectRefStyle];
+	[self parseStringWithShortcut:nil andName:@"--objext-reference-template" forKey:kTKCmdObjectRefTemplate];
 
-	[self parseBooleanWithShortcut:nil andName:@"--fix-class-loc" withValue:YES forKey:kTKCmdFixClassLocationsKey];
-	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategoriesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
-	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
-	[self parseBooleanWithShortcut:nil andName:@"--cleantemp" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--cleanbuild" withValue:YES forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
+	[self parseBooleanWithShortcut:nil andName:@"--fix-class-locations" withValue:YES forKey:kTKCmdFixClassLocationsKey];
+	[self parseBooleanWithShortcut:nil andName:@"--merge-categories" withValue:YES forKey:kTKCmdMergeCategoriesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--keep-merged-sections" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
+	[self parseBooleanWithShortcut:nil andName:@"--remove-empty-paragraphs" withValue:YES forKey:kTKCmdRemoveEmptyParaKey];
+	[self parseBooleanWithShortcut:nil andName:@"--clean-temporary-files" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--clean-before-build" withValue:YES forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
 	
 	// Parse undocumented options. These are used to debug the script.
-	[self parseBooleanWithShortcut:nil andName:@"--no-util-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
+	[self parseBooleanWithShortcut:nil andName:@"--no-utility-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
 	
 	// Validate and post process the command line arguments.
 	[self validateCommandLineArguments];
@@ -426,11 +426,15 @@ instead.
 	printf("-d --doxygen <path>  Full path to doxgen command. Defaults to '/opt/local/bin/doxygen'.\n");
 	printf("\n");
 	printf("OPTIONS - clean XML creation\n");
-	printf("   --fix-class-loc   Fix class locations if they seem invalid. This fixes doxygen\n");
+	printf("   --fix-class-locations\n");
+	printf("                     Fix class locations if they seem invalid. This fixes doxygen\n");
 	printf("                     paths for cases where categories are defined in different files.\n");
-	printf("   --no-empty-para   Do not delete empty paragraphs.\n");
-	printf("   --no-cat-merge    Do not merge category documentation to their classes.\n");
-	printf("   --keep-cat-sec    When merging category documentation preserve all category sections.\n");
+	printf("   --remove-empty-paragraphs\n");
+	printf("                     Delete empty paragraphs.\n");
+	printf("   --merge-categories\n");
+	printf("                     Merge category documentation to their classes.\n");
+	printf("   --keep-merged-sections\n");
+	printf("                     When merging category documentation preserve all category sections.\n");
 	printf("                     By default each category is merged into a since section within the class.\n");
 	printf("\n");
 	printf("OPTIONS - clean output creation\n");
@@ -444,12 +448,15 @@ instead.
 	printf("   --docutil <path>  Full path to docsetutils. Defaults to '/Developer/usr/bin/docsetutils'.\n");
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
-	printf("   --objrefstyle     Object reference generation style. Defaults to '[$OBJECT $MEMBER]'.\n");
-	printf("   --cleantemp       Remove all temporary build files. Note that this is dynamic and will\n");
+	printf("   --object-reference-template\n");
+	printf("                     Object reference generation style. Defaults to '[$OBJECT $MEMBER]'.\n");
+	printf("   --clean-temporary-files\n");
+	printf("                     Remove all temporary build files. Note that this is dynamic and will\n");
 	printf("                     delete generated files based on what is build. If html is created, all\n");
 	printf("                     doxygen and clean xml is removed. If doc set is installed, the whole\n");
 	printf("                     output path is removed.\n");
-	printf("   --cleanbuild      Remove output files before build. This option should only be used if\n");
+	printf("   --clean-before-build\n");
+	printf("                     Remove output files before build. This option should only be used if\n");
 	printf("                     output is generated in a separate directory. It will remove the whole\n");
 	printf("                     directory structure starting with the <output> path! BE CAREFUL!!!\n");
 	printf("                     Note that this option is automatically disabled if <output> and\n");
@@ -467,16 +474,17 @@ instead.
 	printf("It will create a directory named 'Help' alongside 'Debug' and 'Release' in the\n");
 	printf("specified custom location. Inside it will create a sub directory named after the\n");
 	printf("project name in which all documentation files will be created:\n");
-	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$BUILD_DIR/Help/$PROJECT_NAME\" --cleanbuild\n");
+	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$BUILD_DIR/Help/$PROJECT_NAME\" --clean-before-build\n");
 	printf("\n");
 	printf("This command line is useful as the script within custom Xcode run script phase\n");
 	printf("in cases where the 'Place Build Products In' option is set to 'Project directory'.\n");
 	printf("It will create a directory named 'Help' inside the project source directory in\n");
 	printf("which all documentation files will be created:\n");
-	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$SRCROOT/Help\" --cleanbuild\n");
+	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$SRCROOT/Help\" --clean-before-build\n");
 	printf("\n");
-	printf("Note that in both examples --cleanoutput is used. It is safe to remove documentation.\n");
-	printf("files in these two cases since the --output path is different from source files.\n");
+	printf("Note that in both examples --clean-before-build is used. It is safe to remove\n");
+	printf("documentation files in these two cases since the --output path is used only\n");
+	printf("for creating files by the utility which can always be re-generated.\n");
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -519,16 +527,16 @@ instead.
 	// all are included.
 	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdFixClassLocationsKey];
-	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategoriesKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdMergeCategoriesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepMergedCategoriesSectionsKey];
-	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveEmptyParaKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
 	
 	// Setup other properties.
-	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefStyle];
+	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdEmitUtilityOutputKey];
 }
 
@@ -809,25 +817,31 @@ instead.
 }
 
 //----------------------------------------------------------------------------------------
-- (BOOL) keepCategorySections
+- (BOOL) keepMergedCategorySections
 {
 	return [[parameters objectForKey:kTKCmdKeepMergedCategoriesSectionsKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------
-- (NSString*) objectReferenceStyle
+- (NSString*) objectReferenceTemplate
 {
-	return [parameters objectForKey:kTKCmdObjectRefStyle];
+	return [parameters objectForKey:kTKCmdObjectRefTemplate];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Properties - clean HTML creation
+#pragma mark Properties - clean output creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (BOOL) createCleanXHTML
 {
 	return [[parameters objectForKey:kTKCmdCreateCleanXHTMLKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) createDocSet
+{
+	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -870,12 +884,6 @@ instead.
 - (NSString*) docsetInstallPath
 {
 	return [parameters objectForKey:kTKCmdDocSetInstallPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (BOOL) createDocSet
-{
-	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
