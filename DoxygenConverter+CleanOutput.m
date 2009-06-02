@@ -1,60 +1,39 @@
 //
-//  DoxygenConverter+CleanHTML.m
+//  DoxygenConverter+CleanOutput.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 17.4.09.
 //  Copyright 2009 Tomaz Kragelj. All rights reserved.
 //
 
-#import "DoxygenConverter+CleanHTML.h"
+#import "DoxygenConverter+CleanOutput.h"
 #import "DoxygenConverter+Helpers.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
 #import "XHTMLGenerator.h"
 
-@implementation DoxygenConverter (CleanHTML)
+@implementation DoxygenConverter (CleanOutput)
 
 //----------------------------------------------------------------------------------------
-- (void) createCleanXHTMLDocumentation
+- (void) createCleanOutputDocumentation
 {
 	logNormal(@"Creating clean XHTML documentation...");
 	NSAutoreleasePool* loopAutoreleasePool = nil;
-	NSError* error = nil;
-	
-	// Copy the css files from templates.
-	NSArray* templateFiles = [manager directoryContentsAtPath:cmd.templatesPath];
-	for (NSString* templateFile in templateFiles)
-	{
-		if ([[templateFile pathExtension] isEqualToString:@"css"])
-		{
-			logDebug(@"Copying '%@' css file...", templateFile);
-			NSString* source = [cmd.templatesPath stringByAppendingPathComponent:templateFile];
-			NSString* dest = [[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS] 
-							  stringByAppendingPathComponent:templateFile];
-			if (![manager copyItemAtPath:source
-								  toPath:dest
-								   error:&error])
-			{
-				logError(@"Copying '%@' failed with error %@!", 
-						 templateFile, 
-						 [error localizedDescription]);
-				continue;
-			}
-		}
-	}
 	
 	// Prepare the argument values.
 	NSCalendarDate* now = [NSCalendarDate date];
 	NSString* lastUpdatedString = [now descriptionWithCalendarFormat:@"%Y-%B-%d"];
 	
-	// Prepare the output generators.
+	// Prepare the output generators, send them default data and notify them generation 
+	// is about to begin.
 	XHTMLGenerator* generator = [[XHTMLGenerator alloc] init];
+	generator.lastUpdated = lastUpdatedString;
+	generator.projectName = cmd.projectName;
+	[generator generationStarting];
+	
 	@try
 	{
-		generator.lastUpdated = lastUpdatedString;
-		generator.projectName = cmd.projectName;
-
 		// Convert the index file.
 		NSString* indexFilename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index.html"];
 		[generator generateOutputForIndex:database toFile:indexFilename];
@@ -89,6 +68,7 @@
 	}
 	@finally
 	{
+		[generator generationFinished];
 		[generator release];
 		[loopAutoreleasePool drain];
 	}

@@ -1,5 +1,5 @@
 //
-//  DoxygenConverter+CleanHTML.h
+//  DoxygenConverter+CleanOutput.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 17.4.09.
@@ -18,7 +18,7 @@ class.
 create clean HTML object and index files, and saves them in the proper directory 
 structure.
 */
-@interface DoxygenConverter (CleanHTML)
+@interface DoxygenConverter (CleanOutput)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Clean HTML handling
@@ -33,6 +33,6 @@ This message is automatically sent from @c DoxygenConverter::convert() in the pr
 
 @exception ￼￼￼￼￼NSException Thrown if creation fails.
 */
-- (void) createCleanXHTMLDocumentation;
+- (void) createCleanOutputDocumentation;
 
 @end

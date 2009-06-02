@@ -20,7 +20,7 @@
 #define kTKCmdInputPathKey					@"InputPath"					// NSString
 #define kTKCmdOutputPathKey					@"OutputPath"					// NSString
 #define kTKCmdOutputCleanXMLPathKey			@"OutputCleanXMLPath"			// NSString
-#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanXHTMLPath"			// NSString
+#define kTKCmdOutputCleanXHTMLPathKey		@"OutputCleanOutputPath"			// NSString
 #define kTKCmdOutputDocSetPathKey			@"OutputDocSetPath"				// NSString
 #define kTKCmdOutputDocSetContentsPathKey	@"OutputDocSetContentsPath"		// NSString
 #define kTKCmdOutputDocSetResourcesPathKey	@"OutputDocSetResourcesPath"	// NSString
@@ -37,11 +37,11 @@
 
 #define kTKCmdVerboseLevelKey				@"VerboseLevel"					// NSNumber / int
 #define kTKCmdRemoveTempFilesKey			@"RemoveTempFiles"				// NSNumber / BOOL
-#define kTKCmdRemoveOutputFilesKey			@"RemoveOutputFiles"			// NSNumber / BOOL
+#define kTKCmdRemoveOutputFilesBeforeStartingKey			@"RemoveOutputFiles"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey			@"RemoveEmptyPara"				// NSNumber / BOOL
 #define kTKCmdMergeCategoriesKey			@"MergeCategories"				// NSNumber / BOOL
-#define kTKCmdKeepCatSectionsKey			@"KeepCatSections"				// NSNumber / BOOL
-#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanXHTML"				// NSNumber / BOOL
+#define kTKCmdKeepMergedCategoriesSectionsKey			@"KeepCatSections"				// NSNumber / BOOL
+#define kTKCmdCreateCleanXHTMLKey			@"CreateCleanOutput"				// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey				@"CreateDocSet"					// NSNumber / BOOL
 
 #define kTKCmdEmitUtilityOutputKey			@"EmitUtilityOutput"			// NSNumber / BOOL
@@ -309,6 +309,9 @@ instead.
 	[self parseStringWithShortcut:@"-d" andName:@"--doxygen" forKey:kTKCmdDoxygenCommandLineKey];
 	[self parseStringWithShortcut:@"-c" andName:@"--doxyfile" forKey:kTKCmdDoxygenConfigFileKey];	
 
+	[self parseBooleanWithShortcut:nil andName:@"--xhtml" withValue:YES forKey:kTKCmdCreateCleanXHTMLKey];
+	[self parseBooleanWithShortcut:nil andName:@"--docset" withValue:YES forKey:kTKCmdCreateDocSetKey];
+
 	[self parseStringWithShortcut:nil andName:@"--docid" forKey:kTKCmdDocSetBundleIDKey];
 	[self parseStringWithShortcut:nil andName:@"--docfeed" forKey:kTKCmdDocSetBundleFeedKey];
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
@@ -317,12 +320,10 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--objrefstyle" forKey:kTKCmdObjectRefStyle];
 
 	[self parseBooleanWithShortcut:nil andName:@"--no-cat-merge" withValue:NO forKey:kTKCmdMergeCategoriesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepCatSectionsKey];
-	[self parseBooleanWithShortcut:nil andName:@"--no-xhtml" withValue:NO forKey:kTKCmdCreateCleanXHTMLKey];
-	[self parseBooleanWithShortcut:nil andName:@"--no-docset" withValue:NO forKey:kTKCmdCreateDocSetKey];
+	[self parseBooleanWithShortcut:nil andName:@"--keep-cat-sec" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--no-empty-para" withValue:NO forKey:kTKCmdRemoveEmptyParaKey];
 	[self parseBooleanWithShortcut:nil andName:@"--cleantemp" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--cleanbuild" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--cleanbuild" withValue:YES forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
 	
 	// Parse undocumented options. These are used to debug the script.
 	[self parseBooleanWithShortcut:nil andName:@"--no-util-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
@@ -378,18 +379,18 @@ instead.
 		[parameters setObject:docsetBundleID forKey:kTKCmdDocSetBundleIDKey];
 	}
 		
-	// If html output is disabled, disable also documentation set generation.
+	// If documentation set output is enabled, enable also XHTML generation.
 	if (self.createDocSet && !self.createCleanXHTML)
 	{
-		logNormal(@"Disabling DocSet creation because --no-xhtml is used!");
-		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
+		logNormal(@"Enablind XHTML creation because --docset is used!");
+		[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
 	}
 	
 	// Make sure remove output files is reset if output path is the same as input.
-	if (self.removeOutputFiles && [self.outputPath isEqualToString:self.inputPath])
+	if (self.removeOutputFilesBeforeStarting && [self.outputPath isEqualToString:self.inputPath])
 	{
-		logNormal(@"Disabling --cleanoutput because output path is equal to input path!");
-		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+		logNormal(@"Disabling --cleanbuild because output path is equal to input path!");
+		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
 	}
 }
 
@@ -428,15 +429,15 @@ instead.
 	printf("   --keep-cat-sec    When merging category documentation preserve all category sections.\n");
 	printf("                     By default each category is merged into a since section within the class.\n");
 	printf("\n");
-	printf("OPTIONS - clean HTML creation\n");
-	printf("   --no-xhtml        Don't create clean XHTML files (this will also disable DocSet!).\n");
+	printf("OPTIONS - clean output creation\n");
+	printf("   --xhtml           Create clean XHTML files.\n");
+	printf("   --docset          Create documentation set (this will automatically enable xhtml creation).\n");
 	printf("\n");
 	printf("OPTIONS - documentation set\n");
 	printf("   --docid <id>      DocSet bundle id. Defaults to 'com.custom.<project>.docset'.\n");
 	printf("   --docfeed <name>  DocSet feed name. Defaults to 'Custom documentation'.\n");
 	printf("   --docplist <path> Full path to DocSet plist file. Defaults to '<input>/DocSet-Info.plist'.\n");
 	printf("   --docutil <path>  Full path to docsetutils. Defaults to '/Developer/usr/bin/docsetutils'.\n");
-	printf("   --no-docset       Don't create DocSet.\n");
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
 	printf("   --objrefstyle     Object reference generation style. Defaults to '[$OBJECT $MEMBER]'.\n");
@@ -457,30 +458,18 @@ instead.
 	printf("-v --verbose <level> The verbose level (1-4). Defaults to 0 (only errors).\n");
 	printf("\n");
 	printf("EXAMPLES:\n");
-	printf("Note that the examples below show each option in it's own line to make the\n");
-	printf("output more readable. In real usage, the options should only be separated by\n");
-	printf("a space!\n");
-	printf("\n");
 	printf("This command line is useful as the script within custom Xcode run script phase\n");
 	printf("in cases where the 'Place Build Products In' option is set to 'Customized location'.\n");
 	printf("It will create a directory named 'Help' alongside 'Debug' and 'Release' in the\n");
 	printf("specified custom location. Inside it will create a sub directory named after the\n");
 	printf("project name in which all documentation files will be created:\n");
-	printf("appledoc\n");
-	printf("--project \"$PROJECT_NAME\"\n");
-	printf("--input \"$SRCROOT\"\n");
-	printf("--output \"$BUILD_DIR/Help/$PROJECT_NAME\"\n");
-	printf("--cleanoutput\n");
+	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$BUILD_DIR/Help/$PROJECT_NAME\" --cleanbuild\n");
 	printf("\n");
 	printf("This command line is useful as the script within custom Xcode run script phase\n");
 	printf("in cases where the 'Place Build Products In' option is set to 'Project directory'.\n");
 	printf("It will create a directory named 'Help' inside the project source directory in\n");
 	printf("which all documentation files will be created:\n");
-	printf("appledoc\n");
-	printf("--project \"$PROJECT_NAME\"\n");
-	printf("--input \"$SRCROOT\"\n");
-	printf("--output \"$SRCROOT/Help\"\n");
-	printf("--cleanoutput\n");
+	printf("appledoc --project \"$PROJECT_NAME\" --input \"$SRCROOT\" --output \"$SRCROOT/Help\" --cleanbuild\n");
 	printf("\n");
 	printf("Note that in both examples --cleanoutput is used. It is safe to remove documentation.\n");
 	printf("files in these two cases since the --output path is different from source files.\n");
@@ -526,11 +515,12 @@ instead.
 	// all are included.
 	[parameters setObject:[NSNumber numberWithInt:kTKVerboseLevelError] forKey:kTKCmdVerboseLevelKey];	
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdMergeCategoriesKey];
-	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepCatSectionsKey];
-	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateCleanXHTMLKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdRemoveEmptyParaKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateCleanXHTMLKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
-	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
 	
 	// Setup other properties.
 	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefStyle];
@@ -810,7 +800,7 @@ instead.
 //----------------------------------------------------------------------------------------
 - (BOOL) keepCategorySections
 {
-	return [[parameters objectForKey:kTKCmdKeepCatSectionsKey] boolValue];
+	return [[parameters objectForKey:kTKCmdKeepMergedCategoriesSectionsKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------
@@ -894,9 +884,9 @@ instead.
 }
 
 //----------------------------------------------------------------------------------------
-- (BOOL) removeOutputFiles
+- (BOOL) removeOutputFilesBeforeStarting
 {
-	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
+	return [[parameters objectForKey:kTKCmdRemoveOutputFilesBeforeStartingKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------

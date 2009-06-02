@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CommandLineParser;
+
 /** Defines different object info item types. */
 enum TKGeneratorObjectInfoItemTypes
 {
@@ -87,10 +89,12 @@ objects by simply sending the instance @c generateOutputForObject:toFile:() mess
 */
 @interface GeneratorBase : NSObject
 {
+	CommandLineParser* cmd;
 	NSDictionary* objectData;
 	NSDictionary* indexData;
 	NSString* projectName;
 	NSString* lastUpdated;
+	BOOL wasFileCreated;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +137,31 @@ finishes, the data is saved to the given file.
 */
 - (void) generateOutputForIndex:(NSDictionary*) data
 							toFile:(NSString*) filename;
+
+/** Indicates that the output generation is starting.￼
+
+This message is sent by the clients before any generation is started. It allows subclasses
+to performs any custom "global" prerequisites handling ￼such as copying templates to known
+locations or similar tasks.
+
+@see generationFinished
+@warning If the subclass overrides this method, it must call base implementation, or
+	manually reset @c wasFileCreated(), otherwise it will not show proper value.
+*/
+- (void) generationStarting;
+
+/** Indicates that the output generation has finished.￼
+
+This message is sent by the clients after generation of all files is finished. It allows
+the subclasses to perform any custom "global" handling such as copying stylesheets or
+other similar tasks.
+ 
+The subclass can use @c wasFileCreated() property value to determine if any file was
+indeed created.
+ 
+@see generationStarting
+*/
+- (void) generationFinished;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Subclass output generation
@@ -241,5 +270,12 @@ Clients should set this value prior to sending @c generateOutputForObject:toFile
 the value can be used by the concrete generators to indicate the time of the last update.
 */
 @property(copy) NSString* lastUpdated;
+
+/** Returns the status of output files generation.￼
+
+This returns @c YES if at least one output file was generated within the last generation
+run (i.e. between the @c generationStarting() and @c generationFinished() messages).
+*/
+@property(readonly) BOOL wasFileCreated;
 
 @end

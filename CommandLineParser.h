@@ -76,68 +76,146 @@ are reset and then the given command line parsed.
 /// @name Properties - required
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The command line path to the executable including full path. */
 @property(readonly) NSString* commandLine;
+
+/** Project name. */
 @property(readonly) NSString* projectName;
+
+/** The path to the source files. */
 @property(readonly) NSString* inputPath;
+
+/** The path to the output files (sub directories are created within this location). */
 @property(readonly) NSString* outputPath;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - doxygen
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The command line to the doxygen utility including full path. */
 @property(readonly) NSString* doxygenCommandLine;
+
+/** The path to the doxygen configuration file including full path. */
 @property(readonly) NSString* doxygenConfigFilename;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - clean XML creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** If @c YES, empty paragraphs should be removed from clean XML. */
 @property(readonly) BOOL removeEmptyParagraphs;
+
+/** If @c YES, documentation for categories to known classes should be merged to the 
+class documentation. */
 @property(readonly) BOOL mergeKnownCategoriesToClasses;
+
+/** If @c YES, merged categories method sections should be preserved in the class.
+ 
+@warning This option can create cluttered class documentation, so experiment to see if
+	if works for you or not. */
 @property(readonly) BOOL keepCategorySections;
+
+/** The template for creating references to members of another objects.
+ 
+This is used to generate the actual reference name and is visible on the final output. */
 @property(readonly) NSString* objectReferenceStyle;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties - clean HTML creation
+/// @name Properties - clean output creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** If @c YES, clean XHTML documentation is created. */
 @property(readonly) BOOL createCleanXHTML;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - documentation set creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
-@property(assign) NSString* docsetBundleID;
-@property(assign) NSString* docsetBundleFeed;
-@property(readonly) NSString* docsetSourcePlistPath;
-@property(readonly) NSString* docsetutilCommandLine;
-@property(readonly) NSString* docsetInstallPath;
+/** If @c YES, documentation set is created.
+ 
+Note That @c createCleanXHTML() is a prerequisite for documentation set. */
 @property(readonly) BOOL createDocSet;
+
+/** The documentation set unique bundle ID. */
+@property(assign) NSString* docsetBundleID;
+
+/** The documentation set bundle feed which is displayed in the Xcode documentation window. */
+@property(assign) NSString* docsetBundleFeed;
+
+/** The documentation set source plist which contains identification and description. */
+@property(readonly) NSString* docsetSourcePlistPath;
+
+/** The @c docsetutil command line including full path. */
+@property(readonly) NSString* docsetutilCommandLine;
+
+/** The documentation set installation path.
+ 
+This should be set to one of the known locations which Xcode searches. By default it is
+set to user's documentation set directory. */
+@property(readonly) NSString* docsetInstallPath;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - miscellaneous
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The path to the template files and global options.
+ 
+This is automatically determined by checking the known locations which are (in order of
+preference):
+- ~/.appledoc
+- ~/Application Support/appledoc */
 @property(readonly) NSString* templatesPath;
+
+/** If @c YES, temporary files are removed after generation.
+ 
+This will effectively remove all but the "last" generated files. Which files will be
+removed it depends on what is the desired output. If this is one of the clean outputs,
+all doxygen and clean XML files will be removed. If this is documentation set, the
+clean HTML files will be removed too (other final output files will remain if chosen). */
 @property(readonly) BOOL removeTemporaryFiles;
-@property(readonly) BOOL removeOutputFiles;
+
+/** If @c YES, the @c outputPath() is deleted before starting processing.
+ 
+This is important because otherwise deleted or renamed files will remain in the final
+documentation.
+@ warning Be careful when using this option - it will remove the @c outputPath() directory
+	too, so if you keep any files which are not automatically generated there (should not
+	really!), such as source files or plists etc., these will also be removed! */
+@property(readonly) BOOL removeOutputFilesBeforeStarting;
+
+/** The desired verbose level.
+ 
+This is used by the log macros, so in most cases, you'll not use it directly in code. */
 @property(readonly) int verboseLevel;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - undocumented
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** This is used to show or hide the output from the external utilities such as @c doxygen
+and @c docsetutil. */
 @property(readonly) BOOL emitUtilityOutput;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - internal
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The full path to the output clean XML files. */
 @property(readonly) NSString* outputCleanXMLPath;
+
+/** The full path to the output clean XHTML files. */
 @property(readonly) NSString* outputCleanXHTMLPath;
+
+/** The full path to the temporary output documentation set files. */
 @property(readonly) NSString* outputDocSetPath;
+
+/** The full path to the temporary output documentation set contents files. */
 @property(readonly) NSString* outputDocSetContentsPath;
+
+/** The full path to the temporary output documentation set resources files. */
 @property(readonly) NSString* outputDocSetResourcesPath;
+
+/** The full path to the temporary output documentation set documents files. */
 @property(readonly) NSString* outputDocSetDocumentsPath;
 
 @end

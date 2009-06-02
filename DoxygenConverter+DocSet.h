@@ -70,7 +70,7 @@ This message is automatically sent from @c DoxygenConverter::convert() in the pr
 /** Creates DocSet bundle.￼
 
 This message should be sent after all source files required for documentation set creation
-have been created. It will copy all html files created in @c createCleanXHTMLDocumentation()
+have been created. It will copy all html files created in @c createCleanOutputDocumentation()
 to the DocSet output directory and will invoke the indexing of the files with the help of
 nodes and tokes files.
  

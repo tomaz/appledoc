@@ -99,7 +99,7 @@ helper methods are called from the main convert() method in the proper order. Th
 helper categories are:
 - @c DoxygenConverter(Doxygen)
 - @c DoxygenConverter(CleanXML)
-- @c DoxygenConverter(CleanHTML)
+- @c DoxygenConverter(CleanOutput)
 - @c DoxygenConverter(DocSet)
 - @c DoxygenConverter(Helpers).
 */

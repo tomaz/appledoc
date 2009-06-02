@@ -12,6 +12,7 @@
 #import "GeneratorBase+ObjectSubclassAPI.h"
 #import "GeneratorBase+IndexParsingAPI.h"
 #import "GeneratorBase+IndexSubclassAPI.h"
+#import "CommandLineParser.h"
 #import "DoxygenConverter.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
@@ -196,10 +197,22 @@ The @c type parameter can be one of the following:￼
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
+- (id) init
+{
+	self = [super init];
+	if (self != nil)
+	{
+		cmd = [CommandLineParser sharedInstance];
+	}
+	return self;
+}
+
+//----------------------------------------------------------------------------------------
 - (void) dealloc
 {
 	self.projectName = nil;
 	self.lastUpdated = nil;
+	cmd = nil;
 	[super dealloc];
 }
 
@@ -231,6 +244,7 @@ The @c type parameter can be one of the following:￼
 			logError(message);
 			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 		}
+		wasFileCreated = YES;
 	}
 }
 
@@ -258,7 +272,19 @@ The @c type parameter can be one of the following:￼
 			logError(message);
 			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 		}
+		wasFileCreated = YES;
 	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generationStarting
+{
+	wasFileCreated = NO;
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generationFinished
+{
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -481,5 +507,6 @@ The @c type parameter can be one of the following:￼
 
 @synthesize projectName;
 @synthesize lastUpdated;
+@synthesize wasFileCreated;
 
 @end

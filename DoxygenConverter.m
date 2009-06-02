@@ -13,7 +13,7 @@
 
 #import "DoxygenConverter+Doxygen.h"
 #import "DoxygenConverter+CleanXML.h"
-#import "DoxygenConverter+CleanHTML.h"
+#import "DoxygenConverter+CleanOutput.h"
 #import "DoxygenConverter+DocSet.h"
 #import "DoxygenConverter+Helpers.h"
 
@@ -101,16 +101,13 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	[self fixCleanObjectDocumentation];
 	[self saveCleanObjectDocumentationFiles];
 	
-	if (cmd.createCleanXHTML)
+	[self createCleanOutputDocumentation];
+	if (cmd.createDocSet)
 	{
-		[self createCleanXHTMLDocumentation];
-		if (cmd.createDocSet)
-		{
-			[self createDocSetSourcePlistFile];
-			[self createDocSetNodesFile];
-			[self createDocSetTokesFile];
-			[self createDocSetBundle];
-		}
+		[self createDocSetSourcePlistFile];
+		[self createDocSetNodesFile];
+		[self createDocSetTokesFile];
+		[self createDocSetBundle];
 	}
 
 	logNormal(@"Succesfully finished documentation creation.");
@@ -126,7 +123,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	NSError* error = nil;
 	
 	// If required, remove current directory to get a fresh start.
-	if (cmd.removeOutputFiles && [manager fileExistsAtPath:cmd.outputPath])
+	if (cmd.removeOutputFilesBeforeStarting && [manager fileExistsAtPath:cmd.outputPath])
 	{
 		logNormal(@"Removing previous output files at '%@'...", cmd.outputPath);		
 		

@@ -37,7 +37,7 @@
 		738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8060FA1965F00711038 /* DoxygenConverter.m */; };
 		738FE8130FA1965F00711038 /* DoxygenConverter+Doxygen.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */; };
 		738FE8140FA1965F00711038 /* DoxygenConverter+CleanXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */; };
-		738FE8150FA1965F00711038 /* DoxygenConverter+CleanHTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80C0FA1965F00711038 /* DoxygenConverter+CleanHTML.m */; };
+		738FE8150FA1965F00711038 /* DoxygenConverter+CleanOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */; };
 		738FE8160FA1965F00711038 /* DoxygenConverter+DocSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */; };
 		738FE8170FA1965F00711038 /* DoxygenConverter+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */; };
 		8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* appledoc.m */; settings = {ATTRIBUTES = (); }; };
@@ -92,8 +92,8 @@
 		738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+Doxygen.m"; sourceTree = "<group>"; };
 		738FE8090FA1965F00711038 /* DoxygenConverter+CleanXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+CleanXML.h"; sourceTree = "<group>"; };
 		738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+CleanXML.m"; sourceTree = "<group>"; };
-		738FE80B0FA1965F00711038 /* DoxygenConverter+CleanHTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+CleanHTML.h"; sourceTree = "<group>"; };
-		738FE80C0FA1965F00711038 /* DoxygenConverter+CleanHTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+CleanHTML.m"; sourceTree = "<group>"; };
+		738FE80B0FA1965F00711038 /* DoxygenConverter+CleanOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+CleanOutput.h"; sourceTree = "<group>"; };
+		738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+CleanOutput.m"; sourceTree = "<group>"; };
 		738FE80D0FA1965F00711038 /* DoxygenConverter+DocSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+DocSet.h"; sourceTree = "<group>"; };
 		738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+DocSet.m"; sourceTree = "<group>"; };
 		738FE80F0FA1965F00711038 /* DoxygenConverter+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+Helpers.h"; sourceTree = "<group>"; };
@@ -205,8 +205,8 @@
 				738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */,
 				738FE8090FA1965F00711038 /* DoxygenConverter+CleanXML.h */,
 				738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */,
-				738FE80B0FA1965F00711038 /* DoxygenConverter+CleanHTML.h */,
-				738FE80C0FA1965F00711038 /* DoxygenConverter+CleanHTML.m */,
+				738FE80B0FA1965F00711038 /* DoxygenConverter+CleanOutput.h */,
+				738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */,
 				738FE80D0FA1965F00711038 /* DoxygenConverter+DocSet.h */,
 				738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */,
 				738FE80F0FA1965F00711038 /* DoxygenConverter+Helpers.h */,
@@ -289,7 +289,7 @@
 				738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */,
 				738FE8130FA1965F00711038 /* DoxygenConverter+Doxygen.m in Sources */,
 				738FE8140FA1965F00711038 /* DoxygenConverter+CleanXML.m in Sources */,
-				738FE8150FA1965F00711038 /* DoxygenConverter+CleanHTML.m in Sources */,
+				738FE8150FA1965F00711038 /* DoxygenConverter+CleanOutput.m in Sources */,
 				738FE8160FA1965F00711038 /* DoxygenConverter+DocSet.m in Sources */,
 				738FE8170FA1965F00711038 /* DoxygenConverter+Helpers.m in Sources */,
 				73446FD50FCF04E600D8FDCE /* GeneratorBase.m in Sources */,
