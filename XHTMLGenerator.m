@@ -522,6 +522,7 @@
 	{
 		[self appendString:@"          <a href=\"" toData:data];
 		[self appendString:reference toData:data];
+		[self appendString:@"\">" toData:data];
 	}
 	
 	[self appendString:name toData:data];

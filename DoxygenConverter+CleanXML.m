@@ -341,11 +341,14 @@
 	{
 		NSDictionary* objectData = [objects valueForKey:objectName];
 		NSString* objectKind = [objectData valueForKey:kTKDataObjectKindKey];
+		NSString* objectRef = [objectData valueForKey:kTKDataObjectRelPathKey];
 		
-		// Create the object element and the kind attribute.
+		// Create the object element and the kind and id attributes.
 		NSXMLElement* objectElement = [NSXMLElement elementWithName:@"object"];
 		NSXMLNode* kindAttribute = [NSXMLNode attributeWithName:@"kind" stringValue:objectKind];
+		NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:objectRef];
 		[objectElement addAttribute:kindAttribute];
+		[objectElement addAttribute:idAttribute];
 		[projectElement addChild:objectElement];
 		
 		// Create the name element.
