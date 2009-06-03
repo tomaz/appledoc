@@ -100,7 +100,7 @@
 		738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+Helpers.m"; sourceTree = "<group>"; };
 		73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DocSet-Info.plist"; sourceTree = "<group>"; };
 		73AB8B120FA1CDB300B96D8A /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
-		73EDC6D60FA555680020B94A /* Readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.txt; sourceTree = "<group>"; };
+		73EDC6D60FA555680020B94A /* Readme.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.markdown; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -233,7 +233,7 @@
 			children = (
 				73AB8B120FA1CDB300B96D8A /* Doxyfile */,
 				73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */,
-				73EDC6D60FA555680020B94A /* Readme.txt */,
+				73EDC6D60FA555680020B94A /* Readme.markdown */,
 			);
 			name = Documentation;
 			sourceTree = "<group>";
