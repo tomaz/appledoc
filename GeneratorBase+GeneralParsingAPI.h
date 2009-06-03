@@ -42,6 +42,7 @@ text of individual paragraphs.
 @return Returns the brief item paragraphs or @c nil if brief is empty.
 @see extractBriefDescriptionFromItem:
 @see extractDetailParagraphsFromItem:
+@see extractParagraphsFromItem:
 @see extractParagraphText:
 @see isDescriptionUsed:
 */
@@ -57,10 +58,27 @@ text of individual paragraphs.
 @return Returns the detailed node paragraphs or @c nil if details are empty.
 @see extractBriefDescriptionFromItem:
 @see extractBriefParagraphsFromItem:
+@see extractParagraphsFromItem:
 @see extractParagraphText:
 @see isDescriptionUsed:
 */
 - (NSArray*) extractDetailParagraphsFromItem:(id) item;
+
+/** Extracts the paragraphs from the given item.￼
+
+This method can be used for any item which contains the list of paragraphs. Internally
+it is also used to extract the paragraphs in the @c extractBriefParagraphsFromItem:()
+and @c extractDetailParagraphsFromItem:().￼
+
+@param item The item which paragraphs contents to extract.
+@return Returns the array paragraphs or @c nil if no paragraph is found.
+@see extractBriefDescriptionFromItem:
+@see extractBriefParagraphsFromItem:
+@see extractDetailParagraphsFromItem:
+@see extractParagraphText:
+@see isDescriptionUsed:
+*/
+- (NSArray*) extractParagraphsFromItem:(id) item;
 
 /** Extracts the given paragraph item text.
 
@@ -69,6 +87,7 @@ text of individual paragraphs.
 @see extractBriefDescriptionFromItem:
 @see extractBriefParagraphsFromItem:
 @see extractDetailParagraphsFromItem:
+@see extractParagraphsFromItem:
 @see isDescriptionUsed:
 */
 - (NSString*) extractParagraphText:(id) item;
@@ -84,6 +103,7 @@ source in previous steps, but some may still be present...
 @see extractBriefDescriptionFromItem:
 @see extractBriefParagraphsFromItem:
 @see extractDetailParagraphsFromItem:
+@see extractParagraphsFromItem:
 */
 - (BOOL) isDescriptionUsed:(NSArray*) nodes;
 

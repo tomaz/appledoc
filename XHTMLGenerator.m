@@ -359,7 +359,9 @@
 			[self appendLine:@"</dt>" toData:data];
 			
 			[self appendString:@"        <dd>" toData:data];
-			[self appendDescriptionToData:data fromParagraph:[self extractObjectParameterDescriptionNode:parameterItem]];
+			id descriptionItem = [self extractObjectParameterDescriptionNode:parameterItem];
+			NSArray* paragraphs = [self extractParagraphsFromItem:descriptionItem];
+			[self appendDescriptionToData:data fromParagraphs:paragraphs];
 			[self appendLine:@"</dd>" toData:data];
 		}
 		[self appendLine:@"      </dl>" toData:data];
@@ -374,7 +376,8 @@
 	if (returnItem)
 	{
 		[self appendLine:@"      <h5>Return value</h5>" toData:data];
-		[self appendDescriptionToData:data fromParagraph:returnItem];
+		NSArray* paragraphs = [self extractParagraphsFromItem:returnItem];
+		[self appendDescriptionToData:data fromParagraphs:paragraphs];
 	}
 }
 
@@ -401,8 +404,19 @@
 	id warningItem = [self extractObjectMemberWarningItem:item];
 	if (warningItem)
 	{
-		[self appendLine:@"      <h5>Warning</h5>" toData:data];
-		[self appendDescriptionToData:data fromParagraph:warningItem];
+		// Append the header based on the XHTML options.
+		if (cmd.xhtmlUseBorderedWarnings)
+			[self appendLine:@"      <div class=\"warning\">" toData:data];
+		else
+			[self appendLine:@"      <h5>Warning</h5>" toData:data];
+		
+		// Append the actual text.
+		NSArray* paragraphs = [self extractParagraphsFromItem:warningItem];
+		[self appendDescriptionToData:data fromParagraphs:paragraphs];
+		
+		// Append footer if bordered appearance is desired.
+		if (cmd.xhtmlUseBorderedWarnings)
+			[self appendLine:@"      </div>" toData:data];
 	}
 }
 
@@ -413,8 +427,19 @@
 	id bugItem = [self extractObjectMemberBugItem:item];
 	if (bugItem)
 	{
-		[self appendLine:@"      <h5>Bug</h5>" toData:data];
-		[self appendDescriptionToData:data fromParagraph:bugItem];
+		// Append the header based on the XHTML options.
+		if (cmd.xhtmlUseBorderedBugs)
+			[self appendLine:@"      <div class=\"bug\">" toData:data];
+		else
+			[self appendLine:@"      <h5>Bug</h5>" toData:data];
+		
+		// Append the actual text.
+		NSArray* paragraphs = [self extractParagraphsFromItem:bugItem];
+		[self appendDescriptionToData:data fromParagraphs:paragraphs];
+		
+		// Append footer if bordered appearance is desired.
+		if (cmd.xhtmlUseBorderedWarnings)
+			[self appendLine:@"      </div>" toData:data];
 	}
 }
 
@@ -582,13 +607,7 @@
 							 fromItem:(id) item
 {
 	NSArray* paragraphs = [self extractBriefParagraphsFromItem:item];
-	if (paragraphs)
-	{
-		for (id paragraph in paragraphs)
-		{
-			[self appendDescriptionToData:data fromParagraph:paragraph];
-		}
-	}
+	[self appendDescriptionToData:data fromParagraphs:paragraphs];
 }
 
 //----------------------------------------------------------------------------------------
@@ -596,6 +615,13 @@
 								fromItem:(id) item
 {
 	NSArray* paragraphs = [self extractDetailParagraphsFromItem:item];
+	[self appendDescriptionToData:data fromParagraphs:paragraphs];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendDescriptionToData:(NSMutableData*) data
+				  fromParagraphs:(NSArray*) paragraphs
+{
 	if (paragraphs)
 	{
 		for (id paragraph in paragraphs)
@@ -605,20 +631,24 @@
 	}
 }
 
+
 //----------------------------------------------------------------------------------------
 - (void) appendDescriptionToData:(NSMutableData*) data 
 				   fromParagraph:(id) item
 {
-	NSString* result = [self extractParagraphText:item];
-	result = [result stringByReplacingOccurrencesOfString:@"<para>" withString:@"<p>"];
-	result = [result stringByReplacingOccurrencesOfString:@"</para>" withString:@"</p>"];
-	result = [result stringByReplacingOccurrencesOfString:@"<ref id" withString:@"<a href"];
-	result = [result stringByReplacingOccurrencesOfString:@"</ref>" withString:@"</a>"];
-	result = [result stringByReplacingOccurrencesOfString:@"<list>" withString:@"<ul>"];
-	result = [result stringByReplacingOccurrencesOfString:@"</list>" withString:@"</ul>"];
-	result = [result stringByReplacingOccurrencesOfString:@"<item>" withString:@"<li>"];
-	result = [result stringByReplacingOccurrencesOfString:@"</item>" withString:@"</li>"];
-	[self appendLine:result toData:data];
+	if (item)
+	{
+		NSString* result = [self extractParagraphText:item];
+		result = [result stringByReplacingOccurrencesOfString:@"<para>" withString:@"<p>"];
+		result = [result stringByReplacingOccurrencesOfString:@"</para>" withString:@"</p>"];
+		result = [result stringByReplacingOccurrencesOfString:@"<ref id" withString:@"<a href"];
+		result = [result stringByReplacingOccurrencesOfString:@"</ref>" withString:@"</a>"];
+		result = [result stringByReplacingOccurrencesOfString:@"<list>" withString:@"<ul>"];
+		result = [result stringByReplacingOccurrencesOfString:@"</list>" withString:@"</ul>"];
+		result = [result stringByReplacingOccurrencesOfString:@"<item>" withString:@"<li>"];
+		result = [result stringByReplacingOccurrencesOfString:@"</item>" withString:@"</li>"];
+		[self appendLine:result toData:data];
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

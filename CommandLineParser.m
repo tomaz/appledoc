@@ -32,6 +32,10 @@
 #define kTKCmdCreateCleanXHTMLKey				@"CreateXHTML"					// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey					@"CreateDocSet"					// NSNumber / BOOL
 
+#define kTKCmdXHTMLBorderedExamplesKey			@"XHTMLUseBorderedExamples"		// NSNumber / BOOL
+#define kTKCmdXHTMLBorderedWarningsKey			@"XHTMLUseBorderedWarnings"		// NSNumber / BOOL
+#define kTKCmdXHTMLBorderedBugsKey				@"XHTMLUseBorderedBugs"			// NSNumber / BOOL
+
 #define kTKCmdDocSetBundleIDKey					@"DocSetBundleID"				// NSString
 #define kTKCmdDocSetBundleFeedKey				@"DocSetBundleFeed"				// NSString
 #define kTKCmdDocSetSourcePlistKey				@"DocSetSourcePlist"			// NSString
@@ -339,6 +343,10 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--xhtml" withValue:YES forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--docset" withValue:YES forKey:kTKCmdCreateDocSetKey];
 
+	[self parseBooleanWithShortcut:nil andName:@"--xhtml-bordered-issues" withValue:YES forKey:kTKCmdXHTMLBorderedExamplesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--xhtml-bordered-issues" withValue:YES forKey:kTKCmdXHTMLBorderedWarningsKey];
+	[self parseBooleanWithShortcut:nil andName:@"--xhtml-bordered-issues" withValue:YES forKey:kTKCmdXHTMLBorderedBugsKey];
+
 	[self parseStringWithShortcut:nil andName:@"--docid" forKey:kTKCmdDocSetBundleIDKey];
 	[self parseStringWithShortcut:nil andName:@"--docfeed" forKey:kTKCmdDocSetBundleFeedKey];
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
@@ -461,6 +469,9 @@ instead.
 	printf("OPTIONS - clean output creation\n");
 	printf("   --xhtml\n");
 	printf("   --docset\n");
+	printf("\n");
+	printf("OPTIONS - XHTML output creation\n");
+	printf("   --xhtml-bordered-issues\n");
 	printf("\n");
 	printf("OPTIONS - documentation set\n");
 	printf("   --docid <id>\n");
@@ -851,6 +862,28 @@ instead.
 - (BOOL) createDocSet
 {
 	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - XHTML creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) xhtmlUseBorderedExamples
+{
+	return [[parameters objectForKey:kTKCmdXHTMLBorderedExamplesKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) xhtmlUseBorderedWarnings
+{
+	return [[parameters objectForKey:kTKCmdXHTMLBorderedWarningsKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (BOOL) xhtmlUseBorderedBugs
+{
+	return [[parameters objectForKey:kTKCmdXHTMLBorderedBugsKey] boolValue];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

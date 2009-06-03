@@ -27,23 +27,23 @@
 - (NSArray*) extractBriefParagraphsFromItem:(id) item
 {
 	NSXMLElement* briefNode = [self extractSubitemFromItem:item withName:@"brief"];
-	if (briefNode)
-	{
-		NSArray* result = [briefNode nodesForXPath:@"*" error:nil];
-		if ([result count] > 0) return result;
-	}
+	if (briefNode) [self extractParagraphsFromItem:briefNode];
 	return nil;
 }
 
 //----------------------------------------------------------------------------------------
 - (NSArray*) extractDetailParagraphsFromItem:(id) item
 {
-	NSXMLElement* briefNode = [self extractSubitemFromItem:item withName:@"details"];
-	if (briefNode)
-	{
-		NSArray* result = [briefNode nodesForXPath:@"*" error:nil];
-		if ([result count] > 0) return result;
-	}
+	NSXMLElement* detailsNode = [self extractSubitemFromItem:item withName:@"details"];
+	if (detailsNode) return [self extractParagraphsFromItem:detailsNode];
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------
+- (NSArray*) extractParagraphsFromItem:(id) item
+{
+	NSArray* result = [item nodesForXPath:@"*" error:nil];
+	if ([result count] > 0) return result;
 	return nil;
 }
 

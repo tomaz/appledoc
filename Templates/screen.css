@@ -213,7 +213,31 @@ dl.parameterList dt {
 dl.parameterList dd {
 	margin-left: 1.8em;
 	}
+
+.warning {
+	border: 1px solid #000;
+	background-color: #e6e6e6;
+	padding-right: 1em;
+	padding-left: 1em;
+	margin-bottom: 0.5em;
+	}
+
+.example {
+	border: 1px solid #c9d1d7;
+	background-color: #f1f5f9;
+	padding-right: 1em;
+	padding-left: 1em;
+	margin-bottom: 0.5em;
+	}
 	
+.bug {
+	border: 1px solid #000;
+	background-color: #ffffcc;
+	padding-right: 1em;
+	padding-left: 1em;
+	margin-bottom: 0.5em;
+	}
+
 /* -------------------------------------*/
 /* --------->>>> =Tooltips <<<<---------*/
 /* -------------------------------------*/

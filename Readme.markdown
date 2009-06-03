@@ -217,6 +217,13 @@ or more of the following options to actually produce something more readable...
 *	`--docset`: Generate documentation set (this will automatically enable xhtml as well!).
 
 
+XHTML output options
+--------------------
+
+*	`--xhtml-bordered-issues`: Use bordered examples, warnings and bugs to make them
+	stand out of the rest a bit more. This also produces more Apple like documentation.
+
+
 Documentation set related options
 ---------------------------------
 
@@ -299,6 +306,12 @@ line counterparts is:
 *	`DoxygenConfigFile` (String): `--doxyfile`
 *	`CreateXHTML` (Boolean): `--xhtml`
 *	`CreateDocSet` (Boolean): `--docset`
+*	`XHTMLUseBorderedExamples` (Boolean): `--xhtml-bordered-issues` can be used to set
+	XHTMLUseBorderedExamples, XHTMLUseBorderedWarnings and XHTMLUseBorderedBugs in one
+	setting. There is no way to specify each separately over command line. There's also
+	no way to specify all three with a single setting in global parameters.
+*	`XHTMLUseBorderedWarnings` (Boolean): see previous item.
+*	`XHTMLUseBorderedBugs` (Boolean): see previous item.
 *	`DocSetBundleID` (String): `--docid`
 *	`DocSetBundleFeed` (String): `--docfeed`
 *	`DocSetSourcePlist` (String): `--docplist`

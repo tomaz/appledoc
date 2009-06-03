@@ -136,6 +136,31 @@ derived classes documentation handling...
 */
 @interface SuperLogger : Logger <Blabla1, Blabla2, Blabla3>
 
+/** This method does nothing.￼
+
+Except it uses warning and bug keywords so that we can test them easily in the generated
+output. It also shows how to use code segments. Well because of all these features, bells
+and whistles, the generated output looks kind of... well... see for yourself
+ 
+@verbatim
+[SuperLogger thisMethodUsesWarningAndBug:0 withValue:45];
+@endverbatim
+ 
+The code section is followed by another standard paragraph.
+
+@param param The parameter.
+@param value The value.
+@return Returns some value.
+@exception NSException Thrown if something goes wrong.
+@warning @b Important: Use this method only for doing nothing. Because that's what it 
+	does...
+@bug @b BUG: There's a strange bug in this method. And that is - it misses all the code! To
+	reproduce it, just follow these instructions: write another method in the class
+	interface and ommit the definition in the class implementation section.
+@see someOtherMethod:
+*/
++ (BOOL) thisMethodUsesWarningAndBug:(int) param withValue:(int) value;
+
 @end
 
 //////////////////////////////////////////////////////////////////////////////////////////

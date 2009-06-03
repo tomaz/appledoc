@@ -136,6 +136,22 @@ Note That @c createCleanXHTML() is a prerequisite for documentation set. */
 @property(readonly) BOOL createDocSet;
 
 //////////////////////////////////////////////////////////////////////////////////////////
+/// @name <#description#>Properties - XHTML output creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** If @c YES, use bordered XHTML example sections which results in more Apple like
+documentation. */
+@property(readonly) BOOL xhtmlUseBorderedExamples;
+
+/** If @c YES, use bordered XHTML warning sections which results in more Apple like
+documentation. */
+@property(readonly) BOOL xhtmlUseBorderedWarnings;
+
+/** If @c YES, use bordered XHTML bug sections which results in more Apple like
+documentation. */
+@property(readonly) BOOL xhtmlUseBorderedBugs;
+
+//////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - documentation set creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
