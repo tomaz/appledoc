@@ -39,7 +39,7 @@
 #define kTKCmdDocSetInstallPathKey				@"DocSetInstallPath"			// NSString
 
 #define kTKCmdFixClassLocationsKey				@"FixClassLocations"			// NSNumber / BOOL
-#define kTKCmdRemoveEmptyParaKey				@"removeEmptyParagraphs"		// NSNumber / BOOL
+#define kTKCmdRemoveEmptyParaKey				@"RemoveEmptyParagraphs"		// NSNumber / BOOL
 #define kTKCmdMergeCategoriesKey				@"MergeCategories"				// NSNumber / BOOL
 #define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepMergedSections"			// NSNumber / BOOL
 
