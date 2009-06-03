@@ -39,13 +39,13 @@
 #define kTKCmdDocSetInstallPathKey				@"DocSetInstallPath"			// NSString
 
 #define kTKCmdFixClassLocationsKey				@"FixClassLocations"			// NSNumber / BOOL
-#define kTKCmdRemoveEmptyParaKey				@"RemoveEmptyPara"				// NSNumber / BOOL
+#define kTKCmdRemoveEmptyParaKey				@"removeEmptyParagraphs"		// NSNumber / BOOL
 #define kTKCmdMergeCategoriesKey				@"MergeCategories"				// NSNumber / BOOL
-#define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepCatSections"				// NSNumber / BOOL
+#define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepMergedSections"			// NSNumber / BOOL
 
-#define kTKCmdObjectRefTemplate					@"ObjectReferenceStyle"			// NSString
-#define kTKCmdRemoveTempFilesKey				@"RemoveTempFiles"				// NSNumber / BOOL
-#define kTKCmdRemoveOutputFilesBeforeStartingKey	@"RemoveOutputFiles"		// NSNumber / BOOL
+#define kTKCmdObjectRefTemplate					@"ObjectReferenceTemplate"		// NSString
+#define kTKCmdRemoveTempFilesKey				@"RemoveTemporaryFiles"			// NSNumber / BOOL
+#define kTKCmdRemoveOutputFilesOnStartKey		@"RemoveOutputFilesBeforeBuild"	// NSNumber / BOOL
 #define kTKCmdVerboseLevelKey					@"VerboseLevel"					// NSNumber / int
 
 #define kTKCmdEmitUtilityOutputKey				@"EmitUtilityOutput"			// NSNumber / BOOL
@@ -344,7 +344,7 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--keep-merged-sections" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--remove-empty-paragraphs" withValue:YES forKey:kTKCmdRemoveEmptyParaKey];
 	[self parseBooleanWithShortcut:nil andName:@"--clean-temporary-files" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--clean-before-build" withValue:YES forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
+	[self parseBooleanWithShortcut:nil andName:@"--clean-before-build" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
 	
 	// Parse undocumented options. These are used to debug the script.
 	[self parseBooleanWithShortcut:nil andName:@"--no-utility-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
@@ -411,7 +411,7 @@ instead.
 	if (self.removeOutputFilesBeforeStarting && [self.outputPath isEqualToString:self.inputPath])
 	{
 		logNormal(@"Disabling --cleanbuild because output path is equal to input path!");
-		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
+		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
 	}
 }
 
@@ -552,7 +552,7 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
-	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesBeforeStartingKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
 	
 	// Setup other properties.
 	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
@@ -927,7 +927,7 @@ instead.
 //----------------------------------------------------------------------------------------
 - (BOOL) removeOutputFilesBeforeStarting
 {
-	return [[parameters objectForKey:kTKCmdRemoveOutputFilesBeforeStartingKey] boolValue];
+	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------
