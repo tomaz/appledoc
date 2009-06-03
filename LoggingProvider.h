@@ -138,28 +138,39 @@ derived classes documentation handling...
 
 /** This method does nothing.￼
 
-Except it uses warning and bug keywords so that we can test them easily in the generated
-output. It also shows how to use code segments. Well because of all these features, bells
-and whistles, the generated output looks kind of... well... see for yourself
+Except it uses warning keyword so that we can test it easily in the generated output. 
+It also shows how to use code segments. Well because of all these features, bells and 
+whistles, the generated output looks kind of... well... see for yourself
  
 @verbatim
-[SuperLogger thisMethodUsesWarningAndBug:0 withValue:45];
+[SuperLogger thisMethodUsesWarningAndExample:0 withValue:45];
 @endverbatim
  
-The code section is followed by another standard paragraph.
+The code section is followed by another standard paragraph. Aha, forgot to mention - the
+paragraph text is just being entered so that the paragraph will contain more than a single
+line of text. At least with current browser width. And yea, because I'm not online at
+the moment, I cannot use lorem ipsum for that. And I also don't know it from the memory.
+There's much more important stuff to remember than that... Except for the cases like this
+where the text is actually needed. Well, looks like my imagination is still working...
 
 @param param The parameter.
 @param value The value.
 @return Returns some value.
 @exception NSException Thrown if something goes wrong.
 @warning @b Important: Use this method only for doing nothing. Because that's what it 
-	does...
+	does... And it's actually pretty good at that too!
+@see someOtherMethod:
+*/
++ (BOOL) thisMethodUsesWarningAndExample:(int) param withValue:(int) value;
+
+/** And this is where our bug is described.￼
+
+This method does nothing except for the mentioned bug.
 @bug @b BUG: There's a strange bug in this method. And that is - it misses all the code! To
 	reproduce it, just follow these instructions: write another method in the class
 	interface and ommit the definition in the class implementation section.
-@see someOtherMethod:
 */
-+ (BOOL) thisMethodUsesWarningAndBug:(int) param withValue:(int) value;
++ (void) someOtherMethod;
 
 @end
 
