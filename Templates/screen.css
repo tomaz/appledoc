@@ -142,10 +142,15 @@ p#lastUpdated {
 }
 
 code {
-	font-family: Monaco, 'Courier New', Courier, monospace;
+	font-family: Monaco, Courier, Consolas, monospace;
 	font-size: 1.1em;
 	color: #333;
 }
+pre {
+	font-family: Monaco, Courier, Consolas, monospace;
+	font-size: 11px;
+}
+
 
 code.methodDeclaration {
 	display: block;
@@ -219,10 +224,6 @@ dl.parameterList dd {
 	background-color: #f1f5f9;
 	margin-bottom: 0.5em;
 	padding: 0.5em 1em;
-}
-
-.example pre {
-	font: 11px Monaco, Courier, Consolas, monospace;
 }
 
 .warning {
