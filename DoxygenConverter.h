@@ -34,7 +34,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /** The doxygen output converter class.
 
-￼￼This class handles the doxygen xml output files and converts them to DocSet. The
+This class handles the doxygen xml output files and converts them to DocSet. The
 conversion happens through several steps:
   - If @c Doxyfile doesn't exist or doxygen configuration file is not passed over via
 	the command line parameters, the default file is created using the doxygen itself,
@@ -115,7 +115,7 @@ helper categories are:
 /// @name Converting handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Converts￼ the doxygen generated file into the desired output.
+/** Converts the doxygen generated file into the desired output.
  
 @exception NSException Thrown if conversion fails.
 */

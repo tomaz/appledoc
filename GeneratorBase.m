@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Defines private methods for use within @c GeneratorBase class only.
 
-￼￼These are helper methods to make the main @c generateOutput() less cluttered. The methods
+These are helper methods to make the main @c generateOutput() less cluttered. The methods
 should only be used internaly by the @c GeneratorBase, they are not intended to be used
 by the subclasses. Therefore the parameters are closely coupled to the underlying clean
 object markup which is XML.
@@ -32,14 +32,14 @@ object markup which is XML.
 /// @name Object generation helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Generates the object info section if necessary.￼
+/** Generates the object info section if necessary.
  
 From here the following messages are sent to the subclass:
 - @c appendObjectInfoHeaderToData:()
 - @c appendObjectInfoFooterToData:()
 
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@exception NSException Thrown if generation fails.
 @see generateOutputForObject
 @see generateOverviewSectionToData:
 @see generateTasksSectionToData:
@@ -48,7 +48,7 @@ From here the following messages are sent to the subclass:
 */
 - (void) generateObjectInfoSectionToData:(NSMutableData*) data;
 
-/** Generates the given object info section if necessary.￼
+/** Generates the given object info section if necessary.
  
 This is sent from @c generateObjectInfoSectionToData:() for each info section item. From here 
 the following message is sent to the subclass.
@@ -60,12 +60,12 @@ can be one of the following:
 - @c kTKObjectInfoItemConforms: The @c nodes contain conforms to information.
 - @c kTKObjectInfoItemDeclared: The @c nodex contain declared in information.
  
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances to append to.
-@param index ￼￼￼￼￼￼Pointer to zero based index of the section item. The method will increment
+@param data The @c NSMutableData to append to.
+@param nodes The array of @c NSXMLElement instances to append to.
+@param index Pointer to zero based index of the section item. The method will increment
 	if the given @c nodes is not empty.
-@param type ￼￼￼￼￼￼Type of the section item.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param type Type of the section item.
+@exception NSException Thrown if generation fails.
 @see generateObjectInfoSectionToData:
 */
 - (void) generateObjectInfoSectionToData:(NSMutableData*) data 
@@ -73,13 +73,13 @@ can be one of the following:
 								   index:(int*) index
 									type:(int) type;
 
-/** Generates the object overview data if necessary.￼
+/** Generates the object overview data if necessary.
 
 This is where the following messages are sent to the subclass:
 - @c appendObjectOverviewToData:()
 
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@exception NSException Thrown if generation fails.
 @see generateOutputForObject
 @see generateObjectInfoSectionToData:
 @see generateTasksSectionToData:
@@ -87,7 +87,7 @@ This is where the following messages are sent to the subclass:
 */
 - (void) generateObjectOverviewSectionToData:(NSMutableData*) data;
 
-/** Generates the tasks section data if necessary.￼
+/** Generates the tasks section data if necessary.
 
 This is where the following messages are sent to the subclass:
 - @c appendObjectTasksHeaderToData:()
@@ -96,8 +96,8 @@ This is where the following messages are sent to the subclass:
 - @c appendObjectTaskFooterToData:fromItem:index()
 - @c appendObjectTasksFooterToData:()
 
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@exception NSException Thrown if generation fails.
 @see generateOutputForObject
 @see generateObjectInfoSectionToData:
 @see generateOverviewSectionToData:
@@ -105,14 +105,14 @@ This is where the following messages are sent to the subclass:
 */
 - (void) generateObjectTasksSectionToData:(NSMutableData*) data;
 
-/** Generates the main members documentation section if necessary.￼
+/** Generates the main members documentation section if necessary.
 
 This is where the following messages are sent to the subclass:
 - @c appendObjectMembersHeaderToData:()
 - @c appendObjectMembersFooterToData:()
 
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@exception NSException Thrown if generation fails.
 @see generateOutputForObject
 @see generateObjectInfoSectionToData:
 @see generateOverviewSectionToData:
@@ -121,7 +121,7 @@ This is where the following messages are sent to the subclass:
 */
 - (void) generateObjectMembersSectionToData:(NSMutableData*) data;
 
-/** Generates the given main members documentation section.￼
+/** Generates the given main members documentation section.
 
 This is sent from @c generateMembersSectionToData:() for each group of members that
 has at least one documented entry. This is where the following messages are sent to the 
@@ -130,15 +130,15 @@ subclass:
 - @c appendIndexGroupItemToData:fromItem:index:type:()
 - @c appendIndexGroupFooterToData:type:()
 
-The @c type parameter can be one of the following:￼
+The @c type parameter can be one of the following:
 - @c kTKIndexGroupClasses: This group will append all classes.
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
  
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances representing individual members.
-@param type ￼￼￼￼￼￼The type of the instances.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@param nodes The array of @c NSXMLElement instances representing individual members.
+@param type The type of the instances.
+@exception NSException Thrown if generation fails.
 @see generateMembersSectionToData:
 */
 - (void) generateObjectMemberSectionToData:(NSMutableData*) data 
@@ -155,14 +155,14 @@ This is sent from @c generateIndexGroupSectionsToData:(). It collects the group 
 and then sends @c generateIndexGroupSectionToData:fromNodes:type:() for each detected
 group.
  
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@exception NSException Thrown if generation fails.
 @see generateOutputForIndex
 @see generateIndexGroupSectionToData:fromNodes:type:
 */
 - (void) generateIndexGroupSectionsToData:(NSMutableData*) data;
 
-/** Generates the given main members documentation section.￼
+/** Generates the given main members documentation section.
 
 This is sent from @c generateIndexGroupSectionsToData:() for each group that has at
 least one member. This is where the following messages are sent to the subclass:
@@ -170,15 +170,15 @@ least one member. This is where the following messages are sent to the subclass:
 - @c appendindexGroup()
 - @c appendIndexFooterToData:type:()
 
-The @c type parameter can be one of the following:￼
+The @c type parameter can be one of the following:
 - @c kTKObjectMemberTypeClass: The @c nodes describes class members.
 - @c kTKObjectMemberTypeInstance: The @c nodes describes instance members.
 - @c kTKObjectMemberTypeProperty: The @c nodes describes properties.
  
-@param data ￼￼￼￼￼￼The @c NSMutableData to append to.
-@param nodes ￼￼￼￼￼￼The array of @c NSXMLElement instances representing individual members.
-@param type ￼￼￼￼￼￼The type of the instances.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@param data The @c NSMutableData to append to.
+@param nodes The array of @c NSXMLElement instances representing individual members.
+@param type The type of the instances.
+@exception NSException Thrown if generation fails.
 @see generateMembersSectionToData:
 */
 - (void) generateIndexGroupSectionToData:(NSMutableData*) data 

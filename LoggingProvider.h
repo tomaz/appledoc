@@ -15,68 +15,68 @@
 
 /** Defines the requirements for logging providers.
 
-￼￼Logging providers are objects that provider methods that implement logging support fot
+Logging providers are objects that provider methods that implement logging support fot
 the application.
 */
 @protocol LoggingProvider
 
-/** Logs an error.￼
+/** Logs an error.
 
-@param message ￼￼￼￼￼￼The message to log.
+@param message The message to log.
 */
 - (void) logError:(NSString*) message;
 
-/** Logs a normal message.￼
+/** Logs a normal message.
 
-@param message ￼￼￼￼￼￼The message to log.
+@param message The message to log.
 */
 - (void) logNormal:(NSString*) message;
 
-/** Logs a normal message.￼
+/** Logs a normal message.
  
 Info messages are only logged if info level is used.
  
-param message ￼￼￼￼￼￼The message to log.
+param message The message to log.
 */
 - (void) logInfo:(NSString*) message;
 
-/** Logs a verbosed message.￼
+/** Logs a verbosed message.
 
 Verbosed messages are only logged if verbosed level is used.
 
-@param message ￼￼￼￼￼￼The message to log.
+@param message The message to log.
 */
 - (void) logVerbose:(NSString*) message;
 
-/** Logs a debug message.￼
+/** Logs a debug message.
 
 Debug messages are only logged if verbosed level is used.
 
-@param message ￼￼￼￼￼￼The message to log.
+@param message The message to log.
 */
 - (void) logDebug:(NSString*) message;
 
-/** Determines if normal logging is enabled or not.￼
+/** Determines if normal logging is enabled or not.
  
-@return ￼￼￼￼Returns @c YES if normal logging is enabled, @c NO otherwise.
+@return Returns @c YES if normal logging is enabled, @c NO otherwise.
 */
 - (BOOL) isNormalEnabled;
 
-/** Determines if info logging is enabled or not.￼
+/** Determines if info logging is enabled or not.
  
-@return ￼￼￼￼Returns @c YES if info logging is enabled, @c NO otherwise.
+@return Returns @c YES if info logging is enabled, @c NO otherwise.
 */
 - (BOOL) isInfoEnabled;
 
-/** Determines if verbosed logging is enabled or not.￼
+/** Determines if verbosed logging is enabled or not.
 
-@return ￼￼￼￼Returns @c YES if verbosed logging is enabled, @c NO otherwise.
+@return Returns @c YES if verbosed logging is enabled, @c NO otherwise.
 */
 - (BOOL) isVerboseEnabled;
 
-/** Determines if debug logging is enabled or not.￼
+/** Determines if debug logging is enabled or not.
  
-@return ￼￼￼￼Returns @c YES if debug logging is enabled, @c NO otherwise.
+@return Returns @c YES if debug logging is enabled, @c NO otherwise.
 */
 - (BOOL) isDebugEnabled;
 
@@ -88,20 +88,20 @@ Debug messages are only logged if verbosed level is used.
 
 /** Defines the basic application logger.
 
-￼￼This class implements the application wide logger. It is implemented as a singleton, so
+This class implements the application wide logger. It is implemented as a singleton, so
 that it is easily accessible for all other classes. Note that this class is closely
 coupled with @c CommandLineParser from which it takes the verbose and debug logging
 levels.
 */
 @interface Logger : NSObject <LoggingProvider>
 
-/** Returns the default shared instance of the class.￼
+/** Returns the default shared instance of the class.
 */
 + (Logger*) sharedInstance;
 
-/** Logs the given message to the output.￼
+/** Logs the given message to the output.
 
-@param message ￼￼￼￼￼￼The message to log.
+@param message The message to log.
 @param type The type of the message.
 */
 - (void) logMessage:(NSString*) message type:(NSString*) type;

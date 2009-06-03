@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Implements documentation set related functionality for @c DoxygenConverter class.
 
-￼￼This category creates the documentation set info plist and all required files required for
+This category creates the documentation set info plist and all required files required for
 indexing the documentation set, it handles the indexing itself and prepares the
 documentation set bundle as well as installs it to the @c Xcode documentation.
 */
@@ -23,7 +23,7 @@ documentation set bundle as well as installs it to the @c Xcode documentation.
 /// @name Documentation set creation handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Creates the DocSet source plist file.￼
+/** Creates the DocSet source plist file.
 
 This file is used when creating the documentation set. The file is only created if it
 doesn't exist yet. If it exists, this method will exit without doing anything. This
@@ -38,7 +38,7 @@ This message is automatically sent from @c DoxygenConverter::convert() in the pr
 */
 - (void) createDocSetSourcePlistFile;
 
-/** Creates DocSet Nodes.xml file.￼
+/** Creates DocSet Nodes.xml file.
 
 The Nodes.xml file describes the structure of the documentation set and is used to
 create a table of contents that users see in the Xcode documentation window. This file
@@ -46,28 +46,28 @@ is required when compiling the documentation set.
 
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
 
-@exception ￼￼￼￼￼NSException Thrown if creation fails.
+@exception NSException Thrown if creation fails.
 @see createDocSetSourcePlistFile
 @see createDocSetTokesFile
 @see createDocSetBundle
 */
 - (void) createDocSetNodesFile;
 
-/** Creates DocSet Tokens.xml file.￼
+/** Creates DocSet Tokens.xml file.
 
 The Tokens.xml file associate symbol names with locations in the documentation files.
 This file is used for creating the symbol index for the documentation set.
 
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
 
-@exception ￼￼￼￼￼NSException Thrown if creation fails.
+@exception NSException Thrown if creation fails.
 @see createDocSetSourcePlistFile
 @see createDocSetNodesFile
 @see createDocSetBundle
 */
 - (void) createDocSetTokesFile;
 
-/** Creates DocSet bundle.￼
+/** Creates DocSet bundle.
 
 This message should be sent after all source files required for documentation set creation
 have been created. It will copy all html files created in @c createCleanOutputDocumentation()
@@ -76,7 +76,7 @@ nodes and tokes files.
  
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
 
-@exception ￼￼￼￼￼NSException Thrown if creation fails.
+@exception NSException Thrown if creation fails.
 @see createDocSetSourcePlistFile
 @see createDocSetNodesFile
 @see createDocSetTokesFile

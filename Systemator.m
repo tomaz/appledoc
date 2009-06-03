@@ -18,20 +18,20 @@
 */
 @interface Systemator (ClassPrivateAPI)
 
-/** Determines the system's shell path.￼
+/** Determines the system's shell path.
 
 This method will first determine the kind of shell that is used by the user. Then it will
 get the path from the shell.
 
-@return ￼￼￼￼Returns the shell path.
-@exception ￼￼￼￼￼NSException Thrown if shell path cannot be determined.
+@return Returns the shell path.
+@exception NSException Thrown if shell path cannot be determined.
 */
 + (NSString*) systemShellPath;
 
-/** Returns the array of all lines from the given string.￼
+/** Returns the array of all lines from the given string.
 
-@param string ￼￼￼￼￼￼The string to get the lines from.
-@return ￼￼￼￼Returns the array containing strings representing all lines from the @c string.
+@param string The string to get the lines from.
+@return Returns the array containing strings representing all lines from the @c string.
 */
 + (NSMutableArray*) linesFromString:(NSString*) string;
 

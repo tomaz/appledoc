@@ -38,7 +38,7 @@ really not!), this will alse remove all source files, so be careful!
 
 This message is automaticaly sent from @c DoxygenConverter::convert() in the proper order.
 
-@exception ￼￼￼￼￼NSException Thrown if cleaning fails.
+@exception NSException Thrown if cleaning fails.
 */
 - (void) createOutputDirectoriesAndRemovePreviousOutputFiles;
 

@@ -60,7 +60,7 @@
 /// @name Global templates handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Setups the templates path.￼
+/** Setups the templates path.
 
 This method checks if template files are found on one of the known locations. It searches
 the following paths in this order:
@@ -73,7 +73,7 @@ This will send @c parseTemplatesPath:() message for each known location.
 */
 - (void) setupGlobalTemplates;
 
-/** Determines if the given path is a valid templates path or not.￼
+/** Determines if the given path is a valid templates path or not.
 
 A path is considered valid templates path if it exists and contains all required
 template files. If the detected templates path also contains global parameters file 
@@ -82,8 +82,8 @@ command line as expected.
  
 If parsing global parameters fails, error is logged but the execution continues.
 
-@param path ￼￼￼￼￼￼The path to test.
-@return ￼￼￼￼Returns @c YES if the given path is valid templates path, @c NO otherwise.
+@param path The path to test.
+@return Returns @c YES if the given path is valid templates path, @c NO otherwise.
 */
 - (BOOL) parseTemplatesPath:(NSString*) path;
 
@@ -91,18 +91,18 @@ If parsing global parameters fails, error is logged but the execution continues.
 /// @name Command line parsing
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Validates command line arguments after parsing.￼
+/** Validates command line arguments after parsing.
 
 This function will make sure all required arguments and their values were correctly
 passed to the utility through the command line. This message is automatically sent from 
 @c CommandLineParser::parseCommandLineArguments:ofCount:() immediately after parsing
 the command line.
  
-@exception ￼￼￼￼￼NSException Thrown if validation fails.
+@exception NSException Thrown if validation fails.
 */
 - (void) validateCommandLineArguments;
 
-/** Post-processes command line arguments.￼
+/** Post-processes command line arguments.
 
 This message is sent after parsing the command line is finished. It will replace all
 template parameters (either from factory defaults or from globals plist) with the actual
@@ -116,7 +116,7 @@ values and will prepare all dependent values. The message is automatically sent 
 */
 - (void) postProcessCommandLineArguments;
 
-/** Resets all parsed properties and variables required for parsing.￼
+/** Resets all parsed properties and variables required for parsing.
 */
 - (void) setupFactoryDefaults;
 
@@ -124,7 +124,7 @@ values and will prepare all dependent values. The message is automatically sent 
 /// @name Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Replaces template placeholders for the given @c parameters key.￼
+/** Replaces template placeholders for the given @c parameters key.
 
 This is where template placeholders from globals plist or factory defaults are replaced
 with the actual values from command line. Allowed placeholders are:
@@ -132,21 +132,21 @@ with the actual values from command line. Allowed placeholders are:
 - @c $INPUT is replaced by the value from the @c --input switch.
 - @c $OUTPUT is replaced by the value from the @c --output switch.
 
-@param key ￼￼￼￼￼￼The parameters key to update.
+@param key The parameters key to update.
 */
 - (void) replaceTemplatePlaceholdersForKey:(NSString*) key;
 
-/** Standardizes the path for the given @c parameters key.￼
+/** Standardizes the path for the given @c parameters key.
 
 This will simply replace the @c NSString value of the given key with the existing value
 to which it will send @c NSString::stringByStandardizingPath() message. It is just a
 convenience method that makes paths handling code simpler.
 
-@param key ￼￼￼￼￼￼The parameters key to update.
+@param key The parameters key to update.
 */
 - (void) standardizePathForKey:(NSString*) key;
 
-/** Parses the assigned command line for the string￼ with the given name or shortcut.
+/** Parses the assigned command line for the string with the given name or shortcut.
 
 If the argument is found, it's value is set to the @c parameters dictionary to the given
 @c key. If the argument is found, but value is missing, exception is thrown. For each 
@@ -155,11 +155,11 @@ argument may either consist of a long name (ussually started with double minus),
 (ussually started with a single minus) or both. However, at least one must be passed;
 the method will thrown exception if both, name and shortcut, are @c nil.
  
-@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
-@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
+@param shortcut Optional shortcut of the argument ir @c nil if not used.
+@param name Optional long name of the argument or @c nil if not used.
 @param key The key for which to set the value if found.
 @return Returns @c YES if the given option was found, @c NO otherwise.
-@exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
+@exception NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
 @see parseIntegerWithShortcut:andName:forKey:
@@ -169,7 +169,7 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 						 andName:(NSString*) name
 						  forKey:(NSString*) key;
 
-/** Parses the assigned command line for the integer￼ with the given name or shortcut.
+/** Parses the assigned command line for the integer with the given name or shortcut.
 
 If the argument is found, it's value is set to the @c parameters dictionary to the given
 key. If the argument is found, but value is missing, exception is thrown. For each 
@@ -178,11 +178,11 @@ argument may either consist of a long name (ussually started with double minus),
 (ussually started with a single minus) or both. However, at least one must be passed;
 the method will thrown exception if both, name and shortcut, are @c nil.
  
-@param shortcut ￼￼￼￼￼￼Optional shortcut of the argument ir @c nil if not used.
-@param name ￼￼￼￼￼￼Optional long name of the argument or @c nil if not used.
+@param shortcut Optional shortcut of the argument ir @c nil if not used.
+@param name Optional long name of the argument or @c nil if not used.
 @param key The key for which to set the value if found.
 @return Returns @c YES if the given option was found, @c NO otherwise.
-@exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or the
+@exception NSException Thrown if both @c name and @c shortcut are @c nil or the
 	argument is found, but it doesn't have a value associated. Also thrown if the given
 	@c key is @c nil.
 @see parseStringWithShortcut:andName:forKey:
@@ -192,19 +192,19 @@ the method will thrown exception if both, name and shortcut, are @c nil.
 						  andName:(NSString*) name
 						   forKey:(NSString*) key;
 
-/** Parses the assigned command line for the switch￼ with the given name or shortcut.
+/** Parses the assigned command line for the switch with the given name or shortcut.
 
 If the switch is found, the given @c value is set to the @c parameters dictionary for the
 given key. The switch may either consist of a long name (ussually started with double minus), 
 shortcut (ussually started with a single minus) or both. However, at least one must be 
 passed; the method will thrown exception if both, name and shortcut, are @c nil.
  
-@param shortcut ￼￼￼￼￼￼Optional shortcut of the switch ir @c nil if not used.
-@param name ￼￼￼￼￼￼Optional long name of the switch or @c nil if not used.
+@param shortcut Optional shortcut of the switch ir @c nil if not used.
+@param name Optional long name of the switch or @c nil if not used.
 @param key The key for which to set the value if found.
 @param value The desired value to set for the given @c key if the switch is found.
 @return Returns @c YES if the given option was found, @c NO otherwise.
-@exception ￼￼￼￼￼NSException Thrown if both @c name and @c shortcut are @c nil or @c key is @c nil.
+@exception NSException Thrown if both @c name and @c shortcut are @c nil or @c key is @c nil.
 @see parseStringWithShortcut:andName:forKey:
 @see parseIntegerWithShortcut:andName:forKey:
 */
@@ -213,15 +213,15 @@ passed; the method will thrown exception if both, name and shortcut, are @c nil.
 						withValue:(BOOL) value
 						   forKey:(NSString*) key;
 
-/** Logs the given command line switch usage as debug log entry.￼
+/** Logs the given command line switch usage as debug log entry.
 
 Note that the method automatically outputs shortcut and/or name and automatically
 handles the value if passed. If any of the parameters are not applicable, pass @c nil
 instead.
 
-@param shortcut ￼￼￼￼￼￼Options shortcut of the switch or @c nil if not used.
-@param name ￼￼￼￼￼￼Optional name of the switch or @c nil if not used.
-@param value ￼￼￼￼￼￼Optional value of the switch or @c nil if this is boolean switch.
+@param shortcut Options shortcut of the switch or @c nil if not used.
+@param name Optional name of the switch or @c nil if not used.
+@param value Optional value of the switch or @c nil if this is boolean switch.
 */
 - (void) logCmdLineSwitch:(NSString*) shortcut
 				  andName:(NSString*) name

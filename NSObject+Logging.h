@@ -14,16 +14,16 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Defines logging support for NSObject.
 
-￼￼This adds a @c logger method whic is used to get the object's logger. This allows
+This adds a @c logger method whic is used to get the object's logger. This allows
 simple logging implementation with various levels.
 */
 @interface NSObject (Logging)
 
-/** Returns the @c LoggingProvider implementor associated with this object.￼
+/** Returns the @c LoggingProvider implementor associated with this object.
 
 This is used in @c log macros to get the object that will do the logging.
 
-@return ￼￼￼￼Returns the logger object associated with the receiver.
+@return Returns the logger object associated with the receiver.
 */
 - (id<LoggingProvider>) logger;
 

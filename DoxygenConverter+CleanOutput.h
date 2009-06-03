@@ -14,7 +14,7 @@
 /** Implements clean HTML documentation related functionality for @c DoxygenConverter 
 class.
 
-￼￼This category handles conversion from clean XML files to clean HTML. It's members 
+This category handles conversion from clean XML files to clean HTML. It's members 
 create clean HTML object and index files, and saves them in the proper directory 
 structure.
 */
@@ -24,14 +24,14 @@ structure.
 /// @name Clean HTML handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Creates cleaned XHTML documentation￼.
+/** Creates cleaned XHTML documentation.
 
 This method will convert all clean XML markups in the database to XHTML files in the
 proper output directory.
  
 This message is automatically sent from @c DoxygenConverter::convert() in the proper order.
 
-@exception ￼￼￼￼￼NSException Thrown if creation fails.
+@exception NSException Thrown if creation fails.
 */
 - (void) createCleanOutputDocumentation;
 

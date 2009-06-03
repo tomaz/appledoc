@@ -33,7 +33,7 @@ as a singleton.
 /// @name Initialization & disposal
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Returns the shared instance of the class which can be used throughout the application.￼
+/** Returns the shared instance of the class which can be used throughout the application.
 
 To make the class as accessible for the rest of the application, it is implemented as a
 singleton through @c sharedInstance(). Although nothing will prevent clients creating
@@ -46,7 +46,7 @@ possible problems.
 /// @name Parsing handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Parses the given command line arguments and set ups the object values.￼
+/** Parses the given command line arguments and set ups the object values.
 
 This message must be sent to the class after construction before all the properties
 can be used. It will parse and validate the given arguments. If any inconsistency is
@@ -58,15 +58,15 @@ returns @c NO which indicates that the user doesn't know how to use the utility 
 Note that parsing code may be called as many times as needed. Eact time, the properties
 are reset and then the given command line parsed.
 
-@param argv ￼￼￼￼￼￼The array of zero terminated c strings.
-@param argc ￼￼￼￼￼￼The number of items in the @c argv array.
+@param argv The array of zero terminated c strings.
+@param argc The number of items in the @c argv array.
 @exception NSException Thrown if parsing fails.
 @see printUsage
 */
 - (void) parseCommandLineArguments:(const char**) argv 
 						   ofCount:(int) argc;
 
-/** Outputs the utility usage to the standard output.￼
+/** Outputs the utility usage to the standard output.
 
 @see parseCommandLineArguments:ofCount:
 */

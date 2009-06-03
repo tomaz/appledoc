@@ -56,7 +56,7 @@ enum TKGeneratorIndexGroupTypes
 //////////////////////////////////////////////////////////////////////////////////////////
 /** Defines the basics for an output generator.
 
-￼￼Output generators are objects that generate final output files from the intermediate
+Output generators are objects that generate final output files from the intermediate
 (cleaned) XML. Each type of supported output is implemented by a concrete subclass.
 This class should be treated as abstract base class. It provides the stubs for the
 output generation as well as several helper methods that the subclasses can use to
@@ -101,7 +101,7 @@ objects by simply sending the instance @c generateOutputForObject:toFile:() mess
 /// @name Generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Generates the output￼ data from the given object data.
+/** Generates the output data from the given object data.
 
 This is the main message that starts the whole generation for the given object. It copies 
 the values from the given data to the properties and then sends the receiver 
@@ -109,9 +109,9 @@ the values from the given data to the properties and then sends the receiver
 the receiver several messages that can be used to convert the data. When conversion
 finishes, the data is saved to the given file.
 
-@param data ￼￼￼￼￼￼An @c NSDictionary that describes the object for which output is generated.
+@param data An @c NSDictionary that describes the object for which output is generated.
 @param filename The name of the file to save to.
-@exception ￼￼￼￼￼NSException Thrown if the given @c data or @c filename is @c nil or empty or 
+@exception NSException Thrown if the given @c data or @c filename is @c nil or empty or 
 	output generation or saving to file fails.
 @see outputDataForObject
 @see generateOutputForIndex:toFile:()
@@ -119,7 +119,7 @@ finishes, the data is saved to the given file.
 - (void) generateOutputForObject:(NSDictionary*) data
 						  toFile:(NSString*) filename;
 
-/** Generates the output￼ data from the given index data.
+/** Generates the output data from the given index data.
 
 This is the main message that starts the whole generation for the given index. It copies 
 the values from the given data to the properties and then sends the receiver 
@@ -128,9 +128,9 @@ the receiver several messages that can be used to convert the data. When convers
 finishes, the data is saved to the given file.
 
 
-@param data ￼￼￼￼￼￼An @c NSDictionary that describes the object for which output is generated.
+@param data An @c NSDictionary that describes the object for which output is generated.
 @param filename The name of the file to save to.
-@exception ￼￼￼￼￼NSException Thrown if the given @c data or @c filename is @c nil or empty or 
+@exception NSException Thrown if the given @c data or @c filename is @c nil or empty or 
 	output generation or saving to file fails.
 @see outputDataForIndex
 @see generateOutputForObject:toFile:()
@@ -138,10 +138,10 @@ finishes, the data is saved to the given file.
 - (void) generateOutputForIndex:(NSDictionary*) data
 							toFile:(NSString*) filename;
 
-/** Indicates that the output generation is starting.￼
+/** Indicates that the output generation is starting.
 
 This message is sent by the clients before any generation is started. It allows subclasses
-to performs any custom "global" prerequisites handling ￼such as copying templates to known
+to performs any custom "global" prerequisites handling such as copying templates to known
 locations or similar tasks.
 
 @see generationFinished
@@ -150,7 +150,7 @@ locations or similar tasks.
 */
 - (void) generationStarting;
 
-/** Indicates that the output generation has finished.￼
+/** Indicates that the output generation has finished.
 
 This message is sent by the clients after generation of all files is finished. It allows
 the subclasses to perform any custom "global" handling such as copying stylesheets or
@@ -167,7 +167,7 @@ indeed created.
 /// @name Subclass output generation
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Generates the output data from the data contained in the class properties.￼
+/** Generates the output data from the data contained in the class properties.
 
 This message is sent from @c generateOutputForObject:toFile:() after the passed object data 
 is stored in the class properties. The concrete subclasses that require full control over 
@@ -202,14 +202,14 @@ Note that only a subset of above messages may be sent for a particular object, d
 on the object data. Messages marked with @a * are optional, while messages marked with 
 @a ** may additionaly be sent multiple times, for each corresponding item once.
 
-@return ￼￼￼￼Returns an autoreleased @c NSData containing generated output.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@return Returns an autoreleased @c NSData containing generated output.
+@exception NSException Thrown if generation fails.
 @see generateOutputForObject:toFile:
 @see outputDataForIndex
 */
 - (NSData*) outputDataForObject;
 
-/** Generates the output data from the data contained in the class properties.￼
+/** Generates the output data from the data contained in the class properties.
 
 This message is sent from @c generateOutputForIndex:toFile:() after the passed object data
 is stored in the class properties. The concrete subclasses that require full control over 
@@ -230,8 +230,8 @@ Note that only a subset of above messages may be sent for a particular object, d
 on the object data. Messages marked with @a * are optional, while messages marked with 
 @a ** may additionaly be sent multiple times, for each corresponding item once.
 
-@return ￼￼￼￼Returns an autoreleased @c NSData containing generated output.
-@exception ￼￼￼￼￼NSException Thrown if generation fails.
+@return Returns an autoreleased @c NSData containing generated output.
+@exception NSException Thrown if generation fails.
 @see generateOutputForIndex:toFile:
 @see outputDataForObject
 */
@@ -241,7 +241,7 @@ on the object data. Messages marked with @a * are optional, while messages marke
 /// @name Properties
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Sets or returns the project name.￼
+/** Sets or returns the project name.
 
 Clients should set this value prior to sending @c generateOutputForObject:toFile:() or
 @c generateOutputForIndex:toFile:() messages. If the value is non @c nil and is not an empty 
@@ -249,7 +249,7 @@ string, the value can be used by the concrete generators to indicate the project
 */
 @property(copy) NSString* projectName;
 
-/** Sets or returns the last updated date.￼
+/** Sets or returns the last updated date.
 
 Clients should set this value prior to sending @c generateOutputForObject:toFile:() or
 @c generateOutputForIndex:toFile:() messages. If the value is non @c nil and is not an empty,
@@ -257,7 +257,7 @@ the value can be used by the concrete generators to indicate the time of the las
 */
 @property(copy) NSString* lastUpdated;
 
-/** Returns the status of output files generation.￼
+/** Returns the status of output files generation.
 
 This returns @c YES if at least one output file was generated within the last generation
 run (i.e. between the @c generationStarting() and @c generationFinished() messages).

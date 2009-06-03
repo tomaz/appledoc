@@ -20,28 +20,28 @@ index output generation.
 /// @name Subclass index file header and footer handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Appends any header text before the actual generation starts.￼
+/** Appends any header text before the actual generation starts.
 
 The message is sent from the @c GeneratorBase::outputDataForIndex() as the first message. 
 It gives subclasses a chance to append data to the output before the actual output generation 
 starts. After this message is sent, the rest of the messages are followed and as the last one,
 @c appendIndexFooterToData:() is sent.
 
-@param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
-@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@param data The data to append to. This is guaranteed to be non @c null.
+@exception NSException Thrown if appending fails.
 @see GeneratorBase::outputDataForIndex
 @see appendIndexFooterToData:
 */
 - (void) appendIndexHeaderToData:(NSMutableData*) data;
 
-/** Appends any footer text after output generation ends.￼
+/** Appends any footer text after output generation ends.
 
 The message is sent from the @c GeneratorBase::outputDataForIndex() as the last message. It 
 gives subclasses a chance to append data to the output after the rest of the output is 
 generated. This is ussually the place to "close" open tags or similar.
 
-@param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
-@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@param data The data to append to. This is guaranteed to be non @c null.
+@exception NSException Thrown if appending fails.
 @see GeneratorBase::outputDataForIndex
 @see appendIndexHeaderToData:
 */
@@ -51,7 +51,7 @@ generated. This is ussually the place to "close" open tags or similar.
 /// @name Subclass index group handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Appends any index group header text before the actual group items generation starts.￼
+/** Appends any index group header text before the actual group items generation starts.
 
 The message is sent from the @c GeneratorBase::outputDataForIndex() just before index group 
 items are generated. It gives subclasses a chance to append data to the output before the 
@@ -64,9 +64,9 @@ The type identifies the type of the index group and can be one of the following:
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
 
-@param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
-@param type ￼￼￼￼￼￼The type of the index group.
-@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@param data The data to append to. This is guaranteed to be non @c null.
+@param type The type of the index group.
+@exception NSException Thrown if appending fails.
 @see GeneratorBase::outputDataForIndex
 @see appendIndexGroupItemToData:fromItem:index:type:
 @see appendIndexGroupFooterToData:type:
@@ -74,7 +74,7 @@ The type identifies the type of the index group and can be one of the following:
 - (void) appendIndexGroupHeaderToData:(NSMutableData*) data
 								 type:(int) type;
 
-/** Appends any index group footer text after the group items generation ends.￼
+/** Appends any index group footer text after the group items generation ends.
 
 The message is sent from the @c GeneratorBase::outputDataForIndex() as the last group 
 generation message. It gives subclasses a chance to append data to the output after the 
@@ -85,9 +85,9 @@ The type identifies the type of the index group and can be one of the following:
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
 
-@param data ￼￼￼￼￼￼The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c null.
 @param type The type of the index group.
-@exception ￼￼￼￼￼NSException Thrown if appending fails.
+@exception NSException Thrown if appending fails.
 @see GeneratorBase::outputDataForIndex
 @see appendIndexGroupHeaderToData:type:
 @see appendIndexGroupItemToData:fromItem:index:type:
@@ -95,7 +95,7 @@ The type identifies the type of the index group and can be one of the following:
 - (void) appendIndexGroupFooterToData:(NSMutableData*) data
 								 type:(int) type;
 
-/** ￼Appends the given index group item data.￼
+/** Appends the given index group item data.
 
 This message is sent from @c GeneratorBase::outputDataForIndex() for each group member. 
 The subclass should append the data for the given item. The subclass can get more 
