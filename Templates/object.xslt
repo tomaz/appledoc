@@ -132,8 +132,19 @@
 	    </ref>
 	</xsl:template>
 	
+	<xsl:template match="bold">
+		<bold><xsl:apply-templates/></bold>
+	</xsl:template>
+	
 	<xsl:template match="para">
-		<para><xsl:apply-templates/></para>
+		<xsl:choose>
+			<xsl:when test="count(verbatim) > 0">
+				<example><xsl:apply-templates select="verbatim"/></example>
+			</xsl:when>
+			<xsl:otherwise>
+				<para><xsl:apply-templates/></para>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 	
 	<xsl:template match="computeroutput">

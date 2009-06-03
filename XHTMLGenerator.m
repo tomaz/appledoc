@@ -639,6 +639,8 @@
 	if (item)
 	{
 		NSString* result = [self extractParagraphText:item];
+		
+		// Handle simple tags replacements.
 		result = [result stringByReplacingOccurrencesOfString:@"<para>" withString:@"<p>"];
 		result = [result stringByReplacingOccurrencesOfString:@"</para>" withString:@"</p>"];
 		result = [result stringByReplacingOccurrencesOfString:@"<ref id" withString:@"<a href"];
@@ -647,6 +649,19 @@
 		result = [result stringByReplacingOccurrencesOfString:@"</list>" withString:@"</ul>"];
 		result = [result stringByReplacingOccurrencesOfString:@"<item>" withString:@"<li>"];
 		result = [result stringByReplacingOccurrencesOfString:@"</item>" withString:@"</li>"];
+		
+		// Handle replacements with spans.
+		result = [result stringByReplacingOccurrencesOfString:@"<bold>" withString:@"<span class=\"emphasize\">"];
+		result = [result stringByReplacingOccurrencesOfString:@"</bold>" withString:@"</span>"];
+		
+		// Handle the example section.
+		NSString* exampleTag = [NSString stringWithFormat:@"<div%@>",
+								cmd.xhtmlUseBorderedExamples ? 
+								@" class=\"example\"" : 
+								@""];
+		result = [result stringByReplacingOccurrencesOfString:@"<example>" withString:exampleTag];
+		result = [result stringByReplacingOccurrencesOfString:@"</example>" withString:@"</div>"];
+		
 		[self appendLine:result toData:data];
 	}
 }
