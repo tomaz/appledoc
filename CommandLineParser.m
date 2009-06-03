@@ -199,6 +199,13 @@ given key. The switch may either consist of a long name (ussually started with d
 shortcut (ussually started with a single minus) or both. However, at least one must be 
 passed; the method will thrown exception if both, name and shortcut, are @c nil.
  
+Note that in case @c name is specified, the method will automatically check if the
+negative form of the option is found and will use the negated @c value in such case.
+This is useful for overriding global parameters for example. If the @c name is @c --option,
+the method assumes the negative form is @c --no-option. If both forms are found in the
+command line, the last one encountered is used. Note that this only works properly for
+option names starting with a @c -- prefix.
+ 
 @param shortcut Optional shortcut of the switch ir @c nil if not used.
 @param name Optional long name of the switch or @c nil if not used.
 @param key The key for which to set the value if found.
@@ -685,16 +692,32 @@ instead.
 {
 	NSParameterAssert(name != nil || shortcut != nil);	
 	NSParameterAssert(key != nil);
+	
+	// Prepare the negative form of the long name.
+	NSString* negative = nil;
+	if (name)
+	{
+		negative = [name substringFromIndex:2];
+		negative = [NSString stringWithFormat:@"--no-%@", negative];
+	}
+	
+	BOOL result = NO;
 	for (NSString* arg in commandLineArguments)
 	{
 		if ([arg isEqualToString:name] || [arg isEqualToString:shortcut])
 		{
 			[self logCmdLineSwitch:shortcut andName:name andValue:nil];
 			[parameters setObject:[NSNumber numberWithBool:value] forKey:key];
-			return YES;
+			result = YES;
+		}
+		else if (negative && [arg isEqualToString:negative])
+		{
+			[self logCmdLineSwitch:nil andName:negative andValue:nil];
+			[parameters setObject:[NSNumber numberWithBool:!value] forKey:key];
+			result = YES;
 		}
 	}
-	return NO;
+	return result;
 }
 
 //----------------------------------------------------------------------------------------
