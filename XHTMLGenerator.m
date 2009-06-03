@@ -655,12 +655,12 @@
 		result = [result stringByReplacingOccurrencesOfString:@"</bold>" withString:@"</span>"];
 		
 		// Handle the example section.
-		NSString* exampleTag = [NSString stringWithFormat:@"<div%@>",
+		NSString* exampleTag = [NSString stringWithFormat:@"<div%@><pre>",
 								cmd.xhtmlUseBorderedExamples ? 
 								@" class=\"example\"" : 
 								@""];
 		result = [result stringByReplacingOccurrencesOfString:@"<example>" withString:exampleTag];
-		result = [result stringByReplacingOccurrencesOfString:@"</example>" withString:@"</div>"];
+		result = [result stringByReplacingOccurrencesOfString:@"</example>" withString:@"</pre></div>"];
 		
 		[self appendLine:result toData:data];
 	}

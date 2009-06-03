@@ -140,10 +140,14 @@ derived classes documentation handling...
 
 Except it uses warning keyword so that we can test it easily in the generated output. 
 It also shows how to use code segments. Well because of all these features, bells and 
-whistles, the generated output looks kind of... well... see for yourself
+whistles, the generated output looks kind of... well... see for yourself:
  
 @verbatim
-[SuperLogger thisMethodUsesWarningAndExample:0 withValue:45];
+BOOL result = [SuperLogger thisMethodUsesWarningAndExample:0 withValue:45];
+if (result)
+{
+    NSLog(@"What a beautiful life!");
+}
 @endverbatim
  
 The code section is followed by another standard paragraph. Aha, forgot to mention - the
@@ -158,7 +162,9 @@ where the text is actually needed. Well, looks like my imagination is still work
 @return Returns some value.
 @exception NSException Thrown if something goes wrong.
 @warning @b Important: Use this method only for doing nothing. Because that's what it 
-	does... And it's actually pretty good at that too!
+	does... And it's actually pretty good at that too! Probably it's easy to miss, but
+	take a closer look at the important word which is actually emphasized in the generated
+	XHTML documentation!
 @see someOtherMethod:
 */
 + (BOOL) thisMethodUsesWarningAndExample:(int) param withValue:(int) value;
@@ -166,7 +172,7 @@ where the text is actually needed. Well, looks like my imagination is still work
 /** And this is where our bug is described.￼
 
 This method does nothing except for the mentioned bug.
-@bug @b BUG: There's a strange bug in this method. And that is - it misses all the code! To
+@bug @b ID104: There's a strange bug in this method. And that is - it misses all the code! To
 	reproduce it, just follow these instructions: write another method in the class
 	interface and ommit the definition in the class implementation section.
 */

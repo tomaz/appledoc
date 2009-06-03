@@ -6,7 +6,7 @@
 }
 
 body {
-	backgroundcolor: #fff;
+	background-color: #fff;
 	font-family: "Lucida Grande", Helvetica, sans-serif;
 	font-size: 0.74em;
 }
@@ -210,13 +210,19 @@ dl.parameterList dt {
 dl.parameterList dd {
 	margin-left: 1.8em;
 }
+/* @end */
+
+/* @group Classes */
 
 .example {
 	border: 1px solid #c9d1d7;
 	background-color: #f1f5f9;
 	margin-bottom: 0.5em;
-	font: 11px Monaco, Courier, Consolas, monospace;
 	padding: 0.5em 1em;
+}
+
+.example pre {
+	font: 11px Monaco, Courier, Consolas, monospace;
 }
 
 .warning {
@@ -234,6 +240,7 @@ dl.parameterList dd {
 	padding-right: 1em;
 	padding-left: 1em;
 	margin-bottom: 0.5em;
+	padding-top: 0.3em;
 }
 
 .emphasize {
