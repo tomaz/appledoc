@@ -123,7 +123,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	NSError* error = nil;
 	
 	// If required, remove current directory to get a fresh start.
-	if (cmd.removeOutputFilesBeforeStarting && [manager fileExistsAtPath:cmd.outputPath])
+	if (cmd.cleanOutputFilesBeforeBuild && [manager fileExistsAtPath:cmd.outputPath])
 	{
 		logNormal(@"Removing previous output files at '%@'...", cmd.outputPath);		
 		

@@ -56,7 +56,7 @@
 		}
 		
 		// If cleantemp is used, remove clean XML temporary files.
-		if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXMLPath])
+		if (cmd.cleanTempFilesAfterBuild && [manager fileExistsAtPath:cmd.outputCleanXMLPath])
 		{
 			logInfo(@"Removing temporary clean XML files at '%@'...", cmd.outputCleanXMLPath);
 			NSError* error = nil;

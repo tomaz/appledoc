@@ -44,8 +44,8 @@
 #define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepMergedSections"			// NSNumber / BOOL
 
 #define kTKCmdObjectRefTemplate					@"ObjectReferenceTemplate"		// NSString
-#define kTKCmdRemoveTempFilesKey				@"RemoveTemporaryFiles"			// NSNumber / BOOL
-#define kTKCmdRemoveOutputFilesOnStartKey		@"RemoveOutputFilesBeforeBuild"	// NSNumber / BOOL
+#define kTKCmdCleanTempFilesKey					@"CleanTemporaryFilesAfterBuild"// NSNumber / BOOL
+#define kTKCmdCleanBeforeBuildKey				@"CleanOutputFilesBeforeBuild"	// NSNumber / BOOL
 #define kTKCmdVerboseLevelKey					@"VerboseLevel"					// NSNumber / int
 
 #define kTKCmdEmitUtilityOutputKey				@"EmitUtilityOutput"			// NSNumber / BOOL
@@ -343,8 +343,8 @@ instead.
 	[self parseBooleanWithShortcut:nil andName:@"--merge-categories" withValue:YES forKey:kTKCmdMergeCategoriesKey];
 	[self parseBooleanWithShortcut:nil andName:@"--keep-merged-sections" withValue:YES forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--remove-empty-paragraphs" withValue:YES forKey:kTKCmdRemoveEmptyParaKey];
-	[self parseBooleanWithShortcut:nil andName:@"--clean-temporary-files" withValue:YES forKey:kTKCmdRemoveTempFilesKey];
-	[self parseBooleanWithShortcut:nil andName:@"--clean-before-build" withValue:YES forKey:kTKCmdRemoveOutputFilesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--clean-temp-files" withValue:YES forKey:kTKCmdCleanTempFilesKey];
+	[self parseBooleanWithShortcut:nil andName:@"--clean-before-build" withValue:YES forKey:kTKCmdCleanBeforeBuildKey];
 	
 	// Parse undocumented options. These are used to debug the script.
 	[self parseBooleanWithShortcut:nil andName:@"--no-utility-output" withValue:NO forKey:kTKCmdEmitUtilityOutputKey];
@@ -408,10 +408,10 @@ instead.
 	}
 	
 	// Make sure remove output files is reset if output path is the same as input.
-	if (self.removeOutputFilesBeforeStarting && [self.outputPath isEqualToString:self.inputPath])
+	if (self.cleanOutputFilesBeforeBuild && [self.outputPath isEqualToString:self.inputPath])
 	{
 		logNormal(@"Disabling --cleanbuild because output path is equal to input path!");
-		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+		[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanBeforeBuildKey];
 	}
 }
 
@@ -469,7 +469,7 @@ instead.
 	printf("OPTIONS - miscellaneous\n");
 	printf("   --object-reference-template\n");
 	printf("                     Object reference generation style. Defaults to '[$OBJECT $MEMBER]'.\n");
-	printf("   --clean-temporary-files\n");
+	printf("   --clean-temp-files\n");
 	printf("                     Remove all temporary build files. Note that this is dynamic and will\n");
 	printf("                     delete generated files based on what is build. If html is created, all\n");
 	printf("                     doxygen and clean xml is removed. If doc set is installed, the whole\n");
@@ -551,8 +551,8 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveEmptyParaKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
-	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveTempFilesKey];
-	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveOutputFilesKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanTempFilesKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanBeforeBuildKey];
 	
 	// Setup other properties.
 	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
@@ -919,15 +919,15 @@ instead.
 }
 
 //----------------------------------------------------------------------------------------
-- (BOOL) removeTemporaryFiles
+- (BOOL) cleanTempFilesAfterBuild
 {
-	return [[parameters objectForKey:kTKCmdRemoveTempFilesKey] boolValue];
+	return [[parameters objectForKey:kTKCmdCleanTempFilesKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------
-- (BOOL) removeOutputFilesBeforeStarting
+- (BOOL) cleanOutputFilesBeforeBuild
 {
-	return [[parameters objectForKey:kTKCmdRemoveOutputFilesKey] boolValue];
+	return [[parameters objectForKey:kTKCmdCleanBeforeBuildKey] boolValue];
 }
 
 //----------------------------------------------------------------------------------------

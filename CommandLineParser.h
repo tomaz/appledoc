@@ -175,7 +175,7 @@ This will effectively remove all but the "last" generated files. Which files wil
 removed it depends on what is the desired output. If this is one of the clean outputs,
 all doxygen and clean XML files will be removed. If this is documentation set, the
 clean HTML files will be removed too (other final output files will remain if chosen). */
-@property(readonly) BOOL removeTemporaryFiles;
+@property(readonly) BOOL cleanTempFilesAfterBuild;
 
 /** If @c YES, the @c outputPath() is deleted before starting processing.
  
@@ -184,7 +184,7 @@ documentation.
 @ warning Be careful when using this option - it will remove the @c outputPath() directory
 	too, so if you keep any files which are not automatically generated there (should not
 	really!), such as source files or plists etc., these will also be removed! */
-@property(readonly) BOOL removeOutputFilesBeforeStarting;
+@property(readonly) BOOL cleanOutputFilesBeforeBuild;
 
 /** The desired verbose level.
  

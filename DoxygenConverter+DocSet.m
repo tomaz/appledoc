@@ -349,7 +349,7 @@
 	[installScript release];
 		
 	// If cleantemp is used, remove clean html and docset temporary files.
-	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputCleanXHTMLPath])
+	if (cmd.cleanTempFilesAfterBuild && [manager fileExistsAtPath:cmd.outputCleanXHTMLPath])
 	{
 		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputCleanXHTMLPath);
 		NSError* error = nil;
@@ -360,7 +360,7 @@
 	}
 	
 	// If cleantemp is used, remove docset temporary files.
-	if (cmd.removeTemporaryFiles && [manager fileExistsAtPath:cmd.outputDocSetPath])
+	if (cmd.cleanTempFilesAfterBuild && [manager fileExistsAtPath:cmd.outputDocSetPath])
 	{
 		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputDocSetPath);
 		NSError* error = nil;

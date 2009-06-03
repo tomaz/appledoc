@@ -473,7 +473,7 @@
 	}
 	
 	// If cleantemp is used, remove doxygen temporary files.
-	if (cmd.removeTemporaryFiles && doxygenXMLOutputPath && [manager fileExistsAtPath:doxygenXMLOutputPath])
+	if (cmd.cleanTempFilesAfterBuild && doxygenXMLOutputPath && [manager fileExistsAtPath:doxygenXMLOutputPath])
 	{
 		logInfo(@"Removing temporary doxygen files at '%@'...", doxygenXMLOutputPath);
 		NSError* error = nil;
