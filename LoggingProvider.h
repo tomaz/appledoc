@@ -132,7 +132,15 @@ levels.
 /** A super class declaration.
  
 This class is not used anywhere in the application. It's just here so we can test
-derived classes documentation handling...
+derived classes documentation handling... And yes, we also use the object for
+testing links to external objects such as @c Systemator and their members
+like @c Systemator::runTask:(). We even support linking to external categories
+like this: @c NSObject(Logging) and their members like: @c NSObject(Logging)::logger()
+(for these we need to fix doxygen output since it's confused with categories). See
+that we can also correctly spell non-documented category or class members such as:
+@c NSObject(Nonexistent)::methodWithParameter1:andParameter2:() or
+@c NSObject::description(). However notice that for unknown objects the prefix is not 
+used since we don't have the required information.
 */
 @interface SuperLogger : Logger <Blabla1, Blabla2, Blabla3>
 

@@ -813,8 +813,19 @@
 					objectData:(NSMutableDictionary*) objectData
 					   objects:(NSDictionary*) objects
 {
+	// The handling of replacements is done in two phases. First we scan all possible
+	// documentation words and prepare the list of words which should be replaced and
+	// the corresponding replacement strings. This is held in the replacements dictionary.
+	// However in some cases we may have a word which contains another, smaller word
+	// within. So we need do first replace the larger word and only then the smaller one.
+	// But even this doesn't handle all cases, so we first obsfucate certain replacements
+	// which can potentially contain words from other replacements so we obsfucate those
+	// and when all are replaced, we run through all obsfucations as well... If we could
+	// find a better way of replacing words at the moment of detection, we could avoid
+	// all this hassle, but for the moment, we'll have to live with it.
 	NSCharacterSet* whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
 	NSMutableDictionary* replacements = [NSMutableDictionary dictionary];
+	NSMutableDictionary* obsfucations = [NSMutableDictionary dictionary];
 	
 	// We also need to handle broken doxygen member links handling. This is especially
 	// evident in categories where the links to member functions are not properly
@@ -847,14 +858,79 @@
 			}
 			
 			// Fix members that are declated with parenthesis. Skip words which are composed
-			// from parenthesis only so that users can still use that in documentation.
+			// from parenthesis only so that users can still use that in documentation. Note
+			// that this is also where we come in case a category member link is desired.
+			// For example: for documentation "NSObject(Logging)::logger()", doxygen would
+			// convert to "NSObject(Logging)logger()". So we need to check whether the given
+			// word contains parenthesis in the middle and assume this is a category member
+			// link if so. Note that class members are correctly handled by doxygen, so
+			// we don't need to handle these cases.
 			if ([word hasSuffix:@"()"] && [word length] > 2 && ![replacements objectForKey:word])
 			{
-				NSString* member = [word substringToIndex:[word length] - 2];
-				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
-				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
-				[replacements setObject:link forKey:word];
-				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+				// Does the word include parenthesis in the middle? If so, this is link to
+				// a category member and we should handle it differently because it
+				// represents link to member of a category. We should check if the category
+				// is known or not and prepare the link in the first case and only prettier
+				// name in second. Note that we need to obsfucate the replacement since
+				// a category object link may also be present and it will partially
+				// replace these!
+				NSUInteger firstOpenParLocation = [word rangeOfString:@"("].location;
+				NSUInteger firstCloseParLocation = [word rangeOfString:@")"].location;
+				if (firstOpenParLocation < [word length] - 2 &&
+					firstCloseParLocation < [word length] - 1)
+				{
+					NSString* category = [word substringToIndex:firstCloseParLocation + 1];
+					NSString* member = [word substringFromIndex:firstCloseParLocation + 1];
+					member = [member substringToIndex:[member length] - 2];
+					NSString* name = [self objectLinkNameForObject:category andMember:member];
+					NSDictionary* categoryData = [objects objectForKey:category];
+					if (categoryData)
+					{
+						NSString* categoryLink = [self objectReferenceFromObject:objectName toObject:category];
+						NSString* link = [NSString stringWithFormat:@"<ref id=\"%@#%@\">%@</ref>", 
+										  categoryLink, 
+										  member,
+										  name];
+						NSString* obsfucated = [self obsfucatedStringFromString:link];
+						[obsfucations setObject:link forKey:obsfucated];
+						[replacements setObject:obsfucated forKey:word];
+						logVerbose(@"- Found reference to member %@ from category %@.", member, category);
+					}
+					else
+					{
+						NSString* obsfucated = [self obsfucatedStringFromString:name];
+						[obsfucations setObject:name forKey:obsfucated];
+						[replacements setObject:obsfucated forKey:word];
+						logVerbose(@"- Found reference to member %@ from unknown category %@.", member, category);
+					}
+				}
+
+				// This is either true member link or unknown class link.
+				else
+				{
+					// Does the work contain :: in the middle? If so, this is a link to an
+					// unknown class member, so we need to handle it similar to categories
+					// above. However the case is simpler here - we can be sure the link is
+					// to unknown class, so we don't have to check the database...
+					NSRange colonsRange = [word rangeOfString:@"::"];
+					if (colonsRange.location != NSNotFound)
+					{
+						NSString* class = [word substringToIndex:colonsRange.location];
+						NSString* member = [word substringFromIndex:colonsRange.location + 2];
+						member = [member substringToIndex:[member length] - 2];
+						NSString* name = [self objectLinkNameForObject:class andMember:member];
+						[replacements setObject:name forKey:word];
+						logVerbose(@"- Found reference to %@ from unknown class %@.", member, class);
+					}
+					else
+					{
+						NSString* member = [word substringToIndex:[word length] - 2];
+						NSString* name = [self memberLinkNameForObject:objectName andMember:member];
+						NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
+						[replacements setObject:link forKey:word];
+						logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+					}
+				}
 			}
 			
 			// Fix known category links.
@@ -899,11 +975,22 @@
 	// tags would be imported as &lt; and similar...
 	if ([replacements count] > 0)
 	{
-		// Replace all occurences of the found member links with the fixed notation.
 		NSString* xmlString = [cleanDocument XMLString];
-		for (NSString* word in replacements)
+		
+		// Replace all occurences of the found member links with the fixed notation. Note
+		// that we have to replace by using sorted keys by their names to make sure we
+		// handle larger names first. Note that we need to scan throught
+		NSArray* sortedWords = [[replacements allKeys] sortedArrayUsingSelector:@selector(compare:)];
+		for (NSString* word in [sortedWords reverseObjectEnumerator])
 		{
 			NSString* replacement = [replacements objectForKey:word];
+			xmlString = [xmlString stringByReplacingOccurrencesOfString:word withString:replacement];
+		}
+		
+		// Now re-apply all obsfucations.
+		for (NSString* word in obsfucations)
+		{
+			NSString* replacement = [obsfucations objectForKey:word];
 			xmlString = [xmlString stringByReplacingOccurrencesOfString:word withString:replacement];
 		}
 		
@@ -1026,6 +1113,19 @@
 	}
 	
 	return [NSString stringWithFormat:@"%@.html", destination];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) obsfucatedStringFromString:(NSString*) string
+{
+	NSMutableString* result = [NSMutableString string];
+	for (int i = 0; i < [string length]; i++)
+	{
+		NSString* original = [string substringWithRange:NSMakeRange(i, 1)];
+		[result appendString:original];
+		[result appendString:@"*"];
+	}
+	return result;
 }
 
 @end

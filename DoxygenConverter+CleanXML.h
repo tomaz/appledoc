@@ -152,6 +152,10 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 This scans the actual object document and extracts all members data which is later used
 when handling references.￼ Note that this should be sent only after categories are merged
 so that the correct data is used for generation.
+ 
+This message is automatically sent from @c updateCleanObjectsDatabase for each documented
+object and should not be sent otherwise. It is used to simplify otherwise large and
+difficult to manage parent method.
 
 @param objectName The name of the object for which we should create members.
 @param objectData The data of the object into which to create the members.
@@ -236,10 +240,11 @@ method.
 This will actually check all description paragraphs and scan word by word to see if a
 known object is being addressed. If so, it will convert the word to the proper @c &lt;ref&gt;
 tag. Therefore all links to classes, protocols and categories are properly handled.
- 
 In addition, the code will also convert any word that starts with @c :: or ends with @c ()
 to a @c &lt;ref&gt; for the given member. The code will not check if a member with that name
 exists or not though, so some care needs to be taken when documenting code...
+Further more, doxygen incorrectly handles links to category members and doesn't detect
+links to unknown classes. These are also properly detected and converted here.
  
 This message is sent automatically from @c fixCleanObjectDocumentation() and should not
 be sent otherwise. It is used to simplify otherwise large and difficult to manage parent
@@ -332,5 +337,16 @@ returned link already contains the required html extension.
 */
 - (NSString*) objectReferenceFromObject:(NSString*) source 
 							   toObject:(NSString*) destination;
+
+/** Generates obsfucated string from the given one.￼
+
+This is used internally while fixing broken links. The obsfucation is only temporary and
+is removed before creating final text. It is not meant to hide contents from human eye
+or web robots.
+
+@param string The string to obsfucate.
+@return Returns obsfucated string.
+*/
+- (NSString*) obsfucatedStringFromString:(NSString*) string;
 
 @end
