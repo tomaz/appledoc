@@ -579,11 +579,11 @@
 	NSString* reference = [self extractIndexGroupItemRef:item];
 	NSString* name = [self extractIndexGroupItemName:item];
 	
-	[self appendLine:@"        <li>" toData:data];
+	[self appendString:@"        <li>" toData:data];
 	
 	if (reference)
 	{
-		[self appendString:@"          <a href=\"" toData:data];
+		[self appendString:@"<a href=\"" toData:data];
 		[self appendString:reference toData:data];
 		[self appendString:@"\">" toData:data];
 	}
@@ -595,7 +595,7 @@
 		[self appendString:@"</a>" toData:data];
 	}
 	
-	[self appendLine:@"        </li>" toData:data];
+	[self appendLine:@"</li>" toData:data];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
