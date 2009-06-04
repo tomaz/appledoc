@@ -41,6 +41,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 
 @exception NSException Thrown if convertion fails.
 @see mergeCleanCategoriesToKnownObjects
+@see updateCleanObjectsDatabase
 @see createCleanIndexDocumentationFile
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
@@ -64,11 +65,28 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 
 @exception NSException Thrown if convertion fails.
 @see createCleanObjectDocumentationMarkup
+@see updateCleanObjectsDatabase
 @see createCleanIndexDocumentationFile
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
 */
 - (void) mergeCleanCategoriesToKnownObjects;
+
+/** Updates clean objects XML database by integrating data dependent on the XML itself.￼
+
+This message needs to be sent after @c mergeCleanCategoriesToKnownObjects() and
+before ￼@c fixCleanObjectDocumentation(). It handles the following:
+- Creation of object members database entries.
+
+@exception NSException Thrown if conversion fails.
+@see createCleanObjectDocumentationMarkup
+@see mergeCleanCategoriesToKnownObjects
+@see createCleanIndexDocumentationFile
+@see fixCleanObjectDocumentation
+@see saveCleanObjectDocumentationFiles
+@see createMembersDataForObject:objectData:
+*/
+- (void) updateCleanObjectsDatabase;
 
 /** Creates clean index XML file.
 
@@ -81,6 +99,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 @exception NSException Thrown if index file creation fails.
 @see createCleanObjectDocumentationMarkup
 @see mergeCleanCategoriesToKnownObjects
+@see updateCleanObjectsDatabase
 @see fixCleanObjectDocumentation
 @see saveCleanObjectDocumentationFiles
 */
@@ -103,6 +122,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 @exception NSException Thrown if fixing XML fails.
 @see createCleanObjectDocumentationMarkup
 @see mergeCleanCategoriesToKnownObjects
+@see updateCleanObjectsDatabase
 @see createCleanIndexDocumentationFile
 @see saveCleanObjectDocumentationFiles
 */
@@ -117,6 +137,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 @exception NSException Thrown if saving fails.
 @see createCleanObjectDocumentationMarkup
 @see mergeCleanCategoriesToKnownObjects
+@see updateCleanObjectsDatabase
 @see createCleanIndexDocumentationFile
 @see fixCleanObjectDocumentation
 */
@@ -125,6 +146,20 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Clean XML "makeup" handling
 //////////////////////////////////////////////////////////////////////////////////////////
+
+/** Creates the members entry within the given object data.￼
+
+This scans the actual object document and extracts all members data which is later used
+when handling references.￼ Note that this should be sent only after categories are merged
+so that the correct data is used for generation.
+
+@param objectName The name of the object for which we should create members.
+@param objectData The data of the object into which to create the members.
+@exception NSException Thrown if creation fails.
+@see updateCleanObjectsDatabase
+*/
+- (void) createMembersDataForObject:(NSString*) objectName
+						 objectData:(NSMutableDictionary*) objectData;
 
 /** Fixes inheritance links for the given object.
 
@@ -249,6 +284,40 @@ method.
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////
+
+/** Fetches the link data for the given object and member name.￼
+
+@param objectName The name of the object.
+@param memberName The name of the object's member.
+@return Returns the @c NSDictionary from the database corresponding to the given object
+	member data. Returns @c nil if either object or member is not found.
+@see objectLinkNameForObject:andMember:
+@see memberLinkNameForObject:andMember:
+*/
+- (NSDictionary*) linkDataForObject:(NSString*) objectName
+						  andMember:(NSString*) memberName;
+
+/** Generates the link name for inter-object link.
+
+@param objectName The name of the object.
+@param memberName The name of the object's member.
+@return Returns the given link name.
+@see linkDataForObject:andMember:
+@see memberLinkNameForObject:andMember:
+*/
+- (NSString*) objectLinkNameForObject:(NSString*) objectName
+							andMember:(NSString*) memberName;
+
+/** Generates the link name for a member link.
+
+@param objectName The name of the object.
+@param memberName The name of the object's member.
+@return Returns the given link name.
+@see linkDataForObject:andMember:
+@see objectLinkNameForObject:andMember:
+*/
+- (NSString*) memberLinkNameForObject:(NSString*) objectName
+							andMember:(NSString*) memberName;
 
 /** Prepares the link to the given destination object.
 

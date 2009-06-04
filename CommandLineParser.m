@@ -48,6 +48,7 @@
 #define kTKCmdKeepMergedCategoriesSectionsKey	@"KeepMergedSections"			// NSNumber / BOOL
 
 #define kTKCmdObjectRefTemplate					@"ObjectReferenceTemplate"		// NSString
+#define kTKCmdMemberRefTemplate					@"MemberReferenceTemplate"		// NSString
 #define kTKCmdCleanTempFilesKey					@"CleanTemporaryFilesAfterBuild"// NSNumber / BOOL
 #define kTKCmdCleanBeforeBuildKey				@"CleanOutputFilesBeforeBuild"	// NSNumber / BOOL
 #define kTKCmdVerboseLevelKey					@"VerboseLevel"					// NSNumber / int
@@ -143,7 +144,7 @@ with the actual values from command line. Allowed placeholders are:
 /** Standardizes the path for the given @c parameters key.
 
 This will simply replace the @c NSString value of the given key with the existing value
-to which it will send @c NSString::stringByStandardizingPath() message. It is just a
+to which it will send @c stringByStandardizingPath message. It is just a
 convenience method that makes paths handling code simpler.
 
 @param key The parameters key to update.
@@ -352,7 +353,8 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
 	
-	[self parseStringWithShortcut:nil andName:@"--objext-reference-template" forKey:kTKCmdObjectRefTemplate];
+	[self parseStringWithShortcut:nil andName:@"--object-reference-template" forKey:kTKCmdObjectRefTemplate];
+	[self parseStringWithShortcut:nil andName:@"--member-reference-template" forKey:kTKCmdMemberRefTemplate];
 
 	[self parseBooleanWithShortcut:nil andName:@"--fix-class-locations" withValue:YES forKey:kTKCmdFixClassLocationsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--merge-categories" withValue:YES forKey:kTKCmdMergeCategoriesKey];
@@ -481,6 +483,7 @@ instead.
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
 	printf("   --object-reference-template\n");
+	printf("   --member-reference-template\n");
 	printf("   --clean-temp-files\n");
 	printf("   --clean-before-build\n");
 	printf("-t --templates <path>\n");
@@ -537,7 +540,8 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanBeforeBuildKey];
 	
 	// Setup other properties.
-	[parameters setObject:@"[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
+	[parameters setObject:@"$PREFIX[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
+	[parameters setObject:@"$PREFIX $MEMBER" forKey:kTKCmdMemberRefTemplate];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdEmitUtilityOutputKey];
 }
 
@@ -846,6 +850,12 @@ instead.
 - (NSString*) objectReferenceTemplate
 {
 	return [parameters objectForKey:kTKCmdObjectRefTemplate];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) memberReferenceTemplate
+{
+	return [parameters objectForKey:kTKCmdMemberRefTemplate];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

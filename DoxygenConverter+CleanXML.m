@@ -356,6 +356,37 @@
 }
 
 //----------------------------------------------------------------------------------------
+- (void) updateCleanObjectsDatabase
+{
+	logNormal(@"Updating clean objects database...");
+	
+	// Prepare common variables to optimize loop a bit.
+	NSAutoreleasePool* loopAutoreleasePool = nil;
+	
+	// Handle all files in the database.
+	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
+	for (NSString* objectName in objects)
+	{
+		// Setup the autorelease pool for this iteration. Note that we are releasing the
+		// previous iteration pool here as well. This is because we use continue to 
+		// skip certain iterations, so releasing at the end of the loop would not work...
+		// Also note that after the loop ends, we are releasing the last iteration loop.
+		[loopAutoreleasePool drain];
+		loopAutoreleasePool = [[NSAutoreleasePool alloc] init];
+		
+		// Get the required object data.
+		NSMutableDictionary* objectData = [objects objectForKey:objectName];
+		logVerbose(@"Handling '%@'...", objectName);
+		
+		[self createMembersDataForObject:objectName objectData:objectData];
+	}
+	
+	// Release last iteration pool.
+	[loopAutoreleasePool drain];
+	logInfo(@"Finished updating clean objects database.");
+}
+
+//----------------------------------------------------------------------------------------
 - (void) createCleanIndexDocumentationFile
 {
 	logNormal(@"Creating clean index documentation file...");	
@@ -489,6 +520,70 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Clean XML "makeup" handling
 //////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) createMembersDataForObject:(NSString*) objectName
+						 objectData:(NSMutableDictionary*) objectData
+{
+	// Add the empty dictionary to the object data.
+	NSMutableDictionary* members = [NSMutableDictionary dictionary];
+	[objectData setObject:members forKey:kTKDataObjectMembersKey];
+	
+	// Get the array of all member nodes.
+	NSXMLDocument* document = [objectData objectForKey:kTKDataObjectMarkupKey];
+	NSArray* memberNodes = [document nodesForXPath:@"object/sections/section/member" error:nil];
+	for (NSXMLElement* memberNode in memberNodes)
+	{
+		NSXMLNode* kindAttr = [memberNode attributeForName:@"kind"];
+		if (kindAttr)
+		{
+			NSArray* nameNodes = [memberNode nodesForXPath:@"name" error:nil];
+			if ([nameNodes count] > 0)
+			{
+				// Get member data.
+				NSString* memberName = [[nameNodes objectAtIndex:0] stringValue];
+				NSString* memberKind = [kindAttr stringValue];
+				
+				// Prepare member prefix.
+				NSString* memberPrefix = @"";
+				if ([memberKind isEqualToString:@"class-method"])
+					memberPrefix = @"+";
+				else if ([memberKind isEqualToString:@"instance-method"])
+					memberPrefix = @"-";
+				
+				// Prepare member selector. Note that we use the template to allow the
+				// users specify their desired format. If prefix is used, we should use
+				// the template, otherwise we stick to the name only. This avoids the
+				// empty spaces in front of properties for example.
+				NSString* memberSelector = nil;
+				if ([memberPrefix length] > 0)
+				{
+					memberSelector = cmd.memberReferenceTemplate;
+					memberSelector = [memberSelector stringByReplacingOccurrencesOfString:@"$PREFIX" withString:memberPrefix];
+					memberSelector = [memberSelector stringByReplacingOccurrencesOfString:@"$MEMBER" withString:memberName];
+				}
+				else
+				{
+					memberSelector = memberName;
+				}
+				logVerbose(@"Generating '%@' member data...", memberSelector);
+				
+				// Create member data dictionary.
+				NSMutableDictionary* memberData = [NSMutableDictionary dictionary];
+				[memberData setObject:memberName forKey:kTKDataMemberNameKey];
+				[memberData setObject:memberPrefix forKey:kTKDataMemberPrefixKey];
+				[memberData setObject:memberSelector forKey:kTKDataMemberSelectorKey];
+				
+				// Add the dictionary to the members data.
+				[members setObject:memberData forKey:memberName];
+				
+				// Add the member selector to the XML.
+				NSXMLElement* selectorNode = [NSXMLNode elementWithName:@"selector" stringValue:memberSelector];
+				[memberNode addChild:selectorNode];
+			}
+		}
+	}
+}
 
 //----------------------------------------------------------------------------------------
 - (void) fixInheritanceForObject:(NSString*) objectName
@@ -642,7 +737,7 @@
 			// If we only have one component, we should first determine if it
 			// represents an object name or member name. In the second case, the
 			// reference is alredy setup properly. In the first case, however, we
-			// need to swapt the object and member reference.
+			// need to swap the object and member reference.
 			if (!refObject && [objects objectForKey:refMember])
 			{
 				refObject = refMember;
@@ -680,9 +775,7 @@
 			NSString* linkReference = nil;
 			if (refObject && refMember)
 			{
-				linkDescription = cmd.objectReferenceTemplate;
-				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$OBJECT" withString:refObject];
-				linkDescription = [linkDescription stringByReplacingOccurrencesOfString:@"$MEMBER" withString:refMember];
+				linkDescription = [self objectLinkNameForObject:refObject andMember:refMember];
 				linkReference = [NSString stringWithFormat:@"#%@", refMember];
 			}
 			else if (refObject)
@@ -692,7 +785,7 @@
 			}
 			else
 			{
-				linkDescription = refMember;
+				linkDescription = [self memberLinkNameForObject:objectName andMember:refMember];
 				linkReference = [NSString stringWithFormat:@"#%@", refMember];
 			}
 			
@@ -747,7 +840,8 @@
 			if ([word hasPrefix:@"::"] && [word length] > 2 && ![replacements objectForKey:word])
 			{
 				NSString* member = [word substringFromIndex:2];
-				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
+				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
+				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 				[replacements setObject:link forKey:word];
 				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
 			}
@@ -757,7 +851,8 @@
 			if ([word hasSuffix:@"()"] && [word length] > 2 && ![replacements objectForKey:word])
 			{
 				NSString* member = [word substringToIndex:[word length] - 2];
-				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, member];
+				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
+				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 				[replacements setObject:link forKey:word];
 				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
 			}
@@ -787,7 +882,8 @@
 		if ([[testNode nodesForXPath:@"ref" error:nil] count] == 0)
 		{
 			NSString* itemValue = [[testNode stringValue] stringByTrimmingCharactersInSet:whitespaceSet];
-			NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", itemValue, itemValue];
+			NSString* name = [self memberLinkNameForObject:objectName andMember:itemValue];
+			NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", itemValue, name];
 			NSString* fixedValue = [itemValue stringByAppendingString:@"()"];
 			[replacements setObject:link forKey:fixedValue];
 			[testNode setStringValue:fixedValue];
@@ -870,6 +966,44 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSDictionary*) linkDataForObject:(NSString*) objectName
+						  andMember:(NSString*) memberName
+{
+	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
+	NSDictionary* objectData = [objects objectForKey:objectName];
+	if (objectData)
+	{
+		NSDictionary* membersData = [objectData objectForKey:kTKDataObjectMembersKey];
+		return [membersData objectForKey:memberName];
+	}
+	return nil;
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) objectLinkNameForObject:(NSString*) objectName
+							andMember:(NSString*) memberName
+{
+	NSString* prefix = @"";
+	NSDictionary* memberData = [self linkDataForObject:objectName andMember:memberName];
+	if (memberData) prefix = [memberData objectForKey:kTKDataMemberPrefixKey];
+	
+	NSString* result = cmd.objectReferenceTemplate;
+	result = [result stringByReplacingOccurrencesOfString:@"$PREFIX" withString:prefix];
+	result = [result stringByReplacingOccurrencesOfString:@"$OBJECT" withString:objectName];
+	result = [result stringByReplacingOccurrencesOfString:@"$MEMBER" withString:memberName];
+	return result;
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) memberLinkNameForObject:(NSString*) objectName
+							andMember:(NSString*) memberName
+{
+	NSDictionary* memberData = [self linkDataForObject:objectName andMember:memberName];
+	if (memberData) return [memberData objectForKey:kTKDataMemberSelectorKey];
+	return memberName;
+}
 
 //----------------------------------------------------------------------------------------
 - (NSString*) objectReferenceFromObject:(NSString*) source 

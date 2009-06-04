@@ -10,23 +10,28 @@
 
 #define kTKConverterException @"TKConverterException"
 
-#define kTKDirClasses @"Classes"
-#define kTKDirCategories @"Categories"
-#define kTKDirProtocols @"Protocols"
-#define kTKDirCSS @"css"
-#define kTKDirDocSet @"docset"
+#define kTKDirClasses		@"Classes"
+#define kTKDirCategories	@"Categories"
+#define kTKDirProtocols		@"Protocols"
+#define kTKDirCSS			@"css"
+#define kTKDirDocSet		@"docset"
 
-#define kTKDataMainIndexKey @"Index"
-#define kTKDataMainObjectsKey @"Objects"
-#define kTKDataMainDirectoriesKey @"Directories"
+#define kTKDataMainIndexKey				@"Index"					// NSXMLDocument
+#define kTKDataMainObjectsKey			@"Objects"					// NSDictionary
+#define kTKDataMainDirectoriesKey		@"Directories"				// NSDictionary
 
-#define kTKDataObjectNameKey @"ObjectName"
-#define kTKDataObjectKindKey @"ObjectKind"
-#define kTKDataObjectClassKey @"ObjectClass"
-#define kTKDataObjectMarkupKey @"CleanedMarkup"
-#define kTKDataObjectRelDirectoryKey @"RelativeDirectory"
-#define kTKDataObjectRelPathKey @"RelativePath"
-#define kTKDataObjectDoxygenFilenameKey @"DoxygenMarkupFilename"
+#define kTKDataObjectNameKey			@"ObjectName"				// NSString
+#define kTKDataObjectKindKey			@"ObjectKind"				// NSString
+#define kTKDataObjectClassKey			@"ObjectClass"				// NSString
+#define kTKDataObjectMarkupKey			@"CleanedMarkup"			// NSXMLDocument
+#define kTKDataObjectMembersKey			@"Members"					// NSDictionary
+#define kTKDataObjectRelDirectoryKey	@"RelativeDirectory"		// NSString
+#define kTKDataObjectRelPathKey			@"RelativePath"				// NSString
+#define kTKDataObjectDoxygenFilenameKey	@"DoxygenMarkupFilename"	// NSString
+
+#define kTKDataMemberNameKey			@"Name"						// NSString
+#define kTKDataMemberPrefixKey			@"Prefix"					// NSString
+#define kTKDataMemberSelectorKey		@"Selector"					// NSString
 
 @class CommandLineParser;
 
@@ -70,6 +75,19 @@ is a standard @c NSDictionary of the following layout:
 		  - @c "CleanedMarkup" key: contains an @c NSXMLDocument with clean XML. This
 			document is updated through different steps and always contains the last
 			object data.
+		  - @c "Members" key: contains a @c NSMutableDictionary with the descriptions
+			of all object members. This is mainly used for nicer links generation. The
+			keys for the dictionary are simply method names:
+			  - @c "<MethodName>" key: contains a @c NSMutableDictionary with member
+				description:
+				  - @c "Name" key: a @c NSString with the member name (this is the same
+					name as the key in the parent dictionary).
+				  - @c "Prefix" key: a @c NSString with the prefix to be used before the
+					name in order to get the selector name.
+				  - @c "Selector" key: a @c NSString with the correctly formatted member
+					selector that can be used directly when creating member link names
+					within the same object (inter object links cannot use this because
+					their template might include prefix at arbitrary place).
 		  - @c "RelativeDirectory" key: this @c NSString describes the sub directory 
 			under which the object will be stored relative to the index file. At the
 			moment this value depends on the object type and can be @c "Classes", 

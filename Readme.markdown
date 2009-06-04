@@ -245,9 +245,13 @@ Miscellaneous options
 
 *	`--object-reference-template`: Inter-object reference (links) generation style. This
 	option allows you to change the way the link names are generated. Defaults to 
-	`[$OBJECT $MEMBER]`. However you may choose to only generate member name or any
-	combination. You can use `$OBJECT` and `$MEMBER` placeholders which will be replaced by
-	the object name and member name respectively.
+	`$PREFIX[$OBJECT $MEMBER]`. However you may choose to only generate member name or any
+	combination. You can use `$PREFIX`, `$OBJECT` and `$MEMBER` placeholders which will be 
+	replaced by the selector prefix (`-` or `+`), object name and member name respectively.
+*	`--member-reference-template`: Same-object reference (links) generation style. This
+	option allows you to change the way the link names are generated. Defaults to
+	`$PREFIX $MEMBER`. You can use `$PREFIX` and `$MEMBER` placeholders which will be
+	replaced by the selector prefix (`-` or `+`) and member name respectively.
 *	`--clean-temp-files`: Remove all temporary build files. Note that this is 
 	dynamic and will delete generated files based on what is build. If html is created, 
 	all doxygen and clean xml is removed. If doc set is installed, the whole output path 
@@ -323,6 +327,7 @@ line counterparts is:
 *	`MergeCategories` (Boolean): `--merge-categories`
 *	`KeepMergedSections` (Boolean): `--keep-merged-sections`
 *	`ObjectReferenceTemplate` (String): `--object-reference-template`
+*	`MemberReferenceTemplate` (String): `--member-reference-template`
 *	`CleanTemporaryFilesAfterBuild` (Boolean): `--clean-temp-files`
 *	`CleanOutputFilesBeforeBuild` (Boolean): `--clean-before-build`
 *	`VerboseLevel` (Number): `--verbose`
@@ -343,8 +348,8 @@ set ID - if the  `DocSetBundleID` is `com.yourdomain.$PROJECT.docset`, the `$PRO
 automatically be replaced by the passed project name from the `--project` command line 
 argument.
 
-Additionally, you can use `$MEMBER` and `$OBJECT` for `ObjectReferenceTemplate` option as
-described in the usage section above.
+Additionally, `$PREFIX`, and `$MEMBER` can be used as placeholders for `MemberReferenceTemplate`
+parameter, while the `ObjectReferenceTemplate` can also use `$OBJECT` as described above.
 
 
 

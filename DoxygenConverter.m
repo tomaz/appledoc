@@ -97,6 +97,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	
 	[self createCleanObjectDocumentationMarkup];
 	[self mergeCleanCategoriesToKnownObjects];
+	[self updateCleanObjectsDatabase];
 	[self createCleanIndexDocumentationFile];
 	[self fixCleanObjectDocumentation];
 	[self saveCleanObjectDocumentationFiles];

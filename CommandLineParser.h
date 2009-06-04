@@ -123,6 +123,11 @@ class documentation. */
 This is used to generate the actual reference name and is visible on the final output. */
 @property(readonly) NSString* objectReferenceTemplate;
 
+/** The template for creating references to members of the same object.
+ 
+This is used to generate the actual reference name and is visible on the final output. */
+@property(readonly) NSString* memberReferenceTemplate;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - clean output creation
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -136,7 +141,7 @@ Note That @c createCleanXHTML() is a prerequisite for documentation set. */
 @property(readonly) BOOL createDocSet;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name <#description#>Properties - XHTML output creation
+/// @name Properties - XHTML output creation
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** If @c YES, use bordered XHTML example sections which results in more Apple like

@@ -71,23 +71,9 @@
 //----------------------------------------------------------------------------------------
 - (NSString*) extractObjectMemberSelector:(id) node
 {
-	// Determine whether this is class or instance method.
-	NSString* prefix = nil;
-	switch ([self extractObjectMemberType:node])
-	{
-		case kTKObjectMemberTypeClass:
-			prefix = @"+ ";
-			break;
-		case kTKObjectMemberTypeInstance:
-			prefix = @"- ";
-			break;
-		default:
-			prefix = @"";
-			break;
-	}
-	
-	// Return the prefix followed by the name.
-	return [NSString stringWithFormat:@"%@%@", prefix, [self extractObjectMemberName:node]];
+	NSXMLElement* selectorNode = [self extractSubitemFromItem:node withName:@"selector"];
+	if (selectorNode) return [selectorNode stringValue];
+	return [self extractObjectMemberName:node];
 }
 
 //----------------------------------------------------------------------------------------
