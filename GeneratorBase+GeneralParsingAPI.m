@@ -27,7 +27,7 @@
 - (NSArray*) extractBriefParagraphsFromItem:(id) item
 {
 	NSXMLElement* briefNode = [self extractSubitemFromItem:item withName:@"brief"];
-	if (briefNode) [self extractParagraphsFromItem:briefNode];
+	if (briefNode) return [self extractParagraphsFromItem:briefNode];
 	return nil;
 }
 
