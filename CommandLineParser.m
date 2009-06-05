@@ -328,8 +328,8 @@ instead.
 			NSString* message = [NSString stringWithFormat:
 								 @"Custom templates path '%@' doesn't contain all required files!",
 								 self.templatesPath];
-			[Systemator throwExceptionWithName:kTKCommandLineException
-							   withDescription:message];
+			logError(@"Failed parsing custom templates path at '%@'!", self.templatesPath);
+			[Systemator throwExceptionWithName:kTKCommandLineException withDescription:message];
 		}
 	}
 

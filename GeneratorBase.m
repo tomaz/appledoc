@@ -243,7 +243,7 @@ The @c type parameter can be one of the following:
 		if (![result writeToFile:filename atomically:NO])
 		{
 			NSString* message = [NSString stringWithFormat:@"Failed saving object output to '%@'!", filename];
-			logError(message);
+			logError(@"Failed saving clean object output!");
 			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 		}
 		wasFileCreated = YES;
@@ -271,7 +271,7 @@ The @c type parameter can be one of the following:
 		if (![result writeToFile:filename atomically:NO])
 		{
 			NSString* message = [NSString stringWithFormat:@"Failed saving index output to '%@'!", filename];
-			logError(message);
+			logError(@"Failed saving clean index output!");
 			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 		}
 		wasFileCreated = YES;
@@ -299,7 +299,7 @@ The @c type parameter can be one of the following:
 		if (![result writeToFile:filename atomically:NO])
 		{
 			NSString* message = [NSString stringWithFormat:@"Failed saving hierarchy output to '%@'!", filename];
-			logError(message);
+			logError(@"Failed saving clean hierarchy output!");
 			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 		}
 		wasFileCreated = YES;

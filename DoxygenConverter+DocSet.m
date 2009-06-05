@@ -152,6 +152,7 @@
 	if (![documentData writeToFile:filename options:0 error:&error])
 	{
 		[loopAutoreleasePool drain];
+		logError(@"Failed saving DocSet Nodes.xml to '%@'!", filename);
 		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 	}
 	
@@ -274,6 +275,7 @@
 	if (![documentData writeToFile:filename options:0 error:&error])
 	{
 		[loopAutoreleasePool drain];
+		logError(@"Failed saving DocSet Tokens.xml to '%@'!", filename);
 		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 	}
 	
@@ -285,26 +287,15 @@
 - (void) createDocSetBundle
 {
 	logNormal(@"Creating DocSet bundle...");
-	NSError* error = nil;
 	
 	// First copy the info plist file into the contents output.
 	NSString* plistDestPath = [cmd.outputDocSetContentsPath stringByAppendingPathComponent:@"Info.plist"];
 	logVerbose(@"Copying info plist file to '%@'...", plistDestPath);
-	if (![manager copyItemAtPath:cmd.docsetSourcePlistPath
-						  toPath:plistDestPath
-						   error:&error])
-	{
-		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-	}
+	[Systemator copyItemAtPath:cmd.docsetSourcePlistPath toPath:plistDestPath];
 	
 	// Copy all html files to the bundle structure.
 	logVerbose(@"Copying clean XHTML to '%@'...", cmd.outputDocSetDocumentsPath);
-	if (![manager copyItemAtPath:cmd.outputCleanXHTMLPath
-						  toPath:cmd.outputDocSetDocumentsPath
-						   error:&error])
-	{
-		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-	}
+	[Systemator copyItemAtPath:cmd.outputCleanXHTMLPath toPath:cmd.outputDocSetDocumentsPath];
 	
 	// Index the documentation set.
 	logVerbose(@"Indexing DocSet...");
@@ -313,21 +304,8 @@
 	// Copy the documentation set to the proper directory. First we need to remove
 	// previous files otherwise copying will fail.
 	NSString* docsetInstallPath = [cmd.docsetInstallPath stringByAppendingPathComponent:cmd.docsetBundleID];
-	if ([manager fileExistsAtPath:docsetInstallPath])
-	{
-		logVerbose(@"Removing existing DocSet bundle at '%@'", docsetInstallPath);
-		if (![manager removeItemAtPath:docsetInstallPath error:&error])
-		{
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}
-	}	
 	logVerbose(@"Copying DocSet bundle to '%@'...", docsetInstallPath);
-	if (![manager copyItemAtPath:cmd.outputDocSetPath 
-						  toPath:docsetInstallPath
-						   error:&error])
-	{
-		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-	}
+	[Systemator copyItemAtPath:cmd.outputDocSetPath toPath:docsetInstallPath];
 	
 	// Install the script to the Xcode.
 	logVerbose(@"Installing DocSet to Xcode...");
@@ -343,6 +321,7 @@
 		[installScript release];
 		NSString* message = [NSString stringWithFormat:@"Installation of DocSet failed with message:\n'%@'!", 
 							 [errorDict objectForKey:NSAppleScriptErrorMessage]];
+		logError(@"Failed installing DocSet to Xcode documentation!");
 		[Systemator throwExceptionWithName:kTKConverterException 
 						   withDescription:message];
 	}
@@ -355,6 +334,7 @@
 		NSError* error = nil;
 		if (![manager removeItemAtPath:cmd.outputCleanXHTMLPath error:&error])
 		{
+			logError(@"Failed removing temporary XHTML files at '%@'!", cmd.outputCleanXHTMLPath);
 			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 		}		
 	}
@@ -366,6 +346,7 @@
 		NSError* error = nil;
 		if (![manager removeItemAtPath:cmd.outputDocSetPath error:&error])
 		{
+			logError(@"Failed removing temporary DocSet files at '%@'!", cmd.outputDocSetPath);
 			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 		}		
 	}

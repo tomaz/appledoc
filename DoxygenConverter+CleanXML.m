@@ -439,6 +439,7 @@
 	NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:@"Index.xml"];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
+		logError(@"Failed writting clean Index.xml to '%@'!", filename);
 		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 	}
 	
@@ -558,6 +559,7 @@
 	NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:@"Hierarchy.xml"];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
+		logError(@"Failed writting clean Hierarchy.xml to '%@'!", filename);
 		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 	}
 	
@@ -637,6 +639,7 @@
 		NSError* error = nil;
 		if (![manager removeItemAtPath:doxygenXMLOutputPath error:&error])
 		{
+			logError(@"Failed removing temporary doxygen files at '%@'!", doxygenXMLOutputPath);
 			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 		}
 	}
@@ -1169,6 +1172,7 @@
 														   error:&error];
 		if (!cleanDocument)
 		{
+			logError(@"Failed reloading clean XML document!");
 			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 		}
 		[objectData setObject:cleanDocument forKey:kTKDataObjectMarkupKey];

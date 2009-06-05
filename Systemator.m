@@ -190,6 +190,7 @@ get the path from the shell.
 		}
 	}
 	
+	logDebug(@"- Copying '%@' to '%@'...", source, destination);
 	if (![manager copyItemAtPath:source
 						  toPath:destination
 						   error:&error])
@@ -210,7 +211,11 @@ get the path from the shell.
 	NSString* contents = [[NSString alloc] initWithContentsOfFile:filename
 														 encoding:NSASCIIStringEncoding
 															error:&error];
-	if (!contents) [self throwExceptionWithName:kTKSystemError basedOnError:error];
+	if (!contents)
+	{
+		logError(@"Failed reading data from '%@'!", filename);
+		[self throwExceptionWithName:kTKSystemError basedOnError:error];
+	}
 	return [self linesFromString:contents];
 }
 
@@ -232,6 +237,7 @@ get the path from the shell.
 					encoding:NSASCIIStringEncoding
 					   error:&error])
 	{
+		logError(@"Failed writting data to file '%@'!", filename);
 		[self throwExceptionWithName:kTKSystemError basedOnError:error];
 	}
 }
@@ -246,7 +252,8 @@ get the path from the shell.
 													 error:&error];
 	if (!infoPlistData)
 	{
-		[Systemator throwExceptionWithName:kTKSystemError basedOnError:error];
+		logError(@"Failed reading property list data from '%@'!", filename);
+		[self throwExceptionWithName:kTKSystemError basedOnError:error];
 	}
 	
 	// Convert the data into the object that will represent the property list.
@@ -257,7 +264,8 @@ get the path from the shell.
 													 errorDescription:&errorDescription];
 	if (!docsetInfo)
 	{
-		[Systemator throwExceptionWithName:kTKSystemError withDescription:errorDescription];
+		logError(@"Failed parsing property list data from '%@'!", filename);
+		[self throwExceptionWithName:kTKSystemError withDescription:errorDescription];
 	}
 	
 	return docsetInfo;
@@ -273,8 +281,9 @@ get the path from the shell.
 															 errorDescription:&errorDescription];
 	if (!infoPlistData)
 	{
+		logError(@"Failed extracting property list data for '%@'!", filename);
 		[errorDescription autorelease];
-		[Systemator throwExceptionWithName:kTKSystemError withDescription:errorDescription];
+		[self throwExceptionWithName:kTKSystemError withDescription:errorDescription];
 	}
 	
 	// Save the data to the file.
@@ -283,7 +292,8 @@ get the path from the shell.
 							options:0
 							  error:&error])
 	{
-		[Systemator throwExceptionWithName:kTKSystemError basedOnError:error];
+		logError(@"Failed writting property list data to '%@'!", filename);
+		[self throwExceptionWithName:kTKSystemError basedOnError:error];
 	}
 }
 

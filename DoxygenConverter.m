@@ -133,6 +133,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 		// Remove previous directory.
 		if (![manager removeItemAtPath:cmd.outputPath error:&error])
 		{
+			logError(@"Failed removing previous output files at '%@'!", cmd.outputPath);
 			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 		}
 		

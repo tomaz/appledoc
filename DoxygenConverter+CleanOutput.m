@@ -63,6 +63,7 @@
 			NSError* error = nil;
 			if (![manager removeItemAtPath:cmd.outputCleanXMLPath error:&error])
 			{
+				logError(@"Failed removing temporary clean XML files at '%@'!", cmd.outputCleanXMLPath);
 				[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
 			}
 		}
