@@ -12,6 +12,7 @@
 #import "GeneratorBase+ObjectSubclassAPI.h"
 #import "GeneratorBase+IndexParsingAPI.h"
 #import "GeneratorBase+IndexSubclassAPI.h"
+#import "Systemator.h"
 #import "LoggingProvider.h"
 #import "CommandLineParser.h"
 #import "DoxygenConverter.h"
@@ -28,25 +29,22 @@
 	// If at least one file was genereated, copy the css files from templates.
 	if (self.wasFileCreated)
 	{
-		NSError* error = nil;
 		NSFileManager* manager = [NSFileManager defaultManager];
 		NSArray* templateFiles = [manager directoryContentsAtPath:cmd.templatesPath];
 		for (NSString* templateFile in templateFiles)
 		{
 			if ([[templateFile pathExtension] isEqualToString:@"css"])
 			{
-				logDebug(@"Copying '%@' css file...", templateFile);
+				logVerbose(@"- Copying '%@' css file...", templateFile);
 				NSString* source = [cmd.templatesPath stringByAppendingPathComponent:templateFile];
 				NSString* dest = [[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS] 
 								  stringByAppendingPathComponent:templateFile];
-				if (![manager copyItemAtPath:source
-									  toPath:dest
-									   error:&error])
+				@try
 				{
-					logError(@"Copying '%@' failed with error %@!", 
-							 templateFile, 
-							 [error localizedDescription]);
-					continue;
+					[Systemator copyItemAtPath:source toPath:dest];
+				}
+				@catch (NSException* e)
+				{
 				}
 			}
 		}

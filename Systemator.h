@@ -53,6 +53,17 @@ the directory is created. If creation fails, exception is thrown.
 */
 + (void) createDirectory:(NSString*) path;
 
+/** Copies the given file or directory to the given destination.￼￼
+
+If the destination already exists, it is removed first.
+ 
+@param source The source of the copy.
+@param destination The destination to copy to.
+@exception NSException Thrown if copying fails.
+*/
++ (void) copyItemAtPath:(NSString*) source
+				 toPath:(NSString*) destination;
+
 /** Reads the contents of the given file and returns the array of all lines.
 
 The file is assumed to be in @c NSASCIIStringEncoding. If reading fails, the exception 

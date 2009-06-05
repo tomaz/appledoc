@@ -157,15 +157,48 @@ get the path from the shell.
 {
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path])
 	{
-		logDebug(@"Creating directory '%@'...", path);
 		NSError* error = nil;
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:path
 									   withIntermediateDirectories:YES
 														attributes:nil
 															 error:&error])
 		{
+			logError(@"Creating directory '%@' failed with error %@!", 
+					 path,
+					 [error localizedDescription]);
 			[self throwExceptionWithName:kTKSystemError basedOnError:error];
 		}
+	}
+}
+
+//----------------------------------------------------------------------------------------
++ (void) copyItemAtPath:(NSString*) source 
+				 toPath:(NSString*) destination
+{
+	NSError* error = nil;
+	NSFileManager* manager = [NSFileManager defaultManager];
+	
+	if ([manager fileExistsAtPath:destination])
+	{
+		logDebug(@"- Removing existing '%@'...", destination);
+		if (![manager removeItemAtPath:destination error:&error])
+		{
+			logError(@"Removing existing '%@' failed with %@!",
+					 destination,
+					 [error localizedDescription]);
+			[self throwExceptionWithName:kTKSystemError basedOnError:error];
+		}
+	}
+	
+	if (![manager copyItemAtPath:source
+						  toPath:destination
+						   error:&error])
+	{
+		logError(@"Copying '%@' to '%@' failed with error %@!", 
+				 source, 
+				 destination,
+				 [error localizedDescription]);
+		[self throwExceptionWithName:kTKSystemError basedOnError:error];
 	}
 }
 
