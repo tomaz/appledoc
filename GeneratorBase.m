@@ -12,6 +12,8 @@
 #import "GeneratorBase+ObjectSubclassAPI.h"
 #import "GeneratorBase+IndexParsingAPI.h"
 #import "GeneratorBase+IndexSubclassAPI.h"
+#import "GeneratorBase+HierarchyParsingAPI.h"
+#import "GeneratorBase+HierarchySubclassAPI.h"
 #import "CommandLineParser.h"
 #import "DoxygenConverter.h"
 #import "LoggingProvider.h"
@@ -277,6 +279,34 @@ The @c type parameter can be one of the following:
 }
 
 //----------------------------------------------------------------------------------------
+- (void) generateOutputForHierarchy:(NSDictionary*) data
+							 toFile:(NSString*) filename
+{
+	NSParameterAssert(data != nil);
+	NSParameterAssert(filename != nil);
+	NSParameterAssert([filename length] > 0);
+	
+	// Generate the data.
+	hierarchyData = data;
+	logVerbose(@"- Generating output for hierarchy...");
+	NSData* result = [self outputDataForHierarchy];
+	hierarchyData = nil;
+	
+	// Save the data.
+	if (result && [result length] > 0)
+	{
+		logDebug(@"  - Saving hierarchy output to '%@'...", filename);
+		if (![result writeToFile:filename atomically:NO])
+		{
+			NSString* message = [NSString stringWithFormat:@"Failed saving hierarchy output to '%@'!", filename];
+			logError(message);
+			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+		}
+		wasFileCreated = YES;
+	}
+}
+
+//----------------------------------------------------------------------------------------
 - (void) generationStarting
 {
 	wasFileCreated = NO;
@@ -499,6 +529,38 @@ The @c type parameter can be one of the following:
 		}
 		[self appendIndexGroupFooterToData:data type:type];
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Hierarchy output generation handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSData*) outputDataForHierarchy
+{
+	// Note that we could use the hierarchies data directly instead of relying on the
+	// generated XML and it would probably be more optimized too. However using XML
+	// ensures consistent parsing code with the rest of the generation methods and
+	// perhaps even more important - it uses the same data that external utilities
+	// might use if they are only interested in generating the XML from appledoc.
+	NSMutableData* result = [NSMutableData data];	
+	NSArray* rootNodes = [self.hierarchyMarkup nodesForXPath:@"project/object" error:nil];
+	if ([rootNodes count] > 0)
+	{
+		[self appendHierarchyHeaderToData:result];
+		[self appendHierarchyGroupHeaderToData:result];
+		for (int i = 0; i < [rootNodes count]; i++)
+		{
+			NSXMLElement* rootNode = [rootNodes objectAtIndex:i];
+			[self appendHierarchyGroupItemToData:result 
+										fromItem:rootNode 
+										   index:i];
+		}
+		[self appendHierarchyGroupFooterToData:result];
+		[self appendHierarchyFooterToData:result];	
+	}
+	
+	return result;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

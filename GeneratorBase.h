@@ -62,13 +62,14 @@ This class should be treated as abstract base class. It provides the stubs for t
 output generation as well as several helper methods that the subclasses can use to
 make their job easier.
  
-Each concrete subclass can convert two types of files - the index files and object files.
+Each concrete subclass can convert three types of files - index, hierarchy and object files.
 The subclass can only override the methods for generating output that makes sense for the 
 implemented output type. The clients send @c generateOutputForIndex:toFile:() to generate the
-main index file and @c generateOutputForObject:toFile:() to generate the documentation for
+main index file, @c generateOutputForHierarchy:toFile() to generate the main hierarchy
+file and @c generateOutputForObject:toFile:() to generate the documentation for
 individual objects.
  
-In both cases, there are two options for generating output in the subclass. The first is
+In all cases, there are two options for generating output in the subclass. The first is
 to use the default stubs. This means that the subclass should leave the layout and order
 of creation to the base class and should override several methods which are sent during
 the creation, depending the object that is being generated. The methods which fall into
@@ -77,21 +78,24 @@ and also the simplest way of getting the job done. However it limits the order i
 output elements are generated (of course the subclass can still use this way and generate
 intermediate results which it can store to class variables and then use to generate the
 complete output at the end of appending). If the subclass requires more control, it can
-also override @c outputDataForObject() and/or @c outputDataForIndex() methods and handle 
-the data in a completely custom way (@c outputDataForObject() message is sent from
-@c generateOutputForObject:toFile:() which sets the class properties with the object data, so 
-the subclass can use these to make it's life easier. Similarly, @c outputDataForIndex()
-is sent from @c generateOutputForIndex()).
+also override @c outputDataForObject(), @c outputDataForIndex() and/or
+@c outputDataForHierarchy() methods and handle the data in a completely custom way 
+(@c outputDataForObject() message is sent from @c generateOutputForObject:toFile:() which 
+sets the class properties with the object data, so the subclass can use these to make 
+it's life easier. Similarly, @c outputDataForIndex() is sent from @c generateOutputForIndex:toFile:()
+and @c outputDataForHierarchy() from @c generateOutputForHierarchy:toFile:()).
  
 The class is designed so that the same instance can be re-used for generation of several
-objects by simply sending the instance @c generateOutputForObject:toFile:() message and/or
-@c generateOutputForIndex:toFile:() with the required data.
+objects by simply sending the instance @c generateOutputForObject:toFile:() message,
+@c generateOutputForIndex:toFile:() and/or @c generateOutputForHierarchy:toFile:() with 
+the required data.
 */
 @interface GeneratorBase : NSObject
 {
 	CommandLineParser* cmd;
 	NSDictionary* objectData;
 	NSDictionary* indexData;
+	NSDictionary* hierarchyData;
 	NSString* projectName;
 	NSString* lastUpdated;
 	BOOL wasFileCreated;
@@ -114,7 +118,8 @@ finishes, the data is saved to the given file.
 @exception NSException Thrown if the given @c data or @c filename is @c nil or empty or 
 	output generation or saving to file fails.
 @see outputDataForObject
-@see generateOutputForIndex:toFile:()
+@see generateOutputForIndex:toFile:
+@see generateOutputForHierarchy:toFile:
 */
 - (void) generateOutputForObject:(NSDictionary*) data
 						  toFile:(NSString*) filename;
@@ -127,16 +132,35 @@ the values from the given data to the properties and then sends the receiver
 the receiver several messages that can be used to convert the data. When conversion
 finishes, the data is saved to the given file.
 
-
-@param data An @c NSDictionary that describes the object for which output is generated.
+@param data The main database @c NSDictionary that describes all objects and data.
 @param filename The name of the file to save to.
 @exception NSException Thrown if the given @c data or @c filename is @c nil or empty or 
 	output generation or saving to file fails.
 @see outputDataForIndex
-@see generateOutputForObject:toFile:()
+@see generateOutputForObject:toFile:
+@see generateOutputForHierarchy:toFile:
 */
 - (void) generateOutputForIndex:(NSDictionary*) data
-							toFile:(NSString*) filename;
+						 toFile:(NSString*) filename;
+
+/** Generates the output data from the given hierarchy data.
+
+This is the main message that starts the whole generation for the given hierarchy. It 
+copies the values from the given data to the properties and then sends the receiver 
+@c outputDataForHierarchy() message that triggers the object data parsing and in turn sends 
+the receiver several messages that can be used to convert the data. When conversion
+finishes, the data is saved to the given file.
+
+@param data The main database @c NSDictionary that describes all objects and data.
+@param filename The name of the file to save to.
+@exception NSException Thrown if the given @c data or @c filename is @c nil or empty or 
+	output generation or saving to file fails.
+@see outputDataForHierarchy
+@see generateOutputForObject:toFile:
+@see generateOutputForIndex:toFile:
+*/
+- (void) generateOutputForHierarchy:(NSDictionary*) data
+							 toFile:(NSString*) filename;
 
 /** Indicates that the output generation is starting.
 
@@ -206,6 +230,7 @@ on the object data. Messages marked with @a * are optional, while messages marke
 @exception NSException Thrown if generation fails.
 @see generateOutputForObject:toFile:
 @see outputDataForIndex
+@see outputDataForHierarchy
 */
 - (NSData*) outputDataForObject;
 
@@ -214,16 +239,14 @@ on the object data. Messages marked with @a * are optional, while messages marke
 This message is sent from @c generateOutputForIndex:toFile:() after the passed object data
 is stored in the class properties. The concrete subclasses that require full control over 
 the generated data, can override this method and return the desired output. If overriden, 
-the subclass can get the XML document through the @c objectMarkup property.
+the subclass can get the database @c NSDictionary data through the @c indexMarkup() property.
  
 By default, this will send several higher level messages which can be overriden instead.
 The messages are sent in the following order:
 - @c appendIndexHeaderToData:()
- 
 - @c appendIndexGroupHeaderToData:type:() **
 - @c appendIndexGroupItemToData:fromItem:index:type:() **
 - @c appendIndexGroupFooterToData:type:() **
- 
 - @c appendIndexFooterToData:()
  
 Note that only a subset of above messages may be sent for a particular object, depending
@@ -234,8 +257,48 @@ on the object data. Messages marked with @a * are optional, while messages marke
 @exception NSException Thrown if generation fails.
 @see generateOutputForIndex:toFile:
 @see outputDataForObject
+@see outputDataForHierarchy
 */
 - (NSData*) outputDataForIndex;
+
+/** Generates the output data from the data contained in the class properties.
+
+This message is sent from @c generateOutputForHierarchy:toFile:() after the passed object 
+data is stored in the class properties. The concrete subclasses that require full control 
+over the generated data, can override this method and return the desired output. If 
+overriden, the subclass can get the database @c NSDictionary data through the 
+@c hierarchyMarkup() property.
+ 
+By default, this will send several higher level messages which can be overriden instead.
+The messages are sent in the following order:
+- @c appendHierarchyHeaderToData:()
+- @c appendHierarchyGroupHeaderToData:() **
+- @c appendHierarchyGroupItemToData:fromItem:index:() **
+- @c appendHierarchyGroupFooterToData:() ** 
+- @c appendHierarchyFooterToData:()
+ 
+Note that only a subset of above messages may be sent for a particular object, depending
+on the object data. Messages marked with @a * are optional, while messages marked with 
+@a ** may additionaly be sent multiple times, for each corresponding item once.
+
+@return Returns an autoreleased @c NSData containing generated output.
+@exception NSException Thrown if generation fails.
+@warning @b Important: Since objects hierarchy is tree-like structure with multiple levels,
+	subclass should be able to have full control of when the children of a particular item
+	are handled. The base class only automates the root objects notifications, while the
+	subclass is responsible for sending @c generateHierarchyGroupChildrenToData:forItem:() 
+	from within it's @c appendHierarchyGroupItemToData:fromItem:index:() override in order 
+	to trigger the parsing of the children (if there are some). This deviates somehow from
+	the rest of the output generation types.
+@warning @b Note: The above mentioned deviation actually starts recursive loop between
+	@c generateHierarchyGroupChildrenToData:forItem:() and 
+	@c appendHierarchyGroupItemToData:fromItem:index:(), however do not fear, since the 
+	base class method will automatically stop when no more children are detected.
+@see generateOutputForHierarchy:toFile:
+@see outputDataForObject
+@see outputDataForIndex
+*/
+- (NSData*) outputDataForHierarchy;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties

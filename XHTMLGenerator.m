@@ -12,6 +12,8 @@
 #import "GeneratorBase+ObjectSubclassAPI.h"
 #import "GeneratorBase+IndexParsingAPI.h"
 #import "GeneratorBase+IndexSubclassAPI.h"
+#import "GeneratorBase+HierarchyParsingAPI.h"
+#import "GeneratorBase+HierarchySubclassAPI.h"
 #import "Systemator.h"
 #import "LoggingProvider.h"
 #import "CommandLineParser.h"
@@ -501,6 +503,11 @@
 	
 	// Finish the rest of the markup.
 	[self appendLine:@"    <div class=\"clear\"></div>" toData:data];
+	[self appendLine:@"    <div class=\"footer\">" toData:data];
+	[self appendLine:@"      <a href=\"hierarchy.html\">Class hierarchy</a>" toData:data];
+	[self appendLine:@"     </div>" toData:data];
+	
+	// Append the standard footer.
 	[self appendFileFooterToData:data
 				 withLastUpdated:NO
 					andIndexLink:NO];
@@ -594,6 +601,97 @@
 	}
 	
 	[self appendLine:@"</li>" toData:data];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Hierarchy groups handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) appendHierarchyHeaderToData:(NSMutableData*) data
+{
+	[self appendFileHeaderToData:data 
+					   withTitle:self.hierarchyTitle 
+				   andStylesheet:@"css/screen.css"];
+	
+	// Start the references column.
+	[self appendLine:@"    <div class=\"hierarchy\">" toData:data];
+	
+	// Append the title.
+	[self appendString:@"      <h5>" toData:data];
+	[self appendString:self.hierarchyTitle toData:data];
+	[self appendLine:@"</h5>" toData:data];
+	
+	// Prepare the default group indent. We use this so that the XHTML code is visually
+	// more readable, however it doesn't add to the actual appearance...
+	hierarchyGroupIndent = @"    ";
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendHierarchyFooterToData:(NSMutableData*) data
+{	
+	[self appendLine:@"  </div>" toData:data];
+	[self appendLine:@"  <div class=\"clear\"></div>" toData:data];
+	[self appendLine:@"  <div class=\"footer\">" toData:data];
+	[self appendLine:@"    <a href=\"index.html\">Main objects reference</a>" toData:data];
+	[self appendLine:@"  </div>" toData:data];
+	[self appendFileFooterToData:data
+				 withLastUpdated:NO
+					andIndexLink:NO];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendHierarchyGroupHeaderToData:(NSMutableData*) data
+{
+	hierarchyGroupIndent = [hierarchyGroupIndent stringByAppendingString:@"  "];
+	
+	[self appendString:hierarchyGroupIndent toData:data];
+	[self appendLine:@"<ul>" toData:data];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendHierarchyGroupFooterToData:(NSMutableData*) data
+{
+	[self appendString:hierarchyGroupIndent toData:data];
+	[self appendLine:@"</ul>" toData:data];
+	
+	int length = [hierarchyGroupIndent length] - 2;
+	hierarchyGroupIndent = [hierarchyGroupIndent substringToIndex:length];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) appendHierarchyGroupItemToData:(NSMutableData*) data
+							   fromItem:(id) item
+								  index:(int) index
+{
+	NSString* reference = [self extractHierarchyGroupItemRef:item];
+	NSString* name = [self extractHierarchyGroupItemName:item];
+	
+	// Append the <li> opening tag.
+	[self appendString:hierarchyGroupIndent toData:data];
+	[self appendLine:@"  <li>" toData:data];
+	
+	// Append the item name and reference.
+	[self appendString:hierarchyGroupIndent toData:data];
+	if (reference)
+	{
+		[self appendString:@"    <a href=\"" toData:data];
+		[self appendString:reference toData:data];
+		[self appendString:@"\">" toData:data];
+	}
+	[self appendString:name toData:data];
+	if (reference)
+	{
+		[self appendString:@"</a>" toData:data];
+	}
+	[self appendLine:@"" toData:data];
+		
+	// Ask the subclass to generate data for all the children.
+	[self generateHierarchyGroupChildrenToData:data forItem:item];
+	
+	// Append the closing </li> tag.
+	[self appendString:hierarchyGroupIndent toData:data];
+	[self appendLine:@"  </li>" toData:data];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -725,7 +823,10 @@
 		
 		if (showBackToIndex)
 		{
-			[self appendLine:@"Back to <a href=\"../Index.html\">index</a>." toData:data];
+			[self appendString:@"Back to " toData:data];
+			[self appendString:@"<a href=\"../index.html\">index</a> / " toData:data];
+			[self appendString:@"<a href=\"../hierarchy.html\">hierarchy</a>." toData:data];
+			[self appendLine:@"" toData:data];
 		}
 		
 		[self appendLine:@"    </p>" toData:data];

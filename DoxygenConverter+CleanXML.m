@@ -550,7 +550,7 @@
 	}
 	
 	// Store the cleaned markup to the application data.
-	[database setObject:document forKey:kTKDataHierarchyTempKey];
+	[database setObject:document forKey:kTKDataMainHierarchyKey];
 	
 	// Save the markup.
 	NSError* error = nil;
@@ -721,11 +721,14 @@
 	NSDictionary* children = [objectHierarchyData objectForKey:kTKDataHierarchyChildrenKey];	
 	NSString* objectName = [objectHierarchyData objectForKey:kTKDataHierarchyObjectNameKey];
 	NSString* objectKind = [objectData objectForKey:kTKDataObjectKindKey];
+	NSString* objectRef = [objectData valueForKey:kTKDataObjectRelPathKey];
+	if (!objectKind) objectKind = @"class";
 	logVerbose(@"- Handling '%@'...", objectName);
 	
 	// Create the node that will represent the object itself.
 	NSXMLElement* objectNode = [NSXMLNode elementWithName:@"object"];
 	[objectNode addAttribute:[NSXMLNode attributeWithName:@"kind" stringValue:objectKind]];
+	if (objectRef) [objectNode addAttribute:[NSXMLNode attributeWithName:@"id" stringValue:objectRef]];
 	[node addChild:objectNode];
 	
 	// Create the name subnode.

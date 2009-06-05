@@ -28,6 +28,8 @@
 		73446FD50FCF04E600D8FDCE /* GeneratorBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD40FCF04E600D8FDCE /* GeneratorBase.m */; };
 		73446FD80FCF08C300D8FDCE /* GeneratorBase+ObjectParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD70FCF08C300D8FDCE /* GeneratorBase+ObjectParsingAPI.m */; };
 		7344702B0FCF169400D8FDCE /* XHTMLGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7344702A0FCF169400D8FDCE /* XHTMLGenerator.m */; };
+		734543790FD928350001018F /* GeneratorBase+HierarchySubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543750FD928350001018F /* GeneratorBase+HierarchySubclassAPI.m */; };
+		7345437A0FD928350001018F /* GeneratorBase+HierarchyParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543770FD928350001018F /* GeneratorBase+HierarchyParsingAPI.m */; };
 		738FE7EE0FA195FB00711038 /* object.xslt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
 		738FE7F00FA195FB00711038 /* screen.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
 		738FE8000FA1965700711038 /* Systemator.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FB0FA1965700711038 /* Systemator.m */; };
@@ -76,6 +78,10 @@
 		73446FD70FCF08C300D8FDCE /* GeneratorBase+ObjectParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GeneratorBase+ObjectParsingAPI.m"; sourceTree = "<group>"; };
 		734470290FCF169400D8FDCE /* XHTMLGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHTMLGenerator.h; sourceTree = "<group>"; };
 		7344702A0FCF169400D8FDCE /* XHTMLGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHTMLGenerator.m; sourceTree = "<group>"; };
+		734543750FD928350001018F /* GeneratorBase+HierarchySubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GeneratorBase+HierarchySubclassAPI.m"; sourceTree = "<group>"; };
+		734543760FD928350001018F /* GeneratorBase+HierarchyParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GeneratorBase+HierarchyParsingAPI.h"; sourceTree = "<group>"; };
+		734543770FD928350001018F /* GeneratorBase+HierarchyParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GeneratorBase+HierarchyParsingAPI.m"; sourceTree = "<group>"; };
+		734543780FD928350001018F /* GeneratorBase+HierarchySubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GeneratorBase+HierarchySubclassAPI.h"; sourceTree = "<group>"; };
 		738FE7E60FA195E700711038 /* object.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = object.xslt; sourceTree = "<group>"; };
 		738FE7E80FA195E700711038 /* screen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = screen.css; sourceTree = "<group>"; };
 		738FE7FA0FA1965700711038 /* Systemator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Systemator.h; sourceTree = "<group>"; };
@@ -170,6 +176,10 @@
 				73399F050FD4160300B65E5C /* GeneratorBase+IndexSubclassAPI.m */,
 				73399F670FD4612B00B65E5C /* GeneratorBase+IndexParsingAPI.h */,
 				73399F680FD4612B00B65E5C /* GeneratorBase+IndexParsingAPI.m */,
+				734543780FD928350001018F /* GeneratorBase+HierarchySubclassAPI.h */,
+				734543750FD928350001018F /* GeneratorBase+HierarchySubclassAPI.m */,
+				734543760FD928350001018F /* GeneratorBase+HierarchyParsingAPI.h */,
+				734543770FD928350001018F /* GeneratorBase+HierarchyParsingAPI.m */,
 				734470290FCF169400D8FDCE /* XHTMLGenerator.h */,
 				7344702A0FCF169400D8FDCE /* XHTMLGenerator.m */,
 			);
@@ -299,6 +309,8 @@
 				73399E710FD40C9700B65E5C /* GeneratorBase+ObjectSubclassAPI.m in Sources */,
 				73399F070FD4160300B65E5C /* GeneratorBase+IndexSubclassAPI.m in Sources */,
 				73399F690FD4612B00B65E5C /* GeneratorBase+IndexParsingAPI.m in Sources */,
+				734543790FD928350001018F /* GeneratorBase+HierarchySubclassAPI.m in Sources */,
+				7345437A0FD928350001018F /* GeneratorBase+HierarchyParsingAPI.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

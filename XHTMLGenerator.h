@@ -16,6 +16,7 @@
 {
 	BOOL indexProtocolsGroupAppended;
 	BOOL indexCategoriesGroupAppended;
+	NSString* hierarchyGroupIndent;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

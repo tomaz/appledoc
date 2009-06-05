@@ -56,7 +56,7 @@ generated. This is ussually the place to "close" open tags or similar.
 The message is sent from the @c GeneratorBase::outputDataForIndex() just before index group 
 items are generated. It gives subclasses a chance to append data to the output before the 
 generation for group items starts. After this message is sent, at least one 
-@c appendIndexGroupItemToData:fromItem:type:index:() message is sent and then 
+@c appendIndexGroupItemToData:fromItem:index:type:() message is sent and then 
 @c appendIndexGroupFooterToData:type:() is sent at the end.
  
 The type identifies the type of the index group and can be one of the following:

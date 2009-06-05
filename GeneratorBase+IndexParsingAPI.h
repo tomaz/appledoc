@@ -22,7 +22,7 @@ help parsing index related documentation.
 
 /** Extracts the index group item reference value for the given item.
 
-@param item The item which reference to te return.
+@param item The item which reference to return.
 @return Returns the item reference or @c nil if not found.
 @see extractIndexGroupItemName:
 */
@@ -30,7 +30,7 @@ help parsing index related documentation.
 
 /** Extracts the index group item name for the given item.
 
-@param item The item which value to te return.
+@param item The item which value to return.
 @return Returns the item value or @c nil if not found.
 @see extractIndexGroupItemRef:
 */

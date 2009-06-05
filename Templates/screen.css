@@ -68,28 +68,60 @@ h5 {
 
 /* @end */
 
-/* @group Index */
+/* @group Index & hierarchy */
 
 .column {
 	float: left;
 	width: 200px;
+	font-size: 0.9em;
 	margin-right: 40px;
 }
 
 .column h5 {
+	font-size: 1.1em;
 	border-bottom: 1px solid #aaa;
 }
 
 .column ul {
 	margin: 8px 0 0 0;
 	padding: 0;
-	font-size: 0.9em;
 	list-style: none;
 }
 
 .column ul li {
 	margin: 0 0 4px 0;
 	padding: 0;
+}
+
+.hierarchy {
+	font-size: 0.9em;
+}
+
+.hierarchy h5 {
+	font-size: 1.1em;
+	border-bottom: 1px solid #aaa;
+	margin-bottom: 6px;
+}
+
+.hierarchy ul {
+	list-style: none;
+	padding: 0;
+	margin: 4px 0 6px 20px;
+}
+
+.hierarchy ul li {
+	margin: 0 0 4px 0;
+	padding: 0;
+}
+
+.clear {
+	clear: left;
+	padding-top: 20px;
+}
+
+.footer {
+	font-size: 0.9em;
+	border-top: 1px solid #aaa;
 }
 
 /* @end */
