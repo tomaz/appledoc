@@ -85,6 +85,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	// Clear common variables.
 	[database removeAllObjects];
 	[database setObject:[NSMutableDictionary dictionary] forKey:kTKDataMainObjectsKey];
+	[database setObject:[NSMutableDictionary dictionary] forKey:kTKDataMainHierarchiesKey];
 	[database setObject:[NSMutableDictionary dictionary] forKey:kTKDataMainDirectoriesKey];
 	[doxygenXMLOutputPath release], doxygenXMLOutputPath = [[cmd outputPath] retain];
 
@@ -99,6 +100,7 @@ This message is automaticaly sent from @c DoxygenConverter::convert() in the pro
 	[self mergeCleanCategoriesToKnownObjects];
 	[self updateCleanObjectsDatabase];
 	[self createCleanIndexDocumentationFile];
+	[self createCleanHierarchyDocumentationFile];
 	[self fixCleanObjectDocumentation];
 	[self saveCleanObjectDocumentationFiles];
 	

@@ -39,7 +39,7 @@
 				 [filename hasPrefix:@"protocol_"];
 		if (!parse)
 		{
-			logVerbose(@"Skipping '%@' because it doesn't describe known object.", filename);
+			logDebug(@"- Skipping '%@' because it doesn't describe known object.", filename);
 			continue;
 		}
 		
@@ -68,7 +68,7 @@
 		if ([[originalDocument nodesForXPath:@"//briefdescription/para" error:NULL] count] == 0 &&
 			[[originalDocument nodesForXPath:@"//detaileddescription/para" error:NULL] count] == 0)
 		{
-			logVerbose(@"Skipping '%@' because it contains non-documented object...", filename);
+			logVerbose(@"- Skipping '%@' because it contains non-documented object...", filename);
 			continue;
 		}
 
@@ -119,6 +119,11 @@
 				continue;
 			}
 			
+			// (D.1) Prepare the object's parent.
+			NSString* objectParent = nil;
+			NSArray* baseNodes = [objectNode nodesForXPath:@"base" error:nil];
+			if ([baseNodes count] > 0) objectParent = [[baseNodes objectAtIndex:0] stringValue];
+			
 			// (E) Prepare the object relative directory and relative path to the index.
 			// Also set the class "link" for categories.
 			NSString* objectClass = nil;
@@ -156,6 +161,7 @@
 			[objectData setObject:objectRelativeDirectory forKey:kTKDataObjectRelDirectoryKey];
 			[objectData setObject:objectRelativePath forKey:kTKDataObjectRelPathKey];
 			[objectData setObject:inputFilename forKey:kTKDataObjectDoxygenFilenameKey];
+			if (objectParent) [objectData setObject:objectParent forKey:kTKDataObjectParentKey];
 			if (objectClass) [objectData setObject:objectClass forKey:kTKDataObjectClassKey];
 			
 			// Add the object to the object's dictionary.
@@ -173,7 +179,7 @@
 			[directoryArray addObject:objectData];
 			
 			// Log the object.
-			logVerbose(@"Found '%@' of type '%@' in file '%@'...", 
+			logVerbose(@"- Found '%@' of type '%@' in file '%@'...", 
 					   objectName, 
 					   objectKind,
 					   filename);
@@ -212,11 +218,11 @@
 			NSString* className = [categoryData objectForKey:kTKDataObjectClassKey];
 			if (!className)
 			{
-				logVerbose(@"Skipping '%@' because it belongs to unknown class.", categoryName);
+				logVerbose(@"- Skipping '%@' because it belongs to unknown class.", categoryName);
 				continue;
 			}
 			
-			logVerbose(@"Merging category '%@' documentation to class '%@'...",
+			logVerbose(@"- Merging category '%@' documentation to class '%@'...",
 					   categoryName,
 					   className);
 			
@@ -263,7 +269,7 @@
 					// the category name before the section description before... Note that
 					// we handle the cases where no category name is defined by simply using
 					// the category section name.
-					logDebug(@"- Merging documentation for section '%@'...");
+					logDebug(@"  - Merging documentation for section '%@'...");
 					NSXMLElement* classSectionNode = [categorySectionNode copy];
 					NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
 					if ([classSectionNameNodes count] > 0)
@@ -283,7 +289,7 @@
 			}
 			else
 			{
-				logDebug(@"- Merging all sections to '%@'...", categoryName);
+				logDebug(@"  - Merging all sections to '%@'...", categoryName);
 				
 				// Create the class section element.
 				NSXMLElement* sectionNode = [NSXMLNode elementWithName:@"section"];
@@ -322,7 +328,7 @@
 											   [categoryFileNode stringValue]];
 						if ([[classDocument nodesForXPath:testQuery error:nil] count] == 0)
 						{
-							logDebug(@"- Inserting file '%@' from category to index %d...",
+							logDebug(@"  - Inserting file '%@' from category to index %d...",
 									 [categoryFileNode stringValue],
 									 index);						
 							NSXMLElement* insertedNode = [categoryFileNode copy];
@@ -346,7 +352,7 @@
 		for (NSDictionary* categoryData in removedCategories)
 		{
 			NSString* categoryName = [categoryData objectForKey:kTKDataObjectNameKey];
-			logDebug(@"- Removing category '%@' documentation...", categoryName);
+			logDebug(@"  - Removing category '%@' documentation...", categoryName);
 			[categoriesArray removeObject:categoryData];
 			[objects removeObjectForKey:categoryName];
 		}
@@ -376,7 +382,7 @@
 		
 		// Get the required object data.
 		NSMutableDictionary* objectData = [objects objectForKey:objectName];
-		logVerbose(@"Handling '%@'...", objectName);
+		logVerbose(@"- Handling '%@'...", objectName);
 		
 		[self createMembersDataForObject:objectName objectData:objectData];
 	}
@@ -404,6 +410,8 @@
 	NSArray* sortedObjectNames = [[objects allKeys] sortedArrayUsingSelector:@selector(compare:)];
 	for (NSString* objectName in sortedObjectNames)
 	{
+		logVerbose(@"- Handling '%@'...", objectName);
+		
 		NSDictionary* objectData = [objects valueForKey:objectName];
 		NSString* objectKind = [objectData valueForKey:kTKDataObjectKindKey];
 		NSString* objectRef = [objectData valueForKey:kTKDataObjectRelPathKey];
@@ -439,6 +447,125 @@
 }
 
 //----------------------------------------------------------------------------------------
+- (void) createCleanHierarchyDocumentationFile
+{
+	logNormal(@"Creating clean hierarchy documentation file...");
+	
+	// Prepare common variables.
+	NSAutoreleasePool* loopAutoreleasePool = nil;
+	
+	// Go through all the objects in the database and prepare the hierarchy. Note that
+	// this is done in two steps. In the first step the objects are stored in the
+	// hierarchy in proper structure, except that the root level contains ALL of the
+	// objects. However all objects which place is not in the root will have their
+	// temporary flag set. These will be removed in the second pass. This way allows
+	// us to simplify hieararchy generation - when adding a new object, get it's parent
+	// and check if the parent already exists in the root. If not, add the parent, add
+	// the object to it's children and then also add the object to the root but marked
+	// with temporary...
+	NSMutableDictionary* hierarchies = [database objectForKey:kTKDataMainHierarchiesKey];
+	NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
+	for (NSString* objectName in objects)
+	{
+		// Release all autoreleased objects from the previous iteration.
+		[loopAutoreleasePool drain];
+		loopAutoreleasePool = [[NSAutoreleasePool alloc] init];
+		
+		// Get the object data from the objects database. If parent data exists, add the
+		// object to the hierarchy. Note that this adds both, the parent and the object
+		// to the root.
+		NSMutableDictionary* objectData = [objects objectForKey:objectName];
+		NSString* parentName = [objectData objectForKey:kTKDataObjectParentKey];
+		if (parentName)
+		{
+			logDebug(@"  - Handling '%@' as child of '%@'...", objectName, parentName);
+			
+			// Check the hierarchy database to see if object has already been added - this
+			// can happen in the code below if the object is found as a parent of another
+			// object. In such case we need to add object's data to the existing entry,
+			// otherwise we need to create the data.
+			NSMutableDictionary* objectHierarchyData = [hierarchies objectForKey:objectName];
+			if (!objectHierarchyData)
+			{
+				objectHierarchyData = [NSMutableDictionary dictionary];
+				[objectHierarchyData setObject:objectName forKey:kTKDataHierarchyObjectNameKey];
+				[objectHierarchyData setObject:[NSMutableDictionary dictionary] forKey:kTKDataHierarchyChildrenKey];
+				[hierarchies setObject:objectHierarchyData forKey:objectName];
+			}
+			
+			// Add the pointer to the object's data dictionary and set it's temporary
+			// key so that it will be removed later on - this object has a parent, so
+			// it's place is not in the root.
+			[objectHierarchyData setObject:objectData forKey:kTKDataHierarchyObjectDataKey];
+			[objectHierarchyData setObject:[NSNumber numberWithBool:YES] forKey:kTKDataHierarchyTempKey];
+			
+			// Check the hierarchy database to see if parent was already handled - if
+			// we find it in the root, add the object to it's children. Otherwise create
+			// the data for it now (note that at this point we don't prepare full data,
+			// this will be handled in above code when (if) parent object is found in
+			// documented data).
+			NSMutableDictionary* parentHierarchyData = [hierarchies objectForKey:parentName];
+			if (!parentHierarchyData)
+			{
+				parentHierarchyData = [NSMutableDictionary dictionary];
+				[parentHierarchyData setObject:parentName forKey:kTKDataHierarchyObjectNameKey];
+				[parentHierarchyData setObject:[NSMutableDictionary dictionary] forKey:kTKDataHierarchyChildrenKey];
+				[hierarchies setObject:parentHierarchyData forKey:parentName];
+			}
+			
+			// Add the object to it's parent children. Note that we don't set parent's
+			// temporary key - if the parent is still unknown, it may be the root object,
+			// however if we find it as a child of another object later on, we'll set it's
+			// temporary key at that point (see above).
+			NSMutableDictionary* parentChildren = [parentHierarchyData objectForKey:kTKDataHierarchyChildrenKey];
+			[parentChildren setObject:objectHierarchyData forKey:objectName];
+		}
+	}	
+	
+	// Ok, we've added all the objects, now delete temporary root placeholders.
+	for (int i = 0; i < [hierarchies count]; i++)
+	{
+		NSString* objectName = [[hierarchies allKeys] objectAtIndex:i];
+		NSDictionary* data = [hierarchies objectForKey:objectName];
+		NSNumber* temporary = [data objectForKey:kTKDataHierarchyTempKey];
+		if (temporary && [temporary boolValue])
+		{
+			logDebug(@"  - Removing temporary object '%@' from root...", objectName);
+			[hierarchies removeObjectForKey:objectName];
+			i--;
+		}
+	}
+	
+	// Create the default markup. Then handle all root level objects. This in turn will
+	// handle their children and these their and so on in the recursive method.
+	NSXMLDocument* document = [[NSXMLDocument alloc] init];
+	NSXMLElement* projectElement = [NSXMLElement elementWithName:@"project"];
+	[document setVersion:@"1.0"];
+	[document addChild:projectElement];
+	NSArray* sortedObjects = [[hierarchies allKeys] sortedArrayUsingSelector:@selector(compare:)];
+	for (NSString* objectName in sortedObjects)
+	{
+		NSDictionary* objectData = [hierarchies objectForKey:objectName];
+		[self createHierarchyDataForObject:objectData withinNode:projectElement];
+	}
+	
+	// Store the cleaned markup to the application data.
+	[database setObject:document forKey:kTKDataHierarchyTempKey];
+	
+	// Save the markup.
+	NSError* error = nil;
+	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
+	NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:@"Hierarchy.xml"];
+	if (![markupData writeToFile:filename options:0 error:&error])
+	{
+		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+	}
+	
+	[loopAutoreleasePool drain];
+	logInfo(@"Finished creating clean hierarchy documentation file.");
+}
+
+//----------------------------------------------------------------------------------------
 - (void) fixCleanObjectDocumentation
 {
 	logNormal(@"Fixing clean objects documentation links...");
@@ -459,7 +586,7 @@
 		
 		// Get the required object data.
 		NSMutableDictionary* objectData = [objects objectForKey:objectName];
-		logVerbose(@"Handling '%@'...", objectName);
+		logVerbose(@"- Handling '%@'...", objectName);
 		
 		[self fixInheritanceForObject:objectName objectData:objectData objects:objects];
 		[self fixLocationForObject:objectName objectData:objectData objects:objects];
@@ -492,7 +619,7 @@
 		filename = [filename stringByAppendingPathExtension:@"xml"];
 		
 		// Convert the file.
-		logDebug(@"Saving '%@' to '%@'...", objectName, filename);
+		logVerbose(@"- Saving '%@' to '%@'...", objectName, filename);
 		NSXMLDocument* document = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSData* documentData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
 		if (![documentData writeToFile:filename atomically:NO])
@@ -566,7 +693,7 @@
 				{
 					memberSelector = memberName;
 				}
-				logVerbose(@"Generating '%@' member data...", memberSelector);
+				logDebug(@"  - Generating '%@' member data...", memberSelector);
 				
 				// Create member data dictionary.
 				NSMutableDictionary* memberData = [NSMutableDictionary dictionary];
@@ -581,6 +708,43 @@
 				NSXMLElement* selectorNode = [NSXMLNode elementWithName:@"selector" stringValue:memberSelector];
 				[memberNode addChild:selectorNode];
 			}
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------
+- (void) createHierarchyDataForObject:(NSDictionary*) objectHierarchyData
+						   withinNode:(NSXMLElement*) node
+{
+	// Get the object data.
+	NSDictionary* objectData = [objectHierarchyData objectForKey:kTKDataHierarchyObjectDataKey];
+	NSDictionary* children = [objectHierarchyData objectForKey:kTKDataHierarchyChildrenKey];	
+	NSString* objectName = [objectHierarchyData objectForKey:kTKDataHierarchyObjectNameKey];
+	NSString* objectKind = [objectData objectForKey:kTKDataObjectKindKey];
+	logVerbose(@"- Handling '%@'...", objectName);
+	
+	// Create the node that will represent the object itself.
+	NSXMLElement* objectNode = [NSXMLNode elementWithName:@"object"];
+	[objectNode addAttribute:[NSXMLNode attributeWithName:@"kind" stringValue:objectKind]];
+	[node addChild:objectNode];
+	
+	// Create the name subnode.
+	NSXMLElement* nameNode = [NSXMLNode elementWithName:@"name" stringValue:objectName];
+	[objectNode addChild:nameNode];
+	
+	// If there are any children, process them. First create the children node, then
+	// add all children to it.
+	if ([children count] > 0)
+	{
+		NSXMLElement* childrenNode = [NSXMLNode elementWithName:@"children"];
+		[objectNode addChild:childrenNode];
+		
+		NSArray* sortedChildrenNames = [[children allKeys] sortedArrayUsingSelector:@selector(compare:)];
+		for (NSString* childName in sortedChildrenNames)
+		{
+			NSDictionary* childData = [children objectForKey:childName];
+			[self createHierarchyDataForObject:childData 
+									withinNode:childrenNode];
 		}
 	}
 }
@@ -608,7 +772,7 @@
 			NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
 			NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
 			[baseNode addAttribute:idAttribute];
-			logVerbose(@"- Found base class reference to '%@' at '%@'.", refValue, linkReference);
+			logDebug(@"  - Found base class reference to '%@' at '%@'.", refValue, linkReference);
 		}
 		else
 		{
@@ -627,11 +791,11 @@
 					NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
 					NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
 					[protocolNode addAttribute:idAttribute];
-					logVerbose(@"- Found protocol reference to '%@' at '%@'.", refValue, linkReference);
+					logDebug(@"  - Found protocol reference to '%@' at '%@'.", refValue, linkReference);
 				}
 				else
 				{
-					logVerbose(@"- Found protocol reference to '%@'.", refValue);
+					logDebug(@"  - Found protocol reference to '%@'.", refValue);
 				}
 				
 				NSUInteger index = [baseNode index];
@@ -668,9 +832,9 @@
 						[path length] != [extension length] + [objectName length] + 1)
 					{
 						NSString* newPath = [NSString stringWithFormat:@"%@.h", objectName];
-						logVerbose(@"- Fixing strange looking class file '%@' to '%@'...",
-								   path,
-								   newPath);
+						logDebug(@"  - Fixing strange looking class file '%@' to '%@'...",
+								 path,
+								 newPath);
 						[fileNode setStringValue:newPath];
 					}
 				}
@@ -803,7 +967,7 @@
 			[refNode removeAttributeForName:@"id"];
 			[refNode addAttribute:idAttribute];
 			[refNode setStringValue:linkDescription];
-			logVerbose(@"- Found reference to %@ at '%@'.", linkDescription, linkReference);
+			logDebug(@"  - Found reference to %@ at '%@'.", linkDescription, linkReference);
 		}
 	}
 }
@@ -854,7 +1018,7 @@
 				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
 				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 				[replacements setObject:link forKey:word];
-				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+				logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 			}
 			
 			// Fix members that are declated with parenthesis. Skip words which are composed
@@ -894,14 +1058,14 @@
 						NSString* obsfucated = [self obsfucatedStringFromString:link];
 						[obsfucations setObject:link forKey:obsfucated];
 						[replacements setObject:obsfucated forKey:word];
-						logVerbose(@"- Found reference to member %@ from category %@.", member, category);
+						logDebug(@"  - Found reference to member %@ from category %@.", member, category);
 					}
 					else
 					{
 						NSString* obsfucated = [self obsfucatedStringFromString:name];
 						[obsfucations setObject:name forKey:obsfucated];
 						[replacements setObject:obsfucated forKey:word];
-						logVerbose(@"- Found reference to member %@ from unknown category %@.", member, category);
+						logDebug(@"  - Found reference to member %@ from unknown category %@.", member, category);
 					}
 				}
 
@@ -920,7 +1084,7 @@
 						member = [member substringToIndex:[member length] - 2];
 						NSString* name = [self objectLinkNameForObject:class andMember:member];
 						[replacements setObject:name forKey:word];
-						logVerbose(@"- Found reference to %@ from unknown class %@.", member, class);
+						logDebug(@"  - Found reference to %@ from unknown class %@.", member, class);
 					}
 					else
 					{
@@ -928,7 +1092,7 @@
 						NSString* name = [self memberLinkNameForObject:objectName andMember:member];
 						NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 						[replacements setObject:link forKey:word];
-						logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+						logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 					}
 				}
 			}
@@ -940,7 +1104,7 @@
 				NSString* link = [self objectReferenceFromObject:objectName toObject:word];
 				NSString* linkReference = [NSString stringWithFormat:@"<ref id=\"%@\">%@</ref>", link, word];
 				[replacements setObject:linkReference forKey:word];
-				logVerbose(@"- Found reference to %@ at '%@'.", word, link);
+				logDebug(@"  - Found reference to %@ at '%@'.", word, link);
 			}
 		}			
 	}
@@ -963,7 +1127,7 @@
 			NSString* fixedValue = [itemValue stringByAppendingString:@"()"];
 			[replacements setObject:link forKey:fixedValue];
 			[testNode setStringValue:fixedValue];
-			logVerbose(@"- Found broken see also reference to '%@'.", itemValue);
+			logDebug(@"  - Found broken see also reference to '%@'.", itemValue);
 		}
 	}
 		
@@ -1040,10 +1204,10 @@
 			if ([paraNode childCount] == 0 || [paragraph length] == 0)
 			{
 				NSXMLElement* parent = (NSXMLElement*)[paraNode parent];
-				logVerbose(@"- Removing empty paragraph '%@' index %d from '%@'...",
-						   paraNode,
-						   [paraNode index],
-						   [parent name]);
+				logDebug(@"  - Removing empty paragraph '%@' index %d from '%@'...",
+						 paraNode,
+						 [paraNode index],
+						 [parent name]);
 				[parent removeChildAtIndex:[paraNode index]];
 			}
 		}		

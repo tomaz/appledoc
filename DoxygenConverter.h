@@ -17,14 +17,22 @@
 #define kTKDirDocSet		@"docset"
 
 #define kTKDataMainIndexKey				@"Index"					// NSXMLDocument
+#define kTKDataMainHierarchyKey			@"Hierarchy"				// NSXMLDocument
+#define kTKDataMainHierarchiesKey		@"Hierarchies"				// NSDictionary
 #define kTKDataMainObjectsKey			@"Objects"					// NSDictionary
 #define kTKDataMainDirectoriesKey		@"Directories"				// NSDictionary
+
+#define kTKDataHierarchyObjectNameKey	@"ObjectName"				// NSString
+#define kTKDataHierarchyObjectDataKey	@"ObjectData"				// NSDictionary
+#define kTKDataHierarchyChildrenKey		@"Children"					// NSString
+#define kTKDataHierarchyTempKey			@"TEMPORARY"				// NSNumber / BOOL
 
 #define kTKDataObjectNameKey			@"ObjectName"				// NSString
 #define kTKDataObjectKindKey			@"ObjectKind"				// NSString
 #define kTKDataObjectClassKey			@"ObjectClass"				// NSString
 #define kTKDataObjectMarkupKey			@"CleanedMarkup"			// NSXMLDocument
 #define kTKDataObjectMembersKey			@"Members"					// NSDictionary
+#define kTKDataObjectParentKey			@"Parent"					// NSString
 #define kTKDataObjectRelDirectoryKey	@"RelativeDirectory"		// NSString
 #define kTKDataObjectRelPathKey			@"RelativePath"				// NSString
 #define kTKDataObjectDoxygenFilenameKey	@"DoxygenMarkupFilename"	// NSString
@@ -58,6 +66,18 @@ The convertion takes several steps. In the first steps the objects database is g
 which is used in later steps to get and handle the list of documented objects. The database
 is a standard @c NSDictionary of the following layout:
   - @c "Index" key: contains a @c NSXMLDocument with clean index XML.
+  - @c "Hierarchy" key: contains a @c NSXMLDocument with clean hierarchy XML.
+  - @c "Hierarchies" key: contains a @c NSMutableDictionary with classes hierarchy tree.
+	  - @c "<ObjectName>" key: contains a @c NSMutableDictionary describing the object:
+		  - @c "ObjectData" key: contains a pointer to the object's data under the main
+			@c "Objects" key list.
+		  - @c "Children" key: contains a @c NSMutableDictionary with all children of
+			this object. The dictionary has the same structure as the main @c "Hierarchy"
+			dictionary:
+			  - @c "<ObjectName>"...
+			  - ...
+	  - @c "<ObjectName>"...
+	  - ...
   - @c "Objects" key: contains a @c NSMutableDictionary with object descriptions. This
 	is usefull for enumerating over all documented objects:
 	  - @c "<ObjectName>" key: contains a @c NSMutableDictionary with object data:
@@ -88,6 +108,10 @@ is a standard @c NSDictionary of the following layout:
 					selector that can be used directly when creating member link names
 					within the same object (inter object links cannot use this because
 					their template might include prefix at arbitrary place).
+			  - @c "<MethodName>"...
+			  - ...
+		  - @c "Parent" key: A @c NSString containing the name of the object parent.
+			This is only used for classes and is left out for other objects.
 		  - @c "RelativeDirectory" key: this @c NSString describes the sub directory 
 			under which the object will be stored relative to the index file. At the
 			moment this value depends on the object type and can be @c "Classes", 
