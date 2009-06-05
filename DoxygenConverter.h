@@ -69,10 +69,16 @@ is a standard @c NSDictionary of the following layout:
   - @c "Hierarchy" key: contains a @c NSXMLDocument with clean hierarchy XML.
   - @c "Hierarchies" key: contains a @c NSMutableDictionary with classes hierarchy tree.
 	  - @c "<ObjectName>" key: contains a @c NSMutableDictionary describing the object:
+		  - @c "ObjectName" key: contains the object name. This is the same name as used
+			for the key in the parent dictionary. It still serves a purpose for the
+			non-documented objects which are part of the hierarchy - for there we can't
+			use the @c "ObjectData" key since we have no entry...
 		  - @c "ObjectData" key: contains a pointer to the object's data under the main
-			@c "Objects" key list.
+			@c "Objects" key list. Note that this is @c nil if the object is not
+			documented.
 		  - @c "Children" key: contains a @c NSMutableDictionary with all children of
-			this object. The dictionary has the same structure as the main @c "Hierarchy"
+			this object. If the object doesn't have any children, empty dictionary is
+			used. The dictionary has the same structure as the main @c "Hierarchies"
 			dictionary:
 			  - @c "<ObjectName>"...
 			  - ...

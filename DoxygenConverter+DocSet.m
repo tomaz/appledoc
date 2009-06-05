@@ -145,6 +145,25 @@
 		}
 	}
 	
+	// At the end of the directories create class hierarchy.
+	NSXMLElement* hierarchyNodeElement = [NSXMLNode elementWithName:@"Node"];
+	[hierarchyNodeElement addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:@"folder"]];
+	[indexSubnodesElement addChild:hierarchyNodeElement];
+	NSXMLElement* hierarchyNameElement = [NSXMLNode elementWithName:@"Name" stringValue:@"Class hierarchy"];
+	[hierarchyNodeElement addChild:hierarchyNameElement];
+	NSXMLElement* hierarchyPathElement = [NSXMLNode elementWithName:@"Path" stringValue:@"hierarchy.html"];
+	[hierarchyNodeElement addChild:hierarchyPathElement];
+	NSXMLElement* hierarchySubnodesElement = [NSXMLNode elementWithName:@"Subnodes"];
+	[hierarchyNodeElement addChild:hierarchySubnodesElement];
+	
+	// Scan for all classes in the hierarchy.
+	NSMutableDictionary* hierarchies = [database objectForKey:kTKDataMainHierarchiesKey];
+	for (NSString* objectName in hierarchies)
+	{
+		NSDictionary* hierarchyData = [hierarchies objectForKey:objectName];
+		[self addDocSetNodeToElement:hierarchySubnodesElement fromHierarchyData:hierarchyData];
+	}
+	
 	// Save the document.
 	NSError* error = nil;
 	NSString* filename = [cmd.outputDocSetResourcesPath stringByAppendingPathComponent:@"Nodes.xml"];
@@ -352,6 +371,43 @@
 	}
 	
 	logInfo(@"Finished creating DocSet bundle.");
+}
+
+//----------------------------------------------------------------------------------------
+- (void) addDocSetNodeToElement:(NSXMLElement*) parent
+			  fromHierarchyData:(NSDictionary*) data
+{
+	NSDictionary* children = [data objectForKey:kTKDataHierarchyChildrenKey];
+	NSDictionary* objectData = [data objectForKey:kTKDataHierarchyObjectDataKey];
+	NSString* objectName = [data objectForKey:kTKDataHierarchyObjectNameKey];
+	NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
+	if (!objectPath) objectPath = @"hierarchy.html";
+
+	// Create the main node that will represent the object.
+	NSXMLElement* node = [NSXMLNode elementWithName:@"Node"];
+	[parent addChild:node];
+	
+	// Create the name and path subnodes. Note that the path will be the main hierarchy
+	// index file if the node is not documented.
+	NSXMLElement* nameElement = [NSXMLNode elementWithName:@"Name" stringValue:objectName];
+	[node addChild:nameElement];
+	NSXMLElement* pathElement = [NSXMLNode elementWithName:@"Path" stringValue:objectPath];
+	[node addChild:pathElement];
+	
+	// If there are children, set the node type to folder and add subnodes.
+	if ([children count] > 0)
+	{
+		[node addAttribute:[NSXMLNode attributeWithName:@"type" stringValue:@"folder"]];
+		
+		NSXMLElement* subnodesElement = [NSXMLNode elementWithName:@"Subnodes"];
+		[node addChild:subnodesElement];
+		
+		for (NSString* childName in children)
+		{
+			NSDictionary* childHierarchyData = [children objectForKey:childName];
+			[self addDocSetNodeToElement:subnodesElement fromHierarchyData:childHierarchyData];
+		}
+	}
 }
 
 @end

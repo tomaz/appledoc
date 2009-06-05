@@ -50,6 +50,7 @@ This message is automatically sent from @c DoxygenConverter::convert() in the pr
 @see createDocSetSourcePlistFile
 @see createDocSetTokesFile
 @see createDocSetBundle
+@see addDocSetNodeToElement:fromHierarchyData:
 */
 - (void) createDocSetNodesFile;
 
@@ -82,5 +83,19 @@ This message is automatically sent from @c DoxygenConverter::convert() in the pr
 @see createDocSetTokesFile
 */
 - (void) createDocSetBundle;
+
+/** Adds a new DocSet node as the child of the given parent element.￼
+
+The given hierarchy data ￼contains the description of the node to add. The added node is
+either of the type folder if it contains children or it is a leaf otherwise. The methods
+will recursively add all subnodes as well.
+
+@param parent The Nodes.xml element to which to add new node.
+@param data The hierarchy object data that describes the node.
+@exception NSException Thrown if adding fails.
+@see createDocSetNodesFile
+*/
+- (void) addDocSetNodeToElement:(NSXMLElement*) parent
+			  fromHierarchyData:(NSDictionary*) data;
 
 @end
