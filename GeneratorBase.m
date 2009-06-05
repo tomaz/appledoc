@@ -230,14 +230,14 @@ The @c type parameter can be one of the following:
 
 	// Generate the data.
 	objectData = data;
-	logDebug(@"Generating output for object '%@'...", self.objectName);
+	logVerbose(@"- Generating output for object '%@'...", self.objectName);
 	NSData* result = [self outputDataForObject];
 	objectData = nil;
 	
 	// Save the data.
 	if (result && [result length] > 0)
 	{
-		logDebug(@"Saving object output to '%@'...", filename);
+		logDebug(@"  - Saving object output to '%@'...", filename);
 		if (![result writeToFile:filename atomically:NO])
 		{
 			NSString* message = [NSString stringWithFormat:@"Failed saving object output to '%@'!", filename];
@@ -258,14 +258,14 @@ The @c type parameter can be one of the following:
 
 	// Generate the data.
 	indexData = data;
-	logDebug(@"Generating output for index...");
+	logVerbose(@"- Generating output for index...");
 	NSData* result = [self outputDataForIndex];
 	indexData = nil;
 	
 	// Save the data.
 	if (result && [result length] > 0)
 	{
-		logDebug(@"Saving index output to '%@'...", filename);
+		logDebug(@"  - Saving index output to '%@'...", filename);
 		if (![result writeToFile:filename atomically:NO])
 		{
 			NSString* message = [NSString stringWithFormat:@"Failed saving index output to '%@'!", filename];

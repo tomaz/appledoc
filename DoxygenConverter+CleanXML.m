@@ -39,7 +39,7 @@
 				 [filename hasPrefix:@"protocol_"];
 		if (!parse)
 		{
-			logVerbose(@"Skipping '%@' because it doesn't describe known object.", filename);
+			logDebug(@"- Skipping '%@' because it doesn't describe known object.", filename);
 			continue;
 		}
 		
@@ -68,7 +68,7 @@
 		if ([[originalDocument nodesForXPath:@"//briefdescription/para" error:NULL] count] == 0 &&
 			[[originalDocument nodesForXPath:@"//detaileddescription/para" error:NULL] count] == 0)
 		{
-			logVerbose(@"Skipping '%@' because it contains non-documented object...", filename);
+			logVerbose(@"- Skipping '%@' because it contains non-documented object...", filename);
 			continue;
 		}
 
@@ -173,7 +173,7 @@
 			[directoryArray addObject:objectData];
 			
 			// Log the object.
-			logVerbose(@"Found '%@' of type '%@' in file '%@'...", 
+			logVerbose(@"- Found '%@' of type '%@' in file '%@'...", 
 					   objectName, 
 					   objectKind,
 					   filename);
@@ -212,11 +212,11 @@
 			NSString* className = [categoryData objectForKey:kTKDataObjectClassKey];
 			if (!className)
 			{
-				logVerbose(@"Skipping '%@' because it belongs to unknown class.", categoryName);
+				logVerbose(@"- Skipping '%@' because it belongs to unknown class.", categoryName);
 				continue;
 			}
 			
-			logVerbose(@"Merging category '%@' documentation to class '%@'...",
+			logVerbose(@"- Merging category '%@' documentation to class '%@'...",
 					   categoryName,
 					   className);
 			
@@ -263,7 +263,7 @@
 					// the category name before the section description before... Note that
 					// we handle the cases where no category name is defined by simply using
 					// the category section name.
-					logDebug(@"- Merging documentation for section '%@'...");
+					logDebug(@"  - Merging documentation for section '%@'...");
 					NSXMLElement* classSectionNode = [categorySectionNode copy];
 					NSArray* classSectionNameNodes = [classSectionNode nodesForXPath:@"name" error:nil];
 					if ([classSectionNameNodes count] > 0)
@@ -283,7 +283,7 @@
 			}
 			else
 			{
-				logDebug(@"- Merging all sections to '%@'...", categoryName);
+				logDebug(@"  - Merging all sections to '%@'...", categoryName);
 				
 				// Create the class section element.
 				NSXMLElement* sectionNode = [NSXMLNode elementWithName:@"section"];
@@ -322,7 +322,7 @@
 											   [categoryFileNode stringValue]];
 						if ([[classDocument nodesForXPath:testQuery error:nil] count] == 0)
 						{
-							logDebug(@"- Inserting file '%@' from category to index %d...",
+							logDebug(@"  - Inserting file '%@' from category to index %d...",
 									 [categoryFileNode stringValue],
 									 index);						
 							NSXMLElement* insertedNode = [categoryFileNode copy];
@@ -346,7 +346,7 @@
 		for (NSDictionary* categoryData in removedCategories)
 		{
 			NSString* categoryName = [categoryData objectForKey:kTKDataObjectNameKey];
-			logDebug(@"- Removing category '%@' documentation...", categoryName);
+			logDebug(@"  - Removing category '%@' documentation...", categoryName);
 			[categoriesArray removeObject:categoryData];
 			[objects removeObjectForKey:categoryName];
 		}
@@ -376,7 +376,7 @@
 		
 		// Get the required object data.
 		NSMutableDictionary* objectData = [objects objectForKey:objectName];
-		logVerbose(@"Handling '%@'...", objectName);
+		logVerbose(@"- Handling '%@'...", objectName);
 		
 		[self createMembersDataForObject:objectName objectData:objectData];
 	}
@@ -404,6 +404,8 @@
 	NSArray* sortedObjectNames = [[objects allKeys] sortedArrayUsingSelector:@selector(compare:)];
 	for (NSString* objectName in sortedObjectNames)
 	{
+		logVerbose(@"- Handling '%@'...", objectName);
+		
 		NSDictionary* objectData = [objects valueForKey:objectName];
 		NSString* objectKind = [objectData valueForKey:kTKDataObjectKindKey];
 		NSString* objectRef = [objectData valueForKey:kTKDataObjectRelPathKey];
@@ -459,7 +461,7 @@
 		
 		// Get the required object data.
 		NSMutableDictionary* objectData = [objects objectForKey:objectName];
-		logVerbose(@"Handling '%@'...", objectName);
+		logVerbose(@"- Handling '%@'...", objectName);
 		
 		[self fixInheritanceForObject:objectName objectData:objectData objects:objects];
 		[self fixLocationForObject:objectName objectData:objectData objects:objects];
@@ -492,7 +494,7 @@
 		filename = [filename stringByAppendingPathExtension:@"xml"];
 		
 		// Convert the file.
-		logDebug(@"Saving '%@' to '%@'...", objectName, filename);
+		logVerbose(@"- Saving '%@' to '%@'...", objectName, filename);
 		NSXMLDocument* document = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSData* documentData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
 		if (![documentData writeToFile:filename atomically:NO])
@@ -566,7 +568,7 @@
 				{
 					memberSelector = memberName;
 				}
-				logVerbose(@"Generating '%@' member data...", memberSelector);
+				logDebug(@"  - Generating '%@' member data...", memberSelector);
 				
 				// Create member data dictionary.
 				NSMutableDictionary* memberData = [NSMutableDictionary dictionary];
@@ -608,7 +610,7 @@
 			NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
 			NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
 			[baseNode addAttribute:idAttribute];
-			logVerbose(@"- Found base class reference to '%@' at '%@'.", refValue, linkReference);
+			logDebug(@"  - Found base class reference to '%@' at '%@'.", refValue, linkReference);
 		}
 		else
 		{
@@ -627,11 +629,11 @@
 					NSString* linkReference = [self objectReferenceFromObject:objectName toObject:refValue];
 					NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
 					[protocolNode addAttribute:idAttribute];
-					logVerbose(@"- Found protocol reference to '%@' at '%@'.", refValue, linkReference);
+					logDebug(@"  - Found protocol reference to '%@' at '%@'.", refValue, linkReference);
 				}
 				else
 				{
-					logVerbose(@"- Found protocol reference to '%@'.", refValue);
+					logDebug(@"  - Found protocol reference to '%@'.", refValue);
 				}
 				
 				NSUInteger index = [baseNode index];
@@ -668,9 +670,9 @@
 						[path length] != [extension length] + [objectName length] + 1)
 					{
 						NSString* newPath = [NSString stringWithFormat:@"%@.h", objectName];
-						logVerbose(@"- Fixing strange looking class file '%@' to '%@'...",
-								   path,
-								   newPath);
+						logDebug(@"  - Fixing strange looking class file '%@' to '%@'...",
+								 path,
+								 newPath);
 						[fileNode setStringValue:newPath];
 					}
 				}
@@ -803,7 +805,7 @@
 			[refNode removeAttributeForName:@"id"];
 			[refNode addAttribute:idAttribute];
 			[refNode setStringValue:linkDescription];
-			logVerbose(@"- Found reference to %@ at '%@'.", linkDescription, linkReference);
+			logDebug(@"  - Found reference to %@ at '%@'.", linkDescription, linkReference);
 		}
 	}
 }
@@ -854,7 +856,7 @@
 				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
 				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 				[replacements setObject:link forKey:word];
-				logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+				logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 			}
 			
 			// Fix members that are declated with parenthesis. Skip words which are composed
@@ -894,14 +896,14 @@
 						NSString* obsfucated = [self obsfucatedStringFromString:link];
 						[obsfucations setObject:link forKey:obsfucated];
 						[replacements setObject:obsfucated forKey:word];
-						logVerbose(@"- Found reference to member %@ from category %@.", member, category);
+						logDebug(@"  - Found reference to member %@ from category %@.", member, category);
 					}
 					else
 					{
 						NSString* obsfucated = [self obsfucatedStringFromString:name];
 						[obsfucations setObject:name forKey:obsfucated];
 						[replacements setObject:obsfucated forKey:word];
-						logVerbose(@"- Found reference to member %@ from unknown category %@.", member, category);
+						logDebug(@"  - Found reference to member %@ from unknown category %@.", member, category);
 					}
 				}
 
@@ -920,7 +922,7 @@
 						member = [member substringToIndex:[member length] - 2];
 						NSString* name = [self objectLinkNameForObject:class andMember:member];
 						[replacements setObject:name forKey:word];
-						logVerbose(@"- Found reference to %@ from unknown class %@.", member, class);
+						logDebug(@"  - Found reference to %@ from unknown class %@.", member, class);
 					}
 					else
 					{
@@ -928,7 +930,7 @@
 						NSString* name = [self memberLinkNameForObject:objectName andMember:member];
 						NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
 						[replacements setObject:link forKey:word];
-						logVerbose(@"- Found reference to %@ at '#%@'.", member, member);
+						logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 					}
 				}
 			}
@@ -940,7 +942,7 @@
 				NSString* link = [self objectReferenceFromObject:objectName toObject:word];
 				NSString* linkReference = [NSString stringWithFormat:@"<ref id=\"%@\">%@</ref>", link, word];
 				[replacements setObject:linkReference forKey:word];
-				logVerbose(@"- Found reference to %@ at '%@'.", word, link);
+				logDebug(@"  - Found reference to %@ at '%@'.", word, link);
 			}
 		}			
 	}
@@ -963,7 +965,7 @@
 			NSString* fixedValue = [itemValue stringByAppendingString:@"()"];
 			[replacements setObject:link forKey:fixedValue];
 			[testNode setStringValue:fixedValue];
-			logVerbose(@"- Found broken see also reference to '%@'.", itemValue);
+			logDebug(@"  - Found broken see also reference to '%@'.", itemValue);
 		}
 	}
 		
@@ -1040,10 +1042,10 @@
 			if ([paraNode childCount] == 0 || [paragraph length] == 0)
 			{
 				NSXMLElement* parent = (NSXMLElement*)[paraNode parent];
-				logVerbose(@"- Removing empty paragraph '%@' index %d from '%@'...",
-						   paraNode,
-						   [paraNode index],
-						   [parent name]);
+				logDebug(@"  - Removing empty paragraph '%@' index %d from '%@'...",
+						 paraNode,
+						 [paraNode index],
+						 [parent name]);
 				[parent removeChildAtIndex:[paraNode index]];
 			}
 		}		

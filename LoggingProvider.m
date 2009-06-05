@@ -121,13 +121,13 @@ NSString* FormatLogMessage(char* file, const char* method, int line, NSString* m
 	va_end(args);
 
 	// If debug verbose level is requested, we should include information about the source.
-	if ([CommandLineParser sharedInstance].verboseLevel >= kTKVerboseLevelDebug)
+	if ([CommandLineParser sharedInstance].verboseLevel >= kTKVerboseLevelFull)
 	{
 		while ([msg length] < kTKLogMessageLength)
 		{
 			[msg appendString:@" "];
 		}		
-		return [NSString stringWithFormat:@"%@ | %s @ %d\n", msg, method, line];			
+		return [NSString stringWithFormat:@"%@\n< %s line %d >\n\n", msg, method, line];			
 	}
 	
 	return [NSString stringWithFormat:@"%@\n", msg];

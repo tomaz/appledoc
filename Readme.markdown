@@ -267,7 +267,7 @@ Miscellaneous options
 	directories in the given order. The templates path is also checked for `Globals.plist` 
 	file that contains default global parameters. Global parameters are overriden by 
 	command line arguments. See more about globals later on.
-*	`-v <level>` or `--verbose <level>`: The verbose level (1-4). Defaults to 0 (only errors).
+*	`-v <level>` or `--verbose <level>`: The verbose level (1-5). Defaults to 0 (only errors).
 	You may want to increase this if utility is failing and you don't know why.
 
 
