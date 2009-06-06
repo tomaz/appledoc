@@ -618,9 +618,7 @@
 	[self appendLine:@"    <div class=\"hierarchy\">" toData:data];
 	
 	// Append the title.
-	[self appendString:@"      <h5>" toData:data];
-	[self appendString:self.hierarchyTitle toData:data];
-	[self appendLine:@"</h5>" toData:data];
+	[self appendLine:@"      <h5>Class hierarchy</h5>" toData:data];
 	
 	// Prepare the default group indent. We use this so that the XHTML code is visually
 	// more readable, however it doesn't add to the actual appearance...
