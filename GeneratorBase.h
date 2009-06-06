@@ -65,7 +65,7 @@ make their job easier.
 Each concrete subclass can convert three types of files - index, hierarchy and object files.
 The subclass can only override the methods for generating output that makes sense for the 
 implemented output type. The clients send @c generateOutputForIndex:toFile:() to generate the
-main index file, @c generateOutputForHierarchy:toFile() to generate the main hierarchy
+main index file, @c generateOutputForHierarchy:toFile:() to generate the main hierarchy
 file and @c generateOutputForObject:toFile:() to generate the documentation for
 individual objects.
  
@@ -200,26 +200,21 @@ the subclass can get the XML document through the @c objectMarkup property.
  
 By default, this will send several higher level messages which can be overriden instead.
 The messages are sent in the following order:
-- @c appendObjectHeaderToData:()
- 
+- @c appendObjectHeaderToData:() 
 - @c appendObjectInfoHeaderToData:() @a *
 - @c appendObjectInfoItemToData:fromItems:index:type:() @a **
-- @c appendObjectInfoFooterToData:() @a *
- 
+- @c appendObjectInfoFooterToData:() @a * 
 - @c appendObjectOverviewToData:fromItem:() @a *
-
 - @c appendObjectTasksHeaderToData:() @a *
 - @c appendObjectTaskHeaderToData:fromItem:index:() @a **
 - @c appendObjectTaskMemberToData:fromItem:index:() @a **
 - @c appendObjectTaskFooterToData:fromItem:index:() @a **
-- @c appendObjectTasksFooterToData:() @a *
- 
+- @c appendObjectTasksFooterToData:() @a * 
 - @c appendObjectMembersHeaderToData:() @a *
 - @c appendObjectMemberGroupHeaderToData:type:() @a **
 - @c appendObjectMemberToData:fromItem:index:() @a **
 - @c appendObjectMemberGroupFooterToData:type:() @a **
 - @c appendObjectMembersFooterToData:() @a *
- 
 - @c appendObjectFooterToData:()
  
 Note that only a subset of above messages may be sent for a particular object, depending

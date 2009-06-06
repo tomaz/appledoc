@@ -126,9 +126,9 @@ The result is one of the following:
 
 /** Extracts the member prototype item from the given member item.
 
-The returned item can be used by @c extractPrototypeSubitemsFromItem:() to get 
-individual components. Then use @c extractPrototypeSubnodeTypeFromItem:() and
-@c extractPrototypeSubnodeValueFromItem:() to get data for the individual components.
+The returned item can be used by @c extractObjectMemberPrototypeSubitems:() to get 
+individual components. Then use @c extractObjectMemberPrototypeItemType:() and
+@c extractObjectMemberPrototypeItemValue:() to get data for the individual components.
  
 @param item The member item which prototype item to return.
 @return Returns the member prototype item or @c nil if not found.
@@ -314,7 +314,7 @@ This can be used over the items of the array returned from
 - @c kTKPrototypeValue: The item represents a value.
 - @c kTKPrototypeParameter: The item represents a parameter name.
 
-To get the actual value, use @c extractPrototypeSubnodeValueFromItem:() passing the 
+To get the actual value, use @c extractObjectMemberPrototypeItemValue:() passing the 
 result of this method as the @c type parameter.
 
 @param item The prototype item to check.
@@ -328,7 +328,7 @@ result of this method as the @c type parameter.
 /** Extracts the given prototype component value from the given prototype item.
 
 This can be used over the items of the array returned from
-@c extractPrototypeSubitemsFromItem:().
+@c extractObjectMemberPrototypeSubitems:().
  
 @param item The prototype item to check.
 @return Returns the string value representation of the given prototype item.

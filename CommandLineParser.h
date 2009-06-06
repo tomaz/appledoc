@@ -68,7 +68,7 @@ are reset and then the given command line parsed.
 						   ofCount:(int) argc;
 
 /** Outputs the utility usage to the standard output.
-
+ 
 @see parseCommandLineArguments:ofCount:
 */
 - (void) printUsage;

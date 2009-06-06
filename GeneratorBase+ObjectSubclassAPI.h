@@ -56,7 +56,7 @@ generated. This is ussually the place to "close" open tags or similar.
 The message is sent from the @c GeneratorBase::outputDataForObject() just before object info 
 items are generated. It gives subclasses a chance to append data to the output before the 
 generation for secion items starts. After this message is sent, at least one 
-@c appendObjectInfoItemToData:fromItem:index:() message is sent and then 
+@c appendObjectInfoItemToData:fromItems:index:type:() message is sent and then 
 @c appendObjectInfoHeaderToData:() is sent at the end.
 
 @param data The data to append to. This is guaranteed to be non @c null.

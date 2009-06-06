@@ -1060,6 +1060,10 @@
 	NSMutableDictionary* replacements = [NSMutableDictionary dictionary];
 	NSMutableDictionary* obsfucations = [NSMutableDictionary dictionary];
 	
+	// Get given object members. This is used for testing links to the members of the
+	// same object.
+	NSDictionary* objectMembers = [objectData objectForKey:kTKDataObjectMembersKey];
+	
 	// We also need to handle broken doxygen member links handling. This is especially
 	// evident in categories where the links to member functions are not properly
 	// handled at all. At the moment we only handle members which are expressed either
@@ -1085,9 +1089,18 @@
 			{
 				NSString* member = [word substringFromIndex:2];
 				NSString* name = [self memberLinkNameForObject:objectName andMember:member];
-				NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
+				NSString* link = nil;
+				if ([objectMembers objectForKey:member])
+				{
+					link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
+					logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
+				}
+				else
+				{
+					link = name;
+					logError(@"- Found reference to unknown member %@!", member);
+				}
 				[replacements setObject:link forKey:word];
-				logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 			}
 			
 			// Fix members that are declated with parenthesis. Skip words which are composed
@@ -1159,9 +1172,18 @@
 					{
 						NSString* member = [word substringToIndex:[word length] - 2];
 						NSString* name = [self memberLinkNameForObject:objectName andMember:member];
-						NSString* link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
+						NSString* link = nil;
+						if ([objectMembers objectForKey:member])
+						{
+							link = [NSString stringWithFormat:@"<ref id=\"#%@\">%@</ref>", member, name];
+							logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
+						}
+						else
+						{
+							link = name;
+							logError(@"- Found reference to unknown member %@!", member);
+						}
 						[replacements setObject:link forKey:word];
-						logDebug(@"  - Found reference to %@ at '#%@'.", member, member);
 					}
 				}
 			}

@@ -45,7 +45,7 @@ From here the following messages are sent to the subclass:
 @see generateOutputForObject
 @see generateOverviewSectionToData:
 @see generateTasksSectionToData:
-@see generateMembersSectionToData:
+@see generateObjectMembersSectionToData:
 @see generateObjectInfoSectionToData:fromNodes:index:type:
 */
 - (void) generateObjectInfoSectionToData:(NSMutableData*) data;
@@ -78,14 +78,14 @@ can be one of the following:
 /** Generates the object overview data if necessary.
 
 This is where the following messages are sent to the subclass:
-- @c appendObjectOverviewToData:()
+- @c appendObjectOverviewToData:fromItem:()
 
 @param data The @c NSMutableData to append to.
 @exception NSException Thrown if generation fails.
 @see generateOutputForObject
 @see generateObjectInfoSectionToData:
 @see generateTasksSectionToData:
-@see generateMembersSectionToData:
+@see generateObjectMembersSectionToData:
 */
 - (void) generateObjectOverviewSectionToData:(NSMutableData*) data;
 
@@ -93,9 +93,9 @@ This is where the following messages are sent to the subclass:
 
 This is where the following messages are sent to the subclass:
 - @c appendObjectTasksHeaderToData:()
-- @c appendObjectTaskHeaderToData:fromItem:index()
+- @c appendObjectTaskHeaderToData:fromItem:index:()
 - @c appendObjectTaskMemberToData:fromItem:index:()
-- @c appendObjectTaskFooterToData:fromItem:index()
+- @c appendObjectTaskFooterToData:fromItem:index:()
 - @c appendObjectTasksFooterToData:()
 
 @param data The @c NSMutableData to append to.
@@ -103,7 +103,7 @@ This is where the following messages are sent to the subclass:
 @see generateOutputForObject
 @see generateObjectInfoSectionToData:
 @see generateOverviewSectionToData:
-@see generateMembersSectionToData:
+@see generateObjectMembersSectionToData:
 */
 - (void) generateObjectTasksSectionToData:(NSMutableData*) data;
 
@@ -125,7 +125,7 @@ This is where the following messages are sent to the subclass:
 
 /** Generates the given main members documentation section.
 
-This is sent from @c generateMembersSectionToData:() for each group of members that
+This is sent from @c generateObjectMembersSectionToData:() for each group of members that
 has at least one documented entry. This is where the following messages are sent to the 
 subclass:
 - @c appendIndexGroupHeaderToData:type:()
@@ -141,7 +141,7 @@ The @c type parameter can be one of the following:
 @param nodes The array of @c NSXMLElement instances representing individual members.
 @param type The type of the instances.
 @exception NSException Thrown if generation fails.
-@see generateMembersSectionToData:
+@see generateObjectMembersSectionToData:
 */
 - (void) generateObjectMemberSectionToData:(NSMutableData*) data 
 								 fromNodes:(NSArray*) nodes 
@@ -168,9 +168,9 @@ group.
 
 This is sent from @c generateIndexGroupSectionsToData:() for each group that has at
 least one member. This is where the following messages are sent to the subclass:
-- @c appendIndexHeaderToData:type:()
-- @c appendindexGroup()
-- @c appendIndexFooterToData:type:()
+- @c appendIndexGroupHeaderToData:type:()
+- @c appendIndexGroupItemToData:fromItem:index:type:()
+- @c appendIndexGroupFooterToData:type:()
 
 The @c type parameter can be one of the following:
 - @c kTKObjectMemberTypeClass: The @c nodes describes class members.
@@ -181,7 +181,7 @@ The @c type parameter can be one of the following:
 @param nodes The array of @c NSXMLElement instances representing individual members.
 @param type The type of the instances.
 @exception NSException Thrown if generation fails.
-@see generateMembersSectionToData:
+@see generateObjectMembersSectionToData:
 */
 - (void) generateIndexGroupSectionToData:(NSMutableData*) data 
 							   fromNodes:(NSArray*) nodes 

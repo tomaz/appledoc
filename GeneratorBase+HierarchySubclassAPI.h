@@ -97,8 +97,8 @@ information about the member by using the hierarchy member data methods from the
 @param index Zero based index of the member within the group.
 @exception NSException Thrown if appending fails.
 @see GeneratorBase::outputDataForHierarchy
-@see appendHierarchyGroupHeaderToData:type:
-@see appendHierarchyGroupFooterToData:type:
+@see appendHierarchyGroupHeaderToData:
+@see appendHierarchyGroupFooterToData:
 @see generateHierarchyGroupChildrenToData:forItem:
 */
 - (void) appendHierarchyGroupItemToData:(NSMutableData*) data
@@ -114,9 +114,9 @@ information about the member by using the hierarchy member data methods from the
 This should be sent by the subclass from it's ￼@c appendHierarchyGroupItemToData:fromItem:index:()
 override at the point where all children should be processed. It will check if any
 children are defined for the given item and will in turn send the subclass all hierarchy
-group appending methods: @c appendHierarchyGroupHeaderToData:type:(), 
+group appending methods: @c appendHierarchyGroupHeaderToData:(), 
 @c appendHierarchyGroupItemToData:fromItem:index:() and
-@c appendHierarchyGroupFooterToData:type:() for all children, including their children
+@c appendHierarchyGroupFooterToData:() for all children, including their children
 and so on recursively until no more children are found.
 
 @param data The @c NSMutableData to append to.

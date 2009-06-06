@@ -31,7 +31,7 @@ will return the transformed object which is either an @c NSXMLDocument if transf
 created an XML or @c NSData otherwise. If transformation failed, @c nil is returned and
 error description is passed over the @c error parameter.
  
-This message internally sends @c applyXSLTFromFile:toDocument:arguments:error() with
+This message internally sends @c applyXSLTFromFile:toDocument:arguments:error:() with
 arguments set to @c nil.
 
 @param filename The name of the XSLT file including full path.
