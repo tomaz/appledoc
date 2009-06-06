@@ -158,7 +158,7 @@
 //----------------------------------------------------------------------------------------
 - (NSXMLDocument*) objectMarkup
 {
-	return [objectData objectForKey:kTKDataObjectMarkupKey];
+	return objectMarkup;
 }
 
 //----------------------------------------------------------------------------------------

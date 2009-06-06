@@ -187,6 +187,21 @@ The @c type parameter can be one of the following:
 							   fromNodes:(NSArray*) nodes 
 									type:(int) type;
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Various helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Converts all common placeholders in the given clean XML.￼
+
+The method eventually returns new @c NSXMLDocument instance which can be used for
+output generation.￼
+
+@param document The original clean XML.
+@return Returns new autoreleased @c NSXMLDocument with all common placeholders replaced.
+@exception NSException Thrown if convertion fails.
+*/
+- (NSXMLDocument*) convertPlaceholdersInMarkup:(NSXMLDocument*) document;
+
 @end
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -224,85 +239,118 @@ The @c type parameter can be one of the following:
 
 //----------------------------------------------------------------------------------------
 - (void) generateOutputForObject:(NSDictionary*) data
-						  toFile:(NSString*) filename
 {
 	NSParameterAssert(data != nil);
-	NSParameterAssert(filename != nil);
-	NSParameterAssert([filename length] > 0);
 
-	// Generate the data.
-	objectData = data;
-	logVerbose(@"- Generating output for object '%@'...", self.objectName);
-	NSData* result = [self outputDataForObject];
-	objectData = nil;
-	
-	// Save the data.
-	if (result && [result length] > 0)
+	@try
 	{
-		logDebug(@"  - Saving object output to '%@'...", filename);
-		if (![result writeToFile:filename atomically:NO])
+		// Assign the parameters and replace all placeholder templates.
+		objectMarkup = [[self convertPlaceholdersInMarkup:[data objectForKey:kTKDataObjectMarkupKey]] retain];
+		objectData = data;
+		
+		// Generate the data.
+		logVerbose(@"- Generating output for object '%@'...", self.objectName);
+		NSData* result = [self outputDataForObject];
+
+		// Save the data.
+		if (result && [result length] > 0)
 		{
-			NSString* message = [NSString stringWithFormat:@"Failed saving object output to '%@'!", filename];
-			logError(@"Failed saving clean object output!");
-			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
+			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
+			NSString* extension = [self outputFilesExtension];
+			filename = [filename stringByReplacingOccurrencesOfString:kTKPlaceholderExtension withString:extension];
+			
+			logDebug(@"  - Saving object output to '%@'...", filename);
+			if (![result writeToFile:filename atomically:NO])
+			{
+				NSString* message = [NSString stringWithFormat:@"Failed saving object output to '%@'!", filename];
+				logError(@"Failed saving clean object output!");
+				[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			}
+			wasFileCreated = YES;
 		}
-		wasFileCreated = YES;
+		
+	}	
+	@finally
+	{
+		[objectMarkup release];
+		objectData = nil;
 	}
 }
 
 //----------------------------------------------------------------------------------------
 - (void) generateOutputForIndex:(NSDictionary*) data
-							toFile:(NSString*) filename
 {
 	NSParameterAssert(data != nil);
-	NSParameterAssert(filename != nil);
-	NSParameterAssert([filename length] > 0);
 
-	// Generate the data.
-	indexData = data;
-	logVerbose(@"- Generating output for index...");
-	NSData* result = [self outputDataForIndex];
-	indexData = nil;
-	
-	// Save the data.
-	if (result && [result length] > 0)
+	@try
 	{
-		logDebug(@"  - Saving index output to '%@'...", filename);
-		if (![result writeToFile:filename atomically:NO])
+		// Assign the parameters and replace all placeholder templates.
+		indexMarkup = [[self convertPlaceholdersInMarkup:[data objectForKey:kTKDataMainIndexKey]] retain];
+		indexData = data;
+
+		// Generate the data.
+		logVerbose(@"- Generating output for index...");
+		NSData* result = [self outputDataForIndex];
+		
+		// Save the data.
+		if (result && [result length] > 0)
 		{
-			NSString* message = [NSString stringWithFormat:@"Failed saving index output to '%@'!", filename];
-			logError(@"Failed saving clean index output!");
-			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index"];
+			filename = [filename stringByAppendingString:[self outputFilesExtension]];
+			
+			logDebug(@"  - Saving index output to '%@'...", filename);
+			if (![result writeToFile:filename atomically:NO])
+			{
+				NSString* message = [NSString stringWithFormat:@"Failed saving index output to '%@'!", filename];
+				logError(@"Failed saving clean index output!");
+				[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			}
+			wasFileCreated = YES;
 		}
-		wasFileCreated = YES;
+	}
+	@finally
+	{
+		[indexMarkup release];
+		indexData = nil;
 	}
 }
 
 //----------------------------------------------------------------------------------------
 - (void) generateOutputForHierarchy:(NSDictionary*) data
-							 toFile:(NSString*) filename
 {
 	NSParameterAssert(data != nil);
-	NSParameterAssert(filename != nil);
-	NSParameterAssert([filename length] > 0);
 	
-	// Generate the data.
-	hierarchyData = data;
-	logVerbose(@"- Generating output for hierarchy...");
-	NSData* result = [self outputDataForHierarchy];
-	hierarchyData = nil;
-	
-	// Save the data.
-	if (result && [result length] > 0)
+	@try
 	{
-		logDebug(@"  - Saving hierarchy output to '%@'...", filename);
-		if (![result writeToFile:filename atomically:NO])
+		// Assign the parameters and replace all placeholder templates.
+		hierarchyMarkup = [[self convertPlaceholdersInMarkup:[data objectForKey:kTKDataMainHierarchyKey]] retain];
+		hierarchyData = data;
+
+		// Generate the data.
+		logVerbose(@"- Generating output for hierarchy...");
+		NSData* result = [self outputDataForHierarchy];
+		
+		// Save the data.
+		if (result && [result length] > 0)
 		{
-			NSString* message = [NSString stringWithFormat:@"Failed saving hierarchy output to '%@'!", filename];
-			logError(@"Failed saving clean hierarchy output!");
-			[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"hierarchy"];
+			filename = [filename stringByAppendingString:[self outputFilesExtension]];
+			
+			logDebug(@"  - Saving hierarchy output to '%@'...", filename);
+			if (![result writeToFile:filename atomically:NO])
+			{
+				NSString* message = [NSString stringWithFormat:@"Failed saving hierarchy output to '%@'!", filename];
+				logError(@"Failed saving clean hierarchy output!");
+				[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+			}
+			wasFileCreated = YES;
 		}
-		wasFileCreated = YES;
+	}
+	@finally
+	{
+		[hierarchyMarkup release];
+		hierarchyData = nil;
 	}
 }
 
@@ -315,6 +363,14 @@ The @c type parameter can be one of the following:
 //----------------------------------------------------------------------------------------
 - (void) generationFinished
 {
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	[Systemator throwExceptionWithName:kTKConverterException 
+					   withDescription:@"Output file extension is not provided!"];
+	return nil;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -560,6 +616,34 @@ The @c type parameter can be one of the following:
 		[self appendHierarchyFooterToData:result];	
 	}
 	
+	return result;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Common helper methods
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSXMLDocument*) convertPlaceholdersInMarkup:(NSXMLDocument*) document
+{
+	// The handling is simple, but resource intensive - convert the XML to string,
+	// replace all placeholder occurences and re-create the new document from the
+	// resulting string.
+	NSString* string = [document XMLString];
+	string = [self convertPathByReplacingPlaceholders:string];
+	
+	// Create the new XMl document.
+	NSError* error = nil;
+	NSXMLDocument* result = [[[NSXMLDocument alloc] initWithXMLString:string
+															  options:0
+																error:&error] autorelease];
+	if (error)
+	{
+		logError(@"Converting placeholders XML failed!");
+		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+	}
+	
+	// Return the new document.
 	return result;
 }
 

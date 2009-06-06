@@ -7,6 +7,7 @@
 //
 
 #import "DoxygenConverter+DocSet.h"
+#import "XHTMLGenerator.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
@@ -87,6 +88,8 @@
 	logNormal(@"Creating DocSet Nodes.xml file...");	
 	NSAutoreleasePool* loopAutoreleasePool = [[NSAutoreleasePool alloc] init];	
 	NSXMLDocument* document = [NSXMLDocument document];
+	NSString* indexFileName = [XHTMLGenerator indexFileName];
+	NSString* hierarchyFileName = [XHTMLGenerator hierarchyFileName];
 	
 	// Create the version and ecoding elements.
 	[document setVersion:@"1.0"];
@@ -106,7 +109,7 @@
 	[tocElement addChild:indexNodeElement];
 	NSXMLElement* indexNameElement = [NSXMLNode elementWithName:@"Name" stringValue:cmd.projectName];
 	[indexNodeElement addChild:indexNameElement];
-	NSXMLElement* indexPathElement = [NSXMLNode elementWithName:@"Path" stringValue:@"index.html"];
+	NSXMLElement* indexPathElement = [NSXMLNode elementWithName:@"Path" stringValue:indexFileName];
 	[indexNodeElement addChild:indexPathElement];
 	NSXMLElement* indexSubnodesElement = [NSXMLNode elementWithName:@"Subnodes"];
 	[indexNodeElement addChild:indexSubnodesElement];
@@ -123,7 +126,7 @@
 		[indexSubnodesElement addChild:directoryNodeElement];
 		NSXMLElement* directoryNameElement = [NSXMLNode elementWithName:@"Name" stringValue:directoryName];
 		[directoryNodeElement addChild:directoryNameElement];
-		NSXMLElement* directoryPathElement = [NSXMLNode elementWithName:@"Path" stringValue:@"index.html"];
+		NSXMLElement* directoryPathElement = [NSXMLNode elementWithName:@"Path" stringValue:indexFileName];
 		[directoryNodeElement addChild:directoryPathElement];
 		NSXMLElement* directorySubnodesElement = [NSXMLNode elementWithName:@"Subnodes"];
 		[directoryNodeElement addChild:directorySubnodesElement];
@@ -132,9 +135,10 @@
 		// simply links to the main "Objects" dictionary, so we can use the data from there.
 		NSArray* directoryObjects = [directories objectForKey:directoryName];
 		for (NSDictionary* objectData in directoryObjects)
-		{			
+		{
 			NSString* objectName = [objectData objectForKey:kTKDataObjectNameKey];
 			NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
+			objectPath = [XHTMLGenerator pathByReplacingPlaceholders:objectPath];
 			
 			NSXMLElement* objectElement = [NSXMLNode elementWithName:@"Node"];
 			[directorySubnodesElement addChild:objectElement];
@@ -151,7 +155,7 @@
 	[indexSubnodesElement addChild:hierarchyNodeElement];
 	NSXMLElement* hierarchyNameElement = [NSXMLNode elementWithName:@"Name" stringValue:@"Class hierarchy"];
 	[hierarchyNodeElement addChild:hierarchyNameElement];
-	NSXMLElement* hierarchyPathElement = [NSXMLNode elementWithName:@"Path" stringValue:@"hierarchy.html"];
+	NSXMLElement* hierarchyPathElement = [NSXMLNode elementWithName:@"Path" stringValue:hierarchyFileName];
 	[hierarchyNodeElement addChild:hierarchyPathElement];
 	NSXMLElement* hierarchySubnodesElement = [NSXMLNode elementWithName:@"Subnodes"];
 	[hierarchyNodeElement addChild:hierarchySubnodesElement];
@@ -202,9 +206,10 @@
 	{
 		// Get required object data.
 		NSDictionary* objectData = [objects objectForKey:objectName];
+		NSXMLDocument* objectDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSString* objectKind = [objectData objectForKey:kTKDataObjectKindKey];
 		NSString* objectRelPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-		NSXMLDocument* objectDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
+		objectRelPath = [XHTMLGenerator pathByReplacingPlaceholders:objectRelPath];
 		
 		// Prepare the object identifier.
 		NSString* objectIdentifier = nil;
@@ -381,7 +386,9 @@
 	NSDictionary* objectData = [data objectForKey:kTKDataHierarchyObjectDataKey];
 	NSString* objectName = [data objectForKey:kTKDataHierarchyObjectNameKey];
 	NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-	if (!objectPath) objectPath = @"hierarchy.html";
+	objectPath = objectPath ?
+		[XHTMLGenerator pathByReplacingPlaceholders:objectPath] :
+		[XHTMLGenerator hierarchyFileName];
 
 	// Create the main node that will represent the object.
 	NSXMLElement* node = [NSXMLNode elementWithName:@"Node"];

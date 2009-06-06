@@ -20,6 +20,56 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+/// @name Generator descriptions
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Returns the default output files extension.￼￼ 
+
+This method is provided so that any external objects that need to handle XHTML files
+can properly setup file extensions. Note that these objects are then closely coupled
+to this concrete generator...
+ 
+@see pathByReplacingPlaceholders:
+@see indexFileName
+@see hierarchyFileName
+*/
++ (NSString*) defaultOutputFilesExtension;
+
+/** Converts￼ the given path by replacing the placeholder texts.
+
+This method is provided so that any external objects that rely on the XHTML files
+can easily update paths with proper ones. Note that these objects are then closely
+couples to this concrete generator...￼
+
+@param path The path for which to replace placeholders.
+@return Returns a new autoreleased @c NSString containing correct path.
+@see defaultOutputFilesExtension
+@see indexFileName
+@see hierarchyFileName
+*/
++ (NSString*) pathByReplacingPlaceholders:(NSString*) path;
+
+/** Returns the index file name including extension.￼
+
+Note that this only returns the file name and extension, without path.
+
+@see defaultOutputFilesExtension;
+@see pathByReplacingPlaceholders:
+@see hierarchyFileName;
+*/
++ (NSString*) indexFileName;
+
+/** Returns the hierarchy file name including extension.￼
+
+Note that this only returns the file name and extension, without path.
+
+@see defaultOutputFilesExtension;
+@see pathByReplacingPlaceholders:
+@see indexFileName;
+*/
++ (NSString*) hierarchyFileName;
+
+//////////////////////////////////////////////////////////////////////////////////////////
 /// @name Object member helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 

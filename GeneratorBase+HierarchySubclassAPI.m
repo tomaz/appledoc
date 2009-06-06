@@ -85,7 +85,7 @@
 //----------------------------------------------------------------------------------------
 - (NSXMLDocument*) hierarchyMarkup
 {
-	return [hierarchyData objectForKey:kTKDataMainHierarchyKey];
+	return hierarchyMarkup;
 }
 
 @end

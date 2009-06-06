@@ -34,13 +34,9 @@
 	
 	@try
 	{
-		// Convert the index file.
-		NSString* indexFilename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index.html"];
-		[generator generateOutputForIndex:database toFile:indexFilename];
-		
-		// Convert the hierarchy file.
-		NSString* hierarchyFilename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"hierarchy.html"];
-		[generator generateOutputForHierarchy:database toFile:hierarchyFilename];
+		// Convert the index and hierarchy files.
+		[generator generateOutputForIndex:database];
+		[generator generateOutputForHierarchy:database];
 
 		// Convert the object files.
 		NSDictionary* objects = [database objectForKey:kTKDataMainObjectsKey];
@@ -50,10 +46,7 @@
 			loopAutoreleasePool = [[NSAutoreleasePool alloc] init];
 			
 			NSDictionary* objectData = [objects objectForKey:objectName];
-			NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
-			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
-
-			[generator generateOutputForObject:objectData toFile:filename];
+			[generator generateOutputForObject:objectData];
 		}
 		
 		// If cleantemp is used, remove clean XML temporary files.

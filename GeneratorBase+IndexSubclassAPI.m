@@ -65,7 +65,7 @@
 //----------------------------------------------------------------------------------------
 - (NSXMLDocument*) indexMarkup
 {
-	return [indexData objectForKey:kTKDataMainIndexKey];
+	return indexMarkup;
 }
 
 @end

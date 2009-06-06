@@ -124,6 +124,17 @@ Note that this method always returns the first subitem if more than one exists.
 - (id) extractSubitemFromItem:(id) item
 					 withName:(NSString*) name;
 
+/** Converts￼ the given path by replacing the placeholder texts.
+
+This method is provided so that subclasses can use standardized way of replacing path
+placeholders. It replaces extension placeholder with the extension returned from
+@c GeneratorBase::outputFilesExtension().
+
+@param path The path for which to replace placeholders.
+@return Returns a new autoreleased @c NSString containing correct path.
+*/
+- (NSString*) convertPathByReplacingPlaceholders:(NSString*) path;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper generation methods
 //////////////////////////////////////////////////////////////////////////////////////////

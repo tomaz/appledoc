@@ -147,7 +147,7 @@
 			}
 			
 			NSString* objectRelativePath = [objectRelativeDirectory stringByAppendingPathComponent:objectName];
-			objectRelativePath = [objectRelativePath stringByAppendingPathExtension:@"html"];
+			objectRelativePath = [objectRelativePath stringByAppendingString:kTKPlaceholderExtension];
 			
 			// (F) OK, now really add the node to the database... ;) First create the
 			// object's description dictionary. Then add the object to the Objects
@@ -1365,10 +1365,10 @@
 	// If the two subdirectories are not the same, we should prepend the relative path.
 	if (![sourceSubdir isEqualToString:destinationSubdir])
 	{
-		return [NSString stringWithFormat:@"../%@/%@.html", destinationSubdir, destination];
+		return [NSString stringWithFormat:@"../%@/%@%@", destinationSubdir, destination, kTKPlaceholderExtension];
 	}
 	
-	return [NSString stringWithFormat:@"%@.html", destination];
+	return [NSString stringWithFormat:@"%@%@", destination, kTKPlaceholderExtension];
 }
 
 //----------------------------------------------------------------------------------------

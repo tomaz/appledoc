@@ -22,6 +22,41 @@
 @implementation XHTMLGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Generator descriptions
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
++ (NSString*) defaultOutputFilesExtension
+{
+	return @".html";
+}
+
+//----------------------------------------------------------------------------------------
++ (NSString*) pathByReplacingPlaceholders:(NSString*) path
+{
+	return [path stringByReplacingOccurrencesOfString:kTKPlaceholderExtension 
+										   withString:[self defaultOutputFilesExtension]];
+}
+
+//----------------------------------------------------------------------------------------
++ (NSString*) indexFileName
+{
+	return [NSString stringWithFormat:@"index%@", [self defaultOutputFilesExtension]];
+}
+
+//----------------------------------------------------------------------------------------
++ (NSString*) hierarchyFileName
+{
+	return [NSString stringWithFormat:@"hierarchy%@", [self defaultOutputFilesExtension]];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return [[self class] defaultOutputFilesExtension];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Global generation handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -822,8 +857,17 @@
 		if (showBackToIndex)
 		{
 			[self appendString:@"Back to " toData:data];
-			[self appendString:@"<a href=\"../index.html\">index</a> / " toData:data];
-			[self appendString:@"<a href=\"../hierarchy.html\">hierarchy</a>." toData:data];
+			
+			[self appendString:@"<a href=\"../" toData:data];
+			[self appendString:[[self class] indexFileName] toData:data];
+			[self appendString:@"\">index</a>" toData:data];
+			
+			[self appendString:@" / " toData:data];
+			
+			[self appendString:@"<a href=\"../" toData:data];
+			[self appendString:[[self class] hierarchyFileName] toData:data];
+			[self appendString:@"\">hierarchy</a>." toData:data];
+			
 			[self appendLine:@"" toData:data];
 		}
 		

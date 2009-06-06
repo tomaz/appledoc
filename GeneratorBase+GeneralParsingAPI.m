@@ -80,6 +80,13 @@
 	return nil;
 }
 
+//----------------------------------------------------------------------------------------
+- (NSString*) convertPathByReplacingPlaceholders:(NSString*) path
+{
+	return [path stringByReplacingOccurrencesOfString:kTKPlaceholderExtension 
+										   withString:[self outputFilesExtension]];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////

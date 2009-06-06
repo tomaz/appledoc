@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-#define kTKConverterException @"TKConverterException"
+#define kTKConverterException	@"TKConverterException"
+#define kTKPlaceholderExtension	@"$EXTENSION"
 
 #define kTKDirClasses		@"Classes"
 #define kTKDirCategories	@"Categories"
