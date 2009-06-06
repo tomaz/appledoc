@@ -523,22 +523,13 @@
 		}
 	}	
 	
-	// Ok, we've added all the objects, now delete temporary root placeholders.
-	for (int i = 0; i < [hierarchies count]; i++)
-	{
-		NSString* objectName = [[hierarchies allKeys] objectAtIndex:i];
-		NSDictionary* data = [hierarchies objectForKey:objectName];
-		NSNumber* temporary = [data objectForKey:kTKDataHierarchyTempKey];
-		if (temporary && [temporary boolValue])
-		{
-			logDebug(@"  - Removing temporary object '%@' from root...", objectName);
-			[hierarchies removeObjectForKey:objectName];
-			i--;
-		}
-	}
-	
 	// Create the default markup. Then handle all root level objects. This in turn will
-	// handle their children and these their and so on in the recursive method.
+	// handle their children and these their and so on in the recursive method. Note that
+	// all root level nodes with temporary flag set, should not be handled. These will
+	// eventually be removed from the database root level, at the end of the clean XML
+	// generation. However for the moment they are left here, so that code generation
+	// is simpler - to find an object and it's hierarchy, simply search for it in the
+	// root...
 	NSXMLDocument* document = [[NSXMLDocument alloc] init];
 	NSXMLElement* projectElement = [NSXMLElement elementWithName:@"project"];
 	[document setVersion:@"1.0"];
@@ -547,7 +538,11 @@
 	for (NSString* objectName in sortedObjects)
 	{
 		NSDictionary* objectData = [hierarchies objectForKey:objectName];
-		[self createHierarchyDataForObject:objectData withinNode:projectElement];
+		NSNumber* temporaryFlag = [objectData objectForKey:kTKDataHierarchyTempKey];
+		if (!temporaryFlag || ![temporaryFlag boolValue])
+		{
+			[self createHierarchyDataForObject:objectData withinNode:projectElement];
+		}
 	}
 	
 	// Store the cleaned markup to the application data.
@@ -595,6 +590,23 @@
 		[self fixReferencesForObject:objectName objectData:objectData objects:objects];
 		[self fixParaLinksForObject:objectName objectData:objectData objects:objects];
 		[self fixEmptyParaForObject:objectName objectData:objectData objects:objects];
+	}
+	
+	// When all fixes are applied, we can remove temporary objects from the hierarchies
+	// root level. The outside code relies on the fact that the hierarchies is "clean"
+	// and only contains objects on the places where they belong.
+	NSMutableDictionary* hierarchies = [database objectForKey:kTKDataMainHierarchiesKey];
+	for (int i = 0; i < [hierarchies count]; i++)
+	{
+		NSString* objectName = [[hierarchies allKeys] objectAtIndex:i];
+		NSDictionary* data = [hierarchies objectForKey:objectName];
+		NSNumber* temporary = [data objectForKey:kTKDataHierarchyTempKey];
+		if (temporary && [temporary boolValue])
+		{
+			logDebug(@"  - Removing temporary object '%@' from root...", objectName);
+			[hierarchies removeObjectForKey:objectName];
+			i--;
+		}
 	}
 	
 	// Release last iteration pool.
@@ -808,6 +820,57 @@
 				NSXMLElement* parentNode = (NSXMLElement*)[baseNode parent];
 				[parentNode replaceChildAtIndex:index withNode:protocolNode];
 			}
+		}
+	}
+	
+	// Now prepare the object full hierarchy. This will add additional <base> nodes after
+	// the main one for classes which have "deep" inheritance. All known bases will also
+	// be documented. Note that we only handle objects that are contained in the hierarchy.
+	// Also note that we need to fetch base nodes again (we should only have one now, 
+	// however we play safe and start adding after the last one).
+	NSString* parentName = [objectData objectForKey:kTKDataObjectParentKey];
+	if (parentName)
+	{
+		// We need the object node in case there's non base node - then we should just
+		// add additional base nodes directly to the object node.
+		NSArray* objectNodes = [cleanDocument nodesForXPath:@"object" error:nil];
+		NSXMLElement* objectNode = [objectNodes lastObject];
+		
+		// Prepare default insertion index. If object node contains less than 4 subnodes
+		// (name, file, base), we should insert to the end, otherwise we should insert
+		// after the third (after the base node). However, if the node contains base
+		// subnodes, we will properly setup the insertion index after the last one.
+		NSUInteger insertionIndex = ([objectNode childCount] < 4) ? [objectNode childCount] - 1 : 3;
+		NSArray* baseNodes = [objectNode nodesForXPath:@"base" error:nil];
+		if ([baseNodes count] == 0)
+		{
+			insertionIndex = [[baseNodes lastObject] index] + 1;
+		}
+
+		// Note that this loop will skip the immediate object's parent since this one is
+		// already documented. However to avoid code repetition, this is not handled
+		// outside, and therefore requires a conditional within the loop.
+		int parentLevel = 0;
+		while (parentName)
+		{
+			// Only handle second level inheritance...
+			NSDictionary* parentData = [objects objectForKey:parentName];
+			if (parentLevel > 0)
+			{
+				NSXMLElement* baseNode = [NSXMLNode elementWithName:@"base" stringValue:parentName];
+				if (parentData)
+				{
+					NSString* linkReference = [self objectReferenceFromObject:objectName toObject:parentName];
+					NSXMLNode* idAttribute = [NSXMLNode attributeWithName:@"id" stringValue:linkReference];
+					[baseNode addAttribute:idAttribute];
+				}
+				[objectNode insertChild:baseNode atIndex:insertionIndex];
+				insertionIndex++;
+			}
+			
+			// Continue with the next parent.
+			parentName = [parentData objectForKey:kTKDataObjectParentKey];
+			parentLevel++;
 		}
 	}
 }
