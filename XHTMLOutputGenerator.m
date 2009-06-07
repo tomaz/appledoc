@@ -1,25 +1,25 @@
 //
-//  XHTMLGenerator.m
+//  XHTMLOutputGenerator.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "XHTMLGenerator.h"
-#import "GeneratorBase+GeneralParsingAPI.h"
-#import "GeneratorBase+ObjectParsingAPI.h"
-#import "GeneratorBase+ObjectSubclassAPI.h"
-#import "GeneratorBase+IndexParsingAPI.h"
-#import "GeneratorBase+IndexSubclassAPI.h"
-#import "GeneratorBase+HierarchyParsingAPI.h"
-#import "GeneratorBase+HierarchySubclassAPI.h"
+#import "XHTMLOutputGenerator.h"
+#import "OutputGenerator+GeneralParsingAPI.h"
+#import "OutputGenerator+ObjectParsingAPI.h"
+#import "OutputGenerator+ObjectSubclassAPI.h"
+#import "OutputGenerator+IndexParsingAPI.h"
+#import "OutputGenerator+IndexSubclassAPI.h"
+#import "OutputGenerator+HierarchyParsingAPI.h"
+#import "OutputGenerator+HierarchySubclassAPI.h"
 #import "Systemator.h"
 #import "LoggingProvider.h"
 #import "CommandLineParser.h"
 #import "DoxygenConverter.h"
 
-@implementation XHTMLGenerator
+@implementation XHTMLOutputGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Generator descriptions

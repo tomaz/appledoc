@@ -1,5 +1,5 @@
 //
-//  GeneratorBase+HierarchySubclassAPI.h
+//  OutputGenerator+HierarchySubclassAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneratorBase.h"
+#import "OutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper virtual methods for the @c GeneratorBase subclasses that help
+/** Defines helper virtual methods for the @c OutputGenerator subclasses that help
 hierarchy output generation.
 */
-@interface GeneratorBase (HierarchySubclassAPI)
+@interface OutputGenerator (HierarchySubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Subclass hierarchy file header and footer handling
@@ -22,27 +22,27 @@ hierarchy output generation.
 
 /** Appends any header text before the actual generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForHierarchy() as the first message. 
+The message is sent from the @c OutputGenerator::outputDataForHierarchy() as the first message. 
 It gives subclasses a chance to append data to the output before the actual output generation 
 starts. After this message is sent, the rest of the messages are followed and as the last one,
 @c appendHierarchyFooterToData:() is sent.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForHierarchy
+@see OutputGenerator::outputDataForHierarchy
 @see appendHierarchyFooterToData:
 */
 - (void) appendHierarchyHeaderToData:(NSMutableData*) data;
 
 /** Appends any footer text after output generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForHierarchy() as the last message. It 
+The message is sent from the @c OutputGenerator::outputDataForHierarchy() as the last message. It 
 gives subclasses a chance to append data to the output after the rest of the output is 
 generated. This is ussually the place to "close" open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForHierarchy
+@see OutputGenerator::outputDataForHierarchy
 @see appendHierarchyHeaderToData:
 */
 - (void) appendHierarchyFooterToData:(NSMutableData*) data;
@@ -53,7 +53,7 @@ generated. This is ussually the place to "close" open tags or similar.
 
 /** Appends any hierarchy group header text before the actual group items generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForHierarchy() just before hierarchy 
+The message is sent from the @c OutputGenerator::outputDataForHierarchy() just before hierarchy 
 group items are generated. It gives subclasses a chance to append data to the output before 
 the generation for group items starts. After this message is sent, at least one 
 @c appendHierarchyGroupItemToData:fromItem:index:() message is sent and then 
@@ -61,7 +61,7 @@ the generation for group items starts. After this message is sent, at least one
  
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForHierarchy
+@see OutputGenerator::outputDataForHierarchy
 @see appendHierarchyGroupItemToData:fromItem:index:
 @see appendHierarchyGroupFooterToData:
 */
@@ -69,7 +69,7 @@ the generation for group items starts. After this message is sent, at least one
 
 /** Appends any hierarchy group footer text after the group items generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForHierarchy() as the last group 
+The message is sent from the @c OutputGenerator::outputDataForHierarchy() as the last group 
 generation message. It gives subclasses a chance to append data to the output after the 
 generation for hierarchy group ends. This is ussually the place to "close" open tags or 
 similar.
@@ -79,7 +79,7 @@ so that the subclass can safely assume the whole group is processed well.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForHierarchy
+@see OutputGenerator::outputDataForHierarchy
 @see appendHierarchyGroupHeaderToData:
 @see appendHierarchyGroupItemToData:fromItem:index:
 */
@@ -87,16 +87,16 @@ so that the subclass can safely assume the whole group is processed well.
 
 /** Appends the given hierarchy group item data.
 
-This message is sent from @c GeneratorBase::outputDataForHierarchy() for each group member. 
+This message is sent from @c OutputGenerator::outputDataForHierarchy() for each group member. 
 The subclass should append the data for the given item. The subclass can get more 
 information about the member by using the hierarchy member data methods from the 
-@c GeneratorBase(HierarchyParsingAPI) category.
+@c OutputGenerator(HierarchyParsingAPI) category.
  
 @param data The data to append to. This is guaranteed to be non @c null.
 @param item The data item describing the given member.
 @param index Zero based index of the member within the group.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForHierarchy
+@see OutputGenerator::outputDataForHierarchy
 @see appendHierarchyGroupHeaderToData:
 @see appendHierarchyGroupFooterToData:
 @see generateHierarchyGroupChildrenToData:forItem:

@@ -1,5 +1,5 @@
 //
-//  GeneratorBase+ObjectParsingAPI.h
+//  OutputGenerator+ObjectParsingAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneratorBase.h"
+#import "OutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper methods private for the @c GeneratorBase and it's subclasses that
+/** Defines helper methods private for the @c OutputGenerator and it's subclasses that
 help parsing object related documentation.
 */
-@interface GeneratorBase (ObjectParsingAPI)
+@interface OutputGenerator (ObjectParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Object info items parsing support

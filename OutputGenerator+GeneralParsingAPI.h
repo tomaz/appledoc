@@ -1,5 +1,5 @@
 //
-//  GeneratorBase+GeneralParsingAPI.h
+//  OutputGenerator+GeneralParsingAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneratorBase.h"
+#import "OutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines general helper methods private for the @c GeneratorBase and it's subclasses.
+/** Defines general helper methods private for the @c OutputGenerator and it's subclasses.
 */
-@interface GeneratorBase (GeneralParsingAPI)
+@interface OutputGenerator (GeneralParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Descriptions parsing support
@@ -128,7 +128,7 @@ Note that this method always returns the first subitem if more than one exists.
 
 This method is provided so that subclasses can use standardized way of replacing path
 placeholders. It replaces extension placeholder with the extension returned from
-@c GeneratorBase::outputFilesExtension().
+@c OutputGenerator::outputFilesExtension().
 
 @param path The path for which to replace placeholders.
 @return Returns a new autoreleased @c NSString containing correct path.

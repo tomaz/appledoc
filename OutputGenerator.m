@@ -1,19 +1,19 @@
 //
-//  GeneratorBase.m
+//  OutputGenerator.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "GeneratorBase.h"
-#import "GeneratorBase+GeneralParsingAPI.h"
-#import "GeneratorBase+ObjectParsingAPI.h"
-#import "GeneratorBase+ObjectSubclassAPI.h"
-#import "GeneratorBase+IndexParsingAPI.h"
-#import "GeneratorBase+IndexSubclassAPI.h"
-#import "GeneratorBase+HierarchyParsingAPI.h"
-#import "GeneratorBase+HierarchySubclassAPI.h"
+#import "OutputGenerator.h"
+#import "OutputGenerator+GeneralParsingAPI.h"
+#import "OutputGenerator+ObjectParsingAPI.h"
+#import "OutputGenerator+ObjectSubclassAPI.h"
+#import "OutputGenerator+IndexParsingAPI.h"
+#import "OutputGenerator+IndexSubclassAPI.h"
+#import "OutputGenerator+HierarchyParsingAPI.h"
+#import "OutputGenerator+HierarchySubclassAPI.h"
 #import "CommandLineParser.h"
 #import "DoxygenConverter.h"
 #import "LoggingProvider.h"
@@ -21,14 +21,14 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines private methods for use within @c GeneratorBase class only.
+/** Defines private methods for use within @c OutputGenerator class only.
 
 These are helper methods to make the main @c generateOutput() less cluttered. The methods
-should only be used internaly by the @c GeneratorBase, they are not intended to be used
+should only be used internaly by the @c OutputGenerator, they are not intended to be used
 by the subclasses. Therefore the parameters are closely coupled to the underlying clean
 object markup which is XML.
 */
-@interface GeneratorBase ()
+@interface OutputGenerator ()
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Object generation helpers
@@ -207,7 +207,7 @@ output generation.￼
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
 
-@implementation GeneratorBase
+@implementation OutputGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Construction & destruction

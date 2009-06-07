@@ -1,5 +1,5 @@
 //
-//  GeneratorBase+ObjectSubclassAPI.h
+//  OutputGenerator+ObjectSubclassAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GeneratorBase.h"
+#import "OutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper virtual methods for the @c GeneratorBase subclasses that help
+/** Defines helper virtual methods for the @c OutputGenerator subclasses that help
 objects output generation.
 */
-@interface GeneratorBase (ObjectSubclassAPI)
+@interface OutputGenerator (ObjectSubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Subclass object file header and footer handling
@@ -22,27 +22,27 @@ objects output generation.
 
 /** Appends any header text before the actual generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() as the first message. 
+The message is sent from the @c OutputGenerator::outputDataForObject() as the first message. 
 It gives subclasses a chance to append data to the output before the actual output 
 generation starts. After this message is sent, the rest of the messages are followed and 
 as the last one, @c appendObjectFooterToData:() is sent.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectFooterToData:
 */
 - (void) appendObjectHeaderToData:(NSMutableData*) data;
 
 /** Appends any footer text after output generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() as the last message. It 
+The message is sent from the @c OutputGenerator::outputDataForObject() as the last message. It 
 gives subclasses a chance to append data to the output after the rest of the output is 
 generated. This is ussually the place to "close" open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectHeaderToData:
 */
 - (void) appendObjectFooterToData:(NSMutableData*) data;
@@ -53,7 +53,7 @@ generated. This is ussually the place to "close" open tags or similar.
 
 /** Appends any object info header text before the actual generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() just before object info 
+The message is sent from the @c OutputGenerator::outputDataForObject() just before object info 
 items are generated. It gives subclasses a chance to append data to the output before the 
 generation for secion items starts. After this message is sent, at least one 
 @c appendObjectInfoItemToData:fromItems:index:type:() message is sent and then 
@@ -61,7 +61,7 @@ generation for secion items starts. After this message is sent, at least one
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectInfoItemToData:fromItems:index:type:
 @see appendObjectInfoFooterToData:
 */
@@ -69,13 +69,13 @@ generation for secion items starts. After this message is sent, at least one
 
 /** Appends any object info footer text after the object info items generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() as the last info
+The message is sent from the @c OutputGenerator::outputDataForObject() as the last info
 generation message. It gives subclasses a chance to append data to the output after the 
 info items generation is finished. This is ussually the place to "close" open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectInfoHeaderToData:
 @see appendObjectInfoItemToData:fromItems:index:type:
 */
@@ -83,7 +83,7 @@ info items generation is finished. This is ussually the place to "close" open ta
 
 /** Appends the given object info item data.
 
-This message is sent from @c GeneratorBase::outputDataForObject() for each applicable object 
+This message is sent from @c OutputGenerator::outputDataForObject() for each applicable object 
 info item type. The subclass should append the data for the given item. The subclass can get 
 more information about the object info item by investigating the given array which 
 contains objects that can be used to query additional data for individual item.
@@ -101,7 +101,7 @@ The type identifies the type of the info item and can be one of the following:
 @param index Zero based index of the item within the info object info.
 @param type The type of the item.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectInfoHeaderToData:
 @see appendObjectInfoFooterToData:
 */
@@ -116,7 +116,7 @@ The type identifies the type of the info item and can be one of the following:
 
 /** Appends object overview description.
 
-This message is sent from @c GeneratorBase::outputDataForObject() if the object has brief 
+This message is sent from @c OutputGenerator::outputDataForObject() if the object has brief 
 and or detailed documentation assigned. It gives subclasses a chance to append object overview 
 from the gathered documentation. The given @c item contains brief and detailed object
 description and can be treated as any other description item.
@@ -124,7 +124,7 @@ description and can be treated as any other description item.
 @param data The data to append to. This is guaranteed to be non @c null.
 @param item The item that contains the brief and detailed description.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 */
 - (void) appendObjectOverviewToData:(NSMutableData*) data 
 						   fromItem:(id) item;
@@ -135,14 +135,14 @@ description and can be treated as any other description item.
 
 /** Appends any tasks header before the actual tasks generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() if the object has at 
+The message is sent from the @c OutputGenerator::outputDataForObject() if the object has at 
 least one task defined. It gives subclasses a chance to append data to the output before 
 any individual task handling is started. After this message is sent, each individual 
 task is handled and when all tasks are done, @c appendObjectTasksFooterToData:() is sent.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectTaskHeaderToData:fromItem:index:
 @see appendObjectTaskFooterToData:fromItem:index:
 @see appendObjectTasksFooterToData:
@@ -151,13 +151,13 @@ task is handled and when all tasks are done, @c appendObjectTasksFooterToData:()
 
 /** Appends any tasks footer after sections generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() after all tasks have 
+The message is sent from the @c OutputGenerator::outputDataForObject() after all tasks have 
 been processed. It gives subclasses a chance to append data to the output at that point. 
 This is ussually the place to "close" tasks open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectTasksHeaderToData:
 @see appendObjectTaskHeaderToData:fromItem:index:
 @see appendObjectTaskMemberToData:fromItem:index:
@@ -167,7 +167,7 @@ This is ussually the place to "close" tasks open tags or similar.
 
 /** Appends an individual task header before the task members generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() for each task which 
+The message is sent from the @c OutputGenerator::outputDataForObject() for each task which 
 has at least one member. It gives subclasses a chance to append data to the output before 
 member handling for the given task starts.
 
@@ -175,7 +175,7 @@ member handling for the given task starts.
 @param item The item that contains the task description.
 @param index Zero based index of the task.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectTasksHeaderToData:
 @see appendObjectTaskMemberToData:fromItem:index:
 @see appendObjectTaskFooterToData:fromItem:index:
@@ -187,7 +187,7 @@ member handling for the given task starts.
 
 /** Appends an individual task footer after the task members generation ends.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() after all task members 
+The message is sent from the @c OutputGenerator::outputDataForObject() after all task members 
 have been processed. It gives subclasses a chance to append data to the output at that 
 point. This is ussually the place to "close" tasks open tags or similar.
 
@@ -195,7 +195,7 @@ point. This is ussually the place to "close" tasks open tags or similar.
 @param item The item that contains the task description.
 @param index Zero based index of the task.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectTasksHeaderToData:
 @see appendObjectTaskHeaderToData:fromItem:index:
 @see appendObjectTaskMemberToData:fromItem:index:
@@ -207,7 +207,7 @@ point. This is ussually the place to "close" tasks open tags or similar.
 
 /** Appends a task member data.
 
-This message is sent from the @c GeneratorBase::outputDataForObject() for each task member 
+This message is sent from the @c OutputGenerator::outputDataForObject() for each task member 
 (class or instance method or property. Subclasses should append any desired data for the 
 given member.
 
@@ -215,7 +215,7 @@ given member.
 @param item The item that contains the task member description.
 @param index Zero based index of the member within the task.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectTasksHeaderToData:
 @see appendObjectTaskHeaderToData:fromItem:index:
 @see appendObjectTaskFooterToData:fromItem:index:
@@ -231,7 +231,7 @@ given member.
 
 /** Appends any main members documentation header before the actual member generation starts.
 
-The message is sent from the @c GeneratorBase::outputDataForObject() if the object has at least 
+The message is sent from the @c OutputGenerator::outputDataForObject() if the object has at least 
 one main member group defined. It gives subclasses a chance to append data to the output 
 before  any individual member handling is started. After this message is sent, each individual 
 member group is handled and when all members are done, @c appendObjectMembersFooterToData:() is 
@@ -239,7 +239,7 @@ sent.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectMembersFooterToData:
 @see appendObjectMemberGroupHeaderToData:type:
 @see appendObjectMemberGroupFooterToData:type:
@@ -249,13 +249,13 @@ sent.
 
 /** Appends any main members documentation footer after members generation ends.
 
-The message is sent from the @cGeneratorBase:: outputDataForObject() after all member groups 
+The message is sent from the @cOutputGenerator:: outputDataForObject() after all member groups 
 have been processed. It gives subclasses a chance to append data to the output at that point. 
 This is ussually the place to "close" sections open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectMembersHeaderToData:
 @see appendObjectMemberGroupHeaderToData:type:
 @see appendObjectMemberGroupFooterToData:type:
@@ -265,7 +265,7 @@ This is ussually the place to "close" sections open tags or similar.
 
 /** Appends member group header data.
  
-This message is sent from @c GeneratorBase::outputDataForObject() for each main member 
+This message is sent from @c OutputGenerator::outputDataForObject() for each main member 
 documentation group. The group is specified with the @c type parameter and can be one of 
 the following:
 - @c kTKObjectMemberTypeClass: The group describes class members.
@@ -281,7 +281,7 @@ each documented member of the given group and after all members output is genera
 @param data The data to append to. This is guaranteed to be non @c null.
 @param type The type of the group that is being described.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectMembersHeaderToData:
 @see appendObjectMembersFooterToData:
 @see appendObjectMemberToData:fromItem:index:
@@ -292,7 +292,7 @@ each documented member of the given group and after all members output is genera
 
 /** Appends member group footer data.
 
-This message is sent from @c GeneratorBase::outputDataForObject() for each main member 
+This message is sent from @c OutputGenerator::outputDataForObject() for each main member 
 documentation group. The group is specified by the @c type parameter and can be one of 
 the following:
 - @c kTKObjectMemberTypeClass: The group describes class members.
@@ -306,7 +306,7 @@ corresponding @c appendObjectMemberGroupHeaderToData:type:() was sent.
 @param data The data to append to. This is guaranteed to be non @c null.
 @param type The type of the group that is being described.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectMembersHeaderToData:
 @see appendObjectMembersFooterToData:
 @see appendObjectMemberGroupHeaderToData:type:
@@ -317,14 +317,14 @@ corresponding @c appendObjectMemberGroupHeaderToData:type:() was sent.
 
 /** Appends individual member full documentation data.
 
-This message is sent from @c GeneratorBase::outputDataForObject() for each documented member. 
+This message is sent from @c OutputGenerator::outputDataForObject() for each documented member. 
 Subclasses should output the full documentation for the given member.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @param item The item that describes the member data.
 @param index Zero based index of the member within the group.
 @exception NSException Thrown if appending fails.
-@see GeneratorBase::outputDataForObject
+@see OutputGenerator::outputDataForObject
 @see appendObjectMembersHeaderToData:
 @see appendObjectMembersFooterToData:
 @see appendObjectMemberGroupHeaderToData:type:
@@ -364,7 +364,7 @@ which also returns the file name. */
 /** Returns current object relative path within the generated output.
  
 This returns the directory and the object name without the extension (the extension should
-be specified by each concrete @c GeneratorBase class). See also @c objectRelativeDir(). */
+be specified by each concrete @c OutputGenerator class). See also @c objectRelativeDir(). */
 @property(readonly) NSString* objectRelativePath;
 
 @end

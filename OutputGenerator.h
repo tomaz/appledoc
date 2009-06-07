@@ -1,5 +1,5 @@
 //
-//  GeneratorBase.h
+//  OutputGenerator.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -90,7 +90,7 @@ objects by simply sending the instance @c generateOutputForObject:() message,
 @c generateOutputForIndex:() and/or @c generateOutputForHierarchy:() with 
 the required data.
 */
-@interface GeneratorBase : NSObject
+@interface OutputGenerator : NSObject
 {
 	CommandLineParser* cmd;
 	NSDictionary* objectData;

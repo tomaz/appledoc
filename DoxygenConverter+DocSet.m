@@ -7,7 +7,7 @@
 //
 
 #import "DoxygenConverter+DocSet.h"
-#import "XHTMLGenerator.h"
+#import "XHTMLOutputGenerator.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
@@ -88,8 +88,8 @@
 	logNormal(@"Creating DocSet Nodes.xml file...");	
 	NSAutoreleasePool* loopAutoreleasePool = [[NSAutoreleasePool alloc] init];	
 	NSXMLDocument* document = [NSXMLDocument document];
-	NSString* indexFileName = [XHTMLGenerator indexFileName];
-	NSString* hierarchyFileName = [XHTMLGenerator hierarchyFileName];
+	NSString* indexFileName = [XHTMLOutputGenerator indexFileName];
+	NSString* hierarchyFileName = [XHTMLOutputGenerator hierarchyFileName];
 	
 	// Create the version and ecoding elements.
 	[document setVersion:@"1.0"];
@@ -138,7 +138,7 @@
 		{
 			NSString* objectName = [objectData objectForKey:kTKDataObjectNameKey];
 			NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-			objectPath = [XHTMLGenerator pathByReplacingPlaceholders:objectPath];
+			objectPath = [XHTMLOutputGenerator pathByReplacingPlaceholders:objectPath];
 			
 			NSXMLElement* objectElement = [NSXMLNode elementWithName:@"Node"];
 			[directorySubnodesElement addChild:objectElement];
@@ -209,7 +209,7 @@
 		NSXMLDocument* objectDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSString* objectKind = [objectData objectForKey:kTKDataObjectKindKey];
 		NSString* objectRelPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-		objectRelPath = [XHTMLGenerator pathByReplacingPlaceholders:objectRelPath];
+		objectRelPath = [XHTMLOutputGenerator pathByReplacingPlaceholders:objectRelPath];
 		
 		// Prepare the object identifier.
 		NSString* objectIdentifier = nil;
@@ -387,8 +387,8 @@
 	NSString* objectName = [data objectForKey:kTKDataHierarchyObjectNameKey];
 	NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
 	objectPath = objectPath ?
-		[XHTMLGenerator pathByReplacingPlaceholders:objectPath] :
-		[XHTMLGenerator hierarchyFileName];
+		[XHTMLOutputGenerator pathByReplacingPlaceholders:objectPath] :
+		[XHTMLOutputGenerator hierarchyFileName];
 
 	// Create the main node that will represent the object.
 	NSXMLElement* node = [NSXMLNode elementWithName:@"Node"];

@@ -1,15 +1,15 @@
 //
-//  GeneratorBase+ObjectSubclassAPI.m
+//  OutputGenerator+ObjectSubclassAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "GeneratorBase+ObjectSubclassAPI.h"
+#import "OutputGenerator+ObjectSubclassAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation GeneratorBase (ObjectSubclassAPI)
+@implementation OutputGenerator (ObjectSubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark File header and footer handling

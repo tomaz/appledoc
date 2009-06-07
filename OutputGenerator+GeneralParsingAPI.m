@@ -1,15 +1,15 @@
 //
-//  GeneratorBase+GeneralParsingAPI.m
+//  OutputGenerator+GeneralParsingAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "GeneratorBase+GeneralParsingAPI.h"
+#import "OutputGenerator+GeneralParsingAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation GeneratorBase (PrivateAPI)
+@implementation OutputGenerator (PrivateAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Descriptions parsing support

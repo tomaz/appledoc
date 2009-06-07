@@ -1,18 +1,18 @@
 //
-//  XHTMLGenerator.h
+//  XHTMLOutputGenerator.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "GeneratorBase.h"
+#import "OutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines a concrete @c GeneratorBase that generates XHTML output.
+/** Defines a concrete @c OutputGenerator that generates XHTML output.
 */
-@interface XHTMLGenerator : GeneratorBase
+@interface XHTMLOutputGenerator : OutputGenerator
 {
 	BOOL indexProtocolsGroupAppended;
 	BOOL indexCategoriesGroupAppended;

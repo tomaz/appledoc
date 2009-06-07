@@ -11,7 +11,7 @@
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
-#import "XHTMLGenerator.h"
+#import "XHTMLOutputGenerator.h"
 
 @implementation DoxygenConverter (CleanOutput)
 
@@ -27,7 +27,7 @@
 	
 	// Prepare the output generators, send them default data and notify them generation 
 	// is about to begin.
-	XHTMLGenerator* generator = [[XHTMLGenerator alloc] init];
+	XHTMLOutputGenerator* generator = [[XHTMLOutputGenerator alloc] init];
 	generator.lastUpdated = lastUpdatedString;
 	generator.projectName = cmd.projectName;
 	[generator generationStarting];

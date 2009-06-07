@@ -1,15 +1,15 @@
 //
-//  GeneratorBase+IndexSubclassAPI.m
+//  OutputGenerator+IndexSubclassAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "GeneratorBase+IndexSubclassAPI.h"
+#import "OutputGenerator+IndexSubclassAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation GeneratorBase (IndexSubclassAPI)
+@implementation OutputGenerator (IndexSubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark File header and footer handling
