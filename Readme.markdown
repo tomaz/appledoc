@@ -38,6 +38,7 @@ Features
 --------
  
 * Generates apple like XHTML documentation.
+* Generates visual class hierarchy.
 * Generates fully indexed and browsable documentation set.
 * Installs documentation set to Xcode documentation window and research assistant.
 * Optionally merges category documentation into extended class.
