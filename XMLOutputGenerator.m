@@ -878,7 +878,7 @@
 		// subnodes, we will properly setup the insertion index after the last one.
 		NSUInteger insertionIndex = ([objectNode childCount] < 4) ? [objectNode childCount] - 1 : 3;
 		NSArray* baseNodes = [objectNode nodesForXPath:@"base" error:nil];
-		if ([baseNodes count] == 0)
+		if ([baseNodes count] > 0)
 		{
 			insertionIndex = [[baseNodes lastObject] index] + 1;
 		}
