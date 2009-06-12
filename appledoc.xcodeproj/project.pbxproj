@@ -21,15 +21,15 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		733560550FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 733560530FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.m */; };
-		73399E710FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399E700FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.m */; };
-		73399F070FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F050FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.m */; };
-		73399F690FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F680FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.m */; };
-		73446FD50FCF04E600D8FDCE /* OutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD40FCF04E600D8FDCE /* OutputGenerator.m */; };
-		73446FD80FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD70FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.m */; };
+		733560550FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */; };
+		73399E710FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */; };
+		73399F070FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */; };
+		73399F690FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */; };
+		73446FD50FCF04E600D8FDCE /* XMLBasedOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */; };
+		73446FD80FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */; };
 		7344702B0FCF169400D8FDCE /* XHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */; };
-		734543790FD928350001018F /* OutputGenerator+HierarchySubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543750FD928350001018F /* OutputGenerator+HierarchySubclassAPI.m */; };
-		7345437A0FD928350001018F /* OutputGenerator+HierarchyParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543770FD928350001018F /* OutputGenerator+HierarchyParsingAPI.m */; };
+		734543790FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */; };
+		7345437A0FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */; };
 		738FE7EE0FA195FB00711038 /* object.xslt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
 		738FE7F00FA195FB00711038 /* screen.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
 		738FE8000FA1965700711038 /* Systemator.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FB0FA1965700711038 /* Systemator.m */; };
@@ -37,11 +37,11 @@
 		738FE8020FA1965700711038 /* NSObject+Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FF0FA1965700711038 /* NSObject+Logging.m */; };
 		738FE8110FA1965F00711038 /* CommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8040FA1965F00711038 /* CommandLineParser.m */; };
 		738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8060FA1965F00711038 /* DoxygenConverter.m */; };
-		738FE8130FA1965F00711038 /* DoxygenConverter+Doxygen.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */; };
-		738FE8140FA1965F00711038 /* DoxygenConverter+CleanXML.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */; };
-		738FE8150FA1965F00711038 /* DoxygenConverter+CleanOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */; };
-		738FE8160FA1965F00711038 /* DoxygenConverter+DocSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */; };
-		738FE8170FA1965F00711038 /* DoxygenConverter+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */; };
+		739C8E1A0FE193E500E6D950 /* OutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C8E190FE193E500E6D950 /* OutputGenerator.m */; };
+		739C8E1D0FE1A06900E6D950 /* DoxygenOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */; };
+		73B88A140FE22D73004C31DC /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88A130FE22D73004C31DC /* Constants.m */; };
+		73B88AED0FE245CE004C31DC /* XMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */; };
+		73B88BD30FE26842004C31DC /* DocSetOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */; };
 		8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* appledoc.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -64,24 +64,24 @@
 		08FB7796FE84155DC02AAC07 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* appledoc_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_Prefix.pch; sourceTree = "<group>"; };
-		733560530FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+GeneralParsingAPI.m"; sourceTree = "<group>"; };
-		733560540FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+GeneralParsingAPI.h"; sourceTree = "<group>"; };
-		73399E6F0FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+ObjectSubclassAPI.h"; sourceTree = "<group>"; };
-		73399E700FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+ObjectSubclassAPI.m"; sourceTree = "<group>"; };
-		73399F050FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+IndexSubclassAPI.m"; sourceTree = "<group>"; };
-		73399F060FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+IndexSubclassAPI.h"; sourceTree = "<group>"; };
-		73399F670FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+IndexParsingAPI.h"; sourceTree = "<group>"; };
-		73399F680FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+IndexParsingAPI.m"; sourceTree = "<group>"; };
-		73446FD30FCF04E600D8FDCE /* OutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputGenerator.h; sourceTree = "<group>"; };
-		73446FD40FCF04E600D8FDCE /* OutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutputGenerator.m; sourceTree = "<group>"; };
-		73446FD60FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+ObjectParsingAPI.h"; sourceTree = "<group>"; };
-		73446FD70FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+ObjectParsingAPI.m"; sourceTree = "<group>"; };
+		733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+GeneralParsingAPI.m"; sourceTree = "<group>"; };
+		733560540FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+GeneralParsingAPI.h"; sourceTree = "<group>"; };
+		73399E6F0FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+ObjectSubclassAPI.h"; sourceTree = "<group>"; };
+		73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+ObjectSubclassAPI.m"; sourceTree = "<group>"; };
+		73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+IndexSubclassAPI.m"; sourceTree = "<group>"; };
+		73399F060FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+IndexSubclassAPI.h"; sourceTree = "<group>"; };
+		73399F670FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+IndexParsingAPI.h"; sourceTree = "<group>"; };
+		73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+IndexParsingAPI.m"; sourceTree = "<group>"; };
+		73446FD30FCF04E600D8FDCE /* XMLBasedOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLBasedOutputGenerator.h; sourceTree = "<group>"; };
+		73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLBasedOutputGenerator.m; sourceTree = "<group>"; };
+		73446FD60FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+ObjectParsingAPI.h"; sourceTree = "<group>"; };
+		73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+ObjectParsingAPI.m"; sourceTree = "<group>"; };
 		734470290FCF169400D8FDCE /* XHTMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHTMLOutputGenerator.h; sourceTree = "<group>"; };
 		7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHTMLOutputGenerator.m; sourceTree = "<group>"; };
-		734543750FD928350001018F /* OutputGenerator+HierarchySubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+HierarchySubclassAPI.m"; sourceTree = "<group>"; };
-		734543760FD928350001018F /* OutputGenerator+HierarchyParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+HierarchyParsingAPI.h"; sourceTree = "<group>"; };
-		734543770FD928350001018F /* OutputGenerator+HierarchyParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "OutputGenerator+HierarchyParsingAPI.m"; sourceTree = "<group>"; };
-		734543780FD928350001018F /* OutputGenerator+HierarchySubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OutputGenerator+HierarchySubclassAPI.h"; sourceTree = "<group>"; };
+		734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+HierarchySubclassAPI.m"; sourceTree = "<group>"; };
+		734543760FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+HierarchyParsingAPI.h"; sourceTree = "<group>"; };
+		734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+HierarchyParsingAPI.m"; sourceTree = "<group>"; };
+		734543780FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+HierarchySubclassAPI.h"; sourceTree = "<group>"; };
 		738FE7E60FA195E700711038 /* object.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = object.xslt; sourceTree = "<group>"; };
 		738FE7E80FA195E700711038 /* screen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = screen.css; sourceTree = "<group>"; };
 		738FE7FA0FA1965700711038 /* Systemator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Systemator.h; sourceTree = "<group>"; };
@@ -94,18 +94,20 @@
 		738FE8040FA1965F00711038 /* CommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandLineParser.m; sourceTree = "<group>"; };
 		738FE8050FA1965F00711038 /* DoxygenConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoxygenConverter.h; sourceTree = "<group>"; };
 		738FE8060FA1965F00711038 /* DoxygenConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoxygenConverter.m; sourceTree = "<group>"; };
-		738FE8070FA1965F00711038 /* DoxygenConverter+Doxygen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+Doxygen.h"; sourceTree = "<group>"; };
-		738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+Doxygen.m"; sourceTree = "<group>"; };
-		738FE8090FA1965F00711038 /* DoxygenConverter+CleanXML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+CleanXML.h"; sourceTree = "<group>"; };
-		738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+CleanXML.m"; sourceTree = "<group>"; };
-		738FE80B0FA1965F00711038 /* DoxygenConverter+CleanOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+CleanOutput.h"; sourceTree = "<group>"; };
-		738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+CleanOutput.m"; sourceTree = "<group>"; };
-		738FE80D0FA1965F00711038 /* DoxygenConverter+DocSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+DocSet.h"; sourceTree = "<group>"; };
-		738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+DocSet.m"; sourceTree = "<group>"; };
-		738FE80F0FA1965F00711038 /* DoxygenConverter+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DoxygenConverter+Helpers.h"; sourceTree = "<group>"; };
-		738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "DoxygenConverter+Helpers.m"; sourceTree = "<group>"; };
+		739C8E180FE193E500E6D950 /* OutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputGenerator.h; sourceTree = "<group>"; };
+		739C8E190FE193E500E6D950 /* OutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutputGenerator.m; sourceTree = "<group>"; };
+		739C8E1B0FE1A06900E6D950 /* DoxygenOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoxygenOutputGenerator.h; sourceTree = "<group>"; };
+		739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoxygenOutputGenerator.m; sourceTree = "<group>"; };
 		73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DocSet-Info.plist"; sourceTree = "<group>"; };
 		73AB8B120FA1CDB300B96D8A /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
+		73B889C10FE22631004C31DC /* OutputProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputProcessing.h; sourceTree = "<group>"; };
+		73B88A120FE22D73004C31DC /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		73B88A130FE22D73004C31DC /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLOutputGenerator.m; sourceTree = "<group>"; };
+		73B88AEC0FE245CE004C31DC /* XMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLOutputGenerator.h; sourceTree = "<group>"; };
+		73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocSetOutputGenerator.m; sourceTree = "<group>"; };
+		73B88BD20FE26842004C31DC /* DocSetOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocSetOutputGenerator.h; sourceTree = "<group>"; };
+		73B88C050FE26DBD004C31DC /* OutputInfoProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputInfoProvider.h; sourceTree = "<group>"; };
 		73EDC6D60FA555680020B94A /* Readme.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.markdown; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -137,6 +139,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				73B88A120FE22D73004C31DC /* Constants.h */,
+				73B88A130FE22D73004C31DC /* Constants.m */,
 				73446FD10FCF04CD00D8FDCE /* Generators */,
 				738FE7F80FA1964300711038 /* Conversion */,
 				738FE7F90FA1964900711038 /* Helpers */,
@@ -164,24 +168,18 @@
 		73446FD10FCF04CD00D8FDCE /* Generators */ = {
 			isa = PBXGroup;
 			children = (
-				73446FD30FCF04E600D8FDCE /* OutputGenerator.h */,
-				73446FD40FCF04E600D8FDCE /* OutputGenerator.m */,
-				733560540FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.h */,
-				733560530FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.m */,
-				73399E6F0FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.h */,
-				73399E700FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.m */,
-				73446FD60FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.h */,
-				73446FD70FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.m */,
-				73399F060FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.h */,
-				73399F050FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.m */,
-				73399F670FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.h */,
-				73399F680FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.m */,
-				734543780FD928350001018F /* OutputGenerator+HierarchySubclassAPI.h */,
-				734543750FD928350001018F /* OutputGenerator+HierarchySubclassAPI.m */,
-				734543760FD928350001018F /* OutputGenerator+HierarchyParsingAPI.h */,
-				734543770FD928350001018F /* OutputGenerator+HierarchyParsingAPI.m */,
+				73B88C060FE26DC0004C31DC /* Protocols */,
+				739C8DDE0FE1930500E6D950 /* XMLBasedOutputGenerator */,
+				739C8E180FE193E500E6D950 /* OutputGenerator.h */,
+				739C8E190FE193E500E6D950 /* OutputGenerator.m */,
+				739C8E1B0FE1A06900E6D950 /* DoxygenOutputGenerator.h */,
+				739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */,
+				73B88AEC0FE245CE004C31DC /* XMLOutputGenerator.h */,
+				73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */,
 				734470290FCF169400D8FDCE /* XHTMLOutputGenerator.h */,
 				7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */,
+				73B88BD20FE26842004C31DC /* DocSetOutputGenerator.h */,
+				73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */,
 			);
 			name = Generators;
 			sourceTree = "<group>";
@@ -211,16 +209,6 @@
 				738FE8040FA1965F00711038 /* CommandLineParser.m */,
 				738FE8050FA1965F00711038 /* DoxygenConverter.h */,
 				738FE8060FA1965F00711038 /* DoxygenConverter.m */,
-				738FE8070FA1965F00711038 /* DoxygenConverter+Doxygen.h */,
-				738FE8080FA1965F00711038 /* DoxygenConverter+Doxygen.m */,
-				738FE8090FA1965F00711038 /* DoxygenConverter+CleanXML.h */,
-				738FE80A0FA1965F00711038 /* DoxygenConverter+CleanXML.m */,
-				738FE80B0FA1965F00711038 /* DoxygenConverter+CleanOutput.h */,
-				738FE80C0FA1965F00711038 /* DoxygenConverter+CleanOutput.m */,
-				738FE80D0FA1965F00711038 /* DoxygenConverter+DocSet.h */,
-				738FE80E0FA1965F00711038 /* DoxygenConverter+DocSet.m */,
-				738FE80F0FA1965F00711038 /* DoxygenConverter+Helpers.h */,
-				738FE8100FA1965F00711038 /* DoxygenConverter+Helpers.m */,
 			);
 			name = Conversion;
 			sourceTree = "<group>";
@@ -238,6 +226,29 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		739C8DDE0FE1930500E6D950 /* XMLBasedOutputGenerator */ = {
+			isa = PBXGroup;
+			children = (
+				73446FD30FCF04E600D8FDCE /* XMLBasedOutputGenerator.h */,
+				73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */,
+				733560540FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.h */,
+				733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */,
+				73399E6F0FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.h */,
+				73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */,
+				73446FD60FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.h */,
+				73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */,
+				73399F060FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.h */,
+				73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */,
+				73399F670FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.h */,
+				73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */,
+				734543780FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.h */,
+				734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */,
+				734543760FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.h */,
+				734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */,
+			);
+			name = XMLBasedOutputGenerator;
+			sourceTree = "<group>";
+		};
 		73AB8B100FA1CDA100B96D8A /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +257,15 @@
 				73EDC6D60FA555680020B94A /* Readme.markdown */,
 			);
 			name = Documentation;
+			sourceTree = "<group>";
+		};
+		73B88C060FE26DC0004C31DC /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				73B889C10FE22631004C31DC /* OutputProcessing.h */,
+				73B88C050FE26DBD004C31DC /* OutputInfoProvider.h */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,20 +317,20 @@
 				738FE8020FA1965700711038 /* NSObject+Logging.m in Sources */,
 				738FE8110FA1965F00711038 /* CommandLineParser.m in Sources */,
 				738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */,
-				738FE8130FA1965F00711038 /* DoxygenConverter+Doxygen.m in Sources */,
-				738FE8140FA1965F00711038 /* DoxygenConverter+CleanXML.m in Sources */,
-				738FE8150FA1965F00711038 /* DoxygenConverter+CleanOutput.m in Sources */,
-				738FE8160FA1965F00711038 /* DoxygenConverter+DocSet.m in Sources */,
-				738FE8170FA1965F00711038 /* DoxygenConverter+Helpers.m in Sources */,
-				73446FD50FCF04E600D8FDCE /* OutputGenerator.m in Sources */,
-				73446FD80FCF08C300D8FDCE /* OutputGenerator+ObjectParsingAPI.m in Sources */,
+				73446FD50FCF04E600D8FDCE /* XMLBasedOutputGenerator.m in Sources */,
+				73446FD80FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m in Sources */,
 				7344702B0FCF169400D8FDCE /* XHTMLOutputGenerator.m in Sources */,
-				733560550FD3E08300C19DED /* OutputGenerator+GeneralParsingAPI.m in Sources */,
-				73399E710FD40C9700B65E5C /* OutputGenerator+ObjectSubclassAPI.m in Sources */,
-				73399F070FD4160300B65E5C /* OutputGenerator+IndexSubclassAPI.m in Sources */,
-				73399F690FD4612B00B65E5C /* OutputGenerator+IndexParsingAPI.m in Sources */,
-				734543790FD928350001018F /* OutputGenerator+HierarchySubclassAPI.m in Sources */,
-				7345437A0FD928350001018F /* OutputGenerator+HierarchyParsingAPI.m in Sources */,
+				733560550FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m in Sources */,
+				73399E710FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m in Sources */,
+				73399F070FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m in Sources */,
+				73399F690FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m in Sources */,
+				734543790FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m in Sources */,
+				7345437A0FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m in Sources */,
+				739C8E1A0FE193E500E6D950 /* OutputGenerator.m in Sources */,
+				739C8E1D0FE1A06900E6D950 /* DoxygenOutputGenerator.m in Sources */,
+				73B88A140FE22D73004C31DC /* Constants.m in Sources */,
+				73B88AED0FE245CE004C31DC /* XMLOutputGenerator.m in Sources */,
+				73B88BD30FE26842004C31DC /* DocSetOutputGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,15 +1,15 @@
 //
-//  OutputGenerator+ObjectSubclassAPI.m
+//  XMLBasedOutputGenerator+ObjectSubclassAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator+ObjectSubclassAPI.h"
+#import "XMLBasedOutputGenerator+ObjectSubclassAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation OutputGenerator (ObjectSubclassAPI)
+@implementation XMLBasedOutputGenerator (ObjectSubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark File header and footer handling

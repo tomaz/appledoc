@@ -410,6 +410,9 @@ instead.
 	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetResourcesPathKey];
 	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetDocumentsPathKey];
 	
+	// Setup the default doxygen output XML path.
+	self.outputDoxygenXMLPath = self.outputPath;
+	
 	// Make sure the documentation set bundle ID ends with .docset.
 	if (![self.docsetBundleID hasSuffix:@".docset"])
 	{
@@ -1015,5 +1018,11 @@ instead.
 {
 	return [parameters objectForKey:kTKCmdOutputDocSetDocumentsPathKey];
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Synthetized properties
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@synthesize outputDoxygenXMLPath;
 
 @end

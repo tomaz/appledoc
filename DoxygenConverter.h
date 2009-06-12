@@ -7,40 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
-#define kTKConverterException	@"TKConverterException"
-#define kTKPlaceholderExtension	@"$EXTENSION"
-
-#define kTKDirClasses		@"Classes"
-#define kTKDirCategories	@"Categories"
-#define kTKDirProtocols		@"Protocols"
-#define kTKDirCSS			@"css"
-#define kTKDirDocSet		@"docset"
-
-#define kTKDataMainIndexKey				@"Index"					// NSXMLDocument
-#define kTKDataMainHierarchyKey			@"Hierarchy"				// NSXMLDocument
-#define kTKDataMainHierarchiesKey		@"Hierarchies"				// NSDictionary
-#define kTKDataMainObjectsKey			@"Objects"					// NSDictionary
-#define kTKDataMainDirectoriesKey		@"Directories"				// NSDictionary
-
-#define kTKDataHierarchyObjectNameKey	@"ObjectName"				// NSString
-#define kTKDataHierarchyObjectDataKey	@"ObjectData"				// NSDictionary
-#define kTKDataHierarchyChildrenKey		@"Children"					// NSString
-#define kTKDataHierarchyTempKey			@"TEMPORARY"				// NSNumber / BOOL
-
-#define kTKDataObjectNameKey			@"ObjectName"				// NSString
-#define kTKDataObjectKindKey			@"ObjectKind"				// NSString
-#define kTKDataObjectClassKey			@"ObjectClass"				// NSString
-#define kTKDataObjectMarkupKey			@"CleanedMarkup"			// NSXMLDocument
-#define kTKDataObjectMembersKey			@"Members"					// NSDictionary
-#define kTKDataObjectParentKey			@"Parent"					// NSString
-#define kTKDataObjectRelDirectoryKey	@"RelativeDirectory"		// NSString
-#define kTKDataObjectRelPathKey			@"RelativePath"				// NSString
-#define kTKDataObjectDoxygenFilenameKey	@"DoxygenMarkupFilename"	// NSString
-
-#define kTKDataMemberNameKey			@"Name"						// NSString
-#define kTKDataMemberPrefixKey			@"Prefix"					// NSString
-#define kTKDataMemberSelectorKey		@"Selector"					// NSString
+#import "Constants.h"
 
 @class CommandLineParser;
 
@@ -139,25 +106,19 @@ is a standard @c NSDictionary of the following layout:
 	  - @c "<DirectoryName>"...
 	  - ...
  
-Note that this class is closely coupled with @c CommandLineParser which it uses to
-determine the exact conversion work flow.
- 
-Since this class is quite complex one, it is divided into several categories. The
-categories which implement helper methods handle individual conversion tasks. The
-helper methods are called from the main convert() method in the proper order. The
-helper categories are:
-- @c DoxygenConverter(Doxygen)
-- @c DoxygenConverter(CleanXML)
-- @c DoxygenConverter(CleanOutput)
-- @c DoxygenConverter(DocSet)
-- @c DoxygenConverter(Helpers).
+Note that this class relies on @c CommandLineParser to determine the exact conversion
+work flow and common, application-wide parameters. Internally the class delegates
+all output generation to top level @c OutputProcessing conformers which in turn manage
+all their dependent generators.
+
+This class doesn't perform any actual output generation. Instead it delegates it to the
+concrete @c OutputGenerator instances.
 */
 @interface DoxygenConverter : NSObject 
 {
 	CommandLineParser* cmd;
-	NSFileManager* manager;
-	NSString* doxygenXMLOutputPath;
 	NSMutableDictionary* database;
+	NSMutableArray* topLevelGenerators;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

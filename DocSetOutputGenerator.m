@@ -1,18 +1,63 @@
 //
-//  DoxygenConverter+DocSet.m
+//  DocSetOutputGenerator.m
 //  appledoc
 //
-//  Created by Tomaz Kragelj on 17.4.09.
-//  Copyright 2009 Tomaz Kragelj. All rights reserved.
+//  Created by Tomaz Kragelj on 11.6.09.
+//  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "DoxygenConverter+DocSet.h"
-#import "XHTMLOutputGenerator.h"
+#import "DocSetOutputGenerator.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
 
-@implementation DoxygenConverter (DocSet)
+@implementation DocSetOutputGenerator
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Specific output generation entry points
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) isOutputGenerationEnabled
+{
+	return cmd.createDocSet;
+}
+
+//----------------------------------------------------------------------------------------
+- (void) generateSpecificOutput
+{
+	if (!self.documentationFilesInfoProvider)
+		[Systemator throwExceptionWithName:kTKConverterException
+						   withDescription:@"documentationFilesInfoProvider not set"];
+	
+	[self createDocSetSourcePlistFile];
+	[self createDocSetNodesFile];
+	[self createDocSetTokesFile];
+	[self createDocSetBundle];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) createOutputDirectories
+{
+	// Note that we only manually create temporary documentation set directory here,
+	// if the documentation set is installed, it will be copied as a bundle to the
+	// appropriate path.
+	[Systemator createDirectory:cmd.outputDocSetPath];
+	[Systemator createDirectory:cmd.outputDocSetContentsPath];
+	[Systemator createDirectory:cmd.outputDocSetResourcesPath];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) removeOutputDirectories
+{
+	// Note that we only remove temporary documentation set directory here, the installed
+	// copy is always left in it's installation directory.
+	[Systemator removeItemAtPath:cmd.outputDocSetPath];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Documentation set handling
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (void) createDocSetSourcePlistFile
@@ -88,8 +133,8 @@
 	logNormal(@"Creating DocSet Nodes.xml file...");	
 	NSAutoreleasePool* loopAutoreleasePool = [[NSAutoreleasePool alloc] init];	
 	NSXMLDocument* document = [NSXMLDocument document];
-	NSString* indexFileName = [XHTMLOutputGenerator indexFileName];
-	NSString* hierarchyFileName = [XHTMLOutputGenerator hierarchyFileName];
+	NSString* indexFileName = [documentationFilesInfoProvider outputIndexFilename];
+	NSString* hierarchyFileName = [documentationFilesInfoProvider outputHierarchyFilename];
 	
 	// Create the version and ecoding elements.
 	[document setVersion:@"1.0"];
@@ -137,8 +182,7 @@
 		for (NSDictionary* objectData in directoryObjects)
 		{
 			NSString* objectName = [objectData objectForKey:kTKDataObjectNameKey];
-			NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-			objectPath = [XHTMLOutputGenerator pathByReplacingPlaceholders:objectPath];
+			NSString* objectPath = [documentationFilesInfoProvider outputObjectFilenameForObject:objectData];
 			
 			NSXMLElement* objectElement = [NSXMLNode elementWithName:@"Node"];
 			[directorySubnodesElement addChild:objectElement];
@@ -208,8 +252,7 @@
 		NSDictionary* objectData = [objects objectForKey:objectName];
 		NSXMLDocument* objectDocument = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSString* objectKind = [objectData objectForKey:kTKDataObjectKindKey];
-		NSString* objectRelPath = [objectData objectForKey:kTKDataObjectRelPathKey];
-		objectRelPath = [XHTMLOutputGenerator pathByReplacingPlaceholders:objectRelPath];
+		NSString* objectRelPath = [documentationFilesInfoProvider outputObjectFilenameForObject:objectData];
 		
 		// Prepare the object identifier.
 		NSString* objectIdentifier = nil;
@@ -346,8 +389,7 @@
 		NSString* message = [NSString stringWithFormat:@"Installation of DocSet failed with message:\n'%@'!", 
 							 [errorDict objectForKey:NSAppleScriptErrorMessage]];
 		logError(@"Failed installing DocSet to Xcode documentation!");
-		[Systemator throwExceptionWithName:kTKConverterException 
-						   withDescription:message];
+		[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
 	}
 	[installScript release];
 		
@@ -387,8 +429,8 @@
 	NSString* objectName = [data objectForKey:kTKDataHierarchyObjectNameKey];
 	NSString* objectPath = [objectData objectForKey:kTKDataObjectRelPathKey];
 	objectPath = objectPath ?
-		[XHTMLOutputGenerator pathByReplacingPlaceholders:objectPath] :
-		[XHTMLOutputGenerator hierarchyFileName];
+		[documentationFilesInfoProvider outputObjectFilenameForObject:objectData] :
+		[documentationFilesInfoProvider outputHierarchyFilename];
 
 	// Create the main node that will represent the object.
 	NSXMLElement* node = [NSXMLNode elementWithName:@"Node"];
@@ -416,5 +458,11 @@
 		}
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@synthesize documentationFilesInfoProvider;
 
 @end

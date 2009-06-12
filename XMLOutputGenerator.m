@@ -1,18 +1,66 @@
 //
-//  DoxygenConverter+CleanXML.m
+//  XMLOutputGenerator.m
 //  appledoc
 //
-//  Created by Tomaz Kragelj on 17.4.09.
-//  Copyright 2009 Tomaz Kragelj. All rights reserved.
+//  Created by Tomaz Kragelj on 11.6.09.
+//  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "DoxygenConverter+CleanXML.h"
-#import "DoxygenConverter+Helpers.h"
+#import "XMLOutputGenerator.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
 
-@implementation DoxygenConverter (CleanXML)
+@implementation XMLOutputGenerator
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark OutputInfoProvider protocol implementation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return @".xml";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Specific output generation entry points
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) generateSpecificOutput
+{
+	[self createCleanObjectDocumentationMarkup];
+	[self mergeCleanCategoriesToKnownObjects];
+	[self updateCleanObjectsDatabase];
+	[self createCleanIndexDocumentationFile];
+	[self createCleanHierarchyDocumentationFile];
+	[self fixCleanObjectDocumentation];
+	[self saveCleanObjectDocumentationFiles];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Specific output directories handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) createOutputDirectories
+{
+	[Systemator createDirectory:cmd.outputCleanXMLPath];
+	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirClasses]];
+	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirCategories]];
+	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirProtocols]];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) removeOutputDirectories
+{
+	[Systemator removeItemAtPath:cmd.outputCleanXMLPath];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Clean XML handling
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (void) createCleanObjectDocumentationMarkup
@@ -22,7 +70,7 @@
 	
 	// First get the list of all files (and directories) at the doxygen output path. Note
 	// that we only handle certain files, based on their names.
-	NSArray* files = [manager directoryContentsAtPath:doxygenXMLOutputPath];
+	NSArray* files = [manager directoryContentsAtPath:cmd.outputDoxygenXMLPath];
 	for (NSString* filename in files)
 	{
 		// Setup the autorelease pool for this iteration. Note that we are releasing the
@@ -48,7 +96,7 @@
 		// para tag. If so, the document is considered documented... If parsing
 		// fails, log and skip the file.
 		NSError* error = nil;
-		NSString* inputFilename = [doxygenXMLOutputPath stringByAppendingPathComponent:filename];
+		NSString* inputFilename = [cmd.outputDoxygenXMLPath stringByAppendingPathComponent:filename];
 		NSURL* originalURL = [NSURL fileURLWithPath:inputFilename];
 		NSXMLDocument* originalDocument = [[[NSXMLDocument alloc] initWithContentsOfURL:originalURL
 																				options:0
@@ -78,9 +126,9 @@
 		{
 			// (A) Run the xslt converter.
 			NSString* stylesheetFile = [cmd.templatesPath stringByAppendingPathComponent:@"object.xslt"];
-			NSXMLDocument* cleanDocument = [self applyXSLTFromFile:stylesheetFile 
-														toDocument:originalDocument
-															 error:&error];
+			NSXMLDocument* cleanDocument = [Systemator applyXSLTFromFile:stylesheetFile 
+															  toDocument:originalDocument
+																   error:&error];
 			if (!cleanDocument)
 			{
 				logError(@"Skipping '%@' because creating clean XML failed with error %@!", 
@@ -436,7 +484,8 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
-	NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:@"Index.xml"];
+	NSString* filename = cmd.outputCleanXMLPath;
+	filename = [filename stringByAppendingPathComponent:[self outputIndexFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
 		logError(@"Failed writting clean Index.xml to '%@'!", filename);
@@ -551,7 +600,8 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
-	NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:@"Hierarchy.xml"];
+	NSString* filename = cmd.outputCleanXMLPath;
+	filename = [filename stringByAppendingPathComponent:[self outputHierarchyFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
 		logError(@"Failed writting clean Hierarchy.xml to '%@'!", filename);
@@ -627,12 +677,10 @@
 		NSDictionary* objectData = [objects objectForKey:objectName];
 		
 		// Prepare the file name.
-		NSString* relativeDirectory = [objectData objectForKey:kTKDataObjectRelDirectoryKey];
-		NSString* filename = [cmd.outputCleanXMLPath stringByAppendingPathComponent:relativeDirectory];
-		filename = [filename stringByAppendingPathComponent:objectName];
-		filename = [filename stringByAppendingPathExtension:@"xml"];
+		NSString* filename = cmd.outputCleanXMLPath;
+		filename = [filename stringByAppendingPathComponent:[self outputObjectFilenameForObject:objectData]];
 		
-		// Convert the file.
+		// Save the document.
 		logVerbose(@"- Saving '%@' to '%@'...", objectName, filename);
 		NSXMLDocument* document = [objectData objectForKey:kTKDataObjectMarkupKey];
 		NSData* documentData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
@@ -642,18 +690,6 @@
 		}
 		
 		[loopAutoreleasePool drain];
-	}
-	
-	// If cleantemp is used, remove doxygen temporary files.
-	if (cmd.cleanTempFilesAfterBuild && doxygenXMLOutputPath && [manager fileExistsAtPath:doxygenXMLOutputPath])
-	{
-		logInfo(@"Removing temporary doxygen files at '%@'...", doxygenXMLOutputPath);
-		NSError* error = nil;
-		if (![manager removeItemAtPath:doxygenXMLOutputPath error:&error])
-		{
-			logError(@"Failed removing temporary doxygen files at '%@'!", doxygenXMLOutputPath);
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}
 	}
 	
 	logInfo(@"Finished saving clean object documentation files...");

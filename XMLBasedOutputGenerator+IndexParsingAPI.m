@@ -1,16 +1,16 @@
 //
-//  OutputGenerator+IndexParsingAPI.m
+//  XMLBasedOutputGenerator+IndexParsingAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator+GeneralParsingAPI.h"
-#import "OutputGenerator+IndexParsingAPI.h"
+#import "XMLBasedOutputGenerator+GeneralParsingAPI.h"
+#import "XMLBasedOutputGenerator+IndexParsingAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation OutputGenerator (IndexParsingAPI)
+@implementation XMLBasedOutputGenerator (IndexParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Index items parsing support

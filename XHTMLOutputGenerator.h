@@ -6,13 +6,13 @@
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator.h"
+#import "XMLBasedOutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines a concrete @c OutputGenerator that generates XHTML output.
+/** Defines a concrete @c XMLBasedOutputGenerator that generates XHTML output.
 */
-@interface XHTMLOutputGenerator : OutputGenerator
+@interface XHTMLOutputGenerator : XMLBasedOutputGenerator
 {
 	BOOL indexProtocolsGroupAppended;
 	BOOL indexCategoriesGroupAppended;
@@ -22,18 +22,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Generator descriptions
 //////////////////////////////////////////////////////////////////////////////////////////
-
-/** Returns the default output files extension.￼￼ 
-
-This method is provided so that any external objects that need to handle XHTML files
-can properly setup file extensions. Note that these objects are then closely coupled
-to this concrete generator...
- 
-@see pathByReplacingPlaceholders:
-@see indexFileName
-@see hierarchyFileName
-*/
-+ (NSString*) defaultOutputFilesExtension;
 
 /** Converts￼ the given path by replacing the placeholder texts.
 
@@ -47,27 +35,7 @@ couples to this concrete generator...￼
 @see indexFileName
 @see hierarchyFileName
 */
-+ (NSString*) pathByReplacingPlaceholders:(NSString*) path;
-
-/** Returns the index file name including extension.￼
-
-Note that this only returns the file name and extension, without path.
-
-@see defaultOutputFilesExtension;
-@see pathByReplacingPlaceholders:
-@see hierarchyFileName;
-*/
-+ (NSString*) indexFileName;
-
-/** Returns the hierarchy file name including extension.￼
-
-Note that this only returns the file name and extension, without path.
-
-@see defaultOutputFilesExtension;
-@see pathByReplacingPlaceholders:
-@see indexFileName;
-*/
-+ (NSString*) hierarchyFileName;
+//+ (NSString*) pathByReplacingPlaceholders:(NSString*) path;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Object member helpers

@@ -1,5 +1,5 @@
 //
-//  OutputGenerator+GeneralParsingAPI.h
+//  XMLBasedOutputGenerator+GeneralParsingAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OutputGenerator.h"
+#import "XMLBasedOutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines general helper methods private for the @c OutputGenerator and it's subclasses.
+/** Defines general helper methods private for the @c XMLBasedOutputGenerator and it's subclasses.
 */
-@interface OutputGenerator (GeneralParsingAPI)
+@interface XMLBasedOutputGenerator (GeneralParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Descriptions parsing support
@@ -123,17 +123,6 @@ Note that this method always returns the first subitem if more than one exists.
 */
 - (id) extractSubitemFromItem:(id) item
 					 withName:(NSString*) name;
-
-/** Converts￼ the given path by replacing the placeholder texts.
-
-This method is provided so that subclasses can use standardized way of replacing path
-placeholders. It replaces extension placeholder with the extension returned from
-@c OutputGenerator::outputFilesExtension().
-
-@param path The path for which to replace placeholders.
-@return Returns a new autoreleased @c NSString containing correct path.
-*/
-- (NSString*) convertPathByReplacingPlaceholders:(NSString*) path;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper generation methods

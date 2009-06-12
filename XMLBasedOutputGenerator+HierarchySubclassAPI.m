@@ -1,27 +1,27 @@
 //
-//  OutputGenerator+IndexSubclassAPI.m
+//  XMLBasedOutputGenerator+HierarchySubclassAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator+IndexSubclassAPI.h"
+#import "XMLBasedOutputGenerator+HierarchySubclassAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation OutputGenerator (IndexSubclassAPI)
+@implementation XMLBasedOutputGenerator (HierarchySubclassAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark File header and footer handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendIndexHeaderToData:(NSMutableData*) data
+- (void) appendHierarchyHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendIndexFooterToData:(NSMutableData*) data
+- (void) appendHierarchyFooterToData:(NSMutableData*) data
 {	
 }
 
@@ -30,23 +30,43 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) appendIndexGroupHeaderToData:(NSMutableData*) data
-								 type:(int) type
+- (void) appendHierarchyGroupHeaderToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendIndexGroupFooterToData:(NSMutableData*) data
-								 type:(int) type
+- (void) appendHierarchyGroupFooterToData:(NSMutableData*) data
 {
 }
 
 //----------------------------------------------------------------------------------------
-- (void) appendIndexGroupItemToData:(NSMutableData*) data
-						   fromItem:(id) item
-							  index:(int) index
-							   type:(int) type
+- (void) appendHierarchyGroupItemToData:(NSMutableData*) data
+							   fromItem:(id) item
+								  index:(int) index
 {
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Parsing support
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) generateHierarchyGroupChildrenToData:(NSMutableData*) data
+									  forItem:(id) item
+{
+	NSArray* childrenNodes = [item nodesForXPath:@"children/object" error:nil];
+	if ([childrenNodes count] > 0)
+	{
+		[self appendHierarchyGroupHeaderToData:data];
+		for (int i = 0; i < [childrenNodes count]; i++)
+		{
+			NSXMLElement* childNode = [childrenNodes objectAtIndex:i];
+			[self appendHierarchyGroupItemToData:data 
+										fromItem:childNode 
+										   index:i];
+		}
+		[self appendHierarchyGroupFooterToData:data];
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -54,18 +74,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (NSString*) indexTitle
+- (NSString*) hierarchyTitle
 {
 	NSString* project =
 		(self.projectName != nil && [self.projectName length] > 0) ?
 		self.projectName : @"Project";
-	return [NSString stringWithFormat:@"%@ reference", project];
+	return [NSString stringWithFormat:@"%@ hierarchy", project];
 }
 
 //----------------------------------------------------------------------------------------
-- (NSXMLDocument*) indexMarkup
+- (NSXMLDocument*) hierarchyMarkup
 {
-	return indexMarkup;
+	return hierarchyMarkup;
 }
 
 @end

@@ -16,6 +16,10 @@ Note that this class only contains class methods, so no instance is needed.
 */
 @interface Systemator : NSObject
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Tasks and processes handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
 /** Runs the given task.
 
 This is a helper method which facilitates running external commands. It creates a task,
@@ -43,6 +47,54 @@ temporary file removed. This command allows the clients to properly handle shell
 */
 + (void) runShellTaskWithCommand:(NSString*) command;
 
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name XML helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Applies the XSLT from the given file to the document and returns the resulting object.
+
+This will first load the XSLT from the given file and will apply it to the document. It
+will return the transformed object which is either an @c NSXMLDocument if transformation
+created an XML or @c NSData otherwise. If transformation failed, @c nil is returned and
+error description is passed over the @c error parameter.
+ 
+This message internally sends @c applyXSLTFromFile:toDocument:arguments:error:() with
+arguments set to @c nil.
+
+@param filename The name of the XSLT file including full path.
+@param document The @c NSXMLDocument to transform.
+@param error If transformation failed, error is reported here.
+@return Returns transformed object or @c nil if transformation failed.
+@see applyXSLTFromFile:toDocument:arguments:error:
+*/
++ (id) applyXSLTFromFile:(NSString*) filename 
+			  toDocument:(NSXMLDocument*) document 
+				   error:(NSError**) error;
+
+/** Applies the XSLT from the given file to the document and returns the resulting object.
+
+This will first load the XSLT from the given file and will apply it to the document. It
+will return the transformed object which is either an @c NSXMLDocument if transformation
+created an XML or @c NSData otherwise. If transformation failed, @c nil is returned and
+error description is passed over the @c error parameter.
+
+@param filename The name of the XSLT file including full path.
+@param document The @c NSXMLDocument to transform.
+@param arguments An @c NSDictionary containing all arguments to be passed to the XSLT.
+	May be @c nil if no argument is to be passed.
+@param error If transformation failed, error is reported here.
+@return Returns transformed object or @c nil if transformation failed.
+@see applyXSLTFromFile:toDocument:error:
+*/
++ (id) applyXSLTFromFile:(NSString*) filename 
+			  toDocument:(NSXMLDocument*) document 
+			   arguments:(NSDictionary*) arguments
+				   error:(NSError**) error;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name File system helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
 /** Creates the given directory.
 
 If the directory (or file with that name) already exists, nothing happens. Otherwise
@@ -60,9 +112,20 @@ If the destination already exists, it is removed first.
 @param source The source of the copy.
 @param destination The destination to copy to.
 @exception NSException Thrown if copying fails.
+@see removeItemAtPath:
 */
 + (void) copyItemAtPath:(NSString*) source
 				 toPath:(NSString*) destination;
+
+/** Removes the given file or directory (including contents).￼
+
+If the path exists, it is removed, otherwise nothing happens. If removing fails,
+exception is raised.￼
+
+@param path The path to remove.
+@exception NSException Thrown if removing fails.
+*/
++ (void) removeItemAtPath:(NSString*) path;
 
 /** Reads the contents of the given file and returns the array of all lines.
 
@@ -109,6 +172,10 @@ If writting fails, exception is thrown.
 @see readPropertyListFromFile:
 */
 + (void) writePropertyList:(id) plist toFile:(NSString*) filename;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Exception helpers
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /** Throws an @c NSException with description from the given @c NSError;
  

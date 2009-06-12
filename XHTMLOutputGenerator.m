@@ -7,13 +7,13 @@
 //
 
 #import "XHTMLOutputGenerator.h"
-#import "OutputGenerator+GeneralParsingAPI.h"
-#import "OutputGenerator+ObjectParsingAPI.h"
-#import "OutputGenerator+ObjectSubclassAPI.h"
-#import "OutputGenerator+IndexParsingAPI.h"
-#import "OutputGenerator+IndexSubclassAPI.h"
-#import "OutputGenerator+HierarchyParsingAPI.h"
-#import "OutputGenerator+HierarchySubclassAPI.h"
+#import "XMLBasedOutputGenerator+GeneralParsingAPI.h"
+#import "XMLBasedOutputGenerator+ObjectParsingAPI.h"
+#import "XMLBasedOutputGenerator+ObjectSubclassAPI.h"
+#import "XMLBasedOutputGenerator+IndexParsingAPI.h"
+#import "XMLBasedOutputGenerator+IndexSubclassAPI.h"
+#import "XMLBasedOutputGenerator+HierarchyParsingAPI.h"
+#import "XMLBasedOutputGenerator+HierarchySubclassAPI.h"
 #import "Systemator.h"
 #import "LoggingProvider.h"
 #import "CommandLineParser.h"
@@ -22,70 +22,74 @@
 @implementation XHTMLOutputGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Generator descriptions
+#pragma mark OutputInfoProvider protocol implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-+ (NSString*) defaultOutputFilesExtension
-{
-	return @".html";
-}
-
-//----------------------------------------------------------------------------------------
-+ (NSString*) pathByReplacingPlaceholders:(NSString*) path
-{
-	return [path stringByReplacingOccurrencesOfString:kTKPlaceholderExtension 
-										   withString:[self defaultOutputFilesExtension]];
-}
-
-//----------------------------------------------------------------------------------------
-+ (NSString*) indexFileName
-{
-	return [NSString stringWithFormat:@"index%@", [self defaultOutputFilesExtension]];
-}
-
-//----------------------------------------------------------------------------------------
-+ (NSString*) hierarchyFileName
-{
-	return [NSString stringWithFormat:@"hierarchy%@", [self defaultOutputFilesExtension]];
-}
 
 //----------------------------------------------------------------------------------------
 - (NSString*) outputFilesExtension
 {
-	return [[self class] defaultOutputFilesExtension];
+	return @".html";
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Global generation handling
+#pragma mark Specific output generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) generationFinished
+- (BOOL) isOutputGenerationEnabled
+{
+	return cmd.createCleanXHTML;
+}
+
+//----------------------------------------------------------------------------------------
+- (void) outputGenerationFinished
 {
 	// If at least one file was genereated, copy the css files from templates.
-	if (self.wasFileCreated)
+	if (self.outputFileWasCreated)
 	{
-		NSFileManager* manager = [NSFileManager defaultManager];
-		NSArray* templateFiles = [manager directoryContentsAtPath:cmd.templatesPath];
+		NSError* error = nil;
+		NSArray* templateFiles = [manager contentsOfDirectoryAtPath:cmd.templatesPath error:&error];
+		if (!templateFiles)
+		{
+			logError(@"Failed accessing template files at '%@'!", cmd.templatesPath);
+			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+		}
+		
 		for (NSString* templateFile in templateFiles)
 		{
 			if ([[templateFile pathExtension] isEqualToString:@"css"])
 			{
 				logVerbose(@"- Copying '%@' css file...", templateFile);
 				NSString* source = [cmd.templatesPath stringByAppendingPathComponent:templateFile];
-				NSString* dest = [[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS] 
-								  stringByAppendingPathComponent:templateFile];
+				NSString* dest = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS];
+				dest = [dest stringByAppendingPathComponent:templateFile];
 				@try
 				{
 					[Systemator copyItemAtPath:source toPath:dest];
 				}
 				@catch (NSException* e)
 				{
+					logError(@"Failed copying XHTML css file!");
 				}
 			}
 		}
 	}	
+}
+
+//----------------------------------------------------------------------------------------
+- (void) createOutputDirectories
+{
+	[Systemator createDirectory:cmd.outputCleanXHTMLPath];
+	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirClasses]];
+	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCategories]];
+	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirProtocols]];
+	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS]];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) removeOutputDirectories
+{
+	[Systemator removeItemAtPath:cmd.outputCleanXHTMLPath];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -95,9 +99,10 @@
 //----------------------------------------------------------------------------------------
 - (void) appendObjectHeaderToData:(NSMutableData*) data
 {
+	NSString* stylesheetPath = [NSString stringWithFormat:@"../%@/screen.css", kTKDirCSS];
 	[self appendFileHeaderToData:data 
 					   withTitle:self.objectTitle 
-				   andStylesheet:@"../css/screen.css"];
+				   andStylesheet:stylesheetPath];
 }
 
 //----------------------------------------------------------------------------------------
@@ -520,9 +525,10 @@
 {
 	indexProtocolsGroupAppended = NO;
 	indexCategoriesGroupAppended = NO;
+	NSString* stylesheetPath = [NSString stringWithFormat:@"%@/screen.css", kTKDirCSS];
 	[self appendFileHeaderToData:data 
 					   withTitle:self.indexTitle 
-				   andStylesheet:@"css/screen.css"];
+				   andStylesheet:stylesheetPath];
 }
 
 //----------------------------------------------------------------------------------------
@@ -645,9 +651,10 @@
 //----------------------------------------------------------------------------------------
 - (void) appendHierarchyHeaderToData:(NSMutableData*) data
 {
+	NSString* stylesheetPath = [NSString stringWithFormat:@"%@/screen.css", kTKDirCSS];
 	[self appendFileHeaderToData:data 
 					   withTitle:self.hierarchyTitle 
-				   andStylesheet:@"css/screen.css"];
+				   andStylesheet:stylesheetPath];
 	
 	// Start the references column.
 	[self appendLine:@"    <div class=\"hierarchy\">" toData:data];
@@ -859,13 +866,13 @@
 			[self appendString:@"Back to " toData:data];
 			
 			[self appendString:@"<a href=\"../" toData:data];
-			[self appendString:[[self class] indexFileName] toData:data];
+			[self appendString:[self outputIndexFilename] toData:data];
 			[self appendString:@"\">index</a>" toData:data];
 			
 			[self appendString:@" / " toData:data];
 			
 			[self appendString:@"<a href=\"../" toData:data];
-			[self appendString:[[self class] hierarchyFileName] toData:data];
+			[self appendString:[self outputHierarchyFilename] toData:data];
 			[self appendString:@"\">hierarchy</a>." toData:data];
 			
 			[self appendLine:@"" toData:data];

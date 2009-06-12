@@ -1,5 +1,5 @@
 //
-//  OutputGenerator+HierarchyParsingAPI.h
+//  XMLBasedOutputGenerator+HierarchyParsingAPI.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
@@ -7,14 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "OutputGenerator.h"
+#import "XMLBasedOutputGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper methods private for the @c OutputGenerator and it's subclasses that
+/** Defines helper methods private for the @c XMLBasedOutputGenerator and it's subclasses that
 help parsing hierarchy related documentation.
 */
-@interface OutputGenerator (HierarchyParsingAPI)
+@interface XMLBasedOutputGenerator (HierarchyParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Hierarchy group items parsing support

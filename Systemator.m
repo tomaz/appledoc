@@ -37,10 +37,14 @@ get the path from the shell.
 
 @end
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+//////////////////////////////////////////////////////////////////////////////////////////
+
 @implementation Systemator
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Public interface methods
+#pragma mark Tasks and processes helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
@@ -152,6 +156,44 @@ get the path from the shell.
 	[manager removeItemAtPath:filename error:nil];
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark XML helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
++ (id) applyXSLTFromFile:(NSString*) filename 
+			  toDocument:(NSXMLDocument*) document 
+				   error:(NSError**) error
+{
+	return [self applyXSLTFromFile:filename 
+						toDocument:document 
+						 arguments:nil 
+							 error:error];
+}
+
+//----------------------------------------------------------------------------------------
++ (id) applyXSLTFromFile:(NSString*) filename 
+			  toDocument:(NSXMLDocument*) document 
+			   arguments:(NSDictionary*) arguments
+				   error:(NSError**) error
+{
+	NSString* xsltString = [NSString stringWithContentsOfFile:filename 
+													 encoding:NSASCIIStringEncoding 
+														error:error];
+	if (xsltString)
+	{
+		return [document objectByApplyingXSLTString:xsltString 
+										  arguments:arguments
+											  error:error];
+	}
+	
+	return nil;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark File system helpers
+//////////////////////////////////////////////////////////////////////////////////////////
+
 //----------------------------------------------------------------------------------------
 + (void) createDirectory:(NSString*) path
 {
@@ -200,6 +242,23 @@ get the path from the shell.
 				 destination,
 				 [error localizedDescription]);
 		[self throwExceptionWithName:kTKSystemError basedOnError:error];
+	}
+}
+
+//----------------------------------------------------------------------------------------
++ (void) removeItemAtPath:(NSString*) path
+{
+	NSError* error = nil;
+	NSFileManager* manager = [NSFileManager defaultManager];
+
+	if ([manager fileExistsAtPath:path])
+	{
+		logDebug(@"Removing files at '%@'...", path);
+		if (![manager removeItemAtPath:path error:&error])
+		{
+			logError(@"Failed removing files at '%@'!", path);
+			[self throwExceptionWithName:kTKSystemError basedOnError:error];
+		}
 	}
 }
 
@@ -296,6 +355,10 @@ get the path from the shell.
 		[self throwExceptionWithName:kTKSystemError basedOnError:error];
 	}
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Exception helpers
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 + (void) throwExceptionWithName:(NSString*) name basedOnError:(NSError*) error;

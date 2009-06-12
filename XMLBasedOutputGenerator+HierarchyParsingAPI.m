@@ -1,16 +1,16 @@
 //
-//  OutputGenerator+HierarchyParsingAPI.m
+//  XMLBasedOutputGenerator+HierarchyParsingAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator+GeneralParsingAPI.h"
-#import "OutputGenerator+HierarchyParsingAPI.h"
+#import "XMLBasedOutputGenerator+GeneralParsingAPI.h"
+#import "XMLBasedOutputGenerator+HierarchyParsingAPI.h"
 #import "DoxygenConverter.h"
 
-@implementation OutputGenerator (HierarchyParsingAPI)
+@implementation XMLBasedOutputGenerator (HierarchyParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Hierarchy items parsing support

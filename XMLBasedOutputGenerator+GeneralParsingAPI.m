@@ -1,15 +1,14 @@
 //
-//  OutputGenerator+GeneralParsingAPI.m
+//  XMLBasedOutputGenerator+GeneralParsingAPI.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 28.5.09.
 //  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "OutputGenerator+GeneralParsingAPI.h"
-#import "DoxygenConverter.h"
+#import "XMLBasedOutputGenerator+GeneralParsingAPI.h"
 
-@implementation OutputGenerator (PrivateAPI)
+@implementation XMLBasedOutputGenerator (GeneralParsingAPI)
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Descriptions parsing support
@@ -78,13 +77,6 @@
 		return [children objectAtIndex:0];
 	}
 	return nil;
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) convertPathByReplacingPlaceholders:(NSString*) path
-{
-	return [path stringByReplacingOccurrencesOfString:kTKPlaceholderExtension 
-										   withString:[self outputFilesExtension]];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

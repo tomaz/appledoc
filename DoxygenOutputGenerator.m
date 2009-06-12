@@ -1,17 +1,21 @@
 //
-//  DoxygenConverter+Doxygen.m
+//  DoxygenOutputGenerator.m
 //  appledoc
 //
-//  Created by Tomaz Kragelj on 17.4.09.
-//  Copyright 2009 Tomaz Kragelj. All rights reserved.
+//  Created by Tomaz Kragelj on 11.6.09.
+//  Copyright (C) 2009, Tomaz Kragelj. All rights reserved.
 //
 
-#import "DoxygenConverter+Doxygen.h"
+#import "DoxygenOutputGenerator.h"
 #import "CommandLineParser.h"
 #import "LoggingProvider.h"
 #import "Systemator.h"
 
-@implementation DoxygenConverter (Doxygen)
+@implementation DoxygenOutputGenerator
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Doxygen handling
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
 - (void) createDoxygenConfigFile
@@ -174,8 +178,8 @@
 					// Remember XML output path.
 					if ([optionName rangeOfString:@"XML_OUTPUT"].location != NSNotFound)
 					{
-						doxygenXMLOutputPath = [[[cmd outputPath] stringByAppendingPathComponent:optionValue] retain];
-						logInfo(@"Found XML_OUTPUT set to %@.", doxygenXMLOutputPath);
+						cmd.outputDoxygenXMLPath = [[[cmd outputPath] stringByAppendingPathComponent:optionValue] retain];
+						logInfo(@"Found XML_OUTPUT set to %@.", cmd.outputDoxygenXMLPath);
 					}
 				}
 			}
@@ -207,6 +211,28 @@
 	[Systemator runTask:[cmd doxygenCommandLine], cmd.doxygenConfigFilename, nil];
 	
 	logInfo(@"Finished creating doxygen documentation.");
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Specific output generation entry points
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) generateSpecificOutput
+{
+	[self createDoxygenConfigFile];
+	[self updateDoxygenConfigFile];
+	[self createDoxygenDocumentation];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Specific output directories handling
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) removeOutputDirectories
+{
+	[Systemator removeItemAtPath:cmd.outputDoxygenXMLPath];
 }
 
 @end
