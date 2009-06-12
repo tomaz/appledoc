@@ -222,37 +222,4 @@ This is used by the log macros, so in most cases, you'll not use it directly in 
 and @c docsetutil. */
 @property(readonly) BOOL emitUtilityOutput;
 
-//////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties - internal
-//////////////////////////////////////////////////////////////////////////////////////////
-
-/** The full path to the doxygen output files.
-
-Note that this property is handled differently from others - by default it is set to
-@c outputPath(), however doxygen handler should read the actual value from the doxygen
-configuration file and set it here so that the rest of the application can use it.
- 
-Since doxygen generation is the first this that gets generated, the path is properly
-setup for all dependent generators automatically.
-*/
-@property(copy) NSString* outputDoxygenXMLPath;
-
-/** The full path to the output clean XML files. */
-@property(readonly) NSString* outputCleanXMLPath;
-
-/** The full path to the output clean XHTML files. */
-@property(readonly) NSString* outputCleanXHTMLPath;
-
-/** The full path to the temporary output documentation set files. */
-@property(readonly) NSString* outputDocSetPath;
-
-/** The full path to the temporary output documentation set contents files. */
-@property(readonly) NSString* outputDocSetContentsPath;
-
-/** The full path to the temporary output documentation set resources files. */
-@property(readonly) NSString* outputDocSetResourcesPath;
-
-/** The full path to the temporary output documentation set documents files. */
-@property(readonly) NSString* outputDocSetDocumentsPath;
-
 @end

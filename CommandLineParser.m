@@ -10,7 +10,7 @@
 #import "LoggingProvider.h"
 #import "Systemator.h"
 
-#define kTKCommandLineException @"TKCommandLineException"
+#define kTKCommandLineException					@"TKCommandLineException"
 
 #define kTKCmdGlobalTemplatesPathKey			@"GlobalTemplatesPath"			// NSString
 #define kTKCmdTemplatesPathKey					@"TemplatesPath"				// NSString
@@ -19,12 +19,6 @@
 
 #define kTKCmdInputPathKey						@"InputPath"					// NSString
 #define kTKCmdOutputPathKey						@"OutputPath"					// NSString
-#define kTKCmdOutputCleanXMLPathKey				@"OutputCleanXMLPath"			// NSString
-#define kTKCmdOutputCleanXHTMLPathKey			@"OutputCleanXHTMLPath"			// NSString
-#define kTKCmdOutputDocSetPathKey				@"OutputDocSetPath"				// NSString
-#define kTKCmdOutputDocSetContentsPathKey		@"OutputDocSetContentsPath"		// NSString
-#define kTKCmdOutputDocSetResourcesPathKey		@"OutputDocSetResourcesPath"	// NSString
-#define kTKCmdOutputDocSetDocumentsPathKey		@"OutputDocSetDocumentsPath"	// NSString
 
 #define kTKCmdDoxygenCommandLineKey				@"DoxygenCommandLine"			// NSString
 #define kTKCmdDoxygenConfigFileKey				@"DoxygenConfigFile"			// NSString
@@ -402,17 +396,6 @@ instead.
 	[self replaceTemplatePlaceholdersForKey:kTKCmdDocSetBundleFeedKey];
 	[self replaceTemplatePlaceholdersForKey:kTKCmdDocSetSourcePlistKey];
 	
-	// Replace template placeholders for all dependent parameters.
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputCleanXMLPathKey];
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputCleanXHTMLPathKey];
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetPathKey];
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetContentsPathKey];
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetResourcesPathKey];
-	[self replaceTemplatePlaceholdersForKey:kTKCmdOutputDocSetDocumentsPathKey];
-	
-	// Setup the default doxygen output XML path.
-	self.outputDoxygenXMLPath = self.outputPath;
-	
 	// Make sure the documentation set bundle ID ends with .docset.
 	if (![self.docsetBundleID hasSuffix:@".docset"])
 	{
@@ -519,15 +502,7 @@ instead.
 	[parameters setObject:@"$INPUT/DocSet-Info.plist" forKey:kTKCmdDocSetSourcePlistKey];
 	[parameters setObject:@"/Developer/usr/bin/docsetutil" forKey:kTKCmdDocSetUtilCommandLinKey];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdCreateDocSetKey];
-	
-	// Setup dependencies, note that we use template placeholders...
-	[parameters setObject:@"$OUTPUT/cxml" forKey:kTKCmdOutputCleanXMLPathKey];
-	[parameters setObject:@"$OUTPUT/cxhtml" forKey:kTKCmdOutputCleanXHTMLPathKey];
-	[parameters setObject:@"$OUTPUT/docset" forKey:kTKCmdOutputDocSetPathKey];
-	[parameters setObject:@"$OUTPUT/docset/Contents" forKey:kTKCmdOutputDocSetContentsPathKey];
-	[parameters setObject:@"$OUTPUT/docset/Contents/Resources" forKey:kTKCmdOutputDocSetResourcesPathKey];
-	[parameters setObject:@"$OUTPUT/docset/Contents/Resources/Documents" forKey:kTKCmdOutputDocSetDocumentsPathKey];
-	
+		
 	// Setup the default verbose level and switches. Note that we would only need to
 	// initialize those which default value is YES since NO is returned by default if
 	// a boolValue is sent to nil object, but to make future changes more meaningful, 
@@ -978,51 +953,5 @@ instead.
 {
 	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Properties - internal
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputCleanXMLPath
-{
-	return [parameters objectForKey:kTKCmdOutputCleanXMLPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputCleanXHTMLPath
-{
-	return [parameters objectForKey:kTKCmdOutputCleanXHTMLPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputDocSetPath
-{
-	return [parameters objectForKey:kTKCmdOutputDocSetPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputDocSetContentsPath
-{
-	return [parameters objectForKey:kTKCmdOutputDocSetContentsPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputDocSetResourcesPath
-{
-	return [parameters objectForKey:kTKCmdOutputDocSetResourcesPathKey];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputDocSetDocumentsPath
-{
-	return [parameters objectForKey:kTKCmdOutputDocSetDocumentsPathKey];
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Synthetized properties
-//////////////////////////////////////////////////////////////////////////////////////////
-
-@synthesize outputDoxygenXMLPath;
 
 @end

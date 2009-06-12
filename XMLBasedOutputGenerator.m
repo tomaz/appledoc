@@ -280,7 +280,7 @@ output generation.￼
 		if (result && [result length] > 0)
 		{
 			NSString* relativePath = [objectData objectForKey:kTKDataObjectRelPathKey];
-			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:relativePath];
+			NSString* filename = [[self outputBasePath] stringByAppendingPathComponent:relativePath];
 			NSString* extension = [self outputFilesExtension];
 			filename = [filename stringByReplacingOccurrencesOfString:kTKPlaceholderExtension withString:extension];
 			
@@ -470,7 +470,7 @@ output generation.￼
 		// Save the data.
 		if (result && [result length] > 0)
 		{
-			NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"index"];
+			NSString* filename = [[self outputBasePath] stringByAppendingPathComponent:@"index"];
 			filename = [filename stringByAppendingString:[self outputFilesExtension]];
 			
 			logDebug(@"  - Saving index output to '%@'...", filename);
@@ -568,7 +568,7 @@ output generation.￼
 			// Save the data.
 			if (result && [result length] > 0)
 			{
-				NSString* filename = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:@"hierarchy"];
+				NSString* filename = [[self outputBasePath] stringByAppendingPathComponent:@"hierarchy"];
 				filename = [filename stringByAppendingString:[self outputFilesExtension]];
 				
 				logDebug(@"  - Saving hierarchy output to '%@'...", filename);

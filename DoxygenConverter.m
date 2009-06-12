@@ -42,6 +42,7 @@
 		[doxygenGenerator registerDependentGenerator:xmlGenerator];
 		[xmlGenerator registerDependentGenerator:xhtmlGenerator];
 		[xhtmlGenerator registerDependentGenerator:docSetGenerator];
+		xmlGenerator.doxygenInfoProvider = doxygenGenerator;
 		docSetGenerator.documentationFilesInfoProvider = xhtmlGenerator;
 		
 		// Setup top level generators.

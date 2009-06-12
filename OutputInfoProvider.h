@@ -34,6 +34,7 @@ can get all required information it needs.
 @see outputIndexFilename
 @see outputHierarchyFilename
 @see outputFilesExtension
+@see outputBasePath
 */
 - (NSString*) outputObjectFilenameForObject:(NSDictionary*) objectData;
 
@@ -44,6 +45,7 @@ can get all required information it needs.
 @see outputObjectFilenameForObject:
 @see outputHierarchyFilename
 @see outputFilesExtension
+@see outputBasePath
 */
 - (NSString*) outputIndexFilename;
 
@@ -54,15 +56,28 @@ can get all required information it needs.
 @see outputObjectFilenameForObject:
 @see outputIndexFilename
 @see outputFilesExtension
+@see outputBasePath
 */
 - (NSString*) outputHierarchyFilename;
 
 /** Returns the output files extension.￼
  
+@return Returns the output files extension.￼
 @see outputObjectFilenameForObject:
 @see outputIndexFilename
 @see outputHierarchyFilename
+@see outputBasePath
 */
 - (NSString*) outputFilesExtension;
+
+/** Returns the base path where ￼output files are generated.￼
+
+@return Returns the base path where ￼output files are generated.￼
+@see outputObjectFilenameForObject:
+@see outputIndexFilename
+@see outputHierarchyFilename
+@see outputFilesExtension
+*/
+- (NSString*) outputBasePath;
 
 @end

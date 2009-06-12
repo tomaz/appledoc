@@ -20,6 +20,10 @@ the user after initial creation. When doxygen configuration file is processed, t
 generator invokes doxygen so that it actually generates the output for us.
 */
 @interface DoxygenOutputGenerator : OutputGenerator
+{
+	NSString* outputDirectory;
+	NSString* outputRelativePath;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Doxygen handling

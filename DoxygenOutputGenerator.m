@@ -14,6 +14,18 @@
 @implementation DoxygenOutputGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Initialization & disposal
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) dealloc
+{
+	[outputDirectory release], outputDirectory = nil;
+	[outputRelativePath release], outputRelativePath = nil;
+	[super dealloc];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Doxygen handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,6 +55,7 @@
 	// Prepare commonly used character sets and variables.
 	NSCharacterSet* newlineCharSet = [NSCharacterSet newlineCharacterSet];
 	NSCharacterSet* equalCharSet = [NSCharacterSet characterSetWithCharactersInString:@"="];
+	NSCharacterSet* quotesCharSet = [NSCharacterSet characterSetWithCharactersInString:@"\"'"];
 	BOOL updateFileData = YES;
 	BOOL dataChanged = NO;
 
@@ -175,11 +188,18 @@
 						}
 					}
 					
-					// Remember XML output path.
+					// Remember output directory.
+					if ([optionName rangeOfString:@"OUTPUT_DIRECTORY"].location != NSNotFound)
+					{
+						outputDirectory = [[optionValue stringByTrimmingCharactersInSet:quotesCharSet] retain];
+						logInfo(@"Found OUTPUT_DIRECTORY set to '%@'...", outputDirectory);
+					}
+					
+					// Remember XML output path. We should do this in any cas
 					if ([optionName rangeOfString:@"XML_OUTPUT"].location != NSNotFound)
 					{
-						cmd.outputDoxygenXMLPath = [[[cmd outputPath] stringByAppendingPathComponent:optionValue] retain];
-						logInfo(@"Found XML_OUTPUT set to %@.", cmd.outputDoxygenXMLPath);
+						outputRelativePath = [optionValue retain];
+						logInfo(@"Found XML_OUTPUT set to '%@'.", outputRelativePath);
 					}
 				}
 			}
@@ -214,7 +234,7 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Specific output generation entry points
+#pragma mark Output generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
@@ -225,14 +245,26 @@
 	[self createDoxygenDocumentation];
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Specific output directories handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
 //----------------------------------------------------------------------------------------
 - (void) removeOutputDirectories
 {
-	[Systemator removeItemAtPath:cmd.outputDoxygenXMLPath];
+	[Systemator removeItemAtPath:[self outputBasePath]];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark OutputInfoProvider protocol implementation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return @"xml";
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return [outputDirectory stringByAppendingPathComponent:outputRelativePath];
 }
 
 @end

@@ -31,6 +31,12 @@
 	return @".html";
 }
 
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return [cmd.outputPath stringByAppendingPathComponent:@"cxhtml"];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Specific output generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +67,7 @@
 			{
 				logVerbose(@"- Copying '%@' css file...", templateFile);
 				NSString* source = [cmd.templatesPath stringByAppendingPathComponent:templateFile];
-				NSString* dest = [cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS];
+				NSString* dest = [[self outputBasePath] stringByAppendingPathComponent:kTKDirCSS];
 				dest = [dest stringByAppendingPathComponent:templateFile];
 				@try
 				{
@@ -79,17 +85,17 @@
 //----------------------------------------------------------------------------------------
 - (void) createOutputDirectories
 {
-	[Systemator createDirectory:cmd.outputCleanXHTMLPath];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirClasses]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCategories]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirProtocols]];
-	[Systemator createDirectory:[cmd.outputCleanXHTMLPath stringByAppendingPathComponent:kTKDirCSS]];
+	[Systemator createDirectory:[self outputBasePath]];
+	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirClasses]];
+	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirCategories]];
+	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirProtocols]];
+	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirCSS]];
 }
 
 //----------------------------------------------------------------------------------------
 - (void) removeOutputDirectories
 {
-	[Systemator removeItemAtPath:cmd.outputCleanXHTMLPath];
+	[Systemator removeItemAtPath:[self outputBasePath]];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

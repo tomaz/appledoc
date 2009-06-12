@@ -18,6 +18,9 @@ by other generators. The generator also fixes member or inter-objects links and 
 Objective-C specifics which are missed or not supported by doxygen.
 */
 @interface XMLOutputGenerator : OutputGenerator
+{
+	id<OutputInfoProvider> doxygenInfoProvider;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Clean XML handling
@@ -383,5 +386,17 @@ or web robots.
 @return Returns obsfucated string.
 */
 - (NSString*) obsfucatedStringFromString:(NSString*) string;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** Sets or returns the @c OutputInfoProvider conformer that provides information about
+doxygen files.￼￼
+
+@warning Clients need to set this before starting output generation. If they fail to
+	provide a valid object, generation immediately fails with an exception.
+*/
+@property(retain) id<OutputInfoProvider> doxygenInfoProvider;
 
 @end

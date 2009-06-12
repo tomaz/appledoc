@@ -123,4 +123,25 @@ source files.￼￼
 */
 @property(retain) id<OutputInfoProvider> documentationFilesInfoProvider;
 
+/** Returns the temporary documentation set contents path.￼
+
+@see outputResourcesPath
+@see outputDocumentsPath
+*/
+@property(readonly) NSString* outputContentsPath;
+
+/** Returns the temporary documentation set resources path.￼
+
+@see outputContentsPath
+@see outputDocumentsPath
+*/
+@property(readonly) NSString* outputResourcesPath;
+
+/** Returns the temporary documentation set documents path.￼
+
+@see outputContentsPath
+@see outputResourcesPath
+*/
+@property(readonly) NSString* outputDocumentsPath;
+
 @end

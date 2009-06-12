@@ -23,6 +23,12 @@
 	return @".xml";
 }
 
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return [cmd.outputPath stringByAppendingPathComponent:@"cxml"];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Specific output generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +36,10 @@
 //----------------------------------------------------------------------------------------
 - (void) generateSpecificOutput
 {
+	if (!self.doxygenInfoProvider)
+		[Systemator throwExceptionWithName:kTKConverterException
+						   withDescription:@"doxygenInfoProvider not set"];
+	
 	[self createCleanObjectDocumentationMarkup];
 	[self mergeCleanCategoriesToKnownObjects];
 	[self updateCleanObjectsDatabase];
@@ -46,16 +56,17 @@
 //----------------------------------------------------------------------------------------
 - (void) createOutputDirectories
 {
-	[Systemator createDirectory:cmd.outputCleanXMLPath];
-	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirClasses]];
-	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirCategories]];
-	[Systemator createDirectory:[cmd.outputCleanXMLPath stringByAppendingPathComponent:kTKDirProtocols]];
+	NSString* basePath = [self outputBasePath];
+	[Systemator createDirectory:basePath];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirClasses]];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirCategories]];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirProtocols]];
 }
 
 //----------------------------------------------------------------------------------------
 - (void) removeOutputDirectories
 {
-	[Systemator removeItemAtPath:cmd.outputCleanXMLPath];
+	[Systemator removeItemAtPath:[self outputBasePath]];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -67,10 +78,18 @@
 {
 	logNormal(@"Creating clean object XML files...");
 	NSAutoreleasePool* loopAutoreleasePool = nil;
+	NSError* error = nil;
 	
 	// First get the list of all files (and directories) at the doxygen output path. Note
 	// that we only handle certain files, based on their names.
-	NSArray* files = [manager directoryContentsAtPath:cmd.outputDoxygenXMLPath];
+	NSString* searchPath = [self.doxygenInfoProvider outputBasePath];
+	NSArray* files = [manager contentsOfDirectoryAtPath:searchPath error:&error];
+	if (!files)
+	{
+		logError(@"Failed enumerating files at '%@'!", searchPath);
+		[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
+	}
+	
 	for (NSString* filename in files)
 	{
 		// Setup the autorelease pool for this iteration. Note that we are releasing the
@@ -95,8 +114,7 @@
 		// we check if at least one brief or detailed description contains a
 		// para tag. If so, the document is considered documented... If parsing
 		// fails, log and skip the file.
-		NSError* error = nil;
-		NSString* inputFilename = [cmd.outputDoxygenXMLPath stringByAppendingPathComponent:filename];
+		NSString* inputFilename = [searchPath stringByAppendingPathComponent:filename];
 		NSURL* originalURL = [NSURL fileURLWithPath:inputFilename];
 		NSXMLDocument* originalDocument = [[[NSXMLDocument alloc] initWithContentsOfURL:originalURL
 																				options:0
@@ -484,7 +502,7 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
-	NSString* filename = cmd.outputCleanXMLPath;
+	NSString* filename = [self outputBasePath];
 	filename = [filename stringByAppendingPathComponent:[self outputIndexFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
@@ -600,7 +618,7 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
-	NSString* filename = cmd.outputCleanXMLPath;
+	NSString* filename = [self outputBasePath];
 	filename = [filename stringByAppendingPathComponent:[self outputHierarchyFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])
 	{
@@ -677,7 +695,7 @@
 		NSDictionary* objectData = [objects objectForKey:objectName];
 		
 		// Prepare the file name.
-		NSString* filename = cmd.outputCleanXMLPath;
+		NSString* filename = [self outputBasePath];
 		filename = [filename stringByAppendingPathComponent:[self outputObjectFilenameForObject:objectData]];
 		
 		// Save the document.
@@ -1419,5 +1437,11 @@
 	}
 	return result;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties
+//////////////////////////////////////////////////////////////////////////////////////////
+
+@synthesize doxygenInfoProvider;
 
 @end

@@ -14,6 +14,40 @@
 @implementation DocSetOutputGenerator
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark OutputInfoProvider protocol implementation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return @".html";
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return [cmd.outputPath stringByAppendingPathComponent:@"docset"];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputContentsPath
+{
+	return [self.outputBasePath stringByAppendingPathComponent:@"Contents"];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputResourcesPath
+{
+	return [self.outputContentsPath stringByAppendingPathComponent:@"Resources"];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputDocumentsPath
+{
+	return [self.outputResourcesPath stringByAppendingPathComponent:@"Documents"];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Specific output generation entry points
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -42,9 +76,10 @@
 	// Note that we only manually create temporary documentation set directory here,
 	// if the documentation set is installed, it will be copied as a bundle to the
 	// appropriate path.
-	[Systemator createDirectory:cmd.outputDocSetPath];
-	[Systemator createDirectory:cmd.outputDocSetContentsPath];
-	[Systemator createDirectory:cmd.outputDocSetResourcesPath];
+	[Systemator createDirectory:[self outputBasePath]];
+	[Systemator createDirectory:[self outputContentsPath]];
+	[Systemator createDirectory:[self outputResourcesPath]];
+	[Systemator createDirectory:[self outputDocumentsPath]];
 }
 
 //----------------------------------------------------------------------------------------
@@ -52,7 +87,7 @@
 {
 	// Note that we only remove temporary documentation set directory here, the installed
 	// copy is always left in it's installation directory.
-	[Systemator removeItemAtPath:cmd.outputDocSetPath];
+	[Systemator removeItemAtPath:[self outputBasePath]];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -214,7 +249,7 @@
 	
 	// Save the document.
 	NSError* error = nil;
-	NSString* filename = [cmd.outputDocSetResourcesPath stringByAppendingPathComponent:@"Nodes.xml"];
+	NSString* filename = [self.outputResourcesPath stringByAppendingPathComponent:@"Nodes.xml"];
 	NSData* documentData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if (![documentData writeToFile:filename options:0 error:&error])
 	{
@@ -337,7 +372,7 @@
 	
 	// Save the document.
 	NSError* error = nil;
-	NSString* filename = [cmd.outputDocSetResourcesPath stringByAppendingPathComponent:@"Tokens.xml"];
+	NSString* filename = [self.outputResourcesPath stringByAppendingPathComponent:@"Tokens.xml"];
 	NSData* documentData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
 	if (![documentData writeToFile:filename options:0 error:&error])
 	{
@@ -356,23 +391,24 @@
 	logNormal(@"Creating DocSet bundle...");
 	
 	// First copy the info plist file into the contents output.
-	NSString* plistDestPath = [cmd.outputDocSetContentsPath stringByAppendingPathComponent:@"Info.plist"];
+	NSString* plistDestPath = [self.outputContentsPath stringByAppendingPathComponent:@"Info.plist"];
 	logVerbose(@"- Copying info plist file to '%@'...", plistDestPath);
 	[Systemator copyItemAtPath:cmd.docsetSourcePlistPath toPath:plistDestPath];
 	
 	// Copy all html files to the bundle structure.
-	logVerbose(@"- Copying documentation to '%@'...", cmd.outputDocSetDocumentsPath);
-	[Systemator copyItemAtPath:cmd.outputCleanXHTMLPath toPath:cmd.outputDocSetDocumentsPath];
+	logVerbose(@"- Copying documentation to '%@'...", self.outputDocumentsPath);
+	[Systemator copyItemAtPath:[documentationFilesInfoProvider outputBasePath] 
+						toPath:self.outputDocumentsPath];
 	
 	// Index the documentation set.
 	logVerbose(@"- Indexing DocSet...");
-	[Systemator runTask:cmd.docsetutilCommandLine, @"index", cmd.outputDocSetPath, nil];
+	[Systemator runTask:cmd.docsetutilCommandLine, @"index", [self outputBasePath], nil];
 	
 	// Copy the documentation set to the proper directory. First we need to remove
 	// previous files otherwise copying will fail.
 	NSString* docsetInstallPath = [cmd.docsetInstallPath stringByAppendingPathComponent:cmd.docsetBundleID];
 	logVerbose(@"- Copying DocSet bundle to '%@'...", docsetInstallPath);
-	[Systemator copyItemAtPath:cmd.outputDocSetPath toPath:docsetInstallPath];
+	[Systemator copyItemAtPath:[self outputBasePath] toPath:docsetInstallPath];
 	
 	// Install the script to the Xcode.
 	logVerbose(@"- Installing DocSet to Xcode...");
@@ -393,30 +429,6 @@
 	}
 	[installScript release];
 		
-	// If cleantemp is used, remove clean html and docset temporary files.
-	if (cmd.cleanTempFilesAfterBuild && [manager fileExistsAtPath:cmd.outputCleanXHTMLPath])
-	{
-		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputCleanXHTMLPath);
-		NSError* error = nil;
-		if (![manager removeItemAtPath:cmd.outputCleanXHTMLPath error:&error])
-		{
-			logError(@"Failed removing temporary XHTML files at '%@'!", cmd.outputCleanXHTMLPath);
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}		
-	}
-	
-	// If cleantemp is used, remove docset temporary files.
-	if (cmd.cleanTempFilesAfterBuild && [manager fileExistsAtPath:cmd.outputDocSetPath])
-	{
-		logInfo(@"Removing temporary clean XHTML files at '%@'...", cmd.outputDocSetPath);
-		NSError* error = nil;
-		if (![manager removeItemAtPath:cmd.outputDocSetPath error:&error])
-		{
-			logError(@"Failed removing temporary DocSet files at '%@'!", cmd.outputDocSetPath);
-			[Systemator throwExceptionWithName:kTKConverterException basedOnError:error];
-		}		
-	}
-	
 	logInfo(@"Finished creating DocSet bundle.");
 }
 
