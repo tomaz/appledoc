@@ -11,8 +11,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper methods private for the @c XMLBasedOutputGenerator and it's subclasses that
-help parsing hierarchy related documentation.
+/** Defines helper methods private for the @c XMLBasedOutputGenerator and it's subclasses 
+that help parsing hierarchy related documentation.
 */
 @interface XMLBasedOutputGenerator (HierarchyParsingAPI)
 

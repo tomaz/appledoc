@@ -357,25 +357,25 @@
 	
 	// First copy the info plist file into the contents output.
 	NSString* plistDestPath = [cmd.outputDocSetContentsPath stringByAppendingPathComponent:@"Info.plist"];
-	logVerbose(@"Copying info plist file to '%@'...", plistDestPath);
+	logVerbose(@"- Copying info plist file to '%@'...", plistDestPath);
 	[Systemator copyItemAtPath:cmd.docsetSourcePlistPath toPath:plistDestPath];
 	
 	// Copy all html files to the bundle structure.
-	logVerbose(@"Copying clean XHTML to '%@'...", cmd.outputDocSetDocumentsPath);
+	logVerbose(@"- Copying documentation to '%@'...", cmd.outputDocSetDocumentsPath);
 	[Systemator copyItemAtPath:cmd.outputCleanXHTMLPath toPath:cmd.outputDocSetDocumentsPath];
 	
 	// Index the documentation set.
-	logVerbose(@"Indexing DocSet...");
+	logVerbose(@"- Indexing DocSet...");
 	[Systemator runTask:cmd.docsetutilCommandLine, @"index", cmd.outputDocSetPath, nil];
 	
 	// Copy the documentation set to the proper directory. First we need to remove
 	// previous files otherwise copying will fail.
 	NSString* docsetInstallPath = [cmd.docsetInstallPath stringByAppendingPathComponent:cmd.docsetBundleID];
-	logVerbose(@"Copying DocSet bundle to '%@'...", docsetInstallPath);
+	logVerbose(@"- Copying DocSet bundle to '%@'...", docsetInstallPath);
 	[Systemator copyItemAtPath:cmd.outputDocSetPath toPath:docsetInstallPath];
 	
 	// Install the script to the Xcode.
-	logVerbose(@"Installing DocSet to Xcode...");
+	logVerbose(@"- Installing DocSet to Xcode...");
 	NSMutableString* installCode = [NSMutableString string];
 	[installCode appendString:@"tell application \"Xcode\"\n"];
 	[installCode appendFormat:@"\tload documentation set with path \"%@\"\n", docsetInstallPath];

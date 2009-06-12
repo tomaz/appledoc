@@ -22,10 +22,10 @@ index output generation.
 
 /** Appends any header text before the actual generation starts.
 
-The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the first message. 
-It gives subclasses a chance to append data to the output before the actual output generation 
-starts. After this message is sent, the rest of the messages are followed and as the last one,
-@c appendIndexFooterToData:() is sent.
+The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the first
+message. It gives subclasses a chance to append data to the output before the actual output 
+generation starts. After this message is sent, the rest of the messages are followed and as 
+the last one, @c appendIndexFooterToData:() is sent.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
@@ -36,9 +36,9 @@ starts. After this message is sent, the rest of the messages are followed and as
 
 /** Appends any footer text after output generation ends.
 
-The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the last message. It 
-gives subclasses a chance to append data to the output after the rest of the output is 
-generated. This is ussually the place to "close" open tags or similar.
+The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the last 
+message. It gives subclasses a chance to append data to the output after the rest of the 
+output is generated. This is ussually the place to "close" open tags or similar.
 
 @param data The data to append to. This is guaranteed to be non @c null.
 @exception NSException Thrown if appending fails.
@@ -53,9 +53,9 @@ generated. This is ussually the place to "close" open tags or similar.
 
 /** Appends any index group header text before the actual group items generation starts.
 
-The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() just before index group 
-items are generated. It gives subclasses a chance to append data to the output before the 
-generation for group items starts. After this message is sent, at least one 
+The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() just before 
+index group items are generated. It gives subclasses a chance to append data to the output 
+before the generation for group items starts. After this message is sent, at least one 
 @c appendIndexGroupItemToData:fromItem:index:type:() message is sent and then 
 @c appendIndexGroupFooterToData:type:() is sent at the end.
  
@@ -76,8 +76,8 @@ The type identifies the type of the index group and can be one of the following:
 
 /** Appends any index group footer text after the group items generation ends.
 
-The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the last group 
-generation message. It gives subclasses a chance to append data to the output after the 
+The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as the last 
+group generation message. It gives subclasses a chance to append data to the output after the 
 generation for index group ends. This is ussually the place to "close" open tags or similar.
 
 The type identifies the type of the index group and can be one of the following:
@@ -97,8 +97,8 @@ The type identifies the type of the index group and can be one of the following:
 
 /** Appends the given index group item data.
 
-This message is sent from @c XMLBasedOutputGenerator::outputDataForIndex() for each group member. 
-The subclass should append the data for the given item. The subclass can get more 
+This message is sent from @c XMLBasedOutputGenerator::outputDataForIndex() for each group 
+member. The subclass should append the data for the given item. The subclass can get more 
 information about the member by using the index member data methods from the 
 @c XMLBasedOutputGenerator(IndexParsingAPI) category.
  

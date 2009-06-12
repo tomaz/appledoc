@@ -11,7 +11,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines general helper methods private for the @c XMLBasedOutputGenerator and it's subclasses.
+/** Defines general helper methods private for the @c XMLBasedOutputGenerator and it's 
+subclasses.
 */
 @interface XMLBasedOutputGenerator (GeneralParsingAPI)
 

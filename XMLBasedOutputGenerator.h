@@ -65,7 +65,7 @@ should be very small ammount of work for subclasses.
 Each concrete subclass can convert three types of files - index, hierarchy and object files.
 The subclass can only override the methods for generating output that makes sense for the 
 implemented output type. The @c XMLBasedOutputGenerator overrides the 
-@c genearteSpecificOutput() in which it delegates the concrete output generation through 
+@c generateSpecificOutput() in which it delegates the concrete output generation through 
 the following messages:
 - @c generateOutputForIndex() to generate the main index file,
 - @c generateOutputForHierarchy() to generate the main hierarchy file and
@@ -217,7 +217,8 @@ Note that this always return formatted current system time.
 /** Returns the status of output files generation.
 
 This returns @c YES if at least one output file was generated within the last generation
-run (i.e. between the @c generationStarting() and @c generationFinished() messages).
+run (i.e. between the @c outputGenerationStarting() and @c outputGenerationFinished() 
+messages).
 */
 @property(readonly) BOOL outputFileWasCreated;
 

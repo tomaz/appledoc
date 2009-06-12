@@ -11,8 +11,8 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////
-/** Defines helper methods private for the @c XMLBasedOutputGenerator and it's subclasses that
-help parsing index related documentation.
+/** Defines helper methods private for the @c XMLBasedOutputGenerator and it's subclasses 
+that help parsing index related documentation.
 */
 @interface XMLBasedOutputGenerator (IndexParsingAPI)
 
