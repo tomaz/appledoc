@@ -82,14 +82,6 @@
 	[Systemator createDirectory:[self outputDocumentsPath]];
 }
 
-//----------------------------------------------------------------------------------------
-- (void) removeOutputDirectories
-{
-	// Note that we only remove temporary documentation set directory here, the installed
-	// copy is always left in it's installation directory.
-	[Systemator removeItemAtPath:[self outputBasePath]];
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Documentation set handling
 //////////////////////////////////////////////////////////////////////////////////////////

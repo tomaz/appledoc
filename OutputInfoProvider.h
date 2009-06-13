@@ -71,6 +71,8 @@ can get all required information it needs.
 - (NSString*) outputFilesExtension;
 
 /** Returns the base path where ￼output files are generated.￼
+ 
+This is full path to the base directory under which all files are generated.
 
 @return Returns the base path where ￼output files are generated.￼
 @see outputObjectFilenameForObject:

@@ -393,6 +393,10 @@ or web robots.
 
 /** Sets or returns the @c OutputInfoProvider conformer that provides information about
 doxygen files.￼￼
+ 
+This value is used to determine the path to the doxygen XML files. It is used to enumerate
+the list of all objects and convert the doxygen XML to clean XML which is later as a
+foundation for generating usable output by the rest of the output generators.
 
 @warning Clients need to set this before starting output generation. If they fail to
 	provide a valid object, generation immediately fails with an exception.

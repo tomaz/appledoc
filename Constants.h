@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 extern NSString* kTKConverterException;
+
 extern NSString* kTKPlaceholderExtension;
 
 extern NSString* kTKDirClasses;

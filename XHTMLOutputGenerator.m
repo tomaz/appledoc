@@ -85,17 +85,8 @@
 //----------------------------------------------------------------------------------------
 - (void) createOutputDirectories
 {
-	[Systemator createDirectory:[self outputBasePath]];
-	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirClasses]];
-	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirCategories]];
-	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirProtocols]];
+	[super createOutputDirectories];
 	[Systemator createDirectory:[[self outputBasePath] stringByAppendingPathComponent:kTKDirCSS]];
-}
-
-//----------------------------------------------------------------------------------------
-- (void) removeOutputDirectories
-{
-	[Systemator removeItemAtPath:[self outputBasePath]];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

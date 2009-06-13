@@ -26,6 +26,44 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark OutputInfoProvider protocol implementation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return @"xml";
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return [outputDirectory stringByAppendingPathComponent:outputRelativePath];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Output generation entry points
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) generateSpecificOutput
+{
+	[self createDoxygenConfigFile];
+	[self updateDoxygenConfigFile];
+	[self createDoxygenDocumentation];
+}
+
+//----------------------------------------------------------------------------------------
+- (void) createOutputDirectories
+{
+	// We must not allow creation of default paths since at the point this message is
+	// sent, the outputBasePath components were not prepared yet. In fact we don't have
+	// to do anything, since doxygen will take care of creating the path. We only need
+	// to determine the exact path from configuration file so that any dependent objects 
+	// can use it.
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Doxygen handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -231,40 +269,6 @@
 	[Systemator runTask:[cmd doxygenCommandLine], cmd.doxygenConfigFilename, nil];
 	
 	logInfo(@"Finished creating doxygen documentation.");
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Output generation entry points
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) generateSpecificOutput
-{
-	[self createDoxygenConfigFile];
-	[self updateDoxygenConfigFile];
-	[self createDoxygenDocumentation];
-}
-
-//----------------------------------------------------------------------------------------
-- (void) removeOutputDirectories
-{
-	[Systemator removeItemAtPath:[self outputBasePath]];
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark OutputInfoProvider protocol implementation
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputFilesExtension
-{
-	return @"xml";
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputBasePath
-{
-	return [outputDirectory stringByAppendingPathComponent:outputRelativePath];
 }
 
 @end

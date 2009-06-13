@@ -116,7 +116,10 @@ will recursively add all subnodes as well.
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** Sets or returns the @c OutputInfoProvider conformer that provides information about
-source files.￼￼
+documentation files which should be included in the documentation set.￼￼
+
+This value is used to determine the path to the documentation HTML files so that they
+can be copied to the documentation set.
 
 @warning Clients need to set this before starting output generation. If they fail to
 	provide a valid object, generation immediately fails with an exception.

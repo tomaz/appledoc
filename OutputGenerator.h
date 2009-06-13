@@ -159,6 +159,11 @@ If any of the required directories already exists, the subclass should decide on
 it should delete it or skip it. In most cases, the directory is left as is. If the directory 
 contains files, the subclass should again decide whether it should remove these or 
 leave them. Again, in most cases the files can be left as they are.
+ 
+Default implementation creates the path returned from @c outputBasePath() and all
+default subdirectories: @c Classes, @c Categories and @c Protocols. Subclasses that need
+to create additional directories or don't want to use default ones, should override
+and create all required directories themselves.
 
 @exception NSException Thrown if directories creation fails.
 @see removeOutputDirectories
@@ -171,6 +176,10 @@ This message is sent after all concrete output generators finish their jobs if t
 files should be removed or before generation starts if clean run is desired. Subclasses 
 should remove all generated directories and files. Note that this message is only sent
 if @c createOutputDirectories() was sent at the start of the generation.
+ 
+Default implementation removes the directory at the path returned from @c outputBasePath().
+Subclasses that need to remove additional directories should override and remove all
+directories created in @c createOutputDirectories(). This should be vary rare though.
 
 @exception NSException Thrown if removing directories or files fails.
 @see createOutputDirectories

@@ -8,6 +8,7 @@
 
 #import "OutputGenerator.h"
 #import "CommandLineParser.h"
+#import "Systemator.h"
 
 @implementation OutputGenerator
 
@@ -40,23 +41,38 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Dependencies handling
+#pragma mark OutputInfoProvider protocol implementation
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (void) registerDependentGenerator:(id<OutputProcessing>) generator
+- (NSString*) outputObjectFilenameForObject:(NSDictionary*) objectData
 {
-	NSParameterAssert(generator != nil);
-	[dependentGenerators addObject:generator];
+	NSString* path = [objectData objectForKey:kTKDataObjectRelPathKey];
+	return [self pathByReplacingTemplatePlaceholdersInPath:path];
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Subclass handling
-//////////////////////////////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------------------------------
+- (NSString*) outputIndexFilename
+{
+	return [NSString stringWithFormat:@"index%@", [self outputFilesExtension]];
+}
 
 //----------------------------------------------------------------------------------------
-- (void) generateSpecificOutput
+- (NSString*) outputHierarchyFilename
 {
+	return [NSString stringWithFormat:@"hierarchy%@", [self outputFilesExtension]];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputFilesExtension
+{
+	return @"";
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputBasePath
+{
+	return @"";
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -120,51 +136,38 @@
 //----------------------------------------------------------------------------------------
 - (void) createOutputDirectories
 {
+	NSString* basePath = self.outputBasePath;
+	[Systemator createDirectory:basePath];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirClasses]];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirCategories]];
+	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirProtocols]];
 }
 
 //----------------------------------------------------------------------------------------
 - (void) removeOutputDirectories
 {
+	[Systemator removeItemAtPath:self.outputBasePath];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark OutputInfoProvider protocol implementation
+#pragma mark Subclass handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
 //----------------------------------------------------------------------------------------
-- (NSString*) outputObjectFilenameForObject:(NSDictionary*) objectData
+- (void) generateSpecificOutput
 {
-	NSString* path = [objectData objectForKey:kTKDataObjectRelPathKey];
-	return [self pathByReplacingTemplatePlaceholdersInPath:path];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputIndexFilename
-{
-	return [NSString stringWithFormat:@"index%@", [self outputFilesExtension]];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputHierarchyFilename
-{
-	return [NSString stringWithFormat:@"hierarchy%@", [self outputFilesExtension]];
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputFilesExtension
-{
-	return @"";
-}
-
-//----------------------------------------------------------------------------------------
-- (NSString*) outputBasePath
-{
-	return @"";
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Helper methods
 //////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (void) registerDependentGenerator:(id<OutputProcessing>) generator
+{
+	NSParameterAssert(generator != nil);
+	[dependentGenerators addObject:generator];
+}
 
 //----------------------------------------------------------------------------------------
 - (NSString*) pathByReplacingTemplatePlaceholdersInPath:(NSString*) path

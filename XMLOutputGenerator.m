@@ -50,26 +50,6 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Specific output directories handling
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//----------------------------------------------------------------------------------------
-- (void) createOutputDirectories
-{
-	NSString* basePath = [self outputBasePath];
-	[Systemator createDirectory:basePath];
-	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirClasses]];
-	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirCategories]];
-	[Systemator createDirectory:[basePath stringByAppendingPathComponent:kTKDirProtocols]];
-}
-
-//----------------------------------------------------------------------------------------
-- (void) removeOutputDirectories
-{
-	[Systemator removeItemAtPath:[self outputBasePath]];
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Clean XML handling
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1419,7 +1399,11 @@
 	// If the two subdirectories are not the same, we should prepend the relative path.
 	if (![sourceSubdir isEqualToString:destinationSubdir])
 	{
-		return [NSString stringWithFormat:@"../%@/%@%@", destinationSubdir, destination, kTKPlaceholderExtension];
+		return [NSString stringWithFormat:
+				@"../%@/%@%@",
+				destinationSubdir, 
+				destination, 
+				kTKPlaceholderExtension];
 	}
 	
 	return [NSString stringWithFormat:@"%@%@", destination, kTKPlaceholderExtension];
