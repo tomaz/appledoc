@@ -82,9 +82,9 @@ It is not designed to be sent manually from the clients.
 /** Creates DocSet bundle.
 
 This message should be sent after all source files required for documentation set creation
-have been created. It will copy all html files created in @c createCleanOutputDocumentation()
-to the DocSet output directory and will invoke the indexing of the files with the help of
-nodes and tokes files.
+have been created. It will copy all html files found at path returned from
+@c documentationFilesInfoProvider to the documentation set output directory and will 
+invoke the indexing of the files with the help of nodes and tokes files.
  
 This message is automatically sent from @c generateSpecificOutput() in the proper order.
 It is not designed to be sent manually from the clients.

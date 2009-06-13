@@ -1355,10 +1355,7 @@
 			if ([paraNode childCount] == 0 || [paragraph length] == 0)
 			{
 				NSXMLElement* parent = (NSXMLElement*)[paraNode parent];
-				logDebug(@"  - Removing empty paragraph '%@' index %d from '%@'...",
-						 paraNode,
-						 [paraNode index],
-						 [parent name]);
+				logDebug(@"  - Removing empty paragraph...");
 				[parent removeChildAtIndex:[paraNode index]];
 			}
 		}		
