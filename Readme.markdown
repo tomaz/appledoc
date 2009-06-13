@@ -241,8 +241,8 @@ Documentation set related options
 	specify it.
 
 
-Miscellaneous options
----------------------
+Formatting options
+------------------
 
 *	`--object-reference-template`: Inter-object reference (links) generation style. This
 	option allows you to change the way the link names are generated. Defaults to 
@@ -253,6 +253,17 @@ Miscellaneous options
 	option allows you to change the way the link names are generated. Defaults to
 	`$PREFIX $MEMBER`. You can use `$PREFIX` and `$MEMBER` placeholders which will be
 	replaced by the selector prefix (`-` or `+`) and member name respectively.
+*	`--date-time-template`: Date and time template format. This is used for generating
+	last updated. Any number of date and time components can be formatted using format
+	specifiers of `NSCalendarDate`. Defaults to `(Last updated: %Y-%m-%d)`. As you can
+	see this allows you to use any static text, such as your copyright notice, for
+	example: `(c) 2008-%Y YourCompany. All rights reserved. (Last updated: %Y-%m-%d)`
+	would give you similar footer as Apple documentation does.
+
+
+Miscellaneous options
+---------------------
+
 *	`--clean-temp-files`: Remove all temporary build files. Note that this is 
 	dynamic and will delete generated files based on what is build. If html is created, 
 	all doxygen and clean xml is removed. If doc set is installed, the whole output path 
@@ -329,6 +340,7 @@ line counterparts is:
 *	`KeepMergedSections` (Boolean): `--keep-merged-sections`
 *	`ObjectReferenceTemplate` (String): `--object-reference-template`
 *	`MemberReferenceTemplate` (String): `--member-reference-template`
+*	`DateTimeTemplate` (String): `--date-time-template`
 *	`CleanTemporaryFilesAfterBuild` (Boolean): `--clean-temp-files`
 *	`CleanOutputFilesBeforeBuild` (Boolean): `--clean-before-build`
 *	`VerboseLevel` (Number): `--verbose`

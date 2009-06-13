@@ -853,14 +853,14 @@
 	
 		if (showLastUpdate && self.lastUpdated && [self.lastUpdated length] > 0)
 		{
-			[self appendString:@"Last updated: " toData:data];
-			[self appendString:self.lastUpdated toData:data];
-			[self appendLine:@"      <br />" toData:data];
+			[self appendString:@"      " toData:data];
+			[self appendLine:self.lastUpdated toData:data];
+			if (showBackToIndex) [self appendLine:@"      <br />" toData:data];
 		}
 		
 		if (showBackToIndex)
 		{
-			[self appendString:@"Back to " toData:data];
+			[self appendString:@"      Back to " toData:data];
 			
 			[self appendString:@"<a href=\"../" toData:data];
 			[self appendString:[self outputIndexFilename] toData:data];

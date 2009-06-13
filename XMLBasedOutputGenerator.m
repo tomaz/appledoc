@@ -630,7 +630,7 @@ output generation.￼
 - (NSString*) lastUpdated
 {
 	NSCalendarDate* now = [NSCalendarDate date];
-	return [now descriptionWithCalendarFormat:@"%Y-%B-%d"];
+	return [now descriptionWithCalendarFormat:cmd.dateTimeTemplate];
 }
 
 //----------------------------------------------------------------------------------------

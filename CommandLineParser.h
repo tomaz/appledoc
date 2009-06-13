@@ -130,6 +130,9 @@ This is used to generate the actual reference name and is visible on the final o
 This is used to generate the actual reference name and is visible on the final output. */
 @property(readonly) NSString* memberReferenceTemplate;
 
+/** The template for formatting date/time strings. */
+@property(readonly) NSString* dateTimeTemplate;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - clean output creation
 //////////////////////////////////////////////////////////////////////////////////////////

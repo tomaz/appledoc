@@ -43,6 +43,7 @@
 
 #define kTKCmdObjectRefTemplate					@"ObjectReferenceTemplate"		// NSString
 #define kTKCmdMemberRefTemplate					@"MemberReferenceTemplate"		// NSString
+#define kTKCmdDateTimeTemplate					@"DateTimeTemplate"				// NSString
 #define kTKCmdCleanTempFilesKey					@"CleanTemporaryFilesAfterBuild"// NSNumber / BOOL
 #define kTKCmdCleanBeforeBuildKey				@"CleanOutputFilesBeforeBuild"	// NSNumber / BOOL
 #define kTKCmdVerboseLevelKey					@"VerboseLevel"					// NSNumber / int
@@ -235,6 +236,10 @@ instead.
 
 @end
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+//////////////////////////////////////////////////////////////////////////////////////////
+
 @implementation CommandLineParser
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +354,7 @@ instead.
 	
 	[self parseStringWithShortcut:nil andName:@"--object-reference-template" forKey:kTKCmdObjectRefTemplate];
 	[self parseStringWithShortcut:nil andName:@"--member-reference-template" forKey:kTKCmdMemberRefTemplate];
+	[self parseStringWithShortcut:nil andName:@"--date-time-template" forKey:kTKCmdDateTimeTemplate];
 
 	[self parseBooleanWithShortcut:nil andName:@"--fix-class-locations" withValue:YES forKey:kTKCmdFixClassLocationsKey];
 	[self parseBooleanWithShortcut:nil andName:@"--merge-categories" withValue:YES forKey:kTKCmdMergeCategoriesKey];
@@ -520,6 +526,7 @@ instead.
 	// Setup other properties.
 	[parameters setObject:@"$PREFIX[$OBJECT $MEMBER]" forKey:kTKCmdObjectRefTemplate];
 	[parameters setObject:@"$PREFIX $MEMBER" forKey:kTKCmdMemberRefTemplate];
+	[parameters setObject:@"(Last updated: %Y-%m-%d)" forKey:kTKCmdDateTimeTemplate];
 	[parameters setObject:[NSNumber numberWithBool:YES] forKey:kTKCmdEmitUtilityOutputKey];
 }
 
@@ -834,6 +841,12 @@ instead.
 - (NSString*) memberReferenceTemplate
 {
 	return [parameters objectForKey:kTKCmdMemberRefTemplate];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) dateTimeTemplate
+{
+	return [parameters objectForKey:kTKCmdDateTimeTemplate];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
