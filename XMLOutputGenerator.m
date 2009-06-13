@@ -1001,6 +1001,16 @@
 				}
 			}
 			
+			// Doxygen appends -p to the end of the protocol names, so we should remove
+			// that before checking any further. Note that this apparently happens only
+			// for links to protocol members, so we can only test if both components
+			// are provided.
+			if (refMember && refObject && [refObject hasSuffix:@"-p"])
+			{
+				logDebug(@"  - Found broken '%@' protocol link...", refObject);
+				refObject = [refObject substringToIndex:[refObject length] - 2];
+			}
+			
 			// If we only have one component, we should first determine if it
 			// represents an object name or member name. In the second case, the
 			// reference is alredy setup properly. In the first case, however, we
@@ -1185,13 +1195,12 @@
 					}
 				}
 
-				// This is either true member link or unknown class link.
+				// This is either true member link, protocol link or unknown class link.
 				else
 				{
-					// Does the work contain :: in the middle? If so, this is a link to an
-					// unknown class member, so we need to handle it similar to categories
-					// above. However the case is simpler here - we can be sure the link is
-					// to unknown class, so we don't have to check the database...
+					// Does the work contain :: in the middle? If so, this is a link to a
+					// protocol or unknown class member, so we need to handle it similar to 
+					// categories above.
 					NSRange colonsRange = [word rangeOfString:@"::"];
 					if (colonsRange.location != NSNotFound)
 					{
@@ -1199,8 +1208,24 @@
 						NSString* member = [word substringFromIndex:colonsRange.location + 2];
 						member = [member substringToIndex:[member length] - 2];
 						NSString* name = [self objectLinkNameForObject:class andMember:member];
-						[replacements setObject:name forKey:word];
-						logDebug(@"  - Found reference to %@ from unknown class %@.", member, class);
+						NSDictionary* linkData = [objects objectForKey:class];
+						if (linkData)
+						{
+							NSString* classLink = [self objectReferenceFromObject:objectName toObject:class];
+							NSString* link = [NSString stringWithFormat:@"<ref id=\"%@#%@\">%@</ref>", 
+											  classLink, 
+											  member,
+											  name];
+							NSString* obsfucated = [self obsfucatedStringFromString:link];
+							[obsfucations setObject:link forKey:obsfucated];
+							[replacements setObject:obsfucated forKey:word];
+							logDebug(@"  - Found reference to member %@ from object %@.", member, class);
+						}
+						else
+						{
+							[replacements setObject:name forKey:word];
+							logDebug(@"  - Found reference to %@ from unknown class %@.", member, class);
+						}
 					}
 					else
 					{
