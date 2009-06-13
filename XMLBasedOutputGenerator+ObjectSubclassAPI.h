@@ -252,7 +252,7 @@ is sent, each individual member group is handled and when all members are done,
 
 /** Appends any main members documentation footer after members generation ends.
 
-The message is sent from the @cXMLBasedOutputGenerator:: generateOutputForObject:() after all 
+The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject:() after all 
 member groups have been processed. It gives subclasses a chance to append data to the 
 output at that point. This is ussually the place to "close" sections open tags or similar.
 

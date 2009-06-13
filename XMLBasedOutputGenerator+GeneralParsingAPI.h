@@ -116,7 +116,7 @@ source in previous steps, but some may still be present...
 
 Note that this method always returns the first subitem if more than one exists.
 
-@param node The item to extract from.
+@param item The item to extract from.
 @param name The name of the subitem to extract.
 @return Returns the given subitem or @c nil if doesn't exist.
 @warning This method is here because other methods from the category need it, the method
