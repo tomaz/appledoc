@@ -20,24 +20,6 @@
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Generator descriptions
-//////////////////////////////////////////////////////////////////////////////////////////
-
-/** Converts￼ the given path by replacing the placeholder texts.
-
-This method is provided so that any external objects that rely on the XHTML files
-can easily update paths with proper ones. Note that these objects are then closely
-couples to this concrete generator...￼
-
-@param path The path for which to replace placeholders.
-@return Returns a new autoreleased @c NSString containing correct path.
-@see defaultOutputFilesExtension
-@see indexFileName
-@see hierarchyFileName
-*/
-//+ (NSString*) pathByReplacingPlaceholders:(NSString*) path;
-
-//////////////////////////////////////////////////////////////////////////////////////////
 /// @name Object member helpers
 //////////////////////////////////////////////////////////////////////////////////////////
 
