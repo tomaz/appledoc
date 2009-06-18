@@ -41,8 +41,31 @@ enum TKGeneratorObjectMemberSectionTypes
 	kTKObjectMemberSectionExceptions,
 };
 
+/** Defines different description item types. Description item types are used when
+appending brief or detailed description. */
+enum TKGeneratorDescriptionItemTypes
+{
+	kTKDescriptionParagraphStart,
+	kTKDescriptionParagraphEnd,
+	kTKDescriptionCodeStart,
+	kTKDescriptionCodeEnd,
+	kTKDescriptionListStart,
+	kTKDescriptionListEnd,
+	kTKDescriptionListItemStart,
+	kTKDescriptionListItemEnd,
+	kTKDescriptionStrongStart,
+	kTKDescriptionStrongEnd,
+	kTKDescriptionEmphasisStart,
+	kTKDescriptionEmphasisEnd,
+	kTKDescriptionExampleStart,
+	kTKDescriptionExampleEnd,
+	kTKDescriptionReferenceStart,
+	kTKDescriptionReferenceEnd,
+	kTKDescriptionText,
+};
+
 /** Defines different index group types. These are used mainly to simplify the code and
- avoid repetition since all of the groups use the same layout. */
+avoid repetition since all of the groups use the same layout. */
 enum TKGeneratorIndexGroupTypes
 {
 	kTKIndexGroupClasses,

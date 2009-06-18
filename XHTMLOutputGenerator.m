@@ -397,8 +397,11 @@
 			
 			[self appendString:@"        <dd>" toData:data];
 			id descriptionItem = [self extractObjectParameterDescriptionNode:parameterItem];
-			NSArray* paragraphs = [self extractParagraphsFromItem:descriptionItem];
-			[self appendDescriptionToData:data fromParagraphs:paragraphs];
+			NSArray* descriptions = [self extractDescriptionsFromItem:descriptionItem];
+			for (id description in descriptions)
+			{
+				[self appendDescriptionToData:data fromDescription:description];
+			}
 			[self appendLine:@"</dd>" toData:data];
 		}
 		[self appendLine:@"      </dl>" toData:data];
@@ -413,8 +416,11 @@
 	if (returnItem)
 	{
 		[self appendLine:@"      <h5>Return value</h5>" toData:data];
-		NSArray* paragraphs = [self extractParagraphsFromItem:returnItem];
-		[self appendDescriptionToData:data fromParagraphs:paragraphs];
+		NSArray* descriptions = [self extractDescriptionsFromItem:returnItem];
+		for (id description in descriptions)
+		{
+			[self appendDescriptionToData:data fromDescription:description];
+		}
 	}
 }
 
@@ -425,7 +431,7 @@
 	id descriptionItem = [self extractObjectMemberDescriptionItem:item];
 	if (descriptionItem)
 	{
-		NSArray* paragraphs = [self extractDetailParagraphsFromItem:descriptionItem];
+		NSArray* paragraphs = [self extractDetailDescriptionsFromItem:descriptionItem];
 		if (paragraphs && [self isDescriptionUsed:paragraphs])
 		{
 			[self appendLine:@"      <h5>Discussion</h5>" toData:data];
@@ -448,8 +454,11 @@
 			[self appendLine:@"      <h5>Warning</h5>" toData:data];
 		
 		// Append the actual text.
-		NSArray* paragraphs = [self extractParagraphsFromItem:warningItem];
-		[self appendDescriptionToData:data fromParagraphs:paragraphs];
+		NSArray* descriptions = [self extractDescriptionsFromItem:warningItem];
+		for (id description in descriptions)
+		{
+			[self appendDescriptionToData:data fromDescription:description];
+		}
 		
 		// Append footer if bordered appearance is desired.
 		if (cmd.xhtmlUseBorderedWarnings)
@@ -471,8 +480,11 @@
 			[self appendLine:@"      <h5>Bug</h5>" toData:data];
 		
 		// Append the actual text.
-		NSArray* paragraphs = [self extractParagraphsFromItem:bugItem];
-		[self appendDescriptionToData:data fromParagraphs:paragraphs];
+		NSArray* descriptions = [self extractDescriptionsFromItem:bugItem];
+		for (id description in descriptions)
+		{
+			[self appendDescriptionToData:data fromDescription:description];
+		}
 		
 		// Append footer if bordered appearance is desired.
 		if (cmd.xhtmlUseBorderedWarnings)
@@ -492,7 +504,7 @@
 		for (id item in items)
 		{
 			[self appendString:@"        <li><code>" toData:data];
-			[self appendDescriptionToData:data fromParagraph:item];
+			[self appendDescriptionToData:data fromDescription:item];
 			[self appendLine:@"</code></li>" toData:data];
 		}
 		[self appendLine:@"      </ul>" toData:data];
@@ -739,63 +751,94 @@
 - (void) appendBriefDescriptionToData:(NSMutableData*) data 
 							 fromItem:(id) item
 {
-	NSArray* paragraphs = [self extractBriefParagraphsFromItem:item];
-	[self appendDescriptionToData:data fromParagraphs:paragraphs];
+	NSArray* descriptions = [self extractBriefDescriptionsFromItem:item];
+	for (id description in descriptions)
+	{
+		[self appendDescriptionToData:data fromDescription:description];
+	}
 }
 
 //----------------------------------------------------------------------------------------
 - (void) appendDetailedDescriptionToData:(NSMutableData*) data 
 								fromItem:(id) item
 {
-	NSArray* paragraphs = [self extractDetailParagraphsFromItem:item];
-	[self appendDescriptionToData:data fromParagraphs:paragraphs];
-}
-
-//----------------------------------------------------------------------------------------
-- (void) appendDescriptionToData:(NSMutableData*) data
-				  fromParagraphs:(NSArray*) paragraphs
-{
-	if (paragraphs)
+	NSArray* descriptions = [self extractDetailDescriptionsFromItem:item];
+	for (id description in descriptions)
 	{
-		for (id paragraph in paragraphs)
-		{
-			[self appendDescriptionToData:data fromParagraph:paragraph];
-		}
+		[self appendDescriptionToData:data fromDescription:description];
 	}
 }
 
-
 //----------------------------------------------------------------------------------------
 - (void) appendDescriptionToData:(NSMutableData*) data 
-				   fromParagraph:(id) item
+				 fromDescription:(id) item
 {
-	if (item)
+	int type = [self extractDescriptionType:item];
+	switch (type) 
 	{
-		NSString* result = [self extractParagraphText:item];
-		
-		// Handle simple tags replacements.
-		result = [result stringByReplacingOccurrencesOfString:@"<para>" withString:@"<p>"];
-		result = [result stringByReplacingOccurrencesOfString:@"</para>" withString:@"</p>"];
-		result = [result stringByReplacingOccurrencesOfString:@"<ref id" withString:@"<a href"];
-		result = [result stringByReplacingOccurrencesOfString:@"</ref>" withString:@"</a>"];
-		result = [result stringByReplacingOccurrencesOfString:@"<list>" withString:@"<ul>"];
-		result = [result stringByReplacingOccurrencesOfString:@"</list>" withString:@"</ul>"];
-		result = [result stringByReplacingOccurrencesOfString:@"<item>" withString:@"<li>"];
-		result = [result stringByReplacingOccurrencesOfString:@"</item>" withString:@"</li>"];
-		
-		// Handle replacements with spans.
-		result = [result stringByReplacingOccurrencesOfString:@"<bold>" withString:@"<span class=\"emphasize\">"];
-		result = [result stringByReplacingOccurrencesOfString:@"</bold>" withString:@"</span>"];
-		
-		// Handle the example section.
-		NSString* exampleTag = [NSString stringWithFormat:@"<div%@><pre>",
-								cmd.xhtmlUseBorderedExamples ? 
-								@" class=\"example\"" : 
-								@""];
-		result = [result stringByReplacingOccurrencesOfString:@"<example>" withString:exampleTag];
-		result = [result stringByReplacingOccurrencesOfString:@"</example>" withString:@"</pre></div>"];
-		
-		[self appendLine:result toData:data];
+		case kTKDescriptionParagraphStart:
+			[self appendString:@"<p>" toData:data];
+			break;
+		case kTKDescriptionParagraphEnd:
+			[self appendLine:@"</p>" toData:data];
+			break;
+			
+		case kTKDescriptionCodeStart:
+			[self appendString:@"<code>" toData:data];
+			break;
+		case kTKDescriptionCodeEnd:
+			[self appendString:@"</code>" toData:data];
+			break;
+			
+		case kTKDescriptionListStart:
+			[self appendLine:@"<ul>" toData:data];
+			break;
+		case kTKDescriptionListEnd:
+			[self appendLine:@"</ul>" toData:data];
+			break;
+		case kTKDescriptionListItemStart:
+			[self appendString:@"<li>" toData:data];
+			break;
+		case kTKDescriptionListItemEnd:
+			[self appendLine:@"</li>" toData:data];
+			break;
+			
+		case kTKDescriptionStrongStart:
+			[self appendString:@"<span class=\"strong\">" toData:data];
+			break;
+		case kTKDescriptionStrongEnd:
+			[self appendString:@"</span>" toData:data];
+			break;
+			
+		case kTKDescriptionEmphasisStart:
+			[self appendString:@"<span class=\"emphasize\">" toData:data];
+			break;
+		case kTKDescriptionEmphasisEnd:
+			[self appendString:@"</span>" toData:data];
+			break;
+			
+		case kTKDescriptionExampleStart:
+			if (cmd.xhtmlUseBorderedExamples)
+				[self appendString:@"<div class=\"example\"><pre>" toData:data];
+			else
+				[self appendString:@"<div><pre>" toData:data];
+			break;
+		case kTKDescriptionExampleEnd:
+			[self appendLine:@"</pre></div>" toData:data];
+			break;
+			
+		case kTKDescriptionReferenceStart:
+			[self appendString:@"<a href=\"" toData:data];
+			[self appendString:[self extractDescriptionReference:item] toData:data];
+			[self appendString:@"\">" toData:data];
+			break;
+		case kTKDescriptionReferenceEnd:
+			[self appendString:@"</a>" toData:data];
+			break;
+			
+		case kTKDescriptionText:
+			[self appendString:[self extractDescriptionText:item] toData:data];
+			break;
 	}
 }
 

@@ -135,8 +135,7 @@ of the given data.
 @param item The description item which brief subcsection to append.
 @exception NSException Thrown if appending fails.
 @see appendDetailedDescriptionToData:fromItem:
-@see appendDescriptionToData:fromParagraphs:
-@see appendDescriptionToData:fromParagraph:
+@see appendDescriptionToData:fromDescription:
 */
 - (void) appendBriefDescriptionToData:(NSMutableData*) data 
 							 fromItem:(id) item;
@@ -151,26 +150,10 @@ of the given data.
 @param item The description item which detailed subcsection to append.
 @exception NSException Thrown if appending fails.
 @see appendBriefDescriptionToData:fromItem:
-@see appendDescriptionToData:fromParagraphs:
-@see appendDescriptionToData:fromParagraph:
+@see appendDescriptionToData:fromDescription:
 */
 - (void) appendDetailedDescriptionToData:(NSMutableData*) data 
 								fromItem:(id) item;
-
-/** converts the description data from the given paragraphs to proper XHTML format and￼
-appends it to the given data.
-
-This method ￼is useful for items which contents should be treated as standard descriptions.
-
-@param data The array of paragraphs to append.
-@param paragraphs The array of paragraphs to convert and append. If @c nil nothing will happen.
-@exception NSException Thrown if conversion fails.
-@see appendBriefDescriptionToData:fromItem:
-@see appendDetailedDescriptionToData:fromItem:
-@see appendDescriptionToData:fromParagraph:
-*/
-- (void) appendDescriptionToData:(NSMutableData*) data
-				  fromParagraphs:(NSArray*) paragraphs;
 
 /** Converts the description data from the given paragraph to proper XHTML format and 
 appends it to the given data.
@@ -184,10 +167,9 @@ data XML structure is exposed to the class.
 @exception NSException Thrown if convertion fails.
 @see appendBriefDescriptionToData:fromItem:
 @see appendDetailedDescriptionToData:fromItem:
-@see appendDescriptionToData:fromParagraphs:
 */
 - (void) appendDescriptionToData:(NSMutableData*) data 
-				   fromParagraph:(id) item;
+				 fromDescription:(id) item;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper methods

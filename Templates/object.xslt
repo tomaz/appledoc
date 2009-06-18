@@ -133,7 +133,11 @@
 	</xsl:template>
 	
 	<xsl:template match="bold">
-		<bold><xsl:apply-templates/></bold>
+		<strong><xsl:apply-templates/></strong>
+	</xsl:template>
+	
+	<xsl:template match="emphasis">
+		<emphasis><xsl:apply-templates/></emphasis>
 	</xsl:template>
 	
 	<xsl:template match="para">

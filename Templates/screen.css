@@ -276,8 +276,12 @@ dl.parameterList dd {
 	padding-top: 0.3em;
 }
 
-.emphasize {
+.strong {
 	font-weight: bold;
+}
+
+.emphasize {
+	font-style: italic;
 }
 
 /* @end */

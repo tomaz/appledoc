@@ -152,7 +152,7 @@ individual components. Then use @c extractObjectMemberPrototypeItemType:() and
 /** Extracts the member description item from the given member item.
 
 The returned item can be used by @c extractBriefDescriptionFromItem:(),
-@c extractBriefParagraphsFromItem:() and @c extractDetailParagraphsFromItem:() to get
+@c extractBriefDescriptionsFromItem:() and @c extractDetailDescriptionsFromItem:() to get
 individual description components.
 
 @param item The member item which description item to return.
@@ -352,7 +352,7 @@ This can be used over the items of the array returned from
 /** Extracts the parameter description item from the given parameter item.
 
 The returned item can be used by @c extractBriefDescriptionFromItem:(),
-@c extractBriefParagraphsFromItem:() and @c extractDetailParagraphsFromItem:() to get
+@c extractBriefDescriptionsFromItem:() and @c extractDetailDescriptionsFromItem:() to get
 individual description components.
 
 @param item The parameter item which description item to return.
