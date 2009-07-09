@@ -136,8 +136,23 @@
 //----------------------------------------------------------------------------------------
 - (NSArray*) extractObjectMemberSeeAlsoItems:(id) node
 {
+	// Get all see also items, then make sure <ref> subnodes are properly handled.
 	NSArray* itemNodes = [node nodesForXPath:@"seeAlso/item" error:nil];
-	if ([itemNodes count] > 0) return itemNodes;
+	if ([itemNodes count] > 0)
+	{
+		NSMutableArray* result = [NSMutableArray array];
+		for (NSXMLNode* itemNode in itemNodes)
+		{
+			NSArray* refNodes = [itemNode nodesForXPath:@"ref" error:nil];
+			if ([refNodes count] > 0)
+			{
+				[result addObject:[refNodes objectAtIndex:0]];
+				continue;
+			}
+			[result addObject:itemNode];
+		}
+		return result;
+	}
 	return nil;
 }
 
@@ -178,7 +193,7 @@
 }
 
 //----------------------------------------------------------------------------------------
-- (id) extractObjectParameterDescriptionNode:(id) node
+- (id) extractObjectParameterDescriptionItem:(id) node
 {
 	return [self extractSubitemFromItem:node withName:@"description"];
 }

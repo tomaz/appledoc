@@ -371,7 +371,7 @@
 				}
 			}
 		}		
-		[self appendLine:@"      </code>" toData:data];
+		[self appendLine:@"</code>" toData:data];
 	}
 }
 
@@ -396,11 +396,11 @@
 			[self appendLine:@"</dt>" toData:data];
 			
 			[self appendString:@"        <dd>" toData:data];
-			id descriptionItem = [self extractObjectParameterDescriptionNode:parameterItem];
+			id descriptionItem = [self extractObjectParameterDescriptionItem:parameterItem];
 			NSArray* descriptions = [self extractDescriptionsFromItem:descriptionItem];
 			for (id description in descriptions)
 			{
-				[self appendDescriptionToData:data fromDescription:description];
+				[self appendDescriptionToData:data fromDescriptionItem:description];
 			}
 			[self appendLine:@"</dd>" toData:data];
 		}
@@ -419,7 +419,7 @@
 		NSArray* descriptions = [self extractDescriptionsFromItem:returnItem];
 		for (id description in descriptions)
 		{
-			[self appendDescriptionToData:data fromDescription:description];
+			[self appendDescriptionToData:data fromDescriptionItem:description];
 		}
 	}
 }
@@ -457,7 +457,7 @@
 		NSArray* descriptions = [self extractDescriptionsFromItem:warningItem];
 		for (id description in descriptions)
 		{
-			[self appendDescriptionToData:data fromDescription:description];
+			[self appendDescriptionToData:data fromDescriptionItem:description];
 		}
 		
 		// Append footer if bordered appearance is desired.
@@ -483,7 +483,7 @@
 		NSArray* descriptions = [self extractDescriptionsFromItem:bugItem];
 		for (id description in descriptions)
 		{
-			[self appendDescriptionToData:data fromDescription:description];
+			[self appendDescriptionToData:data fromDescriptionItem:description];
 		}
 		
 		// Append footer if bordered appearance is desired.
@@ -504,7 +504,22 @@
 		for (id item in items)
 		{
 			[self appendString:@"        <li><code>" toData:data];
-			[self appendDescriptionToData:data fromDescription:item];
+			
+			NSString* reference = [self extractDescriptionReference:item];
+			NSString* text = [self extractDescriptionText:item];
+
+			if (reference)
+			{
+				[self appendString:@"<a href=\"" toData:data];
+				[self appendString:reference toData:data];
+				[self appendString:@"\">" toData:data];
+			}
+			[self appendString:text toData:data];
+			if (reference)
+			{
+				[self appendString:@"</a>" toData:data];	
+			}
+
 			[self appendLine:@"</code></li>" toData:data];
 		}
 		[self appendLine:@"      </ul>" toData:data];
@@ -754,7 +769,7 @@
 	NSArray* descriptions = [self extractBriefDescriptionsFromItem:item];
 	for (id description in descriptions)
 	{
-		[self appendDescriptionToData:data fromDescription:description];
+		[self appendDescriptionToData:data fromDescriptionItem:description];
 	}
 }
 
@@ -765,13 +780,13 @@
 	NSArray* descriptions = [self extractDetailDescriptionsFromItem:item];
 	for (id description in descriptions)
 	{
-		[self appendDescriptionToData:data fromDescription:description];
+		[self appendDescriptionToData:data fromDescriptionItem:description];
 	}
 }
 
 //----------------------------------------------------------------------------------------
 - (void) appendDescriptionToData:(NSMutableData*) data 
-				 fromDescription:(id) item
+			 fromDescriptionItem:(id) item
 {
 	int type = [self extractDescriptionType:item];
 	switch (type) 
@@ -804,17 +819,17 @@
 			break;
 			
 		case kTKDescriptionStrongStart:
-			[self appendString:@"<span class=\"strong\">" toData:data];
+			[self appendString:@"<strong>" toData:data];
 			break;
 		case kTKDescriptionStrongEnd:
-			[self appendString:@"</span>" toData:data];
+			[self appendString:@"</strong>" toData:data];
 			break;
 			
 		case kTKDescriptionEmphasisStart:
-			[self appendString:@"<span class=\"emphasize\">" toData:data];
+			[self appendString:@"<em>" toData:data];
 			break;
 		case kTKDescriptionEmphasisEnd:
-			[self appendString:@"</span>" toData:data];
+			[self appendString:@"</em>" toData:data];
 			break;
 			
 		case kTKDescriptionExampleStart:

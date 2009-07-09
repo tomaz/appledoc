@@ -358,6 +358,6 @@ individual description components.
 @param item The parameter item which description item to return.
 @return Returns the parameter description item or @c nil if not found.
 */
-- (id) extractObjectParameterDescriptionNode:(id) item;
+- (id) extractObjectParameterDescriptionItem:(id) item;
 
 @end

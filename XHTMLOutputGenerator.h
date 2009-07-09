@@ -169,7 +169,7 @@ data XML structure is exposed to the class.
 @see appendDetailedDescriptionToData:fromItem:
 */
 - (void) appendDescriptionToData:(NSMutableData*) data 
-				 fromDescription:(id) item;
+			 fromDescriptionItem:(id) item;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Helper methods
