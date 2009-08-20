@@ -62,13 +62,30 @@ can get all required information it needs.
 
 /** Returns the output files extension.￼
  
+Output file extension is added to all generated output files.
+ 
 @return Returns the output files extension.￼
+@see outputReferencesExtension
 @see outputObjectFilenameForObject:
 @see outputIndexFilename
 @see outputHierarchyFilename
 @see outputBasePath
 */
 - (NSString*) outputFilesExtension;
+
+/** Returns the output references extension.￼
+ 
+References extension is used while generating the references inside output files. In]
+most cases this should be the same as @c outputFilesExtension().
+ 
+@return Returns the references files extension.￼
+@see outputFilesExtension
+@see outputObjectFilenameForObject:
+@see outputIndexFilename
+@see outputHierarchyFilename
+@see outputBasePath
+*/
+- (NSString*) outputReferencesExtension;
 
 /** Returns the base path where ￼output files are generated.￼
  

@@ -9,6 +9,7 @@
 #import "OutputGenerator.h"
 #import "CommandLineParser.h"
 #import "Systemator.h"
+#import "LoggingProvider.h"
 
 @implementation OutputGenerator
 
@@ -54,19 +55,25 @@
 //----------------------------------------------------------------------------------------
 - (NSString*) outputIndexFilename
 {
-	return [NSString stringWithFormat:@"index%@", [self outputFilesExtension]];
+	return [NSString stringWithFormat:@"index%@", [self outputReferencesExtension]];
 }
 
 //----------------------------------------------------------------------------------------
 - (NSString*) outputHierarchyFilename
 {
-	return [NSString stringWithFormat:@"hierarchy%@", [self outputFilesExtension]];
+	return [NSString stringWithFormat:@"hierarchy%@", [self outputReferencesExtension]];
 }
 
 //----------------------------------------------------------------------------------------
 - (NSString*) outputFilesExtension
 {
 	return @"";
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) outputReferencesExtension
+{
+	return [self outputFilesExtension];
 }
 
 //----------------------------------------------------------------------------------------
@@ -94,6 +101,8 @@
 {
 	if (self.isOutputGenerationEnabled)
 	{
+		logNormal(@"Generating %@ output...", [[self outputBasePath] lastPathComponent]);
+		
 		// Create required output directories.
 		[self createOutputDirectories];
 		
@@ -173,7 +182,7 @@
 - (NSString*) pathByReplacingTemplatePlaceholdersInPath:(NSString*) path
 {
 	return [path stringByReplacingOccurrencesOfString:kTKPlaceholderExtension 
-										   withString:[self outputFilesExtension]];
+										   withString:[self outputReferencesExtension]];
 }
 
 @end
