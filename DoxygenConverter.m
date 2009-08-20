@@ -14,6 +14,7 @@
 
 #import "DoxygenOutputGenerator.h"
 #import "XMLOutputGenerator.h"
+#import "MarkdownOutputGenerator.h"
 #import "XHTMLOutputGenerator.h"
 #import "DocSetOutputGenerator.h"
 
@@ -35,12 +36,14 @@
 		// Setup all output generators.
 		DoxygenOutputGenerator* doxygenGenerator = [[DoxygenOutputGenerator alloc] initWithDatabase:database];
 		XMLOutputGenerator* xmlGenerator = [[XMLOutputGenerator alloc] initWithDatabase:database];
+		MarkdownOutputGenerator* markdownGenerator = [[MarkdownOutputGenerator alloc] initWithDatabase:database];
 		XHTMLOutputGenerator* xhtmlGenerator = [[XHTMLOutputGenerator alloc] initWithDatabase:database];
 		DocSetOutputGenerator* docSetGenerator = [[DocSetOutputGenerator alloc] initWithDatabase:database];
 		
 		// Setup all dependencies.
 		[doxygenGenerator registerDependentGenerator:xmlGenerator];
 		[xmlGenerator registerDependentGenerator:xhtmlGenerator];
+		[xmlGenerator registerDependentGenerator:markdownGenerator];
 		[xhtmlGenerator registerDependentGenerator:docSetGenerator];
 		xmlGenerator.doxygenInfoProvider = doxygenGenerator;
 		docSetGenerator.documentationFilesInfoProvider = xhtmlGenerator;
@@ -52,6 +55,7 @@
 		// We can now release generators because they are retained by their parents.
 		[doxygenGenerator release];
 		[xmlGenerator release];
+		[markdownGenerator release];
 		[xhtmlGenerator release];
 		[docSetGenerator release];
 	}

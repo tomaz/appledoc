@@ -145,6 +145,9 @@ This is used to generate the actual reference name and is visible on the final o
 Note That @c createCleanXHTML() is a prerequisite for documentation set. */
 @property(readonly) BOOL createDocSet;
 
+/** If @c YES, Markdown documentaiton is created. */
+@property(readonly) BOOL createMarkdown;
+
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - XHTML output creation
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -182,6 +185,45 @@ documentation. */
 This should be set to one of the known locations which Xcode searches. By default it is
 set to user's documentation set directory. */
 @property(readonly) NSString* docsetInstallPath;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Properties - Markdown creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/** If @c YES, object files links are created using reference style, otherwise inline
+links are created. */
+@property(readonly) BOOL markdownReferenceStyleLinks;
+
+/** The maximum number of chars to use in one line.
+
+This is the desired maximum line length.
+*/
+@property(readonly) int markdownLineLength;
+
+/** The minimum number of chars in the line before considering wrapping.
+
+This value controls line wrapping when adding non-wrappable phrases. It works in
+pair with @c markdownLineLength() and @c markdownLineWrapMargin().
+ 
+If the line has less chars than this value, a non-wrappable phrase is still appended if
+the total line length including the phrase is below the sum of @c markdownLineLength() and
+@c markdownLineWrapMargin().
+ 
+@see markdownLineLength
+*/
+@property(readonly) int markdownLineWrapThreshold;
+
+/** The maximum number of chars to use in one line.
+ 
+This value controls line wrapping when adding non-wrappable phrases. It works in
+pair with @c markdownLineLength() and @c markdownLineWrapThreshold().
+
+If the line length is below or equal to the threshold, the phrase is added to it even if
+the new line length is over the @c markdownLineLength() however below the given margin.
+
+@see markdownLineLength
+*/
+@property(readonly) int markdownLineWrapMargin;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Properties - miscellaneous

@@ -165,7 +165,7 @@ the moment, I cannot use lorem ipsum for that. And I also don't know it from the
 There's much more important stuff to remember than that... Except for the cases like this
 where the text is actually needed. Well, looks like my imagination is still working...
  
-Here's an example of how to get @b strong or @a emphasized items.
+Here's an example of how to get @b strong or @a emphasized words.
 
 @param param The parameter.
 @param value The value.

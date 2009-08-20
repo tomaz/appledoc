@@ -27,7 +27,7 @@ first message. It gives subclasses a chance to append data to the output before 
 output generation starts. After this message is sent, the rest of the messages are followed 
 and as the last one, @c appendHierarchyFooterToData:() is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForHierarchy
 @see appendHierarchyFooterToData:
@@ -40,7 +40,7 @@ The message is sent from the @c XMLBasedOutputGenerator::outputDataForHierarchy(
 last message. It gives subclasses a chance to append data to the output after the rest of 
 the output is generated. This is ussually the place to "close" open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForHierarchy
 @see appendHierarchyHeaderToData:
@@ -59,7 +59,7 @@ to the output before the generation for group items starts. After this message i
 at least one @c appendHierarchyGroupItemToData:fromItem:index:() message is sent and then 
 @c appendHierarchyGroupFooterToData:() is sent at the end.
  
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForHierarchy
 @see appendHierarchyGroupItemToData:fromItem:index:
@@ -77,7 +77,7 @@ tags or similar.
 Note that this message is sent after all children of all the group items are processed
 so that the subclass can safely assume the whole group is processed well.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForHierarchy
 @see appendHierarchyGroupHeaderToData:
@@ -92,7 +92,7 @@ group member. The subclass should append the data for the given item. The subcla
 get more information about the member by using the hierarchy member data methods from the 
 @c XMLBasedOutputGenerator(HierarchyParsingAPI) category.
  
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The data item describing the given member.
 @param index Zero based index of the member within the group.
 @exception NSException Thrown if appending fails.

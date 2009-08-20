@@ -184,8 +184,22 @@ item extracted through one of the following methods: @c extractBriefDescriptions
 @see extractDescriptionsFromItem:
 @see extractDescriptionType:
 @see extractDescriptionText:
+@see isInterObjectReference
 */
 - (NSString*) extractDescriptionText:(id) item;
+
+/** Determines if the given reference is inter-object or member reference.￼
+
+This method can be used to determine the type of the given reference. It should be
+passed the reference obtained from the @c extractDescriptionReference:() method.￼ If
+@c mil is passed, @c NO is returned.
+
+@param reference The reference to check.
+@return Returns @c YES if the given reference represents an inter-object reference,
+	@c NO otherwise. Also returns @c NO if @c mil is passed as the parameter.
+@see extractDescriptionReference:
+*/
+- (BOOL) isInterObjectReference:(NSString*) reference;
 
 /** Determines if at least one of the given brief or detailed paragraphs is used or not.
  

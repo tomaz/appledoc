@@ -27,7 +27,7 @@ message. It gives subclasses a chance to append data to the output before the ac
 generation starts. After this message is sent, the rest of the messages are followed and as 
 the last one, @c appendIndexFooterToData:() is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForIndex
 @see appendIndexFooterToData:
@@ -40,7 +40,7 @@ The message is sent from the @c XMLBasedOutputGenerator::outputDataForIndex() as
 message. It gives subclasses a chance to append data to the output after the rest of the 
 output is generated. This is ussually the place to "close" open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForIndex
 @see appendIndexHeaderToData:
@@ -64,7 +64,7 @@ The type identifies the type of the index group and can be one of the following:
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param type The type of the index group.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForIndex
@@ -85,7 +85,7 @@ The type identifies the type of the index group and can be one of the following:
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param type The type of the index group.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::outputDataForIndex
@@ -107,7 +107,7 @@ The type identifies the type of the index group and can be one of the following:
 - @c kTKIndexGroupProtocols: This group will append all protocols.
 - @c kTKIndexGroupCategories: This group will append all categories.
  
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The data item describing the given member.
 @param index Zero based index of the member within the group.
 @param type The type of the index group.

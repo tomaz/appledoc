@@ -216,6 +216,7 @@ or more of the following options to actually produce something more readable...
 
 *	`--xhtml`: Generate XHTML documentation.
 *	`--docset`: Generate documentation set (this will automatically enable xhtml as well!).
+*	`--markdown`: Generate Markdown documentation.
 
 
 XHTML output options
@@ -239,6 +240,33 @@ Documentation set related options
 	the created documentation set. Defaults to `/Developer/usr/bin/docsetutils` which is
 	the default install location, however if you use another path, you must manually
 	specify it.
+	
+	
+Markdown output options
+-----------------------
+
+*	`--markdown-line-length <number>`: The number of chars to use before forcing a new
+	line. Setting this value below or equal to 0 prevents wrapping take place. Defaults to 80.
+	note that wrapping for non-wrappable phrases (method names for example) can be controller
+	finer with `--markdown-line-threshold` and `--markdown-line-margin`. Note that line
+	wrapping values may not seem intuitive from the start on, so play with them a bit to
+	get a feel.
+*	`--markdown-line-threshold <number>`: If a non-wrappable phrase is being added to a
+	line and causes the line to break, this setting prevents break if the line length is
+	below the given threshold of the `--markdown-line-length` and the phrase length is not
+	too big. This value should be kept reasonably small. Defaults to 7.
+*	`--markdown-line-margin <number>`: If a non-wrappable phrase is being added to a line
+	and the line length passes the `--markdown-line-threshold` "test" above and the overall
+	length of the line including the phrase is still below the given margin (added to the
+	value of `--markdown-line-length`), the phrase is kept in the same line. This value
+	should be kept reasonably small. Defaults to 12.
+*	`--markdown-refstyle-links`: Use reference style links. When used, the links to
+	same or inter-object members will be created using reference style links which are
+	generated as footnotes. Numbers will be used for link IDs, starting with 1 and
+	links to the same object or member will be properly handled (i.e. will not be repeated). 
+	Using this option will result in much more readable output. If this option is not used, 
+	inline links will be generated which is the default. Note that this option only affects
+	object files creation, index and hierarchy always use inline links!
 
 
 Formatting options
@@ -320,27 +348,39 @@ line counterparts is:
 
 *	`DoxygenCommandLine` (String): `--doxygen`
 *	`DoxygenConfigFile` (String): `--doxyfile`
+
 *	`CreateXHTML` (Boolean): `--xhtml`
 *	`CreateDocSet` (Boolean): `--docset`
+*	`CreateMarkdown` (Boolean): `--markdown`
+
 *	`XHTMLUseBorderedExamples` (Boolean): `--xhtml-bordered-issues` can be used to set
 	XHTMLUseBorderedExamples, XHTMLUseBorderedWarnings and XHTMLUseBorderedBugs in one
 	setting. There is no way to specify each separately over command line. There's also
 	no way to specify all three with a single setting in global parameters.
 *	`XHTMLUseBorderedWarnings` (Boolean): see previous item.
 *	`XHTMLUseBorderedBugs` (Boolean): see previous item.
+
 *	`DocSetBundleID` (String): `--docid`
 *	`DocSetBundleFeed` (String): `--docfeed`
 *	`DocSetSourcePlist` (String): `--docplist`
 *	`DocSetUtilCommandLine` (String): `--docutil`
 *	`DocSetInstallPath` (String): The path for installing the documentation set. Not
 	possible to change over command line.
+
+*	`MarkdownLineLength` (Number): `--markdown-line-length`
+*	`MarkdownLineWrapThreshold` (Number): `--markdown-line-threshold`
+*	`MarkdownLineWrapMargin` (Number): `--markdown-line-margin`
+*	`MarkdownReferenceStyleLinks` (Boolean): `--markdown-refstyle-links`
+
 *	`FixClassLocations` (Boolean): `--fix-class-locations`
 *	`RemoveEmptyParagraphs` (Boolean): `--remove-empty-paragraphs`
 *	`MergeCategories` (Boolean): `--merge-categories`
 *	`KeepMergedSections` (Boolean): `--keep-merged-sections`
+
 *	`ObjectReferenceTemplate` (String): `--object-reference-template`
 *	`MemberReferenceTemplate` (String): `--member-reference-template`
 *	`DateTimeTemplate` (String): `--date-time-template`
+
 *	`CleanTemporaryFilesAfterBuild` (Boolean): `--clean-temp-files`
 *	`CleanOutputFilesBeforeBuild` (Boolean): `--clean-before-build`
 *	`VerboseLevel` (Number): `--verbose`

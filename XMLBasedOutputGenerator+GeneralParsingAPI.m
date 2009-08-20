@@ -112,6 +112,17 @@
 }
 
 //----------------------------------------------------------------------------------------
+- (BOOL) isInterObjectReference:(NSString*) reference
+{
+	if (reference)
+	{
+		NSRange range = [reference rangeOfString:@"#"];
+		return (range.location == NSNotFound);
+	}
+	return NO;
+}
+
+//----------------------------------------------------------------------------------------
 - (BOOL) isDescriptionUsed:(NSArray*) items
 {
 	for (NSXMLElement* subnode in items)

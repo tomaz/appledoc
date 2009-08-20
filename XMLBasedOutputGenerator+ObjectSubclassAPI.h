@@ -27,7 +27,7 @@ the first message. It gives subclasses a chance to append data to the output bef
 actual output generation starts. After this message is sent, the rest of the messages are 
 followed and as the last one, @c appendObjectFooterToData:() is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectFooterToData:
@@ -40,7 +40,7 @@ The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject
 last message. It gives subclasses a chance to append data to the output after the rest 
 of the output is generated. This is ussually the place to "close" open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectHeaderToData:
@@ -59,7 +59,7 @@ the output before the generation for secion items starts. After this message is 
 at least one @c appendObjectInfoItemToData:fromItems:index:type:() message is sent and 
 then @c appendObjectInfoHeaderToData:() is sent at the end.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectInfoItemToData:fromItems:index:type:
@@ -74,7 +74,7 @@ last info generation message. It gives subclasses a chance to append data to the
 after the info items generation is finished. This is ussually the place to "close" open 
 tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectInfoHeaderToData:
@@ -98,7 +98,7 @@ The type identifies the type of the info item and can be one of the following:
 - @c kTKInfoItemDeclared: The @c nodex contain declared in information. Only one node
 	is in the list in most (all) cases.
  
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param items The array of info items instances describing individual items.
 @param index Zero based index of the item within the info object info.
 @param type The type of the item.
@@ -123,7 +123,7 @@ has brief and or detailed documentation assigned. It gives subclasses a chance t
 object overview from the gathered documentation. The given @c item contains brief and 
 detailed object description and can be treated as any other description item.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The item that contains the brief and detailed description.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
@@ -143,7 +143,7 @@ output before any individual task handling is started. After this message is sen
 individual task is handled and when all tasks are done, @c appendObjectTasksFooterToData:() 
 is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectTaskHeaderToData:fromItem:index:
@@ -158,7 +158,7 @@ The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject
 tasks have been processed. It gives subclasses a chance to append data to the output at 
 that point. This is ussually the place to "close" tasks open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectTasksHeaderToData:
@@ -174,7 +174,7 @@ The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject
 task which has at least one member. It gives subclasses a chance to append data to the 
 output before member handling for the given task starts.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The item that contains the task description.
 @param index Zero based index of the task.
 @exception NSException Thrown if appending fails.
@@ -194,7 +194,7 @@ The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject
 task members have been processed. It gives subclasses a chance to append data to the output 
 at that point. This is ussually the place to "close" tasks open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The item that contains the task description.
 @param index Zero based index of the task.
 @exception NSException Thrown if appending fails.
@@ -214,7 +214,7 @@ This message is sent from the @c XMLBasedOutputGenerator::generateOutputForObjec
 task member (class or instance method or property). Subclasses should append any desired 
 data for the given member.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The item that contains the task member description.
 @param index Zero based index of the member within the task.
 @exception NSException Thrown if appending fails.
@@ -240,7 +240,7 @@ data to the output before any individual member handling is started. After this 
 is sent, each individual member group is handled and when all members are done, 
 @c appendObjectMembersFooterToData:() is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectMembersFooterToData:
@@ -256,7 +256,7 @@ The message is sent from the @c XMLBasedOutputGenerator::generateOutputForObject
 member groups have been processed. It gives subclasses a chance to append data to the 
 output at that point. This is ussually the place to "close" sections open tags or similar.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
 @see appendObjectMembersHeaderToData:
@@ -281,7 +281,7 @@ message one or more @c appendObjectMemberToData:fromItem:index:() messages are s
 for each documented member of the given group and after all members output is generated,
 @c appendObjectMemberGroupHeaderToData:type:() is sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param type The type of the group that is being described.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
@@ -306,7 +306,7 @@ Subclasses should append any desired data for the given group type. In most case
 is the place to close any open tags or similar. The message is only sent if the
 corresponding @c appendObjectMemberGroupHeaderToData:type:() was sent.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param type The type of the group that is being described.
 @exception NSException Thrown if appending fails.
 @see XMLBasedOutputGenerator::generateOutputForObject:
@@ -323,7 +323,7 @@ corresponding @c appendObjectMemberGroupHeaderToData:type:() was sent.
 This message is sent from @c XMLBasedOutputGenerator::generateOutputForObject:() for each 
 documented member. Subclasses should output the full documentation for the given member.
 
-@param data The data to append to. This is guaranteed to be non @c null.
+@param data The data to append to. This is guaranteed to be non @c mil.
 @param item The item that describes the member data.
 @param index Zero based index of the member within the group.
 @exception NSException Thrown if appending fails.

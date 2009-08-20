@@ -25,6 +25,7 @@
 
 #define kTKCmdCreateCleanXHTMLKey				@"CreateXHTML"					// NSNumber / BOOL
 #define kTKCmdCreateDocSetKey					@"CreateDocSet"					// NSNumber / BOOL
+#define kTKCmdCreateMarkdownKey					@"CreateMarkdown"				// NSNumber / BOOL
 
 #define kTKCmdXHTMLBorderedExamplesKey			@"XHTMLUseBorderedExamples"		// NSNumber / BOOL
 #define kTKCmdXHTMLBorderedWarningsKey			@"XHTMLUseBorderedWarnings"		// NSNumber / BOOL
@@ -35,6 +36,11 @@
 #define kTKCmdDocSetSourcePlistKey				@"DocSetSourcePlist"			// NSString
 #define kTKCmdDocSetUtilCommandLinKey			@"DocSetUtilCommandLine"		// NSString
 #define kTKCmdDocSetInstallPathKey				@"DocSetInstallPath"			// NSString
+
+#define kTKCmdMarkdownRefStyleLinksKey			@"MarkdownReferenceStyleLinks"	// NSNumber / BOOL
+#define kTKCmdMarkdownLineLengthKey				@"MarkdownLineLength"			// NSNumber / int
+#define kTKCmdMarkdownLineThresholdKey			@"MarkdownLineWrapThreshold"	// NSNumber / int
+#define kTKCmdMarkdownLineMarginKey				@"MarkdownLineWrapMargin"		// NSNumber / int
 
 #define kTKCmdFixClassLocationsKey				@"FixClassLocations"			// NSNumber / BOOL
 #define kTKCmdRemoveEmptyParaKey				@"RemoveEmptyParagraphs"		// NSNumber / BOOL
@@ -342,6 +348,7 @@ instead.
 
 	[self parseBooleanWithShortcut:nil andName:@"--xhtml" withValue:YES forKey:kTKCmdCreateCleanXHTMLKey];
 	[self parseBooleanWithShortcut:nil andName:@"--docset" withValue:YES forKey:kTKCmdCreateDocSetKey];
+	[self parseBooleanWithShortcut:nil andName:@"--markdown" withValue:YES forKey:kTKCmdCreateMarkdownKey];
 
 	[self parseBooleanWithShortcut:nil andName:@"--xhtml-bordered-issues" withValue:YES forKey:kTKCmdXHTMLBorderedExamplesKey];
 	[self parseBooleanWithShortcut:nil andName:@"--xhtml-bordered-issues" withValue:YES forKey:kTKCmdXHTMLBorderedWarningsKey];
@@ -351,7 +358,12 @@ instead.
 	[self parseStringWithShortcut:nil andName:@"--docfeed" forKey:kTKCmdDocSetBundleFeedKey];
 	[self parseStringWithShortcut:nil andName:@"--docplist" forKey:kTKCmdDocSetSourcePlistKey];
 	[self parseStringWithShortcut:nil andName:@"--docutil" forKey:kTKCmdDocSetUtilCommandLinKey];
-	
+
+	[self parseBooleanWithShortcut:nil andName:@"--markdown-refstyle-links" withValue:YES forKey:kTKCmdMarkdownRefStyleLinksKey];
+	[self parseIntegerWithShortcut:nil andName:@"--markdown-line-length" forKey:kTKCmdMarkdownLineLengthKey];
+	[self parseIntegerWithShortcut:nil andName:@"--markdown-line-threshold" forKey:kTKCmdMarkdownLineThresholdKey];
+	[self parseIntegerWithShortcut:nil andName:@"--markdown-line-margin" forKey:kTKCmdMarkdownLineMarginKey];
+
 	[self parseStringWithShortcut:nil andName:@"--object-reference-template" forKey:kTKCmdObjectRefTemplate];
 	[self parseStringWithShortcut:nil andName:@"--member-reference-template" forKey:kTKCmdMemberRefTemplate];
 	[self parseStringWithShortcut:nil andName:@"--date-time-template" forKey:kTKCmdDateTimeTemplate];
@@ -463,6 +475,7 @@ instead.
 	printf("OPTIONS - clean output creation\n");
 	printf("   --xhtml\n");
 	printf("   --docset\n");
+	printf("   --markdown\n");
 	printf("\n");
 	printf("OPTIONS - XHTML output creation\n");
 	printf("   --xhtml-bordered-issues\n");
@@ -472,6 +485,9 @@ instead.
 	printf("   --docfeed <name>\n");
 	printf("   --docplist <path>\n");
 	printf("   --docutil <path>\n");
+	printf("\n");
+	printf("OPTIONS - markdown output creation\n");
+	printf("   --markdown-refstyle-links\n");
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
 	printf("   --object-reference-template\n");
@@ -518,8 +534,16 @@ instead.
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdMergeCategoriesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdKeepMergedCategoriesSectionsKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdRemoveEmptyParaKey];
+	
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateCleanXHTMLKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateDocSetKey];
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCreateMarkdownKey];
+	
+	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdMarkdownRefStyleLinksKey];
+	[parameters setObject:[NSNumber numberWithInt:80] forKey:kTKCmdMarkdownLineLengthKey];
+	[parameters setObject:[NSNumber numberWithInt:7] forKey:kTKCmdMarkdownLineThresholdKey];
+	[parameters setObject:[NSNumber numberWithInt:12] forKey:kTKCmdMarkdownLineMarginKey];
+	
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanTempFilesKey];
 	[parameters setObject:[NSNumber numberWithBool:NO] forKey:kTKCmdCleanBeforeBuildKey];
 	
@@ -865,6 +889,12 @@ instead.
 	return [[parameters objectForKey:kTKCmdCreateDocSetKey] boolValue];
 }
 
+//----------------------------------------------------------------------------------------
+- (BOOL) createMarkdown
+{
+	return [[parameters objectForKey:kTKCmdCreateMarkdownKey] boolValue];
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Properties - XHTML creation
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -927,6 +957,34 @@ instead.
 - (NSString*) docsetInstallPath
 {
 	return [parameters objectForKey:kTKCmdDocSetInstallPathKey];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Properties - Markdown creation
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------------------------------
+- (BOOL) markdownReferenceStyleLinks
+{
+	return [[parameters objectForKey:kTKCmdMarkdownRefStyleLinksKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (int) markdownLineLength
+{
+	return [[parameters objectForKey:kTKCmdMarkdownLineLengthKey] intValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (int) markdownLineWrapThreshold
+{
+	return [[parameters objectForKey:kTKCmdMarkdownLineThresholdKey] intValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (int) markdownLineWrapMargin
+{
+	return [[parameters objectForKey:kTKCmdMarkdownLineMarginKey] intValue];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
