@@ -455,7 +455,7 @@ instead.
 - (void) printUsage
 {
 	printf("USAGE: appledoc [options]\n");
-	printf("VERSION: 1.1\n");
+	printf("VERSION: 1.0\n");
 	printf("\n");
 	printf("OPTIONS - required\n");
 	printf("-p --project <name>\n");
