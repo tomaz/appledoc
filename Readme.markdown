@@ -82,11 +82,16 @@ you can also use "Install" script from the Xcode - just select "Install" as the 
 target and build it. It will install all required files to the application support
 directory (you still need to manually copy the executable).
 
-Now you're ready to go! You can periodically check for updates by typing the following 
+Now you're ready to go! Build the project to generate the `appledoc` executable. I recommend
+you copy the executable to some directory on your path such as `/usr/local/bin` or similar so
+that it is easily accessible. You can periodically check for updates by typing the following 
 into your terminal:
 
 	cd <directory where you installed appledoc>
 	git pull
+
+If you're using precompiled executable, the installation is similar. Just copy the files to
+the locations as mentioned above.
 
 
 Quick start / tutorial
@@ -153,6 +158,9 @@ enclosed within quotes if it contains spaces - if you're using the utility from 
 command line, the spaces are automatically escaped for you, at least for paths, so this 
 may not be necessary, however if you're using it as Xcode build script, you need to take 
 care of that!
+
+Oh, and all boolean swithces can be prefixed with `--no-` following the switch name to
+override the default or global value. Example: `--no-docset`.
 
 That being said, the usage is:
 	
