@@ -486,7 +486,10 @@ instead.
 	printf("   --docplist <path>\n");
 	printf("   --docutil <path>\n");
 	printf("\n");
-	printf("OPTIONS - markdown output creation\n");
+	printf("OPTIONS - Markdown output creation\n");
+	printf("   --markdown-line-length <number>\n");
+	printf("   --markdown-line-threshold <number>\n");
+	printf("   --markdown-line-margin <number>\n");
 	printf("   --markdown-refstyle-links\n");
 	printf("\n");
 	printf("OPTIONS - miscellaneous\n");
