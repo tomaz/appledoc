@@ -303,7 +303,7 @@ instead.
 	[commandLineArguments removeAllObjects];
 	for (int i=0; i<argc; i++)
 	{
-		NSString* arg = [NSString stringWithCString:argv[i]];
+		NSString* arg = [NSString stringWithCString:argv[i] encoding:NSASCIIStringEncoding];
 		[commandLineArguments addObject:arg];
 	}
 
