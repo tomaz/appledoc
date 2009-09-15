@@ -332,6 +332,7 @@
 						[nameNode setStringValue:classSectionName];
 					}
 					[classSectionsNode addChild:classSectionNode];
+					[classSectionNode release];
 				}
 			}
 			else
@@ -350,6 +351,7 @@
 				{
 					NSXMLElement* classMemberNode = [memberNode copy];
 					[sectionNode addChild:classMemberNode];
+					[classMemberNode release];
 				}
 				
 				// Append the section data to the main class document.
@@ -380,6 +382,7 @@
 									 index);						
 							NSXMLElement* insertedNode = [categoryFileNode copy];
 							[parentNode insertChild:insertedNode atIndex:index + 1];
+							[insertedNode release];
 							index++;
 						}
 					}
@@ -484,6 +487,7 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
+	[document release];
 	NSString* filename = [self outputBasePath];
 	filename = [filename stringByAppendingPathComponent:[self outputIndexFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])
@@ -601,6 +605,7 @@
 	// Save the markup.
 	NSError* error = nil;
 	NSData* markupData = [document XMLDataWithOptions:NSXMLNodePrettyPrint];
+	[document release];
 	NSString* filename = [self outputBasePath];
 	filename = [filename stringByAppendingPathComponent:[self outputHierarchyFilename]];
 	if (![markupData writeToFile:filename options:0 error:&error])

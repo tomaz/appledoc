@@ -282,7 +282,7 @@ get the path from the shell.
 + (void) writeLines:(NSArray*) lines toFile:(NSString*) filename
 {
 	// Generate the string containing all lines.
-	NSMutableString* string = [[NSMutableString alloc] init];
+	NSMutableString* string = [NSMutableString string];
 	for (NSString* line in lines)
 	{
 		[string appendString:line];
