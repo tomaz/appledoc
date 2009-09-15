@@ -52,9 +52,9 @@
 		<xsl:choose>
 			<xsl:when test="contains($string,':')">
 				<xsl:value-of select="substring($string,0,string-length(substring-before($string,':'))+2)"/>
-				<xsl:param name="attribute">
+				<xsl:variable name="attribute">
 					<xsl:text>[</xsl:text><xsl:value-of select="substring-before($string,':')"/><xsl:text>]</xsl:text>
-				</xsl:param>
+				</xsl:variable>
 				<xsl:choose>
 					<xsl:when test="param[attributes=$attribute]">(<xsl:apply-templates select="param[attributes=$attribute]/type"/>)<parameter><xsl:value-of select="param[attributes=$attribute]/declname"/></parameter>
 					</xsl:when>
