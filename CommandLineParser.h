@@ -267,6 +267,9 @@ This is used by the log macros, so in most cases, you'll not use it directly in 
 and @c docsetutil. */
 @property(readonly) BOOL emitUtilityOutput;
 
+/** Generator name and version. */
+@property(readonly) NSString* generator;
+
 /** The version of appledoc. */
 @property(readonly) NSString* version;
 

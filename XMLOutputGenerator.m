@@ -143,7 +143,7 @@
 				continue;
 			}
 			
-			// (C) Get object name node. If not found, exit.
+			// (C) Get object name node and append utility version to xml. If not found, exit.
 			NSXMLElement* objectNode = [objectNodes objectAtIndex:0];
 			NSArray* objectNameNodes = [objectNode nodesForXPath:@"name" error:NULL];
 			if ([objectNameNodes count] == 0)
@@ -151,6 +151,7 @@
 				logError(@"Skipping '%@' because object name node not found!", filename);
 				continue;
 			}
+			[objectNode addAttribute:[NSXMLNode attributeWithName:@"generator" stringValue:cmd.generator]];
 			
 			// (D) Now we have all information, get the data and add the object to the list.
 			NSXMLElement* objectNameNode = [objectNameNodes objectAtIndex:0];
@@ -447,6 +448,7 @@
 	// Create the default markup.
 	NSXMLDocument* document = [[NSXMLDocument alloc] init];
 	NSXMLElement* projectElement = [NSXMLElement elementWithName:@"project"];
+	[projectElement addAttribute:[NSXMLNode attributeWithName:@"generator" stringValue:cmd.generator]];
 	[document setVersion:@"1.0"];
 	[document addChild:projectElement];
 	
@@ -579,6 +581,7 @@
 	// root...
 	NSXMLDocument* document = [[NSXMLDocument alloc] init];
 	NSXMLElement* projectElement = [NSXMLElement elementWithName:@"project"];
+	[projectElement addAttribute:[NSXMLNode attributeWithName:@"generator" stringValue:cmd.generator]];
 	[document setVersion:@"1.0"];
 	[document addChild:projectElement];
 	NSArray* sortedObjects = [[hierarchies allKeys] sortedArrayUsingSelector:@selector(compare:)];

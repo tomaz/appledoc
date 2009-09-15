@@ -308,7 +308,7 @@ instead.
 	// Parse the verbose level first, so that we will correctly log as soon as possible.
 	// Then log the utility command line.
 	[self parseIntegerWithShortcut:@"-v" andName:@"--verbose" forKey:kTKCmdVerboseLevelKey];
-	logNormal(@"appledoc v%@", [self version]);
+	logNormal([self generator]);
 	logNormal(@"Parsing command line arguments...");	
 	logVerbose([commandLineArguments objectAtIndex:0]);
 	
@@ -1028,6 +1028,12 @@ instead.
 	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
 }
 
+//----------------------------------------------------------------------------------------
+- (NSString*) generator
+{
+	return [NSString stringWithFormat:@"appledoc v%@", self.version];
+}
+	
 //----------------------------------------------------------------------------------------
 - (NSString*) version
 {
