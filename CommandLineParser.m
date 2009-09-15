@@ -296,8 +296,6 @@ instead.
 	NSParameterAssert(argv != nil);
 	NSParameterAssert(argc > 0);
 	
-	logNormal(@"Parsing command line arguments...");
-	
 	// Copy the command line arguments to internal array. Note that since the array
 	// will retain all strings, we don't have to retain for each option separately.
 	[commandLineArguments removeAllObjects];
@@ -310,6 +308,8 @@ instead.
 	// Parse the verbose level first, so that we will correctly log as soon as possible.
 	// Then log the utility command line.
 	[self parseIntegerWithShortcut:@"-v" andName:@"--verbose" forKey:kTKCmdVerboseLevelKey];
+	logNormal(@"appledoc v%@", [self version]);
+	logNormal(@"Parsing command line arguments...");	
 	logVerbose([commandLineArguments objectAtIndex:0]);
 	
 	// Reset the parsing data and read the data from the global templates. This has to
@@ -455,7 +455,7 @@ instead.
 - (void) printUsage
 {
 	printf("USAGE: appledoc [options]\n");
-	printf("VERSION: 1.0\n");
+	printf("VERSION: %s\n", [[self version] cStringUsingEncoding:NSASCIIStringEncoding]);
 	printf("\n");
 	printf("OPTIONS - required\n");
 	printf("-p --project <name>\n");
@@ -1026,6 +1026,12 @@ instead.
 - (BOOL) emitUtilityOutput
 {
 	return [[parameters objectForKey:kTKCmdEmitUtilityOutputKey] boolValue];
+}
+
+//----------------------------------------------------------------------------------------
+- (NSString*) version
+{
+	return @"1.0.1";
 }
 
 @end

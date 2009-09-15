@@ -260,11 +260,14 @@ This is used by the log macros, so in most cases, you'll not use it directly in 
 @property(readonly) int verboseLevel;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Properties - undocumented
+/// @name Properties - "undocumented"
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** This is used to show or hide the output from the external utilities such as @c doxygen
 and @c docsetutil. */
 @property(readonly) BOOL emitUtilityOutput;
+
+/** The version of appledoc. */
+@property(readonly) NSString* version;
 
 @end
