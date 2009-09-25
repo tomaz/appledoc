@@ -439,10 +439,10 @@ get the path from the shell.
 {
 	NSMutableArray *result = [NSMutableArray array];
 	
-	unsigned paragraphStart = 0;
-	unsigned paragraphEnd = 0;
-	unsigned contentsEnd = 0;
-	unsigned length = [string length];
+	NSUInteger paragraphStart = 0;
+	NSUInteger paragraphEnd = 0;
+	NSUInteger contentsEnd = 0;
+	NSUInteger length = [string length];
 	
 	NSRange currentRange;
 	while (paragraphEnd < length)
