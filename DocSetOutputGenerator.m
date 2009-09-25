@@ -418,6 +418,7 @@
 							 [errorDict objectForKey:NSAppleScriptErrorMessage]];
 		logError(@"Failed installing DocSet to Xcode documentation!");
 		[Systemator throwExceptionWithName:kTKConverterException withDescription:message];
+		return;
 	}
 	[installScript release];
 		

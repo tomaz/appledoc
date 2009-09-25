@@ -857,7 +857,7 @@
 					// non-wrapping phrases as a single words).
 					if ([phrase length] > 0) 
 					{
-						word = [phrase copy];
+						word = [[phrase copy] autorelease];
 						[phrase setString:@""];
 					}
 					
