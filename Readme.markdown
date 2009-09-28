@@ -54,7 +54,7 @@ Prerequisites
 
 *	Doxygen must be installed; [mac ports](http://www.macports.org/) version is 
 	recommended since it will install the utility to a default path which is used
-	by appledoc. I use 1.5.8 version at the moment.
+	by appledoc.
 *	The requirement for building the source is Xcode 3.
 
 
@@ -142,7 +142,15 @@ see `Custom documentation` option with `My Great Project` listed within. Click o
 and you can browse the documentation and use all of the other documentation features.
 
 *Note that all the above command lines assume `appledoc` is found on the path.*
-	
+
+
+Known issues
+------------
+
+*	As of doxygen 1.6.1 some objective-c classes derived information is not extracted
+	(NSManagedObject as an example). In such cases the hieararchy misses all these 
+	subclasses. The objects and main index documentation is still extracted properly.
+
 
 
 Command line usage
