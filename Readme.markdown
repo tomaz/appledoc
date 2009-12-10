@@ -613,22 +613,28 @@ For all macros use these options:
 LICENCE
 =======
 
-Copyright (c) 2009 Tomaz Kragelj.
+Copyright (c) 2009 Tomaz Kragelj
 
-The appledoc software and associated documentation (from now, the "Software") is freeware. 
-You may use, copy, modify and/or merge copies of the Software free of charge in 
-non-commercial solutions. The redistribution of this Software as part of or merged in 
-commercial solutions is forbidden without prior authorization of the author. However, 
-any output from the original or modified Software, may be used in any kind of project 
-without any restrictions.
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
 
-The Software and the accompanying documentation are provided "AS IS" without warranty 
-of any kind. IN NO EVENT SHALL THE AUTHOR(S) BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, 
-SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE 
-USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE AUTHOR(S) HAVE BEEN ADVISED OF 
-THE POSSIBILITY OF SUCH DAMAGE. The entire risk as to the results and performance of this 
-software is assumed by you. If the software is defective, you, and not the author, assume 
-the entire cost of all necessary servicing, repairs and corrections. If you do not agree 
-to these terms and conditions, you may not install or use this software.
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+ 
 Tomaz Kragelj <tkragelj@gmail.com>
