@@ -7,6 +7,18 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		7366025E10D18EE8009BB775 /* Create Tool Bundle */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 7366026110D18F06009BB775 /* Build configuration list for PBXAggregateTarget "Create Tool Bundle" */;
+			buildPhases = (
+				7366025D10D18EE8009BB775 /* Copy Tool Files */,
+				7366026510D18F66009BB775 /* Copy Template Files */,
+			);
+			dependencies = (
+			);
+			name = "Create Tool Bundle";
+			productName = "Bundle compiled tool";
+		};
 		738FE7EA0FA195F300711038 /* Install */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 738FE7F60FA1961600711038 /* Build configuration list for PBXAggregateTarget "Install" */;
@@ -31,6 +43,10 @@
 		7344702B0FCF169400D8FDCE /* XHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */; };
 		734543790FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */; };
 		7345437A0FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */; };
+		7366026210D18F25009BB775 /* appledoc in Copy Tool Files */ = {isa = PBXBuildFile; fileRef = 8DD76FA10486AA7600D96B5E /* appledoc */; };
+		7366026310D18F2D009BB775 /* Readme.markdown in Copy Tool Files */ = {isa = PBXBuildFile; fileRef = 73EDC6D60FA555680020B94A /* Readme.markdown */; };
+		7366026610D18F68009BB775 /* object.xslt in Copy Template Files */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
+		7366026710D18F68009BB775 /* screen.css in Copy Template Files */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
 		738FE7EE0FA195FB00711038 /* object.xslt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
 		738FE7F00FA195FB00711038 /* screen.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
 		738FE8000FA1965700711038 /* Systemator.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FB0FA1965700711038 /* Systemator.m */; };
@@ -48,6 +64,30 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7366025D10D18EE8009BB775 /* Copy Tool Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "~/Downloads/appledoc";
+			dstSubfolderSpec = 0;
+			files = (
+				7366026310D18F2D009BB775 /* Readme.markdown in Copy Tool Files */,
+				7366026210D18F25009BB775 /* appledoc in Copy Tool Files */,
+			);
+			name = "Copy Tool Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7366026510D18F66009BB775 /* Copy Template Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "~/Downloads/appledoc/Templates";
+			dstSubfolderSpec = 0;
+			files = (
+				7366026610D18F68009BB775 /* object.xslt in Copy Template Files */,
+				7366026710D18F68009BB775 /* screen.css in Copy Template Files */,
+			);
+			name = "Copy Template Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		738FE7E90FA195F300711038 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -307,6 +347,7 @@
 			targets = (
 				8DD76F960486AA7600D96B5E /* appledoc */,
 				738FE7EA0FA195F300711038 /* Install */,
+				7366025E10D18EE8009BB775 /* Create Tool Bundle */,
 			);
 		};
 /* End PBXProject section */
@@ -402,6 +443,27 @@
 			};
 			name = Release;
 		};
+		7366025F10D18EE8009BB775 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Bundle compiled tool";
+			};
+			name = Debug;
+		};
+		7366026010D18EE8009BB775 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Bundle compiled tool";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		738FE7EB0FA195F300711038 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -440,6 +502,15 @@
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
 				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7366026110D18F06009BB775 /* Build configuration list for PBXAggregateTarget "Create Tool Bundle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7366025F10D18EE8009BB775 /* Debug */,
+				7366026010D18EE8009BB775 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
