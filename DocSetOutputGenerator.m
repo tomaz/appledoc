@@ -397,7 +397,9 @@
 	[Systemator runTask:cmd.docsetutilCommandLine, @"index", [self outputBasePath], nil];
 	
 	// Copy the documentation set to the proper directory. First we need to remove
-	// previous files otherwise copying will fail.
+	// previous files otherwise copying will fail. Note that we need to create the
+	// documentation set directory otherwise copying fails too...
+	[Systemator createDirectory:cmd.docsetInstallPath];
 	NSString* docsetInstallPath = [cmd.docsetInstallPath stringByAppendingPathComponent:cmd.docsetBundleID];
 	logVerbose(@"- Copying DocSet bundle to '%@'...", docsetInstallPath);
 	[Systemator copyItemAtPath:[self outputBasePath] toPath:docsetInstallPath];
