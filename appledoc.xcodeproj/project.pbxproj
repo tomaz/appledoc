@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
+		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
+		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
+		73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9D11F8D22B00CCDDB0 /* DDLog.m */; };
+		73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -15,6 +19,14 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
+		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
+		73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDConsoleLogger.m; sourceTree = "<group>"; };
+		73D54C9A11F8D22B00CCDDB0 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
+		73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
+		73D54C9C11F8D22B00CCDDB0 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
+		73D54C9D11F8D22B00CCDDB0 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
+		73D54CA711F8D27F00CCDDB0 /* GBLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBLog.h; sourceTree = "<group>"; };
+		73D54CA811F8D27F00CCDDB0 /* GBLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBLog.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -33,6 +45,7 @@
 		08FB7794FE84155DC02AAC07 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
+				73D54C9011F8D18300CCDDB0 /* Classes */,
 				73D54BDF11F8CE2300CCDDB0 /* Startup */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -63,6 +76,45 @@
 				73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */,
 			);
 			name = Startup;
+			sourceTree = "<group>";
+		};
+		73D54C9011F8D18300CCDDB0 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				73D54C9411F8D1CC00CCDDB0 /* Common */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		73D54C9411F8D1CC00CCDDB0 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				73D54CA711F8D27F00CCDDB0 /* GBLog.h */,
+				73D54CA811F8D27F00CCDDB0 /* GBLog.m */,
+				73D54C9511F8D1F500CCDDB0 /* ThirdParty */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		73D54C9511F8D1F500CCDDB0 /* ThirdParty */ = {
+			isa = PBXGroup;
+			children = (
+				73D54C9611F8D21000CCDDB0 /* DDLog */,
+			);
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		73D54C9611F8D21000CCDDB0 /* DDLog */ = {
+			isa = PBXGroup;
+			children = (
+				73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */,
+				73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */,
+				73D54C9A11F8D22B00CCDDB0 /* DDFileLogger.h */,
+				73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */,
+				73D54C9C11F8D22B00CCDDB0 /* DDLog.h */,
+				73D54C9D11F8D22B00CCDDB0 /* DDLog.m */,
+			);
+			path = DDLog;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -111,6 +163,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */,
+				73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */,
+				73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */,
+				73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */,
+				73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
