@@ -3,155 +3,18 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		7366025E10D18EE8009BB775 /* Create Tool Bundle */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 7366026110D18F06009BB775 /* Build configuration list for PBXAggregateTarget "Create Tool Bundle" */;
-			buildPhases = (
-				7366025D10D18EE8009BB775 /* Copy Tool Files */,
-				7366026510D18F66009BB775 /* Copy Template Files */,
-			);
-			dependencies = (
-			);
-			name = "Create Tool Bundle";
-			productName = "Bundle compiled tool";
-		};
-		738FE7EA0FA195F300711038 /* Install */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 738FE7F60FA1961600711038 /* Build configuration list for PBXAggregateTarget "Install" */;
-			buildPhases = (
-				738FE7E90FA195F300711038 /* CopyFiles */,
-			);
-			dependencies = (
-			);
-			name = Install;
-			productName = Install;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
-		7325D2200FE5811400596AFB /* MarkdownOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7325D21F0FE5811400596AFB /* MarkdownOutputGenerator.m */; };
-		733560550FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */; };
-		73399E710FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */; };
-		73399F070FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */; };
-		73399F690FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */; };
-		73446FD50FCF04E600D8FDCE /* XMLBasedOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */; };
-		73446FD80FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */; };
-		7344702B0FCF169400D8FDCE /* XHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */; };
-		734543790FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */; };
-		7345437A0FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */; };
-		7366026210D18F25009BB775 /* appledoc in Copy Tool Files */ = {isa = PBXBuildFile; fileRef = 8DD76FA10486AA7600D96B5E /* appledoc */; };
-		7366026310D18F2D009BB775 /* Readme.markdown in Copy Tool Files */ = {isa = PBXBuildFile; fileRef = 73EDC6D60FA555680020B94A /* Readme.markdown */; };
-		7366026610D18F68009BB775 /* object.xslt in Copy Template Files */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
-		7366026710D18F68009BB775 /* screen.css in Copy Template Files */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
-		738FE7EE0FA195FB00711038 /* object.xslt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E60FA195E700711038 /* object.xslt */; };
-		738FE7F00FA195FB00711038 /* screen.css in CopyFiles */ = {isa = PBXBuildFile; fileRef = 738FE7E80FA195E700711038 /* screen.css */; };
-		738FE8000FA1965700711038 /* Systemator.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FB0FA1965700711038 /* Systemator.m */; };
-		738FE8010FA1965700711038 /* LoggingProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FD0FA1965700711038 /* LoggingProvider.m */; };
-		738FE8020FA1965700711038 /* NSObject+Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE7FF0FA1965700711038 /* NSObject+Logging.m */; };
-		738FE8110FA1965F00711038 /* CommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8040FA1965F00711038 /* CommandLineParser.m */; };
-		738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 738FE8060FA1965F00711038 /* DoxygenConverter.m */; };
-		739C8E1A0FE193E500E6D950 /* OutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C8E190FE193E500E6D950 /* OutputGenerator.m */; };
-		739C8E1D0FE1A06900E6D950 /* DoxygenOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */; };
-		73B88A140FE22D73004C31DC /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88A130FE22D73004C31DC /* Constants.m */; };
-		73B88AED0FE245CE004C31DC /* XMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */; };
-		73B88BD30FE26842004C31DC /* DocSetOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */; };
-		8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* appledoc.m */; settings = {ATTRIBUTES = (); }; };
+		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		7366025D10D18EE8009BB775 /* Copy Tool Files */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "~/Downloads/appledoc";
-			dstSubfolderSpec = 0;
-			files = (
-				7366026310D18F2D009BB775 /* Readme.markdown in Copy Tool Files */,
-				7366026210D18F25009BB775 /* appledoc in Copy Tool Files */,
-			);
-			name = "Copy Tool Files";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7366026510D18F66009BB775 /* Copy Template Files */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "~/Downloads/appledoc/Templates";
-			dstSubfolderSpec = 0;
-			files = (
-				7366026610D18F68009BB775 /* object.xslt in Copy Template Files */,
-				7366026710D18F68009BB775 /* screen.css in Copy Template Files */,
-			);
-			name = "Copy Template Files";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		738FE7E90FA195F300711038 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(USER_LIBRARY_DIR)/Application Support/$(PROJECT_NAME)";
-			dstSubfolderSpec = 0;
-			files = (
-				738FE7EE0FA195FB00711038 /* object.xslt in CopyFiles */,
-				738FE7F00FA195FB00711038 /* screen.css in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		08FB7796FE84155DC02AAC07 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32A70AAB03705E1F00C91783 /* appledoc_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_Prefix.pch; sourceTree = "<group>"; };
-		7325D21E0FE5811400596AFB /* MarkdownOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkdownOutputGenerator.h; sourceTree = "<group>"; };
-		7325D21F0FE5811400596AFB /* MarkdownOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkdownOutputGenerator.m; sourceTree = "<group>"; wrapsLines = 0; };
-		733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+GeneralParsingAPI.m"; sourceTree = "<group>"; };
-		733560540FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+GeneralParsingAPI.h"; sourceTree = "<group>"; };
-		73399E6F0FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+ObjectSubclassAPI.h"; sourceTree = "<group>"; };
-		73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+ObjectSubclassAPI.m"; sourceTree = "<group>"; };
-		73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+IndexSubclassAPI.m"; sourceTree = "<group>"; };
-		73399F060FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+IndexSubclassAPI.h"; sourceTree = "<group>"; };
-		73399F670FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+IndexParsingAPI.h"; sourceTree = "<group>"; };
-		73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+IndexParsingAPI.m"; sourceTree = "<group>"; };
-		73446FD30FCF04E600D8FDCE /* XMLBasedOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLBasedOutputGenerator.h; sourceTree = "<group>"; };
-		73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLBasedOutputGenerator.m; sourceTree = "<group>"; };
-		73446FD60FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+ObjectParsingAPI.h"; sourceTree = "<group>"; };
-		73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+ObjectParsingAPI.m"; sourceTree = "<group>"; };
-		734470290FCF169400D8FDCE /* XHTMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHTMLOutputGenerator.h; sourceTree = "<group>"; };
-		7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHTMLOutputGenerator.m; sourceTree = "<group>"; };
-		734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+HierarchySubclassAPI.m"; sourceTree = "<group>"; };
-		734543760FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+HierarchyParsingAPI.h"; sourceTree = "<group>"; };
-		734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMLBasedOutputGenerator+HierarchyParsingAPI.m"; sourceTree = "<group>"; };
-		734543780FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMLBasedOutputGenerator+HierarchySubclassAPI.h"; sourceTree = "<group>"; };
-		738FE7E60FA195E700711038 /* object.xslt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = object.xslt; sourceTree = "<group>"; };
-		738FE7E80FA195E700711038 /* screen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = screen.css; sourceTree = "<group>"; };
-		738FE7FA0FA1965700711038 /* Systemator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Systemator.h; sourceTree = "<group>"; };
-		738FE7FB0FA1965700711038 /* Systemator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Systemator.m; sourceTree = "<group>"; };
-		738FE7FC0FA1965700711038 /* LoggingProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoggingProvider.h; sourceTree = "<group>"; };
-		738FE7FD0FA1965700711038 /* LoggingProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoggingProvider.m; sourceTree = "<group>"; };
-		738FE7FE0FA1965700711038 /* NSObject+Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+Logging.h"; sourceTree = "<group>"; };
-		738FE7FF0FA1965700711038 /* NSObject+Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Logging.m"; sourceTree = "<group>"; };
-		738FE8030FA1965F00711038 /* CommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandLineParser.h; sourceTree = "<group>"; };
-		738FE8040FA1965F00711038 /* CommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandLineParser.m; sourceTree = "<group>"; };
-		738FE8050FA1965F00711038 /* DoxygenConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoxygenConverter.h; sourceTree = "<group>"; };
-		738FE8060FA1965F00711038 /* DoxygenConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoxygenConverter.m; sourceTree = "<group>"; };
-		739C8E180FE193E500E6D950 /* OutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputGenerator.h; sourceTree = "<group>"; };
-		739C8E190FE193E500E6D950 /* OutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutputGenerator.m; sourceTree = "<group>"; };
-		739C8E1B0FE1A06900E6D950 /* DoxygenOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DoxygenOutputGenerator.h; sourceTree = "<group>"; };
-		739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DoxygenOutputGenerator.m; sourceTree = "<group>"; };
-		73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DocSet-Info.plist"; sourceTree = "<group>"; };
-		73AB8B120FA1CDB300B96D8A /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Doxyfile; sourceTree = "<group>"; };
-		73B889C10FE22631004C31DC /* OutputProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputProcessing.h; sourceTree = "<group>"; };
-		73B88A120FE22D73004C31DC /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		73B88A130FE22D73004C31DC /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
-		73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLOutputGenerator.m; sourceTree = "<group>"; };
-		73B88AEC0FE245CE004C31DC /* XMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLOutputGenerator.h; sourceTree = "<group>"; };
-		73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DocSetOutputGenerator.m; sourceTree = "<group>"; };
-		73B88BD20FE26842004C31DC /* DocSetOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DocSetOutputGenerator.h; sourceTree = "<group>"; };
-		73B88C050FE26DBD004C31DC /* OutputInfoProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputInfoProvider.h; sourceTree = "<group>"; };
-		73EDC6D60FA555680020B94A /* Readme.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Readme.markdown; sourceTree = "<group>"; };
+		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
+		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -170,26 +33,11 @@
 		08FB7794FE84155DC02AAC07 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
-				738FE7E40FA195E700711038 /* Templates */,
-				08FB7795FE84155DC02AAC07 /* Source */,
-				73AB8B100FA1CDA100B96D8A /* Documentation */,
+				73D54BDF11F8CE2300CCDDB0 /* Startup */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = appledoc;
-			sourceTree = "<group>";
-		};
-		08FB7795FE84155DC02AAC07 /* Source */ = {
-			isa = PBXGroup;
-			children = (
-				73B88A120FE22D73004C31DC /* Constants.h */,
-				73B88A130FE22D73004C31DC /* Constants.m */,
-				73446FD10FCF04CD00D8FDCE /* Generators */,
-				738FE7F80FA1964300711038 /* Conversion */,
-				738FE7F90FA1964900711038 /* Helpers */,
-				738FE7F70FA1963700711038 /* Startup */,
-			);
-			name = Source;
 			sourceTree = "<group>";
 		};
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
@@ -208,109 +56,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		73446FD10FCF04CD00D8FDCE /* Generators */ = {
+		73D54BDF11F8CE2300CCDDB0 /* Startup */ = {
 			isa = PBXGroup;
 			children = (
-				73B88C060FE26DC0004C31DC /* Protocols */,
-				739C8DDE0FE1930500E6D950 /* XMLBasedOutputGenerator */,
-				739C8E180FE193E500E6D950 /* OutputGenerator.h */,
-				739C8E190FE193E500E6D950 /* OutputGenerator.m */,
-				739C8E1B0FE1A06900E6D950 /* DoxygenOutputGenerator.h */,
-				739C8E1C0FE1A06900E6D950 /* DoxygenOutputGenerator.m */,
-				73B88AEC0FE245CE004C31DC /* XMLOutputGenerator.h */,
-				73B88AEB0FE245CE004C31DC /* XMLOutputGenerator.m */,
-				7325D21E0FE5811400596AFB /* MarkdownOutputGenerator.h */,
-				7325D21F0FE5811400596AFB /* MarkdownOutputGenerator.m */,
-				734470290FCF169400D8FDCE /* XHTMLOutputGenerator.h */,
-				7344702A0FCF169400D8FDCE /* XHTMLOutputGenerator.m */,
-				73B88BD20FE26842004C31DC /* DocSetOutputGenerator.h */,
-				73B88BD10FE26842004C31DC /* DocSetOutputGenerator.m */,
-			);
-			name = Generators;
-			sourceTree = "<group>";
-		};
-		738FE7E40FA195E700711038 /* Templates */ = {
-			isa = PBXGroup;
-			children = (
-				738FE7E60FA195E700711038 /* object.xslt */,
-				738FE7E80FA195E700711038 /* screen.css */,
-			);
-			path = Templates;
-			sourceTree = "<group>";
-		};
-		738FE7F70FA1963700711038 /* Startup */ = {
-			isa = PBXGroup;
-			children = (
-				32A70AAB03705E1F00C91783 /* appledoc_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* appledoc.m */,
+				73D54C6111F8CE6D00CCDDB0 /* appledoc.m */,
+				73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */,
 			);
 			name = Startup;
-			sourceTree = "<group>";
-		};
-		738FE7F80FA1964300711038 /* Conversion */ = {
-			isa = PBXGroup;
-			children = (
-				738FE8030FA1965F00711038 /* CommandLineParser.h */,
-				738FE8040FA1965F00711038 /* CommandLineParser.m */,
-				738FE8050FA1965F00711038 /* DoxygenConverter.h */,
-				738FE8060FA1965F00711038 /* DoxygenConverter.m */,
-			);
-			name = Conversion;
-			sourceTree = "<group>";
-		};
-		738FE7F90FA1964900711038 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				738FE7FA0FA1965700711038 /* Systemator.h */,
-				738FE7FB0FA1965700711038 /* Systemator.m */,
-				738FE7FC0FA1965700711038 /* LoggingProvider.h */,
-				738FE7FD0FA1965700711038 /* LoggingProvider.m */,
-				738FE7FE0FA1965700711038 /* NSObject+Logging.h */,
-				738FE7FF0FA1965700711038 /* NSObject+Logging.m */,
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
-		739C8DDE0FE1930500E6D950 /* XMLBasedOutputGenerator */ = {
-			isa = PBXGroup;
-			children = (
-				73446FD30FCF04E600D8FDCE /* XMLBasedOutputGenerator.h */,
-				73446FD40FCF04E600D8FDCE /* XMLBasedOutputGenerator.m */,
-				733560540FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.h */,
-				733560530FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m */,
-				73399E6F0FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.h */,
-				73399E700FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m */,
-				73446FD60FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.h */,
-				73446FD70FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m */,
-				73399F060FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.h */,
-				73399F050FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m */,
-				73399F670FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.h */,
-				73399F680FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m */,
-				734543780FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.h */,
-				734543750FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m */,
-				734543760FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.h */,
-				734543770FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m */,
-			);
-			name = XMLBasedOutputGenerator;
-			sourceTree = "<group>";
-		};
-		73AB8B100FA1CDA100B96D8A /* Documentation */ = {
-			isa = PBXGroup;
-			children = (
-				73AB8B120FA1CDB300B96D8A /* Doxyfile */,
-				73AB8B110FA1CDB300B96D8A /* DocSet-Info.plist */,
-				73EDC6D60FA555680020B94A /* Readme.markdown */,
-			);
-			name = Documentation;
-			sourceTree = "<group>";
-		};
-		73B88C060FE26DC0004C31DC /* Protocols */ = {
-			isa = PBXGroup;
-			children = (
-				73B889C10FE22631004C31DC /* OutputProcessing.h */,
-				73B88C050FE26DBD004C31DC /* OutputInfoProvider.h */,
-			);
-			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -338,16 +90,17 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Gentle Bytes";
+			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "appledoc" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* appledoc */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* appledoc */,
-				738FE7EA0FA195F300711038 /* Install */,
-				7366025E10D18EE8009BB775 /* Create Tool Bundle */,
 			);
 		};
 /* End PBXProject section */
@@ -357,27 +110,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8DD76F9A0486AA7600D96B5E /* appledoc.m in Sources */,
-				738FE8000FA1965700711038 /* Systemator.m in Sources */,
-				738FE8010FA1965700711038 /* LoggingProvider.m in Sources */,
-				738FE8020FA1965700711038 /* NSObject+Logging.m in Sources */,
-				738FE8110FA1965F00711038 /* CommandLineParser.m in Sources */,
-				738FE8120FA1965F00711038 /* DoxygenConverter.m in Sources */,
-				73446FD50FCF04E600D8FDCE /* XMLBasedOutputGenerator.m in Sources */,
-				73446FD80FCF08C300D8FDCE /* XMLBasedOutputGenerator+ObjectParsingAPI.m in Sources */,
-				7344702B0FCF169400D8FDCE /* XHTMLOutputGenerator.m in Sources */,
-				733560550FD3E08300C19DED /* XMLBasedOutputGenerator+GeneralParsingAPI.m in Sources */,
-				73399E710FD40C9700B65E5C /* XMLBasedOutputGenerator+ObjectSubclassAPI.m in Sources */,
-				73399F070FD4160300B65E5C /* XMLBasedOutputGenerator+IndexSubclassAPI.m in Sources */,
-				73399F690FD4612B00B65E5C /* XMLBasedOutputGenerator+IndexParsingAPI.m in Sources */,
-				734543790FD928350001018F /* XMLBasedOutputGenerator+HierarchySubclassAPI.m in Sources */,
-				7345437A0FD928350001018F /* XMLBasedOutputGenerator+HierarchyParsingAPI.m in Sources */,
-				739C8E1A0FE193E500E6D950 /* OutputGenerator.m in Sources */,
-				739C8E1D0FE1A06900E6D950 /* DoxygenOutputGenerator.m in Sources */,
-				73B88A140FE22D73004C31DC /* Constants.m in Sources */,
-				73B88AED0FE245CE004C31DC /* XMLOutputGenerator.m in Sources */,
-				73B88BD30FE26842004C31DC /* DocSetOutputGenerator.m in Sources */,
-				7325D2200FE5811400596AFB /* MarkdownOutputGenerator.m in Sources */,
+				73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,7 +127,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = appledoc;
 			};
@@ -407,7 +140,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_prefix.pch;
 				INSTALL_PATH = /usr/local/bin;
 				PRODUCT_NAME = appledoc;
 			};
@@ -416,72 +149,33 @@
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = macosx10.5;
+				SDKROOT = macosx10.6;
 			};
 			name = Debug;
 		};
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_ENABLE_OBJC_GC = required;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = macosx10.5;
-			};
-			name = Release;
-		};
-		7366025F10D18EE8009BB775 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Bundle compiled tool";
-			};
-			name = Debug;
-		};
-		7366026010D18EE8009BB775 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = "Bundle compiled tool";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		738FE7EB0FA195F300711038 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = Install;
-			};
-			name = Debug;
-		};
-		738FE7EC0FA195F300711038 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = Install;
-				ZERO_LINK = NO;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
@@ -502,24 +196,6 @@
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
 				1DEB927A08733DD40010E9CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7366026110D18F06009BB775 /* Build configuration list for PBXAggregateTarget "Create Tool Bundle" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7366025F10D18EE8009BB775 /* Debug */,
-				7366026010D18EE8009BB775 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		738FE7F60FA1961600711038 /* Build configuration list for PBXAggregateTarget "Install" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				738FE7EB0FA195F300711038 /* Debug */,
-				738FE7EC0FA195F300711038 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

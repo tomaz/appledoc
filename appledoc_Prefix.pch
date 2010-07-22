@@ -1,7 +1,11 @@
 //
-// Prefix header for all source files of the 'appledoc' target in the 'appledoc' project.
+//  prefix.pch
+//  appledoc
+//
+//  Created by Tomaz Kragelj on 22.7.10.
+//  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
 #ifdef __OBJC__
-    #import <Foundation/Foundation.h>
+	#import <Foundation/Foundation.h>
 #endif
