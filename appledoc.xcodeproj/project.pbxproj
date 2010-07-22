@@ -12,6 +12,11 @@
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
 		73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9D11F8D22B00CCDDB0 /* DDLog.m */; };
 		73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
+		73D54D1E11F8D53E00CCDDB0 /* DDCliApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */; };
+		73D54D1F11F8D53E00CCDDB0 /* DDCliParseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */; };
+		73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
+		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
+		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +32,17 @@
 		73D54C9D11F8D22B00CCDDB0 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
 		73D54CA711F8D27F00CCDDB0 /* GBLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBLog.h; sourceTree = "<group>"; };
 		73D54CA811F8D27F00CCDDB0 /* GBLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBLog.m; sourceTree = "<group>"; };
+		73D54D1511F8D53E00CCDDB0 /* DDCliApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliApplication.h; sourceTree = "<group>"; };
+		73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliApplication.m; sourceTree = "<group>"; };
+		73D54D1711F8D53E00CCDDB0 /* DDCliParseException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliParseException.h; sourceTree = "<group>"; };
+		73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliParseException.m; sourceTree = "<group>"; };
+		73D54D1911F8D53E00CCDDB0 /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
+		73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
+		73D54D1B11F8D53E00CCDDB0 /* DDCommandLineInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCommandLineInterface.h; sourceTree = "<group>"; };
+		73D54D1C11F8D53E00CCDDB0 /* DDGetoptLongParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDGetoptLongParser.h; sourceTree = "<group>"; };
+		73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDGetoptLongParser.m; sourceTree = "<group>"; };
+		73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBAppledocApplication.h; sourceTree = "<group>"; };
+		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -82,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				73D54C9411F8D1CC00CCDDB0 /* Common */,
+				73D54D1411F8D4FF00CCDDB0 /* Application */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -100,6 +117,7 @@
 			isa = PBXGroup;
 			children = (
 				73D54C9611F8D21000CCDDB0 /* DDLog */,
+				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -115,6 +133,31 @@
 				73D54C9D11F8D22B00CCDDB0 /* DDLog.m */,
 			);
 			path = DDLog;
+			sourceTree = "<group>";
+		};
+		73D54CD511F8D43D00CCDDB0 /* DDCli */ = {
+			isa = PBXGroup;
+			children = (
+				73D54D1511F8D53E00CCDDB0 /* DDCliApplication.h */,
+				73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */,
+				73D54D1711F8D53E00CCDDB0 /* DDCliParseException.h */,
+				73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */,
+				73D54D1911F8D53E00CCDDB0 /* DDCliUtil.h */,
+				73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */,
+				73D54D1B11F8D53E00CCDDB0 /* DDCommandLineInterface.h */,
+				73D54D1C11F8D53E00CCDDB0 /* DDGetoptLongParser.h */,
+				73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */,
+			);
+			path = DDCli;
+			sourceTree = "<group>";
+		};
+		73D54D1411F8D4FF00CCDDB0 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */,
+				73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */,
+			);
+			path = Application;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,6 +210,11 @@
 				73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */,
 				73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */,
 				73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */,
+				73D54D1E11F8D53E00CCDDB0 /* DDCliApplication.m in Sources */,
+				73D54D1F11F8D53E00CCDDB0 /* DDCliParseException.m in Sources */,
+				73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */,
+				73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */,
+				73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

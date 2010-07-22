@@ -6,6 +6,9 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "DDCommandLineInterface.h"
+#import "GBAppledocApplication.h"
+
 int main(int argc, const char *argv[]) {
-	return 0;
+	return DDCliAppRunWithClass([GBAppledocApplication class]);
 }
