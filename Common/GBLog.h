@@ -39,6 +39,8 @@
 
 // Now define everything the way we want it...
 
+extern NSUInteger kGBLogLevel;
+
 #define LOG_FLAG_FATAL		(1 << 0) // 0...0000001
 #define LOG_FLAG_ERROR		(1 << 1) // 0...0000010
 #define LOG_FLAG_WARN		(1 << 2) // 0...0000100
@@ -55,25 +57,25 @@
 #define LOG_LEVEL_VERBOSE	(LOG_FLAG_VERBOSE | LOG_LEVEL_INFO)		// 0...0111111
 #define LOG_LEVEL_DEBUG		(LOG_FLAG_DEBUG   | LOG_LEVEL_VERBOSE)	// 0...1111111
 
-#define LOG_FATAL	(ddLogLevel & LOG_FLAG_FATAL)
-#define LOG_ERROR	(ddLogLevel & LOG_FLAG_ERROR)
-#define LOG_WARN	(ddLogLevel & LOG_FLAG_WARN)
-#define LOG_NORMAL	(ddLogLevel & LOG_FLAG_NORMAL)
-#define LOG_INFO	(ddLogLevel & LOG_FLAG_INFO)
-#define LOG_VERBOSE	(ddLogLevel & LOG_FLAG_VERBOSE)
-#define LOG_DEBUG	(ddLogLevel & LOG_FLAG_DEBUG)
+#define LOG_FATAL	(kGBLogLevel & LOG_FLAG_FATAL)
+#define LOG_ERROR	(kGBLogLevel & LOG_FLAG_ERROR)
+#define LOG_WARN	(kGBLogLevel & LOG_FLAG_WARN)
+#define LOG_NORMAL	(kGBLogLevel & LOG_FLAG_NORMAL)
+#define LOG_INFO	(kGBLogLevel & LOG_FLAG_INFO)
+#define LOG_VERBOSE	(kGBLogLevel & LOG_FLAG_VERBOSE)
+#define LOG_DEBUG	(kGBLogLevel & LOG_FLAG_DEBUG)
 
-#define logFatal(frmt, ...)		SYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__)
-#define logError(frmt, ...)		SYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__)
-#define logWarn(frmt, ...)		ASYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_WARN, frmt, ##__VA_ARGS__)
-#define logNormal(frmt, ...)	ASYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_NORMAL, frmt, ##__VA_ARGS__)
-#define logInfo(frmt, ...)		ASYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_INFO, frmt, ##__VA_ARGS__)
-#define logVerbose(frmt, ...)	ASYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_VERBOSE, frmt, ##__VA_ARGS__)
-#define logDebug(frmt, ...)		ASYNC_LOG_OBJC_MAYBE(ddLogLevel, LOG_FLAG_DEBUG, frmt, ##__VA_ARGS__)
+#define GBLogFatal(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__)
+#define GBLogError(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__)
+#define GBLogWarn(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_WARN, frmt, ##__VA_ARGS__)
+#define GBLogNormal(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_NORMAL, frmt, ##__VA_ARGS__)
+#define GBLogInfo(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_INFO, frmt, ##__VA_ARGS__)
+#define GBLogVerbose(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_VERBOSE, frmt, ##__VA_ARGS__)
+#define GBLogDebug(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_DEBUG, frmt, ##__VA_ARGS__)
 
 // Helper macros for higher level logging.
 #define LOG_ERROR_LINE(prefix,error) logError(@"%@%@ #%d: %@", prefix, [error domain], [error code], [error localizedDescription]);
-#define logNSError(error,frmt,...) if (YES) { \
+#define GBLogNSError(error,frmt,...) if (YES) { \
 	if (frmt) logError(frmt, ##__VA_ARGS__); \
 	NSError *err = error; \
 	while (err) { \
@@ -90,21 +92,20 @@
 	} \
 }
 
-// Our dynamic logging helpers
+// Helper class for nicer logging handling
 
-#define DECLARE_DYNAMIC_LOGGING_CLASS \
-	static NSInteger ddLogLevel = LOG_LEVEL_INFO; \
-	+ (NSInteger)ddLogLevel { \
-		return ddLogLevel; \
-	} \
-	+ (void)ddSetLogLevel:(NSInteger)logLevel { \
-		ddLogLevel = logLevel; \
-	}
+@interface GBLog : NSObject
+
++ (void)setLogLevel:(NSUInteger)value;
++ (void)setLogLevelFromVerbose:(NSString *)verbosity;
+
+@end
+
 
 // Our custom formatters.
 
-@interface GBSimpleLogFormatter : NSObject <DDLogFormatter>
+@interface GBStandardLogFormatter : NSObject <DDLogFormatter>
 @end
 
-@interface GBFullLogFormatter : NSObject <DDLogFormatter>
+@interface GBDebugLogFormatter : NSObject <DDLogFormatter>
 @end

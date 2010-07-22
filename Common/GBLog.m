@@ -8,6 +8,49 @@
 
 #import "GBLog.h"
 
+#pragma mark Log level handling
+
+@implementation GBLog
+
+NSUInteger kGBLogLevel = LOG_LEVEL_NORMAL;
+
++ (void)setLogLevel:(NSUInteger)value {
+	kGBLogLevel = value;
+}
+
++ (void)setLogLevelFromVerbose:(NSString *)verbosity {
+	NSInteger value = [verbosity integerValue];
+	if (value < 0) value = 0;
+	if (value > 6) value = 6;
+	switch (value) {
+		case 0:
+			[self setLogLevel:LOG_LEVEL_FATAL];
+			break;
+		case 1:
+			[self setLogLevel:LOG_LEVEL_ERROR];
+			break;
+		case 2:
+			[self setLogLevel:LOG_LEVEL_WARN];
+			break;
+		case 3:
+			[self setLogLevel:LOG_LEVEL_NORMAL];
+			break;
+		case 4:
+			[self setLogLevel:LOG_LEVEL_INFO];
+			break;
+		case 5:
+			[self setLogLevel:LOG_LEVEL_VERBOSE];
+			break;
+		default:
+			[self setLogLevel:LOG_LEVEL_DEBUG];
+			break;
+	}
+}
+
+@end
+
+#pragma mark Log formatting handling
+
 static NSString *GBLogLevel(DDLogMessage *msg) {
 	switch (msg->logFlag) {
 		case LOG_FLAG_FATAL:	return @"FATAL";
@@ -28,7 +71,7 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 #define GBLogSource(msg) msg->object ? [msg->object className] : GBLogFile(msg)
 #define GBLogLine(msg) msg->lineNumber
 
-@implementation GBSimpleLogFormatter
+@implementation GBStandardLogFormatter
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
 	return [NSString stringWithFormat:@"-%@- %@ %@", GBLogSource(logMessage), GBLogLevel(logMessage), GBLogMessage(logMessage)];
@@ -36,7 +79,7 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 
 @end
 
-@implementation GBFullLogFormatter
+@implementation GBDebugLogFormatter
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
 	return [NSString stringWithFormat:@"%@ %@  [%@ %s] @ %@:%i", GBLogLevel(logMessage), GBLogMessage(logMessage), GBLogSource(logMessage), GBLogFunction(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
