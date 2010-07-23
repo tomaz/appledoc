@@ -101,7 +101,7 @@ static NSString *kGBArgHelp = @"help";
 }
 
 - (void)validateArguments:(NSArray *)arguments {
-	if ([arguments count] == 0) [NSException raise:@"ArgumentsMissingException" format:@"At least one argument is required"];
+	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
 }
 
 #pragma mark Properties

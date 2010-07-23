@@ -8,5 +8,6 @@
 
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
+	#import "NSException+GBException.h"
 	#import "GBLog.h"
 #endif
