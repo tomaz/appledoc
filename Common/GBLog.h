@@ -94,7 +94,7 @@ extern NSUInteger kGBLogLevel;
 
 /** Sets logging level to the given value.
  
- Sending this message has the same effect as setting the value of @c kGBLogLevel directly.
+ Sending this message has the same effect as setting the value of `kGBLogLevel` directly.
  
  @param value The new application-wide log level.
  @see setLogLevelFromVerbose:
@@ -112,8 +112,8 @@ extern NSUInteger kGBLogLevel;
 
 /** Returns proper log formatter based on the given log format command line argument value.
  
- The method returns @c GBLogFormat0Formatter, @c GBLogFormat1Formatter, @c GBLogFormat2Formatter, @c GBLogFormat3Formatter 
- or @c GBLogFormat4Formatter instance, based on the given value. The value is forced into a valid range beforehand.
+ The method returns `GBLogFormat0Formatter`, `GBLogFormat1Formatter`, `GBLogFormat2Formatter`, `GBLogFormat3Formatter` 
+ or `GBLogFormat4Formatter` instance, based on the given value. The value is forced into a valid range beforehand.
  
  @param level Log format command line argument value to use.
  @return Returns the log formatter corresponding to the given value.
