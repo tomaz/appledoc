@@ -86,18 +86,43 @@ extern NSUInteger kGBLogLevel;
 	} \
 }
 
-// Helper class for nicer logging handling
+#pragma mark Application wide logging helpers
 
+/** Logging helper class with common log-related functionality.
+ */
 @interface GBLog : NSObject
 
+/** Sets logging level to the given value.
+ 
+ Sending this message has the same effect as setting the value of @c kGBLogLevel directly.
+ 
+ @param value The new application-wide log level.
+ @see setLogLevelFromVerbose:
+ */
 + (void)setLogLevel:(NSUInteger)value;
+
+/** Sets logging level from the given verbose command line argument value.
+ 
+ The method converts the given command line argument value to a proper log level and sends it to @c setLogLevel: 
+ method. The value is forced into a valid range beforehand.
+ 
+ @param verbosity Verbose command line argument value to use.
+ */
 + (void)setLogLevelFromVerbose:(NSString *)verbosity;
+
+/** Returns proper log formatter based on the given log format command line argument value.
+ 
+ The method returns @c GBLogFormat0Formatter, @c GBLogFormat1Formatter, @c GBLogFormat2Formatter, @c GBLogFormat3Formatter 
+ or @c GBLogFormat4Formatter instance, based on the given value. The value is forced into a valid range beforehand.
+ 
+ @param level Log format command line argument value to use.
+ @return Returns the log formatter corresponding to the given value.
+ */
 + (id<DDLogFormatter>)logFormatterForLogFormat:(NSString *)level;
 
 @end
 
-
-// Our custom formatters.
+#pragma mark Log formatters
 
 @interface GBLogFormat0Formatter : NSObject <DDLogFormatter>
 @end

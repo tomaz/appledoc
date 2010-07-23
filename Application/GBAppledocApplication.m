@@ -67,12 +67,12 @@ static NSString *kGBArgHelp = @"help";
 	}
 	
 	@try {
-		[self initializeLoggingSystem];
 		[self validateArguments:arguments];
+		[self initializeLoggingSystem];
 		GBLogNormal(@"Starting...");
 		GBLogNormal(@"Finished.");
 	}
-	@catch (NSException * e) {
+	@catch (NSException *e) {
 		GBLogException(e, @"Oops, something went wrong...");
 		return EXIT_FAILURE;
 	}
