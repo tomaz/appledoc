@@ -33,7 +33,6 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication (UsagePrintout)
 
 - (void)printVersion;
-- (void)printArguments;
 - (void)printHelp;
 - (void)printHelpForShortOption:(NSString *)aShort longOption:(NSString *)aLong argument:(NSString *)argument description:(NSString *)description;
 
@@ -122,14 +121,9 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"%@ version: %@\n", DDCliApp, @"2.0 pre-alpha");
 }
 
-- (void)printArguments {
-	ddprintf(@"At least one directory or file argument is required.\n");
-	ddprintf(@"Try '%@ --help' for more information.\n", DDCliApp);
-}
-
 - (void)printHelp {
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:long argument:arg description:desc]
-	ddprintf(@"Usage: %@ [OPTIONS] <source dirs or files>\n", DDCliApp);
+	ddprintf(@"Usage: %@ [OPTIONS] <path to source dirs or files>\n", DDCliApp);
 	ddprintf(@"\n");
 	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-4]");
 	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level [0-6]");
