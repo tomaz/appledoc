@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "DDCliApplication.h"
 
-@interface GBAppledocApplication : NSObject <DDCliApplicationDelegate> {
-
-}
+@interface GBAppledocApplication : NSObject <DDCliApplicationDelegate>
 
 @end

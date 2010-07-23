@@ -98,14 +98,24 @@ extern NSUInteger kGBLogLevel;
 
 + (void)setLogLevel:(NSUInteger)value;
 + (void)setLogLevelFromVerbose:(NSString *)verbosity;
++ (id<DDLogFormatter>)logFormatterForLogFormat:(NSString *)level;
 
 @end
 
 
 // Our custom formatters.
 
-@interface GBStandardLogFormatter : NSObject <DDLogFormatter>
+@interface GBLogFormat0Formatter : NSObject <DDLogFormatter>
 @end
 
-@interface GBDebugLogFormatter : NSObject <DDLogFormatter>
+@interface GBLogFormat1Formatter : NSObject <DDLogFormatter>
+@end
+
+@interface GBLogFormat2Formatter : NSObject <DDLogFormatter>
+@end
+
+@interface GBLogFormat3Formatter : NSObject <DDLogFormatter>
+@end
+
+@interface GBLogFormat4Formatter : NSObject <DDLogFormatter>
 @end

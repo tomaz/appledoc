@@ -10,8 +10,8 @@
 #import "DDGetoptLongParser.h"
 #import "GBAppledocApplication.h"
 
+static NSString *kGBArgLogFormat = @"logformat";
 static NSString *kGBArgVerbose = @"verbose";
-static NSString *kGBArgDebug = @"debug";
 static NSString *kGBArgVersion = @"version";
 static NSString *kGBArgHelp = @"help";
 
@@ -20,8 +20,9 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
+- (void)validateArguments:(NSArray *)arguments;
+@property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
-@property (assign) BOOL debug;
 @property (assign) BOOL version;
 @property (assign) BOOL help;
 
@@ -47,6 +48,7 @@ static NSString *kGBArgHelp = @"help";
 - (id)init {
 	self = [super init];
 	if (self) {
+		self.logformat = @"1";
 		self.verbose = @"2";
 	}
 	return self;
@@ -55,21 +57,32 @@ static NSString *kGBArgHelp = @"help";
 #pragma mark DDCliApplicationDelegate implementation
 
 - (int)application:(DDCliApplication *)app runWithArguments:(NSArray *)arguments {
-#define INVOKE_HELP(method) { [self method]; return EXIT_SUCCESS; }
-	if (self.help) INVOKE_HELP(printHelp);
-	if (self.version) INVOKE_HELP(printVersion);
-	if ([arguments count] == 0) INVOKE_HELP(printArguments);
+	if (self.help) {
+		[self printHelp];
+		return EXIT_SUCCESS;
+	}
+	if (self.version) {
+		[self printHelp];
+		return EXIT_SUCCESS;
+	}
 	
-	[self initializeLoggingSystem];
-	GBLogNormal(@"Starting...");
-	GBLogNormal(@"Finished.");
+	@try {
+		[self validateArguments:arguments];
+		[self initializeLoggingSystem];
+		GBLogNormal(@"Starting...");
+		GBLogNormal(@"Finished.");
+	}
+	@catch (NSException * e) {
+		return EXIT_FAILURE;
+	}
+	
 	return EXIT_SUCCESS;
 }
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {
 	DDGetoptOption options[] = {
+		{ kGBArgLogFormat,				'f',	DDGetoptRequiredArgument },
 		{ kGBArgVerbose,				'v',	DDGetoptRequiredArgument },
-		{ kGBArgDebug,					0,		DDGetoptNoArgument },
 		{ kGBArgVersion,				0,		DDGetoptNoArgument },
 		{ kGBArgHelp,					'h',	DDGetoptNoArgument },
 		{ nil,							0,		0 },
@@ -80,17 +93,21 @@ static NSString *kGBArgHelp = @"help";
 #pragma mark Application handling
 
 - (void)initializeLoggingSystem {
-	id formatter = self.debug ? [[GBDebugLogFormatter alloc] init] : [[GBStandardLogFormatter alloc] init];
+	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
 	[[DDConsoleLogger sharedInstance] setLogFormatter:formatter];
 	[DDLog addLogger:[DDConsoleLogger sharedInstance]];
 	[GBLog setLogLevelFromVerbose:self.verbose];
 	[formatter release];
 }
 
+- (void)validateArguments:(NSArray *)arguments {
+	if ([arguments count] == 0) [NSException raise:@"ArgumentsMissingException" format:@"At least one argument is required"];
+}
+
 #pragma mark Properties
 
+@synthesize logformat;
 @synthesize verbose;
-@synthesize debug;
 @synthesize version;
 @synthesize help;
 
@@ -113,8 +130,8 @@ static NSString *kGBArgHelp = @"help";
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:long argument:arg description:desc]
 	ddprintf(@"Usage: %@ [OPTIONS] <source dirs or files>\n", DDCliApp);
 	ddprintf(@"\n");
-	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level 0-6");
-	PRINT_USAGE(@"   ", kGBArgDebug, @"", @"Use very verbose logging");
+	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-4]");
+	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level [0-6]");
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");
 	PRINT_USAGE(@"-h,", kGBArgHelp, @"", @"Display this help and exit");
 	ddprintf(@"\n");
