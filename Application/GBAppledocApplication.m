@@ -136,6 +136,12 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");
 	PRINT_USAGE(@"-h,", kGBArgHelp, @"", @"Display this help and exit");
 	ddprintf(@"\n");
+	ddprintf(@"appledoc uses the following open source components, fully or partially:\n");
+	ddprintf(@"\n");
+	ddprintf(@"- DDCli by Dave Dribin\n");
+	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
+	ddprintf(@"\n");
+	ddprintf(@"We'd like to thank all authors for their contribution!");
 }
 
 - (void)printHelpForShortOption:(NSString *)aShort longOption:(NSString *)aLong argument:(NSString *)argument description:(NSString *)description {
