@@ -9,6 +9,7 @@
 #import "DDLog.h"
 #import "DDConsoleLogger.h"
 #import "DDFileLogger.h"
+#import "DDCliUtil.h"
 
 // Undefine defaults
 
@@ -73,22 +74,15 @@ extern NSUInteger kGBLogLevel;
 #define GBLogVerbose(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_VERBOSE, frmt, ##__VA_ARGS__)
 #define GBLogDebug(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_DEBUG, frmt, ##__VA_ARGS__)
 
-// Helper macros for higher level logging.
-#define LOG_ERROR_LINE(prefix,error) logError(@"%@%@ #%d: %@", prefix, [error domain], [error code], [error localizedDescription]);
-#define GBLogNSError(error,frmt,...) if (YES) { \
-	if (frmt) logError(frmt, ##__VA_ARGS__); \
-	NSError *err = error; \
-	while (err) { \
-		LOG_ERROR_LINE(@"", err); \
-		NSDictionary *info = [err userInfo]; \
-		if (info) { \
-			for (NSError *detail in [info valueForKey:NSDetailedErrorsKey]) { \
-				LOG_ERROR_LINE(@"- ", detail); \
-			} \
-			err = [info valueForKey:NSUnderlyingErrorKey]; \
-			continue; \
-		} \
-		break; \
+// Helper macros for logging exceptions. Note that we don't use formatting here as it would make the output unreadable
+// in higher level log formats. The information is already verbose enough!
+#define GBLogExceptionLine(frmt,...) { ddprintf(frmt, ##__VA_ARGS__); ddprintf(@"\n"); }
+#define GBLogException(exception,frmt,...) { \
+	if (frmt) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
+	GBLogExceptionLine(@"%@: %@", [exception name], [exception reason]); \
+	NSArray *symbols = [exception callStackSymbols]; \
+	for (NSString *symbol in symbols) { \
+		GBLogExceptionLine(@"  @ %@", symbol); \
 	} \
 }
 
