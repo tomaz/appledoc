@@ -61,14 +61,26 @@ static NSString *kGBArgHelp = @"help";
 		return EXIT_SUCCESS;
 	}
 	if (self.version) {
-		[self printHelp];
+		[self printVersion];
 		return EXIT_SUCCESS;
 	}
 	
 	@try {
 		[self validateArguments:arguments];
 		[self initializeLoggingSystem];
-		GBLogNormal(@"Starting...");
+		
+//		GBLogNormal(@"Parsing source files...");
+//		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
+//		[parser parseObjectsFromPaths:arguments];
+//		
+//		GBLogNormal(@"Processing parsed data...");
+//		GBProcessor *processor = [[GBProcessor alloc] init];
+//		[processor processObjectsFromParser:parser];
+//		
+//		GBLogNormal(@"Generating output...");
+//		GBGenerator *generator = [[GBGenerator alloc] init];
+//		[generator generateOutputFromProcessor:processor];
+		
 		GBLogNormal(@"Finished.");
 	}
 	@catch (NSException *e) {
@@ -102,6 +114,17 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)validateArguments:(NSArray *)arguments {
 	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
+	for (NSString *path in arguments) {
+		if (![self.fileManager fileExistsAtPath:path]) {
+			[NSException raise:@"Path or file '%@' doesn't exist!", path];
+		}
+	}
+}
+
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [self className];
 }
 
 #pragma mark Properties
@@ -123,7 +146,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)printHelp {
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:long argument:arg description:desc]
-	ddprintf(@"Usage: %@ [OPTIONS] <path to source dirs or files>\n", DDCliApp);
+	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", DDCliApp);
 	ddprintf(@"\n");
 	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-4]");
 	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level [0-6]");

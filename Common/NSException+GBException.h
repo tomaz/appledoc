@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 /** Adds helper methods to `NSException` for more organized code.
  */
@@ -22,5 +22,19 @@
  @exception NSException Always thrown ;)
  */
 + (void)raise:(NSString *)format, ...;
+
+/** Raises the exception with the given `NSError` object.
+ 
+ This is useful for converting `NSError`s into `NSException`s. The method allows the client to pass in additional
+ context information which further aids diagnosting the exact reason for the exception. If no context information
+ is desired, pass `nil` and only error information is used for formatting. As exception message can become quite
+ verbose, it is split into several lines to make the output more readable.
+
+ @param error The error that describes the reason.
+ @param format A human readable message string explaining the context of the error.
+ @param ... Variable information to be inserted into the formatted reason.
+ @exception NSException Always thrown ;)
+ */
++ (void)raise:(NSError *)error format:(NSString *)format, ...;
 
 @end
