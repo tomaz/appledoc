@@ -52,10 +52,21 @@
 		73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDGetoptLongParser.m; sourceTree = "<group>"; };
 		73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBAppledocApplication.h; sourceTree = "<group>"; };
 		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
+		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		73FC6D8911FCCB7000AAD0B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F9B0486AA7600D96B5E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -72,6 +83,7 @@
 			children = (
 				73D54C9011F8D18300CCDDB0 /* Classes */,
 				73D54BDF11F8CE2300CCDDB0 /* Startup */,
+				7340F0AB11FCC87300E712A4 /* Testing */,
 				08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
@@ -82,6 +94,8 @@
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+				73D8E98911FCC97100966C4A /* AppKit.framework */,
+				73D8E98B11FCC97100966C4A /* Cocoa.framework */,
 			);
 			name = "Libraries & Frameworks";
 			path = Libraries;
@@ -91,8 +105,17 @@
 			isa = PBXGroup;
 			children = (
 				8DD76FA10486AA7600D96B5E /* appledoc */,
+				73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7340F0AB11FCC87300E712A4 /* Testing */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */,
+			);
+			path = Testing;
 			sourceTree = "<group>";
 		};
 		73D54BDF11F8CE2300CCDDB0 /* Startup */ = {
@@ -179,6 +202,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		73FC6D8B11FCCB7000AAD0B9 /* AppledocTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 73FC6D9011FCCB7000AAD0B9 /* Build configuration list for PBXNativeTarget "AppledocTests" */;
+			buildPhases = (
+				73FC6D8711FCCB7000AAD0B9 /* Resources */,
+				73FC6D8811FCCB7000AAD0B9 /* Sources */,
+				73FC6D8911FCCB7000AAD0B9 /* Frameworks */,
+				73FC6D8A11FCCB7000AAD0B9 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppledocTests;
+			productName = AppledocTests;
+			productReference = 73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
 		8DD76F960486AA7600D96B5E /* appledoc */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */;
@@ -212,11 +253,45 @@
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* appledoc */,
+				73FC6D8B11FCCB7000AAD0B9 /* AppledocTests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		73FC6D8711FCCB7000AAD0B9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		73FC6D8A11FCCB7000AAD0B9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		73FC6D8811FCCB7000AAD0B9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F990486AA7600D96B5E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -302,6 +377,60 @@
 			};
 			name = Release;
 		};
+		73FC6D8E11FCCB7000AAD0B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "AppledocTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = AppledocTests;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		73FC6D8F11FCCB7000AAD0B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				INFOPLIST_FILE = "AppledocTests-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = AppledocTests;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -319,6 +448,15 @@
 			buildConfigurations = (
 				1DEB927908733DD40010E9CD /* Debug */,
 				1DEB927A08733DD40010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		73FC6D9011FCCB7000AAD0B9 /* Build configuration list for PBXNativeTarget "AppledocTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				73FC6D8E11FCCB7000AAD0B9 /* Debug */,
+				73FC6D8F11FCCB7000AAD0B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
