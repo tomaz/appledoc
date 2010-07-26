@@ -31,28 +31,11 @@
  Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property
  and name to `ivarName` property.
  
- If you don't have the components available at the time of initialization, use `init` instead. You can pass the array later on
- through 'setIvarDataFromComponents:` method or set individual properties separately.
- 
  @param components Components array to setup the data from.
  @return Returns initialized instance.
  @exception NSException Thrown if the given array of components is `nil` or has only one entry.
  */
 - (id)initWithDataFromComponents:(NSArray *)components;
-
-///---------------------------------------------------------------------------------------
-/// @name Helper methods
-///---------------------------------------------------------------------------------------
-
-/** Sets the ivar data from the given array of components.
- 
- Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property
- and name to `ivarName` property.
- 
- @param components Components array to setup the data from.
- @exception NSException Thrown if the given array of components is `nil` or has only one entry.
- */
-- (void)setIvarDataFromComponents:(NSArray *)components;
 
 ///---------------------------------------------------------------------------------------
 /// @name Ivar data

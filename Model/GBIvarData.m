@@ -21,20 +21,12 @@
 	NSParameterAssert([components count] >= 2);
 	self = [super init];
 	if (self) {
-		[self setIvarDataFromComponents:components];
+		NSMutableArray *types = [NSMutableArray arrayWithArray:components];
+		[types removeLastObject];
+		self.ivarTypes = types;
+		self.ivarName = [components lastObject];
 	}
 	return self;
-}
-
-#pragma mark Helper methods
-
-- (void)setIvarDataFromComponents:(NSArray *)components {
-	NSParameterAssert(components != nil);
-	NSParameterAssert([components count] >= 2);
-	NSMutableArray *types = [NSMutableArray arrayWithArray:components];
-	[types removeLastObject];
-	self.ivarTypes = types;
-	self.ivarName = [components lastObject];
 }
 
 #pragma mark Overriden methods
