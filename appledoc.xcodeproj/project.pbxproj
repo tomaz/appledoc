@@ -20,8 +20,44 @@
 		73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
+		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
+		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
+		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
+		73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */; };
+		73FC6E5E11FCD69C00AAD0B9 /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
+		73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
+		73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */; };
+		73FC6EE011FCE01E00AAD0B9 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
+		73FC6FAA11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
+		73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
+		73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
+		73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
+		73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		73FC718511FD7A8A00AAD0B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E /* appledoc */;
+			remoteInfo = appledoc;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		73FC6E5811FCD63F00AAD0B9 /* Copy Bundle Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Copy Bundle Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -56,6 +92,81 @@
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
+		73FC6DB311FCCCC600AAD0B9 /* GBParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParser.h; sourceTree = "<group>"; };
+		73FC6DB411FCCCC600AAD0B9 /* GBParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParser.m; sourceTree = "<group>"; };
+		73FC6DB911FCCD0400AAD0B9 /* GBApplicationSettingsProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBApplicationSettingsProviding.h; sourceTree = "<group>"; };
+		73FC6DC511FCCD7B00AAD0B9 /* AppledocTests_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTests_prefix.pch; sourceTree = SOURCE_ROOT; };
+		73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectiveCParser.h; sourceTree = "<group>"; };
+		73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectiveCParser.m; sourceTree = "<group>"; };
+		73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBStoreProviding.h; sourceTree = "<group>"; };
+		73FC6E0D11FCD54400AAD0B9 /* GBStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBStore.h; sourceTree = "<group>"; };
+		73FC6E0E11FCD54400AAD0B9 /* GBStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBStore.m; sourceTree = "<group>"; };
+		73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBStoreTesting.m; sourceTree = "<group>"; };
+		73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCHamcrest.framework; sourceTree = "<group>"; };
+		73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBClassData.h; sourceTree = "<group>"; };
+		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
+		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectiveCParserTesting.m; sourceTree = "<group>"; };
+		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
+		73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libParseKitLib.a; sourceTree = "<group>"; };
+		73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseKit.h; sourceTree = "<group>"; };
+		73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAlternation.h; sourceTree = "<group>"; };
+		73FC6FC711FCE9E900AAD0B9 /* PKAny.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAny.h; sourceTree = "<group>"; };
+		73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAssembly.h; sourceTree = "<group>"; };
+		73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCaseInsensitiveLiteral.h; sourceTree = "<group>"; };
+		73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKChar.h; sourceTree = "<group>"; };
+		73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCharacterAssembly.h; sourceTree = "<group>"; };
+		73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCollectionParser.h; sourceTree = "<group>"; };
+		73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKComment.h; sourceTree = "<group>"; };
+		73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCommentState.h; sourceTree = "<group>"; };
+		73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitedString.h; sourceTree = "<group>"; };
+		73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitState.h; sourceTree = "<group>"; };
+		73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDifference.h; sourceTree = "<group>"; };
+		73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDigit.h; sourceTree = "<group>"; };
+		73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmailState.h; sourceTree = "<group>"; };
+		73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmpty.h; sourceTree = "<group>"; };
+		73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKIntersection.h; sourceTree = "<group>"; };
+		73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLetter.h; sourceTree = "<group>"; };
+		73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLiteral.h; sourceTree = "<group>"; };
+		73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLowercaseWord.h; sourceTree = "<group>"; };
+		73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKMultiLineCommentState.h; sourceTree = "<group>"; };
+		73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNegation.h; sourceTree = "<group>"; };
+		73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumber.h; sourceTree = "<group>"; };
+		73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumberState.h; sourceTree = "<group>"; };
+		73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParser.h; sourceTree = "<group>"; };
+		73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParserFactory.h; sourceTree = "<group>"; };
+		73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKPattern.h; sourceTree = "<group>"; };
+		73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuotedString.h; sourceTree = "<group>"; };
+		73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuoteState.h; sourceTree = "<group>"; };
+		73FC6FE211FCE9E900AAD0B9 /* PKReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKReader.h; sourceTree = "<group>"; };
+		73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRepetition.h; sourceTree = "<group>"; };
+		73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSequence.h; sourceTree = "<group>"; };
+		73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSingleLineCommentState.h; sourceTree = "<group>"; };
+		73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSpecificChar.h; sourceTree = "<group>"; };
+		73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbol.h; sourceTree = "<group>"; };
+		73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolNode.h; sourceTree = "<group>"; };
+		73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolRootNode.h; sourceTree = "<group>"; };
+		73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolState.h; sourceTree = "<group>"; };
+		73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTerminal.h; sourceTree = "<group>"; };
+		73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKToken.h; sourceTree = "<group>"; };
+		73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenArraySource.h; sourceTree = "<group>"; };
+		73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenAssembly.h; sourceTree = "<group>"; };
+		73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizer.h; sourceTree = "<group>"; };
+		73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizerState.h; sourceTree = "<group>"; };
+		73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrack.h; sourceTree = "<group>"; };
+		73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrackException.h; sourceTree = "<group>"; };
+		73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTwitterState.h; sourceTree = "<group>"; };
+		73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTypes.h; sourceTree = "<group>"; };
+		73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKUppercaseWord.h; sourceTree = "<group>"; };
+		73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKURLState.h; sourceTree = "<group>"; };
+		73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespace.h; sourceTree = "<group>"; };
+		73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespaceState.h; sourceTree = "<group>"; };
+		73FC6FF911FCE9E900AAD0B9 /* PKWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWord.h; sourceTree = "<group>"; };
+		73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWordState.h; sourceTree = "<group>"; };
+		73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+GBToken.h"; sourceTree = "<group>"; };
+		73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+GBToken.m"; sourceTree = "<group>"; };
+		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
+		73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTokenizer.m; sourceTree = "<group>"; };
+		73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTokenizerTesting.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -64,6 +175,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73FC6E5E11FCD69C00AAD0B9 /* OCHamcrest.framework in Frameworks */,
+				73FC6EE011FCE01E00AAD0B9 /* OCMock.framework in Frameworks */,
+				73FC6FAA11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,6 +208,9 @@
 		08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				73FC720411FD7FB200AAD0B9 /* CopyToSharedFrameworks! */,
+				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
+				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				73D8E98911FCC97100966C4A /* AppKit.framework */,
 				73D8E98B11FCC97100966C4A /* Cocoa.framework */,
@@ -113,7 +231,10 @@
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */,
+				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */,
+				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
+				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
 			path = Testing;
 			sourceTree = "<group>";
@@ -132,6 +253,8 @@
 			children = (
 				73D54C9411F8D1CC00CCDDB0 /* Common */,
 				73D54D1411F8D4FF00CCDDB0 /* Application */,
+				73FC6DDD11FCCF1500AAD0B9 /* Model */,
+				73FC6DB211FCCC8D00AAD0B9 /* Parsing */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -193,10 +316,117 @@
 		73D54D1411F8D4FF00CCDDB0 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				73FC6DB911FCCD0400AAD0B9 /* GBApplicationSettingsProviding.h */,
 				73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */,
 				73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */,
 			);
 			path = Application;
+			sourceTree = "<group>";
+		};
+		73FC6DB211FCCC8D00AAD0B9 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6DB311FCCCC600AAD0B9 /* GBParser.h */,
+				73FC6DB411FCCCC600AAD0B9 /* GBParser.m */,
+				73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */,
+				73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */,
+				73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */,
+				73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */,
+				73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */,
+				73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */,
+			);
+			path = Parsing;
+			sourceTree = "<group>";
+		};
+		73FC6DDD11FCCF1500AAD0B9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */,
+				73FC6E0D11FCD54400AAD0B9 /* GBStore.h */,
+				73FC6E0E11FCD54400AAD0B9 /* GBStore.m */,
+				73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */,
+				73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		73FC6DFE11FCD2D300AAD0B9 /* Bundle */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6DC511FCCD7B00AAD0B9 /* AppledocTests_prefix.pch */,
+				73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */,
+			);
+			name = Bundle;
+			sourceTree = "<group>";
+		};
+		73FC6FC411FCE9E900AAD0B9 /* ParseKit */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */,
+				73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */,
+				73FC6FC711FCE9E900AAD0B9 /* PKAny.h */,
+				73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */,
+				73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */,
+				73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */,
+				73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */,
+				73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */,
+				73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */,
+				73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */,
+				73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */,
+				73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */,
+				73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */,
+				73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */,
+				73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */,
+				73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */,
+				73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */,
+				73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */,
+				73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */,
+				73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */,
+				73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */,
+				73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */,
+				73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */,
+				73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */,
+				73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */,
+				73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */,
+				73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */,
+				73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */,
+				73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */,
+				73FC6FE211FCE9E900AAD0B9 /* PKReader.h */,
+				73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */,
+				73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */,
+				73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */,
+				73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */,
+				73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */,
+				73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */,
+				73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */,
+				73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */,
+				73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */,
+				73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */,
+				73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */,
+				73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */,
+				73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */,
+				73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */,
+				73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */,
+				73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */,
+				73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */,
+				73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */,
+				73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */,
+				73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */,
+				73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */,
+				73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */,
+				73FC6FF911FCE9E900AAD0B9 /* PKWord.h */,
+				73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */,
+			);
+			path = ParseKit;
+			sourceTree = "<group>";
+		};
+		73FC720411FD7FB200AAD0B9 /* CopyToSharedFrameworks! */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
+				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
+			);
+			name = "CopyToSharedFrameworks!";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,6 +437,7 @@
 			buildConfigurationList = 73FC6D9011FCCB7000AAD0B9 /* Build configuration list for PBXNativeTarget "AppledocTests" */;
 			buildPhases = (
 				73FC6D8711FCCB7000AAD0B9 /* Resources */,
+				73FC6E5811FCD63F00AAD0B9 /* Copy Bundle Frameworks */,
 				73FC6D8811FCCB7000AAD0B9 /* Sources */,
 				73FC6D8911FCCB7000AAD0B9 /* Frameworks */,
 				73FC6D8A11FCCB7000AAD0B9 /* ShellScript */,
@@ -214,6 +445,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				73FC718611FD7A8A00AAD0B9 /* PBXTargetDependency */,
 			);
 			name = AppledocTests;
 			productName = AppledocTests;
@@ -289,6 +521,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m in Sources */,
+				73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */,
+				73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,10 +544,24 @@
 				731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */,
 				7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */,
 				7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */,
+				73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */,
+				73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */,
+				73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */,
+				73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */,
+				73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */,
+				73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		73FC718611FD7A8A00AAD0B9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* appledoc */;
+			targetProxy = 73FC718511FD7A8A00AAD0B9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
@@ -326,7 +575,12 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = appledoc_prefix.pch;
+				HEADER_SEARCH_PATHS = Libraries;
 				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				PRODUCT_NAME = appledoc;
 			};
 			name = Debug;
@@ -339,7 +593,12 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = appledoc_prefix.pch;
+				HEADER_SEARCH_PATHS = Libraries;
 				INSTALL_PATH = /usr/local/bin;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				PRODUCT_NAME = appledoc;
 			};
 			name = Release;
@@ -381,25 +640,35 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/appledoc";
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_PREFIX_HEADER = AppledocTests_prefix.pch;
+				HEADER_SEARCH_PATHS = Libraries;
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
-					Cocoa,
+					Foundation,
 					"-framework",
 					SenTestingKit,
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
+				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -408,9 +677,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/appledoc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
@@ -418,6 +691,10 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -426,6 +703,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
+				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};

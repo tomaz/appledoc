@@ -8,6 +8,7 @@
 
 #import "DDCliUtil.h"
 #import "DDGetoptLongParser.h"
+#import "GBParser.h"
 #import "GBAppledocApplication.h"
 
 static NSString *kGBArgLogFormat = @"logformat";

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "DDCliApplication.h"
-#import "GBApplicationSettingsProvider.h"
+#import "GBApplicationSettingsProviding.h"
 
 /** The appledoc application handler. 
  
@@ -28,6 +28,6 @@
  3. Generating output: This is the final phase where we use the in-memory data to generate output. This step is driven
 	by `GBGenerator` class.
  */
-@interface GBAppledocApplication : NSObject <GBApplicationSettingsProvider, DDCliApplicationDelegate>
+@interface GBAppledocApplication : NSObject <GBApplicationSettingsProviding, DDCliApplicationDelegate>
 
 @end
