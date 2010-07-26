@@ -6,17 +6,31 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "GBAdoptedProtocolsProvider.h"
+#import "GBIvarsProvider.h"
 
 /** Describes a class.
  */
-@interface GBClassData : NSObject
+@interface GBClassData : NSObject {
+	@private
+	NSString *_className;
+	GBAdoptedProtocolsProvider *_adoptedProtocols;
+	GBIvarsProvider *_ivars;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Initializes the class with he given name.
+/** Returns autoreleased instance of the class data with the given name.
+ 
+ @param name The name of the class.
+ @return Returns initialized object.
+ @exception NSException Thrown if the given name is `nil` or empty.
+ */
++ (id)classDataWithName:(NSString *)name;
+
+/** Initializes the class with the given name.
  
  This is the designated initializer.
  
@@ -31,9 +45,15 @@
 ///---------------------------------------------------------------------------------------
 
 /** The name of the class. */
-@property (readonly, copy) NSString *className;
+@property (readonly) NSString *className;
 
 /** The name of the superclass or `nil` if this is root class. */
-@property (readonly, copy) NSString *superclassName;
+@property (copy) NSString *superclassName;
+
+/** Class's adopted protocols, available via `GBAdoptedProtocolsProvider`. */
+@property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;
+
+/** Class's ivars, available via `GBIvarsProvider`. */
+@property (readonly) GBIvarsProvider *ivars;
 
 @end

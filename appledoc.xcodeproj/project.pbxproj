@@ -26,13 +26,19 @@
 		73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */; };
 		73FC6E5E11FCD69C00AAD0B9 /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 		73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
-		73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */; };
+		73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */; };
 		73FC6EE011FCE01E00AAD0B9 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		73FC6FAA11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */; };
+		73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
+		73FC72AB11FD95A200AAD0B9 /* GBProtocolData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */; };
+		73FC72D911FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */; };
+		73FC730811FDAACD00AAD0B9 /* GBIvarsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */; };
+		73FC731011FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */; };
+		73FC731311FDADD600AAD0B9 /* GBIvarData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC731211FDADD600AAD0B9 /* GBIvarData.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -105,7 +111,7 @@
 		73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCHamcrest.framework; sourceTree = "<group>"; };
 		73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBClassData.h; sourceTree = "<group>"; };
 		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
-		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectiveCParserTesting.m; sourceTree = "<group>"; };
+		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ClassParsingTesting.m"; sourceTree = "<group>"; };
 		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libParseKitLib.a; sourceTree = "<group>"; };
 		73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseKit.h; sourceTree = "<group>"; };
@@ -167,6 +173,16 @@
 		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
 		73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTokenizer.m; sourceTree = "<group>"; };
 		73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTokenizerTesting.m; sourceTree = "<group>"; };
+		73FC729711FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBAdoptedProtocolsProvider.h; sourceTree = "<group>"; };
+		73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAdoptedProtocolsProvider.m; sourceTree = "<group>"; };
+		73FC72A911FD95A200AAD0B9 /* GBProtocolData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProtocolData.h; sourceTree = "<group>"; };
+		73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBProtocolData.m; sourceTree = "<group>"; };
+		73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAdoptedProtocolsProviderTesting.m; sourceTree = "<group>"; };
+		73FC730611FDAACD00AAD0B9 /* GBIvarsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBIvarsProvider.h; sourceTree = "<group>"; };
+		73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBIvarsProvider.m; sourceTree = "<group>"; };
+		73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBIvarsProviderTesting.m; sourceTree = "<group>"; };
+		73FC731111FDADD600AAD0B9 /* GBIvarData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBIvarData.h; sourceTree = "<group>"; };
+		73FC731211FDADD600AAD0B9 /* GBIvarData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBIvarData.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -231,8 +247,10 @@
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m */,
+				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
 				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
+				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
+				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
 				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
@@ -346,6 +364,11 @@
 				73FC6E0E11FCD54400AAD0B9 /* GBStore.m */,
 				73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */,
 				73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */,
+				73FC72A911FD95A200AAD0B9 /* GBProtocolData.h */,
+				73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */,
+				73FC731111FDADD600AAD0B9 /* GBIvarData.h */,
+				73FC731211FDADD600AAD0B9 /* GBIvarData.m */,
+				73FC730911FDAB5800AAD0B9 /* Helpers */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -427,6 +450,17 @@
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
 			name = "CopyToSharedFrameworks!";
+			sourceTree = "<group>";
+		};
+		73FC730911FDAB5800AAD0B9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				73FC729711FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.h */,
+				73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */,
+				73FC730611FDAACD00AAD0B9 /* GBIvarsProvider.h */,
+				73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -521,9 +555,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParserTesting.m in Sources */,
+				73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m in Sources */,
 				73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */,
 				73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */,
+				73FC72D911FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m in Sources */,
+				73FC731011FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -550,6 +586,10 @@
 				73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */,
 				73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */,
 				73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */,
+				73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */,
+				73FC72AB11FD95A200AAD0B9 /* GBProtocolData.m in Sources */,
+				73FC730811FDAACD00AAD0B9 /* GBIvarsProvider.m in Sources */,
+				73FC731311FDADD600AAD0B9 /* GBIvarData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

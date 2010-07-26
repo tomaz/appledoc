@@ -7,6 +7,7 @@
 //
 
 #import "GBClassData.h"
+#import "GBProtocolData.h"
 
 /** Defines the requirements for store providers.
  
@@ -26,7 +27,7 @@
  */
 - (void)registerClass:(GBClassData *)class;
 
-/** The list of all registered classes. */
+/** The list of all registered classes as instances of `GBClassData`. */
 @property (readonly) NSSet *classes;
 
 @end

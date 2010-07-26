@@ -75,6 +75,32 @@
  */
 - (void)consume:(NSUInteger)count;
 
+/** Enumerates and consumes all tokens starting at current token up until the given end token is detected.
+ 
+ For each token, the given block is called which gives client a chance to inspect and handle tokens. End token is not reported and 
+ is automatically consumed after all previous tokens are reported. Sending this message is equivalent to sending
+ `consumeFrom:to:usingBlock:` and passing `nil` for start token.
+ 
+ @param end Ending token.
+ @param block The blck to be called for each token.
+ @exception NSException Thrown if the given end token is `nil`.
+ */
+- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block;
+
+/** Enumerates and consumes all tokens starting at current token up until the given end token is detected.
+ 
+ For each token, the given block is called which gives client a chance to inspect and handle tokens. If start token is given
+ and current token matches it, the token is consumed without reporting it to block. However if the token doesn't match, the
+ method returns immediately without doint anything. End token is also not reported and is also automatically consumed after
+ all previous tokens are reported.
+ 
+ @param start Optional starting token or `nil`.
+ @param end Ending token.
+ @param block The blck to be called for each token.
+ @exception NSException Thrown if the given end token is `nil`.
+ */
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block;
+
 /** Specifies whether we're at EOF.
  
  @return Returns `YES` if we're at EOF, `NO` otherwise.

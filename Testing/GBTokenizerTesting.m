@@ -11,6 +11,7 @@
 @interface GBTokenizerTesting : SenTestCase
 
 - (PKTokenizer *)defaultTokenizer;
+- (PKTokenizer *)longTokenizer;
 
 @end
 
@@ -43,6 +44,60 @@
 	// verify
 	assertThat([tokenizer.currentToken stringValue], equalTo([[PKToken EOFToken] stringValue]));
 	assertThatBool([tokenizer eof], equalToBool(YES));
+}
+
+- (void)testConsumeFromToUsingblock_shouldReportAllTokens {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	NSMutableArray *tokens = [NSMutableArray array];
+	// execute
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume) {
+		[tokens addObject:[token stringValue]];
+	}];
+	// verify
+	assertThatInteger([tokens count], equalToInteger(4));
+	assertThat([tokens objectAtIndex:0], is(@"one"));
+	assertThat([tokens objectAtIndex:1], is(@"two"));
+	assertThat([tokens objectAtIndex:2], is(@"three"));
+	assertThat([tokens objectAtIndex:3], is(@"four"));
+}
+
+- (void)testConsumeFromToUsingblock_shouldReportAllTokensFromTo {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	NSMutableArray *tokens = [NSMutableArray array];
+	// execute
+	[tokenizer consumeFrom:@"one" to:@"five" usingBlock:^(PKToken *token, BOOL *consume) {
+		[tokens addObject:[token stringValue]];
+	}];
+	// verify
+	assertThatInteger([tokens count], equalToInteger(3));
+	assertThat([tokens objectAtIndex:0], is(@"two"));
+	assertThat([tokens objectAtIndex:1], is(@"three"));
+	assertThat([tokens objectAtIndex:2], is(@"four"));
+}
+
+- (void)testConsumeFromToUsingblock_shouldReturnIfStartTokenDoesnMatch {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	__block NSUInteger count = 0;
+	// execute
+	[tokenizer consumeFrom:@"two" to:@"five" usingBlock:^(PKToken *token, BOOL *consume) {
+		count++;
+	}];
+	// verify
+	assertThatInteger(count, equalToInteger(0));
+	assertThat([[tokenizer currentToken] stringValue], is(@"one"));
+}
+
+- (void)testConsumeFromToUsingblock_shouldConsumeEndToken {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	// execute
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume) {
+	}];
+	// verify
+	assertThat([[tokenizer currentToken] stringValue], is(@"six"));
 }
 
 - (void)testLookahead_shouldReturnNextToken {
@@ -81,6 +136,10 @@
 
 - (PKTokenizer *)defaultTokenizer {
 	return [PKTokenizer tokenizerWithString:@"one two three"];
+}
+
+- (PKTokenizer *)longTokenizer {
+	return [PKTokenizer tokenizerWithString:@"one two three four five six seven eight nine ten"];
 }
 
 @end

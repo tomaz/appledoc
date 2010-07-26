@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "PKToken+GBToken.h"
 #import "GBTokenizer.h"
 
 @interface GBTokenizer ()
@@ -50,6 +51,28 @@
 
 - (void)consume:(NSUInteger)count {
 	self.tokenIndex += count;
+}
+
+- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block {
+	[self consumeFrom:nil to:end usingBlock:block];
+}
+
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block {
+	// Skip starting token.
+	if (start) {
+		if (![[self currentToken] matches:start]) return;
+		[self consume:1];
+	}
+	
+	// Report all tokens until EOF or ending token is found.
+	while (![self eof] && ![[self currentToken] matches:end]) {
+		BOOL consume = YES;
+		block([self currentToken], &consume);
+		if (consume) [self consume:1];
+	}
+	
+	// Skip ending token if found.
+	if ([[self currentToken] matches:end]) [self consume:1];
 }
 
 - (BOOL)eof {

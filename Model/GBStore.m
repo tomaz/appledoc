@@ -33,7 +33,8 @@
 - (void)registerClass:(GBClassData *)class {
 	NSParameterAssert(class != nil);
 	GBLogDebug(@"Registering class %@...", class);
-	if (![self.classes containsObject:class] && [_classesByName objectForKey:class.className]) [NSException raise:@"Class with name %@ is already registered!", class.className];
+	if ([_classes containsObject:class]) return;
+	if ([_classesByName objectForKey:class.className]) [NSException raise:@"Class with name %@ is already registered!", class.className];
 	[_classes addObject:class];
 	[_classesByName setObject:class forKey:class.className];
 }
