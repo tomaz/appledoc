@@ -17,7 +17,7 @@
 
 @implementation GBObjectiveCParserCategoryParsingTesting
 
-#pragma mark Categories common data parsing testing
+#pragma mark Categories definition data parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryDefinition {
 	// setup
@@ -38,6 +38,34 @@
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass(MyCategory1) @end   @interface MyClass(MyCategory2) @end" toStore:store];
+	// verify
+	NSArray *categories = [store categoriesSortedByName];
+	assertThatInteger([categories count], equalToInteger(2));
+	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory1"));
+	assertThat([[categories objectAtIndex:1] categoryName], is(@"MyCategory2"));
+}
+
+#pragma mark Categories declaration data parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryDeclaration {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass (MyCategory) @end" toStore:store];
+	// verify
+	NSArray *categories = [store categoriesSortedByName];
+	assertThatInteger([categories count], equalToInteger(1));
+	assertThat([[categories objectAtIndex:0] className], is(@"MyClass"));
+	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterAllCategoryDeclaration {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass(MyCategory1) @end   @implementation MyClass(MyCategory2) @end" toStore:store];
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
@@ -73,7 +101,7 @@
 	assertThat([[categories objectAtIndex:1] className], is(@"MyClass2"));
 }
 
-#pragma mark Category components parsing testing
+#pragma mark Category definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryAdoptedProtocols {
 	// setup
@@ -114,7 +142,7 @@
 	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
 }
 
-#pragma mark Extension components parsing testing
+#pragma mark Extension definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionAdoptedProtocols {
 	// setup
@@ -153,6 +181,21 @@
 	NSArray *methods = [extension.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
 	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+}
+
+#pragma mark Category declaration components parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryMethodDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass(MyCategory) -(void)method { } @end" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	NSArray *methods = [category.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
 }
 
 #pragma mark Complex parsing testing

@@ -240,6 +240,13 @@
 }
 
 - (void)matchCategoryDeclaration {
+	// @implementation CLASSNAME ( CATEGORYNAME )
+	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+	[self.store registerCategory:category];
+	[self.tokenizer consume:5];
+	[self matchMethodDeclarationsForProvider:category.methods];
 }
 
 - (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider {
@@ -333,8 +340,8 @@
 	
 	// Found category declaration.
 	if (isImplementation && isOpenParenthesis) {
-//		[self matchCategoryDeclaration];
-//		return YES;
+		[self matchCategoryDeclaration];
+		return YES;
 		return NO;
 	}
 	
