@@ -19,6 +19,8 @@
 		_classesByName = [[NSMutableDictionary alloc] init];
 		_categories = [[NSMutableSet alloc] init];
 		_categoriesByName = [[NSMutableDictionary alloc] init];
+		_protocols = [[NSMutableSet alloc] init];
+		_protocolsByName = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -35,6 +37,11 @@
 	NSSortDescriptor *categoryNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"categoryName" ascending:YES];
 	NSArray *descriptors = [NSArray arrayWithObjects:classNameDescription, categoryNameDescription, nil];
 	return [[self.categories allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
+- (NSArray *)protocolsSortedByName {
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"protocolName" ascending:YES]];
+	return [[self.protocols allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
 #pragma mark GBStoreProviding implementation
@@ -58,7 +65,17 @@
 	[_categoriesByName setObject:category forKey:categoryID];
 }
 
+- (void)registerProtocol:(GBProtocolData *)protocol {
+	NSParameterAssert(protocol != nil);
+	GBLogDebug(@"Registering class %@...", protocol);
+	if ([_protocols containsObject:protocol]) return;
+	if ([_protocolsByName objectForKey:protocol.protocolName]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.protocolName];
+	[_protocols addObject:protocol];
+	[_protocolsByName setObject:protocol forKey:protocol.protocolName];
+}
+
 @synthesize classes = _classes;
 @synthesize categories = _categories;
+@synthesize protocols = _protocols;
 
 @end

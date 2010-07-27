@@ -49,7 +49,7 @@
 	STAssertThrows([store registerClass:class2], nil);
 }
 
-#pragma mark Categoru registration testing
+#pragma mark Category registration testing
 
 - (void)testRegisterCategory_shouldAddCategoryToList {
 	// setup
@@ -128,6 +128,41 @@
 	// execute & verify
 	assertThatBool([store.categories containsObject:category], equalToBool(YES));
 	assertThatBool([store.categories containsObject:extension], equalToBool(YES));
+}
+
+#pragma mark Protocol registration testing
+
+- (void)testRegisterProtocol_shouldAddProtocolToList {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	// execute
+	[store registerProtocol:protocol];
+	// verify
+	assertThatBool([store.protocols containsObject:protocol], equalToBool(YES));
+	assertThatInteger([[store.protocols allObjects] count], equalToInteger(1));
+	assertThat([[store.protocols allObjects] objectAtIndex:0], is(protocol));
+}
+
+- (void)testRegisterProtocol_shouldIgnoreSameInstance {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	// execute
+	[store registerProtocol:protocol];
+	[store registerProtocol:protocol];
+	// verify
+	assertThatInteger([[store.protocols allObjects] count], equalToInteger(1));
+}
+
+- (void)testRegisterProtocol_shouldPreventAddingDifferentInstanceWithSameName {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBProtocolData *protocol1 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	GBProtocolData *protocol2 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	[store registerProtocol:protocol1];
+	// execute & verify
+	STAssertThrows([store registerProtocol:protocol2], nil);
 }
 
 @end

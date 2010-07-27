@@ -14,10 +14,10 @@
 // Separating unit tests does avoid repetition in top-level objects testing code - we only need to test specific data
 // there.
 
-@interface GBObjectiveCParserClassParsingTesting : GBObjectsAssertor
+@interface GBObjectiveCParserAdoptedProtocolsParsingTesting : GBObjectsAssertor
 @end
 
-@implementation GBObjectiveCParserClassParsingTesting
+@implementation GBObjectiveCParserAdoptedProtocolsParsingTesting
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocol {
 	// setup

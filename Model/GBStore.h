@@ -16,6 +16,8 @@
 	NSMutableDictionary *_classesByName;
 	NSMutableSet *_categories;
 	NSMutableDictionary *_categoriesByName;
+	NSMutableSet *_protocols;
+	NSMutableDictionary *_protocolsByName;
 }
 
 /** Returns all registered classes sorted by their name. */
@@ -23,5 +25,8 @@
 
 /** Returns all registered categories sorted by their name. */
 - (NSArray *)categoriesSortedByName;
+
+/** Returns all registered protocols sorted by their name. */
+- (NSArray *)protocolsSortedByName;
 
 @end

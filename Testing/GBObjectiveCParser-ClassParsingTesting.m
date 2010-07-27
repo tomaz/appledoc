@@ -12,10 +12,10 @@
 // Note that we're only testing class specific stuff here - i.e. all common parsing modules (adopted protocols,
 // ivars, methods...) are tested separately to avoid repetition.
 
-@interface GBObjectiveCParserAdoptedProtocolsParsingTesting : GBObjectsAssertor
+@interface GBObjectiveCParserClassParsingTesting : GBObjectsAssertor
 @end
 
-@implementation GBObjectiveCParserAdoptedProtocolsParsingTesting
+@implementation GBObjectiveCParserClassParsingTesting
 
 #pragma mark Classes common data parsing testing
 

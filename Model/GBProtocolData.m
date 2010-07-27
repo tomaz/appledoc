@@ -13,6 +13,10 @@
 
 #pragma mark Initialization & disposal
 
++ (id)protocolDataWithName:(NSString *)name {
+	return [[[self alloc] initWithName:name] autorelease];
+}
+
 - (id)initWithName:(NSString *)name {
 	NSParameterAssert(name != nil && [name length] > 0);
 	GBLogDebug(@"Initializing protocol with name %@...", name);

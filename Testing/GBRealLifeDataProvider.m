@@ -14,6 +14,7 @@
 	return 
 	@"#import <Foundation/Foundation.h>\n"
 	@"\n"
+	@"@class DeclaredClass;\n"
 	@"@protocol DeclaredProtocol;\n"
 	@"\n"
 	@"@interface GBCalculator : NSObject {\n"

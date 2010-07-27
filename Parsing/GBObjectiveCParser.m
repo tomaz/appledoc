@@ -27,6 +27,7 @@
 - (void)matchClassDefinition;
 - (void)matchCategoryDefinition;
 - (void)matchExtensionDefinition;
+- (void)matchProtocolDefinition;
 - (void)matchSuperclassForClass:(GBClassData *)class;
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider;
@@ -129,6 +130,15 @@
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
 	[self matchMethodDefinitionsForProvider:extension.methods];
+}
+
+- (void)matchProtocolDefinition {
+	// @protocol PROTOCOLNAME
+	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
+	[self.store registerProtocol:protocol];
+	[self.tokenizer consume:2];
+	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
 }
 
 - (void)matchSuperclassForClass:(GBClassData *)class {
@@ -286,15 +296,15 @@
 		return YES;
 	}
 	
-//	// Get data needed for distinguishing between protocol definition and directive.
-//	BOOL isProtocol = [[self.tokenizer currentToken] matches:@"@protocol"];
-//	BOOL isDirective = [[self.tokenizer lookahead:2] matches:@";"] || [[self.tokenizer lookahead:2] matches:@","];
-//	
-//	// Found protocol definition.
-//	if (isProtocol && !isDirective) {
-//		[self matchProtocolDefinition];
-//		return YES;
-//	}
+	// Get data needed for distinguishing between protocol definition and directive.
+	BOOL isProtocol = [[self.tokenizer currentToken] matches:@"@protocol"];
+	BOOL isDirective = [[self.tokenizer lookahead:2] matches:@";"] || [[self.tokenizer lookahead:2] matches:@","];
+	
+	// Found protocol definition.
+	if (isProtocol && !isDirective) {
+		[self matchProtocolDefinition];
+		return YES;
+	}
 	
 	return NO;
 }

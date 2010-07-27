@@ -21,6 +21,14 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
+/** Returns autoreleased instance of the protocol data with the given name.
+ 
+ @param name The name of the protocol.
+ @return Returns initialized object.
+ @exception NSException Thrown if the given name is `nil` or empty.
+ */
++ (id)protocolDataWithName:(NSString *)name;
+
 /** Initializes the protocol with he given name.
  
  This is the designated initializer.
