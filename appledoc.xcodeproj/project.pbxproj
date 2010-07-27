@@ -11,6 +11,7 @@
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
+		7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -81,6 +82,8 @@
 		7340F02711FCC63100E712A4 /* NSObject+GBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GBObject.m"; sourceTree = "<group>"; };
 		7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTestObjectsRegistry.h; sourceTree = "<group>"; };
 		7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTestObjectsRegistry.m; sourceTree = "<group>"; };
+		7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectsAssertor.h; sourceTree = "<group>"; };
+		7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectsAssertor.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -270,19 +273,21 @@
 				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
 				73FC743511FE2CEB00AAD0B9 /* GBModelDataTesting.m */,
 				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
-				7367B6C611FE3750005ED6CD /* Registry */,
+				7367B6C611FE3750005ED6CD /* Creation & Assertion */,
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
 			path = Testing;
 			sourceTree = "<group>";
 		};
-		7367B6C611FE3750005ED6CD /* Registry */ = {
+		7367B6C611FE3750005ED6CD /* Creation & Assertion */ = {
 			isa = PBXGroup;
 			children = (
 				7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */,
 				7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */,
+				7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */,
+				7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */,
 			);
-			name = Registry;
+			name = "Creation & Assertion";
 			sourceTree = "<group>";
 		};
 		73D54BDF11F8CE2300CCDDB0 /* Startup */ = {
@@ -597,6 +602,7 @@
 				73FC741A11FE210100AAD0B9 /* GBMethodsProviderTesting.m in Sources */,
 				73FC743611FE2CEB00AAD0B9 /* GBModelDataTesting.m in Sources */,
 				7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */,
+				7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

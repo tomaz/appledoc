@@ -18,4 +18,5 @@
 	#import <OCMock/OCMock.h>
 	#import <SenTestingKit/SenTestingKit.h>
 	#import "GBTestObjectsRegistry.h"
+	#import "GBObjectsAssertor.h"
 #endif
