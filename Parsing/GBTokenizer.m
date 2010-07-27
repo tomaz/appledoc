@@ -53,11 +53,11 @@
 	self.tokenIndex += count;
 }
 
-- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block {
+- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block {
 	[self consumeFrom:nil to:end usingBlock:block];
 }
 
-- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume))block {
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block {
 	// Skip starting token.
 	if (start) {
 		if (![[self currentToken] matches:start]) return;
@@ -65,10 +65,12 @@
 	}
 	
 	// Report all tokens until EOF or ending token is found.
+	BOOL quit = NO;
 	while (![self eof] && ![[self currentToken] matches:end]) {
 		BOOL consume = YES;
-		block([self currentToken], &consume);
+		block([self currentToken], &consume, &quit);
 		if (consume) [self consume:1];
+		if (quit) break;
 	}
 	
 	// Skip ending token if found.
