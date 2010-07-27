@@ -235,6 +235,15 @@
 
 - (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeInput {
 	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol] toStore:store];
+	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
+	assertThatInteger([[store classes] count], equalToInteger(1));
+	GBClassData *class = [[store classes] anyObject];
+	assertThat(class.className, is(@"GBCalculator"));
+	assertThat(class.superclassName, is(@"NSObject"));
 }
 
 @end

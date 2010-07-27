@@ -12,6 +12,7 @@
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
 		7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
+		7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -84,6 +85,8 @@
 		7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTestObjectsRegistry.m; sourceTree = "<group>"; };
 		7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectsAssertor.h; sourceTree = "<group>"; };
 		7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectsAssertor.m; sourceTree = "<group>"; };
+		7367B83511FEEE27005ED6CD /* GBRealLifeDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBRealLifeDataProvider.h; sourceTree = "<group>"; };
+		7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBRealLifeDataProvider.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -282,6 +285,8 @@
 		7367B6C611FE3750005ED6CD /* Creation & Assertion */ = {
 			isa = PBXGroup;
 			children = (
+				7367B83511FEEE27005ED6CD /* GBRealLifeDataProvider.h */,
+				7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */,
 				7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */,
 				7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */,
 				7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */,
@@ -603,6 +608,7 @@
 				73FC743611FE2CEB00AAD0B9 /* GBModelDataTesting.m in Sources */,
 				7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */,
 				7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */,
+				7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
