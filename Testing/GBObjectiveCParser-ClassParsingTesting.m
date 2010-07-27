@@ -28,7 +28,7 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
-	assertThat([[classes objectAtIndex:0] className], is(@"MyClass"));
+	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllClassDefinitions {
@@ -40,8 +40,8 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
-	assertThat([[classes objectAtIndex:0] className], is(@"MyClass1"));
-	assertThat([[classes objectAtIndex:1] className], is(@"MyClass2"));
+	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass1"));
+	assertThat([[classes objectAtIndex:1] nameOfClass], is(@"MyClass2"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterRootClass {
@@ -52,7 +52,7 @@
 	[parser parseObjectsFromString:@"@interface MyClass @end" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
-	assertThat(class.superclassName, is(nil));
+	assertThat(class.nameOfSuperclass, is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterDerivedClass {
@@ -63,7 +63,7 @@
 	[parser parseObjectsFromString:@"@interface MyClass : NSObject @end" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
-	assertThat(class.superclassName, is(@"NSObject"));
+	assertThat(class.nameOfSuperclass, is(@"NSObject"));
 }
 
 #pragma mark Classes declarations parsing testing
@@ -77,7 +77,7 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
-	assertThat([[classes objectAtIndex:0] className], is(@"MyClass"));
+	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllClassDeclarations {
@@ -89,8 +89,8 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
-	assertThat([[classes objectAtIndex:0] className], is(@"MyClass1"));
-	assertThat([[classes objectAtIndex:1] className], is(@"MyClass2"));
+	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass1"));
+	assertThat([[classes objectAtIndex:1] nameOfClass], is(@"MyClass2"));
 }
 
 #pragma mark Class definition components parsing testing
@@ -105,7 +105,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterRootClassAdoptedProtocols {
@@ -118,7 +118,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterIvars {
@@ -186,8 +186,8 @@
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	assertThatInteger([[store classes] count], equalToInteger(1));
 	GBClassData *class = [[store classes] anyObject];
-	assertThat(class.className, is(@"GBCalculator"));
-	assertThat(class.superclassName, is(@"NSObject"));
+	assertThat(class.nameOfClass, is(@"GBCalculator"));
+	assertThat(class.nameOfSuperclass, is(@"NSObject"));
 }
 
 @end

@@ -51,10 +51,10 @@
 @property (readonly) BOOL isExtension;
 
 /** The name of the category or `nil` if this is an extension. */
-@property (readonly) NSString *categoryName;
+@property (readonly) NSString *nameOfCategory;
 
 /** The name of the class the category extends. */
-@property (readonly) NSString *className;
+@property (readonly) NSString *nameOfClass;
 
 /** Categories adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

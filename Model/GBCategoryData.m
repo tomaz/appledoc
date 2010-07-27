@@ -31,18 +31,18 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.className];
-	return [NSString stringWithFormat:@"%@(%@)", self.className, self.categoryName];
+	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.nameOfClass];
+	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.nameOfCategory];
 }
 
 #pragma mark Properties
 
 - (BOOL)isExtension {
-	return ([self categoryName] == nil);
+	return ([self nameOfCategory] == nil);
 }
 
-@synthesize categoryName = _categoryName;
-@synthesize className = _className;
+@synthesize nameOfCategory = _categoryName;
+@synthesize nameOfClass = _className;
 @synthesize adoptedProtocols = _adoptedProtocols;
 @synthesize methods = _methods;
 

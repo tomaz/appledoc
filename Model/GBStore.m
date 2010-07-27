@@ -28,12 +28,12 @@
 #pragma mark Helper methods
 
 - (NSArray *)classesSortedByName {
-	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"className" ascending:YES]];
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES]];
 	return [[self.classes allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
 - (NSArray *)categoriesSortedByName {
-	NSSortDescriptor *classNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"className" ascending:YES];
+	NSSortDescriptor *classNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES];
 	NSSortDescriptor *categoryNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"categoryName" ascending:YES];
 	NSArray *descriptors = [NSArray arrayWithObjects:classNameDescription, categoryNameDescription, nil];
 	return [[self.categories allObjects] sortedArrayUsingDescriptors:descriptors];
@@ -50,15 +50,15 @@
 	NSParameterAssert(class != nil);
 	GBLogDebug(@"Registering class %@...", class);
 	if ([_classes containsObject:class]) return;
-	if ([_classesByName objectForKey:class.className]) [NSException raise:@"Class with name %@ is already registered!", class.className];
+	if ([_classesByName objectForKey:class.nameOfClass]) [NSException raise:@"Class with name %@ is already registered!", class.nameOfClass];
 	[_classes addObject:class];
-	[_classesByName setObject:class forKey:class.className];
+	[_classesByName setObject:class forKey:class.nameOfClass];
 }
 
 - (void)registerCategory:(GBCategoryData *)category {
 	NSParameterAssert(category != nil);
 	GBLogDebug(@"Registering category %@...", category);
-	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.className, category.categoryName];
+	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
 	if ([_categories containsObject:category]) return;
 	if ([_categoriesByName objectForKey:categoryID]) [NSException raise:@"Category with ID %@ is already registered!", categoryID];
 	[_categories addObject:category];
@@ -69,9 +69,9 @@
 	NSParameterAssert(protocol != nil);
 	GBLogDebug(@"Registering class %@...", protocol);
 	if ([_protocols containsObject:protocol]) return;
-	if ([_protocolsByName objectForKey:protocol.protocolName]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.protocolName];
+	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
 	[_protocols addObject:protocol];
-	[_protocolsByName setObject:protocol forKey:protocol.protocolName];
+	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
 @synthesize classes = _classes;

@@ -28,7 +28,7 @@
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"MyProtocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllProtocolDefinitions {
@@ -40,8 +40,8 @@
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"MyProtocol1"));
-	assertThat([[protocols objectAtIndex:1] protocolName], is(@"MyProtocol2"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol1"));
+	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"MyProtocol2"));
 }
 
 #pragma mark Protocol components parsing testing
@@ -56,7 +56,7 @@
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *protocols = [protocol.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
 #pragma mark Complex parsing testing
@@ -70,7 +70,7 @@
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	assertThatInteger([[store protocols] count], equalToInteger(1));
 	GBProtocolData *protocol = [[store protocols] anyObject];
-	assertThat(protocol.protocolName, is(@"GBObserving"));
+	assertThat(protocol.nameOfProtocol, is(@"GBObserving"));
 }
 
 @end

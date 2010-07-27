@@ -44,7 +44,7 @@
 ///---------------------------------------------------------------------------------------
 
 /** The name of the protocol. */
-@property (readonly) NSString *protocolName;
+@property (readonly) NSString *nameOfProtocol;
 
 /** Protocol's adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

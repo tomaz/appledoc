@@ -29,7 +29,7 @@
 
 - (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer {
 	NSParameterAssert(tokenizer != nil);
-	GBLogDebug(@"Initializing with tokenizer %@...", tokenizer);
+	GBLogDebug(@"Initializing tokenizer using %@...", tokenizer);
 	self = [super init];
 	if (self) {
 		self.tokens = [self allTokensFromTokenizer:tokenizer];

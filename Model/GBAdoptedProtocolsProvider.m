@@ -27,9 +27,9 @@
 	NSParameterAssert(protocol != nil);
 	GBLogDebug(@"Registering protocol %@...", protocol);
 	if ([_protocols containsObject:protocol]) return;
-	if ([_protocolsByName objectForKey:protocol.protocolName]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.protocolName];
+	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
 	[_protocols addObject:protocol];
-	[_protocolsByName setObject:protocol forKey:protocol.protocolName];
+	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
 - (NSArray *)protocolsSortedByName {

@@ -32,13 +32,13 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return self.className;
+	return self.nameOfClass;
 }
 
 #pragma mark Properties
 
-@synthesize className = _className;
-@synthesize superclassName;
+@synthesize nameOfClass = _className;
+@synthesize nameOfSuperclass;
 @synthesize adoptedProtocols = _adoptedProtocols;
 @synthesize ivars = _ivars;
 @synthesize methods = _methods;

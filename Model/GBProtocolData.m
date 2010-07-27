@@ -31,12 +31,12 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return self.protocolName;
+	return self.nameOfProtocol;
 }
 
 #pragma mark Properties
 
-@synthesize protocolName = _protocolName;
+@synthesize nameOfProtocol = _protocolName;
 @synthesize adoptedProtocols = _adoptedProtocols;
 
 @end

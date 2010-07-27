@@ -28,8 +28,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] className], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory"));
+	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllCategoryDefinitions {
@@ -41,8 +41,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory1"));
-	assertThat([[categories objectAtIndex:1] categoryName], is(@"MyCategory2"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory1"));
+	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"MyCategory2"));
 }
 
 #pragma mark Categories declaration data parsing testing
@@ -56,8 +56,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] className], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory"));
+	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllCategoryDeclaration {
@@ -69,8 +69,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] categoryName], is(@"MyCategory1"));
-	assertThat([[categories objectAtIndex:1] categoryName], is(@"MyCategory2"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory1"));
+	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"MyCategory2"));
 }
 
 #pragma mark Extensions common data parsing testing
@@ -84,8 +84,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] className], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] categoryName], is(nil));
+	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllExtensionDefinitions {
@@ -97,8 +97,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] className], is(@"MyClass1"));
-	assertThat([[categories objectAtIndex:1] className], is(@"MyClass2"));
+	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass1"));
+	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"MyClass2"));
 }
 
 #pragma mark Category definition components parsing testing
@@ -113,7 +113,7 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *protocols = [category.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryMethods {
@@ -154,7 +154,7 @@
 	GBCategoryData *extension = [[store categories] anyObject];
 	NSArray *protocols = [extension.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionMethods {
@@ -209,10 +209,10 @@
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] className], is(@"GBCalculator"));
-	assertThat([[categories objectAtIndex:0] categoryName], is(nil));
-	assertThat([[categories objectAtIndex:1] className], is(@"GBCalculator"));
-	assertThat([[categories objectAtIndex:1] categoryName], is(@"Multiplication"));
+	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"GBCalculator"));
+	assertThat([[categories objectAtIndex:0] nameOfCategory], is(nil));
+	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"GBCalculator"));
+	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"Multiplication"));
 }
 
 @end

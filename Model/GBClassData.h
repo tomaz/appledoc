@@ -47,10 +47,10 @@
 ///---------------------------------------------------------------------------------------
 
 /** The name of the class. */
-@property (readonly) NSString *className;
+@property (readonly) NSString *nameOfClass;
 
 /** The name of the superclass or `nil` if this is root class. */
-@property (copy) NSString *superclassName;
+@property (copy) NSString *nameOfSuperclass;
 
 /** Class's adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

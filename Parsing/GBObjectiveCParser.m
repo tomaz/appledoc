@@ -69,7 +69,7 @@
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
 	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
-	GBLogDebug(@"Initializing with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing objective-c parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -159,8 +159,8 @@
 
 - (void)matchSuperclassForClass:(GBClassData *)class {
 	if (![[self.tokenizer currentToken] matches:@":"]) return;
-	class.superclassName = [[self.tokenizer lookahead:1] stringValue];
-	GBLogDebug(@"Matched superclass %@.", class.superclassName);
+	class.nameOfSuperclass = [[self.tokenizer lookahead:1] stringValue];
+	GBLogDebug(@"Matched superclass %@.", class.nameOfSuperclass);
 	[self.tokenizer consume:2];
 }
 
