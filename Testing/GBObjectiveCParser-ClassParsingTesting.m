@@ -7,12 +7,10 @@
 //
 
 #import "GBStore.h"
-#import "GBClassData.h"
 #import "GBObjectiveCParser.h"
 
 @interface GBObjectiveCParserClassParsingTesting : SenTestCase
 
-- (OCMockObject *)mockSettingsProvider;
 - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertMethod:(GBMethodData *)method matchesInstanceComponents:(NSString *)firstItem,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertMethod:(GBMethodData *)method matchesClassComponents:(NSString *)firstItem,... NS_REQUIRES_NIL_TERMINATION;
@@ -27,7 +25,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterClassDefinition {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @end" toStore:store];
@@ -39,7 +37,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAllClassDefinitions {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass1 @end   @interface MyClass2 @end" toStore:store];
@@ -52,7 +50,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterRootClass {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @end" toStore:store];
@@ -63,7 +61,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterDerivedClass {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass : NSObject @end" toStore:store];
@@ -76,7 +74,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocol {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol> @end" toStore:store];
@@ -89,7 +87,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAllAdoptedProtocols {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol1, MyProtocol2> @end" toStore:store];
@@ -105,7 +103,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterIVar {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass { int _var; } @end" toStore:store];
@@ -118,7 +116,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAllIVars {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass { int _var1; long _var2; } @end" toStore:store];
@@ -132,7 +130,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterComplexIVar {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass { id<Protocol>* _var; } @end" toStore:store];
@@ -147,7 +145,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitionWithNoArguments {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass -(id)method; @end" toStore:store];
@@ -160,7 +158,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitionWithArguments {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass -(id)method:(NSString*)var; @end" toStore:store];
@@ -173,7 +171,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitionWithMutlipleArguments {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass -(id)arg1:(int)var1 arg2:(long)var2; @end" toStore:store];
@@ -186,7 +184,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAllMethodDefinitions {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass -(id)method1; +(void)method2; @end" toStore:store];
@@ -202,7 +200,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterSimplePropertyDefinition {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @property(readonly) int name; @end" toStore:store];
@@ -215,7 +213,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterComplexPropertyDefinition {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @property(retain,nonatomic) IBOutlet NSString *name; @end" toStore:store];
@@ -228,7 +226,7 @@
 
 - (void)testParseObjectsFromString_shouldRegisterAllPropertyDefinitions {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[self mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @property(readonly) int name1; @property(readwrite)long name2; @end" toStore:store];
@@ -240,10 +238,10 @@
 	[self assertMethod:[methods objectAtIndex:1] matchesPropertyComponents:@"readwrite", @"long", @"name2", nil];
 }
 
-#pragma mark Creation methods
+#pragma mark Complex parsing testing
 
-- (OCMockObject *)mockSettingsProvider {
-	return [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+- (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeInput {
+	// setup
 }
 
 #pragma mark Assertion methods

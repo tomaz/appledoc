@@ -10,6 +10,8 @@
 
 @interface GBTestObjectsRegistry : NSObject
 
++ (OCMockObject *)mockSettingsProvider;
+
 + (GBMethodData *)instanceMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)classMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)instanceMethodWithNames:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;

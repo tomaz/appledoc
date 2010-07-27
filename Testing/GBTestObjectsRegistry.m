@@ -6,9 +6,16 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBApplicationSettingsProviding.h"
 #import "GBTestObjectsRegistry.h"
 
 @implementation GBTestObjectsRegistry
+
+#pragma mark Common objects creation methods
+
++ (OCMockObject *)mockSettingsProvider {
+	return [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+}
 
 #pragma mark GBMethodData creation methods
 
