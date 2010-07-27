@@ -57,6 +57,12 @@
 	return result;
 }
 
+#pragma mark Overidden methods
+
+- (NSString *)description {
+	return self.methodSelector;
+}
+
 #pragma mark Properties
 
 @synthesize methodType = _methodType;
