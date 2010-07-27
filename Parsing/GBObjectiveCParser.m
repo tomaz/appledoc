@@ -25,6 +25,8 @@
 @interface GBObjectiveCParser (ClassDefinitionParsing)
 
 - (void)matchClassDefinition;
+- (void)matchCategoryDefinition;
+- (void)matchExtensionDefinition;
 - (void)matchSuperclassForClass:(GBClassData *)class;
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider;
@@ -106,6 +108,27 @@
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
 	[self matchMethodDefinitionsForProvider:class.methods];
+}
+
+- (void)matchCategoryDefinition {
+	// @interface CLASSNAME ( CATEGORYNAME )
+	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+	[self.store registerCategory:category];
+	[self.tokenizer consume:5];
+	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
+	[self matchMethodDefinitionsForProvider:category.methods];
+}
+
+- (void)matchExtensionDefinition {
+	// @interface CLASSNAME ( )
+	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
+	[self.store registerCategory:extension];
+	[self.tokenizer consume:4];
+	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
+	[self matchMethodDefinitionsForProvider:extension.methods];
 }
 
 - (void)matchSuperclassForClass:(GBClassData *)class {
@@ -242,22 +265,21 @@
 - (BOOL)matchNextObject {
 	// Get data needed for distinguishing between class, category and extension definition.
 	BOOL isInterface = [[self.tokenizer currentToken] matches:@"@interface"];
-//	BOOL isOpenParenthesis = [[self.tokenizer lookahead:2] matches:@"("];
-//	BOOL isCloseParenthesis = [[self.tokenizer lookahead:3] matches:@")"];
-//	
-//	// Found class extension definition.
-//	if (isInterface && isOpenParenthesis && isCloseParenthesis) {
-//		GBLogDebug(@"Detected class extension definition at %i...");
-//		[self matchExtensionDefinition];
-//		return YES;
-//	}
-//	
-//	// Found category definition.
-//	if (isInterface && isOpenParenthesis) {
-//		[self matchCategoryDefinition];
-//		return YES;
-//	}
-//	
+	BOOL isOpenParenthesis = [[self.tokenizer lookahead:2] matches:@"("];
+	BOOL isCloseParenthesis = [[self.tokenizer lookahead:3] matches:@")"];
+	
+	// Found class extension definition.
+	if (isInterface && isOpenParenthesis && isCloseParenthesis) {
+		[self matchExtensionDefinition];
+		return YES;
+	}
+	
+	// Found category definition.
+	if (isInterface && isOpenParenthesis) {
+		[self matchCategoryDefinition];
+		return YES;
+	}
+	
 	// Found class definition.
 	if (isInterface) {
 		[self matchClassDefinition];

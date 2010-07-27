@@ -14,6 +14,7 @@
 		7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
 		7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
+		7367B86011FEF772005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */; };
 		7367B89A11FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */; };
 		7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */; };
 		7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */; };
@@ -93,6 +94,7 @@
 		7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBRealLifeDataProvider.m; sourceTree = "<group>"; };
 		7367B84C11FEF496005ED6CD /* GBCategoryData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCategoryData.h; sourceTree = "<group>"; };
 		7367B84D11FEF496005ED6CD /* GBCategoryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryData.m; sourceTree = "<group>"; };
+		7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-CategoryParsingTesting.m"; sourceTree = "<group>"; };
 		7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-IvarsParsingTesting.m"; sourceTree = "<group>"; };
 		7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-AdoptedProtocolsParsingTesting.m"; sourceTree = "<group>"; };
 		7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-MethodsParsingTesting.m"; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
+				7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */,
 				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
 				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
 				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
@@ -623,6 +626,7 @@
 				7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */,
 				7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */,
 				7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */,
+				7367B86011FEF772005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */,
 				7367B89A11FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */,
 				7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
 				7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */,

@@ -23,7 +23,7 @@
 		_categoryName = [name copy];
 		_className = [className copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
-		_methods = [[GBAdoptedProtocolsProvider alloc] init];
+		_methods = [[GBMethodsProvider alloc] init];
 	}
 	return self;
 }

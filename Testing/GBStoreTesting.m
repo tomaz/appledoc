@@ -117,4 +117,17 @@
 	STAssertThrows([store registerCategory:extension2], nil);
 }
 
+- (void)testRegisterExtension_shouldAllowCategoryAndExtensionOfSameClass {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	// execute
+	[store registerCategory:category];
+	[store registerCategory:extension];
+	// execute & verify
+	assertThatBool([store.categories containsObject:category], equalToBool(YES));
+	assertThatBool([store.categories containsObject:extension], equalToBool(YES));
+}
+
 @end

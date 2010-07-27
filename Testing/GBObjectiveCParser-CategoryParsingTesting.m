@@ -73,6 +73,88 @@
 	assertThat([[categories objectAtIndex:1] className], is(@"MyClass2"));
 }
 
+#pragma mark Category components parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryAdoptedProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) <Protocol> @end" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	NSArray *protocols = [category.adoptedProtocols protocolsSortedByName];
+	assertThatInteger([protocols count], equalToInteger(1));
+	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryMethods {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) -(void)method; @end" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	NSArray *methods = [category.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryProperties {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) @property (readonly) int name; @end" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	NSArray *methods = [category.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+}
+
+#pragma mark Extension components parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterExtensionAdoptedProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) <Protocol> @end" toStore:store];
+	// verify
+	GBCategoryData *extension = [[store categories] anyObject];
+	NSArray *protocols = [extension.adoptedProtocols protocolsSortedByName];
+	assertThatInteger([protocols count], equalToInteger(1));
+	assertThat([[protocols objectAtIndex:0] protocolName], is(@"Protocol"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterExtensionMethods {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) -(void)method; @end" toStore:store];
+	// verify
+	GBCategoryData *extension = [[store categories] anyObject];
+	NSArray *methods = [extension.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterExtensionProperties {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) @property (readonly) int name; @end" toStore:store];
+	// verify
+	GBCategoryData *extension = [[store categories] anyObject];
+	NSArray *methods = [extension.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+}
+
 #pragma mark Complex parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoriesAndExtensionsFromRealLifeInput {
