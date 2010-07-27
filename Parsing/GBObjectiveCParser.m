@@ -115,6 +115,7 @@
 	// @interface CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
+	GBLogVerbose(@"Matched %@ class definition.", className);
 	[self.store registerClass:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
@@ -128,6 +129,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+	GBLogVerbose(@"Matching %@(%@) category definition...", className, categoryName);
 	[self.store registerCategory:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
@@ -138,6 +140,7 @@
 	// @interface CLASSNAME ( )
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
+	GBLogVerbose(@"Matched %@() extension definition.", className);
 	[self.store registerCategory:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
@@ -148,6 +151,7 @@
 	// @protocol PROTOCOLNAME
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
+	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
 	[self.store registerProtocol:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
@@ -156,6 +160,7 @@
 - (void)matchSuperclassForClass:(GBClassData *)class {
 	if (![[self.tokenizer currentToken] matches:@":"]) return;
 	class.superclassName = [[self.tokenizer lookahead:1] stringValue];
+	GBLogDebug(@"Matched superclass %@.", class.superclassName);
 	[self.tokenizer consume:2];
 }
 
@@ -163,6 +168,7 @@
 	[self.tokenizer consumeFrom:@"<" to:@">" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([token matches:@","]) return;
 		GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:[token stringValue]];
+		GBLogDebug(@"Matched adopted protocol %@.", protocol);
 		[provider registerProtocol:protocol];
 	}];
 }
@@ -179,6 +185,7 @@
 		}];
 		
 		GBIvarData *ivar = [GBIvarData ivarDataWithComponents:components];
+		GBLogDebug(@"Matched ivar %@", ivar);
 		[provider registerIvar:ivar];
 		*consume = NO;
 	}];
@@ -216,6 +223,7 @@
 		
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
+		GBLogDebug(@"Matched property definition %@.", propertyData);
 		[provider registerMethod:propertyData];
 		*consume = NO;
 		*stop = YES;
@@ -234,6 +242,7 @@
 	// @implementation CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
+	GBLogVerbose(@"Matched %@ class declaration.", className);
 	[self.store registerClass:class];
 	[self.tokenizer consume:2];
 	[self matchMethodDeclarationsForProvider:class.methods];
@@ -244,6 +253,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+	GBLogVerbose(@"Matched %@(%@) category declaration.", className, categoryName);
 	[self.store registerCategory:category];
 	[self.tokenizer consume:5];
 	[self matchMethodDeclarationsForProvider:category.methods];
@@ -342,7 +352,6 @@
 	if (isImplementation && isOpenParenthesis) {
 		[self matchCategoryDeclaration];
 		return YES;
-		return NO;
 	}
 	
 	// Found class declaration.
@@ -400,6 +409,7 @@
 		
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
+		GBLogDebug(@"Matched method %@%@.", start, methodData);
 		[provider registerMethod:methodData];
 		*consume = NO;
 		*stop = YES;

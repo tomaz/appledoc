@@ -19,6 +19,7 @@
 - (BOOL)isDirectoryIgnored:(NSString *)filename;
 - (BOOL)isSourceCodeFile:(NSString *)path;
 @property (assign) NSUInteger numberOfParsedFiles;
+@property (retain) GBObjectiveCParser *objectiveCParser;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -36,6 +37,7 @@
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
+		self.objectiveCParser = [[GBObjectiveCParser alloc] initWithSettingsProvider:self.settings];
 	}
 	return self;
 }
@@ -84,7 +86,16 @@
 - (void)parseFile:(NSString *)path {
 	GBLogDebug(@"Parsing file '%@'...", path);
 	if (![self isSourceCodeFile:path]) return;	
+	
 	GBLogInfo(@"Parsing source code from '%@'...", path);
+	NSError *error = nil;
+	NSString *input = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+	if (error) {
+		GBLogExceptionNoStack([NSException exceptionWithError:error format:nil], @"Failed reading contents of file '%@'!", path);
+		return;
+	}
+	
+	[self.objectiveCParser parseObjectsFromString:input toStore:self.store];
 	self.numberOfParsedFiles++;
 }
 
@@ -111,6 +122,7 @@
 #pragma mark Properties
 
 @synthesize numberOfParsedFiles;
+@synthesize objectiveCParser;
 @synthesize settings;
 @synthesize store;
 

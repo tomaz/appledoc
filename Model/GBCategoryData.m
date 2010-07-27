@@ -20,7 +20,7 @@
 	NSParameterAssert(className && [className length] > 0);
 	self = [super init];
 	if (self) {
-		_categoryName = [name copy];
+		_categoryName = name ? [name copy] : nil;
 		_className = [className copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
 		_methods = [[GBMethodsProvider alloc] init];
@@ -38,7 +38,7 @@
 #pragma mark Properties
 
 - (BOOL)isExtension {
-	return ([[self categoryName] length] > 0);
+	return ([self categoryName] == nil);
 }
 
 @synthesize categoryName = _categoryName;

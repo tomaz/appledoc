@@ -8,6 +8,7 @@
 
 #import "DDCliUtil.h"
 #import "DDGetoptLongParser.h"
+#import "GBStore.h"
 #import "GBParser.h"
 #import "GBAppledocApplication.h"
 
@@ -70,10 +71,13 @@ static NSString *kGBArgHelp = @"help";
 		[self validateArguments:arguments];
 		[self initializeLoggingSystem];
 		
-//		GBLogNormal(@"Parsing source files...");
-//		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
-//		[parser parseObjectsFromPaths:arguments];
-//		
+		GBLogNormal(@"Initializing...");
+		GBStore *store = [[GBStore alloc] init];
+		
+		GBLogNormal(@"Parsing source files...");
+		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
+		[parser parseObjectsFromPaths:arguments toStore:store];
+		
 //		GBLogNormal(@"Processing parsed data...");
 //		GBProcessor *processor = [[GBProcessor alloc] init];
 //		[processor processObjectsFromParser:parser];

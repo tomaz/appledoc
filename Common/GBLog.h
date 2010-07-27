@@ -77,9 +77,12 @@ extern NSUInteger kGBLogLevel;
 // Helper macros for logging exceptions. Note that we don't use formatting here as it would make the output unreadable
 // in higher level log formats. The information is already verbose enough!
 #define GBLogExceptionLine(frmt,...) { ddprintf(frmt, ##__VA_ARGS__); ddprintf(@"\n"); }
-#define GBLogException(exception,frmt,...) { \
+#define GBLogExceptionNoStack(exception,frmt,...) { \
 	if (frmt) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
 	GBLogExceptionLine(@"%@: %@", [exception name], [exception reason]); \
+}
+#define GBLogException(exception,frmt,...) { \
+	GBLogExceptionNoStack(exception,frmt,##__VA_ARGS__); \
 	NSArray *symbols = [exception callStackSymbols]; \
 	for (NSString *symbol in symbols) { \
 		GBLogExceptionLine(@"  @ %@", symbol); \
