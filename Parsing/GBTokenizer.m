@@ -53,11 +53,11 @@
 	self.tokenIndex += count;
 }
 
-- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block {
+- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block {
 	[self consumeFrom:nil to:end usingBlock:block];
 }
 
-- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block {
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block {
 	// Skip starting token.
 	if (start) {
 		if (![[self currentToken] matches:start]) return;

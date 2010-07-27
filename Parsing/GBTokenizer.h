@@ -85,7 +85,7 @@
  @param block The block to be called for each token.
  @exception NSException Thrown if the given end token is `nil`.
  */
-- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block;
+- (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block;
 
 /** Enumerates and consumes all tokens starting at current token up until the given end token is detected.
  
@@ -99,7 +99,7 @@
  @param block The block to be called for each token.
  @exception NSException Thrown if the given end token is `nil`.
  */
-- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *quit))block;
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block;
 
 /** Specifies whether we're at EOF.
  

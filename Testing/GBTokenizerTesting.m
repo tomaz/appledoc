@@ -51,7 +51,7 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	NSMutableArray *tokens = [NSMutableArray array];
 	// execute
-	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		[tokens addObject:[token stringValue]];
 	}];
 	// verify
@@ -67,7 +67,7 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	NSMutableArray *tokens = [NSMutableArray array];
 	// execute
-	[tokenizer consumeFrom:@"one" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[tokenizer consumeFrom:@"one" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		[tokens addObject:[token stringValue]];
 	}];
 	// verify
@@ -82,7 +82,7 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	__block NSUInteger count = 0;
 	// execute
-	[tokenizer consumeFrom:@"two" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[tokenizer consumeFrom:@"two" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		count++;
 	}];
 	// verify
@@ -94,7 +94,7 @@
 	// setup
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	// execute
-	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 	}];
 	// verify
 	assertThat([[tokenizer currentToken] stringValue], is(@"six"));
@@ -104,8 +104,8 @@
 	// setup
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	// execute
-	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
-		*quit = YES;
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		*stop = YES;
 	}];
 	// verify
 	assertThat([[tokenizer currentToken] stringValue], is(@"two"));
@@ -115,9 +115,9 @@
 	// setup
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
 	// execute
-	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		*consume = NO;
-		*quit = YES;
+		*stop = YES;
 	}];
 	// verify
 	assertThat([[tokenizer currentToken] stringValue], is(@"one"));

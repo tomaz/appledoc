@@ -19,6 +19,8 @@
 
 @implementation GBObjectiveCParserMethodsParsingTesting
 
+#pragma mark Method definitions parsing
+
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitionWithNoArguments {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -70,6 +72,74 @@
 	assertThatInteger([methods count], equalToInteger(2));
 	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method1", nil];
 	[self assertMethod:[methods objectAtIndex:1] matchesClassComponents:@"void", @"method2", nil];
+}
+
+#pragma mark Method declarations parsing
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithNoArguments {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method { } @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithArguments {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method:(NSString*)var { } @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"NSString", @"*", @"var", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithMutlipleArguments {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)arg1:(int)var1 arg2:(long)var2 { } @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"arg1", @"int", @"var1", @"arg2", @"long", @"var2", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterAllMethodDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method1{} +(void)method2{} @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method1", nil];
+	[self assertMethod:[methods objectAtIndex:1] matchesClassComponents:@"void", @"method2", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterNestedMethodDeclaration {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method { if (_var) { if(a>b) { [self quit]; } else { MY_MACRO(_var); } } } @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", nil];
 }
 
 #pragma mark Properties parsing testing

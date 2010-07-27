@@ -22,7 +22,7 @@
 
 @end
 
-@interface GBObjectiveCParser (ClassDefinitionParsing)
+@interface GBObjectiveCParser (DefinitionParsing)
 
 - (void)matchClassDefinition;
 - (void)matchCategoryDefinition;
@@ -34,13 +34,25 @@
 - (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider;
 - (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider;
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider;
-- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
+
+@end
+
+@interface GBObjectiveCParser (DeclarationsParsing)
+
+- (void)matchClassDeclaration;
+- (void)matchCategoryDeclaration;
+- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider;
+- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider;
+- (void)consumeMethodBody;
 
 @end
 
 @interface GBObjectiveCParser (CommonParsing)
 
 - (BOOL)matchNextObject;
+- (BOOL)matchObjectDefinition;
+- (BOOL)matchObjectDeclaration;
+- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
 
 @end
 
@@ -97,7 +109,7 @@
 
 #pragma mark -
 
-@implementation GBObjectiveCParser (ClassDefinitionParsing)
+@implementation GBObjectiveCParser (DefinitionParsing)
 
 - (void)matchClassDefinition {
 	// @interface CLASSNAME
@@ -148,7 +160,7 @@
 }
 
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider {
-	[self.tokenizer consumeFrom:@"<" to:@">" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[self.tokenizer consumeFrom:@"<" to:@">" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([token matches:@","]) return;
 		GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:[token stringValue]];
 		[provider registerProtocol:protocol];
@@ -156,13 +168,13 @@
 }
 
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider {
-	[self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([token matches:@"@private"]) return;
 		if ([token matches:@"@protected"]) return;
 		if ([token matches:@"@public"]) return;
 		
 		NSMutableArray *components = [NSMutableArray array];
-		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			[components addObject:[token stringValue]];
 		}];
 		
@@ -173,7 +185,7 @@
 }
 
 - (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider {
-	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([self matchMethodDefinitionForProvider:provider] || [self matchPropertyDefinitionForProvider:provider]) {
 			*consume = NO;
 		}
@@ -188,17 +200,17 @@
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider {
 	__block BOOL result = NO;
-	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
-		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			if ([token matches:@","]) return;
 			[propertyAttributes addObject:[token stringValue]];
 		}];
 		
 		// Get property types and name.
 		NSMutableArray *propertyComponents = [NSMutableArray array];
-		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
+		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			[propertyComponents addObject:[token stringValue]];
 		}];
 		
@@ -206,64 +218,63 @@
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		[provider registerMethod:propertyData];
 		*consume = NO;
-		*quit = YES;
+		*stop = YES;
 		result = YES;
 	}];
 	return result;
 }
 	 
-- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
-	// This method only matches class or instance methods, not properties!
-	__block BOOL result = NO;
-	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
-	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
-		// Get result types.
-		NSMutableArray *methodResult = [NSMutableArray array];
-		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
-			[methodResult addObject:[token stringValue]];
-		}];
-		
-		// Get all arguments.
-		__block NSMutableArray *methodArgs = [NSMutableArray array];
-		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
-			// Get argument name.
-			NSString *argumentName = [token stringValue];
-			[self.tokenizer consume:1];
-			
-			__block NSString *argumentVar = nil;
-			__block NSMutableArray *argumentTypes = [NSMutableArray array];
-			if ([[self.tokenizer currentToken] matches:@":"]) {
-				[self.tokenizer consume:1];
-				
-				// Get argument types.
-				[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *quit) {
-					[argumentTypes addObject:[token stringValue]];
-				}];
-				
-				// Get argument variable name.
-				if (![[self.tokenizer currentToken] matches:@";"]) {
-					argumentVar = [[self.tokenizer currentToken] stringValue];
-					[self.tokenizer consume:1];
-				}
-			}
-			
-			GBMethodArgument *argument = nil;
-			if ([argumentTypes count] == 0)
-				argument = [GBMethodArgument methodArgumentWithName:argumentName];
-			else
-				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar];
-			[methodArgs addObject:argument];
+@end
+
+#pragma mark -
+
+@implementation GBObjectiveCParser (DeclarationsParsing)
+
+- (void)matchClassDeclaration {
+	// @implementation CLASSNAME
+	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+	GBClassData *class = [GBClassData classDataWithName:className];
+	[self.store registerClass:class];
+	[self.tokenizer consume:2];
+	[self matchMethodDeclarationsForProvider:class.methods];
+}
+
+- (void)matchCategoryDeclaration {
+}
+
+- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider {
+	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		if ([self matchMethodDeclarationForProvider:provider]) {
 			*consume = NO;
-		}];
-		
-		// Create method instance and register it.
-		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
-		[provider registerMethod:methodData];
-		*consume = NO;
-		*quit = YES;
-		result = YES;
+		}
 	}];
-	return result;
+}
+
+- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider {
+	if ([self matchMethodDataForProvider:provider from:@"+" to:@"{"]) {
+		[self consumeMethodBody];
+		return YES;
+	}
+	if ([self matchMethodDataForProvider:provider from:@"-" to:@"{"]) {
+		[self consumeMethodBody];
+		return YES;
+	}
+	return NO;
+}
+
+- (void)consumeMethodBody {
+	// This method assumes we're currently pointing to the first token after method's opening brace!
+	__block NSUInteger braceLevel = 1;
+	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		if ([token matches:@"{"]) {
+			braceLevel++;
+			return;
+		}
+		if ([token matches:@"}"]) {
+			if (--braceLevel == 0) *stop = YES;
+			return;
+		}
+	}];
 }
 
 @end
@@ -273,6 +284,12 @@
 @implementation GBObjectiveCParser (CommonParsing)
 
 - (BOOL)matchNextObject {
+	if ([self matchObjectDefinition]) return YES;
+	if ([self matchObjectDeclaration]) return YES;
+	return NO;
+}
+
+- (BOOL)matchObjectDefinition {
 	// Get data needed for distinguishing between class, category and extension definition.
 	BOOL isInterface = [[self.tokenizer currentToken] matches:@"@interface"];
 	BOOL isOpenParenthesis = [[self.tokenizer lookahead:2] matches:@"("];
@@ -307,6 +324,81 @@
 	}
 	
 	return NO;
+}
+
+- (BOOL)matchObjectDeclaration {
+	// Get data needed for distinguishing between class and category declaration.
+	BOOL isImplementation = [[self.tokenizer currentToken] matches:@"@implementation"];
+	BOOL isOpenParenthesis = [[self.tokenizer lookahead:2] matches:@"("];
+	
+	// Found category declaration.
+	if (isImplementation && isOpenParenthesis) {
+//		[self matchCategoryDeclaration];
+//		return YES;
+		return NO;
+	}
+	
+	// Found class declaration.
+	if (isImplementation) {
+		[self matchClassDeclaration];
+		return YES;
+	}
+	
+	return NO;
+}
+
+- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
+	// This method only matches class or instance methods, not properties!
+	__block BOOL result = NO;
+	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
+	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		// Get result types.
+		NSMutableArray *methodResult = [NSMutableArray array];
+		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+			[methodResult addObject:[token stringValue]];
+		}];
+		
+		// Get all arguments.
+		__block NSMutableArray *methodArgs = [NSMutableArray array];
+		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+			// Get argument name.
+			NSString *argumentName = [token stringValue];
+			[self.tokenizer consume:1];
+			
+			__block NSString *argumentVar = nil;
+			__block NSMutableArray *argumentTypes = [NSMutableArray array];
+			if ([[self.tokenizer currentToken] matches:@":"]) {
+				[self.tokenizer consume:1];
+				
+				// Get argument types.
+				[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+					[argumentTypes addObject:[token stringValue]];
+				}];
+				
+				// Get argument variable name.
+				if (![[self.tokenizer currentToken] matches:end]) {
+					argumentVar = [[self.tokenizer currentToken] stringValue];
+					[self.tokenizer consume:1];
+				}
+			}
+			
+			GBMethodArgument *argument = nil;
+			if ([argumentTypes count] == 0)
+				argument = [GBMethodArgument methodArgumentWithName:argumentName];
+			else
+				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar];
+			[methodArgs addObject:argument];
+			*consume = NO;
+		}];
+		
+		// Create method instance and register it.
+		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
+		[provider registerMethod:methodData];
+		*consume = NO;
+		*stop = YES;
+		result = YES;
+	}];
+	return result;
 }
 
 @end

@@ -17,7 +17,7 @@
 
 @implementation GBObjectiveCParserClassParsingTesting
 
-#pragma mark Classes common data parsing testing
+#pragma mark Classes definitions parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterClassDefinition {
 	// setup
@@ -66,7 +66,34 @@
 	assertThat(class.superclassName, is(@"NSObject"));
 }
 
-#pragma mark Class components parsing testing
+#pragma mark Classes declarations parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterClassDeclaration {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass @end" toStore:store];
+	// verify
+	NSArray *classes = [store classesSortedByName];
+	assertThatInteger([classes count], equalToInteger(1));
+	assertThat([[classes objectAtIndex:0] className], is(@"MyClass"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterAllClassDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass1 @end   @implementation MyClass2 @end" toStore:store];
+	// verify
+	NSArray *classes = [store classesSortedByName];
+	assertThatInteger([classes count], equalToInteger(2));
+	assertThat([[classes objectAtIndex:0] className], is(@"MyClass1"));
+	assertThat([[classes objectAtIndex:1] className], is(@"MyClass2"));
+}
+
+#pragma mark Class definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocols {
 	// setup
@@ -107,7 +134,7 @@
 	assertThat([[ivars objectAtIndex:0] ivarName], is(@"var"));
 }
 
-- (void)testParseObjectsFromString_shouldRegisterMethods {
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -131,6 +158,21 @@
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
 	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+}
+
+#pragma mark Class declaration components parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(void)method { } @end" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [class.methods methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
 }
 
 #pragma mark Complex parsing testing
