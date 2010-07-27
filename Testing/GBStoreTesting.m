@@ -49,4 +49,72 @@
 	STAssertThrows([store registerClass:class2], nil);
 }
 
+#pragma mark Categoru registration testing
+
+- (void)testRegisterCategory_shouldAddCategoryToList {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	// execute
+	[store registerCategory:category];
+	// verify
+	assertThatBool([store.categories containsObject:category], equalToBool(YES));
+	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
+	assertThat([[store.categories allObjects] objectAtIndex:0], is(category));
+}
+
+- (void)testRegisterCategory_shouldIgnoreSameInstance {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	// execute
+	[store registerCategory:category];
+	[store registerCategory:category];
+	// verify
+	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
+}
+
+- (void)testRegisterCategory_shouldPreventAddingDifferentInstanceWithSameName {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category1 = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *category2 = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	[store registerCategory:category1];
+	// execute & verify
+	STAssertThrows([store registerCategory:category2], nil);
+}
+
+- (void)testRegisterExtension_shouldAddExtensionToList {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	// execute
+	[store registerCategory:extension];
+	// verify
+	assertThatBool([store.categories containsObject:extension], equalToBool(YES));
+	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
+	assertThat([[store.categories allObjects] objectAtIndex:0], is(extension));
+}
+
+- (void)testRegisterExtension_shouldIgnoreSameInstance {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	// execute
+	[store registerCategory:extension];
+	[store registerCategory:extension];
+	// verify
+	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
+}
+
+- (void)testRegisterExtension_shouldPreventAddingDifferentInstanceWithSameName {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *extension1 = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	GBCategoryData *extension2 = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	[store registerCategory:extension1];
+	// execute & verify
+	STAssertThrows([store registerCategory:extension2], nil);
+}
+
 @end

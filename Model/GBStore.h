@@ -14,9 +14,14 @@
 	@private
 	NSMutableSet *_classes;
 	NSMutableDictionary *_classesByName;
+	NSMutableSet *_categories;
+	NSMutableDictionary *_categoriesByName;
 }
 
 /** Returns all registered classes sorted by their name. */
 - (NSArray *)classesSortedByName;
+
+/** Returns all registered categories sorted by their name. */
+- (NSArray *)categoriesSortedByName;
 
 @end

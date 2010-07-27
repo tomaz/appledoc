@@ -7,6 +7,7 @@
 //
 
 #import "GBClassData.h"
+#import "GBCategoryData.h"
 #import "GBProtocolData.h"
 
 /** Defines the requirements for store providers.
@@ -27,7 +28,22 @@
  */
 - (void)registerClass:(GBClassData *)class;
 
+/** Registers the given category to the providers data.
+ 
+ If provider doesn't yet have the given category instance registered, the object is added to `categories` list. If the same object is 
+ already registered, nothing happens.
+ 
+ @warning *Note:* If another instance of the category with the same name/class name is registered, an exception is thrown.
+ 
+ @param category The category to register.
+ @exception NSException Thrown if the given category is already registered.
+ */
+- (void)registerCategory:(GBCategoryData *)category;
+
 /** The list of all registered classes as instances of `GBClassData`. */
 @property (readonly) NSSet *classes;
+
+/** The list of all registered categories and extensions as instances of `GBCategoryData`. */
+@property (readonly) NSSet *categories;
 
 @end

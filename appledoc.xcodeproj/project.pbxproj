@@ -13,6 +13,7 @@
 		7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
 		7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
 		7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */; };
+		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -87,6 +88,8 @@
 		7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectsAssertor.m; sourceTree = "<group>"; };
 		7367B83511FEEE27005ED6CD /* GBRealLifeDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBRealLifeDataProvider.h; sourceTree = "<group>"; };
 		7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBRealLifeDataProvider.m; sourceTree = "<group>"; };
+		7367B84C11FEF496005ED6CD /* GBCategoryData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCategoryData.h; sourceTree = "<group>"; };
+		7367B84D11FEF496005ED6CD /* GBCategoryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryData.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -402,6 +405,8 @@
 				73FC6E0E11FCD54400AAD0B9 /* GBStore.m */,
 				73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */,
 				73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */,
+				7367B84C11FEF496005ED6CD /* GBCategoryData.h */,
+				7367B84D11FEF496005ED6CD /* GBCategoryData.m */,
 				73FC72A911FD95A200AAD0B9 /* GBProtocolData.h */,
 				73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */,
 				73FC731111FDADD600AAD0B9 /* GBIvarData.h */,
@@ -642,6 +647,7 @@
 				73FC741111FE1FDF00AAD0B9 /* GBMethodsProvider.m in Sources */,
 				73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */,
 				73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */,
+				7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

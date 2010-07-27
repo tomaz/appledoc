@@ -17,6 +17,8 @@
 	if (self) {
 		_classes = [[NSMutableSet alloc] init];
 		_classesByName = [[NSMutableDictionary alloc] init];
+		_categories = [[NSMutableSet alloc] init];
+		_categoriesByName = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -26,6 +28,13 @@
 - (NSArray *)classesSortedByName {
 	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"className" ascending:YES]];
 	return [[self.classes allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
+- (NSArray *)categoriesSortedByName {
+	NSSortDescriptor *classNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"className" ascending:YES];
+	NSSortDescriptor *categoryNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"categoryName" ascending:YES];
+	NSArray *descriptors = [NSArray arrayWithObjects:classNameDescription, categoryNameDescription, nil];
+	return [[self.categories allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
 #pragma mark GBStoreProviding implementation
@@ -39,6 +48,17 @@
 	[_classesByName setObject:class forKey:class.className];
 }
 
+- (void)registerCategory:(GBCategoryData *)category {
+	NSParameterAssert(category != nil);
+	GBLogDebug(@"Registering category %@...", category);
+	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.className, category.categoryName];
+	if ([_categories containsObject:category]) return;
+	if ([_categoriesByName objectForKey:categoryID]) [NSException raise:@"Category with ID %@ is already registered!", categoryID];
+	[_categories addObject:category];
+	[_categoriesByName setObject:category forKey:categoryID];
+}
+
 @synthesize classes = _classes;
+@synthesize categories = _categories;
 
 @end
