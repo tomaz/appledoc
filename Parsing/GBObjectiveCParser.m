@@ -28,6 +28,7 @@
 - (void)matchSuperclassForClass:(GBClassData *)class;
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider;
+- (void)matchMethodsForProvider:(GBMethodsProvider *)provider;
 
 @end
 
@@ -101,6 +102,7 @@
 	[self matchSuperclassForClass:class];
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
+	[self matchMethodsForProvider:class.methods];
 }
 
 - (void)matchSuperclassForClass:(GBClassData *)class {
@@ -124,13 +126,80 @@
 		if ([token matches:@"@public"]) return;
 		
 		NSMutableArray *components = [NSMutableArray array];
-		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *ivarToken, BOOL *ivarConsume) {
-			[components addObject:[ivarToken stringValue]];
+		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume) {
+			[components addObject:[token stringValue]];
 		}];
 		
 		GBIvarData *ivar = [GBIvarData ivarDataWithComponents:components];
 		[provider registerIvar:ivar];
 		*consume = NO;
+	}];
+}
+
+- (void)matchMethodsForProvider:(GBMethodsProvider *)provider {
+	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume) {
+		if ([token matches:@"-"] || [token matches:@"+"]) {
+			GBMethodType methodType = [token matches:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
+			[self.tokenizer consume:1];
+			
+			NSMutableArray *methodResult = [NSMutableArray array];
+			[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume) {
+				[methodResult addObject:[token stringValue]];
+			}];
+			
+			NSMutableArray *methodArgs = [NSMutableArray array];
+			[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume) {
+				NSString *argumentName = [token stringValue];
+				[self.tokenizer consume:1];
+				
+				__block NSString *argumentVar = nil;
+				NSMutableArray *argumentTypes = [NSMutableArray array];
+				if ([[self.tokenizer currentToken] matches:@":"]) {
+					[self.tokenizer consume:1];
+					
+					[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume) {
+						[argumentTypes addObject:[token stringValue]];
+					}];
+					
+					if (![[self.tokenizer currentToken] matches:@";"]) {
+						argumentVar = [[self.tokenizer currentToken] stringValue];
+						[self.tokenizer consume:1];
+					}
+				}
+
+				GBMethodArgument *argument = nil;
+				if ([argumentTypes count] == 0)
+					argument = [GBMethodArgument methodArgumentWithName:argumentName];
+				else
+					argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar];
+				[methodArgs addObject:argument];
+				*consume = NO;
+			}];
+			
+			GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
+			[provider registerMethod:methodData];
+			*consume = NO;
+			return;
+		}
+		if ([token matches:@"@property"]) {
+			[self.tokenizer consume:1];
+			
+			NSMutableArray *propertyAttributes = [NSMutableArray array];
+			[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume) {
+				if ([token matches:@","]) return;
+				[propertyAttributes addObject:[token stringValue]];
+			}];
+			
+			NSMutableArray *propertyComponents = [NSMutableArray array];
+			[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume) {
+				[propertyComponents addObject:[token stringValue]];
+			}];
+			
+			GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
+			[provider registerMethod:propertyData];
+			*consume = NO;
+			return;
+		}
 	}];
 }
 

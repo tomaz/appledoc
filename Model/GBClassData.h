@@ -8,6 +8,7 @@
 
 #import "GBAdoptedProtocolsProvider.h"
 #import "GBIvarsProvider.h"
+#import "GBMethodsProvider.h"
 
 /** Describes a class.
  */
@@ -16,6 +17,7 @@
 	NSString *_className;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;
 	GBIvarsProvider *_ivars;
+	GBMethodsProvider *_methods;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -55,5 +57,8 @@
 
 /** Class's ivars, available via `GBIvarsProvider`. */
 @property (readonly) GBIvarsProvider *ivars;
+
+/** Class's methods, available via `GBMethodsProvider`. */
+@property (readonly) GBMethodsProvider *methods;
 
 @end

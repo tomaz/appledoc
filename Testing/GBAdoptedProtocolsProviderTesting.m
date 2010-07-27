@@ -6,7 +6,6 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBProtocolData.h"
 #import "GBAdoptedProtocolsProvider.h"
 
 @interface GBAdoptedProtocolsProviderTesting : SenTestCase

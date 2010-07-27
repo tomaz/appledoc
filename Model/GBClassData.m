@@ -6,7 +6,6 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBAdoptedProtocolsProvider.h"
 #import "GBClassData.h"
 
 @implementation GBClassData
@@ -25,6 +24,7 @@
 		_className = [name copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
 		_ivars = [[GBIvarsProvider alloc] init];
+		_methods = [[GBMethodsProvider alloc] init];
 	}
 	return self;
 }
@@ -41,5 +41,6 @@
 @synthesize superclassName;
 @synthesize adoptedProtocols = _adoptedProtocols;
 @synthesize ivars = _ivars;
+@synthesize methods = _methods;
 
 @end

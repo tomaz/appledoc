@@ -6,7 +6,6 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBIvarData.h"
 #import "GBIvarsProvider.h"
 
 @interface GBIvarsProviderTesting : SenTestCase
@@ -19,7 +18,7 @@
 - (void)testRegisterIvar_shouldAddIvarToList {
 	// setup
 	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
-	GBIvarData *ivar = [[GBIvarData alloc] initWithDataFromComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
+	GBIvarData *ivar = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
 	// execute
 	[provider registerIvar:ivar];
 	// verify
@@ -31,7 +30,7 @@
 - (void)testRegisterIvar_shouldIgnoreSameInstance {
 	// setup
 	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
-	GBIvarData *ivar = [[GBIvarData alloc] initWithDataFromComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
+	GBIvarData *ivar = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
 	// execute
 	[provider registerIvar:ivar];
 	[provider registerIvar:ivar];
@@ -42,8 +41,8 @@
 - (void)testRegisterIvar_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
-	GBIvarData *ivar1 = [[GBIvarData alloc] initWithDataFromComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name1", nil]];
-	GBIvarData *ivar2 = [[GBIvarData alloc] initWithDataFromComponents:[NSArray arrayWithObjects:@"NSRect", @"_name1", nil]];
+	GBIvarData *ivar1 = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name1", nil]];
+	GBIvarData *ivar2 = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSRect", @"_name1", nil]];
 	[provider registerIvar:ivar1];
 	// execute & verify
 	STAssertThrows([provider registerIvar:ivar2], nil);
