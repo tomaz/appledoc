@@ -24,7 +24,7 @@
 		NSMutableArray *types = [NSMutableArray arrayWithArray:components];
 		[types removeLastObject];
 		self.ivarTypes = types;
-		self.ivarName = [components lastObject];
+		self.nameOfIvar = [components lastObject];
 	}
 	return self;
 }
@@ -32,12 +32,12 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return self.ivarName;
+	return self.nameOfIvar;
 }
 
 #pragma mark Properties
 
-@synthesize ivarName;
+@synthesize nameOfIvar;
 @synthesize ivarTypes;
 
 @end

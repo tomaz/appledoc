@@ -27,9 +27,9 @@
 	NSParameterAssert(ivar != nil);
 	GBLogDebug(@"Registering ivar %@...", ivar);
 	if ([_ivars containsObject:ivar]) return;
-	if ([_ivarsByName objectForKey:ivar.ivarName]) [NSException raise:@"Ivar with name %@ is already registered!", ivar.ivarName];
+	if ([_ivarsByName objectForKey:ivar.nameOfIvar]) [NSException raise:@"Ivar with name %@ is already registered!", ivar.nameOfIvar];
 	[_ivars addObject:ivar];
-	[_ivarsByName setObject:ivar forKey:ivar.ivarName];
+	[_ivarsByName setObject:ivar forKey:ivar.nameOfIvar];
 }
 
 #pragma mark Properties

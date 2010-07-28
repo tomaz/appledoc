@@ -23,7 +23,7 @@
 	for (NSUInteger i=0; i<[arguments count] - 1; i++)
 		assertThat([ivar.ivarTypes objectAtIndex:i], is([arguments objectAtIndex:i]));
 	
-	assertThat(ivar.ivarName, is([arguments lastObject]));
+	assertThat(ivar.nameOfIvar, is([arguments lastObject]));
 }
 
 - (void)assertMethod:(GBMethodData *)method matchesInstanceComponents:(NSString *)firstItem,... {

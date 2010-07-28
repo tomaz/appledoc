@@ -42,7 +42,7 @@
 ///---------------------------------------------------------------------------------------
 
 /** The name of the ivar. */
-@property (retain) NSString *ivarName;
+@property (retain) NSString *nameOfIvar;
 
 /** The array of all ivar type tokens in the order of parsing. */
 @property (retain) NSArray *ivarTypes;

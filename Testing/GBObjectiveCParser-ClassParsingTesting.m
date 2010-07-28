@@ -131,7 +131,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [class.ivars ivars];
 	assertThatInteger([ivars count], equalToInteger(1));
-	assertThat([[ivars objectAtIndex:0] ivarName], is(@"var"));
+	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"var"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitions {
