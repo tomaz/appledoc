@@ -83,4 +83,19 @@
 	assertThatInteger([[source.ivars ivars] count], equalToInteger(2));
 }
 
+- (void)testMergeDataFromClass_shouldMergeMethodsAndPreserveSourceData {
+	//setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
+	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
+	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	GBClassData *source = [GBClassData classDataWithName:@"MyClass"];
+	[source.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[source.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	// execute
+	[original mergeDataFromClass:source];
+	// verify
+	assertThatInteger([[original.methods methods] count], equalToInteger(3));
+	assertThatInteger([[source.methods methods] count], equalToInteger(2));
+}
+
 @end

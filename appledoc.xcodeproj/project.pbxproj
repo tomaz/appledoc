@@ -55,7 +55,7 @@
 		73FC741A11FE210100AAD0B9 /* GBMethodsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */; };
 		73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
 		73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
-		73FC743611FE2CEB00AAD0B9 /* GBModelDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC743511FE2CEB00AAD0B9 /* GBModelDataTesting.m */; };
+		73FC743611FE2CEB00AAD0B9 /* GBMethodDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -223,7 +223,7 @@
 		73FC741C11FE215E00AAD0B9 /* GBMethodData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodData.m; sourceTree = "<group>"; };
 		73FC742B11FE274300AAD0B9 /* GBMethodArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodArgument.h; sourceTree = "<group>"; };
 		73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodArgument.m; sourceTree = "<group>"; };
-		73FC743511FE2CEB00AAD0B9 /* GBModelDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelDataTesting.m; sourceTree = "<group>"; };
+		73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodDataTesting.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -298,10 +298,10 @@
 				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
 				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
 				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
+				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
 				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
 				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
 				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
-				73FC743511FE2CEB00AAD0B9 /* GBModelDataTesting.m */,
 				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
 				7367B6C611FE3750005ED6CD /* Creation & Assertion */,
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
@@ -634,7 +634,7 @@
 				73FC72D911FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m in Sources */,
 				73FC731011FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m in Sources */,
 				73FC741A11FE210100AAD0B9 /* GBMethodsProviderTesting.m in Sources */,
-				73FC743611FE2CEB00AAD0B9 /* GBModelDataTesting.m in Sources */,
+				73FC743611FE2CEB00AAD0B9 /* GBMethodDataTesting.m in Sources */,
 				7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */,
 				7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */,
 				7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */,

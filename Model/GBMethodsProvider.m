@@ -27,9 +27,26 @@
 	NSParameterAssert(method != nil);
 	GBLogDebug(@"Registering method %@...", method);
 	if ([_methods containsObject:method]) return;
-	if ([_methodsBySelectors objectForKey:method.methodSelector]) [NSException raise:@"Method with selector %@ is already registered!", method.methodSelector];
+	GBMethodData *existingMethod = [_methodsBySelectors objectForKey:method.methodSelector];
+	if (existingMethod) {
+		[existingMethod mergeDataFromMethod:method];
+		return;
+	}
 	[_methods addObject:method];
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
+}
+
+- (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source {
+	if (!source || source == self) return;
+	GBLogDebug(@"Merging data from %@...", source);
+	for (GBMethodData *sourceMethod in source.methods) {
+		GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
+		if (existingMethod) {
+			[existingMethod mergeDataFromMethod:sourceMethod];
+			continue;
+		}
+		[self registerMethod:sourceMethod];
+	}
 }
 
 #pragma mark Properties

@@ -36,6 +36,15 @@
  */
 - (void)registerMethod:(GBMethodData *)method;
 
+/** Merges data from the given methods provider.
+ 
+ This copies all unknown methods from the given source to receiver and invokes merging of data for receivers methods 
+ also found in source. It leaves source data intact.
+ 
+ @param source `GBMethodsProvider` to merge from.
+ */
+- (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source;
+
 /** The array of all registered methods as `GBMethodData` instances in the order of registration. */
 @property (readonly) NSArray *methods;
 
