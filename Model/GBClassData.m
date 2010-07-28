@@ -29,6 +29,21 @@
 	return self;
 }
 
+#pragma mark Helper methods
+
+- (void)mergeDataFromClass:(GBClassData *)source {
+	if (!source || source == self) return;
+	NSParameterAssert([source.nameOfClass isEqualToString:self.nameOfClass]);
+	GBLogDebug(@"Merging data from %@...", source);
+	
+	// Merge superclass data.
+	if (!self.nameOfSuperclass) {
+		self.nameOfSuperclass = source.nameOfSuperclass;
+	} else if (![self.nameOfSuperclass isEqualToString:source.nameOfSuperclass]) {
+		GBLogWarn(@"Merged class's superclass %@ is different from ours %@!", source.nameOfSuperclass, self.nameOfSuperclass);
+	}
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

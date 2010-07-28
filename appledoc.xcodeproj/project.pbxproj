@@ -19,6 +19,7 @@
 		7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */; };
 		7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */; };
 		7367B8D411FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */; };
+		7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -100,6 +101,7 @@
 		7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-AdoptedProtocolsParsingTesting.m"; sourceTree = "<group>"; };
 		7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-MethodsParsingTesting.m"; sourceTree = "<group>"; };
 		7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ProtocolParsingTesting.m"; sourceTree = "<group>"; };
+		7367BA761200135B005ED6CD /* GBClassDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassDataTesting.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
 				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
 				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
+				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
 				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
 				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
 				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
@@ -634,6 +637,7 @@
 				7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
 				7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */,
 				7367B8D411FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */,
+				7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
