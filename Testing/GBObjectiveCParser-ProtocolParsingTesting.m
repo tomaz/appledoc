@@ -24,7 +24,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@protocol MyProtocol @end" toStore:store];
+	[parser parseObjectsFromString:@"@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
@@ -36,7 +36,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@protocol MyProtocol1 @end   @protocol MyProtocol2 @end" toStore:store];
+	[parser parseObjectsFromString:@"@protocol MyProtocol1 @end   @protocol MyProtocol2 @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
@@ -51,7 +51,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@protocol MyProtocol <Protocol> @end" toStore:store];
+	[parser parseObjectsFromString:@"@protocol MyProtocol <Protocol> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *protocols = [protocol.adoptedProtocols protocolsSortedByName];
@@ -66,7 +66,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol] toStore:store];
+	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol] sourceFile:@"filename.h" toStore:store];
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	assertThatInteger([[store protocols] count], equalToInteger(1));
 	GBProtocolData *protocol = [[store protocols] anyObject];

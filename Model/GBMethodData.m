@@ -54,7 +54,7 @@
 	NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
 	NSParameterAssert([source.methodResultTypes isEqualToArray:self.methodResultTypes]);
 	GBLogDebug(@"Merging data from %@...", source);
-	// TODO: implement source files merging!
+	[self mergeDataFromModelBase:source];
 }
 
 - (NSString *)selectorFromAssignedData {

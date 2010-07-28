@@ -17,6 +17,7 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
+@property (retain) NSString *filename;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -79,8 +80,9 @@
 
 #pragma mark Parsing handling
 
-- (void)parseObjectsFromString:(NSString *)input toStore:(id)store {
+- (void)parseObjectsFromString:(NSString *)input sourceFile:(NSString *)filename toStore:(id)store {
 	NSParameterAssert(input != nil);
+	NSParameterAssert(filename != nil);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Parsing objective-c objects to store %@...", store);
@@ -102,6 +104,7 @@
 #pragma mark Properties
 
 @synthesize tokenizer;
+@synthesize filename;
 @synthesize settings;
 @synthesize store;
 

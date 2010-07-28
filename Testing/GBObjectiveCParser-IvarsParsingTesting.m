@@ -26,7 +26,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass { int _var; } @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass { int _var; } @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];
@@ -39,7 +39,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass { int _var1; long _var2; } @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass { int _var1; long _var2; } @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];
@@ -53,7 +53,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass { id<Protocol>* _var; } @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass { id<Protocol>* _var; } @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];

@@ -50,9 +50,10 @@
  The method adds all detected objects to the given store.
  
  @param input The input string to parse from.
+ @param filename The name of the file including extension.
  @param store Store into which the objects should be added.
  @exception NSException Thrown if the given input or store is `nil`.
  */
-- (void)parseObjectsFromString:(NSString *)input toStore:(id)store;
+- (void)parseObjectsFromString:(NSString *)input sourceFile:(NSString *)filename toStore:(id)store;
 
 @end

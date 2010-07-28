@@ -22,6 +22,8 @@
 		7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
 		7367BAB912001BF7005ED6CD /* GBProtocolDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */; };
 		7367BAFC12002854005ED6CD /* GBIvarDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */; };
+		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
+		7367BB5212004058005ED6CD /* GBModelBaseTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB5112004058005ED6CD /* GBModelBaseTesting.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -106,6 +108,9 @@
 		7367BA761200135B005ED6CD /* GBClassDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassDataTesting.m; sourceTree = "<group>"; };
 		7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBProtocolDataTesting.m; sourceTree = "<group>"; };
 		7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBIvarDataTesting.m; sourceTree = "<group>"; };
+		7367BB3412003CAB005ED6CD /* GBModelBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBModelBase.h; sourceTree = "<group>"; };
+		7367BB3512003CAB005ED6CD /* GBModelBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBase.m; sourceTree = "<group>"; };
+		7367BB5112004058005ED6CD /* GBModelBaseTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBaseTesting.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -299,6 +304,7 @@
 				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
 				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
 				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
+				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
 				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
 				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
 				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
@@ -532,6 +538,8 @@
 				73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */,
 				73FC740F11FE1FDF00AAD0B9 /* GBMethodsProvider.h */,
 				73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */,
+				7367BB3412003CAB005ED6CD /* GBModelBase.h */,
+				7367BB3512003CAB005ED6CD /* GBModelBase.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -646,6 +654,7 @@
 				7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */,
 				7367BAB912001BF7005ED6CD /* GBProtocolDataTesting.m in Sources */,
 				7367BAFC12002854005ED6CD /* GBIvarDataTesting.m in Sources */,
+				7367BB5212004058005ED6CD /* GBModelBaseTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -680,6 +689,7 @@
 				73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */,
 				73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */,
 				7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */,
+				7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

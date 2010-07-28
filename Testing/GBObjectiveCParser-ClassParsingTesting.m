@@ -24,7 +24,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
@@ -36,7 +36,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass1 @end   @interface MyClass2 @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass1 @end   @interface MyClass2 @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
@@ -49,7 +49,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	assertThat(class.nameOfSuperclass, is(nil));
@@ -60,7 +60,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass : NSObject @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass : NSObject @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	assertThat(class.nameOfSuperclass, is(@"NSObject"));
@@ -73,7 +73,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@implementation MyClass @end" toStore:store];
+	[parser parseObjectsFromString:@"@implementation MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
@@ -85,7 +85,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@implementation MyClass1 @end   @implementation MyClass2 @end" toStore:store];
+	[parser parseObjectsFromString:@"@implementation MyClass1 @end   @implementation MyClass2 @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
@@ -100,7 +100,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass : NSObject <Protocol> @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass : NSObject <Protocol> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
@@ -113,7 +113,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass <Protocol> @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass <Protocol> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
@@ -126,7 +126,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass { int var; } @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass { int var; } @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [class.ivars ivars];
@@ -139,7 +139,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass -(void)method; @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass -(void)method; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
@@ -152,7 +152,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass @property (readonly) int name; @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass @property (readonly) int name; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
@@ -167,7 +167,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@implementation MyClass -(void)method { } @end" toStore:store];
+	[parser parseObjectsFromString:@"@implementation MyClass -(void)method { } @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
@@ -182,7 +182,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol] toStore:store];
+	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol]sourceFile:@"filename.h" toStore:store];
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	assertThatInteger([[store classes] count], equalToInteger(1));
 	GBClassData *class = [[store classes] anyObject];

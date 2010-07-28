@@ -14,23 +14,14 @@
 @implementation GBIvarDataTesting
 
 - (void)testMergeDataFromIvar_shouldMergeImplementationDetails {
-	// setup
+	// setup - ivars don't merge any data, except they need to send base class merging message!
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
+	[source registerDeclaredFile:@"file"];
 	// execute
 	[original mergeDataFromIvar:source];
-	// verify
-	STFail(@"Implement source files for ivars!");
-}
-
-- (void)testMergeDataFromIvar_shouldPreserveSourceImplementationDetails {
-	// setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	// execute
-	[original mergeDataFromIvar:source];
-	// verify
-	STFail(@"Implement source files for ivars!");
+	// verify - simple testing here, fully tested in GBModelBaseTesting!
+	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
 - (void)testMergeDataFromIvar_shouldThrowIfDifferentNameIfPassed {

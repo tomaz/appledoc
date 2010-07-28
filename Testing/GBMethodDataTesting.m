@@ -68,23 +68,14 @@
 #pragma mark Merging testing
 
 - (void)testMergeDataFromMethod_shouldMergeImplementationDetails {
-	// setup
+	// setup - methods don't merge any data, except they need to send base class merging message!
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	[source registerDeclaredFile:@"file"];
 	// execute
 	[original mergeDataFromMethod:source];
-	// verify
-	STFail(@"Implement source files for methods!");
-}
-
-- (void)testMergeDataFromMethod_shouldPreserveSourceImplementationDetails {
-	// setup
-	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	// execute
-	[original mergeDataFromMethod:source];
-	// verify
-	STFail(@"Implement source files for methods!");
+	// verify - simple testing here, fully tested in GBModelBaseTesting!
+	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
 - (void)testMergeDataFromMethod_shouldThrowIfDifferentTypeIfPassed {

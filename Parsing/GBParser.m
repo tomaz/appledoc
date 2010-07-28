@@ -98,7 +98,7 @@
 		return;
 	}
 	
-	[self.objectiveCParser parseObjectsFromString:input toStore:self.store];
+	[self.objectiveCParser parseObjectsFromString:input sourceFile:[path lastPathComponent] toStore:self.store];
 	self.numberOfParsedFiles++;
 }
 

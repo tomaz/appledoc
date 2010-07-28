@@ -13,6 +13,19 @@
 
 @implementation GBClassDataTesting
 
+#pragma mark Base data merging
+
+- (void)testMergeDataFromClass_shouldMergeImplementationDetails {
+	//setup
+	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
+	GBClassData *source = [GBClassData classDataWithName:@"MyClass"];
+	[source registerDeclaredFile:@"file"];
+	// execute
+	[original mergeDataFromClass:source];
+	// verify - simple testing here, fully tested in GBModelBaseTesting!
+	assertThatInteger([original.declaredFiles count], equalToInteger(1));
+}
+
 #pragma mark Superclass data merging
 
 - (void)testMergeDataFromClass_shouldMergeSuperclass {

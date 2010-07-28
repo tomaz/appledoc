@@ -47,6 +47,7 @@
 	[self.adoptedProtocols mergeDataFromProtocolsProvider:source.adoptedProtocols];
 	[self.ivars mergeDataFromIvarsProvider:source.ivars];
 	[self.methods mergeDataFromMethodsProvider:source.methods];
+	[self mergeDataFromModelBase:source];
 }
 
 #pragma mark Overriden methods

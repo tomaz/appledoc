@@ -6,12 +6,13 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBModelBase.h"
 #import "GBAdoptedProtocolsProvider.h"
 #import "GBMethodsProvider.h"
 
 /** Describes a category.
  */
-@interface GBCategoryData : NSObject {
+@interface GBCategoryData : GBModelBase {
 	@private
 	NSString *_categoryName;
 	NSString *_className;

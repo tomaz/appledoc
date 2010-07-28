@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBModelBase.h"
 #import "GBMethodArgument.h"
 
 /** Defines different method types. */
@@ -19,7 +20,7 @@ typedef NSUInteger GBMethodType;
 #pragma mark -
 
 /** Describes a method or property. */
-@interface GBMethodData : NSObject {
+@interface GBMethodData : GBModelBase {
 	@private
 	GBMethodType _methodType;
 	NSArray *_methodAttributes;

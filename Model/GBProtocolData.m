@@ -32,7 +32,7 @@
 
 - (void)mergeDataFromProtocol:(GBProtocolData *)source {
 	NSParameterAssert([source.nameOfProtocol isEqualToString:self.nameOfProtocol]);
-	// TODO: implement source files merging!
+	[self mergeDataFromModelBase:source];
 }
 
 #pragma mark Overriden methods

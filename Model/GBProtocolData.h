@@ -6,12 +6,12 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "GBModelBase.h"
 
 @class GBAdoptedProtocolsProvider;
 
 /** Describes a protocol. */
-@interface GBProtocolData : NSObject {
+@interface GBProtocolData : GBModelBase {
 	@private
 	NSString *_protocolName;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;

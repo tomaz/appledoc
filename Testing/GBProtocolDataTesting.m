@@ -14,23 +14,14 @@
 @implementation GBProtocolDataTesting
 
 - (void)testMergeDataFromProtocol_shouldMergeImplementationDetails {
-	// setup
+	// setup - protocols don't merge any data, except they need to send base class merging message!
 	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	[source registerDeclaredFile:@"file"];
 	// execute
 	[original mergeDataFromProtocol:source];
-	// verify
-	STFail(@"Implement source files for protocols!");
-}
-
-- (void)testMergeDataFromProtocol_shouldPreserveSourceImplementationDetails {
-	// setup
-	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	// execute
-	[original mergeDataFromProtocol:source];
-	// verify
-	STFail(@"Implement source files for protocols!");
+	// verify - simple testing here, fully tested in GBModelBaseTesting!
+	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
 @end

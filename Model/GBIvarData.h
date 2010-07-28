@@ -6,10 +6,10 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "GBModelBase.h"
 
 /** Describes an ivar */
-@interface GBIvarData : NSObject
+@interface GBIvarData : GBModelBase
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

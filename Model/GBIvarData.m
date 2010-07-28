@@ -34,7 +34,7 @@
 - (void)mergeDataFromIvar:(GBIvarData *)source {
 	NSParameterAssert([source.nameOfIvar isEqualToString:self.nameOfIvar]);
 	NSParameterAssert([source.ivarTypes isEqualToArray:self.ivarTypes]);
-	// TODO: implement source files merging!
+	[self mergeDataFromModelBase:source];
 }
 
 #pragma mark Overriden methods

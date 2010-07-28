@@ -6,13 +6,14 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBModelBase.h"
 #import "GBAdoptedProtocolsProvider.h"
 #import "GBIvarsProvider.h"
 #import "GBMethodsProvider.h"
 
 /** Describes a class.
  */
-@interface GBClassData : NSObject {
+@interface GBClassData : GBModelBase {
 	@private
 	NSString *_className;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;

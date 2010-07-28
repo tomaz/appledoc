@@ -24,7 +24,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol> @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *protocols = [[[[store classes] anyObject] adoptedProtocols] protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
@@ -36,7 +36,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol1, MyProtocol2> @end" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass <MyProtocol1, MyProtocol2> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	NSArray *protocols = [[[[store classes] anyObject] adoptedProtocols] protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
