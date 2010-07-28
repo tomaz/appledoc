@@ -33,7 +33,7 @@
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
-	NSParameterAssert([[source nameOfCategory] isEqualToString:self.nameOfCategory]);
+	NSParameterAssert([source nameOfCategory] == self.nameOfCategory || [[source nameOfCategory] isEqualToString:self.nameOfCategory]); // allow nil for extensions!
 	[super mergeDataFromObject:source];
 	
 	// Forward merging request to components.
