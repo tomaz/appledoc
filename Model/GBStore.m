@@ -64,7 +64,11 @@
 	GBLogDebug(@"Registering category %@...", category);
 	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
 	if ([_categories containsObject:category]) return;
-	if ([_categoriesByName objectForKey:categoryID]) [NSException raise:@"Category with ID %@ is already registered!", categoryID];
+	GBCategoryData *existingCategory = [_categoriesByName objectForKey:categoryID];
+	if (existingCategory) {
+		[existingCategory mergeDataFromObject:category];
+		return;
+	}
 	[_categories addObject:category];
 	[_categoriesByName setObject:category forKey:categoryID];
 }
@@ -73,7 +77,11 @@
 	NSParameterAssert(protocol != nil);
 	GBLogDebug(@"Registering class %@...", protocol);
 	if ([_protocols containsObject:protocol]) return;
-	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
+	GBProtocolData *existingProtocol = [_protocolsByName objectForKey:protocol.nameOfProtocol];
+	if (existingProtocol) {
+		[existingProtocol mergeDataFromObject:protocol];
+		return;
+	}
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }

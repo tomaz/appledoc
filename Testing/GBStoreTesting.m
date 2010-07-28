@@ -82,11 +82,17 @@
 - (void)testRegisterCategory_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
-	[store registerCategory:category1];
-	// execute & verify
-	STAssertThrows([store registerCategory:category2], nil);
+	OCMockObject *category1 = [OCMockObject niceMockForClass:[GBCategoryData class]];
+	[[[category1 stub] andReturn:@"MyClass"] nameOfClass];
+	[[[category1 stub] andReturn:@"MyCategory"] nameOfCategory];
+	[[category1 expect] mergeDataFromObject:category2];
+	// execute
+	[store registerCategory:(GBCategoryData *)category1];
+	[store registerCategory:category2];
+	// verify
+	assertThatInteger([store.categories count], equalToInteger(1));
+	[category1 verify];
 }
 
 - (void)testRegisterExtension_shouldAddExtensionToList {
@@ -115,11 +121,17 @@
 - (void)testRegisterExtension_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *extension1 = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	GBCategoryData *extension2 = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
-	[store registerCategory:extension1];
-	// execute & verify
-	STAssertThrows([store registerCategory:extension2], nil);
+	OCMockObject *extension1 = [OCMockObject niceMockForClass:[GBCategoryData class]];
+	[[[extension1 stub] andReturn:@"MyClass"] nameOfClass];
+	[[[extension1 stub] andReturn:nil] nameOfCategory];
+	[[extension1 expect] mergeDataFromObject:extension2];
+	// execute
+	[store registerCategory:(GBCategoryData *)extension1];
+	[store registerCategory:extension2];
+	// verify
+	assertThatInteger([store.categories count], equalToInteger(1));
+	[extension1 verify];
 }
 
 - (void)testRegisterExtension_shouldAllowCategoryAndExtensionOfSameClass {
@@ -163,11 +175,16 @@
 - (void)testRegisterProtocol_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	[store registerProtocol:protocol1];
-	// execute & verify
-	STAssertThrows([store registerProtocol:protocol2], nil);
+	OCMockObject *protocol1 = [OCMockObject niceMockForClass:[GBProtocolData class]];
+	[[[protocol1 stub] andReturn:@"MyProtocol"] nameOfProtocol];
+	[[protocol1 expect] mergeDataFromObject:protocol2];
+	// execute
+	[store registerProtocol:(GBProtocolData *)protocol1];
+	[store registerProtocol:protocol2];
+	// verify
+	assertThatInteger([store.protocols count], equalToInteger(1));
+	[protocol1 verify];
 }
 
 @end
