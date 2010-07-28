@@ -38,18 +38,4 @@
  */
 + (void)raise:(NSError *)error format:(NSString *)format, ...;
 
-/** Creates the exception with the given `NSError` object.
- 
- This is useful for converting `NSError`s into `NSException`s, for example for logging instead of raising. The method 
- allows the client to pass in additional context information which further aids diagnosting the exact reason for the exception. 
- If no context information is desired, pass `nil` and only error information is used for formatting. As exception message can 
- become quite verbose, it is split into several lines to make the output more readable.
- 
- @param error The error that describes the reason.
- @param format A human readable message string explaining the context of the error.
- @param ... Variable information to be inserted into the formatted reason.
- @see raise:format:
- */
-+ (NSException *)exceptionWithError:(NSError *)error format:(NSString *)format, ...;
-
 @end

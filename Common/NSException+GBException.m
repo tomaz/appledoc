@@ -38,19 +38,6 @@
 	[self raise:reason];
 }
 
-+ (NSException *)exceptionWithError:(NSError *)error format:(NSString *)format, ... {
-	NSString *message = nil;
-	if (format) {
-		va_list args;
-		va_start(args, format);
-		message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
-		va_end(args);
-	}
-
-	NSString *reason = [self reasonWithError:error message:message];
-	return [NSException exceptionWithName:@"AppledocException" reason:reason userInfo:nil];
-}
-
 + (NSString *)reasonWithError:(NSError *)error message:(NSString *)message {
 	NSInteger code = [error code];
 	NSString *domain = [error domain];

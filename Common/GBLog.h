@@ -88,6 +88,11 @@ extern NSUInteger kGBLogLevel;
 		GBLogExceptionLine(@"  @ %@", symbol); \
 	} \
 }
+#define GBLogNSError(error,frmt,...) { \
+	if (frmt) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
+	GBLogExceptionLine(@"%@", [error localizedDescription]); \
+	GBLogExceptionLine(@"%@", [error localizedFailureReason]); \
+}
 
 #pragma mark Application wide logging helpers
 

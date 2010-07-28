@@ -64,7 +64,10 @@
 	GBLogDebug(@"Parsing path '%@'...", path);
 	NSError *error = nil;
 	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
-	if (error) [NSException raise:error format:@"Problems while fetching contents of '%@'!", path];
+	if (error) {
+		GBLogNSError(error, @"Failed fetching contents of '%@'!", path);
+		return;
+	}
 	
 	// First process files. Skip ignored files.
 	for (NSString *subpath in contents) {
@@ -91,7 +94,7 @@
 	NSError *error = nil;
 	NSString *input = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 	if (error) {
-		GBLogExceptionNoStack([NSException exceptionWithError:error format:nil], @"Failed reading contents of file '%@'!", path);
+		GBLogNSError(error, @"Failed reading contents of file '%@'!", path);
 		return;
 	}
 	
