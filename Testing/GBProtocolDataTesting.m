@@ -24,6 +24,21 @@
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
+- (void)testMergeDataFromObject_shouldMergeAdoptedProtocolsAndPreserveSourceData {
+	//setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
+	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
+	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	[source.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[source.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify
+	assertThatInteger([[original.adoptedProtocols protocols] count], equalToInteger(3));
+	assertThatInteger([[source.adoptedProtocols protocols] count], equalToInteger(2));
+}
+
 - (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentProtocolName {
 	//setup
 	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];

@@ -6,7 +6,6 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBAdoptedProtocolsProvider.h"
 #import "GBProtocolData.h"
 
 @implementation GBProtocolData
@@ -34,6 +33,8 @@
 	if (!source || source == self) return;
 	NSParameterAssert([[source nameOfProtocol] isEqualToString:self.nameOfProtocol]);
 	[super mergeDataFromObject:source];
+	GBProtocolData *sourceProtocol = (GBProtocolData *)source;
+	[self.adoptedProtocols mergeDataFromProtocolsProvider:sourceProtocol.adoptedProtocols];
 }
 
 - (NSString *)description {

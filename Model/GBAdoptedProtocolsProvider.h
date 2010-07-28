@@ -6,7 +6,9 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBProtocolData.h"
+#import <Foundation/Foundation.h>
+
+@class GBProtocolData;
 
 /** A helper class that unifies adopted protocols handling.
  
