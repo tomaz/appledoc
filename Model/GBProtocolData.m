@@ -28,6 +28,12 @@
 	return self;
 }
 
+#pragma mark Helper methods
+
+- (void)mergeDataFromProtocol:(GBProtocolData *)source {
+	// TODO: implement source files merging!
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

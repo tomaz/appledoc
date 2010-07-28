@@ -43,6 +43,17 @@
 /// @name Protocol data
 ///---------------------------------------------------------------------------------------
 
+/** Merges the data from the given source protocol.
+ 
+ The result is all information from both protocols is merged into receiver, while source is left untouched.
+ 
+ @warning *Note:* If the given source protocol name is different, an exception is thrown!
+ 
+ @param source Source protocol to merge from.
+ @exception NSException Thrown if the given source protocol name is different from receivers.
+ */
+- (void)mergeDataFromProtocol:(GBProtocolData *)source;
+
 /** The name of the protocol. */
 @property (readonly) NSString *nameOfProtocol;
 

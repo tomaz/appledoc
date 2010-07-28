@@ -42,6 +42,9 @@
 	} else if (![self.nameOfSuperclass isEqualToString:source.nameOfSuperclass]) {
 		GBLogWarn(@"Merged class's superclass %@ is different from ours %@!", source.nameOfSuperclass, self.nameOfSuperclass);
 	}
+	
+	// Forward merging request to components.
+	[self.adoptedProtocols mergeDataFromProtocolProvider:source.adoptedProtocols];
 }
 
 #pragma mark Overriden methods

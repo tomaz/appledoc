@@ -38,14 +38,55 @@
 	assertThatInteger([[provider.protocols allObjects] count], equalToInteger(1));
 }
 
-- (void)testRegisterProtocol_shouldPreventAddingDifferentInstanceWithSameName {
+- (void)testRegisterProtocol_shouldMergeDifferentInstanceWithSameName {
 	// setup
 	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
-	GBProtocolData *protocol1 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
-	GBProtocolData *protocol2 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
-	[provider registerProtocol:protocol1];
-	// execute & verify
-	STAssertThrows([provider registerProtocol:protocol2], nil);
+	GBProtocolData *source = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	OCMockObject *original = [OCMockObject niceMockForClass:[GBProtocolData class]];
+	[[[original stub] andReturn:@"MyProtocol"] nameOfProtocol];
+	[[original expect] mergeDataFromProtocol:source];
+	[provider registerProtocol:(GBProtocolData *)original];
+	// execute
+	[provider registerProtocol:source];
+	// verify
+	[original verify];
+}
+
+#pragma mark Protocol merging handling
+
+- (void)testMergeDataFromProtocolProvider_shouldMergeAllDifferentProtocols {
+	// setup
+	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] init];
+	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
+	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] init];
+	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
+	// execute
+	[original mergeDataFromProtocolProvider:source];
+	// verify - only basic verification here, details within GBProtocolDataTesting!
+	NSArray *protocols = [original protocolsSortedByName];
+	assertThatInteger([protocols count], equalToInteger(3));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P1"));
+	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P2"));
+	assertThat([[protocols objectAtIndex:2] nameOfProtocol], is(@"P3"));
+}
+
+- (void)testMergeDataFromProtocolProvider_shouldPreserveSourceData {
+	// setup
+	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] init];
+	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
+	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] init];
+	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
+	// execute
+	[original mergeDataFromProtocolProvider:source];
+	// verify - only basic verification here, details within GBProtocolDataTesting!
+	NSArray *protocols = [source protocolsSortedByName];
+	assertThatInteger([protocols count], equalToInteger(2));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P1"));
+	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P3"));
 }
 
 @end

@@ -51,4 +51,21 @@
 	assertThat(source.nameOfSuperclass, is(@"C2"));
 }
 
+#pragma mark Components merging
+
+- (void)testMergeDataFromClass_shouldMergeAdoptedProtocolsAndPreserveSourceData {
+	//setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
+	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
+	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
+	GBClassData *source = [GBClassData classDataWithName:@"MyClass"];
+	[source.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
+	[source.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
+	// execute
+	[original mergeDataFromClass:source];
+	// verify
+	assertThatInteger([[original.adoptedProtocols protocols] count], equalToInteger(3));
+	assertThatInteger([[source.adoptedProtocols protocols] count], equalToInteger(2));
+}
+
 @end
