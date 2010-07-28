@@ -119,12 +119,12 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class definition.", className);
-	[self.store registerClass:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
 	[self matchMethodDefinitionsForProvider:class.methods];
+	[self.store registerClass:class];
 }
 
 - (void)matchCategoryDefinition {
@@ -133,10 +133,10 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matching %@(%@) category definition...", className, categoryName);
-	[self.store registerCategory:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
 	[self matchMethodDefinitionsForProvider:category.methods];
+	[self.store registerCategory:category];
 }
 
 - (void)matchExtensionDefinition {
@@ -144,10 +144,10 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
 	GBLogVerbose(@"Matched %@() extension definition.", className);
-	[self.store registerCategory:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
 	[self matchMethodDefinitionsForProvider:extension.methods];
+	[self.store registerCategory:extension];
 }
 
 - (void)matchProtocolDefinition {
@@ -155,9 +155,9 @@
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
 	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
-	[self.store registerProtocol:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
+	[self.store registerProtocol:protocol];
 }
 
 - (void)matchSuperclassForClass:(GBClassData *)class {
@@ -246,9 +246,9 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class declaration.", className);
-	[self.store registerClass:class];
 	[self.tokenizer consume:2];
 	[self matchMethodDeclarationsForProvider:class.methods];
+	[self.store registerClass:class];
 }
 
 - (void)matchCategoryDeclaration {
@@ -257,9 +257,9 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matched %@(%@) category declaration.", className, categoryName);
-	[self.store registerCategory:category];
 	[self.tokenizer consume:5];
 	[self matchMethodDeclarationsForProvider:category.methods];
+	[self.store registerCategory:category];
 }
 
 - (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider {

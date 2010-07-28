@@ -62,8 +62,8 @@
 - (void)registerCategory:(GBCategoryData *)category {
 	NSParameterAssert(category != nil);
 	GBLogDebug(@"Registering category %@...", category);
-	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
 	if ([_categories containsObject:category]) return;
+	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
 	GBCategoryData *existingCategory = [_categoriesByName objectForKey:categoryID];
 	if (existingCategory) {
 		[existingCategory mergeDataFromObject:category];

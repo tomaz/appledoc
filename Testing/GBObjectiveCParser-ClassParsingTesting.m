@@ -175,6 +175,56 @@
 	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
 }
 
+#pragma mark Merging testing
+
+- (void)testParseObjectsFromString_shouldMergeClassDefinitions {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass { int _v1; } @end" sourceFile:@"filename1.h" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass { int _v2; } @end" sourceFile:@"filename2.h" toStore:store];
+	// verify - simple testing here, details within GBModelBaseTesting!
+	assertThatInteger([[store classes] count], equalToInteger(1));
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *ivars = [class.ivars ivars];
+	assertThatInteger([ivars count], equalToInteger(2));
+	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"_v1"));
+	assertThat([[ivars objectAtIndex:1] nameOfIvar], is(@"_v2"));
+}
+
+- (void)testParseObjectsFromString_shouldMergeClassDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(void)method1{} @end" sourceFile:@"filename1.m" toStore:store];
+	[parser parseObjectsFromString:@"@implementation MyClass -(void)method2{} @end" sourceFile:@"filename2.m" toStore:store];
+	// verify - simple testing here, details within GBModelBaseTesting!
+	assertThatInteger([[store classes] count], equalToInteger(1));
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [class.methods methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+}
+
+- (void)testParseObjectsFromString_shouldMergeClassDefinitionAndDeclaration {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass -(void)method1; @end" sourceFile:@"filename.h" toStore:store];
+	[parser parseObjectsFromString:@"@implementation MyClass -(void)method2{} @end" sourceFile:@"filename.m" toStore:store];
+	// verify - simple testing here, details within GBModelBaseTesting!
+	assertThatInteger([[store classes] count], equalToInteger(1));
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [class.methods methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+}
+
 #pragma mark Complex parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeInput {
