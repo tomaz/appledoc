@@ -28,8 +28,10 @@
 	[_declaredFiles addObject:filename];
 }
 
-- (void)mergeDataFromModelBase:(GBModelBase *)source {
-	[_declaredFiles unionSet:source.declaredFiles];
+- (void)mergeDataFromObject:(id)source {
+	NSParameterAssert([source isKindOfClass:[self class]]);
+	GBLogDebug(@"Merging data from %@...", source);
+	[_declaredFiles unionSet:[source declaredFiles]];
 }
 
 - (NSArray *)declaredFilesSortedByName {

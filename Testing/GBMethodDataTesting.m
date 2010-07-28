@@ -67,41 +67,41 @@
 
 #pragma mark Merging testing
 
-- (void)testMergeDataFromMethod_shouldMergeImplementationDetails {
+- (void)testMergeDataFromObject_shouldMergeImplementationDetails {
 	// setup - methods don't merge any data, except they need to send base class merging message!
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[source registerDeclaredFile:@"file"];
 	// execute
-	[original mergeDataFromMethod:source];
+	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromMethod_shouldThrowIfDifferentTypeIfPassed {
+- (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
 	// setup
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromMethod:source], nil);
+	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
-- (void)testMergeDataFromMethod_shouldThrowIfDifferentSelectorIfPassed {
+- (void)testMergeDataFromObject_shouldThrowIfDifferentSelectorIfPassed {
 	// setup
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source1 = [GBTestObjectsRegistry classMethodWithNames:@"someOtherMethod", nil];
 	GBMethodData *source2 = [GBTestObjectsRegistry instanceMethodWithArguments:[GBMethodArgument methodArgumentWithName:@"method"], nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromMethod:source1], nil); // different name alltogether
-	STAssertThrows([original mergeDataFromMethod:source2], nil); // same selector but difference in arguments
+	STAssertThrows([original mergeDataFromObject:source1], nil); // different name alltogether
+	STAssertThrows([original mergeDataFromObject:source2], nil); // same selector but difference in arguments
 }
 
-- (void)testMergeDataFromMethod_shouldThrowIfDifferentResultIfPassed {
+- (void)testMergeDataFromObject_shouldThrowIfDifferentResultIfPassed {
 	// setup
 	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"int"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
 	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"long"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
 	// execute & verify
-	STAssertThrows([original mergeDataFromMethod:source], nil);
+	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

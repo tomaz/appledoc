@@ -47,17 +47,6 @@
 /// @name Class data
 ///---------------------------------------------------------------------------------------
 
-/** Merges the data from the given source class.
- 
- The result is all information from both classes is merged into receiver, while source is left untouched.
- 
- @warning *Note:* If the given source class name is different, an exception is thrown!
- 
- @param source Source class to merge from.
- @exception NSException Thrown if the given source class name is different from receivers.
- */
-- (void)mergeDataFromClass:(GBClassData *)source;
-
 /** The name of the class. */
 @property (readonly) NSString *nameOfClass;
 

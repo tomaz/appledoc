@@ -31,10 +31,11 @@
 
 #pragma mark Helper methods
 
-- (void)mergeDataFromIvar:(GBIvarData *)source {
-	NSParameterAssert([source.nameOfIvar isEqualToString:self.nameOfIvar]);
-	NSParameterAssert([source.ivarTypes isEqualToArray:self.ivarTypes]);
-	[self mergeDataFromModelBase:source];
+- (void)mergeDataFromObject:(id)source {
+	if (!source || source == self) return;
+	NSParameterAssert([[source nameOfIvar] isEqualToString:self.nameOfIvar]);
+	NSParameterAssert([[source ivarTypes] isEqualToArray:self.ivarTypes]);
+	[super mergeDataFromObject:source];
 }
 
 #pragma mark Overriden methods

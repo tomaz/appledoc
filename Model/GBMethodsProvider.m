@@ -29,7 +29,7 @@
 	if ([_methods containsObject:method]) return;
 	GBMethodData *existingMethod = [_methodsBySelectors objectForKey:method.methodSelector];
 	if (existingMethod) {
-		[existingMethod mergeDataFromMethod:method];
+		[existingMethod mergeDataFromObject:method];
 		return;
 	}
 	[_methods addObject:method];
@@ -42,7 +42,7 @@
 	for (GBMethodData *sourceMethod in source.methods) {
 		GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
 		if (existingMethod) {
-			[existingMethod mergeDataFromMethod:sourceMethod];
+			[existingMethod mergeDataFromObject:sourceMethod];
 			continue;
 		}
 		[self registerMethod:sourceMethod];

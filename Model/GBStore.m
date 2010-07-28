@@ -52,7 +52,7 @@
 	if ([_classes containsObject:class]) return;
 	GBClassData *existingClass = [_classesByName objectForKey:class.nameOfClass];
 	if (existingClass) {
-		[existingClass mergeDataFromClass:class];
+		[existingClass mergeDataFromObject:class];
 		return;
 	}
 	[_classes addObject:class];

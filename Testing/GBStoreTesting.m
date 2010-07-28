@@ -45,7 +45,7 @@
 	GBClassData *class2 = [GBClassData classDataWithName:@"MyClass"];
 	OCMockObject *class1 = [OCMockObject niceMockForClass:[GBClassData class]];
 	[[[class1 stub] andReturn:@"MyClass"] nameOfClass];
-	[[class1 expect] mergeDataFromClass:class2];
+	[[class1 expect] mergeDataFromObject:class2];
 	// execute
 	[store registerClass:(GBClassData *)class1];
 	[store registerClass:class2];

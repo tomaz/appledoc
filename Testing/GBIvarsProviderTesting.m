@@ -44,7 +44,7 @@
 	GBIvarData *source = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"int", @"_index", nil]];
 	OCMockObject *destination = [OCMockObject niceMockForClass:[GBIvarData class]];
 	[[[destination stub] andReturn:@"_index"] nameOfIvar];
-	[[destination expect] mergeDataFromIvar:source];
+	[[destination expect] mergeDataFromObject:source];
 	[provider registerIvar:(GBIvarData *)destination];
 	// execute
 	[provider registerIvar:source];

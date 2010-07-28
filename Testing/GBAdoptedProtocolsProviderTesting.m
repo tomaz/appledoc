@@ -44,7 +44,7 @@
 	GBProtocolData *source = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
 	OCMockObject *original = [OCMockObject niceMockForClass:[GBProtocolData class]];
 	[[[original stub] andReturn:@"MyProtocol"] nameOfProtocol];
-	[[original expect] mergeDataFromProtocol:source];
+	[[original expect] mergeDataFromObject:source];
 	[provider registerProtocol:(GBProtocolData *)original];
 	// execute
 	[provider registerProtocol:source];

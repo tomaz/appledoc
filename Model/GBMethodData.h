@@ -70,17 +70,6 @@ typedef NSUInteger GBMethodType;
 /// @name Method data
 ///---------------------------------------------------------------------------------------
 
-/** Merges the data from the given source method.
- 
- The result is all information from both methods is merged into receiver, while source is left untouched.
- 
- @warning *Note:* If the given source method selector, result, attributes or type are different, an exception is thrown!
- 
- @param source Source method to merge from.
- @exception NSException Thrown if the given source method comparison data is different from receivers.
- */
-- (void)mergeDataFromMethod:(GBMethodData *)source;
-
 /** The type of method with possible values defined by `GBMethodType` enumeration. */
 @property (readonly) GBMethodType methodType;
 

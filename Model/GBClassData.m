@@ -31,23 +31,24 @@
 
 #pragma mark Helper methods
 
-- (void)mergeDataFromClass:(GBClassData *)source {
+- (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	NSParameterAssert([source.nameOfClass isEqualToString:self.nameOfClass]);
-	GBLogDebug(@"Merging data from %@...", source);
-	
+	NSParameterAssert([[source nameOfClass] isEqualToString:[self nameOfClass]]);
+	[super mergeDataFromObject:source];
+
+	GBClassData *sourceClass = (GBClassData *)source;
+
 	// Merge superclass data.
-	if (!self.nameOfSuperclass) {
-		self.nameOfSuperclass = source.nameOfSuperclass;
-	} else if (![self.nameOfSuperclass isEqualToString:source.nameOfSuperclass]) {
-		GBLogWarn(@"Merged class's superclass %@ is different from ours %@!", source.nameOfSuperclass, self.nameOfSuperclass);
+	if (![self nameOfSuperclass]) {
+		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
+	} else if (![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
+		GBLogWarn(@"Merged class's superclass %@ is different from ours %@!", sourceClass.nameOfSuperclass, self.nameOfSuperclass);
 	}
 	
 	// Forward merging request to components.
-	[self.adoptedProtocols mergeDataFromProtocolsProvider:source.adoptedProtocols];
-	[self.ivars mergeDataFromIvarsProvider:source.ivars];
-	[self.methods mergeDataFromMethodsProvider:source.methods];
-	[self mergeDataFromModelBase:source];
+	[self.adoptedProtocols mergeDataFromProtocolsProvider:sourceClass.adoptedProtocols];
+	[self.ivars mergeDataFromIvarsProvider:sourceClass.ivars];
+	[self.methods mergeDataFromMethodsProvider:sourceClass.methods];
 }
 
 #pragma mark Overriden methods

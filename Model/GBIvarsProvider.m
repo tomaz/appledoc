@@ -29,7 +29,7 @@
 	if ([_ivars containsObject:ivar]) return;
 	GBIvarData *existingIvar = [_ivarsByName objectForKey:ivar.nameOfIvar];
 	if (existingIvar) {
-		[existingIvar mergeDataFromIvar:ivar];
+		[existingIvar mergeDataFromObject:ivar];
 		return;
 	}
 	[_ivars addObject:ivar];
@@ -42,7 +42,7 @@
 	for (GBIvarData *sourceIvar in source.ivars) {
 		GBIvarData *existingIvar = [_ivarsByName objectForKey:sourceIvar.nameOfIvar];
 		if (existingIvar) {
-			[existingIvar mergeDataFromIvar:sourceIvar];
+			[existingIvar mergeDataFromObject:sourceIvar];
 			continue;
 		}
 		[self registerIvar:sourceIvar];

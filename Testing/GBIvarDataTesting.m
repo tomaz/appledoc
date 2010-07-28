@@ -13,31 +13,31 @@
 
 @implementation GBIvarDataTesting
 
-- (void)testMergeDataFromIvar_shouldMergeImplementationDetails {
+- (void)testMergeDataFromObject_shouldMergeImplementationDetails {
 	// setup - ivars don't merge any data, except they need to send base class merging message!
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	[source registerDeclaredFile:@"file"];
 	// execute
-	[original mergeDataFromIvar:source];
+	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromIvar_shouldThrowIfDifferentNameIfPassed {
+- (void)testMergeDataFromObject_shouldThrowIfDifferentNameIfPassed {
 	// setup
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_different", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromIvar:source], nil);
+	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
-- (void)testMergeDataFromIvar_shouldThrowIfDifferentTypeIfPassed {
+- (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
 	// setup
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"*", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"&", @"_name", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromIvar:source], nil);
+	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

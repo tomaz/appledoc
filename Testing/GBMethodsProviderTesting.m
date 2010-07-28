@@ -43,7 +43,7 @@
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	OCMockObject *destination = [OCMockObject niceMockForClass:[GBMethodData class]];
 	[[[destination stub] andReturn:@"method:"] methodSelector];
-	[[destination expect] mergeDataFromMethod:source];
+	[[destination expect] mergeDataFromObject:source];
 	[provider registerMethod:(GBMethodData *)destination];
 	// execute
 	[provider registerMethod:source];
@@ -53,7 +53,7 @@
 
 #pragma mark Method merging testing
 
-- (void)testMergeDataFromMethodsProvider_shouldMergeAllDifferentMethods {
+- (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {
 	// setup
 	GBMethodsProvider *original = [[GBMethodsProvider alloc] init];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
@@ -71,7 +71,7 @@
 	assertThat([[methods objectAtIndex:2] methodSelector], is(@"m3:"));
 }
 
-- (void)testMergeDataFromMethodsProvider_shouldPreserveSourceData {
+- (void)testMergeDataFromObjectsProvider_shouldPreserveSourceData {
 	// setup
 	GBMethodsProvider *original = [[GBMethodsProvider alloc] init];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];

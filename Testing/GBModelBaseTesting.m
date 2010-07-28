@@ -13,7 +13,7 @@
 
 @implementation GBModelBaseTesting
 
-- (void)testMergeDataFromModelBase_shouldMergeImplementationDetails {
+- (void)testMergeDataFromObject_shouldMergeImplementationDetails {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
 	[original registerDeclaredFile:@"f1"];
@@ -22,7 +22,7 @@
 	[source registerDeclaredFile:@"f1"];
 	[source registerDeclaredFile:@"f3"];
 	// execute
-	[original mergeDataFromModelBase:source];
+	[original mergeDataFromObject:source];
 	// verify
 	NSArray *files = [original declaredFilesSortedByName];
 	assertThatInteger([files count], equalToInteger(3));
@@ -31,7 +31,7 @@
 	assertThat([files objectAtIndex:2], is(@"f3"));
 }
 
-- (void)testMergeDataFromModelBase_shouldPreserveSourceImplementationDetails {
+- (void)testMergeDataFromObject_shouldPreserveSourceImplementationDetails {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
 	[original registerDeclaredFile:@"f1"];
@@ -40,7 +40,7 @@
 	[source registerDeclaredFile:@"f1"];
 	[source registerDeclaredFile:@"f3"];
 	// execute
-	[original mergeDataFromModelBase:source];
+	[original mergeDataFromObject:source];
 	// verify
 	NSArray *files = [source declaredFilesSortedByName];
 	assertThatInteger([files count], equalToInteger(2));

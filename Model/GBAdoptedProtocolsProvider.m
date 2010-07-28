@@ -29,7 +29,7 @@
 	if ([_protocols containsObject:protocol]) return;
 	GBProtocolData *existingProtocol = [_protocolsByName objectForKey:protocol.nameOfProtocol];
 	if (existingProtocol) {
-		[existingProtocol mergeDataFromProtocol:protocol];
+		[existingProtocol mergeDataFromObject:protocol];
 		return;
 	}
 	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
@@ -43,7 +43,7 @@
 	for (GBProtocolData *sourceProtocol in source.protocols) {
 		GBProtocolData *existingProtocol = [_protocolsByName objectForKey:sourceProtocol.nameOfProtocol];
 		if (existingProtocol) {
-			[existingProtocol mergeDataFromProtocol:sourceProtocol];
+			[existingProtocol mergeDataFromObject:sourceProtocol];
 			continue;
 		}
 		[self registerProtocol:sourceProtocol];

@@ -30,9 +30,10 @@
 
 #pragma mark Helper methods
 
-- (void)mergeDataFromProtocol:(GBProtocolData *)source {
-	NSParameterAssert([source.nameOfProtocol isEqualToString:self.nameOfProtocol]);
-	[self mergeDataFromModelBase:source];
+- (void)mergeDataFromObject:(id)source {
+	if (!source || source == self) return;
+	NSParameterAssert([[source nameOfProtocol] isEqualToString:self.nameOfProtocol]);
+	[super mergeDataFromObject:source];
 }
 
 #pragma mark Overriden methods

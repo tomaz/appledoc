@@ -23,13 +23,20 @@
  */
 - (void)registerDeclaredFile:(NSString *)filename;
 
-/** Merges all data from the given `GBModelBase` object.
+/** Merges all data from the given object.
  
- Source object is left unchanged. If the same object is passed in, nothing happens.
+ Source object is left unchanged. If the same object is passed in, nothing happens. Subclasses should override and
+ add their own specifics, however they should send super object the message as well! Here's overriden method example:
+ 
+	- (void)mergeDataFromObject:(GBModelBase *)source {
+		// source data validation here...
+		[super mergeDataFromObject:source];
+		// merge custom data here...
+	}
  
  @param source Source object to merge from.
  */
-- (void)mergeDataFromModelBase:(GBModelBase *)source;
+- (void)mergeDataFromObject:(id)source;
 
 /** Returns the array of all `declaredFiles` sorted by file name.
  
