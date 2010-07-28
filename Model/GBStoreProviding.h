@@ -6,9 +6,11 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBClassData.h"
-#import "GBCategoryData.h"
-#import "GBProtocolData.h"
+#import <Foundation/Foundation.h>
+
+@class GBClassData;
+@class GBCategoryData;
+@class GBProtocolData;
 
 /** Defines the requirements for store providers.
  

@@ -6,7 +6,9 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBMethodData.h"
+#import <Foundation/Foundation.h>
+
+@class GBMethodData;
 
 /** A helper class that unifies methods handling.
  

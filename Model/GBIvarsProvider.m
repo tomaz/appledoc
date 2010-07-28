@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBIvarData.h"
 #import "GBIvarsProvider.h"
 
 @implementation GBIvarsProvider

@@ -7,9 +7,10 @@
 //
 
 #import "GBModelBase.h"
-#import "GBAdoptedProtocolsProvider.h"
-#import "GBIvarsProvider.h"
-#import "GBMethodsProvider.h"
+
+@class GBAdoptedProtocolsProvider;
+@class GBIvarsProvider;
+@class GBMethodsProvider;
 
 /** Describes a class.
  */

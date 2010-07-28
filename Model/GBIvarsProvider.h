@@ -6,7 +6,9 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBIvarData.h"
+#import <Foundation/Foundation.h>
+
+@class GBIvarData;
 
 /** A helper class that unifies ivars handling.
  

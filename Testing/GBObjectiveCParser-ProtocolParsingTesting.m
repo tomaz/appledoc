@@ -7,6 +7,7 @@
 //
 
 #import "GBStore.h"
+#import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
 // Note that we're only testing protocol specific stuff here - i.e. all common parsing modules (adopted protocols,

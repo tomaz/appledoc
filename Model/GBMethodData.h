@@ -7,7 +7,9 @@
 //
 
 #import "GBModelBase.h"
-#import "GBMethodArgument.h"
+
+@class GBMethodArgument;
+
 
 /** Defines different method types. */
 enum {

@@ -6,8 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBProtocolData.h"
-#import "GBCategoryData.h"
+#import "GBDataObjects.h"
 
 @interface GBCategoryDataTesting : SenTestCase
 @end

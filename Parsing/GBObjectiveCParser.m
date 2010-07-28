@@ -11,6 +11,7 @@
 #import "GBTokenizer.h"
 #import "GBApplicationSettingsProviding.h"
 #import "GBStoreProviding.h"
+#import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
 @interface GBObjectiveCParser ()

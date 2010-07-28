@@ -6,8 +6,10 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBIvarData.h"
-#import "GBMethodData.h"
+#import <Foundation/Foundation.h>
+
+@class GBIvarData;
+@class GBMethodData;
 
 // Need to derive from SenTestCase otherwise ST macros used wouldn't work...
 @interface GBObjectsAssertor : SenTestCase

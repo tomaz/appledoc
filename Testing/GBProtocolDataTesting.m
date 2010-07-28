@@ -6,7 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBProtocolData.h"
+#import "GBDataObjects.h"
 
 @interface GBProtocolDataTesting : SenTestCase
 @end

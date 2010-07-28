@@ -7,7 +7,7 @@
 //
 
 #import "GBStore.h"
-#import "GBClassData.h"
+#import "GBDataObjects.h"
 
 @interface GBStoreTesting : SenTestCase
 @end

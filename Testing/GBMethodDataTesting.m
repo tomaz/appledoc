@@ -7,7 +7,7 @@
 //
 
 #import "GBTestObjectsRegistry.h"
-#import "GBMethodData.h"
+#import "GBDataObjects.h"
 
 @interface GBMethodDataTesting : SenTestCase
 @end

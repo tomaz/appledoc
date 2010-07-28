@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBDataObjects.h"
 #import "GBCategoryData.h"
 
 @implementation GBCategoryData

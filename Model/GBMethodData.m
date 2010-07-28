@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBMethodArgument.h"
 #import "GBMethodData.h"
 
 @interface GBMethodData ()

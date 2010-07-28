@@ -7,8 +7,9 @@
 //
 
 #import "GBModelBase.h"
-#import "GBAdoptedProtocolsProvider.h"
-#import "GBMethodsProvider.h"
+
+@class GBAdoptedProtocolsProvider;
+@class GBMethodsProvider;
 
 /** Describes a protocol. */
 @interface GBProtocolData : GBModelBase {

@@ -7,6 +7,7 @@
 //
 
 #import "GBApplicationSettingsProviding.h"
+#import "GBDataObjects.h"
 #import "GBTestObjectsRegistry.h"
 
 @implementation GBTestObjectsRegistry
@@ -77,7 +78,6 @@
 	va_end(args);
 	return [GBMethodData methodDataWithType:GBMethodTypeClass result:[NSArray arrayWithObject:@"void"] arguments:arguments];
 }
-
 
 + (GBMethodData *)propertyMethodWithArgument:(NSString *)name {
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:name];

@@ -7,6 +7,7 @@
 //
 
 #import "GBStore.h"
+#import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
 // Note that we use class for invoking parsing of ivars. Probably not the best option - i.e. we could isolate ivars
