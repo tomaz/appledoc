@@ -37,7 +37,7 @@
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
-- (void)mergeDataFromProtocolProvider:(GBAdoptedProtocolsProvider *)source {
+- (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source {
 	if (!source || source == self) return;
 	GBLogDebug(@"Merging data from %@...", source);
 	for (GBProtocolData *sourceProtocol in source.protocols) {

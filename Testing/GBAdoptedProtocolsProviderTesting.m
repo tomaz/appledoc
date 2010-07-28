@@ -63,7 +63,7 @@
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
 	// execute
-	[original mergeDataFromProtocolProvider:source];
+	[original mergeDataFromProtocolsProvider:source];
 	// verify - only basic verification here, details within GBProtocolDataTesting!
 	NSArray *protocols = [original protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(3));
@@ -81,7 +81,7 @@
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
 	// execute
-	[original mergeDataFromProtocolProvider:source];
+	[original mergeDataFromProtocolsProvider:source];
 	// verify - only basic verification here, details within GBProtocolDataTesting!
 	NSArray *protocols = [source protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));

@@ -44,7 +44,7 @@
 	}
 	
 	// Forward merging request to components.
-	[self.adoptedProtocols mergeDataFromProtocolProvider:source.adoptedProtocols];
+	[self.adoptedProtocols mergeDataFromProtocolsProvider:source.adoptedProtocols];
 }
 
 #pragma mark Overriden methods

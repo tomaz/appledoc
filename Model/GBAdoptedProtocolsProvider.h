@@ -42,7 +42,7 @@
  
  @param source `GBAdoptedProtocolsProvider` to merge from.
  */
-- (void)mergeDataFromProtocolProvider:(GBAdoptedProtocolsProvider *)source;
+- (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source;
 
 /** Returns the array of all protocols sorted by their name. */
 - (NSArray *)protocolsSortedByName;
