@@ -28,15 +28,13 @@
 	return self;
 }
 
-#pragma mark Helper methods
+#pragma mark Overriden methods
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
 	NSParameterAssert([[source nameOfProtocol] isEqualToString:self.nameOfProtocol]);
 	[super mergeDataFromObject:source];
 }
-
-#pragma mark Overriden methods
 
 - (NSString *)description {
 	return self.nameOfProtocol;

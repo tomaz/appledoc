@@ -48,4 +48,12 @@
 	assertThat([files objectAtIndex:1], is(@"f3"));
 }
 
+- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClass {
+	//setup
+	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
+	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	// execute & verify
+	STAssertThrows([original mergeDataFromObject:source], nil);
+}
+
 @end

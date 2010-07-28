@@ -29,7 +29,7 @@
 	return self;
 }
 
-#pragma mark Helper methods
+#pragma mark Overriden methods
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
@@ -37,8 +37,6 @@
 	NSParameterAssert([[source ivarTypes] isEqualToArray:self.ivarTypes]);
 	[super mergeDataFromObject:source];
 }
-
-#pragma mark Overriden methods
 
 - (NSString *)description {
 	return self.nameOfIvar;

@@ -29,15 +29,15 @@
 	return self;
 }
 
-#pragma mark Helper methods
+#pragma mark Overriden methods
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	NSParameterAssert([[source nameOfClass] isEqualToString:[self nameOfClass]]);
+	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	[super mergeDataFromObject:source];
-
+	
 	GBClassData *sourceClass = (GBClassData *)source;
-
+	
 	// Merge superclass data.
 	if (![self nameOfSuperclass]) {
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
@@ -50,8 +50,6 @@
 	[self.ivars mergeDataFromIvarsProvider:sourceClass.ivars];
 	[self.methods mergeDataFromMethodsProvider:sourceClass.methods];
 }
-
-#pragma mark Overriden methods
 
 - (NSString *)description {
 	return self.nameOfClass;

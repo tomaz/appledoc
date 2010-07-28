@@ -30,6 +30,18 @@
 
 #pragma mark Overriden methods
 
+- (void)mergeDataFromObject:(id)source {
+	if (!source || source == self) return;
+	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
+	NSParameterAssert([[source nameOfCategory] isEqualToString:self.nameOfCategory]);
+	[super mergeDataFromObject:source];
+	
+	// Forward merging request to components.
+	GBCategoryData *sourceCategory = (GBCategoryData *)source;	
+	[self.adoptedProtocols mergeDataFromProtocolsProvider:sourceCategory.adoptedProtocols];
+	[self.methods mergeDataFromMethodsProvider:sourceCategory.methods];
+}
+
 - (NSString *)description {
 	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.nameOfClass];
 	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.nameOfCategory];

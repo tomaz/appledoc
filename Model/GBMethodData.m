@@ -47,16 +47,6 @@
 
 #pragma mark Helper methods
 
-- (void)mergeDataFromObject:(id)source {
-	if (!source || source == self) return;
-	NSParameterAssert([source methodType] == self.methodType);
-	NSParameterAssert([source methodAttributes] == self.methodAttributes || [[source methodAttributes] isEqualToArray:self.methodAttributes]); // allow nil!
-	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);
-	NSParameterAssert([[source methodResultTypes] isEqualToArray:self.methodResultTypes]);
-	GBLogDebug(@"Merging data from %@...", source);
-	[super mergeDataFromObject:source];
-}
-
 - (NSString *)selectorFromAssignedData {
 	NSMutableString *result = [NSMutableString string];
 	NSString *delimiter = ([self.methodArguments count] > 1 || [[self.methodArguments lastObject] isTyped]) ? @":" : @"";
@@ -68,6 +58,16 @@
 }
 
 #pragma mark Overidden methods
+
+- (void)mergeDataFromObject:(id)source {
+	if (!source || source == self) return;
+	NSParameterAssert([source methodType] == self.methodType);
+	NSParameterAssert([source methodAttributes] == self.methodAttributes || [[source methodAttributes] isEqualToArray:self.methodAttributes]); // allow nil!
+	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);
+	NSParameterAssert([[source methodResultTypes] isEqualToArray:self.methodResultTypes]);
+	GBLogDebug(@"Merging data from %@...", source);
+	[super mergeDataFromObject:source];
+}
 
 - (NSString *)description {
 	return self.methodSelector;
