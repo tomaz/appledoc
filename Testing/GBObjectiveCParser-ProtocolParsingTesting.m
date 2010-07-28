@@ -51,12 +51,45 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@protocol MyProtocol <Protocol> @end" sourceFile:@"filename.h" toStore:store];
+	[parser parseObjectsFromString:@"@protocol MyProtocol <Protocol1, Protocol2> @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *protocols = [protocol.adoptedProtocols protocolsSortedByName];
-	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
+	assertThatInteger([protocols count], equalToInteger(2));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol1"));
+	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"Protocol2"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethods {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol MyProtocol -(void)method1; -(void)method2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [protocol.methods methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+}
+
+#pragma mark Merging testing
+
+- (void)testParseObjectsFromString_shouldMergeProtocolDefinitions {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol MyProtocol1 -(void)method1; @end" sourceFile:@"filename1.h" toStore:store];
+	[parser parseObjectsFromString:@"@protocol MyProtocol1 -(void)method2; @end" sourceFile:@"filename2.h" toStore:store];
+	// verify - simple testing here, details within GBModelBaseTesting!
+	assertThatInteger([[store protocols] count], equalToInteger(1));
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [protocol.methods methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Complex parsing testing

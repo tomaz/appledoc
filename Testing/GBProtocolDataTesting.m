@@ -39,6 +39,21 @@
 	assertThatInteger([[source.adoptedProtocols protocols] count], equalToInteger(2));
 }
 
+- (void)testMergeDataFromObject_shouldMergeMethodsAndPreserveSourceData {
+	//setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
+	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	[source.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[source.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify
+	assertThatInteger([[original.methods methods] count], equalToInteger(3));
+	assertThatInteger([[source.methods methods] count], equalToInteger(2));
+}
+
 - (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentProtocolName {
 	//setup
 	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];

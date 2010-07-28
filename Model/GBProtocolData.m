@@ -23,6 +23,7 @@
 	if (self) {
 		_protocolName = [name copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
+		_methods = [[GBMethodsProvider alloc] init];
 	}
 	return self;
 }
@@ -35,6 +36,7 @@
 	[super mergeDataFromObject:source];
 	GBProtocolData *sourceProtocol = (GBProtocolData *)source;
 	[self.adoptedProtocols mergeDataFromProtocolsProvider:sourceProtocol.adoptedProtocols];
+	[self.methods mergeDataFromMethodsProvider:sourceProtocol.methods];
 }
 
 - (NSString *)description {
@@ -45,5 +47,6 @@
 
 @synthesize nameOfProtocol = _protocolName;
 @synthesize adoptedProtocols = _adoptedProtocols;
+@synthesize methods = _methods;
 
 @end

@@ -8,12 +8,14 @@
 
 #import "GBModelBase.h"
 #import "GBAdoptedProtocolsProvider.h"
+#import "GBMethodsProvider.h"
 
 /** Describes a protocol. */
 @interface GBProtocolData : GBModelBase {
 	@private
 	NSString *_protocolName;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;
+	GBMethodsProvider *_methods;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -47,5 +49,8 @@
 
 /** Protocol's adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;
+
+/** Protocol's methods, available via `GBMethodsProvider`. */
+@property (readonly) GBMethodsProvider *methods;
 
 @end

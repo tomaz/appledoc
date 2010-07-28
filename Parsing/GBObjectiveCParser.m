@@ -157,6 +157,7 @@
 	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
+	[self matchMethodDefinitionsForProvider:protocol.methods];
 	[self.store registerProtocol:protocol];
 }
 
