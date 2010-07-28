@@ -27,9 +27,26 @@
 	NSParameterAssert(ivar != nil);
 	GBLogDebug(@"Registering ivar %@...", ivar);
 	if ([_ivars containsObject:ivar]) return;
-	if ([_ivarsByName objectForKey:ivar.nameOfIvar]) [NSException raise:@"Ivar with name %@ is already registered!", ivar.nameOfIvar];
+	GBIvarData *existingIvar = [_ivarsByName objectForKey:ivar.nameOfIvar];
+	if (existingIvar) {
+		[existingIvar mergeDataFromIvar:ivar];
+		return;
+	}
 	[_ivars addObject:ivar];
 	[_ivarsByName setObject:ivar forKey:ivar.nameOfIvar];
+}
+
+- (void)mergeDataFromIvarsProvider:(GBIvarsProvider *)source {
+	if (!source || source == self) return;
+	GBLogDebug(@"Merging data from %@...", source);
+	for (GBIvarData *sourceIvar in source.ivars) {
+		GBIvarData *existingIvar = [_ivarsByName objectForKey:sourceIvar.nameOfIvar];
+		if (existingIvar) {
+			[existingIvar mergeDataFromIvar:sourceIvar];
+			continue;
+		}
+		[self registerIvar:sourceIvar];
+	}
 }
 
 #pragma mark Properties

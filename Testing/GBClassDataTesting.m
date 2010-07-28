@@ -68,4 +68,19 @@
 	assertThatInteger([[source.adoptedProtocols protocols] count], equalToInteger(2));
 }
 
+- (void)testMergeDataFromClass_shouldMergeIvarsAndPreserveSourceData {
+	//setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
+	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
+	[original.ivars registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[original.ivars registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i2", nil]];
+	GBClassData *source = [GBClassData classDataWithName:@"MyClass"];
+	[source.ivars registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[source.ivars registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i3", nil]];
+	// execute
+	[original mergeDataFromClass:source];
+	// verify
+	assertThatInteger([[original.ivars ivars] count], equalToInteger(3));
+	assertThatInteger([[source.ivars ivars] count], equalToInteger(2));
+}
+
 @end

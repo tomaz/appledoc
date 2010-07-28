@@ -17,6 +17,19 @@
 	return [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
 }
 
+#pragma mark GBIvarData creation methods
+
++ (GBIvarData *)ivarWithComponents:(NSString *)first, ... {
+	va_list args;
+	va_start(args, first);
+	NSMutableArray *components = [NSMutableArray array];
+	for (NSString *argument=first; argument!=nil; argument=va_arg(args, NSString*)) {
+		[components addObject:argument];
+	}
+	va_end(args);
+	return [GBIvarData ivarDataWithComponents:components];
+}
+
 #pragma mark GBMethodData creation methods
 
 + (GBMethodData *)instanceMethodWithArguments:(GBMethodArgument *)first,... {
@@ -72,7 +85,7 @@
 }
 
 + (GBMethodArgument *)typedArgumentWithName:(NSString *)name {
-	return [GBMethodArgument methodArgumentWithName:name types:[NSArray arrayWithObject:@"void"] var:name];
+	return [GBMethodArgument methodArgumentWithName:name types:[NSArray arrayWithObject:@"id"] var:name];
 }
 
 @end

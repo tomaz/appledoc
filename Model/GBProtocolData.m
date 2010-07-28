@@ -31,6 +31,7 @@
 #pragma mark Helper methods
 
 - (void)mergeDataFromProtocol:(GBProtocolData *)source {
+	NSParameterAssert([source.nameOfProtocol isEqualToString:self.nameOfProtocol]);
 	// TODO: implement source files merging!
 }
 

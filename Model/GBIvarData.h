@@ -41,6 +41,17 @@
 /// @name Ivar data
 ///---------------------------------------------------------------------------------------
 
+/** Merges the data from the given source ivar.
+ 
+ The result is all information from both ivars is merged into receiver, while source is left untouched.
+ 
+ @warning *Note:* If the given source ivar name or types are different, an exception is thrown!
+ 
+ @param source Source ivar to merge from.
+ @exception NSException Thrown if the given source ivar name or types are different from receivers.
+ */
+- (void)mergeDataFromIvar:(GBIvarData *)source;
+
 /** The name of the ivar. */
 @property (retain) NSString *nameOfIvar;
 

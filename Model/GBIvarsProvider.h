@@ -36,6 +36,15 @@
  */
 - (void)registerIvar:(GBIvarData *)ivar;
 
+/** Merges data from the given ivars provider.
+ 
+ This copies all unknown ivars from the given source to receiver and invokes merging of data for receivers ivars 
+ also found in source. It leaves source data intact.
+ 
+ @param source `GBIvarsProvider` to merge from.
+ */
+- (void)mergeDataFromIvarsProvider:(GBIvarsProvider *)source;
+
 /** The array of all registered ivars as `GBIvarData` instances in the order of registration. */
 @property (readonly) NSArray *ivars;
 

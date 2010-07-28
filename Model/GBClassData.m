@@ -45,6 +45,7 @@
 	
 	// Forward merging request to components.
 	[self.adoptedProtocols mergeDataFromProtocolsProvider:source.adoptedProtocols];
+	[self.ivars mergeDataFromIvarsProvider:source.ivars];
 }
 
 #pragma mark Overriden methods

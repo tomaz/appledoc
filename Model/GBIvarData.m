@@ -29,6 +29,14 @@
 	return self;
 }
 
+#pragma mark Helper methods
+
+- (void)mergeDataFromIvar:(GBIvarData *)source {
+	NSParameterAssert([source.nameOfIvar isEqualToString:self.nameOfIvar]);
+	NSParameterAssert([source.ivarTypes isEqualToArray:self.ivarTypes]);
+	// TODO: implement source files merging!
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

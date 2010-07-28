@@ -38,14 +38,55 @@
 	assertThatInteger([provider.ivars count], equalToInteger(1));
 }
 
-- (void)testRegisterIvar_shouldPreventAddingDifferentInstanceWithSameName {
+- (void)testRegisterIvar_shouldMergeDifferentInstanceWithSameName {
 	// setup
 	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
-	GBIvarData *ivar1 = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name1", nil]];
-	GBIvarData *ivar2 = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSRect", @"_name1", nil]];
-	[provider registerIvar:ivar1];
-	// execute & verify
-	STAssertThrows([provider registerIvar:ivar2], nil);
+	GBIvarData *source = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"int", @"_index", nil]];
+	OCMockObject *destination = [OCMockObject niceMockForClass:[GBIvarData class]];
+	[[[destination stub] andReturn:@"_index"] nameOfIvar];
+	[[destination expect] mergeDataFromIvar:source];
+	[provider registerIvar:(GBIvarData *)destination];
+	// execute
+	[provider registerIvar:source];
+	// verify
+	[destination verify];
+}
+
+#pragma mark Merging testing
+
+- (void)testMergeDataFromIvarsProvider_shouldMergeAllDifferentIvars {
+	// setup
+	GBIvarsProvider *original = [[GBIvarsProvider alloc] init];
+	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i2", nil]];
+	GBIvarsProvider *source = [[GBIvarsProvider alloc] init];
+	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i3", nil]];
+	// execute
+	[original mergeDataFromIvarsProvider:source];
+	// verify - only basic testing here, details at GBIvarDataTesting!
+	NSArray *ivars = [original ivars];
+	assertThatInteger([ivars count], equalToInteger(3));
+	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"_i1"));
+	assertThat([[ivars objectAtIndex:1] nameOfIvar], is(@"_i2"));
+	assertThat([[ivars objectAtIndex:2] nameOfIvar], is(@"_i3"));
+}
+
+- (void)testMergeDataFromIvarsProvider_shouldPreserveSourceData {
+	// setup
+	GBIvarsProvider *original = [[GBIvarsProvider alloc] init];
+	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i2", nil]];
+	GBIvarsProvider *source = [[GBIvarsProvider alloc] init];
+	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
+	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i3", nil]];
+	// execute
+	[original mergeDataFromIvarsProvider:source];
+	// verify - only basic testing here, details at GBIvarDataTesting!
+	NSArray *ivars = [source ivars];
+	assertThatInteger([ivars count], equalToInteger(2));
+	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"_i1"));
+	assertThat([[ivars objectAtIndex:1] nameOfIvar], is(@"_i3"));
 }
 
 @end

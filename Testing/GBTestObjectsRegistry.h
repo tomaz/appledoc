@@ -6,11 +6,14 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBIvarData.h"
 #import "GBMethodData.h"
 
 @interface GBTestObjectsRegistry : NSObject
 
 + (OCMockObject *)mockSettingsProvider;
+
++ (GBIvarData *)ivarWithComponents:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 
 + (GBMethodData *)instanceMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)classMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
