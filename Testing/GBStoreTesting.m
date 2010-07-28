@@ -19,7 +19,7 @@
 - (void)testRegisterClass_shouldAddClassToList {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBClassData *class = [[GBClassData alloc] initWithName:@"MyClass"];
+	GBClassData *class = [GBClassData classDataWithName:@"MyClass"];
 	// execute
 	[store registerClass:class];
 	// verify
@@ -31,7 +31,7 @@
 - (void)testRegisterClass_shouldIgnoreSameInstance {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBClassData *class = [[GBClassData alloc] initWithName:@"MyClass"];
+	GBClassData *class = [GBClassData classDataWithName:@"MyClass"];
 	// execute
 	[store registerClass:class];
 	[store registerClass:class];
@@ -39,14 +39,19 @@
 	assertThatInteger([[store.classes allObjects] count], equalToInteger(1));
 }
 
-- (void)testRegisterClass_shouldPreventAddingDifferentInstanceWithSameName {
-	// setup
+- (void)testRegisterClass_shouldMergeDataFromInstancesOfSameName {
+	// setup - only basic stuff here, details are tested within GBClassDataTesting!
 	GBStore *store = [[GBStore alloc] init];
-	GBClassData *class1 = [[GBClassData alloc] initWithName:@"MyClass"];
-	GBClassData *class2 = [[GBClassData alloc] initWithName:@"MyClass"];
-	[store registerClass:class1];
-	// execute & verify
-	STAssertThrows([store registerClass:class2], nil);
+	GBClassData *class2 = [GBClassData classDataWithName:@"MyClass"];
+	OCMockObject *class1 = [OCMockObject niceMockForClass:[GBClassData class]];
+	[[[class1 stub] andReturn:@"MyClass"] nameOfClass];
+	[[class1 expect] mergeDataFromClass:class2];
+	// execute
+	[store registerClass:(GBClassData *)class1];
+	[store registerClass:class2];
+	// verify
+	assertThatInteger([store.classes count], equalToInteger(1));
+	[class1 verify];
 }
 
 #pragma mark Category registration testing
@@ -54,7 +59,7 @@
 - (void)testRegisterCategory_shouldAddCategoryToList {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	// execute
 	[store registerCategory:category];
 	// verify
@@ -66,7 +71,7 @@
 - (void)testRegisterCategory_shouldIgnoreSameInstance {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	// execute
 	[store registerCategory:category];
 	[store registerCategory:category];
@@ -77,8 +82,8 @@
 - (void)testRegisterCategory_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *category1 = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
-	GBCategoryData *category2 = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	[store registerCategory:category1];
 	// execute & verify
 	STAssertThrows([store registerCategory:category2], nil);
@@ -87,7 +92,7 @@
 - (void)testRegisterExtension_shouldAddExtensionToList {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	// execute
 	[store registerCategory:extension];
 	// verify
@@ -99,7 +104,7 @@
 - (void)testRegisterExtension_shouldIgnoreSameInstance {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	// execute
 	[store registerCategory:extension];
 	[store registerCategory:extension];
@@ -110,8 +115,8 @@
 - (void)testRegisterExtension_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *extension1 = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
-	GBCategoryData *extension2 = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	GBCategoryData *extension1 = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
+	GBCategoryData *extension2 = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	[store registerCategory:extension1];
 	// execute & verify
 	STAssertThrows([store registerCategory:extension2], nil);
@@ -120,8 +125,8 @@
 - (void)testRegisterExtension_shouldAllowCategoryAndExtensionOfSameClass {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBCategoryData *category = [[GBCategoryData alloc] initWithName:@"MyCategory" className:@"MyClass"];
-	GBCategoryData *extension = [[GBCategoryData alloc] initWithName:nil className:@"MyClass"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	// execute
 	[store registerCategory:category];
 	[store registerCategory:extension];
@@ -135,7 +140,7 @@
 - (void)testRegisterProtocol_shouldAddProtocolToList {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	// execute
 	[store registerProtocol:protocol];
 	// verify
@@ -147,7 +152,7 @@
 - (void)testRegisterProtocol_shouldIgnoreSameInstance {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	// execute
 	[store registerProtocol:protocol];
 	[store registerProtocol:protocol];
@@ -158,8 +163,8 @@
 - (void)testRegisterProtocol_shouldPreventAddingDifferentInstanceWithSameName {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBProtocolData *protocol1 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
-	GBProtocolData *protocol2 = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
+	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"MyProtocol"];
+	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	[store registerProtocol:protocol1];
 	// execute & verify
 	STAssertThrows([store registerProtocol:protocol2], nil);

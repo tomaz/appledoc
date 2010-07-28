@@ -50,7 +50,11 @@
 	NSParameterAssert(class != nil);
 	GBLogDebug(@"Registering class %@...", class);
 	if ([_classes containsObject:class]) return;
-	if ([_classesByName objectForKey:class.nameOfClass]) [NSException raise:@"Class with name %@ is already registered!", class.nameOfClass];
+	GBClassData *existingClass = [_classesByName objectForKey:class.nameOfClass];
+	if (existingClass) {
+		[existingClass mergeDataFromClass:class];
+		return;
+	}
 	[_classes addObject:class];
 	[_classesByName setObject:class forKey:class.nameOfClass];
 }
