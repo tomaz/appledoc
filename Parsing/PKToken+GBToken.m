@@ -18,4 +18,12 @@
 	return ([[self stringValue] rangeOfString:string].location != NSNotFound);
 }
 
+- (BOOL)isAppledocComment {
+	if ([self isComment]) {
+		if ([[self stringValue] hasPrefix:@"///"]) return YES;
+		if ([[self stringValue] hasPrefix:@"/**"]) return YES;
+	}
+	return NO;
+}
+
 @end

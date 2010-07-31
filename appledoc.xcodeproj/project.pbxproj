@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
@@ -87,6 +88,8 @@
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		731D2BF312045A61003180E7 /* NSString+GBString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GBString.h"; sourceTree = "<group>"; };
+		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
 		731E7CE711F9962D00AAF15D /* NSException+GBException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+GBException.m"; sourceTree = "<group>"; };
 		7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+GBFileManager.h"; sourceTree = "<group>"; };
@@ -359,6 +362,8 @@
 				73D54CA811F8D27F00CCDDB0 /* GBLog.m */,
 				7340F02611FCC63100E712A4 /* NSObject+GBObject.h */,
 				7340F02711FCC63100E712A4 /* NSObject+GBObject.m */,
+				731D2BF312045A61003180E7 /* NSString+GBString.h */,
+				731D2BF412045A61003180E7 /* NSString+GBString.m */,
 				7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */,
 				7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */,
 				731E7CE611F9962D00AAF15D /* NSException+GBException.h */,
@@ -696,6 +701,7 @@
 				73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */,
 				7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */,
 				7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */,
+				731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

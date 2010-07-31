@@ -26,4 +26,13 @@
  */
 - (BOOL)contains:(NSString *)string;
 
+/** Determines whether this token is an appledoc comment.
+ 
+ The method returns `YES` if the token is a comment and it has special appledoc comment prefix which for single line comments is composed
+ of three slashes and for multiple line comments from a single slash and two stars.
+ 
+ @return Returns `YES` if the token represents appledoc comment, `NO` otherwise.
+ */
+- (BOOL)isAppledocComment;
+
 @end

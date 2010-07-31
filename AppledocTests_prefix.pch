@@ -9,6 +9,7 @@
 #ifdef __OBJC__
 	#import <Foundation/Foundation.h>
 	#import "NSObject+GBObject.h"
+	#import "NSString+GBString.h"
 	#import "NSException+GBException.h"
 	#import "NSFileManager+GBFileManager.h"
 	#import "GBLog.h"
