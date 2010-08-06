@@ -45,6 +45,19 @@
 	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"MyProtocol2"));
 }
 
+#pragma mark Class comments parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterProtocolDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	assertThat(protocol.commentString, is(@"Comment"));
+}
+
 #pragma mark Protocol components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocols {

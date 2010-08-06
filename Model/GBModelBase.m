@@ -20,6 +20,20 @@
 	return self;
 }
 
+#pragma mark Merging handling
+
+- (void)mergeDataFromObject:(id)source {
+	NSParameterAssert([source isKindOfClass:[self class]]);
+	GBLogDebug(@"Merging data from %@...", source);
+	[_declaredFiles unionSet:[source declaredFiles]];
+	NSString *comment = [source commentString];
+	if (self.commentString && comment) {
+		GBLogWarn(@"Comment string for %@ found in definition and declaration!", self);
+		return;
+	}
+	if (!self.commentString && comment) [self registerCommentString:comment];
+}
+
 #pragma mark Declared files handling
 
 - (void)registerDeclaredFile:(NSString *)filename {
@@ -28,16 +42,19 @@
 	[_declaredFiles addObject:filename];
 }
 
-- (void)mergeDataFromObject:(id)source {
-	NSParameterAssert([source isKindOfClass:[self class]]);
-	GBLogDebug(@"Merging data from %@...", source);
-	[_declaredFiles unionSet:[source declaredFiles]];
-}
-
 - (NSArray *)declaredFilesSortedByName {
 	return [[self.declaredFiles allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
+#pragma mark Comments handling
+
+- (void)registerCommentString:(NSString *)value {
+	_commentString = [value copy];
+}
+
+#pragma mark Properties
+
 @synthesize declaredFiles = _declaredFiles;
+@synthesize commentString = _commentString;
 
 @end

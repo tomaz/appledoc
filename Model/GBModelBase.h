@@ -12,7 +12,12 @@
 @interface GBModelBase : NSObject {
 	@private
 	NSMutableSet *_declaredFiles;
+	NSString *_commentString;
 }
+
+///---------------------------------------------------------------------------------------
+/// @name Declared files handling
+///---------------------------------------------------------------------------------------
 
 /** Registers the given filename to `declaredFiles` list.
  
@@ -22,6 +27,40 @@
  @exception NSException Thrown if the given filename is `nil` or empty.
  */
 - (void)registerDeclaredFile:(NSString *)filename;
+
+/** Returns the array of all `declaredFiles` sorted by file name.
+ 
+ @see declaredFiles
+ @see registerDeclaredFile:
+ */
+- (NSArray *)declaredFilesSortedByName;
+
+/** The list of all file names without path the object definition or declaration was found in. 
+ 
+ @see registerDeclaredFile:
+ @see declaredFilesSortedByName
+ */
+@property (readonly) NSSet *declaredFiles;
+
+///---------------------------------------------------------------------------------------
+/// @name Comments handling
+///---------------------------------------------------------------------------------------
+
+/** Registers the given comment string.
+ 
+ @param value Comment string or `nil` to clear the comment.
+ */
+- (void)registerCommentString:(NSString *)value;
+
+/** The comment string associated with this object or `nil` if no comment is associated. 
+ 
+ @see registerCommentString:
+ */
+@property (readonly) NSString *commentString;
+
+///---------------------------------------------------------------------------------------
+/// @name Merging handling
+///---------------------------------------------------------------------------------------
 
 /** Merges all data from the given object.
  
@@ -37,19 +76,5 @@
  @param source Source object to merge from.
  */
 - (void)mergeDataFromObject:(id)source;
-
-/** Returns the array of all `declaredFiles` sorted by file name.
- 
- @see declaredFiles
- @see registerDeclaredFile:
- */
-- (NSArray *)declaredFilesSortedByName;
-
-/** The list of all file names without path the object definition or declaration was found in. 
- 
- @see registerDeclaredFile:
- @see declaredFilesSortedByName
- */
-@property (readonly) NSSet *declaredFiles;
 
 @end

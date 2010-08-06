@@ -94,6 +94,30 @@
 	assertThat([[classes objectAtIndex:1] nameOfClass], is(@"MyClass2"));
 }
 
+#pragma mark Class comments parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterClassDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	assertThat(class.commentString, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterClassDeclarationComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @implementation MyClass @end" sourceFile:@"filename.m" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	assertThat(class.commentString, is(@"Comment"));
+}
+
 #pragma mark Class definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocols {

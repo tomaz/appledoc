@@ -102,6 +102,41 @@
 	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"MyClass2"));
 }
 
+#pragma mark Category comments parsing testing
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	assertThat(category.commentString, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryDeclarationComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @implementation MyClass(MyCategory) @end" sourceFile:@"filename.m" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	assertThat(category.commentString, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterExtensionDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBCategoryData *category = [[store categories] anyObject];
+	assertThat(category.commentString, is(@"Comment"));
+}
+
 #pragma mark Category definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryAdoptedProtocols {
