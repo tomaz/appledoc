@@ -146,12 +146,52 @@
 
 - (NSString *)lastCommentString {
 	if ([self.lastComment length] == 0) return nil;
-	NSMutableString *result = [NSMutableString stringWithCapacity:[self.lastComment length]];
 	NSArray *lines = [self.lastComment componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-	for (NSString *line in lines) {
-		if ([result length] > 0) [result appendFormat:@"\n"];
-		[result appendString:line];
+	NSMutableArray *comments = [NSMutableArray arrayWithCapacity:[lines count]];
+	
+	// First pass: removes lines that are irrelevant and get common prefix of all lines.
+	[lines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		BOOL firstLine = (idx == 0);
+		BOOL lastLine = (idx == [lines count] - 1);
+
+		// Skip first and last line if we only have some common char in it. This is very basic - it tests if the line
+		// only contains a single character and ignores it if so.
+		if (firstLine || lastLine) {
+			NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+			if ([stripped length] > 0) {
+				NSString *delimiter = [stripped substringToIndex:1];
+				stripped = [stripped stringByReplacingOccurrencesOfString:delimiter withString:@""];
+				if ([stripped length] == 0) return;
+			}
+		}
+		
+		[comments addObject:obj];
+	}];
+	
+	// If all lines start with a *, ignore that part.
+	__block BOOL stripPrefix = ([comments count] > 1);
+	if (stripPrefix) {
+		[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			NSString *line = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+			if ([line length] > 0 && ![line hasPrefix:@"*"] && idx > 0) {
+				stripPrefix = NO;
+				*stop = YES;
+			}
+		}];
 	}
+	
+	// Finally remove common line prefix including all spaces and compose all objects into final comment.
+	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
+	NSMutableString *result = [NSMutableString stringWithCapacity:[self.lastComment length]];
+	[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		if (stripPrefix) {
+			obj = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+			if ([obj hasPrefix:@"*"]) obj = [obj substringFromIndex:1];
+		}
+		obj = [obj stringByTrimmingCharactersInSet:spacesSet];
+		[result appendString:obj];
+		if (idx < [comments count] - 1) [result appendString:@"\n"];
+	}];	
 	return result;
 }
 

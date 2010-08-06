@@ -240,18 +240,53 @@
 
 #pragma mark Comments parsing testing
 
-- (void)testComments_shouldGroupSingleLineComments {
+- (void)testLastCommentString_shouldTrimSpacesFromBothEnds {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///     comment     \n   ONE"]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"comment"));
+}
+
+- (void)testLastCommentString_shouldGroupSingleLineComments {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n/// line2\n   ONE"]];
 	// verify
 	assertThat([tokenizer lastCommentString], is(@"line1\nline2"));
 }
 
-- (void)testComments_shouldIgnoreSingleLineCommentsIfEmptyLineFoundInBetween {
+- (void)testLastCommentString_shouldIgnoreSingleLineCommentsIfEmptyLineFoundInBetween {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n\n/// line2\n   ONE"]];
 	// verify
 	assertThat([tokenizer lastCommentString], is(@"line2"));
+}
+
+- (void)testLastCommentString_shouldRemovePrefixLine {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** -----------------\n line */\n   ONE"]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"line"));
+}
+
+- (void)testLastCommentString_shouldRemoveSuffixLine {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line\n ----------------- */\n   ONE"]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"line"));
+}
+
+- (void)testLastCommentString_shouldRemoveCommonPrefix {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n * line2\n * line3\n */\n   ONE"]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"line1\nline2\nline3\n"));
+}
+
+- (void)testLastCommentString_shouldKeepExampleTabs {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
 }
 
 #pragma mark Creation methods
