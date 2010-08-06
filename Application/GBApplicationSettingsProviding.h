@@ -1,5 +1,5 @@
 //
-//  GBApplicationSettingsProvider.h
+//  GBApplicationSettingsProviding.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 23.7.10.
@@ -12,6 +12,6 @@
  
  Application-level settings providers provide application-wide settings and properties that affect application handling.
  */
-@protocol GBApplicationSettingsProvider
+@protocol GBApplicationSettingsProviding
 
 @end

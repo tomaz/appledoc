@@ -8,6 +8,8 @@
 
 #import "DDCliUtil.h"
 #import "DDGetoptLongParser.h"
+#import "GBStore.h"
+#import "GBParser.h"
 #import "GBAppledocApplication.h"
 
 static NSString *kGBArgLogFormat = @"logformat";
@@ -69,10 +71,13 @@ static NSString *kGBArgHelp = @"help";
 		[self validateArguments:arguments];
 		[self initializeLoggingSystem];
 		
-//		GBLogNormal(@"Parsing source files...");
-//		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
-//		[parser parseObjectsFromPaths:arguments];
-//		
+		GBLogNormal(@"Initializing...");
+		GBStore *store = [[GBStore alloc] init];
+		
+		GBLogNormal(@"Parsing source files...");
+		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
+		[parser parseObjectsFromPaths:arguments toStore:store];
+		
 //		GBLogNormal(@"Processing parsed data...");
 //		GBProcessor *processor = [[GBProcessor alloc] init];
 //		[processor processObjectsFromParser:parser];
@@ -157,6 +162,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"\n");
 	ddprintf(@"- DDCli by Dave Dribin\n");
 	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
+	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!");
 }

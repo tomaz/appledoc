@@ -8,6 +8,14 @@
 
 #import "NSException+GBException.h"
 
+@interface NSException (GBExceptionPrivate)
+
++ (NSString *)reasonWithError:(NSError *)error message:(NSString *)message;
+
+@end
+
+#pragma mark -
+
 @implementation NSException (GBException)
 
 + (void)raise:(NSString *)format, ... {
@@ -26,17 +34,21 @@
 		va_end(args);
 	}
 	
+	NSString *reason = [self reasonWithError:error message:message];
+	[self raise:reason];
+}
+
++ (NSString *)reasonWithError:(NSError *)error message:(NSString *)message {
 	NSInteger code = [error code];
 	NSString *domain = [error domain];
 	NSString *description = [error localizedDescription];
 	NSString *reason = [error localizedFailureReason];
 	
-	NSMutableString *output = [NSMutableString string];
-	if (message) [output appendFormat:@"%@\n", message];
-	[output appendFormat:@"Error: %@, code %i: %@\n", domain, code, description];
-	if (reason) [output appendFormat:@"Reason: %@", reason];
-	
-	[self raise:output];
+	NSMutableString *result = [NSMutableString string];
+	if (message) [result appendFormat:@"%@\n", message];
+	[result appendFormat:@"Error: %@, code %i: %@\n", domain, code, description];
+	if (reason) [result appendFormat:@"Reason: %@", reason];
+	return result;
 }
 
 @end
