@@ -75,6 +75,32 @@
 	[self assertMethod:[methods objectAtIndex:1] matchesClassComponents:@"void", @"method2", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ -(id)method1; /** Comment2 */ +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
+	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass /** Comment1 */ -(id)method1{} /** Comment2 */ +(void)method2{} @end" sourceFile:@"filename.m" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
+	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
+}
+
 #pragma mark Method declarations parsing
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithNoArguments {
@@ -183,6 +209,19 @@
 	assertThatInteger([methods count], equalToInteger(2));
 	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"readonly", @"int", @"name1", nil];
 	[self assertMethod:[methods objectAtIndex:1] matchesPropertyComponents:@"readwrite", @"long", @"name2", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterPropertyDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ @property(readonly)NSInteger p1; /** Comment2 */ @property(readonly)NSInteger p2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
+	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
 }
 
 @end

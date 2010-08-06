@@ -216,6 +216,7 @@
 }
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider {
+	NSString *comment = [[self.tokenizer lastCommentString] copy];
 	__block BOOL result = NO;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		// Get attributes.
@@ -234,6 +235,7 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		GBLogDebug(@"Matched property definition %@.", propertyData);
+		[propertyData registerCommentString:comment];
 		[provider registerMethod:propertyData];
 		*consume = NO;
 		*stop = YES;
@@ -380,9 +382,10 @@
 
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
 	// This method only matches class or instance methods, not properties!
+	NSString *comment = [[self.tokenizer lastCommentString] copy];
 	__block BOOL result = NO;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
-	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
 		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -425,6 +428,7 @@
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
+		[methodData registerCommentString:comment];
 		[provider registerMethod:methodData];
 		*consume = NO;
 		*stop = YES;

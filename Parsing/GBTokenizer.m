@@ -69,8 +69,7 @@
 	if (count == 0) return;
 	while (count > 0 && ![self eof]) {
 		self.tokenIndex++;
-		if (![self consumeComments]) {
-		}
+		[self consumeComments];
 		count--;
 	}
 }
