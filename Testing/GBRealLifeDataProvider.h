@@ -11,5 +11,6 @@
 @interface GBRealLifeDataProvider : NSObject
 
 + (NSString *)headerWithClassCategoryAndProtocol;
++ (NSString *)codeWithClassAndCategory;
 
 @end

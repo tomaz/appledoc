@@ -293,7 +293,10 @@
 			return;
 		}
 		if ([token matches:@"}"]) {
-			if (--braceLevel == 0) *stop = YES;
+			if (--braceLevel == 0) {
+				*consume = NO;
+				*stop = YES;
+			}
 			return;
 		}
 	}];

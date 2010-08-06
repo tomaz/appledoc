@@ -269,7 +269,7 @@
 
 #pragma mark Complex parsing testing
 
-- (void)testParseObjectsFromString_shouldRegisterCategoryAndExtensionFromRealLifeInput {
+- (void)testParseObjectsFromString_shouldRegisterCategoryAndExtensionFromRealLifeHeaderInput {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -282,6 +282,20 @@
 	assertThat([[categories objectAtIndex:0] nameOfCategory], is(nil));
 	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"GBCalculator"));
 	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"Multiplication"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryFromRealLifeCodeInput {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:[GBRealLifeDataProvider codeWithClassAndCategory] sourceFile:@"filename.m" toStore:store];
+	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
+	assertThatInteger([[store categories] count], equalToInteger(1));
+	GBCategoryData *category = [[store categories] anyObject];
+	assertThat([category nameOfClass], is(@"GBCalculator"));
+	assertThat([category nameOfCategory], is(@"Multiplication"));
+	assertThatInteger([category.methods.methods count], equalToInteger(1));
 }
 
 @end

@@ -228,17 +228,30 @@
 
 #pragma mark Complex parsing testing
 
-- (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeInput {
+- (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeHeaderInput {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol]sourceFile:@"filename.h" toStore:store];
+	[parser parseObjectsFromString:[GBRealLifeDataProvider headerWithClassCategoryAndProtocol] sourceFile:@"filename.h" toStore:store];
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	assertThatInteger([[store classes] count], equalToInteger(1));
 	GBClassData *class = [[store classes] anyObject];
 	assertThat(class.nameOfClass, is(@"GBCalculator"));
 	assertThat(class.nameOfSuperclass, is(@"NSObject"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterClassFromRealLifeCodeInput {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:[GBRealLifeDataProvider codeWithClassAndCategory] sourceFile:@"filename.m" toStore:store];
+	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
+	assertThatInteger([[store classes] count], equalToInteger(1));
+	GBClassData *class = [[store classes] anyObject];
+	assertThat(class.nameOfClass, is(@"GBCalculator"));
+	assertThatInteger([class.methods.methods count], equalToInteger(1));
 }
 
 @end

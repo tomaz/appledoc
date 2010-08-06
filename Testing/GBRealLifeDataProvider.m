@@ -41,4 +41,27 @@
 	@"\n";
 }
 
++ (NSString *)codeWithClassAndCategory {
+	return
+	@"#import \"Header.h\"\n"
+	@"\n"
+	@"@implementation GBCalculator\n"
+	@"\n"
+	@"- (NSInteger)add:(NSInteger)value1 to:(NSInteger)value2 {\n"
+	@"  if (!_cachedResult) { _cachedResult = @\"Ready\"; }\n"
+	@"  return value1 + value2;\n"
+	@"}\n"
+	@"\n"
+	@"@end\n"
+	@"\n"
+	@"@implementation GBCalculator (Multiplication)\n"
+	@"\n"
+	@"- (NSInteger)multiply:(NSInteger)value1 with:(NSInteger)value2 {\n"
+	@"  return value1 * value2;\n"
+	@"}\n"
+	@"\n"
+	@"@end\n"
+	@"\n";
+}
+
 @end
