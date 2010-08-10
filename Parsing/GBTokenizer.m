@@ -78,7 +78,7 @@
 	[self consumeFrom:nil to:end usingBlock:block];
 }
 
-- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block {
+- (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block {	
 	// Skip starting token.
 	if (start) {
 		if (![[self currentToken] matches:start]) return;
@@ -86,8 +86,17 @@
 	}
 	
 	// Report all tokens until EOF or ending token is found.
+	NSUInteger level = 1;
 	BOOL quit = NO;
-	while (![self eof] && ![[self currentToken] matches:end]) {
+	while (![self eof]) {
+		// Handle multiple hierarchy.
+		if (start && [[self currentToken] matches:start]) level++;
+		if ([[self currentToken] matches:end]) {
+			if (!start) break;
+			if (--level == 0) break;
+		}
+
+		// Report the token.
 		BOOL consume = YES;
 		block([self currentToken], &consume, &quit);
 		if (consume) [self consume:1];

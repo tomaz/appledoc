@@ -61,6 +61,19 @@
 	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"arg1", @"int", @"var1", @"arg2", @"long", @"var2", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionBlockArgument {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass -(id)method:(void (^)(id obj, NSUInteger idx))block; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"void", @"(", @"^", @")", @"(", @"id", @"obj", @",", @"NSUInteger", @"idx", @")", @"block", nil];
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllMethodDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -142,6 +155,19 @@
 	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"arg1", @"int", @"var1", @"arg2", @"long", @"var2", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationBlockArgument {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method:(void (^)(id obj, NSUInteger idx))block{} @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"void", @"(", @"^", @")", @"(", @"id", @"obj", @",", @"NSUInteger", @"idx", @")", @"block", nil];
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllMethodDeclarations {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -197,6 +223,19 @@
 	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"retain", @"nonatomic", @"IBOutlet", @"NSString", @"*", @"name", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterBlockPropertyDefinition {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass @property (retain) void (^name)(id, NSUInteger); @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"retain", @"void", @"(", @"^", @"name", @")", @"(", @"id", @",", @"NSUInteger", @")", nil];
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllPropertyDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -223,5 +262,6 @@
 	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
 	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
 }
+
 
 @end
