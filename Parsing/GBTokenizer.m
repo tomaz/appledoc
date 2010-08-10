@@ -200,6 +200,9 @@
 		[result appendString:obj];
 		if (idx < [comments count] - 1) [result appendString:@"\n"];
 	}];	
+	
+	// If the result is empty string, return nil, otherwise return the comment string.
+	if ([result length] == 0) return nil;
 	return result;
 }
 

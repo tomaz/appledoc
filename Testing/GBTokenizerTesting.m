@@ -300,7 +300,7 @@
 }
 
 - (PKTokenizer *)commentsTokenizer {
-	return [PKTokenizer tokenizerWithString:@"/// first1\n/// first2\nONE\n/// second\nTWO\n///third\nTHREE FOUR"];
+	return [PKTokenizer tokenizerWithString:@"/// first1\n/// first2\nONE\n/// second\nTWO\n///third\nTHREE /// -------------------\nFOUR"];
 }
 
 @end
