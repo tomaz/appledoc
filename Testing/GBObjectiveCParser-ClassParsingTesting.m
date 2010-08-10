@@ -146,7 +146,7 @@
 	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
 }
 
-- (void)testParseObjectsFromString_shouldRegisterIvars {
+- (void)testParseObjectsFromString_shouldIgnoreIvars {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -155,8 +155,7 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [class.ivars ivars];
-	assertThatInteger([ivars count], equalToInteger(1));
-	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"var"));
+	assertThatInteger([ivars count], equalToInteger(0));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitions {
@@ -207,15 +206,15 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass { int _v1; } @end" sourceFile:@"filename1.h" toStore:store];
-	[parser parseObjectsFromString:@"@interface MyClass { int _v2; } @end" sourceFile:@"filename2.h" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass -(void)method1; @end" sourceFile:@"filename1.h" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass -(void)method2; @end" sourceFile:@"filename2.h" toStore:store];
 	// verify - simple testing here, details within GBModelBaseTesting!
 	assertThatInteger([[store classes] count], equalToInteger(1));
 	GBClassData *class = [[store classes] anyObject];
-	NSArray *ivars = [class.ivars ivars];
-	assertThatInteger([ivars count], equalToInteger(2));
-	assertThat([[ivars objectAtIndex:0] nameOfIvar], is(@"_v1"));
-	assertThat([[ivars objectAtIndex:1] nameOfIvar], is(@"_v2"));
+	NSArray *methods = [class.methods methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
 }
 
 - (void)testParseObjectsFromString_shouldMergeClassDeclarations {

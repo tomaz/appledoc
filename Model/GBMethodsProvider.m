@@ -38,12 +38,15 @@
 }
 
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source {
+	// If a method with the same selector is found while merging from source, we should check if the type also matches. If so, we can
+	// merge the data from the source's method. However if the type doesn't match, we should ignore the method alltogether (ussually this
+	// is due to custom property implementation). We should probably deal with this scenario more inteligently, but it seems it works...
 	if (!source || source == self) return;
 	GBLogDebug(@"Merging data from %@...", source);
 	for (GBMethodData *sourceMethod in source.methods) {
 		GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
 		if (existingMethod) {
-			[existingMethod mergeDataFromObject:sourceMethod];
+			if (existingMethod.methodType == sourceMethod.methodType) [existingMethod mergeDataFromObject:sourceMethod];
 			continue;
 		}
 		[self registerMethod:sourceMethod];

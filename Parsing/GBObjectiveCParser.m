@@ -185,19 +185,7 @@
 
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider {
 	[self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if ([token matches:@"@private"]) return;
-		if ([token matches:@"@protected"]) return;
-		if ([token matches:@"@public"]) return;
-		
-		NSMutableArray *components = [NSMutableArray array];
-		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-			[components addObject:[token stringValue]];
-		}];
-		
-		GBIvarData *ivar = [GBIvarData ivarDataWithComponents:components];
-		GBLogDebug(@"Matched ivar %@", ivar);
-		[provider registerIvar:ivar];
-		*consume = NO;
+		return; // Ignore all ivars, no need to document these(?)
 	}];
 }
 

@@ -22,7 +22,7 @@
 
 #pragma mark Ivars parsing testing
 
-- (void)testParseObjectsFromString_shouldRegisterIVar {
+- (void)testParseObjectsFromString_shouldIgnoreIVar {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -31,11 +31,10 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];
-	assertThatInteger([ivars count], equalToInteger(1));
-	[self assertIvar:[ivars objectAtIndex:0] matches:@"int", @"_var", nil];
+	assertThatInteger([ivars count], equalToInteger(0));
 }
 
-- (void)testParseObjectsFromString_shouldRegisterAllIVars {
+- (void)testParseObjectsFromString_shouldIgnoreAllIVars {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -44,12 +43,10 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];
-	assertThatInteger([ivars count], equalToInteger(2));
-	[self assertIvar:[ivars objectAtIndex:0] matches:@"int", @"_var1", nil];
-	[self assertIvar:[ivars objectAtIndex:1] matches:@"long", @"_var2", nil];
+	assertThatInteger([ivars count], equalToInteger(0));
 }
 
-- (void)testParseObjectsFromString_shouldRegisterComplexIVar {
+- (void)testParseObjectsFromString_shouldIgnoreComplexIVar {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -58,8 +55,19 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *ivars = [[class ivars] ivars];
-	assertThatInteger([ivars count], equalToInteger(1));
-	[self assertIvar:[ivars objectAtIndex:0] matches:@"id", @"<", @"Protocol", @">", @"*", @"_var", nil];
+	assertThatInteger([ivars count], equalToInteger(0));
+}
+
+- (void)testParseObjectsFromString_shouldIgnoreIVarEndingWithParenthesis {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass { void (^_name)(id obj, NSUInteger idx, BOOL *stop); } @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *ivars = [[class ivars] ivars];
+	assertThatInteger([ivars count], equalToInteger(0));
 }
 
 @end
