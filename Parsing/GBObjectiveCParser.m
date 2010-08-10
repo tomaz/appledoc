@@ -214,11 +214,19 @@
 			[propertyAttributes addObject:[token stringValue]];
 		}];
 		
-		// Get property types and name.
+		// Get property types and name. Handle block types properly!
 		NSMutableArray *propertyComponents = [NSMutableArray array];
+		__block BOOL parseBlockName = NO;
+		__block NSString *blockName = nil;
 		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			[propertyComponents addObject:[token stringValue]];
+			if (parseBlockName) {
+				blockName = [token stringValue];
+				parseBlockName = NO;
+			}
+			if ([token matches:@"^"]) parseBlockName = YES;
 		}];
+		if (blockName) [propertyComponents addObject:blockName];
 		
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];

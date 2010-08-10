@@ -29,7 +29,7 @@
 + (id)propertyDataWithAttributes:(NSArray *)attributes components:(NSArray *)components {
 	NSParameterAssert([components count] >= 2);	// At least one return and the name!
 	NSMutableArray *results = [NSMutableArray arrayWithArray:components];
-	[results removeLastObject];
+	[results removeLastObject];	// Remove ;
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:[components lastObject]];
 	return [[[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]] autorelease];
 }

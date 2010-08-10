@@ -233,7 +233,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"retain", @"void", @"(", @"^", @"name", @")", @"(", @"id", @",", @"NSUInteger", @")", nil];
+	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"retain", @"void", @"(", @"^", @"name", @")", @"(", @"id", @",", @"NSUInteger", @")", @"name", nil];
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllPropertyDefinitions {
