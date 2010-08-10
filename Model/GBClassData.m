@@ -34,6 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
+	GBLogDebug(@"Merging data from %@...", source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	[super mergeDataFromObject:source];
 	

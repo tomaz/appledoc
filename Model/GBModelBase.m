@@ -24,7 +24,6 @@
 
 - (void)mergeDataFromObject:(id)source {
 	NSParameterAssert([source isKindOfClass:[self class]]);
-	GBLogDebug(@"Merging data from %@...", source);
 	[_declaredFiles unionSet:[source declaredFiles]];
 	NSString *comment = [source commentString];
 	if (self.commentString && comment) {

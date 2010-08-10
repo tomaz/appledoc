@@ -32,8 +32,8 @@
 #pragma mark Initialization & disposal
 
 - (id)initWithSettingsProvider:(id<GBApplicationSettingsProviding>)settingsProvider {
-	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
 	NSParameterAssert(settingsProvider != nil);
+	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
