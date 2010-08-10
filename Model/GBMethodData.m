@@ -62,7 +62,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from %@...", source);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([source methodType] == self.methodType);
 	NSParameterAssert([source methodAttributes] == self.methodAttributes || [[source methodAttributes] isEqualToArray:self.methodAttributes]); // allow nil!
 	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);

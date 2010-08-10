@@ -34,7 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from %@...", source);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	[super mergeDataFromObject:source];
 	
@@ -43,8 +43,8 @@
 	// Merge superclass data.
 	if (![self nameOfSuperclass]) {
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
-	} else if (![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
-		GBLogWarn(@"Merged class's superclass %@ is different from ours %@!", sourceClass.nameOfSuperclass, self.nameOfSuperclass);
+	} else if (sourceClass.nameOfSuperclass && ![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
+		GBLogWarn(@"%@: Merged class's superclass %@ is different from ours %@!", self, sourceClass.nameOfSuperclass, self.nameOfSuperclass);
 	}
 	
 	// Forward merging request to components.
