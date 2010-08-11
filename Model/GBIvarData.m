@@ -40,6 +40,8 @@
 }
 
 - (NSString *)description {
+	if (self.parentObject)
+		return [NSString stringWithFormat:@"%@.%@", self.parentObject, self.nameOfIvar];
 	return self.nameOfIvar;
 }
 

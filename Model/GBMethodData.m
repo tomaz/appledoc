@@ -71,6 +71,16 @@
 }
 
 - (NSString *)description {
+	if (self.parentObject) {
+		switch (self.methodType) {
+			case GBMethodTypeClass:
+				return [NSString stringWithFormat:@"+[%@ %@]", self.parentObject, self.methodSelector];
+			case GBMethodTypeInstance:
+				return [NSString stringWithFormat:@"-[%@ %@]", self.parentObject, self.methodSelector];
+			case GBMethodTypeProperty:
+				return [NSString stringWithFormat:@"%@.%@", self.parentObject, self.methodSelector];
+		}
+	}
 	return self.methodSelector;
 }
 
