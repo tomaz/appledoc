@@ -87,30 +87,30 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 
 @implementation GBLogFormat0Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return GBLogMessage(logMessage);
+	return [NSString stringWithFormat:@"%@ %@", GBLogLevel(logMessage), GBLogMessage(logMessage)];
 }
 @end
 
 @implementation GBLogFormat1Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ | %@", GBLogSource(logMessage), GBLogMessage(logMessage)];
+	return [NSString stringWithFormat:@"%@ %@ | %@", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogMessage(logMessage)];
 }
 @end
 
 @implementation GBLogFormat2Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ | %@ @ %@:%i", GBLogSource(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
+	return [NSString stringWithFormat:@"%@ %@ | %@ @ %@:%i", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
 }
 @end
 
 @implementation GBLogFormat3Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"[%@ %s] | %@", GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage)];
+	return [NSString stringWithFormat:@"%@ [%@ %s] | %@", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage)];
 }
 @end
 
 @implementation GBLogFormat4Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"[%@ %s] | %@ @ %@:%i", GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
+	return [NSString stringWithFormat:@"%@ [%@ %s] | %@ @ %@:%i", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
 }
 @end
