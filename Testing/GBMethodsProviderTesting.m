@@ -18,7 +18,7 @@
 
 - (void)testRegisterMethod_shouldAddMethodToList {
 	// setup
-	GBMethodsProvider *provider = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	// execute
 	[provider registerMethod:method];
@@ -27,9 +27,19 @@
 	assertThat([[provider.methods objectAtIndex:0] methodSelector], is(@"method:"));
 }
 
+- (void)testRegisterMethod_shouldSetParentObject {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThat(method.parentObject, is(self));
+}
+
 - (void)testRegisterMethod_shouldIgnoreSameInstance {
 	// setup
-	GBMethodsProvider *provider = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	// execute
 	[provider registerMethod:method];
@@ -39,7 +49,7 @@
 
 - (void)testRegisterMethod_shouldMergeDifferentInstanceWithSameName {
 	// setup
-	GBMethodsProvider *provider = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	OCMockObject *destination = [OCMockObject niceMockForClass:[GBMethodData class]];
 	[[[destination stub] andReturn:@"method:"] methodSelector];
@@ -55,10 +65,10 @@
 
 - (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {
 	// setup
-	GBMethodsProvider *original = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
-	GBMethodsProvider *source = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
 	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
 	// execute
@@ -73,10 +83,10 @@
 
 - (void)testMergeDataFromObjectsProvider_shouldPreserveSourceData {
 	// setup
-	GBMethodsProvider *original = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
-	GBMethodsProvider *source = [[GBMethodsProvider alloc] init];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
 	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
 	// execute

@@ -13,9 +13,12 @@
 
 #pragma mark Initialization & disposal
 
-- (id)init {
+- (id)initWithParentObject:(id)parent {
+	NSParameterAssert(parent != nil);
+	GBLogDebug(@"Initializing for %@...", parent);
 	self = [super init];
 	if (self) {
+		_parent = [parent retain];
 		_methods = [[NSMutableArray alloc] init];
 		_methodsBySelectors = [[NSMutableDictionary alloc] init];
 	}
@@ -33,6 +36,7 @@
 		[existingMethod mergeDataFromObject:method];
 		return;
 	}
+	method.parentObject = _parent;
 	[_methods addObject:method];
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
 }

@@ -24,7 +24,26 @@
 	@private
 	NSMutableArray *_methods;
 	NSMutableDictionary *_methodsBySelectors;
+	id _parent;
 }
+
+///---------------------------------------------------------------------------------------
+/// @name Initialization & disposal
+///---------------------------------------------------------------------------------------
+
+/** Initializes methods provider with the given parent object.
+ 
+ The given parent object is set to each `GBMethodData` registered through `registerMethod:`. This is the designated initializer.
+ 
+ @param parent The parent object to be used for all registered methods.
+ @return Returns initialized object.
+ @exception NSException Thrown if the given parent is `nil`.
+ */
+- (id)initWithParentObject:(id)parent;
+
+///---------------------------------------------------------------------------------------
+/// @name Methods handling
+///---------------------------------------------------------------------------------------
 
 /** Registers the given method to the providers data.
  

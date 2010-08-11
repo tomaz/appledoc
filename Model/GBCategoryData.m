@@ -25,7 +25,7 @@
 		_categoryName = name ? [name copy] : nil;
 		_className = [className copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
-		_methods = [[GBMethodsProvider alloc] init];
+		_methods = [[GBMethodsProvider alloc] initWithParentObject:self];
 	}
 	return self;
 }

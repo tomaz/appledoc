@@ -17,7 +17,7 @@
 
 - (void)testRegisterIvar_shouldAddIvarToList {
 	// setup
-	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *provider = [[GBIvarsProvider alloc] initWithParentObject:self];
 	GBIvarData *ivar = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
 	// execute
 	[provider registerIvar:ivar];
@@ -27,9 +27,19 @@
 	assertThat([provider.ivars objectAtIndex:0], is(ivar));
 }
 
+- (void)testRegisterIvar_shouldSetParentObject {
+	// setup
+	GBIvarsProvider *provider = [[GBIvarsProvider alloc] initWithParentObject:self];
+	GBIvarData *ivar = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
+	// execute
+	[provider registerIvar:ivar];
+	// verify
+	assertThat(ivar.parentObject, is(self));
+}
+
 - (void)testRegisterIvar_shouldIgnoreSameInstance {
 	// setup
-	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *provider = [[GBIvarsProvider alloc] initWithParentObject:self];
 	GBIvarData *ivar = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"NSUInteger", @"_name", nil]];
 	// execute
 	[provider registerIvar:ivar];
@@ -40,7 +50,7 @@
 
 - (void)testRegisterIvar_shouldMergeDifferentInstanceWithSameName {
 	// setup
-	GBIvarsProvider *provider = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *provider = [[GBIvarsProvider alloc] initWithParentObject:self];
 	GBIvarData *source = [GBIvarData ivarDataWithComponents:[NSArray arrayWithObjects:@"int", @"_index", nil]];
 	OCMockObject *destination = [OCMockObject niceMockForClass:[GBIvarData class]];
 	[[[destination stub] andReturn:@"_index"] nameOfIvar];
@@ -56,10 +66,10 @@
 
 - (void)testMergeDataFromIvarsProvider_shouldMergeAllDifferentIvars {
 	// setup
-	GBIvarsProvider *original = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *original = [[GBIvarsProvider alloc] initWithParentObject:self];
 	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
 	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i2", nil]];
-	GBIvarsProvider *source = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *source = [[GBIvarsProvider alloc] initWithParentObject:self];
 	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
 	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i3", nil]];
 	// execute
@@ -74,10 +84,10 @@
 
 - (void)testMergeDataFromIvarsProvider_shouldPreserveSourceData {
 	// setup
-	GBIvarsProvider *original = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *original = [[GBIvarsProvider alloc] initWithParentObject:self];
 	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
 	[original registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i2", nil]];
-	GBIvarsProvider *source = [[GBIvarsProvider alloc] init];
+	GBIvarsProvider *source = [[GBIvarsProvider alloc] initWithParentObject:self];
 	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i1", nil]];
 	[source registerIvar:[GBTestObjectsRegistry ivarWithComponents:@"int", @"_i3", nil]];
 	// execute

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-/** Provides base functionality for all model objects. */
+/** Provides common functionality for model objects. */
 @interface GBModelBase : NSObject {
 	@private
 	NSMutableSet *_declaredFiles;
@@ -76,5 +76,15 @@
  @param source Source object to merge from.
  */
 - (void)mergeDataFromObject:(id)source;
+
+///---------------------------------------------------------------------------------------
+/// @name Hierarchy handling
+///---------------------------------------------------------------------------------------
+
+/** Object's parent object or `nil` if object has no parent.
+ 
+ This is mostly used for more in-context logging messages.
+ */
+@property (retain) id parentObject;
 
 @end

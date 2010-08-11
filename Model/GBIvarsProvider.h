@@ -24,7 +24,26 @@
 	@private
 	NSMutableArray *_ivars;
 	NSMutableDictionary *_ivarsByName;
+	id _parent;
 }
+
+///---------------------------------------------------------------------------------------
+/// @name Initialization & disposal
+///---------------------------------------------------------------------------------------
+
+/** Initializes ivars provider with the given parent object.
+ 
+ The given parent object is set to each `GBIvarData` registered through `registerIvar:`. This is the designated initializer.
+ 
+ @param parent The parent object to be used for all registered ivars.
+ @return Returns initialized object.
+ @exception NSException Thrown if the given parent is `nil`.
+ */
+- (id)initWithParentObject:(id)parent;
+
+///---------------------------------------------------------------------------------------
+/// @name Ivars handling
+///---------------------------------------------------------------------------------------
 
 /** Registers the given ivar to the providers data.
  

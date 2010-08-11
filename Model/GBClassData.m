@@ -24,8 +24,8 @@
 	if (self) {
 		_className = [name copy];
 		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
-		_ivars = [[GBIvarsProvider alloc] init];
-		_methods = [[GBMethodsProvider alloc] init];
+		_ivars = [[GBIvarsProvider alloc] initWithParentObject:self];
+		_methods = [[GBMethodsProvider alloc] initWithParentObject:self];
 	}
 	return self;
 }

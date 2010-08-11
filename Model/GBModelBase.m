@@ -27,7 +27,7 @@
 	[_declaredFiles unionSet:[source declaredFiles]];
 	NSString *comment = [source commentString];
 	if (self.commentString && comment) {
-		GBLogWarn(@"Comment string for %@ found in definition and declaration!", self);
+		GBLogWarn(@"%@: Comment string found in definition and declaration!", self);
 		return;
 	}
 	if (!self.commentString && comment) [self registerCommentString:comment];
@@ -55,5 +55,6 @@
 
 @synthesize declaredFiles = _declaredFiles;
 @synthesize commentString = _commentString;
+@synthesize parentObject;
 
 @end
