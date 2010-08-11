@@ -43,7 +43,7 @@
 
 - (void)mergeDataFromIvarsProvider:(GBIvarsProvider *)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from %@...", source);
+	GBLogDebug(@"Merging data from implementation...");
 	for (GBIvarData *sourceIvar in source.ivars) {
 		GBIvarData *existingIvar = [_ivarsByName objectForKey:sourceIvar.nameOfIvar];
 		if (existingIvar) {

@@ -40,7 +40,7 @@
 
 - (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from %@...", source);
+	GBLogDebug(@"Merging data from implementation...");
 	for (GBProtocolData *sourceProtocol in source.protocols) {
 		GBProtocolData *existingProtocol = [_protocolsByName objectForKey:sourceProtocol.nameOfProtocol];
 		if (existingProtocol) {
