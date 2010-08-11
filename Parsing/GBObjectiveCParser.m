@@ -135,7 +135,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
-	GBLogVerbose(@"Matching %@(%@) category definition...", className, categoryName);
+	GBLogVerbose(@"Matched %@(%@) category definition...", className, categoryName);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
