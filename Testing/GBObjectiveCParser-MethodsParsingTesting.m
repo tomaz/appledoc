@@ -74,6 +74,19 @@
 	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"void", @"(", @"^", @")", @"(", @"id", @"obj", @",", @"NSUInteger", @"idx", @")", @"block", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionVariableArgsArgument {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass -(id)method:(id)first,...; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"id", @"first", @"...", nil];
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllMethodDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -166,6 +179,19 @@
 	NSArray *methods = [[class methods] methods];
 	assertThatInteger([methods count], equalToInteger(1));
 	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"void", @"(", @"^", @")", @"(", @"id", @"obj", @",", @"NSUInteger", @"idx", @")", @"block", nil];
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationVariableArgsArgument {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method:(id)first,...{} @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"id", @"method", @"id", @"first", @"...", nil];
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllMethodDeclarations {

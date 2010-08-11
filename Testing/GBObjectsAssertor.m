@@ -79,6 +79,12 @@
 		if (argument.argumentVar) {
 			STAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method argument var doesn't match at flat idx %ld!", i-1);
 		}
+		if (argument.isVariableArg) {
+			STAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method argument va_arg ... doesn't match at flat idx %ld!", i-1);
+			for (NSString *macro in argument.terminationMacros) {
+				STAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method argument va_arg termination macro doesn't match at flat isx %ld!", i-1);
+			}
+		}
 	}
 	
 	STAssertEquals(i, [arguments count], @"Flattened method has %ld components, expected %ld!", i, [arguments count]);

@@ -100,6 +100,7 @@
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input {
 	PKTokenizer *result = [PKTokenizer tokenizerWithString:input];
 	[result setTokenizerState:result.wordState from:'_' to:'_'];	// Allow words to start with _
+	[result.symbolState add:@"..."];	// Allow ... as single token
 	return result;
 }
 
@@ -378,6 +379,7 @@
 
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
 	// This method only matches class or instance methods, not properties!
+	// - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
 	NSString *comment = [[self.tokenizer lastCommentString] copy];
 	__block BOOL result = NO;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
@@ -397,6 +399,8 @@
 			
 			__block NSString *argumentVar = nil;
 			__block NSMutableArray *argumentTypes = [NSMutableArray array];
+			__block NSMutableArray *terminationMacros = [NSMutableArray array];
+			__block BOOL isVarArg = NO;
 			if ([[self.tokenizer currentToken] matches:@":"]) {
 				[self.tokenizer consume:1];
 				
@@ -410,13 +414,25 @@
 					argumentVar = [[self.tokenizer currentToken] stringValue];
 					[self.tokenizer consume:1];
 				}
+				
+				// If we have variable args block following, consume the rest of the tokens to get optional termination macros.
+				if ([[self.tokenizer lookahead:0] matches:@","] && [[self.tokenizer lookahead:1] matches:@"..."]) {
+					isVarArg = YES;
+					[self.tokenizer consume:2];
+					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+						[terminationMacros addObject:[token stringValue]];
+					}];
+					*stop = YES; // Ignore the rest of parameters as vararg is the last and above block consumed end token which would confuse above block!
+				}
 			}
 			
 			GBMethodArgument *argument = nil;
 			if ([argumentTypes count] == 0)
 				argument = [GBMethodArgument methodArgumentWithName:argumentName];
-			else
+			else if (!isVarArg)
 				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar];
+			else
+				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar terminationMacros:terminationMacros];
 			[methodArgs addObject:argument];
 			*consume = NO;
 		}];

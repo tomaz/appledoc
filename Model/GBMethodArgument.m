@@ -12,15 +12,19 @@
 
 #pragma mark Initialization & disposal
 
++ (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
+	return [[self alloc] initWithName:name types:types var:var terminationMacros:macros];
+}
+
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var {
-	return [[self alloc] initWithName:name types:types var:var];
+	return [[self alloc] initWithName:name types:types var:var terminationMacros:nil];
 }
 
 + (id)methodArgumentWithName:(NSString *)name {
-	return [[self alloc] initWithName:name];
+	return [[self alloc] initWithName:name types:nil var:nil terminationMacros:nil];
 }
 
-- (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var {
+- (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
 	NSParameterAssert(name != nil);
 	NSParameterAssert((types == nil && var == nil) || (types != nil && var != nil));
 	self = [super init];
@@ -28,12 +32,10 @@
 		_argumentName = [name copy];
 		_argumentTypes = [types retain];
 		_argumentVar = [var copy];
+		_terminationMacros = [macros retain];
+		self.isVariableArg = (self.terminationMacros != nil);
 	}
 	return self;
-}
-
-- (id)initWithName:(NSString *)name {
-	return [self initWithName:name types:nil var:nil];
 }
 
 #pragma mark Overriden methods
@@ -45,7 +47,12 @@
 			[typeValue appendFormat:@"%@", obj];
 			if (idx < [self.argumentTypes count] - 1) [typeValue appendString:@" "];
 		}];
-		return [NSString stringWithFormat:@"%@:(%@)%@", self.argumentName, typeValue, self.argumentVar];
+		__block NSMutableString *terminationValue = [NSMutableString string];
+		[self.terminationMacros enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			[terminationValue appendFormat:@"%@", obj];
+			if (idx < [self.argumentTypes count] - 1) [typeValue appendString:@" "];
+		}];
+		return [NSString stringWithFormat:@"%@:(%@)%@%@%@", self.argumentName, typeValue, self.argumentVar, self.isVariableArg ? @",..." : @"", terminationValue];
 	}
 	return self.argumentName;
 }
@@ -59,5 +66,7 @@
 @synthesize argumentName = _argumentName;
 @synthesize argumentTypes = _argumentTypes;
 @synthesize argumentVar = _argumentVar;
+@synthesize terminationMacros = _terminationMacros;
+@synthesize isVariableArg;
 
 @end
