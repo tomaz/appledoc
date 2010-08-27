@@ -50,38 +50,25 @@
 
 /** Registers the given comment string.
  
- This allows parsers to register comment string to the associated `comment`. The method created a new `GBComment` instance associated with the receiver and passes it the given string value, but doesn't yet process the value yet. Processing needs to be initiated manually by sending `processCommentStrings`. The reason for splitting the functionality is to simplify parsers - they can register comment strings as they appear in current context. Processing comments does take some time, so postponing it allows us to parse quicker and the user can see warnings immediately. Further more, processing comments requires the whole object's graph being present so that we can prepare links to other objects, so splitting the two makes even more sense.
+ This allows parsers to register comment string to the associated `comment`. The method created a new `GBComment` instance associated with the receiver and passes it the given string value, but doesn't yet process the value yet. Processing needs to be initiated manually via `GBProcessor` instance. The reason for splitting the functionality is to simplify parsers - they can register comment strings as they appear in current context. Processing comments does take some time, so postponing allows us to parse quicker and the user can see parsing warnings immediately. Further more, processing comments requires the whole object's graph being present so that we can prepare links to other objects, so splitting the two makes even more sense.
  
  Note that in case `nil` is given for string value and a comment is already associated, the comment is changed to `nil` as well!
  
  @param value Comment string or `nil` to clear the comment.
- @see processCommentStrings
  @see comment
  */
 - (void)registerCommentString:(NSString *)value;
 
-/** Processes the comment string associated with this object and comment string of all children.
- 
- First the method sends `-[GBComment process]` to the associated `comment` (if any). Then it recursively processes the comments of all children objects too. To properly implement recursive handling, each subclass that is also a container, must override the method and invoke it's children processing.
- 
- @warning *Important:* Although you could issue comment processing directly to associated comment, it's advisable to use this method instead to properly process all children as well!
- 
- @see registerCommentString:
- @see comment
- */
-- (void)processCommentStrings;
-
 /** The comment associated with this object or `nil` if no comment is associated. 
  
- To register a comment, send `registerCommentString:` to receiver. To process the comment send `processCommentStrings` to receiver.
+ To register a comment, send `registerCommentString:` to receiver. To process the comment send `processParsedData` to receiver.
  
  @see registerCommentString:
- @see parseCommentString
  */
 @property (readonly) GBComment *comment;
 
 ///---------------------------------------------------------------------------------------
-/// @name Merging handling
+/// @name Data handling
 ///---------------------------------------------------------------------------------------
 
 /** Merges all data from the given object.

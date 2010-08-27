@@ -58,9 +58,6 @@
 	}
 }
 
-- (void)processCommentStrings {
-}
-
 #pragma mark Properties
 
 @synthesize comment = _comment;
