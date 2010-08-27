@@ -390,9 +390,15 @@
 			[methodResult addObject:[token stringValue]];
 		}];
 		
-		// Get all arguments.
+		// Get all arguments. Note that we ignore semicolons which may "happen" in declaration before method opening brace!
 		__block NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+			// If we receive semicolon, ignore it - this works for both - definition and declaration!
+			if ([token matches:@";"]) {
+				*stop = YES;
+				return;
+			}
+			
 			// Get argument name.
 			NSString *argumentName = [token stringValue];
 			[self.tokenizer consume:1];

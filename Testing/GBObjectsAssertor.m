@@ -51,7 +51,7 @@
 - (void)assertMethod:(GBMethodData *)method matchesType:(GBMethodType)type start:(NSString *)first components:(va_list)args {
 	// Note that we flatten all the arguments to make assertion methods simpler; nice trick but we do need to
 	// use custom macros instead of hamcrest to get more meaningful description in case of failure :(
-	STAssertEquals(method.methodType, type, @"Method type doesn't match!");
+	STAssertEquals(method.methodType, type, @"Method %@ type doesn't match!", method);
 	
 	NSMutableArray *arguments = [NSMutableArray arrayWithObject:first];
 	NSString *arg;
@@ -62,32 +62,32 @@
 	NSUInteger i=0;
 	
 	for (NSString *attribute in method.methodAttributes) {
-		STAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property attribute doesn't match at flat idx %ld!", i-1);
+		STAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property %@ attribute doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (NSString *type in method.methodResultTypes) {
-		STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method result doesn't match at flat idx %ld!", i-1);
+		STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ result doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (GBMethodArgument *argument in method.methodArguments) {
-		STAssertEqualObjects(argument.argumentName, [arguments objectAtIndex:i++], @"Method argument name doesn't match at flat idx %ld!", i-1);
+		STAssertEqualObjects(argument.argumentName, [arguments objectAtIndex:i++], @"Method %@ argument name doesn't match at flat idx %ld!", method, i-1);
 		if (argument.argumentTypes) {
 			for (NSString *type in argument.argumentTypes) {
-				STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method argument type doesn't match at flat idx %ld!", i-1);
+				STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ argument type doesn't match at flat idx %ld!", method, i-1);
 			}
 		}
 		if (argument.argumentVar) {
-			STAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method argument var doesn't match at flat idx %ld!", i-1);
+			STAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method %@ argument var doesn't match at flat idx %ld!", method, i-1);
 		}
 		if (argument.isVariableArg) {
-			STAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method argument va_arg ... doesn't match at flat idx %ld!", i-1);
+			STAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method %@ argument va_arg ... doesn't match at flat idx %ld!", method, i-1);
 			for (NSString *macro in argument.terminationMacros) {
-				STAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method argument va_arg termination macro doesn't match at flat isx %ld!", i-1);
+				STAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method %@ argument va_arg termination macro doesn't match at flat isx %ld!", method, i-1);
 			}
 		}
 	}
 	
-	STAssertEquals(i, [arguments count], @"Flattened method has %ld components, expected %ld!", i, [arguments count]);
+	STAssertEquals(i, [arguments count], @"Flattened method %@ has %ld components, expected %ld!", method, i, [arguments count]);
 }
 
 @end
