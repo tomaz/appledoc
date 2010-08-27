@@ -36,6 +36,7 @@
 		73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
+		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
 		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
@@ -140,6 +141,8 @@
 		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
 		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
+		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
 		73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		73FC6DB311FCCCC600AAD0B9 /* GBParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParser.h; sourceTree = "<group>"; };
@@ -421,22 +424,7 @@
 			path = Application;
 			sourceTree = "<group>";
 		};
-		73FC6DB211FCCC8D00AAD0B9 /* Parsing */ = {
-			isa = PBXGroup;
-			children = (
-				73FC6DB311FCCCC600AAD0B9 /* GBParser.h */,
-				73FC6DB411FCCCC600AAD0B9 /* GBParser.m */,
-				73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */,
-				73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */,
-				73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */,
-				73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */,
-				73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */,
-				73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */,
-			);
-			path = Parsing;
-			sourceTree = "<group>";
-		};
-		73FC6DDD11FCCF1500AAD0B9 /* Model */ = {
+		73F70DB31227B32100D19EBA /* Store */ = {
 			isa = PBXGroup;
 			children = (
 				73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */,
@@ -455,6 +443,39 @@
 				73FC741C11FE215E00AAD0B9 /* GBMethodData.m */,
 				73FC742B11FE274300AAD0B9 /* GBMethodArgument.h */,
 				73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */,
+			);
+			name = Store;
+			sourceTree = "<group>";
+		};
+		73F70DB41227B33300D19EBA /* Comments */ = {
+			isa = PBXGroup;
+			children = (
+				73F70DB51227B34300D19EBA /* GBComment.h */,
+				73F70DB61227B34300D19EBA /* GBComment.m */,
+			);
+			name = Comments;
+			sourceTree = "<group>";
+		};
+		73FC6DB211FCCC8D00AAD0B9 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6DB311FCCCC600AAD0B9 /* GBParser.h */,
+				73FC6DB411FCCCC600AAD0B9 /* GBParser.m */,
+				73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */,
+				73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */,
+				73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */,
+				73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */,
+				73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */,
+				73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */,
+			);
+			path = Parsing;
+			sourceTree = "<group>";
+		};
+		73FC6DDD11FCCF1500AAD0B9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				73F70DB31227B32100D19EBA /* Store */,
+				73F70DB41227B33300D19EBA /* Comments */,
 				73FC730911FDAB5800AAD0B9 /* Helpers */,
 			);
 			path = Model;
@@ -702,6 +723,7 @@
 				7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */,
 				7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */,
 				731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */,
+				73F70DB71227B34300D19EBA /* GBComment.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

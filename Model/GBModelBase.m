@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBComment.h"
 #import "GBModelBase.h"
 
 @implementation GBModelBase
@@ -25,12 +26,12 @@
 - (void)mergeDataFromObject:(id)source {
 	NSParameterAssert([source isKindOfClass:[self class]]);
 	[_declaredFiles unionSet:[source declaredFiles]];
-	NSString *comment = [source commentString];
-	if (self.commentString && comment) {
+	GBComment *comment = [(GBModelBase *)source comment];
+	if (self.comment && comment) {
 		GBLogWarn(@"%@: Comment string found in definition and declaration!", self);
 		return;
 	}
-	if (!self.commentString && comment) [self registerCommentString:comment];
+	if (!self.comment && comment) _comment = [comment retain];
 }
 
 #pragma mark Declared files handling
@@ -48,13 +49,22 @@
 #pragma mark Comments handling
 
 - (void)registerCommentString:(NSString *)value {
-	_commentString = [value copy];
+	if (value) {
+		if (!_comment) _comment = [[GBComment alloc] init];
+		[self.comment setStringValue:value];
+	}
+	else if (_comment) {
+		[_comment release], _comment = nil;
+	}
+}
+
+- (void)processCommentStrings {
 }
 
 #pragma mark Properties
 
+@synthesize comment = _comment;
 @synthesize declaredFiles = _declaredFiles;
-@synthesize commentString = _commentString;
 @synthesize parentObject;
 
 @end

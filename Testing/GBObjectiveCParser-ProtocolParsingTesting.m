@@ -54,7 +54,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBProtocolData *protocol = [[store protocols] anyObject];
-	assertThat(protocol.commentString, is(@"Comment"));
+	assertThat(protocol.comment.stringValue, is(@"Comment"));
 }
 
 #pragma mark Protocol components parsing testing

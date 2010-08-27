@@ -103,7 +103,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
-	assertThat(class.commentString, is(@"Comment"));
+	assertThat(class.comment.stringValue, is(@"Comment"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterClassDeclarationComment {
@@ -114,7 +114,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @implementation MyClass @end" sourceFile:@"filename.m" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
-	assertThat(class.commentString, is(@"Comment"));
+	assertThat(class.comment.stringValue, is(@"Comment"));
 }
 
 #pragma mark Class definition components parsing testing

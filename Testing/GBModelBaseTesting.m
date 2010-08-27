@@ -6,7 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBModelBase.h"
+#import "GBDataObjects.h"
 
 @interface GBModelBaseTesting : SenTestCase
 @end
@@ -68,8 +68,8 @@
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	assertThat(original.commentString, is(@"Comment"));
-	assertThat(source.commentString, is(nil));
+	assertThat(original.comment.stringValue, is(@"Comment"));
+	assertThat(source.comment.stringValue, is(nil));
 }
 
 - (void)testMergeDataFromObject_shouldUseSourceCommentIfOriginalIsNotGiven {
@@ -80,8 +80,8 @@
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	assertThat(original.commentString, is(@"Comment"));
-	assertThat(source.commentString, is(@"Comment"));
+	assertThat(original.comment.stringValue, is(@"Comment"));
+	assertThat(source.comment.stringValue, is(@"Comment"));
 }
 
 - (void)testMergeDataFromObject_shouldKeepOriginalCommentIfBothObjectsHaveComments {
@@ -93,8 +93,8 @@
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	assertThat(original.commentString, is(@"Comment1"));
-	assertThat(source.commentString, is(@"Comment2"));
+	assertThat(original.comment.stringValue, is(@"Comment1"));
+	assertThat(source.comment.stringValue, is(@"Comment2"));
 }
 
 @end

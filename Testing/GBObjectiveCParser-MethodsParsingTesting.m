@@ -107,8 +107,8 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];
-	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
-	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDeclarationComment {
@@ -120,8 +120,8 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];
-	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
-	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
 #pragma mark Method declarations parsing
@@ -282,8 +282,8 @@
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];
-	assertThat([[methods objectAtIndex:0] commentString], is(@"Comment1"));
-	assertThat([[methods objectAtIndex:1] commentString], is(@"Comment2"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
 

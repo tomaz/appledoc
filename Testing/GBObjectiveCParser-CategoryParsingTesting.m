@@ -111,7 +111,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBCategoryData *category = [[store categories] anyObject];
-	assertThat(category.commentString, is(@"Comment"));
+	assertThat(category.comment.stringValue, is(@"Comment"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryDeclarationComment {
@@ -122,7 +122,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @implementation MyClass(MyCategory) @end" sourceFile:@"filename.m" toStore:store];
 	// verify
 	GBCategoryData *category = [[store categories] anyObject];
-	assertThat(category.commentString, is(@"Comment"));
+	assertThat(category.comment.stringValue, is(@"Comment"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionDefinitionComment {
@@ -133,7 +133,7 @@
 	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBCategoryData *category = [[store categories] anyObject];
-	assertThat(category.commentString, is(@"Comment"));
+	assertThat(category.comment.stringValue, is(@"Comment"));
 }
 
 #pragma mark Category definition components parsing testing
