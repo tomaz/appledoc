@@ -52,6 +52,13 @@
 	}
 }
 
+- (void)replaceProtocol:(GBProtocolData *)original withProtocol:(GBProtocolData *)protocol {
+	NSParameterAssert(protocol != nil);
+	NSParameterAssert([self.protocols containsObject:original]);
+	[_protocols removeObject:original];
+	[_protocols addObject:protocol];
+}
+
 - (NSArray *)protocolsSortedByName {
 	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"protocolName" ascending:YES]];
 	return [[self.protocols allObjects] sortedArrayUsingDescriptors:descriptors];

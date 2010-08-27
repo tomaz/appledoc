@@ -41,6 +41,16 @@
  */
 - (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source;
 
+/** Replaces the given original adopted protocol with the new one.
+ 
+ This is provided so that processor can replace known protocols "placeholders" with real ones..
+ 
+ @param original Original protocol to replace.
+ @param protocol The protocol to replace with.
+ @exception NSException Thrown if original protocol is not in the current protocols list or new protocol is `nil`.
+ */
+- (void)replaceProtocol:(GBProtocolData *)original withProtocol:(GBProtocolData *)protocol;
+
 /** Returns the array of all protocols sorted by their name. */
 - (NSArray *)protocolsSortedByName;
 
