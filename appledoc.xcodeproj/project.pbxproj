@@ -36,6 +36,8 @@
 		73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
+		73EC00C01227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */; };
+		73EC00F81227F58F0076B7B3 /* GBProcessor-CommentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
 		73F70DF81227C24600D19EBA /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DF71227C24600D19EBA /* GBProcessor.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
@@ -142,6 +144,8 @@
 		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
 		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-AdoptedProtocolsTesting.m"; sourceTree = "<group>"; };
+		73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-CommentsTesting.m"; sourceTree = "<group>"; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
 		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
 		73F70DF61227C24600D19EBA /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
@@ -305,23 +309,9 @@
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
-				7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */,
-				7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */,
-				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
-				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
-				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
-				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
-				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
-				7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */,
-				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
-				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
-				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
-				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
-				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
-				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
-				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
-				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+				73F70E2F1227C7B200D19EBA /* Model */,
+				73F70E221227C7A600D19EBA /* Parsing */,
+				73F70E301227C7C700D19EBA /* Processing */,
 				7367B6C611FE3750005ED6CD /* Creation & Assertion */,
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
@@ -465,6 +455,46 @@
 			children = (
 				73F70DF61227C24600D19EBA /* GBProcessor.h */,
 				73F70DF71227C24600D19EBA /* GBProcessor.m */,
+			);
+			name = Processing;
+			sourceTree = "<group>";
+		};
+		73F70E221227C7A600D19EBA /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
+				7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */,
+				7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */,
+				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
+				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
+				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
+				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+			);
+			name = Parsing;
+			sourceTree = "<group>";
+		};
+		73F70E2F1227C7B200D19EBA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
+				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
+				7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */,
+				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
+				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
+				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
+				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
+				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
+				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
+				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		73F70E301227C7C700D19EBA /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */,
+				73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -700,6 +730,8 @@
 				7367BAFC12002854005ED6CD /* GBIvarDataTesting.m in Sources */,
 				7367BB5212004058005ED6CD /* GBModelBaseTesting.m in Sources */,
 				7367BBB712004928005ED6CD /* GBCategoryDataTesting.m in Sources */,
+				73EC00C01227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m in Sources */,
+				73EC00F81227F58F0076B7B3 /* GBProcessor-CommentsTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

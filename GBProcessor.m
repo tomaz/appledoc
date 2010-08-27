@@ -18,6 +18,7 @@
 - (void)processProtocols;
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
+- (void)processComment:(GBComment *)comment;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -59,6 +60,8 @@
 	for (GBClassData *class in self.store.classes) {
 		GBLogInfo(@"Processing class %@...", class);
 		[self processAdoptedProtocolsFromProvider:class.adoptedProtocols];
+		[self processComment:class.comment];
+		[self processMethodsFromProvider:class.methods];
 	}
 }
 
@@ -66,6 +69,8 @@
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Processing category %@...", category);
 		[self processAdoptedProtocolsFromProvider:category.adoptedProtocols];
+		[self processComment:category.comment];
+		[self processMethodsFromProvider:category.methods];
 	}
 }
 
@@ -73,6 +78,15 @@
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		[self processAdoptedProtocolsFromProvider:protocol.adoptedProtocols];
+		[self processComment:protocol.comment];
+		[self processMethodsFromProvider:protocol.methods];
+	}
+}
+
+- (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
+	for (GBMethodData *method in provider.methods) {
+		GBLogVerbose(@"Processing method %@...", method);
+		[self processComment:method.comment];
 	}
 }
 
@@ -89,6 +103,13 @@
 		}
 	}
 }
+
+#pragma mark Comments processing
+
+- (void)processComment:(GBComment *)comment {
+	if (!comment) return;
+	GBLogDebug(@"Processing comment...");
+	[comment processCommentWithStore:self.store];
 }
 
 #pragma mark Properties

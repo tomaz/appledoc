@@ -88,4 +88,40 @@
 	return [GBMethodArgument methodArgumentWithName:name types:[NSArray arrayWithObject:@"id"] var:name];
 }
 
+#pragma mark GBStore creation methods
+
++ (void)registerComment:(id)comment forObject:(GBModelBase *)object {
+	[object setValue:comment forKey:@"_comment"];
+}
+
++ (GBStore *)storeWithClassWithComment:(id)comment {
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	[self registerComment:comment forObject:class];
+	return [self storeByPerformingSelector:@selector(registerClass:) withObject:class];
+}
+
++ (GBStore *)storeWithCategoryWithComment:(id)comment {
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[self registerComment:comment forObject:category];
+	return [self storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+}
+
++ (GBStore *)storeWithProtocolWithComment:(id)comment {
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	[self registerComment:comment forObject:protocol];
+	return [self storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+}
+
++ (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object {
+	GBStore *result = [[GBStore alloc] init];
+	[result performSelector:selector withObject:object];
+	return result;
+}
+
++ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment {
+	GBMethodData *result = [self instanceMethodWithNames:name, nil];
+	[self registerComment:comment forObject:result];
+	return result;
+}
+
 @end

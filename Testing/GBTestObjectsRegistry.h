@@ -6,8 +6,8 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBIvarData.h"
-#import "GBMethodData.h"
+#import "GBDataObjects.h"
+#import "GBStore.h"
 
 @interface GBTestObjectsRegistry : NSObject
 
@@ -21,5 +21,11 @@
 + (GBMethodData *)classMethodWithNames:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)propertyMethodWithArgument:(NSString *)name;
 + (GBMethodArgument *)typedArgumentWithName:(NSString *)name;
+
++ (GBStore *)storeWithClassWithComment:(id)comment;
++ (GBStore *)storeWithCategoryWithComment:(id)comment;
++ (GBStore *)storeWithProtocolWithComment:(id)comment;
++ (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object;
++ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment;
 
 @end
