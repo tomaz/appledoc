@@ -33,7 +33,8 @@
 		[existingProtocol mergeDataFromObject:protocol];
 		return;
 	}
-	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) [NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
+	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) 
+		[NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }

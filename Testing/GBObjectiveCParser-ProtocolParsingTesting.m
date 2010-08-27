@@ -10,8 +10,7 @@
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
-// Note that we're only testing protocol specific stuff here - i.e. all common parsing modules (adopted protocols,
-// ivars, methods...) are tested separately to avoid repetition.
+// Note that we're only testing protocol specific stuff here - i.e. all common parsing modules (adopted protocols, ivars, methods...) are tested separately to avoid repetition.
 
 @interface GBObjectiveCParserProtocolsParsingTesting : GBObjectsAssertor
 @end

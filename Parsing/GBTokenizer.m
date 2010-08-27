@@ -114,10 +114,7 @@
 #pragma mark Comments handling
 
 - (BOOL)consumeComments {
-	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached.
-	// The result of the method is that current index is positioned on the first non-comment token. If current token is not comment,
-	// the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current 
-	// token. This is also where we do initial comments handling such as removing starting and ending chars etc.
+	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
 	[self.lastComment setString:@""];
 	if ([self eof]) return NO;
 	if (![[self currentToken] isComment]) return NO;
@@ -162,8 +159,7 @@
 		BOOL firstLine = (idx == 0);
 		BOOL lastLine = (idx == [lines count] - 1);
 
-		// Skip first and last line if we only have some common char in it. This is very basic - it tests if the line
-		// only contains a single character and ignores it if so.
+		// Skip first and last line if we only have some common char in it. This is very basic - it tests if the line only contains a single character and ignores it if so.
 		if (firstLine || lastLine) {
 			NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 			if ([stripped length] > 0) {

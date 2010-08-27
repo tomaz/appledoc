@@ -61,13 +61,9 @@
 
 /** Initializes method argument with the given parameters.
  
- This is the designated initializer. You can either use it to specify method argument with all parameters, in such case you must 
- supply all parameters, or you can use it to specify method argument without type. In such case you should set types and var to `nil`. 
- If the argument is variable arg type, you should pass in optional termination macros or empty array if no termination macro is used.
- To specify standard argument, pass `nil` for termination macros instead!
+ This is the designated initializer. You can either use it to specify method argument with all parameters, in such case you must supply all parameters, or you can use it to specify method argument without type. In such case you should set types and var to `nil`. If the argument is variable arg type, you should pass in optional termination macros or empty array if no termination macro is used. To specify standard argument, pass `nil` for termination macros instead!
  
- @warning *Note:* If you use the selector for type-less argument, both initializer parameters - types and var must be `nil`. If only 
-	one of these is `nil`, exception is thrown.
+ @warning *Note:* If you use the selector for type-less argument, both initializer parameters - types and var must be `nil`. If only one of these is `nil`, exception is thrown.
  
  @param argument The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
@@ -102,8 +98,7 @@
 
 /** Array of variable arguments termination macros.
  
- Termination macros array define -(result)arg:(type)var,...*macros* part of method. If argument isn't variable or doesn't have termination macros, 
- this is `nil`.
+ Termination macros array define -(result)arg:(type)var,...*macros* part of method. If argument isn't variable or doesn't have termination macros, this is `nil`.
  */
 @property (readonly) NSArray *terminationMacros;
 

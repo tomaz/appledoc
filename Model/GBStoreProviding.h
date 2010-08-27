@@ -20,8 +20,7 @@
 
 /** Registers the given class to the providers data.
  
- If provider doesn't yet have the given class instance registered, the object is added to `classes` list. If the same object is already
- registered, nothing happens.
+ If provider doesn't yet have the given class instance registered, the object is added to `classes` list. If the same object is already registered, nothing happens.
  
  @warning *Note:* If another instance of the class with the same name is registered, an exception is thrown.
  
@@ -32,8 +31,7 @@
 
 /** Registers the given category to the providers data.
  
- If provider doesn't yet have the given category instance registered, the object is added to `categories` list. If the same object is 
- already registered, nothing happens.
+ If provider doesn't yet have the given category instance registered, the object is added to `categories` list. If the same object is already registered, nothing happens.
  
  @warning *Note:* If another instance of the category with the same name/class name is registered, an exception is thrown.
  
@@ -44,8 +42,7 @@
 
 /** Registers the given protocol to the providers data.
  
- If provider doesn't yet have the given protocol instance registered, the object is added to `protocols` list. If the same object is 
- already registered, nothing happens.
+ If provider doesn't yet have the given protocol instance registered, the object is added to `protocols` list. If the same object is already registered, nothing happens.
  
  @warning *Note:* If another instance of the protocol with the same name name is registered, an exception is thrown.
  

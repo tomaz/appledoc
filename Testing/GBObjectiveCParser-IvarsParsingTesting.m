@@ -10,10 +10,7 @@
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
-// Note that we use class for invoking parsing of ivars. Probably not the best option - i.e. we could isolate ivars
-// parsing code altogether and only parse relevant stuff here, but it seemed not much would be gained by doing this.
-// Separating unit tests does avoid repetition in top-level objects testing code - we only need to test specific data
-// there.
+// Note that we use class for invoking parsing of ivars. Probably not the best option - i.e. we could isolate ivars parsing code altogether and only parse relevant stuff here, but it seemed not much would be gained by doing this. Separating unit tests does avoid repetition in top-level objects testing code - we only need to test specific data there.
 
 @interface GBObjectiveCParserIvarsParsingTesting : GBObjectsAssertor
 @end

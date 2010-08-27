@@ -17,8 +17,7 @@
 
 /** Returns autoreleased instance of the ivar data from given array of components.
  
- Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property
- and name to `ivarName` property.
+ Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property and name to `ivarName` property.
  
  @param components Components array to setup the data from.
  @return Returns initialized instance.
@@ -28,8 +27,7 @@
 
 /** Initializes the ivar data from given array of components.
 
- Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property
- and name to `ivarName` property.
+ Components array should contain all ivar type tokens and ivar name as the last entry. Types are copied to `ivarTypes` property and name to `ivarName` property.
  
  @param components Components array to setup the data from.
  @return Returns initialized instance.

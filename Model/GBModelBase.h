@@ -64,8 +64,7 @@
 
 /** Merges all data from the given object.
  
- Source object is left unchanged. If the same object is passed in, nothing happens. Subclasses should override and
- add their own specifics, however they should send super object the message as well! Here's overriden method example:
+ Source object is left unchanged. If the same object is passed in, nothing happens. Subclasses should override and add their own specifics, however they should send super object the message as well! Here's overriden method example:
  
 	- (void)mergeDataFromObject:(GBModelBase *)source {
 		// source data validation here...
