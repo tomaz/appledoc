@@ -10,6 +10,7 @@
 #import "DDGetoptLongParser.h"
 #import "GBStore.h"
 #import "GBParser.h"
+#import "GBProcessor.h"
 #import "GBAppledocApplication.h"
 
 static NSString *kGBArgLogFormat = @"logformat";
@@ -78,10 +79,10 @@ static NSString *kGBArgHelp = @"help";
 		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
 		[parser parseObjectsFromPaths:arguments toStore:store];
 		
-//		GBLogNormal(@"Processing parsed data...");
-//		GBProcessor *processor = [[GBProcessor alloc] init];
-//		[processor processObjectsFromParser:parser];
-//		
+		GBLogNormal(@"Processing parsed data...");
+		GBProcessor *processor = [[GBProcessor alloc] initWithSettingsProvider:self];
+		[processor processObjectsFromStore:store];
+		
 //		GBLogNormal(@"Generating output...");
 //		GBGenerator *generator = [[GBGenerator alloc] init];
 //		[generator generateOutputFromProcessor:processor];

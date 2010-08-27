@@ -26,6 +26,12 @@
 	return self;
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@ with %u classes, %u categories, %u protocols", [self className], [self.classes count], [self.categories count], [self.protocols count]];
+}
+
 #pragma mark Helper methods
 
 - (NSArray *)classesSortedByName {

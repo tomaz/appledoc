@@ -37,6 +37,7 @@
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
+		73F70DF81227C24600D19EBA /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DF71227C24600D19EBA /* GBProcessor.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
 		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
@@ -143,6 +144,8 @@
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
 		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
+		73F70DF61227C24600D19EBA /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
+		73F70DF71227C24600D19EBA /* GBProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBProcessor.m; sourceTree = "<group>"; };
 		73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		73FC6DB311FCCCC600AAD0B9 /* GBParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParser.h; sourceTree = "<group>"; };
@@ -354,6 +357,7 @@
 				73D54D1411F8D4FF00CCDDB0 /* Application */,
 				73FC6DDD11FCCF1500AAD0B9 /* Model */,
 				73FC6DB211FCCC8D00AAD0B9 /* Parsing */,
+				73F70DF41227C23900D19EBA /* Processing */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -454,6 +458,15 @@
 				73F70DB61227B34300D19EBA /* GBComment.m */,
 			);
 			name = Comments;
+			sourceTree = "<group>";
+		};
+		73F70DF41227C23900D19EBA /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				73F70DF61227C24600D19EBA /* GBProcessor.h */,
+				73F70DF71227C24600D19EBA /* GBProcessor.m */,
+			);
+			name = Processing;
 			sourceTree = "<group>";
 		};
 		73FC6DB211FCCC8D00AAD0B9 /* Parsing */ = {
@@ -724,6 +737,7 @@
 				7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */,
 				731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */,
 				73F70DB71227B34300D19EBA /* GBComment.m in Sources */,
+				73F70DF81227C24600D19EBA /* GBProcessor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
