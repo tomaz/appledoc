@@ -21,7 +21,15 @@
 /// @name ￼Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Initializes the parser to work with the given `GBApplicationSettingsProvider` implementor.
+/** Returns autoreleased processor that work with the given `GBApplicationSettingsProvider` implementor.
+ 
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
+ */
++ (id)processorWithSettingsProvider:(id)settingsProvider;
+
+/** Initializes the processor to work with the given `GBApplicationSettingsProvider` implementor.
  
  This is the designated initializer.
  
@@ -29,7 +37,7 @@
  @return Returns initialized instance or `nil` if initialization fails.
  @exception NSException Thrown if the given application is `nil`.
  */
-- (id)initWithSettingsProvider:(id<GBApplicationSettingsProviding>)settingsProvider;
+- (id)initWithSettingsProvider:(id)settingsProvider;
 
 ///---------------------------------------------------------------------------------------
 /// @name Processing handling
