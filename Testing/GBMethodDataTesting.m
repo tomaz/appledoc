@@ -9,7 +9,7 @@
 #import "GBTestObjectsRegistry.h"
 #import "GBDataObjects.h"
 
-@interface GBMethodDataTesting : SenTestCase
+@interface GBMethodDataTesting : GHTestCase
 @end
 
 @implementation GBMethodDataTesting
@@ -83,7 +83,7 @@
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 - (void)testMergeDataFromObject_shouldThrowIfDifferentSelectorIfPassed {
@@ -92,8 +92,8 @@
 	GBMethodData *source1 = [GBTestObjectsRegistry classMethodWithNames:@"someOtherMethod", nil];
 	GBMethodData *source2 = [GBTestObjectsRegistry instanceMethodWithArguments:[GBMethodArgument methodArgumentWithName:@"method"], nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source1], nil); // different name alltogether
-	STAssertThrows([original mergeDataFromObject:source2], nil); // same selector but difference in arguments
+	GHAssertThrows([original mergeDataFromObject:source1], nil); // different name alltogether
+	GHAssertThrows([original mergeDataFromObject:source2], nil); // same selector but difference in arguments
 }
 
 - (void)testMergeDataFromObject_shouldThrowIfDifferentResultIfPassed {
@@ -101,7 +101,7 @@
 	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"int"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
 	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"long"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

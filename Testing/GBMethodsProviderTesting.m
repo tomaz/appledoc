@@ -9,7 +9,7 @@
 #import "GBTestObjectsRegistry.h"
 #import "GBMethodsProvider.h"
 
-@interface GBMethodsProviderTesting : SenTestCase
+@interface GBMethodsProviderTesting : GHTestCase
 @end
 
 @implementation GBMethodsProviderTesting

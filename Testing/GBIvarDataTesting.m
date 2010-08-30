@@ -8,7 +8,7 @@
 
 #import "GBIvarData.h"
 
-@interface GBIvarDataTesting : SenTestCase
+@interface GBIvarDataTesting : GHTestCase
 @end
 
 @implementation GBIvarDataTesting
@@ -29,7 +29,7 @@
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_different", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 - (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
@@ -37,7 +37,7 @@
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"*", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"&", @"_name", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

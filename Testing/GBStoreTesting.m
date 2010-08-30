@@ -9,7 +9,7 @@
 #import "GBStore.h"
 #import "GBDataObjects.h"
 
-@interface GBStoreTesting : SenTestCase
+@interface GBStoreTesting : GHTestCase
 @end
 	
 @implementation GBStoreTesting

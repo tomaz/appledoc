@@ -9,7 +9,7 @@
 #import "GBProtocolData.h"
 #import "GBAdoptedProtocolsProvider.h"
 
-@interface GBAdoptedProtocolsProviderTesting : SenTestCase
+@interface GBAdoptedProtocolsProviderTesting : GHTestCase
 @end
 
 @implementation GBAdoptedProtocolsProviderTesting

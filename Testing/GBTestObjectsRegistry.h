@@ -22,6 +22,7 @@
 + (GBMethodData *)propertyMethodWithArgument:(NSString *)name;
 + (GBMethodArgument *)typedArgumentWithName:(NSString *)name;
 
++ (GBStore *)store;
 + (GBStore *)storeWithClassWithComment:(id)comment;
 + (GBStore *)storeWithCategoryWithComment:(id)comment;
 + (GBStore *)storeWithProtocolWithComment:(id)comment;

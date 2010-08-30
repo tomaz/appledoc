@@ -7,7 +7,7 @@
 //
 
 #ifdef __OBJC__
-	#import <Foundation/Foundation.h>
+	#import <Cocoa/Cocoa.h>
 	#import "NSObject+GBObject.h"
 	#import "NSString+GBString.h"
 	#import "NSException+GBException.h"
@@ -15,9 +15,9 @@
 	#import "GBLog.h"
 
 	#define HC_SHORTHAND
+	#import <GHUnit/GHUnit.h>
 	#import <OCHamcrest/OCHamcrest.h>
 	#import <OCMock/OCMock.h>
-	#import <SenTestingKit/SenTestingKit.h>
 	#import "GBRealLifeDataProvider.h"
 	#import "GBTestObjectsRegistry.h"
 	#import "GBObjectsAssertor.h"

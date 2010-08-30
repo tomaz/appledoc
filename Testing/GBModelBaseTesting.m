@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBModelBaseTesting : SenTestCase
+@interface GBModelBaseTesting : GHTestCase
 @end
 
 @implementation GBModelBaseTesting
@@ -55,7 +55,7 @@
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 #pragma mark Comments merging handling

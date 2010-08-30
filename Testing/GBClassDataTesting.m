@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBClassDataTesting : SenTestCase
+@interface GBClassDataTesting : GHTestCase
 @end
 
 @implementation GBClassDataTesting
@@ -31,7 +31,7 @@
 	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
 	GBClassData *source = [GBClassData classDataWithName:@"AnotherClass"];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 #pragma mark Superclass data merging

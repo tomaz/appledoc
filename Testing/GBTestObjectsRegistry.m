@@ -94,6 +94,10 @@
 	[object setValue:comment forKey:@"_comment"];
 }
 
++ (GBStore *)store {
+	return [[[GBStore alloc] init] autorelease];
+}
+
 + (GBStore *)storeWithClassWithComment:(id)comment {
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[self registerComment:comment forObject:class];
@@ -113,7 +117,7 @@
 }
 
 + (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object {
-	GBStore *result = [[GBStore alloc] init];
+	GBStore *result = [self store];
 	[result performSelector:selector withObject:object];
 	return result;
 }

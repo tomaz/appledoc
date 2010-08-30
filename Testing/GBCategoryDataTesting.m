@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBCategoryDataTesting : SenTestCase
+@interface GBCategoryDataTesting : GHTestCase
 @end
 
 @implementation GBCategoryDataTesting
@@ -31,7 +31,7 @@
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"AnotherClass"];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 - (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentCategoryName {
@@ -39,7 +39,7 @@
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"AnotherCategory" className:@"MyClass"];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 #pragma mark Category components merging

@@ -11,8 +11,8 @@
 @class GBIvarData;
 @class GBMethodData;
 
-// Need to derive from SenTestCase otherwise ST macros used wouldn't work...
-@interface GBObjectsAssertor : SenTestCase
+// Need to derive from GHTestCase otherwise GH macros used wouldn't work...
+@interface GBObjectsAssertor : GHTestCase
 
 - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertMethod:(GBMethodData *)method matchesInstanceComponents:(NSString *)firstItem,... NS_REQUIRES_NIL_TERMINATION;

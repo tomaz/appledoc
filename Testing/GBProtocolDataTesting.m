@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBProtocolDataTesting : SenTestCase
+@interface GBProtocolDataTesting : GHTestCase
 @end
 
 @implementation GBProtocolDataTesting
@@ -59,7 +59,7 @@
 	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"AnotherProtocol"];
 	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
+	GHAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

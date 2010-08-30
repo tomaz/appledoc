@@ -10,7 +10,7 @@
 #import "GBStore.h"
 #import "GBProcessor.h"
 
-@interface GBProcessorAdoptedProtocolsTesting : SenTestCase
+@interface GBProcessorAdoptedProtocolsTesting : GHTestCase
 @end
 
 #pragma mark -

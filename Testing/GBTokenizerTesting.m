@@ -8,7 +8,7 @@
 
 #import "GBTokenizer.h"
 
-@interface GBTokenizerTesting : SenTestCase
+@interface GBTokenizerTesting : GHTestCase
 
 - (PKTokenizer *)defaultTokenizer;
 - (PKTokenizer *)longTokenizer;
