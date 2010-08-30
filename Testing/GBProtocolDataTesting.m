@@ -54,12 +54,4 @@
 	assertThatInteger([[source.methods methods] count], equalToInteger(2));
 }
 
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentProtocolName {
-	//setup
-	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"AnotherProtocol"];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 @end

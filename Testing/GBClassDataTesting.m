@@ -26,14 +26,6 @@
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClassName {
-	//setup
-	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
-	GBClassData *source = [GBClassData classDataWithName:@"AnotherClass"];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 #pragma mark Superclass data merging
 
 - (void)testMergeDataFromObject_shouldMergeSuperclass {

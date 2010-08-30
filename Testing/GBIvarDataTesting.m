@@ -24,20 +24,4 @@
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromObject_shouldThrowIfDifferentNameIfPassed {
-	// setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_different", nil];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
-- (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
-	// setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"*", @"_name", nil];
-	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"&", @"_name", nil];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 @end

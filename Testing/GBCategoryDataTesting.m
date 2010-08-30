@@ -26,22 +26,6 @@
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClassName {
-	//setup
-	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
-	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"AnotherClass"];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentCategoryName {
-	//setup
-	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
-	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"AnotherCategory" className:@"MyClass"];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 #pragma mark Category components merging
 
 - (void)testMergeDataFromObject_categoryShouldMergeAdoptedProtocolsAndPreserveSourceData {

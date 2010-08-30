@@ -50,14 +50,6 @@
 	assertThat([files objectAtIndex:1], is(@"f3"));
 }
 
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClass {
-	//setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 #pragma mark Comments merging handling
 
 - (void)testMergeDataFromObject_shouldUseOriginalCommentIfSourceIsNotGiven {

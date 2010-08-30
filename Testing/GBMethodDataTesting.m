@@ -78,30 +78,4 @@
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
 }
 
-- (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
-	// setup
-	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	GBMethodData *source = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
-- (void)testMergeDataFromObject_shouldThrowIfDifferentSelectorIfPassed {
-	// setup
-	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	GBMethodData *source1 = [GBTestObjectsRegistry classMethodWithNames:@"someOtherMethod", nil];
-	GBMethodData *source2 = [GBTestObjectsRegistry instanceMethodWithArguments:[GBMethodArgument methodArgumentWithName:@"method"], nil];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source1], nil); // different name alltogether
-	GHAssertThrows([original mergeDataFromObject:source2], nil); // same selector but difference in arguments
-}
-
-- (void)testMergeDataFromObject_shouldThrowIfDifferentResultIfPassed {
-	// setup
-	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"int"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
-	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"long"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
-	// execute & verify
-	GHAssertThrows([original mergeDataFromObject:source], nil);
-}
-
 @end
