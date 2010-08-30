@@ -23,6 +23,7 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
+- (void)initializeSettingsProvider;
 - (void)validateArguments:(NSArray *)arguments;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
@@ -50,10 +51,15 @@ static NSString *kGBArgHelp = @"help";
 - (id)init {
 	self = [super init];
 	if (self) {
+		[self initializeSettingsProvider];
 		self.logformat = @"1";
 		self.verbose = @"2";
 	}
 	return self;
+}
+
+- (void)initializeSettingsProvider {
+	self.commentComponents = [[GBCommentComponentsProvider alloc] init];
 }
 
 #pragma mark DDCliApplicationDelegate implementation
@@ -132,6 +138,10 @@ static NSString *kGBArgHelp = @"help";
 - (NSString *)description {
 	return [self className];
 }
+
+#pragma mark Application settings provider implementation
+
+@synthesize commentComponents;
 
 #pragma mark Properties
 

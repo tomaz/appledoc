@@ -9,10 +9,28 @@
 #import <Foundation/Foundation.h>
 
 @protocol GBStoreProviding;
+@class GBCommentParagraph;
 
 /** Handles all comment related stuff.
+ 
+ Each instance describes a single source code comment for any object - class, category, protocol, method... As the comment is universal for each object, it contains properties for all fields applying to any kind of object. However not all are used in all cases. If a property is not used, it's value remains `nil`. Derived values are:
+ 
+ - `paragraphs`: An array of `GBCommentParagraph` objects. The first entry is considered a short description, also available through `shortDescription`.
+ - `parameters`: An array of `GBCommentParameter` objects. Only applicable for methods with parameters.
+ - `return`: A single `GBCommentParameter` object. Only applicable for methods with return value.
+ - `exceptions`: An array of `GBCommentParameter` objects. Only applicable for methods with exceptions.
+ - `seealso`: An array of `GBCommentLink` objects.
+ 
+ All arrays must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
+ 
+ `GBComment` is not context aware by itself, it's simply a container object that holds comment information. It's the rest of the application that's responsible for setting it's values as needed. In most cases it's `GBParser`s who sets comments string value and `GBProcessor`s to parse string value and setup the derived properties based on the comment's context.
+ 
+ @warning *Note:* Although derived values are prepared based on `stringValue`, nothing prevents clients to setup derived values directly, "on the fly" if needed. However splitting the interface allows us to simplify parsing code and allow us to handle derives values when we have complete information available.
  */
-@interface GBComment : NSObject
+@interface GBComment : NSObject {
+	@private
+	NSMutableArray *_paragraphs;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
@@ -28,22 +46,38 @@
 + (id)commentWithStringValue:(NSString *)value;
 
 ///---------------------------------------------------------------------------------------
+/// @name Paragraphs handling
+///---------------------------------------------------------------------------------------
+
+/** Registers the `GBCommentParagraph` and adds it to the end of `paragraphs` array.
+ 
+ If `paragraphs` is `nil`, a new array is created before adding the given object to it and the given paragraph is assigned as `firstParagraph` (the object is also added to `paragraphs` array!).
+ 
+ @param paragraph Paragraph to register.
+ @exception NSException Thrown if the given paragraph is `nil`.
+ @see firstParagraph
+ @see paragraphs
+ */
+- (void)registerParagraph:(GBCommentParagraph *)paragraph;
+
+/** The first paragraph from `paragraphs` list or `nil` if no paragraph is registered.
+ 
+ The value is automatically returned from `paragraphs` list, it doesn't have to be manually registered. However if needed, it can still be set manually if needed.
+ */
+@property (retain) GBCommentParagraph *firstParagraph;
+
+///---------------------------------------------------------------------------------------
 /// @name Derived values
 ///---------------------------------------------------------------------------------------
 
-/** Processes `stringValue` and prepares all derived values.
- 
- This message should be sent before using derived values. If comment string value contains links, they are validated with the given store, so make sure the store already has all objects registered before sending this message! If any kind of inconsistency is detected, a warning is logged and processing continues. This allows us to extract as much information as possible, while ignoring problems.
- 
- @exception NSException Thrown if the given store is `nil` or processing fails due to unexpected error.
- */
-- (void)processCommentWithStore:(id<GBStoreProviding>)store;
-
 /** `NSArray` containing all paragraphs of the comment.
  
- The paragraphs are in same order as in the source code. First paragraph is used for short description. Each object is a `GBCommentParagraph` instance. The array is prepared by `GBProcessor` during post-processing and is not available before!
+ The paragraphs are in same order as in the source code. First paragraph is used for short description and is also available via `firstParagraph`. Each object is a `GBCommentParagraph` instance and should be registered through `registerParagraph:`.
+
+ @see firstParagraph
+ @see registerParagraph:
  */
-@property (readonly) NSMutableArray *paragraphs;
+@property (retain) NSArray *paragraphs;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

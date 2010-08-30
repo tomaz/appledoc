@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBCommentParagraph.h"
 #import "GBStoreProviding.h"
 #import "GBComment.h"
 
@@ -19,14 +20,22 @@
 	return result;
 }
 
-#pragma mark Processing handling
+#pragma mark Registration handling
 
-- (void)processCommentWithStore:(id<GBStoreProviding>)store {
+- (void)registerParagraph:(GBCommentParagraph *)paragraph {
+	NSParameterAssert(paragraph != nil);
+	GBLogDebug(@"Registering paragraph %@...", paragraph);
+	if (!_paragraphs) {
+		_paragraphs = [[NSMutableArray alloc] init];
+		self.firstParagraph = paragraph;
+	}
+	[_paragraphs addObject:paragraph];
 }
 
 #pragma mark Properties
 
-@synthesize paragraphs;
+@synthesize paragraphs = _paragraphs;
+@synthesize firstParagraph;
 @synthesize stringValue;
 
 @end

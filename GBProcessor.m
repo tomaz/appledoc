@@ -9,6 +9,7 @@
 #import "GBApplicationSettingsProviding.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
+#import "GBCommentsProcessor.h"
 #import "GBProcessor.h"
 
 @interface GBProcessor ()
@@ -19,6 +20,7 @@
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processComment:(GBComment *)comment;
+@property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -41,6 +43,7 @@
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
+		self.commentsProcessor = [GBCommentsProcessor processorWithSettingsProvider:self.settings];
 	}
 	return self;
 }
@@ -109,11 +112,12 @@
 - (void)processComment:(GBComment *)comment {
 	if (!comment) return;
 	GBLogDebug(@"Processing comment...");
-	[comment processCommentWithStore:self.store];
+	[self.commentsProcessor processComment:comment withStore:self.store];
 }
 
 #pragma mark Properties
 
+@synthesize commentsProcessor;
 @synthesize settings;
 @synthesize store;
 

@@ -37,7 +37,7 @@
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
-		self.objectiveCParser = [[GBObjectiveCParser alloc] initWithSettingsProvider:self.settings];
+		self.objectiveCParser = [GBObjectiveCParser parserWithSettingsProvider:self.settings];
 	}
 	return self;
 }
