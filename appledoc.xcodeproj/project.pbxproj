@@ -73,12 +73,12 @@
 		733EA191122BE1850060CBDE /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DF71227C24600D19EBA /* GBProcessor.m */; };
 		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
-		733EA47F122CE8E70060CBDE /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA47E122CE8E70060CBDE /* RegexKitLite.m */; };
-		733EA480122CE8E70060CBDE /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA47E122CE8E70060CBDE /* RegexKitLite.m */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
+		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
+		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -124,7 +124,6 @@
 		733EA125122BDD020060CBDE /* AppledocTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppledocTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		733EA138122BDE980060CBDE /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
 		733EA47D122CE8E70060CBDE /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
-		733EA47E122CE8E70060CBDE /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+GBFileManager.h"; sourceTree = "<group>"; };
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
@@ -150,6 +149,7 @@
 		7367BB5112004058005ED6CD /* GBModelBaseTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBaseTesting.m; sourceTree = "<group>"; };
 		7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryDataTesting.m; sourceTree = "<group>"; };
 		7367BC4212005888005ED6CD /* GBDataObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDataObjects.h; sourceTree = "<group>"; };
+		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -355,7 +355,7 @@
 			isa = PBXGroup;
 			children = (
 				733EA47D122CE8E70060CBDE /* RegexKitLite.h */,
-				733EA47E122CE8E70060CBDE /* RegexKitLite.m */,
+				73CF8130122D3824005B7E26 /* RegexKitLite.m */,
 			);
 			path = RegexKitLite;
 			sourceTree = "<group>";
@@ -813,7 +813,7 @@
 				733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */,
 				733EA191122BE1850060CBDE /* GBProcessor.m in Sources */,
 				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
-				733EA480122CE8E70060CBDE /* RegexKitLite.m in Sources */,
+				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -855,7 +855,7 @@
 				73EC0142122849120076B7B3 /* GBCommentsProcessor.m in Sources */,
 				73EC01711228561B0076B7B3 /* GBCommentParagraph.m in Sources */,
 				733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */,
-				733EA47F122CE8E70060CBDE /* RegexKitLite.m in Sources */,
+				73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -915,7 +915,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx10.6;
 			};
 			name = Debug;
@@ -931,7 +931,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;
