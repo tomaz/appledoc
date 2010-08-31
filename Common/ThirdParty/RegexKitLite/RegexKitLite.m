@@ -1470,7 +1470,7 @@ static id rkl_makeDictionary(RKLCachedRegex *cachedRegex, RKLRegexOp regexOp, RK
         }
       }
       RKLCDelayedAssert((matchedStringIndex <= captureCount), exception, exitNow);
-      if(RKL_EXPECTED(((*matchedDictionariesPtr++ = (NSDictionary * RKL_GC_VOLATILE)NSMakeCollectable(CFDictionaryCreate(NULL, (const void **)matchedKeys, (const void **)matchedStrings, (CFIndex)createdStringsCount, &rkl_transferOwnershipDictionaryKeyCallBacks, &rkl_transferOwnershipDictionaryValueCallBacks))) == NULL), 0L)) { goto exitNow; }
+      if(RKL_EXPECTED(((*matchedDictionariesPtr++ = (NSDictionary * RKL_GC_VOLATILE)CFDictionaryCreate(NULL, (const void **)matchedKeys, (const void **)matchedStrings, (CFIndex)createdStringsCount, &rkl_transferOwnershipDictionaryKeyCallBacks, &rkl_transferOwnershipDictionaryValueCallBacks)) == NULL), 0L)) { goto exitNow; }
       createdStringsCount = 0UL;
     }
   }
@@ -1566,8 +1566,8 @@ static NSString *rkl_replaceString(RKLCachedRegex *cachedRegex, id searchString,
   RKLCDelayedAssert((replacedCount >= 0L), exception, exitNow);  
   if(RKL_EXPECTED(resultU16Length == 0, 0L)) { resultObject = @""; } // Optimize the case where the replaced text length == 0 with a @"" string.
   else if(RKL_EXPECTED((NSUInteger)resultU16Length == searchU16Length, 0L) && RKL_EXPECTED(replacedCount == 0L, 1L)) { // Optimize the case where the replacement == original by creating a copy. Very fast if self is immutable.
-    if(replaceMutable == 0UL) { resultObject = rkl_CFAutorelease(NSMakeCollectable(CFStringCreateCopy(NULL, (CFStringRef)searchString))); } // .. but only if this is not replacing a mutable self.  Warning about potential leak can be safely ignored.
-  } else { resultObject = rkl_CFAutorelease(NSMakeCollectable(CFStringCreateWithCharacters(NULL, tempUniCharBuffer, (CFIndex)resultU16Length))); } // otherwise, create a new string.  Warning about potential leak can be safely ignored.
+    if(replaceMutable == 0UL) { resultObject = rkl_CFAutorelease(CFStringCreateCopy(NULL, (CFStringRef)searchString)); } // .. but only if this is not replacing a mutable self.  Warning about potential leak can be safely ignored.
+  } else { resultObject = rkl_CFAutorelease(CFStringCreateWithCharacters(NULL, tempUniCharBuffer, (CFIndex)resultU16Length)); } // otherwise, create a new string.  Warning about potential leak can be safely ignored.
   
   // If replaceMutable == 1UL, we don't do the replacement here.  We wait until after we return and unlock the cache lock.
   // This is because we may be trying to mutate an immutable string object.
@@ -2016,7 +2016,7 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
   
   RKLCDelayedAssert((self != NULL) && (_cmd != NULL) && ((blockEnumerationOp == RKLBlockEnumerationMatchOp) ? (((regexOp == RKLCapturesArrayOp) || (regexOp == RKLSplitOp)) && (stringsAndRangesBlock != NULL) && (replaceStringsAndRangesBlock == NULL)) : 1) && ((blockEnumerationOp == RKLBlockEnumerationReplaceOp) ? ((regexOp == RKLCapturesArrayOp) && (stringsAndRangesBlock == NULL) && (replaceStringsAndRangesBlock != NULL)) : 1) , &exception, exitNow);
 
-  if((rkl_collectingEnabled() == NO) && RKL_EXPECTED((autoreleaseArray = rkl_CFAutorelease(NSMakeCollectable(CFArrayCreateMutable(NULL, 0L, &rkl_transferOwnershipArrayCallBacks)))) == NULL, 0L))          { goto exitNow; } // Warning about potential leak of Core Foundation object can be safely ignored.
+  if((rkl_collectingEnabled() == NO) && RKL_EXPECTED((autoreleaseArray = rkl_CFAutorelease(CFArrayCreateMutable(NULL, 0L, &rkl_transferOwnershipArrayCallBacks))) == NULL, 0L))          { goto exitNow; } // Warning about potential leak of Core Foundation object can be safely ignored.
   if(RKL_EXPECTED((blockEnumerationHelper = [[RKLBlockEnumerationHelper alloc] initWithRegex:regexString options:options string:matchString range:matchRange error:error]) == NULL, 0L)) { goto exitNow; } // Warning about potential leak of blockEnumerationHelper can be safely ignored.
   if(autoreleaseArray != NULL) { CFArrayAppendValue((CFMutableArrayRef)autoreleaseArray, blockEnumerationHelper); autoreleaseReplaceRange.location++; } // We do not autorelease blockEnumerationHelper, but instead add it to autoreleaseArray.
   
@@ -2062,7 +2062,7 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
     if((fastCapturedStrings = (CFMutableStringRef * RKL_GC_VOLATILE)alloca(sizeof(NSString *) * capturedStringsCapacity)) == NULL) { goto exitNow; } // Space to hold the "fast" captured strings from a match.
 
     for(idx = 0UL; idx < (size_t)captureCountBlockArgument; idx++) {
-      if((fastCapturedStrings[idx] = (CFMutableStringRef)NSMakeCollectable(CFStringCreateMutableWithExternalCharactersNoCopy(NULL, NULL, 0L, 0L, kCFAllocatorNull))) == NULL) { goto exitNow; }
+      if((fastCapturedStrings[idx] = (CFMutableStringRef)CFStringCreateMutableWithExternalCharactersNoCopy(NULL, NULL, 0L, 0L, kCFAllocatorNull)) == NULL) { goto exitNow; }
       if(autoreleaseArray != NULL) { CFArrayAppendValue((CFMutableArrayRef)autoreleaseArray, fastCapturedStrings[idx]); autoreleaseReplaceRange.location++; } // We do not autorelease mutableReplacementString, but instead add it to autoreleaseArray.
       capturedStrings[idx] = (NSString *)fastCapturedStrings[idx];
     }
@@ -2343,28 +2343,28 @@ exitNow2:
 {
   NSRange matchedRange = NSNotFoundRange, range = NSMaxiumRange;
   rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, RKLNoOptions,      0L,      self, &range, NULL, NULL,  &matchedRange, 0UL, NULL, NULL);
-  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(NSMakeCollectable(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length))))); // Warning about potential leak can be safely ignored.
+  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
 } // Warning about potential leak can be safely ignored.
 
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex capture:(NSInteger)capture
 {
   NSRange matchedRange = NSNotFoundRange, range = NSMaxiumRange;
   rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, RKLNoOptions,      capture, self, &range, NULL, NULL,  &matchedRange, 0UL, NULL, NULL);
-  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(NSMakeCollectable(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length))))); // Warning about potential leak can be safely ignored.
+  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
 } // Warning about potential leak can be safely ignored.
 
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex inRange:(NSRange)range
 {
   NSRange matchedRange = NSNotFoundRange;
   rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, RKLNoOptions,      0L,      self, &range, NULL, NULL,  &matchedRange, 0UL, NULL, NULL);
-  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(NSMakeCollectable(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length))))); // Warning about potential leak can be safely ignored.
+  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
 } // Warning about potential leak can be safely ignored.
 
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex options:(RKLRegexOptions)options inRange:(NSRange)range capture:(NSInteger)capture error:(NSError **)error
 {
   NSRange matchedRange = NSNotFoundRange;
   rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, options,           capture, self, &range, NULL, error, &matchedRange, 0UL, NULL, NULL);
-  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(NSMakeCollectable(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length))))); // Warning about potential leak can be safely ignored.
+  return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
 } // Warning about potential leak can be safely ignored.
 
 #pragma mark -stringByReplacingOccurrencesOfRegex:
