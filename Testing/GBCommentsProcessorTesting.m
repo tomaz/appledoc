@@ -16,9 +16,9 @@
 
 @implementation GBCommentsProcessorTesting
 
-#pragma mark Paragraphs processing testing
+#pragma mark Paragraph text items testing
 
-- (void)testProcessCommentWithStore_paragraph_shouldGenerateSingleParagraph {
+- (void)testProcessCommentWithStore_textItems_shouldGenerateSingleParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph"];
@@ -26,10 +26,13 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	assertThat([[comment.paragraphs objectAtIndex:0] stringValue], is(@"Paragraph"));
+	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
+	assertThatInteger([paragraph.items count], equalToInteger(1));
+	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
+	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"Paragraph"));
 }
 
-- (void)testProcessCommentWithStore_paragraph_shouldGenerateAllParagraphs {
+- (void)testProcessCommentWithStore_textItems_shouldGenerateAllParagraphs {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph1\n\nParagraph2"];
@@ -37,38 +40,42 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(2));
-	assertThat([[comment.paragraphs objectAtIndex:0] stringValue], is(@"Paragraph1"));
-	assertThat([[comment.paragraphs objectAtIndex:1] stringValue], is(@"Paragraph2"));
+	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
+	assertThatInteger([paragraph1.items count], equalToInteger(1));
+	assertThat([[paragraph1.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
+	assertThat([[paragraph1.items objectAtIndex:0] stringValue], is(@"Paragraph1"));
+	GBCommentParagraph *paragraph2 = [comment.paragraphs objectAtIndex:1];
+	assertThatInteger([paragraph2.items count], equalToInteger(1));
+	assertThat([[paragraph2.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
+	assertThat([[paragraph2.items objectAtIndex:0] stringValue], is(@"Paragraph2"));
 }
 
-- (void)testProcessCommentWithStore_paragraph_shouldCombineAllParagraphLinesIntoOne {
+- (void)testProcessCommentWithStore_textItems_shouldCombineAllParagraphLinesIntoOne {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"First line\nSecond line"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
-	assertThat([comment.firstParagraph stringValue], is(@"First line Second line"));
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
+	assertThatInteger([paragraph.items count], equalToInteger(1));
+	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
+	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"First line Second line"));
 }
 
-- (void)testProcessCommentWithStore_paragraph_shouldTrimAllParagraphSpaces {
+- (void)testProcessCommentWithStore_textItems_shouldTrimAllParagraphSpaces {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"   First line Second line    "];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
-	assertThat([comment.firstParagraph stringValue], is(@"First line Second line"));
-}
-
-- (void)testProcessCommentWithStore_paragraph_shouldKeepParagraphTabs {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"  \t First line"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThat([comment.firstParagraph stringValue], is(@"\t First line"));
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
+	assertThatInteger([paragraph.items count], equalToInteger(1));
+	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
+	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"First line Second line"));
 }
 
 //#pragma mark Unordered lists testing
@@ -81,6 +88,8 @@
 //	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 //	// verify
 //	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+//	assertThatInteger([comment.firstParagraph.items count], equalToInteger(2));
+//	assertThat([[comment.firstParagraph.items objectAtIndex:0] className], is(@"GBParagraphTextItem"));
 //	assertThat([comment.firstParagraph stringValue], is(@"Paragraph\n- Item"));
 //}
 //
