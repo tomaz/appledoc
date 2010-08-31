@@ -37,6 +37,16 @@
 
 #pragma mark Public interface
 
+- (BOOL)stringDefinesOrderedList:(NSString *)string {
+	NSString *regex = @"^\\s*[0-9]+\\.\\s+";	// optional WS, followed by list delimiter and dot, followed by at least one WS
+	return [self string:string matchesRegex:regex];
+}
+
+- (BOOL)stringDefinesUnorderedList:(NSString *)string {
+	NSString *regex = @"^\\s*[-+*o]\\s+";	// optional WS, followed by list delimiter, followed by at least one WS
+	return [self string:string matchesRegex:regex];
+}
+
 - (BOOL)stringDefinesWarning:(NSString *)string {
 	return [self string:string startsWithKeyword:@"warning"];
 }

@@ -15,6 +15,35 @@
 
 @implementation GBCommentComponentsProviderTesting
 
+- (void)testStringContainsUnorderedList_shouldDetectList {
+	// setup
+	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];
+	// execute & verify - should allow all possible chars
+	assertThatBool([provider stringDefinesUnorderedList:@"- Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"+ Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"* Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"o Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"- 12. Item"], equalToBool(YES));
+	// execute & verify - should allow nested lists
+	assertThatBool([provider stringDefinesUnorderedList:@"\t\t\t\t\t- Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"\t\t\t\t\t+ Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"\t\t\t\t\t* Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesUnorderedList:@"\t\t\t\t\to Item"], equalToBool(YES));
+}
+
+- (void)testStringContainsOrderedList_shouldDetectList {
+	// setup
+	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];
+	// execute & verify - should allow even after whitespace
+	assertThatBool([provider stringDefinesOrderedList:@"1. Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesOrderedList:@"992399. Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesOrderedList:@"\t\t2. Item"], equalToBool(YES));
+	assertThatBool([provider stringDefinesOrderedList:@"    \t8. Item"], equalToBool(YES));
+	// execute & verify - should not allow
+	assertThatBool([provider stringDefinesOrderedList:@"12 Item"], equalToBool(NO));		// no dot
+	assertThatBool([provider stringDefinesOrderedList:@"- 12. Item"], equalToBool(NO));	// unknown prefix
+}
+
 - (void)testStringContainsWarning_shouldDetectWarning {
 	// setup
 	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];

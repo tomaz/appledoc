@@ -26,6 +26,34 @@
 /// @name Sections testing
 ///---------------------------------------------------------------------------------------
 
+/** Determines if the given string defines an ordered list item.
+ 
+ Ordered list items start with list specifier followed by a paragraph text. List specifier is a number followed by a dot (without any whitespace!). The numbers don't need to be successive - the output list has the items in correct order anyway.
+ 
+ Syntactically list items are part of previous paragraph, or if no paragraph is defined, they are contained in their own paragraph. They are composed from list specifier followed by a paragraph text. They are only identified when the list specifier is found on the start of the line. Nested lists can be declared by prefixing the list specifier with tabs. Each tab level provides another nested list level. First level should not be prefixed with tab.
+ 
+ @warning *Important:* If string is prefixed with tab but there was no first level item defined, the string is treated as example! See `stringDefinesExample:`.
+ 
+ @param string The string to check, ussually a single line from a comment.
+ @return Returns `YES` if given string defines a warning, `NO` otherwise.
+ @see stringDefinesOrderedList:
+ */
+- (BOOL)stringDefinesOrderedList:(NSString *)string;
+
+/** Determines if the given string defines an unordered list item.
+ 
+ Unordered list items start with list specifier followed by a paragraph text. List specifier is a minus sign.
+ 
+ Syntactically list items are part of previous paragraph, or if no paragraph is defined, they are contained in their own paragraph. They are composed from list specifier followed by a paragraph text. They are only identified when the list specifier is found on the start of the line. Nested lists can be declared by prefixing the list specifier with tabs. Each tab level provides another nested list level. First level should not be prefixed with tab.
+ 
+ @warning *Important:* If string is prefixed with tab but there was no first level item defined, the string is treated as example! See `stringDefinesExample:`.
+ 
+ @param string The string to check, ussually a single line from a comment.
+ @return Returns `YES` if given string defines a warning, `NO` otherwise.
+ @see stringDefinesOrderedList:
+ */
+- (BOOL)stringDefinesUnorderedList:(NSString *)string;
+
 /** Determines if the given string defines a warning section.
  
  Warning sections are specially formatted paragraphs that are emphasized so the user can quickly see them. They are similar to bugs, but are formatted to be less apparent to the user.
