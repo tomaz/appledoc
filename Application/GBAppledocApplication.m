@@ -174,6 +174,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- DDCli by Dave Dribin\n");
 	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
+	ddprintf(@"- RegexKitLite by John Engelhart\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!");
 }

@@ -73,6 +73,8 @@
 		733EA191122BE1850060CBDE /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DF71227C24600D19EBA /* GBProcessor.m */; };
 		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
+		733EA47F122CE8E70060CBDE /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA47E122CE8E70060CBDE /* RegexKitLite.m */; };
+		733EA480122CE8E70060CBDE /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA47E122CE8E70060CBDE /* RegexKitLite.m */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
@@ -121,6 +123,8 @@
 		733EA0F1122BDC5B0060CBDE /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GHUnit.framework; sourceTree = "<group>"; };
 		733EA125122BDD020060CBDE /* AppledocTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppledocTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		733EA138122BDE980060CBDE /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
+		733EA47D122CE8E70060CBDE /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
+		733EA47E122CE8E70060CBDE /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+GBFileManager.h"; sourceTree = "<group>"; };
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
@@ -347,6 +351,15 @@
 			name = Application;
 			sourceTree = "<group>";
 		};
+		733EA47C122CE8C40060CBDE /* RegexKitLite */ = {
+			isa = PBXGroup;
+			children = (
+				733EA47D122CE8E70060CBDE /* RegexKitLite.h */,
+				733EA47E122CE8E70060CBDE /* RegexKitLite.m */,
+			);
+			path = RegexKitLite;
+			sourceTree = "<group>";
+		};
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
@@ -417,6 +430,7 @@
 			children = (
 				73D54C9611F8D21000CCDDB0 /* DDLog */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
+				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -799,6 +813,7 @@
 				733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */,
 				733EA191122BE1850060CBDE /* GBProcessor.m in Sources */,
 				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
+				733EA480122CE8E70060CBDE /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -840,6 +855,7 @@
 				73EC0142122849120076B7B3 /* GBCommentsProcessor.m in Sources */,
 				73EC01711228561B0076B7B3 /* GBCommentParagraph.m in Sources */,
 				733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */,
+				733EA47F122CE8E70060CBDE /* RegexKitLite.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +913,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.6;
@@ -912,6 +929,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx10.6;
@@ -946,6 +964,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-licucore",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
@@ -978,6 +997,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
+					"-licucore",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
