@@ -65,15 +65,8 @@
 	// Note that this method doesn't require special keyword prefix - it would take any character as long as it's followed by the given keyword and at least one delimiter char! This method is only valid for testing keywords that are followed by some text!
 	if ([keyword length] == 0) return NO;
 	if ([string length] < [keyword length] + 2) return NO;
-	
-	// Trim the string and prepare the range for testing the keyword after the prefix char.
-	string = [string stringByTrimmingCharactersInSet:self.delimitersSet];
-	NSRange range = NSMakeRange(1, [keyword length]);
-
-	// Apply all tests: we only allow if we find the keyword after the prefix char followed by a delimiter.
-	if (![[string substringWithRange:range] isEqualToString:keyword]) return NO;
-	if (![self.delimitersSet characterIsMember:[string characterAtIndex:range.location + range.length]]) return NO;
-	return YES;
+	NSString *regex = [NSString stringWithFormat:@"^\\s*.%@", keyword];
+	return [string isMatchedByRegex:regex];
 }
 
 #pragma mark Properties
