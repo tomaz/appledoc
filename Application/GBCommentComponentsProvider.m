@@ -6,11 +6,13 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GBCommentComponentsProvider.h"
 
 @interface GBCommentComponentsProvider ()
 
 - (BOOL)string:(NSString *)string startsWithKeyword:(NSString *)keyword;
+- (BOOL)string:(NSString *)string matchesRegex:(NSString *)regex;
 @property (retain) NSCharacterSet *delimitersSet;
 
 @end
@@ -56,7 +58,8 @@
 }
 
 - (BOOL)stringDefinesCrossReference:(NSString *)string {
-	return ([self string:string startsWithKeyword:@"sa"] || [self string:string startsWithKeyword:@"see"]);
+	NSString *regex = @"^\\s*.(sa|see)";
+	return [self string:string matchesRegex:regex];
 }
 
 #pragma mark Helper methods
@@ -66,6 +69,10 @@
 	if ([keyword length] == 0) return NO;
 	if ([string length] < [keyword length] + 2) return NO;
 	NSString *regex = [NSString stringWithFormat:@"^\\s*.%@", keyword];
+	return [self string:string matchesRegex:regex];
+}
+
+- (BOOL)string:(NSString *)string matchesRegex:(NSString *)regex {
 	return [string isMatchedByRegex:regex];
 }
 
