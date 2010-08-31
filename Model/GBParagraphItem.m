@@ -16,6 +16,12 @@
 	return [[[self alloc] init] autorelease];
 }
 
++ (id)paragraphItemWithStringValue:(NSString *)value {
+	GBParagraphItem *result = [self paragraphItem];
+	result.stringValue = value;
+	return result;
+}
+
 #pragma mark Properties
 
 @synthesize stringValue;

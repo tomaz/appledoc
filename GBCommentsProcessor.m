@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GBApplicationSettingsProviding.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
@@ -13,8 +14,7 @@
 
 @interface GBCommentsProcessor ()
 
-- (void)registerDerivedValuesToComment:(GBComment *)comment fromTrimmedLines:(NSArray *)lines;
-- (NSArray *)trimmedLinesFromString:(NSString *)string;
+- (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -49,53 +49,27 @@
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Processing comment with store %@...", store);
 	self.store = store;
-	NSArray *lines = [self trimmedLinesFromString:[comment stringValue]];
-	[self registerDerivedValuesToComment:comment fromTrimmedLines:lines];
-}
-
-- (void)registerDerivedValuesToComment:(GBComment *)comment fromTrimmedLines:(NSArray *)lines {
-	// Groups whole paragraph texts into a single line and registers all comment components.
-	//GBCommentComponentsProvider *componetizer = self.settings.commentComponents;
-	GBCommentParagraph *currentParagraph = [GBCommentParagraph paragraph];
-	NSMutableString *currentTextValue = [NSMutableString string];
-	for (NSString *line in lines) {
-		// When empty line is found, we should end current paragraph text an begin new one.
-		if ([line length] == 0) {
-			if ([currentTextValue length] > 0) {
-				GBParagraphTextItem *item = [GBParagraphTextItem paragraphItem];
-				item.stringValue = currentTextValue;
-				[currentParagraph registerItem:item];
-				[comment registerParagraph:currentParagraph];
-			}
-			currentParagraph = [GBCommentParagraph paragraph];
-			[currentTextValue setString:@""];			
-		} else {
-			if ([currentTextValue length] > 0)
-				[currentTextValue appendFormat:@" %@", line];
-			else
-				[currentTextValue setString:line];
-		}
-	}
-	
-	if ([currentTextValue length] > 0) {
-		GBParagraphTextItem *item = [GBParagraphTextItem paragraphItem];
-		item.stringValue = currentTextValue;
-		[currentParagraph registerItem:item];
-		[comment registerParagraph:currentParagraph];
+	NSArray *commentComponents = [self componentsSeparatedByEmptyLinesFromString:[comment stringValue]];
+	for (NSString *commentComponent in commentComponents) {
+		// String all whitespace and convert paragraph text into a single line with words separated with spaces.
+		NSArray *componentParts = [commentComponent componentsSeparatedByRegex:@"\\s+"];
+		NSMutableString *strippedPartValue = [NSMutableString stringWithCapacity:[commentComponent length]];
+		[componentParts enumerateObjectsUsingBlock:^(NSString *componentPart, NSUInteger idx, BOOL *stop) {
+			if ([componentPart length] == 0) return;
+			if ([strippedPartValue length] > 0) [strippedPartValue appendString:@" "];
+			[strippedPartValue appendString:componentPart];
+		}];
+		
+		// Register new paragraph with the item.
+		GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
+		GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:strippedPartValue];
+		[paragraph registerItem:item];
+		[comment registerParagraph:paragraph];
 	}
 }
 
-- (NSArray *)trimmedLinesFromString:(NSString *)string {
-	// Splits string into lines and trims them of extra spaces. We do keep tabs as we need them for detecting example lines.
-	NSCharacterSet *newLinesSet = [NSCharacterSet newlineCharacterSet];
-	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
-	NSMutableArray *lines = [NSMutableArray arrayWithArray:[string componentsSeparatedByCharactersInSet:newLinesSet]];
-	for (NSUInteger i=0; i<[lines count]; i++) {
-		NSString *line = [lines objectAtIndex:i];
-		NSString *clean = [line stringByTrimmingCharactersInSet:spacesSet];
-		[lines replaceObjectAtIndex:i withObject:clean];
-	}
-	return lines;
+- (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string {
+	return [string componentsSeparatedByRegex:@"(?m:^\\s*$)"];
 }
 
 #pragma mark Properties

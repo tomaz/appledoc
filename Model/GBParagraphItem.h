@@ -18,6 +18,15 @@
 /** Returns new autoreleased instance. */
 + (id)paragraphItem;
 
+/** Returns new autoreleased instance with `stringValue` set to the given text.
+ 
+ This is equivalent to the following code:
+ 
+	GBParagraphItem *item = [GBParagraphItem paragraphItem];
+	item.stringValue = value;
+ */
++ (id)paragraphItemWithStringValue:(NSString *)value;
+
 ///---------------------------------------------------------------------------------------
 /// @name Values
 ///---------------------------------------------------------------------------------------
