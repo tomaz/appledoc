@@ -19,6 +19,7 @@
 @property (retain) NSMutableString *lastComment;
 @property (retain) NSString *singleLineCommentRegex;
 @property (retain) NSString *multiLineCommentRegex;
+@property (retain) NSString *commentDelimiterRegex;
 
 @end
 
@@ -39,6 +40,7 @@
 	if (self) {
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
 		self.multiLineCommentRegex = @"(?:/\\*\\*((([^*])|(\\*[^/]))*)\\*/)";
+		self.commentDelimiterRegex = @"[!@#$%^&*()-_=+`~,<.>/?;:'\"]{3,}";
 		self.tokenIndex = 0;
 		self.lastComment = [NSMutableString string];
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
@@ -159,21 +161,14 @@
 	NSArray *lines = [self.lastComment componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	NSMutableArray *comments = [NSMutableArray arrayWithCapacity:[lines count]];
 	
-	// First pass: removes lines that are irrelevant and get common prefix of all lines.
+	// First pass: removes delimiters. We simply detect 3+ delimiter chars in any combination. If removing delimiter yields empty line, discard it.
 	[lines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		BOOL firstLine = (idx == 0);
-		BOOL lastLine = (idx == [lines count] - 1);
-
-		// Skip first and last line if we only have some common char in it. This is very basic - it tests if the line only contains a single character and ignores it if so.
-		if (firstLine || lastLine) {
-			NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([stripped length] > 0) {				
-				NSString *delimiter = [stripped substringToIndex:1];
-				stripped = [stripped stringByReplacingOccurrencesOfString:delimiter withString:@""];
-				if ([stripped length] == 0) return;
-			}
+		NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		NSString *delimited = [stripped stringByReplacingOccurrencesOfRegex:self.commentDelimiterRegex withString:@""];
+		if ([stripped length] > [delimited length]) {
+			if ([delimited length] > 0) [comments addObject:delimited];
+			return;
 		}
-		
 		[comments addObject:obj];
 	}];
 	
@@ -230,5 +225,6 @@
 @synthesize lastComment;
 @synthesize singleLineCommentRegex;
 @synthesize multiLineCommentRegex;
+@synthesize commentDelimiterRegex;
 
 @end
