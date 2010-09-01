@@ -40,11 +40,11 @@
 }
 
 - (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"%@(.*)", self.unorderedListPrefixRegex]));
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"^%@(.*)", self.unorderedListPrefixRegex]));
 }
 
 - (NSString *)unorderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"^\\s*[-+*o]\\s+");
+	GBRETURN_ON_DEMAND(@"\\s*[-+*o]\\s*");
 }
 
 - (NSString *)warningSectionRegex {

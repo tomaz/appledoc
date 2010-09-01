@@ -26,32 +26,22 @@
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	GBCommentParagraph *paragraph = [[comment paragraphs] objectAtIndex:0];
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsItems:[GBCommentParagraph class], @"Item", nil];
-	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
-	assertThatInteger([paragraph.items count], equalToInteger(2));
-	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
-	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"Paragraph"));
-	assertThat([[paragraph.items objectAtIndex:1] class], is([GBParagraphListItem class]));
-	assertThat([[paragraph.items objectAtIndex:1] stringValue], is(@"- Item"));
+	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
-//- (void)testProcessCommentWithStore_unorderedLists_shouldDetectMultipleLinesLists {
-//	// setup
-//	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-//	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n- Item1\n-Item2"];
-//	// execute
-//	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-//	// verify
-//	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-//	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
-//	assertThatInteger([paragraph.items count], equalToInteger(2));
-//	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
-//	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"Paragraph"));
-//	assertThat([[paragraph.items objectAtIndex:1] class], is([GBParagraphListItem class]));
-//	assertThat([[paragraph.items objectAtIndex:1] stringValue], is(@"- Item"));
-//}
-//
+- (void)testProcessCommentWithStore_unorderedLists_shouldDetectMultipleLinesLists {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n-Item1\n-Item2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
+	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1", @"Item2", nil];
+}
+
 //- (void)testProcessCommentWithStore_unorderedLists_shouldDetectItemsSpanningMutlipleLines {
 //	// setup
 //	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
