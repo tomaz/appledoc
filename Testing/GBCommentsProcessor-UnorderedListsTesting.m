@@ -55,7 +55,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_uorderedLists_shouldCreateParagraphIfNoneSpecifiedBefore {
+- (void)testProcessCommentWithStore_unorderedLists_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"- Item"];

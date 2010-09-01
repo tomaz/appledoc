@@ -36,7 +36,11 @@
 #pragma mark Public interface
 
 - (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(@"^\\s*[0-9]+\\.\\s+(.*)");
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"^%@(.*)", self.orderedListPrefixRegex]));
+}
+
+- (NSString *)orderedListPrefixRegex {
+	GBRETURN_ON_DEMAND(@"\\s*[0-9]+\\.\\s*");
 }
 
 - (NSString *)unorderedListRegex {

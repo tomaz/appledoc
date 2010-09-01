@@ -15,6 +15,7 @@
 @interface GBCommentsProcessor ()
 
 - (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
@@ -67,6 +68,10 @@
 			GBRegister([self registerUnorderedListFromString:component toParagraph:currentParagraph]);
 			return;
 		}
+		if ([component isMatchedByRegex:componizer.orderedListRegex]) {
+			GBRegister([self registerOrderedListFromString:component toParagraph:currentParagraph]);
+			return;
+		}
 		
 		// If no other match was found, this is simple text, so start new paragraph.
 		currentParagraph = [GBCommentParagraph paragraph];
@@ -77,9 +82,27 @@
 
 - (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
 	GBParagraphListItem *paragraphItem = [GBParagraphListItem paragraphItemWithStringValue:string];
+	paragraphItem.ordered = NO;
 
 	// Split the block of all list items to individual items, then process and register each one.
 	NSArray *items = [string componentsSeparatedByRegex:self.settings.commentComponents.unorderedListPrefixRegex];
+	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
+		if ([description length] == 0) return;
+		GBCommentParagraph *itemParagraph = [GBCommentParagraph paragraph];
+		[self registerTextFromString:description toParagraph:itemParagraph];
+		[paragraphItem registerItem:itemParagraph];
+	}];
+	
+	// Register list item to paragraph.
+	[paragraph registerItem:paragraphItem];
+}
+
+- (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	GBParagraphListItem *paragraphItem = [GBParagraphListItem paragraphItemWithStringValue:string];
+	paragraphItem.ordered = YES;
+	
+	// Split the block of all list items to individual items, then process and register each one.
+	NSArray *items = [string componentsSeparatedByRegex:self.settings.commentComponents.orderedListPrefixRegex];
 	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
 		if ([description length] == 0) return;
 		GBCommentParagraph *itemParagraph = [GBCommentParagraph paragraph];

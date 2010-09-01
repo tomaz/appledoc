@@ -29,6 +29,9 @@
 /** Returns the regex used for matching ordered lists with capture 1 containing list text. */
 @property (readonly) NSString *orderedListRegex;
 
+/** Returns the regex used for matching ordered list prefix. */
+@property (readonly) NSString *orderedListPrefixRegex;
+
 /** Returns the regex used for matching unordered lists with capture 1 containing list text. */
 @property (readonly) NSString *unorderedListRegex;
 
