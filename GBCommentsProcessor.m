@@ -47,6 +47,12 @@
 #pragma mark Processing handling
 
 - (void)processComment:(GBComment *)comment withStore:(id)store {
+#define GBRegister(code) \
+	BOOL shouldRegisterParagraph = (currentParagraph == nil); \
+	if (shouldRegisterParagraph) currentParagraph = [GBCommentParagraph paragraph]; \
+	code; \
+	if (shouldRegisterParagraph) [comment registerParagraph:currentParagraph]
+
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
@@ -54,11 +60,11 @@
 	self.store = store;	
 	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
 	NSArray *components = [self componentsSeparatedByEmptyLinesFromString:[comment stringValue]];
-	__block GBCommentParagraph *currentParagraph = [GBCommentParagraph paragraph];
+	__block GBCommentParagraph *currentParagraph = nil;
 	[components enumerateObjectsUsingBlock:^(NSString *component, NSUInteger idx, BOOL *stop) {
 		// Match known parts.
 		if ([component isMatchedByRegex:componizer.unorderedListRegex]) {
-			[self registerUnorderedListFromString:component toParagraph:currentParagraph];
+			GBRegister([self registerUnorderedListFromString:component toParagraph:currentParagraph]);
 			return;
 		}
 		

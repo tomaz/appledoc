@@ -55,7 +55,20 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_requiresWhitespaceOnlyLineBefore {
+- (void)testProcessCommentWithStore_uorderedLists_shouldCreateParagraphIfNoneSpecifiedBefore {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"- Item"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertParagraph:paragraph containsItems:[GBParagraphListItem class], [NSNull null], nil];
+	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:NO containsParagraphs:@"Item", nil];
+}
+
+- (void)testProcessCommentWithStore_unorderedLists_requiresEmptyLineBeforeList {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"Paragraph\n- Item"];
@@ -70,30 +83,4 @@
 	[self assertParagraph:comment2.firstParagraph containsItems:[GBParagraphTextItem class], @"Paragraph - Item", nil];
 }
 
-//- (void)testProcessCommentWithStore_ul_shouldCreateParagraph {
-//	// setup
-//	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-//	GBComment *comment = [GBComment commentWithStringValue:@"- Item"];
-//	// execute
-//	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-//	// verify
-//	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-//	assertThat([comment.firstParagraph stringValue], is(@"- Item"));
-//}
-//
-//#pragma mark Complex processing tests
-//
-//- (void)testProcessCommentWithStore_shouldProcessAllItems {
-//	// setup
-//	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-//	GBComment *comment = [GBComment commentWithStringValue:[GBRealLifeDataProvider fullMethodComment]];
-//	// execute
-//	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-//	// verify
-//	assertThatInteger([comment.paragraphs count], equalToInteger(3));
-//	assertThat([[comment.paragraphs objectAtIndex:0] stringValue], is(@"Short description."));
-//	assertThat([[comment.paragraphs objectAtIndex:1] stringValue], is(@"Second paragraph with lot's of text split into two lines."));
-//	assertThat([[comment.paragraphs objectAtIndex:2] stringValue], is(@"Third paragraph."));
-//}
-//
 @end
