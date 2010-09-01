@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
+		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
 		733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
@@ -21,8 +22,7 @@
 		733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */; };
 		733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
 		733EA141122BDEC60060CBDE /* AppledocTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */; };
-		733EA142122BDEC70060CBDE /* GBCommentComponentsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA003122BBFDA0060CBDE /* GBCommentComponentsProviderTesting.m */; };
-		733EA143122BDEC80060CBDE /* GBCommentsProcessorTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC015B122852ED0076B7B3 /* GBCommentsProcessorTesting.m */; };
+		733EA143122BDEC80060CBDE /* GBCommentsProcessor-TextItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */; };
 		733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FB8122B9D510060CBDE /* GBCommentTesting.m */; };
 		733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */; };
 		733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */; };
@@ -83,6 +83,8 @@
 		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73CF81D3122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */; };
 		73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */; };
+		73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
+		73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -120,10 +122,10 @@
 		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
 		731E7CE711F9962D00AAF15D /* NSException+GBException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+GBException.m"; sourceTree = "<group>"; };
+		73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-UnorderedListsTesting.m"; sourceTree = "<group>"; };
 		733E9FB8122B9D510060CBDE /* GBCommentTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentTesting.m; sourceTree = "<group>"; };
 		733E9FD9122BA9B00060CBDE /* GBCommentComponentsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsProvider.h; sourceTree = "<group>"; };
 		733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsProvider.m; sourceTree = "<group>"; };
-		733EA003122BBFDA0060CBDE /* GBCommentComponentsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsProviderTesting.m; sourceTree = "<group>"; };
 		733EA0F1122BDC5B0060CBDE /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GHUnit.framework; sourceTree = "<group>"; };
 		733EA125122BDD020060CBDE /* AppledocTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppledocTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		733EA138122BDE980060CBDE /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
@@ -158,6 +160,8 @@
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73CF81D1122D72ED005B7E26 /* GBParagraphTextItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphTextItem.h; sourceTree = "<group>"; };
 		73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphTextItem.m; sourceTree = "<group>"; };
+		73CF822B122D79AB005B7E26 /* GBParagraphListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphListItem.h; sourceTree = "<group>"; };
+		73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphListItem.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -185,7 +189,7 @@
 		73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-CommentsTesting.m"; sourceTree = "<group>"; };
 		73EC0140122849120076B7B3 /* GBCommentsProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentsProcessor.h; sourceTree = "<group>"; };
 		73EC0141122849120076B7B3 /* GBCommentsProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessor.m; sourceTree = "<group>"; };
-		73EC015B122852ED0076B7B3 /* GBCommentsProcessorTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessorTesting.m; sourceTree = "<group>"; };
+		73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-TextItemsTesting.m"; sourceTree = "<group>"; };
 		73EC016F1228561B0076B7B3 /* GBCommentParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentParagraph.h; sourceTree = "<group>"; };
 		73EC01701228561B0076B7B3 /* GBCommentParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentParagraph.m; sourceTree = "<group>"; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
@@ -351,14 +355,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		733E9FF6122BBFA20060CBDE /* Application */ = {
-			isa = PBXGroup;
-			children = (
-				733EA003122BBFDA0060CBDE /* GBCommentComponentsProviderTesting.m */,
-			);
-			name = Application;
-			sourceTree = "<group>";
-		};
 		733EA47C122CE8C40060CBDE /* RegexKitLite */ = {
 			isa = PBXGroup;
 			children = (
@@ -371,7 +367,6 @@
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
-				733E9FF6122BBFA20060CBDE /* Application */,
 				73F70E2F1227C7B200D19EBA /* Model */,
 				73F70E221227C7A600D19EBA /* Parsing */,
 				73F70E301227C7C700D19EBA /* Processing */,
@@ -517,6 +512,8 @@
 				733EA2E0122C00370060CBDE /* GBParagraphItem.m */,
 				73CF81D1122D72ED005B7E26 /* GBParagraphTextItem.h */,
 				73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */,
+				73CF822B122D79AB005B7E26 /* GBParagraphListItem.h */,
+				73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -569,7 +566,8 @@
 			children = (
 				73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */,
 				73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */,
-				73EC015B122852ED0076B7B3 /* GBCommentsProcessorTesting.m */,
+				73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */,
+				73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -774,8 +772,7 @@
 				733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */,
 				733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */,
 				733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */,
-				733EA142122BDEC70060CBDE /* GBCommentComponentsProviderTesting.m in Sources */,
-				733EA143122BDEC80060CBDE /* GBCommentsProcessorTesting.m in Sources */,
+				733EA143122BDEC80060CBDE /* GBCommentsProcessor-TextItemsTesting.m in Sources */,
 				733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */,
 				733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */,
 				733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */,
@@ -828,6 +825,8 @@
 				733EA2E2122C00370060CBDE /* GBParagraphItem.m in Sources */,
 				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				73CF81D3122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
+				73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
+				73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -872,6 +871,7 @@
 				733EA2E1122C00370060CBDE /* GBParagraphItem.m in Sources */,
 				73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
+				73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,6 +10,7 @@
 #import "GBCommentParagraph.h"
 #import "GBParagraphItem.h"
 #import "GBParagraphTextItem.h"
+#import "GBParagraphListItem.h"
 
 #import "GBClassData.h"
 #import "GBCategoryData.h"

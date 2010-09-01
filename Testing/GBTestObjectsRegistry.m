@@ -15,7 +15,9 @@
 #pragma mark Common objects creation methods
 
 + (OCMockObject *)mockSettingsProvider {
-	return [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+	OCMockObject *result = [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+	[[[result stub] andReturn:[GBCommentComponentsProvider provider]] commentComponents];
+	return result;
 }
 
 #pragma mark GBIvarData creation methods

@@ -12,7 +12,7 @@
 #define GBRETURN_ON_DEMAND(regex) \
 	static NSString *result = nil; \
 	if (!result) result = regex; \
-	return result;
+	return result
 
 #pragma mark -
 
@@ -36,11 +36,15 @@
 #pragma mark Public interface
 
 - (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(@"^\\s*[-+*o]\\s+(.*)");
+	GBRETURN_ON_DEMAND(@"^\\s*[0-9]+\\.\\s+(.*)");
 }
 
 - (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(@"^\\s*[0-9]+\\.\\s+(.*)");
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"%@(.*)", self.unorderedListPrefixRegex]));
+}
+
+- (NSString *)unorderedListPrefixRegex {
+	GBRETURN_ON_DEMAND(@"^\\s*[-+*o]\\s+");
 }
 
 - (NSString *)warningSectionRegex {

@@ -32,6 +32,9 @@
 /** Returns the regex used for matching unordered lists with capture 1 containing list text. */
 @property (readonly) NSString *unorderedListRegex;
 
+/** Returns the regex used for matching unordered list prefix. */
+@property (readonly) NSString *unorderedListPrefixRegex;
+
 /** Returns the regex used for matching warning section with capture 1 containing description. */
 @property (readonly) NSString *warningSectionRegex;
 

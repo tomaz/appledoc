@@ -11,6 +11,8 @@
 
 @implementation GBObjectsAssertor
 
+#pragma mark Store objects
+
 - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... {
 	NSMutableArray *arguments = [NSMutableArray array];
 	va_list args;
@@ -88,6 +90,39 @@
 	}
 	
 	GHAssertEquals(i, [arguments count], @"Flattened method %@ has %ld components, expected %ld!", method, i, [arguments count]);
+}
+
+#pragma mark Comment objects
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(id)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	Class class = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSString *value = va_arg(args, NSString *);
+		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [arguments count] * 2];
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:class, @"class", value, @"value", nil];
+		[arguments addObject:data];
+		
+		class = va_arg(args, Class);
+		if (!class) break;
+	}
+	va_end(args);
+	
+	assertThatInteger([arguments count], equalToInteger([paragraph.items count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
+		NSDictionary *data = [arguments objectAtIndex:i];
+		assertThat([item class], is([data objectForKey:@"class"]));
+		assertThat([item stringValue], is([data objectForKey:@"value"]));
+	}
+}
+
+- (void)assertArray:(NSArray *)array containsTextItem:(NSString *)value atIndex:(NSUInteger)index {
+	assertThat([[array objectAtIndex:index] class], is([GBParagraphTextItem class]));
+	assertThat([[array objectAtIndex:index] stringValue], is(value));
 }
 
 @end

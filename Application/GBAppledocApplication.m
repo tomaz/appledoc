@@ -51,15 +51,11 @@ static NSString *kGBArgHelp = @"help";
 - (id)init {
 	self = [super init];
 	if (self) {
-		[self initializeSettingsProvider];
 		self.logformat = @"1";
 		self.verbose = @"2";
+		self.commentComponents = [GBCommentComponentsProvider provider];
 	}
 	return self;
-}
-
-- (void)initializeSettingsProvider {
-	self.commentComponents = [[GBCommentComponentsProvider alloc] init];
 }
 
 #pragma mark DDCliApplicationDelegate implementation
