@@ -94,21 +94,26 @@
 
 #pragma mark Comment objects
 
-- (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(id)first,... {
-	NSMutableArray *arguments = [NSMutableArray array];
-	Class class = first;
-	va_list args;
-	va_start(args,first);
+- (NSArray *)classStringValuePairsWithFirstClass:(Class)class list:(va_list)args {
+	// Returns array of NSDictionary with class,value pairs.
+	NSMutableArray *result = [NSMutableArray array];
 	while (YES) {
 		NSString *value = va_arg(args, NSString *);
-		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [arguments count] * 2];
+		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [result count] * 2];
 		
 		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:class, @"class", value, @"value", nil];
-		[arguments addObject:data];
+		[result addObject:data];
 		
 		class = va_arg(args, Class);
 		if (!class) break;
 	}
+	return result;
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(id)first,... {
+	va_list args;
+	va_start(args,first);
+	NSArray *arguments = [self classStringValuePairsWithFirstClass:first list:args];
 	va_end(args);
 	
 	assertThatInteger([arguments count], equalToInteger([paragraph.items count]));
@@ -116,13 +121,26 @@
 		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
 		NSDictionary *data = [arguments objectAtIndex:i];
 		assertThat([item class], is([data objectForKey:@"class"]));
+		if ([data objectForKey:@"value"] == [NSNull null]) continue;
 		assertThat([item stringValue], is([data objectForKey:@"value"]));
 	}
 }
 
-- (void)assertArray:(NSArray *)array containsTextItem:(NSString *)value atIndex:(NSUInteger)index {
-	assertThat([[array objectAtIndex:index] class], is([GBParagraphTextItem class]));
-	assertThat([[array objectAtIndex:index] stringValue], is(value));
+- (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsItems:(id)first,... {
+	va_list args;
+	va_start(args,first);
+	NSArray *arguments = [self classStringValuePairsWithFirstClass:first list:args];
+	va_end(args);
+	
+	assertThatBool(list.ordered, equalToBool(ordered));
+	assertThatInteger([arguments count], equalToInteger([list.items count]));
+	for (NSUInteger i=0; i<[list.items count]; i++) {
+		GBCommentParagraph *item = [list.items objectAtIndex:i];
+		NSDictionary *data = [arguments objectAtIndex:i];
+		assertThat([item class], is([data objectForKey:@"class"]));
+		if ([data objectForKey:@"value"] == [NSNull null]) continue;
+		assertThat([item stringValue], is([data objectForKey:@"value"]));
+	}
 }
 
 @end

@@ -23,16 +23,17 @@
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	GBCommentParagraph *paragraph = [[comment paragraphs] objectAtIndex:0];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
+	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsItems:[GBCommentParagraph class], @"Item", nil];
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = [comment.paragraphs objectAtIndex:0];
 	assertThatInteger([paragraph.items count], equalToInteger(2));
 	assertThat([[paragraph.items objectAtIndex:0] class], is([GBParagraphTextItem class]));
 	assertThat([[paragraph.items objectAtIndex:0] stringValue], is(@"Paragraph"));
-	GBParagraphListItem *list = [paragraph.items objectAtIndex:1];
-	assertThatBool(list.ordered, equalToBool(NO));
-	assertThatInteger([list.items count], equalToInteger(1));
-	assertThat([[list.items objectAtIndex:0] class], is([GBCommentParagraph class]));
-	assertThat([[list.items objectAtIndex:0] stringValue], is(@"Item"));
+	assertThat([[paragraph.items objectAtIndex:1] class], is([GBParagraphListItem class]));
+	assertThat([[paragraph.items objectAtIndex:1] stringValue], is(@"- Item"));
 }
 
 //- (void)testProcessCommentWithStore_unorderedLists_shouldDetectMultipleLinesLists {
