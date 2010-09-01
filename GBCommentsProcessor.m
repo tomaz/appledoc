@@ -16,9 +16,11 @@
 
 - (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
+@property (retain) NSString *spaceAndNewLineTrimRegex;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -40,6 +42,8 @@
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
+		NSString *spaceAndNewLineRegex = [NSString stringWithUTF8String:"(?:\\r\n|[ \n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}])+"];
+		self.spaceAndNewLineTrimRegex = [NSString stringWithFormat:@"^%@|%@$", spaceAndNewLineRegex, spaceAndNewLineRegex];
 		self.settings = settingsProvider;
 	}
 	return self;
@@ -80,39 +84,36 @@
 	}];
 }
 
-- (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
-	GBParagraphListItem *paragraphItem = [GBParagraphListItem paragraphItemWithStringValue:string];
-	paragraphItem.ordered = NO;
+#pragma mark Processing paragraph lists
 
-	// Split the block of all list items to individual items, then process and register each one.
-	NSArray *items = [string componentsSeparatedByRegex:self.settings.commentComponents.unorderedListPrefixRegex];
-	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
-		if ([description length] == 0) return;
-		GBCommentParagraph *itemParagraph = [GBCommentParagraph paragraph];
-		[self registerTextFromString:description toParagraph:itemParagraph];
-		[paragraphItem registerItem:itemParagraph];
-	}];
-	
-	// Register list item to paragraph.
-	[paragraph registerItem:paragraphItem];
+- (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	[self registerListFromString:string ordered:NO usingRegex:self.settings.commentComponents.unorderedListPrefixRegex toParagraph:paragraph];
 }
 
 - (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
-	GBParagraphListItem *paragraphItem = [GBParagraphListItem paragraphItemWithStringValue:string];
-	paragraphItem.ordered = YES;
+	[self registerListFromString:string ordered:YES usingRegex:self.settings.commentComponents.orderedListPrefixRegex toParagraph:paragraph];
+}
+
+- (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph {
+	// Sometimes we can get newlines and spaces before or after the component, so remove them first, then use trimmed string as list's string value.
+	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
+	GBParagraphListItem *item = [GBParagraphListItem paragraphItemWithStringValue:trimmed];
+	item.ordered = ordered;
 	
 	// Split the block of all list items to individual items, then process and register each one.
-	NSArray *items = [string componentsSeparatedByRegex:self.settings.commentComponents.orderedListPrefixRegex];
+	NSArray *items = [trimmed componentsSeparatedByRegex:regex];
 	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
 		if ([description length] == 0) return;
-		GBCommentParagraph *itemParagraph = [GBCommentParagraph paragraph];
-		[self registerTextFromString:description toParagraph:itemParagraph];
-		[paragraphItem registerItem:itemParagraph];
+		GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
+		[self registerTextFromString:description toParagraph:paragraph];
+		[item registerItem:paragraph];
 	}];
 	
 	// Register list item to paragraph.
-	[paragraph registerItem:paragraphItem];
+	[paragraph registerItem:item];
 }
+
+#pragma mark Processing paragraph text
 
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
 	// Strip all whitespace and convert text into a single line with words separated with spaces.
@@ -129,22 +130,7 @@
 	[paragraph registerItem:item];
 }
 
-- (void)registerComponent:(NSString *)component toComment:(GBComment *)comment {
-	// Strip all whitespace and convert paragraph text into a single line with words separated with spaces.
-	NSArray *componentParts = [component componentsSeparatedByRegex:@"\\s+"];
-	NSMutableString *strippedPartValue = [NSMutableString stringWithCapacity:[component length]];
-	[componentParts enumerateObjectsUsingBlock:^(NSString *componentPart, NSUInteger idx, BOOL *stop) {
-		if ([componentPart length] == 0) return;
-		if ([strippedPartValue length] > 0) [strippedPartValue appendString:@" "];
-		[strippedPartValue appendString:componentPart];
-	}];
-	
-	// Register new paragraph with the item.
-	GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
-	GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:strippedPartValue];
-	[paragraph registerItem:item];
-	[comment registerParagraph:paragraph];
-}
+#pragma mark Helper methods
 
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string {
 	return [string componentsSeparatedByRegex:@"(?m:^\\s*$)"];
@@ -156,6 +142,7 @@
 
 #pragma mark Properties
 
+@synthesize spaceAndNewLineTrimRegex;
 @synthesize settings;
 @synthesize store;
 
