@@ -44,7 +44,7 @@
 }
 
 - (NSString *)unorderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"\\s*[-+*o]\\s*");
+	GBRETURN_ON_DEMAND(@"\\s*[-+*]\\s*");
 }
 
 - (NSString *)warningSectionRegex {
