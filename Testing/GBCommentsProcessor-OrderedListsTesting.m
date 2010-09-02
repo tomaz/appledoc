@@ -16,6 +16,8 @@
 
 @implementation GBCommentsProcessorOrderedListsTesting
 
+#pragma mark List processing testing
+
 - (void)testProcessCommentWithStore_orderedLists_shouldAttachListToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -32,7 +34,7 @@
 - (void)testProcessCommentWithStore_orderedLists_shouldDetectMultipleLinesLists {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1.Item1\n2. Item2"];
+	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1. Item1\n2. Item2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
@@ -45,7 +47,7 @@
 - (void)testProcessCommentWithStore_orderedLists_shouldDetectMultipleLinesListsRegardlessOfLineNumbers {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n999.Item1\n12.Item2"];
+	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n999. Item1\n12. Item2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
@@ -58,7 +60,7 @@
 - (void)testProcessCommentWithStore_orderedLists_shouldDetectItemsSpanningMutlipleLines {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1.Item1\nContinued\n2.Item2"];
+	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1. Item1\nContinued\n2. Item2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
@@ -81,19 +83,35 @@
 	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:YES containsParagraphs:@"Item", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_requiresEmptyLineBeforeList {
+#pragma mark Requirements testing
+
+- (void)testProcessCommentWithStore_orderedLists_requiresEmptyLineAfterPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment1 = [GBComment commentWithStringValue:@"Paragraph\n1. Item"];
-	GBComment *comment2 = [GBComment commentWithStringValue:@"Paragraph\n   \t\t\t1. Item"];
+	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n1. Line"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
+	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph 1. Line", nil];
+}
+
+- (void)testProcessCommentWithStore_orderedLists_requiresEmptyLineBeforeNextParagraphItem {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"1. Description\nNext"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"1. Description\n\nNext"];
 	// execute
 	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment1.paragraphs count], equalToInteger(1));
-	assertThatInteger([comment2.paragraphs count], equalToInteger(1));
-	[self assertParagraph:comment1.firstParagraph containsItems:[GBParagraphTextItem class], @"Paragraph 1. Item", nil];
-	[self assertParagraph:comment2.firstParagraph containsItems:[GBParagraphTextItem class], @"Paragraph 1. Item", nil];
+	// verify - comment1 should continue warning
+	assertThatInteger([[comment1 paragraphs] count], equalToInteger(1));
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"1. Description\nNext", nil];
+	// verify - comment2 should start new paragraph
+	assertThatInteger([[comment2 paragraphs] count], equalToInteger(2));
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"1. Description", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:1] containsItems:[GBParagraphTextItem class], @"Next", nil];
 }
 
 @end
