@@ -153,9 +153,14 @@
 		[example appendString:line];
 	}];
 	
-	// Warn if empty example was found.
+	// Warn if empty example was found or not all text was processed (note that we calculate remaining text by checking source and processed string length and taking into account all leading tabs that were removed!).
 	if ([example length] == 0) {
 		GBLogWarn(@"Empty example section found!");
+		return;
+	}
+	if ([example length] < [string length] - [lines count]) {
+		NSString *remaining = [string substringFromIndex:[example length] + [lines count]];
+		GBLogWarn(@"Not all text was processed - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@"");
 		return;
 	}
 	
