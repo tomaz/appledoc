@@ -27,6 +27,7 @@
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
+	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
@@ -41,6 +42,7 @@
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
+	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
 }
 
@@ -55,6 +57,7 @@
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:0];
+	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
