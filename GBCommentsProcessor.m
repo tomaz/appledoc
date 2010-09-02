@@ -18,6 +18,8 @@
 - (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerWarningFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerBugFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
@@ -81,6 +83,10 @@
 			GBRegister([self registerWarningFromString:component toParagraph:currentParagraph]);
 			return;
 		}
+		if ([component isMatchedByRegex:componizer.bugSectionRegex]) {
+			GBRegister([self registerBugFromString:component toParagraph:currentParagraph]);
+			return;
+		}
 		
 		// If no other match was found, this is simple text, so start new paragraph.
 		currentParagraph = [GBCommentParagraph paragraph];
@@ -124,16 +130,24 @@
 #pragma mark Processing special items
 
 - (void)registerWarningFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	[self registerSpecialFromString:string type:GBSpecialItemTypeWarning usingRegex:self.settings.commentComponents.warningSectionRegex toParagraph:paragraph];
+}
+
+- (void)registerBugFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	[self registerSpecialFromString:string type:GBSpecialItemTypeBug usingRegex:self.settings.commentComponents.bugSectionRegex toParagraph:paragraph];
+}
+
+- (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph {
 	// Get the description from the string. If empty, warn and exit.
 	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
-	NSString *description = [trimmed stringByMatching:self.settings.commentComponents.warningSectionRegex capture:1];
+	NSString *description = [trimmed stringByMatching:regex capture:1];
 	if ([description length] == 0) {
-		GBLogWarn(@"Empty warning section found!");
+		GBLogWarn(@"Empty special section of type %ld found!", type);
 		return;
 	}
 	
 	// Prepare paragraph item and process the text.
-	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:trimmed];
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:type stringValue:trimmed];
 	GBCommentParagraph *para = [GBCommentParagraph paragraph];
 	[self registerTextFromString:description toParagraph:para];
 	[item registerParagraph:para];
