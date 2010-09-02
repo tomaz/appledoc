@@ -40,4 +40,10 @@
  */
 @property (copy) NSString *stringValue;
 
+/** Prefix to use in debug description, just before `stringValue` extract.
+ 
+ By default we return empty string, but subclasses can override and provide more meaningful description is applicable. If empty string is returned, no prefix is inserted. This value is only used for debugging purposes and should not be used for any output generation! See `description` implementation for details!
+ */
+@property (readonly) NSString *descriptionPrefix;
+
 @end

@@ -33,6 +33,12 @@
 	[_items addObject:item];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@: %ld items", [self className], [self.items count]];
+}
+
 #pragma mark Properties
 
 - (NSString *)stringValue {

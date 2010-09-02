@@ -29,7 +29,7 @@ typedef NSUInteger GBSpecialItemType;
  */
 @interface GBParagraphSpecialItem : GBParagraphItem {
 	@private
-	GBCommentParagraph *_description;
+	GBCommentParagraph *_specialItemDescription;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ typedef NSUInteger GBSpecialItemType;
 - (void)registerParagraph:(GBCommentParagraph *)paragraph;
 
 /** The description of the special item in the form of `GBCommentParagraph`. */
-@property (readonly) GBCommentParagraph *description;
+@property (readonly) GBCommentParagraph *specialItemDescription;
 
 /** The type of the special item. */
 @property (assign) GBSpecialItemType specialItemType;

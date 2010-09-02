@@ -49,6 +49,12 @@
 	[_items addObject:item];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)descriptionPrefix {
+	return [NSString stringWithFormat:@"%ld items ", [self.items count]];
+}
+
 #pragma mark Properties
 
 @synthesize items = _items;

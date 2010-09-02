@@ -32,6 +32,12 @@
 	[_paragraphs addObject:paragraph];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@: %ld paragraphs", [self className], [self.paragraphs count]];
+}
+
 #pragma mark Properties
 
 @synthesize paragraphs = _paragraphs;

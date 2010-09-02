@@ -27,12 +27,12 @@
 #pragma mark Helper methods
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
-	_description = [paragraph retain];
+	_specialItemDescription = [paragraph retain];
 }
 
 #pragma mark Properties
 
-@synthesize description = _description;
+@synthesize specialItemDescription = _specialItemDescription;
 @synthesize specialItemType;
 
 @end
