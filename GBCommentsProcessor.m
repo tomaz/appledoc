@@ -19,10 +19,12 @@
 - (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerWarningFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerBugFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerExampleFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
+@property (retain) NSString *newLinesRegexSymbols;
 @property (retain) NSString *spaceAndNewLineTrimRegex;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -45,8 +47,8 @@
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
-		NSString *spaceAndNewLineRegex = [NSString stringWithUTF8String:"(?:\\r\n|[ \n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}])+"];
-		self.spaceAndNewLineTrimRegex = [NSString stringWithFormat:@"^%@|%@$", spaceAndNewLineRegex, spaceAndNewLineRegex];
+		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"(?:\\r\n|[ \n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}])+"];
+		self.spaceAndNewLineTrimRegex = [NSString stringWithFormat:@"^%1$@|%1$@$", self.newLinesRegexSymbols];
 		self.settings = settingsProvider;
 	}
 	return self;
@@ -70,27 +72,34 @@
 	NSArray *components = [self componentsSeparatedByEmptyLinesFromString:[comment stringValue]];
 	__block GBCommentParagraph *currentParagraph = nil;
 	[components enumerateObjectsUsingBlock:^(NSString *component, NSUInteger idx, BOOL *stop) {
-		// Match known parts.
-		if ([component isMatchedByRegex:componizer.unorderedListRegex]) {
-			GBRegister([self registerUnorderedListFromString:component toParagraph:currentParagraph]);
+		// As most components are given with preceeding new line, we should remove it to get cleaner testing.
+		NSString *trimmed = [component stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
+
+		// Match known parts. Note that order is important for certain items (lists must be processed before examples for example).
+		if ([trimmed isMatchedByRegex:componizer.unorderedListRegex]) {
+			GBRegister([self registerUnorderedListFromString:trimmed toParagraph:currentParagraph]);
 			return;
 		}
-		if ([component isMatchedByRegex:componizer.orderedListRegex]) {
-			GBRegister([self registerOrderedListFromString:component toParagraph:currentParagraph]);
+		if ([trimmed isMatchedByRegex:componizer.orderedListRegex]) {
+			GBRegister([self registerOrderedListFromString:trimmed toParagraph:currentParagraph]);
 			return;
 		}
-		if ([component isMatchedByRegex:componizer.warningSectionRegex]) {
-			GBRegister([self registerWarningFromString:component toParagraph:currentParagraph]);
+		if ([trimmed isMatchedByRegex:componizer.warningSectionRegex]) {
+			GBRegister([self registerWarningFromString:trimmed toParagraph:currentParagraph]);
 			return;
 		}
-		if ([component isMatchedByRegex:componizer.bugSectionRegex]) {
-			GBRegister([self registerBugFromString:component toParagraph:currentParagraph]);
+		if ([trimmed isMatchedByRegex:componizer.bugSectionRegex]) {
+			GBRegister([self registerBugFromString:trimmed toParagraph:currentParagraph]);
+			return;
+		}
+		if ([trimmed isMatchedByRegex:componizer.exampleSectionRegex]) {
+			GBRegister([self registerExampleFromString:trimmed toParagraph:currentParagraph]);
 			return;
 		}
 		
 		// If no other match was found, this is simple text, so start new paragraph.
 		currentParagraph = [GBCommentParagraph paragraph];
-		[self registerTextFromString:component toParagraph:currentParagraph];
+		[self registerTextFromString:trimmed toParagraph:currentParagraph];
 		[comment registerParagraph:currentParagraph];
 	}];
 }
@@ -106,16 +115,14 @@
 }
 
 - (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph {
-	// Sometimes we can get newlines and spaces before or after the component, so remove them first, then use trimmed string as list's string value.
-	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
-	GBParagraphListItem *item = [GBParagraphListItem paragraphItemWithStringValue:trimmed];
+	GBParagraphListItem *item = [GBParagraphListItem paragraphItemWithStringValue:string];
 	item.isOrdered = ordered;
 	
 	// Split the block of all list items to individual items, then process and register each one.
-	NSArray *items = [trimmed componentsSeparatedByRegex:regex];
+	NSArray *items = [string componentsSeparatedByRegex:regex];
 	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
 		if ([description length] == 0) {
-			GBLogWarn(@"%ld. item has empty description for list:\n%@", idx, trimmed);
+			GBLogWarn(@"%ld. item has empty description for list:\n%@", idx, string);
 			return;
 		}
 		GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
@@ -137,17 +144,41 @@
 	[self registerSpecialFromString:string type:GBSpecialItemTypeBug usingRegex:self.settings.commentComponents.bugSectionRegex toParagraph:paragraph];
 }
 
+- (void)registerExampleFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	// Get the description from the string. If empty, warn and exit.
+	NSArray *lines = [string componentsMatchedByRegex:self.settings.commentComponents.exampleLinesRegex capture:1];
+	NSMutableString *example = [NSMutableString stringWithCapacity:[string length]];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		if ([example length] > 0) [example appendString:@"\n"];
+		[example appendString:line];
+	}];
+	
+	// Warn if empty example was found.
+	if ([example length] == 0) {
+		GBLogWarn(@"Empty example section found!");
+		return;
+	}
+	
+	// Prepare paragraph item and process the text.
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:string];
+	GBCommentParagraph *para = [GBCommentParagraph paragraph];
+	[para registerItem:[GBParagraphTextItem paragraphItemWithStringValue:example]];
+	[item registerParagraph:para];
+	
+	// Register special item to paragraph.
+	[paragraph registerItem:item];
+}
+
 - (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph {
 	// Get the description from the string. If empty, warn and exit.
-	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
-	NSString *description = [trimmed stringByMatching:regex capture:1];
+	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
 		GBLogWarn(@"Empty special section of type %ld found!", type);
 		return;
 	}
 	
 	// Prepare paragraph item and process the text.
-	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:type stringValue:trimmed];
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:type stringValue:string];
 	GBCommentParagraph *para = [GBCommentParagraph paragraph];
 	[self registerTextFromString:description toParagraph:para];
 	[item registerParagraph:para];
@@ -176,15 +207,17 @@
 #pragma mark Helper methods
 
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string {
-	return [string componentsSeparatedByRegex:@"(?m:^\\s*$)"];
+	// We need to allow lines with tabs to properly detect empty example lines!
+	return [string componentsSeparatedByRegex:[NSString stringWithFormat:@"(?m:^[ %@]*$)", self.newLinesRegexSymbols]];
 }
 
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string {
-	return [string componentsSeparatedByRegex:[NSString stringWithUTF8String:"(?:\\r\n|[\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}])"]];
+	return [string componentsSeparatedByRegex:[NSString stringWithFormat:@"(?:%@)", self.newLinesRegexSymbols]];
 }
 
 #pragma mark Properties
 
+@synthesize newLinesRegexSymbols;
 @synthesize spaceAndNewLineTrimRegex;
 @synthesize settings;
 @synthesize store;

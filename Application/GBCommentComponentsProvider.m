@@ -18,8 +18,9 @@
 
 @interface GBCommentComponentsProvider ()
 
-- (NSString *)singleCaptureRegexForKeyword:(NSString *)keyword;
-- (NSString *)doubleCaptureRegexForKeyword:(NSString *)keyword;
+- (NSString *)exampleRegexWithoutFlags;
+- (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
+- (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
 
 @end
 
@@ -52,36 +53,48 @@
 }
 
 - (NSString *)warningSectionRegex {
-	GBRETURN_ON_DEMAND([self singleCaptureRegexForKeyword:@"warning"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"warning"]);
 }
 
 - (NSString *)bugSectionRegex {
-	GBRETURN_ON_DEMAND([self singleCaptureRegexForKeyword:@"bug"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
+}
+
+- (NSString *)exampleSectionRegex {
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?s:%@)", [self exampleRegexWithoutFlags]]));
+}
+
+- (NSString *)exampleLinesRegex {
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@)", [self exampleRegexWithoutFlags]]));
+}
+
+- (NSString *)exampleRegexWithoutFlags {
+	GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
 }
 
 - (NSString *)parameterDescriptionRegex {
-	GBRETURN_ON_DEMAND([self doubleCaptureRegexForKeyword:@"param"]);
+	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"param"]);
 }
 
 - (NSString *)returnDescriptionRegex {
-	GBRETURN_ON_DEMAND([self singleCaptureRegexForKeyword:@"return"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"return"]);
 }
 
 - (NSString *)exceptionDescriptionRegex {
-	GBRETURN_ON_DEMAND([self doubleCaptureRegexForKeyword:@"exception"]);
+	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"exception"]);
 }
 
 - (NSString *)crossReferenceRegex {
-	GBRETURN_ON_DEMAND([self singleCaptureRegexForKeyword:@"(sa|see)"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
 }
 
 #pragma mark Helper methods
 
-- (NSString *)singleCaptureRegexForKeyword:(NSString *)keyword {
+- (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*.%@\\s+(?s:(.*))", keyword];
 }
 
-- (NSString *)doubleCaptureRegexForKeyword:(NSString *)keyword {
+- (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*.%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
 }
 

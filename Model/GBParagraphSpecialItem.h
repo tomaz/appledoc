@@ -16,6 +16,8 @@ enum {
 	GBSpecialItemTypeWarning,
 	/** The `GBParagraphSpecialItem` represents a bug. */
 	GBSpecialItemTypeBug,
+	/** The `GBParagraphSpecialItem` represents an example section. */
+	GBSpecialItemTypeExample,
 };
 typedef NSUInteger GBSpecialItemType;
 

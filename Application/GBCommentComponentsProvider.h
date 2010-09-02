@@ -44,6 +44,12 @@
 /** Returns the regex used for matching bug section with capture 1 containing description. */
 @property (readonly) NSString *bugSectionRegex;
 
+/** Returns the regex used for matching example section with capture 1 containing example text. */
+@property (readonly) NSString *exampleSectionRegex;
+
+/** Returns the regex used for matching example lines with capture 1 containing example lines texts. */
+@property (readonly) NSString *exampleLinesRegex;
+
 /** Returns the regex used for matching method parameter description with capture 1 containing parameter name and capture 2 description. */
 @property (readonly) NSString *parameterDescriptionRegex;
 

@@ -111,7 +111,7 @@
 	}
 	va_end(args);
 	
-	assertThatInteger([arguments count], equalToInteger([paragraph.items count]));
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
 	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
 		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
 		NSDictionary *data = [arguments objectAtIndex:i];
