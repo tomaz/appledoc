@@ -16,6 +16,8 @@
 
 @implementation GBCommentsProcessorExamplesTesting
 
+#pragma mark Description processing testing
+
 - (void)testProcessCommentWithStore_examples_shouldAttachExampleToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -28,7 +30,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_shouldDetectMultipleLinesDescriptions {
@@ -43,7 +45,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Line1\nLine2", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1\nLine2", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_shouldRemovePrefixTabs {
@@ -58,7 +60,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Line", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_shouldKeepPrefixTabsAfterFirst {
@@ -73,7 +75,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"\tLine1\n\t\t\tLine2", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"\tLine1\n\t\t\tLine2", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_shouldKeepEmptyLinesIfPrefixedWithTab {
@@ -88,7 +90,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"\tLine1\n\nLine3", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"\tLine1\n\nLine3", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_shouldCreateParagraphIfNoneSpecifiedBefore {
@@ -103,7 +105,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:0];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
 - (void)testProcessCommentWithStore_examples_requiresEmptyLineBeforePreviousParagraphItem {

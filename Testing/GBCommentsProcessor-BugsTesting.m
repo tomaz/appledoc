@@ -30,7 +30,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeBug));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
 - (void)testProcessCommentWithStore_bugs_shouldDetectMultipleLinesDescriptions {
@@ -45,7 +45,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeBug));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
 }
 
 - (void)testProcessCommentWithStore_bugs_shouldCreateParagraphIfNoneSpecifiedBefore {
@@ -60,7 +60,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], [NSNull null], nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:0];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeBug));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Description", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
 #pragma mark Requirements before/after testing
