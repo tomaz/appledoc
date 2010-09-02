@@ -10,7 +10,7 @@
 
 /** Handles ordered and unordered lists for a `GBCommentParagraph`.
  
- Lists are containers for list items which are instances of `GBCommentParagraph`. This allows us to form a tree structure with nested lists and other paragraph items.
+ Lists are containers for list items which are instances of `GBCommentParagraph`. This allows us to form a tree structure with nested lists and other paragraph items. Lists can be ordered or unordered, the type can be determined by testing the value of `isOrdered` property.
  */
 @interface GBParagraphListItem : GBParagraphItem {
 	@private
@@ -45,7 +45,7 @@
 - (void)registerItem:(GBCommentParagraph *)item;
 
 /** Specifies whether the list is ordered (`YES`) or unordered (`NO`). */
-@property (assign) BOOL ordered;
+@property (assign) BOOL isOrdered;
 
 /** Array of all list items as instances of `GBCommentParagraph` in the same order as in comment text. */
 @property (readonly) NSArray *items;

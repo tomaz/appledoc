@@ -24,6 +24,9 @@
  
 	GBParagraphItem *item = [GBParagraphItem paragraphItem];
 	item.stringValue = value;
+ 
+ @param value The string value of the item.
+ @return Returns initialized value.
  */
 + (id)paragraphItemWithStringValue:(NSString *)value;
 

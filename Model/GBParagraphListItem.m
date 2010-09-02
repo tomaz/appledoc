@@ -30,7 +30,7 @@
 
 + (id)newParagraphListItemWithOrderedValue:(BOOL)ordered {
 	GBParagraphListItem *result = [[[self alloc] init] autorelease];
-	result.ordered = ordered;
+	result.isOrdered = ordered;
 	return result;
 }
 
@@ -52,6 +52,6 @@
 #pragma mark Properties
 
 @synthesize items = _items;
-@synthesize ordered;
+@synthesize isOrdered;
 
 @end

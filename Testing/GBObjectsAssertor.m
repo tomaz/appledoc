@@ -130,7 +130,7 @@
 	}
 	va_end(args);
 	
-	assertThatBool(list.ordered, equalToBool(ordered));
+	assertThatBool(list.isOrdered, equalToBool(ordered));
 	assertThatInteger([arguments count], equalToInteger([list.items count]));
 	for (NSUInteger i=0; i<[list.items count]; i++) {
 		assertThat([[list.items objectAtIndex:i] class], is([GBCommentParagraph class]));

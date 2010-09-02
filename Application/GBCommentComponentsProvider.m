@@ -72,17 +72,17 @@
 }
 
 - (NSString *)crossReferenceRegex {
-	GBRETURN_ON_DEMAND(@"^\\s*.(sa|see)\\s+(.*)");
+	GBRETURN_ON_DEMAND([self singleCaptureRegexForKeyword:@"(sa|see)"]);
 }
 
 #pragma mark Helper methods
 
 - (NSString *)singleCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*.%@\\s+(.*)", keyword];
+	return [NSString stringWithFormat:@"^\\s*.%@\\s+(?s:(.*))", keyword];
 }
 
 - (NSString *)doubleCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*.%@\\s+([^\\s]+)\\s+(.*)", keyword];
+	return [NSString stringWithFormat:@"^\\s*.%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
 }
 
 @end

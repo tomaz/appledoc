@@ -17,6 +17,7 @@
 - (void)registerUnorderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerOrderedListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerListFromString:(NSString *)string ordered:(BOOL)ordered usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
+- (void)registerWarningFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
@@ -76,6 +77,10 @@
 			GBRegister([self registerOrderedListFromString:component toParagraph:currentParagraph]);
 			return;
 		}
+		if ([component isMatchedByRegex:componizer.warningSectionRegex]) {
+			GBRegister([self registerWarningFromString:component toParagraph:currentParagraph]);
+			return;
+		}
 		
 		// If no other match was found, this is simple text, so start new paragraph.
 		currentParagraph = [GBCommentParagraph paragraph];
@@ -98,18 +103,42 @@
 	// Sometimes we can get newlines and spaces before or after the component, so remove them first, then use trimmed string as list's string value.
 	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
 	GBParagraphListItem *item = [GBParagraphListItem paragraphItemWithStringValue:trimmed];
-	item.ordered = ordered;
+	item.isOrdered = ordered;
 	
 	// Split the block of all list items to individual items, then process and register each one.
 	NSArray *items = [trimmed componentsSeparatedByRegex:regex];
 	[items enumerateObjectsUsingBlock:^(NSString *description, NSUInteger idx, BOOL *stop) {
-		if ([description length] == 0) return;
+		if ([description length] == 0) {
+			GBLogWarn(@"%ld. item has empty description for list:\n%@", idx, trimmed);
+			return;
+		}
 		GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
 		[self registerTextFromString:description toParagraph:paragraph];
 		[item registerItem:paragraph];
 	}];
 	
 	// Register list item to paragraph.
+	[paragraph registerItem:item];
+}
+
+#pragma mark Processing special items
+
+- (void)registerWarningFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
+	// Get the description from the string. If empty, warn and exit.
+	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
+	NSString *description = [trimmed stringByMatching:self.settings.commentComponents.warningSectionRegex capture:1];
+	if ([description length] == 0) {
+		GBLogWarn(@"Empty warning section found!");
+		return;
+	}
+	
+	// Prepare paragraph item and process the text.
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:trimmed];
+	GBCommentParagraph *para = [GBCommentParagraph paragraph];
+	[self registerTextFromString:description toParagraph:para];
+	[item registerParagraph:para];
+	
+	// Register special item to paragraph.
 	[paragraph registerItem:item];
 }
 
