@@ -108,7 +108,9 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
-- (void)testProcessCommentWithStore_examples_requiresEmptyLineBeforePreviousParagraphItem {
+#pragma mark Requirements before/after testing
+
+- (void)testProcessCommentWithStore_examples_requiresEmptyLineAfterPreviousParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\tLine"];
@@ -123,16 +125,17 @@
 - (void)testProcessCommentWithStore_examples_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"\tLine1\nLine2"];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"\tLine1\nLine2"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"\tLine1\n\nLine2"];
 	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify - Line2 is not counted, but warning is written to log!
-	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
-	[self assertParagraph:paragraph1 containsItems:[GBParagraphSpecialItem class], [NSNull null], nil];
-	GBParagraphSpecialItem *item = [paragraph1.items objectAtIndex:0];
-	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
-	[self assertParagraph:item.description containsItems:[GBParagraphTextItem class], @"Line1", nil];
+	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
+	// verify - comment1 doesn't have Line2, in fact it's ignored but a warning is written to log (can't test it though).
+	assertThatInteger([[comment1 paragraphs] count], equalToInteger(1));
+	[self assertParagraph:[[comment1 paragraphs] objectAtIndex:0] containsItems:[GBParagraphSpecialItem class], @"Line1", nil];
+	assertThatInteger([[comment2 paragraphs] count], equalToInteger(2));
+	[self assertParagraph:[[comment2 paragraphs] objectAtIndex:0] containsItems:[GBParagraphSpecialItem class], @"Line1", nil];
+	[self assertParagraph:[[comment2 paragraphs] objectAtIndex:1] containsItems:[GBParagraphTextItem class], @"Line2", nil];
 }
 
 @end

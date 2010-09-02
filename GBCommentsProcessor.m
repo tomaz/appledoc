@@ -160,12 +160,11 @@
 	}
 	if ([example length] < [string length] - [lines count]) {
 		NSString *remaining = [string substringFromIndex:[example length] + [lines count]];
-		GBLogWarn(@"Not all text was processed - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@"");
-		return;
+		GBLogWarn(@"Not all text was processed - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""]);
 	}
 	
 	// Prepare paragraph item and process the text.
-	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:string];
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:example];
 	GBCommentParagraph *para = [GBCommentParagraph paragraph];
 	[para registerItem:[GBParagraphTextItem paragraphItemWithStringValue:example]];
 	[item registerParagraph:para];
