@@ -72,6 +72,18 @@
 
 #pragma mark Requirements testing
 
+- (void)testProcessCommentWithStore_unorderedLists_requiresWhitespaceBetweenMarkerAndDescription {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"-Line"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
+	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"-Line", nil];
+}
+
 - (void)testProcessCommentWithStore_unorderedLists_requiresEmptyLineAfterPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];

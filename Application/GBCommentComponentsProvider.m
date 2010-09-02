@@ -41,7 +41,7 @@
 }
 
 - (NSString *)orderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"\\s*[0-9]+\\.\\s*");
+	GBRETURN_ON_DEMAND(@"\\s*[0-9]+\\.\\s+");
 }
 
 - (NSString *)unorderedListRegex {
@@ -49,7 +49,7 @@
 }
 
 - (NSString *)unorderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"\\s*[-+*]\\s*");
+	GBRETURN_ON_DEMAND(@"\\s*[-+*]\\s+");
 }
 
 - (NSString *)warningSectionRegex {
