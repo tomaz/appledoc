@@ -9,14 +9,10 @@
 #import "GBComment.h"
 #import "GBCommentsProcessor.h"
 
-@interface GBCommentsProcessorDecoratorItemsTesting : GBObjectsAssertor
-@end
-
 #pragma mark -
 
-@implementation GBCommentsProcessorDecoratorItemsTesting
-
-#pragma mark Bold text testing
+@interface GBCommentsProcessorDecoratorItemsBoldTesting : GBObjectsAssertor @end
+@implementation GBCommentsProcessorDecoratorItemsBoldTesting
 
 - (void)testProcesCommentWithStore_bold_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
@@ -88,7 +84,12 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
 
-#pragma mark Italics text testing
+@end
+
+#pragma mark -
+
+@interface GBCommentsProcessorDecoratorItemsItalicsTesting : GBObjectsAssertor @end
+@implementation GBCommentsProcessorDecoratorItemsItalicsTesting
 
 - (void)testProcesCommentWithStore_italics_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
@@ -160,79 +161,12 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
 
-#pragma mark Code text testing
+@end
 
-- (void)testProcesCommentWithStore_code_shouldGenerateParagraphIfNoneSpecifiedBefore {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"`text`"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
-	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
-	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
-}
+#pragma mark -
 
-- (void)testProcesCommentWithStore_code_shouldDetectAtTheStartOfParagraph {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"`text` normal"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
-	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
-	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
-}
-
-- (void)testProcesCommentWithStore_code_shouldDetectAtTheEndOfParagraph {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"normal `text`"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
-	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
-	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
-}
-
-- (void)testProcesCommentWithStore_code_shouldDetectInTheMiddleOfParagraph {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"prefix `text` suffix"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
-	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
-	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
-}
-
-- (void)testProcesCommentWithStore_code_shouldDetectWhitespaceSeparatedWords {
-	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"`bla word\ttab\nline`"];
-	// execute
-	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify
-	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
-	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"bla word tab line", 
-	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
-}
-
-#pragma mark Bold-italics text testing
+@interface GBCommentsProcessorDecoratorItemsBoldItalicsTesting : GBObjectsAssertor @end
+@implementation GBCommentsProcessorDecoratorItemsBoldItalicsTesting
 
 - (void)testProcesCommentWithStore_bold_italics_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
@@ -306,6 +240,83 @@
 	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bla word tab line", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bla word tab line", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
+}
+
+@end
+
+#pragma mark -
+
+@interface GBCommentsProcessorDecoratorItemsCodeTesting : GBObjectsAssertor @end
+@implementation GBCommentsProcessorDecoratorItemsCodeTesting
+
+- (void)testProcesCommentWithStore_code_shouldGenerateParagraphIfNoneSpecifiedBefore {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"`text`"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
+}
+
+- (void)testProcesCommentWithStore_code_shouldDetectAtTheStartOfParagraph {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"`text` normal"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
+}
+
+- (void)testProcesCommentWithStore_code_shouldDetectAtTheEndOfParagraph {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"normal `text`"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
+}
+
+- (void)testProcesCommentWithStore_code_shouldDetectInTheMiddleOfParagraph {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"prefix `text` suffix"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
+}
+
+- (void)testProcesCommentWithStore_code_shouldDetectWhitespaceSeparatedWords {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"`bla word\ttab\nline`"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
 
