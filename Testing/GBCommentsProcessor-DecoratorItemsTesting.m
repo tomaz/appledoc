@@ -378,3 +378,43 @@
 }
 
 @end
+
+#pragma mark -
+
+@interface GBCommentsProcessorDecoratorComplexTesting : GBObjectsAssertor @end
+@implementation GBCommentsProcessorDecoratorComplexTesting
+
+- (void)testProcesCommentWithStore_shouldGenerateParagraphIfNoneSpecifiedBefore {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"text with _italics_, *bold*, `code` and _*bold_italics*with star*_"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:
+	 [GBParagraphTextItem class], @"text with", 
+	 [GBParagraphDecoratorItem class], @"italics", 
+	 [GBParagraphTextItem class], @",", 
+	 [GBParagraphDecoratorItem class], @"bold", 
+	 [GBParagraphTextItem class], @",", 
+	 [GBParagraphDecoratorItem class], @"code", 
+	 [GBParagraphTextItem class], @"and", 
+	 [GBParagraphDecoratorItem class], @"bold_italics*with star", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"italics", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"italics", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:3] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bold", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bold", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:5] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"code", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"code", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:7] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bold_italics*with star", 
+	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bold_italics*with star", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bold_italics*with star", nil];
+}
+
+@end
+

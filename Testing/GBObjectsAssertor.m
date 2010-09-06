@@ -161,9 +161,8 @@
 		NSDictionary *data = [arguments objectAtIndex:i];
 		Class class = [data objectForKey:@"class"];
 		NSUInteger type = [[data objectForKey:@"type"] unsignedIntValue];		
-		NSString *value = [data objectForKey:@"value"];
-		
-		NSLog(@"Expecting %@, type %ld, text %@ at level %ld.", class, type, value, i);
+		NSString *value = [data objectForKey:@"value"];		
+		//NSLog(@"Expecting %@, type %ld, text %@ at level %ld.", class, type, value, i);
 		assertThat([decorator class], is(class));
 		assertThat([decorator stringValue], is(value));
 		if (type != GBDecorationTypeNone) {
