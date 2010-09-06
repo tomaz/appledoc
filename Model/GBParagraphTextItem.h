@@ -8,13 +8,9 @@
 
 #import "GBParagraphItem.h"
 
-/** Handles normal, unformatted, text for a `GBCommentParagraph`.
+/** Handles normal or formatted text for a `GBCommentParagraph`.
  
- Use `stringValue` to get the text value of the item.
- 
- @see GBParagraphFormattedTextItem
- @see GBParagraphLinkItem
+ Use `stringValue` to get the text value of the item and `textType` to determine type of text.
  */
 @interface GBParagraphTextItem : GBParagraphItem
-
 @end

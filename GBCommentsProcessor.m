@@ -22,6 +22,8 @@
 - (void)registerExampleFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
+- (NSArray *)textComponentsFromString:(NSString *)string;
+- (NSString *)strippedTextComponentFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
 @property (retain) NSString *newLinesRegexSymbols;
@@ -163,11 +165,11 @@
 		GBLogWarn(@"Not all text was processed - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""]);
 	}
 	
-	// Prepare paragraph item and process the text.
+	// Prepare paragraph item and process the text. Note that we don't use standard text processing here as it would interfere with example formatting.
 	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:example];
-	GBCommentParagraph *para = [GBCommentParagraph paragraph];
-	[para registerItem:[GBParagraphTextItem paragraphItemWithStringValue:example]];
-	[item registerParagraph:para];
+	GBCommentParagraph *itemsParagraph = [GBCommentParagraph paragraph];
+	[itemsParagraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:example]];
+	[item registerParagraph:itemsParagraph];
 	
 	// Register special item to paragraph.
 	[paragraph registerItem:item];
@@ -194,18 +196,92 @@
 #pragma mark Processing paragraph text
 
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
-	// Strip all whitespace and convert text into a single line with words separated with spaces.
-	NSArray *componentParts = [string componentsSeparatedByRegex:@"\\s+"];
-	NSMutableString *strippedPartValue = [NSMutableString stringWithCapacity:[string length]];
-	[componentParts enumerateObjectsUsingBlock:^(NSString *componentPart, NSUInteger idx, BOOL *stop) {
-		if ([componentPart length] == 0) return;
-		if ([strippedPartValue length] > 0) [strippedPartValue appendString:@" "];
-		[strippedPartValue appendString:componentPart];
+	// Get and register all components.
+	NSArray *components = [self textComponentsFromString:string];
+	[components enumerateObjectsUsingBlock:^(GBParagraphItem *component, NSUInteger idx, BOOL *stop) {
+		[paragraph registerItem:component];
+	}];
+}
+
+- (NSArray *)textComponentsFromString:(NSString *)string {
+	// Splits given string into un/formatted parts to make further processing simpler. To simplify we first convert nested case markers into something different from single ones, so that we can then handle them all in the same loop.
+	NSString *simplified = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*)" withString:@"=!="];
+	
+	// Split into all formatted parts. Note that the array doesn't contain any normal text, so we need to account for that!
+	NSMutableArray *result = [NSMutableArray array];
+	NSRange search = NSMakeRange(0, [simplified length]);
+	NSArray *formats = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|`|=!=)(.*?)\\1)" withKeysAndCaptures:@"type", 1, @"value", 2, nil];
+	for (NSDictionary *format in formats) {
+		// Get range of next formatted section. If not found, exit (we'll deal with remaining after the loop). If we skipped some part of non-whitespace text, add it before handling formatted part!
+		NSString *type = [format objectForKey:@"type"];
+		NSRange range = [simplified rangeOfString:type options:0 range:search];
+		if (range.location == NSNotFound) continue;
+		if (range.location > search.location) {
+			NSRange r = NSMakeRange(search.location, range.location - search.location);
+			NSString *skipped = [simplified substringWithRange:r];
+			NSString *text = [self strippedTextComponentFromString:skipped];
+			if (text) [result addObject:[GBParagraphTextItem paragraphItemWithStringValue:text]];
+		}
+		
+		// Get formatted text and prepare properly decorated component. Note that we warn the user if we find unknown decorator type (this probably just means we changed some decorator value by forgot to change this part, so it's some sort of "exception" catching).
+		NSString *value = [format valueForKey:@"value"];
+		if ([value length] > 0) {
+			NSString *text = [self strippedTextComponentFromString:value];
+			if (text) {
+				GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
+				if ([type isEqualToString:@"*"]) {
+					decorator.decorationType = GBDecorationTypeBold;
+					decorator.decoratedItem = [GBParagraphTextItem paragraphItemWithStringValue:text];
+				} else if ([type isEqualToString:@"_"]) {
+					decorator.decorationType = GBDecorationTypeItalics;
+					decorator.decoratedItem = [GBParagraphTextItem paragraphItemWithStringValue:text];
+				} else if ([type isEqualToString:@"`"]) {
+					decorator.decorationType = GBDecorationTypeCode;
+					decorator.decoratedItem = [GBParagraphTextItem paragraphItemWithStringValue:text];
+				} else if ([type isEqualToString:@"=!="]) {
+					GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItem];
+					decorator.decorationType = GBDecorationTypeBold;
+					decorator.decoratedItem = inner;
+					inner.decorationType = GBDecorationTypeItalics;
+					inner.decoratedItem = [GBParagraphTextItem paragraphItemWithStringValue:text];
+				} else {
+					GBLogError(@"Unknown text decorator type %@ detected!", type);
+					decorator = nil;
+				}
+				if (decorator) [result addObject:decorator];
+			}
+		}
+		
+		// Prepare next search range.
+		NSUInteger location = range.location + range.length * 2 + [value length];
+		search = NSMakeRange(location, [simplified length] - location);
+	}
+	
+	// If we have some remaining text, append it now.
+	if ([simplified length] > search.location) {
+		NSString *skipped = [simplified substringWithRange:search];
+		NSString *text = [self strippedTextComponentFromString:skipped];
+		if (text) [result addObject:[GBParagraphTextItem paragraphItemWithStringValue:text]];
+	}
+	return result;
+}
+
+- (NSString *)strippedTextComponentFromString:(NSString *)string {
+	// Returns trimmed and stripped text where all occurences of whitespace are replaced with a single space. If text only contains whitespace, nil is returned.
+	NSString *trimmed = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	if ([trimmed length] == 0) return nil;
+
+	// Split all whitespace into single spaces.
+	NSMutableString *result = [NSMutableString stringWithCapacity:[trimmed length]];
+	NSArray *words = [trimmed componentsSeparatedByRegex:@"\\s+"];
+	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
+		if ([word length] == 0) return;
+		if ([result length] > 0) [result appendString:@" "];
+		[result appendString:word];
 	}];
 	
-	// Register text item to the paragraph.
-	GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:strippedPartValue];
-	[paragraph registerItem:item];
+	// Return proper result based on the length.
+	return ([result length] > 0) ? result : nil;
 }
 
 #pragma mark Helper methods

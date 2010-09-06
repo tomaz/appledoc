@@ -82,6 +82,9 @@
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
+		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
+		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
+		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
 		73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */; };
 		73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */; };
 		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
@@ -166,6 +169,9 @@
 		7367BB5112004058005ED6CD /* GBModelBaseTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBaseTesting.m; sourceTree = "<group>"; };
 		7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryDataTesting.m; sourceTree = "<group>"; };
 		7367BC4212005888005ED6CD /* GBDataObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDataObjects.h; sourceTree = "<group>"; };
+		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
+		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
+		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
 		73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-BugsTesting.m"; sourceTree = "<group>"; };
 		73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-ExamplesTesting.m"; sourceTree = "<group>"; };
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
@@ -527,6 +533,8 @@
 				73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */,
 				73329B31122EE18C00AEBA2B /* GBParagraphSpecialItem.h */,
 				73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */,
+				7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */,
+				7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -585,6 +593,7 @@
 				73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */,
 				73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */,
 				73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */,
+				7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -849,6 +858,8 @@
 				73329B33122EE18C00AEBA2B /* GBParagraphSpecialItem.m in Sources */,
 				73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */,
 				73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */,
+				7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
+				7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -894,6 +905,7 @@
 				73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
 				73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
+				7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

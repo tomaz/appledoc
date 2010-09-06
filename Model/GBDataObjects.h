@@ -12,6 +12,7 @@
 #import "GBParagraphTextItem.h"
 #import "GBParagraphListItem.h"
 #import "GBParagraphSpecialItem.h"
+#import "GBParagraphDecoratorItem.h"
 
 #import "GBClassData.h"
 #import "GBCategoryData.h"

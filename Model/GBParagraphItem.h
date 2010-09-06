@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-/** Defines the base functionality for all paragraph items. */
+/** Defines the base functionality for all paragraph items. 
+ */
 @interface GBParagraphItem : NSObject
 
 ///---------------------------------------------------------------------------------------
@@ -39,6 +40,10 @@
  This is mainly used for debugging and unit tests.
  */
 @property (copy) NSString *stringValue;
+
+///---------------------------------------------------------------------------------------
+/// @name Debugging aids
+///---------------------------------------------------------------------------------------
 
 /** Prefix to use in debug description, just before `stringValue` extract.
  
