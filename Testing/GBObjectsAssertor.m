@@ -138,4 +138,39 @@
 	}
 }
 
+- (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	Class class = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSNumber *type = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSString *value = va_arg(args, NSString *);
+		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [arguments count] * 2];
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:class, @"class", type, @"type", value, @"value", nil];
+		[arguments addObject:data];
+		
+		class = va_arg(args, Class);
+		if (!class) break;
+	}
+	va_end(args);
+	
+	GBParagraphDecoratorItem *decorator = (GBParagraphDecoratorItem *)item;
+	for (NSUInteger i=0; i<[arguments count]; i++) {
+		NSDictionary *data = [arguments objectAtIndex:i];
+		Class class = [data objectForKey:@"class"];
+		NSUInteger type = [[data objectForKey:@"type"] unsignedIntValue];		
+		NSString *value = [data objectForKey:@"value"];
+		
+		NSLog(@"Expecting %@, type %ld, text %@ at level %ld.", class, type, value, i);
+		assertThat([decorator class], is(class));
+		assertThat([decorator stringValue], is(value));
+		if (type != GBDecorationTypeNone) {
+			assertThatInteger(decorator.decorationType, equalToInteger(type));
+			decorator = (GBParagraphDecoratorItem *)[decorator decoratedItem];
+		}
+	}
+}
+
 @end

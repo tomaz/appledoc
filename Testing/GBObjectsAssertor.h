@@ -12,6 +12,8 @@
 @class GBMethodData;
 @class GBCommentParagraph;
 
+#define GBDecorationTypeNone	9999
+
 // Need to derive from GHTestCase otherwise GH macros used wouldn't work...
 @interface GBObjectsAssertor : GHTestCase
 
@@ -23,5 +25,7 @@
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsParagraphs:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
+
+- (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
 
 @end

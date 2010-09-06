@@ -239,7 +239,7 @@
 					decorator.decorationType = GBDecorationTypeCode;
 					decorator.decoratedItem = [GBParagraphTextItem paragraphItemWithStringValue:text];
 				} else if ([type isEqualToString:@"=!="]) {
-					GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItem];
+					GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
 					decorator.decorationType = GBDecorationTypeBold;
 					decorator.decoratedItem = inner;
 					inner.decorationType = GBDecorationTypeItalics;
