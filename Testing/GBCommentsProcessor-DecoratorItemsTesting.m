@@ -84,6 +84,20 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
 
+- (void)testProcesCommentWithStore_shouldAllowUnderscore {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"*text_under*"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text_under", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under", nil];
+}
+
 @end
 
 #pragma mark -
@@ -159,6 +173,20 @@
 	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
+}
+
+- (void)testProcesCommentWithStore_shouldAllowStar {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"_text*star_"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text*star", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text*star", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text*star", nil];
 }
 
 @end
@@ -243,6 +271,21 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
 
+- (void)testProcesCommentWithStore_shouldAllowUnderscoreAndStar {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"_*text_under*star*_"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under*star", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text_under*star", 
+	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text_under*star", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under*star", nil];
+}
+
 @end
 
 #pragma mark -
@@ -318,6 +361,20 @@
 	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
+}
+
+- (void)testProcesCommentWithStore_shouldAllowUnderscoreAndStar {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"`text_under*star`"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under*star", nil];
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text_under*star", 
+	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under*star", nil];
 }
 
 @end
