@@ -14,7 +14,7 @@
 @interface GBCommentsProcessorDecoratorItemsBoldTesting : GBObjectsAssertor @end
 @implementation GBCommentsProcessorDecoratorItemsBoldTesting
 
-- (void)testProcesCommentWithStore_bold_shouldGenerateParagraphIfNoneSpecifiedBefore {
+- (void)testProcesCommentWithStore_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"*text*"];
@@ -28,7 +28,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_shouldDetectAtTheStartOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheStartOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"*text* normal"];
@@ -42,7 +42,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_shouldDetectAtTheEndOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheEndOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"normal *text*"];
@@ -56,7 +56,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_shouldDetectInTheMiddleOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectInTheMiddleOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"prefix *text* suffix"];
@@ -70,7 +70,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_shouldDetectWhitespaceSeparatedWords {
+- (void)testProcesCommentWithStore_shouldDetectWhitespaceSeparatedWords {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"*bla word\ttab\nline*"];
@@ -91,7 +91,7 @@
 @interface GBCommentsProcessorDecoratorItemsItalicsTesting : GBObjectsAssertor @end
 @implementation GBCommentsProcessorDecoratorItemsItalicsTesting
 
-- (void)testProcesCommentWithStore_italics_shouldGenerateParagraphIfNoneSpecifiedBefore {
+- (void)testProcesCommentWithStore_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_text_"];
@@ -105,7 +105,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_italics_shouldDetectAtTheStartOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheStartOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_text_ normal"];
@@ -119,7 +119,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_italics_shouldDetectAtTheEndOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheEndOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"normal _text_"];
@@ -133,7 +133,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_italics_shouldDetectInTheMiddleOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectInTheMiddleOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"prefix _text_ suffix"];
@@ -147,7 +147,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_italics_shouldDetectWhitespaceSeparatedWords {
+- (void)testProcesCommentWithStore_shouldDetectWhitespaceSeparatedWords {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_bla word\ttab\nline_"];
@@ -168,7 +168,7 @@
 @interface GBCommentsProcessorDecoratorItemsBoldItalicsTesting : GBObjectsAssertor @end
 @implementation GBCommentsProcessorDecoratorItemsBoldItalicsTesting
 
-- (void)testProcesCommentWithStore_bold_italics_shouldGenerateParagraphIfNoneSpecifiedBefore {
+- (void)testProcesCommentWithStore_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_*text*_"];
@@ -183,7 +183,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_italics_shouldDetectAtTheStartOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheStartOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_*text*_ normal"];
@@ -198,7 +198,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_italics_shouldDetectAtTheEndOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheEndOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"normal _*text*_"];
@@ -213,7 +213,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_italics_shouldDetectInTheMiddleOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectInTheMiddleOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"prefix _*text*_ suffix"];
@@ -228,7 +228,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_bold_italics_shouldDetectWhitespaceSeparatedWords {
+- (void)testProcesCommentWithStore_shouldDetectWhitespaceSeparatedWords {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"_*bla word\ttab\nline*_"];
@@ -250,7 +250,7 @@
 @interface GBCommentsProcessorDecoratorItemsCodeTesting : GBObjectsAssertor @end
 @implementation GBCommentsProcessorDecoratorItemsCodeTesting
 
-- (void)testProcesCommentWithStore_code_shouldGenerateParagraphIfNoneSpecifiedBefore {
+- (void)testProcesCommentWithStore_shouldGenerateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"`text`"];
@@ -264,7 +264,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_code_shouldDetectAtTheStartOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheStartOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"`text` normal"];
@@ -278,7 +278,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_code_shouldDetectAtTheEndOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectAtTheEndOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"normal `text`"];
@@ -292,7 +292,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_code_shouldDetectInTheMiddleOfParagraph {
+- (void)testProcesCommentWithStore_shouldDetectInTheMiddleOfParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"prefix `text` suffix"];
@@ -306,7 +306,7 @@
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
 
-- (void)testProcesCommentWithStore_code_shouldDetectWhitespaceSeparatedWords {
+- (void)testProcesCommentWithStore_shouldDetectWhitespaceSeparatedWords {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"`bla word\ttab\nline`"];
