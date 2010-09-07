@@ -87,7 +87,7 @@
 #pragma mark Common data processing
 
 - (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment {
-	// Set current context then process all data.
+	// Set current context then process all data. Note that processing order is only important for nicer logging messages.
 	self.currentContext = provider;
 	[self processAdoptedProtocolsFromProvider:provider.adoptedProtocols];
 	[self processComment:comment];
@@ -121,7 +121,7 @@
 - (void)processComment:(GBComment *)comment {
 	if (!comment) return;
 	GBLogDebug(@"Processing comment...");
-	[self.commentsProcessor processComment:comment withStore:self.store];
+	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
 }
 
 #pragma mark Properties

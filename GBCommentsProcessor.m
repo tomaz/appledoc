@@ -28,6 +28,7 @@
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
 @property (retain) NSString *newLinesRegexSymbols;
 @property (retain) NSString *spaceAndNewLineTrimRegex;
+@property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -58,7 +59,7 @@
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withStore:(id)store {
+- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store {
 #define GBRegister(code) \
 	BOOL shouldRegisterParagraph = (currentParagraph == nil); \
 	if (shouldRegisterParagraph) currentParagraph = [GBCommentParagraph paragraph]; \
@@ -69,6 +70,7 @@
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Processing comment with store %@...", store);
+	self.currentContext = context;
 	self.store = store;	
 	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
 	NSArray *components = [self componentsSeparatedByEmptyLinesFromString:[comment stringValue]];
@@ -103,7 +105,12 @@
 		currentParagraph = [GBCommentParagraph paragraph];
 		[self registerTextFromString:trimmed toParagraph:currentParagraph];
 		[comment registerParagraph:currentParagraph];
-	}];
+	}];	
+	self.currentContext = nil;
+}
+
+- (void)processComment:(GBComment *)comment withStore:(id)store {
+	[self processComment:comment withContext:nil store:store];
 }
 
 #pragma mark Processing paragraph lists
@@ -299,6 +306,7 @@
 
 @synthesize newLinesRegexSymbols;
 @synthesize spaceAndNewLineTrimRegex;
+@synthesize currentContext;
 @synthesize settings;
 @synthesize store;
 
