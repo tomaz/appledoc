@@ -7,13 +7,14 @@
 //
 
 #import "GBModelBase.h"
+#import "GBObjectDataProviding.h"
 
 @class GBAdoptedProtocolsProvider;
 @class GBMethodsProvider;
 
 /** Describes a category.
  */
-@interface GBCategoryData : GBModelBase {
+@interface GBCategoryData : GBModelBase <GBObjectDataProviding> {
 	@private
 	NSString *_categoryName;
 	NSString *_className;

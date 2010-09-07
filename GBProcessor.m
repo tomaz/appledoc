@@ -17,10 +17,12 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment;
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processComment:(GBComment *)comment;
 @property (retain) GBCommentsProcessor *commentsProcessor;
+@property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -47,11 +49,13 @@
 	}
 	return self;
 }
+
 #pragma mark Processing handling
 
 - (void)processObjectsFromStore:(id<GBStoreProviding>)store {
 	NSParameterAssert(store != nil);
 	GBLogVerbose(@"Processing objects from %@...", store);
+	self.currentContext = nil;
 	self.store = store;
 	[self processClasses];
 	[self processCategories];
@@ -62,35 +66,33 @@
 	// No need to process ivars as they are not used for output.
 	for (GBClassData *class in self.store.classes) {
 		GBLogInfo(@"Processing class %@...", class);
-		[self processAdoptedProtocolsFromProvider:class.adoptedProtocols];
-		[self processComment:class.comment];
-		[self processMethodsFromProvider:class.methods];
+		[self processDataProvider:class withComment:class.comment];
 	}
 }
 
 - (void)processCategories {
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Processing category %@...", category);
-		[self processAdoptedProtocolsFromProvider:category.adoptedProtocols];
-		[self processComment:category.comment];
-		[self processMethodsFromProvider:category.methods];
+		[self processDataProvider:category withComment:category.comment];
 	}
 }
 
 - (void)processProtocols {
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
-		[self processAdoptedProtocolsFromProvider:protocol.adoptedProtocols];
-		[self processComment:protocol.comment];
-		[self processMethodsFromProvider:protocol.methods];
+		[self processDataProvider:protocol withComment:protocol.comment];
 	}
 }
 
-- (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
-	for (GBMethodData *method in provider.methods) {
-		GBLogVerbose(@"Processing method %@...", method);
-		[self processComment:method.comment];
-	}
+#pragma mark Common data processing
+
+- (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment {
+	// Set current context then process all data.
+	self.currentContext = provider;
+	[self processAdoptedProtocolsFromProvider:provider.adoptedProtocols];
+	[self processComment:comment];
+	[self processMethodsFromProvider:provider.methods];
+	self.currentContext = nil;
 }
 
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider {
@@ -107,6 +109,13 @@
 	}
 }
 
+- (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
+	for (GBMethodData *method in provider.methods) {
+		GBLogVerbose(@"Processing method %@...", method);
+		[self processComment:method.comment];
+	}
+}
+
 #pragma mark Comments processing
 
 - (void)processComment:(GBComment *)comment {
@@ -118,6 +127,7 @@
 #pragma mark Properties
 
 @synthesize commentsProcessor;
+@synthesize currentContext;
 @synthesize settings;
 @synthesize store;
 

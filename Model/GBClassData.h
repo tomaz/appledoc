@@ -7,6 +7,7 @@
 //
 
 #import "GBModelBase.h"
+#import "GBObjectDataProviding.h"
 
 @class GBAdoptedProtocolsProvider;
 @class GBIvarsProvider;
@@ -14,7 +15,7 @@
 
 /** Describes a class.
  */
-@interface GBClassData : GBModelBase {
+@interface GBClassData : GBModelBase <GBObjectDataProviding> {
 	@private
 	NSString *_className;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;

@@ -196,8 +196,8 @@
 #pragma mark Processing paragraph text
 
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph {
-	// Get and register all components.
-	NSArray *components = [self textComponentsFromString:string];
+	// Get all components (as GBParagraphItem instances). Then post-process them for links and finaly register everything.
+	NSMutableArray *components = [[self textComponentsFromString:string] mutableCopy];
 	[components enumerateObjectsUsingBlock:^(GBParagraphItem *component, NSUInteger idx, BOOL *stop) {
 		[paragraph registerItem:component];
 	}];
