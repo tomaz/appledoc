@@ -23,6 +23,7 @@
 - (void)registerSpecialFromString:(NSString *)string type:(GBSpecialItemType)type usingRegex:(NSString *)regex toParagraph:(GBCommentParagraph *)paragraph;
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)textComponentsFromString:(NSString *)string;
+- (NSString *)trimmedTextFromString:(NSString *)string;
 - (NSString *)strippedTextComponentFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
@@ -206,12 +207,21 @@
 	// Get all components (as GBParagraphItem instances). Then post-process them for links and finaly register everything.
 	NSMutableArray *components = [[self textComponentsFromString:string] mutableCopy];
 	[components enumerateObjectsUsingBlock:^(GBParagraphItem *component, NSUInteger idx, BOOL *stop) {
+		component.stringValue = [self strippedTextComponentFromString:component.stringValue];
+		if ([component isKindOfClass:[GBParagraphDecoratorItem class]]) {
+			GBParagraphItem *decorator = component;
+			while (decorator) {
+				decorator.stringValue = [self strippedTextComponentFromString:decorator.stringValue];
+				if (![decorator isKindOfClass:[GBParagraphDecoratorItem class]]) break;
+				decorator = [(GBParagraphDecoratorItem *)decorator decoratedItem];
+			}
+		}		
 		[paragraph registerItem:component];
 	}];
 }
 
 - (NSArray *)textComponentsFromString:(NSString *)string {
-	// Splits given string into un/formatted parts to make further processing simpler. To simplify we first convert nested case markers into something different from single ones, so that we can then handle them all in the same loop.
+	// Splits given string into un/formatted parts to make further processing simpler. To simplify we first convert nested case markers into something different from single ones, so that we can then handle them all in the same loop. Note that we keep all paragraph item's texts intact - we'll process them later when handling links.
 	NSString *simplified = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*)" withString:@"=!="];
 	
 	// Split into all formatted parts. Note that the array doesn't contain any normal text, so we need to account for that!
@@ -226,14 +236,14 @@
 		if (range.location > search.location) {
 			NSRange r = NSMakeRange(search.location, range.location - search.location);
 			NSString *skipped = [simplified substringWithRange:r];
-			NSString *text = [self strippedTextComponentFromString:skipped];
+			NSString *text = [self trimmedTextFromString:skipped];
 			if (text) [result addObject:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 		}
 		
 		// Get formatted text and prepare properly decorated component. Note that we warn the user if we find unknown decorator type (this probably just means we changed some decorator value by forgot to change this part, so it's some sort of "exception" catching).
 		NSString *value = [format valueForKey:@"value"];
 		if ([value length] > 0) {
-			NSString *text = [self strippedTextComponentFromString:value];
+			NSString *text = [self trimmedTextFromString:value];
 			if (text) {
 				GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
 				if ([type isEqualToString:@"*"]) {
@@ -267,20 +277,24 @@
 	// If we have some remaining text, append it now.
 	if ([simplified length] > search.location) {
 		NSString *skipped = [simplified substringWithRange:search];
-		NSString *text = [self strippedTextComponentFromString:skipped];
+		NSString *text = [self trimmedTextFromString:skipped];
 		if (text) [result addObject:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 	}
 	return result;
 }
 
+- (NSString *)trimmedTextFromString:(NSString *)string {
+	// Returns trimmed text where all occurences of whitespace at the start and end are stripped out. If text only contains whitespace, nil is returned.
+	NSString *result = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	return ([result length] > 0) ? result : nil;
+}
+
 - (NSString *)strippedTextComponentFromString:(NSString *)string {
 	// Returns trimmed and stripped text where all occurences of whitespace are replaced with a single space. If text only contains whitespace, nil is returned.
-	NSString *trimmed = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	if ([trimmed length] == 0) return nil;
 
 	// Split all whitespace into single spaces.
-	NSMutableString *result = [NSMutableString stringWithCapacity:[trimmed length]];
-	NSArray *words = [trimmed componentsSeparatedByRegex:@"\\s+"];
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	NSArray *words = [string componentsSeparatedByRegex:@"\\s+"];
 	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
 		if ([word length] == 0) return;
 		if ([result length] > 0) [result appendString:@" "];

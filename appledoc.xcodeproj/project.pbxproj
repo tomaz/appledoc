@@ -85,6 +85,9 @@
 		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
+		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
+		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
+		73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
 		73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */; };
 		73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */; };
 		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
@@ -172,7 +175,10 @@
 		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
 		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
 		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
+		73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-LinkItemsTesting.m"; sourceTree = "<group>"; };
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
+		73A32FFE1236532500040070 /* GBParagraphLinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphLinkItem.h; sourceTree = "<group>"; };
+		73A32FFF1236532500040070 /* GBParagraphLinkItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphLinkItem.m; sourceTree = "<group>"; };
 		73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-BugsTesting.m"; sourceTree = "<group>"; };
 		73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-ExamplesTesting.m"; sourceTree = "<group>"; };
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
@@ -537,6 +543,8 @@
 				73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */,
 				7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */,
 				7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */,
+				73A32FFE1236532500040070 /* GBParagraphLinkItem.h */,
+				73A32FFF1236532500040070 /* GBParagraphLinkItem.m */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -596,6 +604,7 @@
 				73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */,
 				73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */,
 				7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */,
+				73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -862,6 +871,8 @@
 				73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */,
 				7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
 				7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */,
+				73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */,
+				73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -908,6 +919,7 @@
 				73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
 				73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
 				7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
+				73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
