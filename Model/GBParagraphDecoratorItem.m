@@ -10,7 +10,36 @@
 
 @implementation GBParagraphDecoratorItem
 
+#pragma mark Initialization & disposal
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		_decoratedItems = [NSMutableArray array];
+	}
+	return self;
+}
+
+#pragma mark Registrations handling
+
+- (void)registerItem:(GBParagraphItem *)item {
+	NSParameterAssert(item != nil);
+	GBLogDebug(@"Registering item %@...", item);
+	[_decoratedItems addObject:item];
+}
+
+- (void)replaceItemsByRegisteringItemsFromArray:(NSArray *)items {
+	GBLogDebug(@"Registering %ld items...", [items count]);
+	if (!items || [items count] == 0) return;
+	[_decoratedItems removeAllObjects];
+	[items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[self registerItem:obj];
+	}];
+}
+
+#pragma mark Properties
+
+@synthesize decoratedItems = _decoratedItems;
 @synthesize decorationType;
-@synthesize decoratedItem;
 
 @end

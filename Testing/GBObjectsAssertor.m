@@ -9,6 +9,14 @@
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 
+@interface GBObjectsAssertor ()
+
+- (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index; 
+
+@end
+
+#pragma mark -
+
 @implementation GBObjectsAssertor
 
 #pragma mark Store objects
@@ -155,21 +163,35 @@
 		if (!class) break;
 	}
 	va_end(args);
+	NSUInteger index = [self assertDecoratedItem:item describesHierarchy:arguments startingAtIndex:0];
+	assertThatInteger(index, equalToInteger([arguments count]));
+}
+
+- (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index {
+	// Get current expected values.
+	NSDictionary *data = [arguments objectAtIndex:index];
+	Class class = [data objectForKey:@"class"];
+	NSUInteger type = [[data objectForKey:@"type"] unsignedIntValue];
+	NSString *value = [data objectForKey:@"value"];		
+	//NSLog(@"Expecting %@, type %ld, text %@ at index %ld.", class, type, value, index);
 	
-	GBParagraphDecoratorItem *decorator = (GBParagraphDecoratorItem *)item;
-	for (NSUInteger i=0; i<[arguments count]; i++) {
-		NSDictionary *data = [arguments objectAtIndex:i];
-		Class class = [data objectForKey:@"class"];
-		NSUInteger type = [[data objectForKey:@"type"] unsignedIntValue];		
-		NSString *value = [data objectForKey:@"value"];		
-		//NSLog(@"Expecting %@, type %ld, text %@ at level %ld.", class, type, value, i);
-		assertThat([decorator class], is(class));
-		assertThat([decorator stringValue], is(value));
-		if (type != GBDecorationTypeNone) {
-			assertThatInteger(decorator.decorationType, equalToInteger(type));
-			decorator = (GBParagraphDecoratorItem *)[decorator decoratedItem];
+	// Increment the index (as we're relying on cached values we can do so before verifying).
+	index++;
+	
+	// Verify common values.
+	assertThat([item class], is(class));
+	assertThat([item stringValue], is(value));
+	
+	// Verify decorator values and all children.
+	if (type != GBDecorationTypeNone) {
+		GBParagraphDecoratorItem *decorator = (GBParagraphDecoratorItem *)item;
+		assertThatInteger(decorator.decorationType, equalToInteger(type));
+		for (GBParagraphItem *child in [decorator decoratedItems]) {
+			index = [self assertDecoratedItem:child describesHierarchy:arguments startingAtIndex:index];
 		}
 	}
+	
+	return index;
 }
 
 @end
