@@ -27,7 +27,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], GBNULL, nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
@@ -42,7 +42,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], GBNULL, nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
@@ -57,7 +57,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], GBNULL, nil];
 	GBParagraphSpecialItem *item = [paragraph.items objectAtIndex:0];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];

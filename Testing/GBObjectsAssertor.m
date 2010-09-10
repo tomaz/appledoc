@@ -124,13 +124,12 @@
 		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
 		NSDictionary *data = [arguments objectAtIndex:i];
 		assertThat([item class], is([data objectForKey:@"class"]));
-		if ([data objectForKey:@"value"] == [NSNull null]) continue;
+		if ([data objectForKey:@"value"] == GBNULL) continue;
 		assertThat([item stringValue], is([data objectForKey:@"value"]));
 	}
 }
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsLinks:(NSString *)first,... {
-//	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"instance:", class, method, YES, nil];
 	NSMutableArray *arguments = [NSMutableArray array];
 	NSString *value = first;
 	va_list args;
@@ -162,9 +161,26 @@
 		BOOL local = [[data objectForKey:@"local"] boolValue];
 		assertThat([item class], is([GBParagraphLinkItem class]));
 		assertThat(item.stringValue, is(value));
-		assertThat(item.context, is(context != [NSNull null] ? context : nil));
-		assertThat(item.member, is(member != [NSNull null] ? member : nil));
+		assertThat(item.context, is(context != GBNULL ? context : nil));
+		assertThat(item.member, is(member != GBNULL ? member : nil));
 		assertThatBool(item.isLocal, equalToBool(local));
+	}
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsTexts:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	va_list args;
+	va_start(args,first);
+	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString*)) {
+		[arguments addObject:arg];
+	}
+	va_end(args);
+	
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphTextItem *item = [paragraph.items objectAtIndex:i];
+		assertThat([item class], is([GBParagraphTextItem class]));
+		assertThat(item.stringValue, is([arguments objectAtIndex:i]));
 	}
 }
 

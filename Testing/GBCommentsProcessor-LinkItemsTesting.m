@@ -77,10 +77,10 @@
 	[processor processComment:comment3 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment4 withStore:[GBTestObjectsRegistry store]];
 	// verify
-	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
-	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"https://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
-	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsLinks:@"ftp://user:pass@gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
-	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"https://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsLinks:@"ftp://user:pass@gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldDetectMarkedUrl {
@@ -90,7 +90,7 @@
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldIgnoreUnknownPrefixes {
@@ -102,8 +102,8 @@
 	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
 	// verify
-	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"appledoc://gentlebytes.com", nil];
-	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"htp://gentlebytes.com", nil];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsTexts:@"appledoc://gentlebytes.com", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"htp://gentlebytes.com", nil];
 }
 
 #pragma mark Local members processing testing
@@ -170,7 +170,7 @@
 	// execute
 	[processor processComment:comment withContext:class store:store];
 	// verify
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"name", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"name", nil];
 }
 
 - (void)testProcessCommentWithStore_localMember_shouldIgnoreMethodIfNoContextIsGiven {
@@ -181,9 +181,163 @@
 	// execute
 	[processor processComment:comment withContext:nil store:store];
 	// verify
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"instance:", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"instance:", nil];
+}
+
+#pragma mark Classes processing testing
+
+- (void)testProcessCommentWithStore_class_shouldDetectLocalLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class", class, GBNULL, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_class_shouldDetectRemoteLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerClass:class1];
+	[store registerClass:class2];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class2"];
+	// execute
+	[processor processComment:comment withContext:class1 store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class2", class2, GBNULL, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_class_shouldIgnoreIfNotRegisteredToStoreEvenIfPassedAsCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Class", nil];
+}
+
+#pragma mark Categories processing testing
+
+- (void)testProcessCommentWithStore_category_shouldDetectLocalLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class(Category)"];
+	// execute
+	[processor processComment:comment withContext:category store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class(Category)", category, GBNULL, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_category_shouldDetectRemoteLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"Category1" className:@"Class"];
+	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"Category2" className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerCategory:category1];
+	[store registerCategory:category2];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class(Category2)"];
+	// execute
+	[processor processComment:comment withContext:category1 store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class(Category2)", category2, GBNULL, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_category_shouldIgnoreIfNotRegisteredToStoreEvenIfPassedAsCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class(Category)"];
+	// execute
+	[processor processComment:comment withContext:category store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Class(Category)", nil];
+}
+
+- (void)testProcessCommentWithStore_category_shouldIgnoreIfWhitespaceIsWrittenWithinWords {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"Class (Category)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"Class( Category)"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Class(Category )"];
+	// execute
+	[processor processComment:comment1 withContext:category store:store];
+	[processor processComment:comment2 withContext:category store:store];
+	[processor processComment:comment3 withContext:category store:store];
+	// verify
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsTexts:@"Class (Category)", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"Class( Category)", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsTexts:@"Class(Category )", nil];
+}
+
+#pragma mark Extensions processing testing
+
+- (void)testProcessCommentWithStore_extension_shouldDetectLocalLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:extension];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class()"];
+	// execute
+	[processor processComment:comment withContext:extension store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class()", extension, GBNULL, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_extension_shouldDetectRemoteLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *extension1 = [GBCategoryData categoryDataWithName:nil className:@"Class1"];
+	GBCategoryData *extension2 = [GBCategoryData categoryDataWithName:nil className:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerCategory:extension1];
+	[store registerCategory:extension2];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class2()"];
+	// execute
+	[processor processComment:comment withContext:extension1 store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Class2()", extension2, GBNULL, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_extension_shouldIgnoreIfNotRegisteredToStoreEvenIfPassedAsCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"Class()"];
+	// execute
+	[processor processComment:comment withContext:extension store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Class()", nil];
+}
+
+- (void)testProcessCommentWithStore_extension_shouldIgnoreIfWhitespaceIsWrittenWithinWords {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:extension];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"Class ()"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"Class( )"];
+	// execute
+	[processor processComment:comment1 withContext:extension store:store];
+	[processor processComment:comment2 withContext:extension store:store];
+	// verify
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsTexts:@"Class ()", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"Class( )", nil];
 }
 
 @end
-
-

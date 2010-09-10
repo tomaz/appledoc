@@ -27,7 +27,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
@@ -40,7 +40,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1", @"Item2", nil];
 }
 
@@ -53,7 +53,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
@@ -66,7 +66,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertParagraph:paragraph containsItems:[GBParagraphListItem class], [NSNull null], nil];
+	[self assertParagraph:paragraph containsItems:[GBParagraphListItem class], GBNULL, nil];
 	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 

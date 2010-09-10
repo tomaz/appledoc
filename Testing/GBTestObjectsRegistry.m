@@ -119,6 +119,11 @@
 	return [[[GBStore alloc] init] autorelease];
 }
 
++ (GBStore *)storeWithClassWithName:(NSString *)name {
+	GBClassData *class = [GBClassData classDataWithName:name];
+	return [self storeByPerformingSelector:@selector(registerClass:) withObject:class];
+}
+
 + (GBStore *)storeWithClassWithComment:(id)comment {
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[self registerComment:comment forObject:class];
