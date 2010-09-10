@@ -25,6 +25,7 @@
 
 - (void)registerTextFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)linkifiedParagraphItemsFromItem:(GBParagraphItem *)item;
+- (NSArray *)paragraphSimpleLinkItemsFromString:(NSString *)string;
 - (NSArray *)paragraphTextItemsFromString:(NSString *)string;
 - (NSString *)wordifiedTextFromString:(NSString *)string;
 - (NSString *)trimmedTextFromString:(NSString *)string;
@@ -223,7 +224,6 @@
 - (NSArray *)linkifiedParagraphItemsFromItem:(GBParagraphItem *)item {
 	// Processes GBParagraphItem's text for links and converts string value to words separated with spaces. If links are detected, the item is "split" to several GBParagraphTextItem and GBParagraphLinkItem instances as necessary and the array of all resulting items in proper order is returned. If the item doesn't contain any link, the array with a single object - the passed in item - is returned. If the given item is GBParagraphDecoratorItem, it's string value is wordified and decorated children items are recursively processed. If the item is anythin else, only it's string value is wordified.
 	if ([item isKindOfClass:[GBParagraphDecoratorItem class]]) {
-		item.stringValue = [self wordifiedTextFromString:item.stringValue];
 		GBParagraphDecoratorItem *decorator = (GBParagraphDecoratorItem *)item;
 		NSMutableArray *linkifiedChildren = [NSMutableArray arrayWithCapacity:[decorator.decoratedItems count]];
 		[decorator.decoratedItems enumerateObjectsUsingBlock:^(GBParagraphItem *child, NSUInteger idx, BOOL *stop) {
@@ -231,10 +231,134 @@
 			[linkifiedChildren addObjectsFromArray:childsLinkifiedChildren];
 		}];
 		[decorator replaceItemsByRegisteringItemsFromArray:linkifiedChildren];
+		decorator.stringValue = [self wordifiedTextFromString:decorator.stringValue];
 		return [NSArray arrayWithObject:decorator];
 	}
+	
+	// We only handle links for GBParagraphTextItem which we convert into an array of text/link items as needed. Note that if we detect a link, we don't even return the original item, but we create new items instead! We progressively scan item's string value for complex references and then we check the remaining text for local members or other objects links. We first split the original text with remote member links, then we scan the rest for other references.
+	else if ([item isKindOfClass:[GBParagraphTextItem class]]) {
+		NSMutableArray *items = [NSMutableArray array];
+		NSString *regex = self.settings.commentComponents.remoteMemberCrossReferenceRegex;
+		NSString *string = [item stringValue];
+		while (YES) {
+			// Get the first occurence of the match within current range. Exit if no more found.
+			NSArray *components = [string captureComponentsMatchedByRegex:regex];
+			if ([components count] == 0) break;
+			
+			// If there's some skipped text in front of the match, linkify it.
+			NSString *reference = [components objectAtIndex:0]; // Idx. 0 = full value of match.
+			NSRange range = [string rangeOfString:reference];
+			if (range.location > 0) {
+				NSString *skipped = [string substringWithRange:NSMakeRange(0, range.location)];
+				NSArray *children = [self paragraphSimpleLinkItemsFromString:skipped];
+				[items addObjectsFromArray:children];
+			}
+			
+			// Add remote member link item or warning if remote member is not found.
+			GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:reference];
+			// TODO: test and make real object!!!!
+			link.context = [components objectAtIndex:1];
+			link.member = [components objectAtIndex:2];
+			link.isLocal = NO;
+			[items addObject:link];
+			
+			// Search within the text after the match if there is some more.
+			string = [string substringFromIndex:range.location + range.length];
+		}
+		
+		// Linkify remaining text if any.
+		if ([string length] > 0) {
+			NSArray *children = [self paragraphSimpleLinkItemsFromString:string];
+			[items addObjectsFromArray:children];
+		}
+		return items;
+	}
+	
+	// For all other items, just wordify string value to get nicer debug and unit testing strings.
 	item.stringValue = [self wordifiedTextFromString:item.stringValue];
 	return [NSArray arrayWithObject:item];
+}
+
+- (NSArray *)paragraphSimpleLinkItemsFromString:(NSString *)string {
+#define GBCREATE_TEXT_ITEM \
+	if ([staticText count] > 0) { \
+		NSMutableString *value = [NSMutableString string]; \
+		[staticText enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { \
+			if ([value length] > 0) [value appendString:@" "]; \
+			[value appendString:obj]; \
+		}]; \
+		GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:value]; \
+		[result addObject:item]; \
+		[staticText removeAllObjects]; \
+	}
+#define GBCREATE_OBJECT_LINK_ITEM(obj,str) \
+	GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:str]; \
+	item.context = obj; \
+	item.isLocal = (obj == self.currentContext); \
+	[result addObject:item]
+	// Matches all known simple links (i.e. local member, object or URL) and prepares the array of all paragraph items.	
+	NSMutableArray *result = [NSMutableArray array];
+	NSMutableArray *staticText = [NSMutableArray array];
+	GBCommentComponentsProvider *provider = self.settings.commentComponents;
+	NSArray *words = [string componentsSeparatedByRegex:@"\\s+"];
+	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
+		if ([word length] == 0) return;
+		
+		// Test for URL reference.
+		NSString *url = [word stringByMatching:provider.urlCrossReferenceRegex];
+		if (url) {
+			GBCREATE_TEXT_ITEM;
+			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
+			[result addObject:item];
+			return;
+		}
+		
+		// Test for local member reference (only if current context is given).
+		if (self.currentContext) {
+			NSString *selector = [word stringByMatching:provider.localMemberCrossReferenceRegex];
+			if (selector) {
+				GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
+				if (method) {
+					GBCREATE_TEXT_ITEM;
+					GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
+					item.context = self.currentContext;
+					item.member = method;
+					item.isLocal = YES;
+					[result addObject:item];
+				}
+				return;
+			}
+		}
+		
+		// Test for local or remote object reference.
+		NSString *objectName = [word stringByMatching:provider.objectCrossReferenceRegex];
+		if (objectName) {
+			GBClassData *class = [self.store classByName:objectName];
+			if (class) {
+				GBCREATE_TEXT_ITEM;
+				GBCREATE_OBJECT_LINK_ITEM(class, class.nameOfClass);
+				return;
+			}
+			GBCategoryData *category = [self.store categoryByName:objectName];
+			if (category) {
+				GBCREATE_TEXT_ITEM;
+				GBCREATE_OBJECT_LINK_ITEM(category, category.idOfCategory);
+				return;
+			}
+			GBProtocolData *protocol = [self.store protocolByName:objectName];
+			if (protocol) {
+				GBCREATE_TEXT_ITEM;
+				GBCREATE_OBJECT_LINK_ITEM(protocol, protocol.nameOfProtocol);
+				return;
+			}
+		}
+		
+		// If word is no link, just add it to the list.
+		[staticText addObject:word];
+	}];
+	
+	GBCREATE_TEXT_ITEM;
+	return result;
 }
 
 - (NSArray *)paragraphTextItemsFromString:(NSString *)string {

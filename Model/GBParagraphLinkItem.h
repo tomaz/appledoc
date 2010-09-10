@@ -23,6 +23,8 @@
 
 /** The context to which the link's `member` points to or `nil` if this is a `stringValue` link.
  
+ The context can be either `GBClassData`, `GBCategoryData` or `GBProtocolData` if provided.
+ 
  @see member
  @see isLocal
  */
@@ -30,7 +32,7 @@
 
 /** The member to which the link points to or `nil` if this is either a `stringValue` link or `context` link.
  
- This is only used if the link points to a `member` within a `context`. If this is link to the `context` itself or to an `stringValue`, this value is `nil`.
+ This is only used if the link points to a `member` within a `context`. If this is link to the `context` itself or to an `stringValue`, this value is `nil`. The member can only be a `GBMethodData` instance at this point.
  
  @see context
  @see isLocal

@@ -10,7 +10,7 @@
 
 /** Handles normal or formatted text for a `GBCommentParagraph`.
  
- Use `stringValue` to get the text value of the item and `textType` to determine type of text.
+ Use `stringValue` to get the text value of the item.
  */
 @interface GBParagraphTextItem : GBParagraphItem
 @end

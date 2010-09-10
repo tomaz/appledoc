@@ -23,7 +23,7 @@
 + (id)provider;
 
 ///---------------------------------------------------------------------------------------
-/// @name Sections testing
+/// @name Lists definitions
 ///---------------------------------------------------------------------------------------
 
 /** Returns the regex used for matching ordered lists with capture 1 containing list text. */
@@ -38,17 +38,28 @@
 /** Returns the regex used for matching unordered list prefix. */
 @property (readonly) NSString *unorderedListPrefixRegex;
 
+///---------------------------------------------------------------------------------------
+/// @name Sections definitions
+///---------------------------------------------------------------------------------------
+
 /** Returns the regex used for matching warning section with capture 1 containing description. */
 @property (readonly) NSString *warningSectionRegex;
 
 /** Returns the regex used for matching bug section with capture 1 containing description. */
 @property (readonly) NSString *bugSectionRegex;
 
+/** Returns the regex used for matching cross reference directive with capture 2 containing link. */
+@property (readonly) NSString *crossReferenceSectionRegex;
+
 /** Returns the regex used for matching example section with capture 1 containing example text. */
 @property (readonly) NSString *exampleSectionRegex;
 
 /** Returns the regex used for matching example lines with capture 1 containing example lines texts. */
 @property (readonly) NSString *exampleLinesRegex;
+
+///---------------------------------------------------------------------------------------
+/// @name Method specific definitions
+///---------------------------------------------------------------------------------------
 
 /** Returns the regex used for matching method parameter description with capture 1 containing parameter name and capture 2 description. */
 @property (readonly) NSString *parameterDescriptionRegex;
@@ -59,7 +70,20 @@
 /** Returns the regex used for matching method exception description with capture 1 containing exception name and capture 2 description. */
 @property (readonly) NSString *exceptionDescriptionRegex;
 
-/** Returns the regex used for matching cross reference directive with capture 2 containing link. */
-@property (readonly) NSString *crossReferenceRegex;
+///---------------------------------------------------------------------------------------
+/// @name Common definitions
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. */
+@property (readonly) NSString *remoteMemberCrossReferenceRegex;
+
+/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name. */
+@property (readonly) NSString *localMemberCrossReferenceRegex;
+
+/** Returns the regex used for matching (possible) object cross reference with capture 1 containing object name. */
+@property (readonly) NSString *objectCrossReferenceRegex;
+
+/** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself. */
+@property (readonly) NSString *urlCrossReferenceRegex;
 
 @end

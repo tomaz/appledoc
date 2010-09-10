@@ -21,6 +21,7 @@
 - (NSString *)exampleRegexWithoutFlags;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
+- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex;
 
 @end
 
@@ -34,7 +35,7 @@
 	return [[[self alloc] init] autorelease];
 }
 
-#pragma mark Public interface
+#pragma mark Lists detection
 
 - (NSString *)orderedListRegex {
 	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"^%@(.*)", self.orderedListPrefixRegex]));
@@ -52,12 +53,18 @@
 	GBRETURN_ON_DEMAND(@"\\s*[-+*]\\s+");
 }
 
+#pragma mark Sections detection
+
 - (NSString *)warningSectionRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"warning"]);
 }
 
 - (NSString *)bugSectionRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
+}
+
+- (NSString *)crossReferenceSectionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
 }
 
 - (NSString *)exampleSectionRegex {
@@ -72,6 +79,8 @@
 	GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
 }
 
+#pragma mark Method specific detection
+
 - (NSString *)parameterDescriptionRegex {
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"param"]);
 }
@@ -84,8 +93,23 @@
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"exception"]);
 }
 
-- (NSString *)crossReferenceRegex {
-	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
+#pragma mark Common detection
+
+- (NSString *)remoteMemberCrossReferenceRegex {
+	// +[Class member] or -[Class member] or simply [Class member].
+	return [self crossReferenceRegexByEmbeddingRegex:@"[+-]?\\[(\\S+)\\s+(\\S+)\\]"];
+}
+
+- (NSString *)localMemberCrossReferenceRegex {
+	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+}
+
+- (NSString *)objectCrossReferenceRegex {
+	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+}
+
+- (NSString *)urlCrossReferenceRegex {
+	return [self crossReferenceRegexByEmbeddingRegex:@"((?:http|https|ftp|file)://[^>\\s]*)"];
 }
 
 #pragma mark Helper methods
@@ -96,6 +120,10 @@
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*.%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
+}
+
+- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex {
+	return [NSString stringWithFormat:@"<?%@>?", regex];
 }
 
 @end
