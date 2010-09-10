@@ -20,6 +20,10 @@
 	return result;
 }
 
++ (void)registerComment:(id)comment forObject:(GBModelBase *)object {
+	[object setValue:comment forKey:@"_comment"];
+}
+
 #pragma mark GBIvarData creation methods
 
 + (GBIvarData *)ivarWithComponents:(NSString *)first, ... {
@@ -34,6 +38,12 @@
 }
 
 #pragma mark GBMethodData creation methods
+
++ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment {
+	GBMethodData *result = [self instanceMethodWithNames:name, nil];
+	[self registerComment:comment forObject:result];
+	return result;
+}
 
 + (GBMethodData *)instanceMethodWithArguments:(GBMethodArgument *)first,... {
 	va_list args;
@@ -90,11 +100,20 @@
 	return [GBMethodArgument methodArgumentWithName:name types:[NSArray arrayWithObject:@"id"] var:name];
 }
 
-#pragma mark GBStore creation methods
+#pragma mark Store objects creation methods
 
-+ (void)registerComment:(id)comment forObject:(GBModelBase *)object {
-	[object setValue:comment forKey:@"_comment"];
++ (GBClassData *)classWithName:(NSString *)name methods:(GBMethodData *)first,... {
+	GBClassData *result = [GBClassData classDataWithName:name];
+	va_list args;
+	va_start(args, first);
+	for (GBMethodData *method=first; method!=nil; method=va_arg(args, GBMethodData*)) {
+		[result.methods registerMethod:method];
+	}
+	va_end(args);
+	return result;
 }
+
+#pragma mark GBStore creation methods
 
 + (GBStore *)store {
 	return [[[GBStore alloc] init] autorelease];
@@ -121,12 +140,6 @@
 + (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object {
 	GBStore *result = [self store];
 	[result performSelector:selector withObject:object];
-	return result;
-}
-
-+ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment {
-	GBMethodData *result = [self instanceMethodWithNames:name, nil];
-	[self registerComment:comment forObject:result];
 	return result;
 }
 

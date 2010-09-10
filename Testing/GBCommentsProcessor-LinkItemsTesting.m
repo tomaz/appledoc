@@ -77,10 +77,10 @@
 	[processor processComment:comment3 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment4 withStore:[GBTestObjectsRegistry store]];
 	// verify
-	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"http://gentlebytes.com", nil];
-	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"https://gentlebytes.com", nil];
-	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"ftp://user:pass@gentlebytes.com", nil];
-	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"file://gentlebytes.com", nil];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"https://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsLinks:@"ftp://user:pass@gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldDetectMarkedUrl {
@@ -90,7 +90,7 @@
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"http://gentlebytes.com", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", [NSNull null], [NSNull null], NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldIgnoreUnknownPrefixes {
@@ -104,6 +104,84 @@
 	// verify
 	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"appledoc://gentlebytes.com", nil];
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"htp://gentlebytes.com", nil];
+}
+
+#pragma mark Local members processing testing
+
+- (void)testProcessCommentWithStore_localMember_shouldDetectKnownInstanceMethod {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment = [GBComment commentWithStringValue:@"instance:"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"instance:", class, method, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldDetectKnownClassMethod {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"class", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment = [GBComment commentWithStringValue:@"class:"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"class:", class, method, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldDetectKnownProperty {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment = [GBComment commentWithStringValue:@"name"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"name", class, method, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldDetectMarkedMethod {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment = [GBComment commentWithStringValue:@"<instance:>"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"instance:", class, method, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldIgnoreUnknownMethodForCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment = [GBComment commentWithStringValue:@"name"];
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"name", nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldIgnoreMethodIfNoContextIsGiven {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"instance:"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"instance:", nil];
 }
 
 @end

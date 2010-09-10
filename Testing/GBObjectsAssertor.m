@@ -129,6 +129,45 @@
 	}
 }
 
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsLinks:(NSString *)first,... {
+//	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"instance:", class, method, YES, nil];
+	NSMutableArray *arguments = [NSMutableArray array];
+	NSString *value = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		id context = va_arg(args, id);
+		if (!context) [NSException raise:@"Context not given for value %@ at index %ld!", value, [arguments count] * 4];
+		
+		id member = va_arg(args, id);
+		if (!member) [NSException raise:@"Member not given for value %@ at index %ld!", value, [arguments count] * 4];
+		
+		BOOL local = va_arg(args, BOOL);
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", context, @"context", member, @"member", [NSNumber numberWithBool:local], @"local", nil];
+		[arguments addObject:data];
+		
+		value = va_arg(args, NSString *);
+		if (!value) break;
+	}
+	va_end(args);
+	
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphLinkItem *item = [paragraph.items objectAtIndex:i];
+		NSDictionary *data = [arguments objectAtIndex:i];
+		NSString *value = [data objectForKey:@"value"];
+		id context = [data objectForKey:@"context"];
+		id member = [data objectForKey:@"member"];
+		BOOL local = [[data objectForKey:@"local"] boolValue];
+		assertThat([item class], is([GBParagraphLinkItem class]));
+		assertThat(item.stringValue, is(value));
+		assertThat(item.context, is(context != [NSNull null] ? context : nil));
+		assertThat(item.member, is(member != [NSNull null] ? member : nil));
+		assertThatBool(item.isLocal, equalToBool(local));
+	}
+}
+
 - (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsParagraphs:(NSString *)first,... {
 	NSMutableArray *arguments = [NSMutableArray array];
 	va_list args;
@@ -192,6 +231,13 @@
 	}
 	
 	return index;
+}
+
+- (void)assertLinkItem:(GBParagraphLinkItem *)item hasLink:(NSString *)link context:(id)context member:(id)member local:(BOOL)local {
+	assertThat([item stringValue], is(link));
+	assertThat([item context], is(context));
+	assertThat([item member], is(member));
+	assertThatBool([item isLocal], equalToBool(local));
 }
 
 @end

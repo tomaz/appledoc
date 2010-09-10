@@ -15,6 +15,7 @@
 
 + (GBIvarData *)ivarWithComponents:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 
++ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment;
 + (GBMethodData *)instanceMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)classMethodWithArguments:(GBMethodArgument *)first,... NS_REQUIRES_NIL_TERMINATION;
 + (GBMethodData *)instanceMethodWithNames:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
@@ -27,6 +28,7 @@
 + (GBStore *)storeWithCategoryWithComment:(id)comment;
 + (GBStore *)storeWithProtocolWithComment:(id)comment;
 + (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object;
-+ (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment;
+
++ (GBClassData *)classWithName:(NSString *)name methods:(GBMethodData *)first,... NS_REQUIRES_NIL_TERMINATION;
 
 @end

@@ -315,7 +315,7 @@
 		
 		// Test for local member reference (only if current context is given).
 		if (self.currentContext) {
-			NSString *selector = [word stringByMatching:provider.localMemberCrossReferenceRegex];
+			NSString *selector = [word stringByMatching:provider.localMemberCrossReferenceRegex capture:1];
 			if (selector) {
 				GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
 				if (method) {
@@ -325,13 +325,13 @@
 					item.member = method;
 					item.isLocal = YES;
 					[result addObject:item];
+					return;
 				}
-				return;
 			}
 		}
 		
 		// Test for local or remote object reference.
-		NSString *objectName = [word stringByMatching:provider.objectCrossReferenceRegex];
+		NSString *objectName = [word stringByMatching:provider.objectCrossReferenceRegex capture:1];
 		if (objectName) {
 			GBClassData *class = [self.store classByName:objectName];
 			if (class) {

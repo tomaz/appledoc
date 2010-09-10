@@ -24,6 +24,7 @@
 - (void)assertMethod:(GBMethodData *)method matchesType:(GBMethodType)type start:(NSString *)first components:(va_list)args;
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsLinks:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsParagraphs:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 
 - (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
