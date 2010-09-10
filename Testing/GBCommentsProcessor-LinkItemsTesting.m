@@ -106,6 +106,212 @@
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"htp://gentlebytes.com", nil];
 }
 
+#pragma mark Remote instance methods processing testing
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownInstanceMethodForClass {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class instance:]", class, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownInstanceMethodForCategory {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class(Category) instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class(Category) instance:]", category, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownInstanceMethodForExtension {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBCategoryData *extension = [GBTestObjectsRegistry categoryWithName:nil className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:extension];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class() instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class() instance:]", extension, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownInstanceMethodForProtocol {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Protocol instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Protocol instance:]", protocol, method, NO, nil];
+}
+
+#pragma mark Remote class methods processing testing
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownClassMethodForClass {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class instance:]", class, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownClassMethodForCategory {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"instance", nil];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class(Category) instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class(Category) instance:]", category, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownClassMethodForExtension {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"instance", nil];
+	GBCategoryData *extension = [GBTestObjectsRegistry categoryWithName:nil className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:extension];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class() instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class() instance:]", extension, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownClassMethodForProtocol {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"instance", nil];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Protocol instance:]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Protocol instance:]", protocol, method, NO, nil];
+}
+
+#pragma mark Remote properties processing testing
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownPropertyForClass {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class name]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class name]", class, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownPropertyForCategory {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class(Category) name]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class(Category) name]", category, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownPropertyForExtension {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBCategoryData *extension = [GBTestObjectsRegistry categoryWithName:nil className:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:extension];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class() name]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class() name]", extension, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownPropertyForProtocol {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Protocol name]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Protocol name]", protocol, method, NO, nil];
+}
+
+#pragma mark Remote methods common processing testing
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectMarkedMember {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"<[Class name]>"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Class name]", class, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectMemberRegardlessOfPrefix {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"-[Class name]"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"+[Class name]"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"-[Class name]", class, method, NO, nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"+[Class name]", class, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldIgnoreUnknownMethod {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"[Class instance]"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"[Class instance]", nil];
+}
+
 #pragma mark Local members processing testing
 
 - (void)testProcessCommentWithStore_localMember_shouldDetectKnownInstanceMethod {

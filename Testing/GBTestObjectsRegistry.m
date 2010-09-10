@@ -113,6 +113,28 @@
 	return result;
 }
 
++ (GBCategoryData *)categoryWithName:(NSString *)name className:(NSString *)className methods:(GBMethodData *)first,... {
+	GBCategoryData *result = [GBCategoryData categoryDataWithName:name className:className];
+	va_list args;
+	va_start(args, first);
+	for (GBMethodData *method=first; method!=nil; method=va_arg(args, GBMethodData*)) {
+		[result.methods registerMethod:method];
+	}
+	va_end(args);
+	return result;
+}
+
++ (GBProtocolData *)protocolWithName:(NSString *)name methods:(GBMethodData *)first,... {
+	GBProtocolData *result = [GBProtocolData protocolDataWithName:name];
+	va_list args;
+	va_start(args, first);
+	for (GBMethodData *method=first; method!=nil; method=va_arg(args, GBMethodData*)) {
+		[result.methods registerMethod:method];
+	}
+	va_end(args);
+	return result;
+}
+
 #pragma mark GBStore creation methods
 
 + (GBStore *)store {

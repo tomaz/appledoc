@@ -245,8 +245,12 @@
 			NSArray *components = [string captureComponentsMatchedByRegex:regex];
 			if ([components count] == 0) break;
 			
-			// If there's some skipped text in front of the match, linkify it.
+			// Get reference components.
 			NSString *reference = [components objectAtIndex:0]; // Idx. 0 = full value of match.
+			NSString *objectName = [components objectAtIndex:1];
+			NSString *memberName = [components objectAtIndex:2];
+			
+			// If there's some skipped text in front of the match, linkify it.
 			NSRange range = [string rangeOfString:reference];
 			if (range.location > 0) {
 				NSString *skipped = [string substringWithRange:NSMakeRange(0, range.location)];
@@ -254,13 +258,39 @@
 				[items addObjectsFromArray:children];
 			}
 			
-			// Add remote member link item or warning if remote member is not found.
-			GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:reference];
-			// TODO: test and make real object!!!!
-			link.context = [components objectAtIndex:1];
-			link.member = [components objectAtIndex:2];
-			link.isLocal = NO;
-			[items addObject:link];
+			// Find remote object first.
+			id objectRefence = [self.store classByName:objectName];
+			if (!objectRefence) {
+				objectRefence = [self.store categoryByName:objectName];
+				if (!objectRefence) {
+					objectRefence = [self.store protocolByName:objectName];
+				}
+			}
+			
+			// If found, get the member reference.
+			id memberReference = nil;
+			if (objectRefence) {
+				memberReference = [[objectRefence methods] methodBySelector:memberName];
+				if (memberReference) {
+					NSString *stringValue = [reference stringByReplacingOccurrencesOfString:@"<" withString:@""];
+					stringValue = [stringValue stringByReplacingOccurrencesOfString:@">" withString:@""];
+					GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
+					link.context = objectRefence;
+					link.member = memberReference;
+					link.isLocal = NO;
+					[items addObject:link];
+				} else {
+					GBLogWarn(@"Invalid object reference for %@: member %@ not found!", objectRefence, memberName);
+				}
+			} else {
+				GBLogWarn(@"Invalid object reference: %@ object not found!", objectName);
+			}
+			
+			// If not found, add static text instead!
+			if (!objectRefence || !memberReference) {
+				GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:string];
+				[items addObject:item];
+			}
 			
 			// Search within the text after the match if there is some more.
 			string = [string substringFromIndex:range.location + range.length];

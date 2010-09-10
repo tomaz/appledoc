@@ -30,5 +30,7 @@
 + (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object;
 
 + (GBClassData *)classWithName:(NSString *)name methods:(GBMethodData *)first,... NS_REQUIRES_NIL_TERMINATION;
++ (GBCategoryData *)categoryWithName:(NSString *)name className:(NSString *)className methods:(GBMethodData *)first,... NS_REQUIRES_NIL_TERMINATION;
++ (GBProtocolData *)protocolWithName:(NSString *)name methods:(GBMethodData *)first,... NS_REQUIRES_NIL_TERMINATION;
 
 @end
