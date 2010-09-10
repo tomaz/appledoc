@@ -70,7 +70,7 @@
 	NSParameterAssert(category != nil);
 	GBLogDebug(@"Registering category %@...", category);
 	if ([_categories containsObject:category]) return;
-	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
+	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory ? category.nameOfCategory : @""];
 	GBCategoryData *existingCategory = [_categoriesByName objectForKey:categoryID];
 	if (existingCategory) {
 		[existingCategory mergeDataFromObject:category];
@@ -91,6 +91,18 @@
 	}
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
+}
+
+- (GBClassData *)classByName:(NSString *)name {
+	return [_classesByName objectForKey:name];
+}
+
+- (GBClassData *)categoryByName:(NSString *)name {
+	return [_categoriesByName objectForKey:name];
+}
+
+- (GBClassData *)protocolByName:(NSString *)name {
+	return [_protocolsByName objectForKey:name];
 }
 
 @synthesize classes = _classes;

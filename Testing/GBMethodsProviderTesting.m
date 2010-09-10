@@ -61,6 +61,30 @@
 	[destination verify];
 }
 
+#pragma mark Helper methods testing
+
+- (void)testMethodBySelector_shouldReturnProperInstanceOrNil {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", @"arg", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry classMethodWithNames:@"method3", nil];
+	GBMethodData *property = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	[provider registerMethod:method3];
+	[provider registerMethod:property];
+	// execute & verify
+	assertThat([provider methodBySelector:@"method1:"], is(method1));
+	assertThat([provider methodBySelector:@"method:arg:"], is(method2));
+	assertThat([provider methodBySelector:@"method3:"], is(method3));
+	assertThat([provider methodBySelector:@"name"], is(property));
+	assertThat([provider methodBySelector:@"some:other:"], is(nil));
+	assertThat([provider methodBySelector:@"single"], is(nil));
+	assertThat([provider methodBySelector:@""], is(nil));
+	assertThat([provider methodBySelector:nil], is(nil));
+}
+
 #pragma mark Method merging testing
 
 - (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {

@@ -54,6 +54,21 @@
 	[class1 verify];
 }
 
+- (void)testClassByName_shouldReturnProperInstanceOrNil {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	[store registerClass:class1];
+	[store registerClass:class2];
+	// execute & verify
+	assertThat([store classByName:@"Class1"], is(class1));
+	assertThat([store classByName:@"Class2"], is(class2));
+	assertThat([store classByName:@"Class3"], is(nil));
+	assertThat([store classByName:@""], is(nil));
+	assertThat([store classByName:nil], is(nil));
+}
+
 #pragma mark Category registration testing
 
 - (void)testRegisterCategory_shouldAddCategoryToList {
@@ -147,6 +162,25 @@
 	assertThatBool([store.categories containsObject:extension], equalToBool(YES));
 }
 
+- (void)testCategoryByName_shouldReturnProperInstanceOrNil {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"Category1" className:@"Class"];
+	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"Category2" className:@"Class"];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
+	[store registerCategory:category1];
+	[store registerCategory:category2];
+	[store registerCategory:extension];
+	// execute & verify
+	assertThat([store categoryByName:@"Class(Category1)"], is(category1));
+	assertThat([store categoryByName:@"Class(Category2)"], is(category2));
+	assertThat([store categoryByName:@"Class()"], is(extension));
+	assertThat([store categoryByName:@"Class(Category3)"], is(nil));
+	assertThat([store categoryByName:@"Class1()"], is(nil));
+	assertThat([store categoryByName:@"()"], is(nil));
+	assertThat([store categoryByName:nil], is(nil));
+}
+
 #pragma mark Protocol registration testing
 
 - (void)testRegisterProtocol_shouldAddProtocolToList {
@@ -185,6 +219,21 @@
 	// verify
 	assertThatInteger([store.protocols count], equalToInteger(1));
 	[protocol1 verify];
+}
+
+- (void)testProtocolByName_shouldReturnProperInstanceOrNil {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
+	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
+	[store registerProtocol:protocol1];
+	[store registerProtocol:protocol2];
+	// execute & verify
+	assertThat([store protocolByName:@"Protocol1"], is(protocol1));
+	assertThat([store protocolByName:@"Protocol2"], is(protocol2));
+	assertThat([store protocolByName:@"Protocol3"], is(nil));
+	assertThat([store protocolByName:@""], is(nil));
+	assertThat([store protocolByName:nil], is(nil));
 }
 
 @end

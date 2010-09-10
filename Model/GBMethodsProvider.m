@@ -55,6 +55,10 @@
 	}
 }
 
+- (GBMethodData *)methodBySelector:(NSString *)selector {
+	return [_methodsBySelectors objectForKey:selector];
+}
+
 #pragma mark Properties
 
 @synthesize methods = _methods;

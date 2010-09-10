@@ -60,6 +60,15 @@
  */
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source;
 
+/** Returns the method that matches the given selector.
+ 
+ If no method matches the given selector, `nil` is returned. If `nil` or empty string is passed for selector, `nil` is returned also.
+ 
+ @param selector Selector for which to return the method.
+ @return Returns method data or `nil` if no method matches the given selector.
+ */
+- (GBMethodData *)methodBySelector:(NSString *)selector;
+
 /** The array of all registered methods as `GBMethodData` instances in the order of registration. */
 @property (readonly) NSArray *methods;
 
