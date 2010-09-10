@@ -20,8 +20,8 @@
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
 	// execute & verify
-	assertThat(category.categoryID, is(@"Class(Category)"));
-	assertThat(extension.categoryID, is(@"Class()"));
+	assertThat(category.idOfCategory, is(@"Class(Category)"));
+	assertThat(extension.idOfCategory, is(@"Class()"));
 }
 
 #pragma mark Base data merging

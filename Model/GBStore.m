@@ -97,11 +97,11 @@
 	return [_classesByName objectForKey:name];
 }
 
-- (GBClassData *)categoryByName:(NSString *)name {
+- (GBCategoryData *)categoryByName:(NSString *)name {
 	return [_categoriesByName objectForKey:name];
 }
 
-- (GBClassData *)protocolByName:(NSString *)name {
+- (GBProtocolData *)protocolByName:(NSString *)name {
 	return [_protocolsByName objectForKey:name];
 }
 

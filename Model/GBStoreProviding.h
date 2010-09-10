@@ -93,7 +93,7 @@
  @see protocolByName:
  @see categories
  */
-- (GBClassData *)categoryByName:(NSString *)name;
+- (GBCategoryData *)categoryByName:(NSString *)name;
 
 /** Returns the protocol instance that matches the given name.
  
@@ -105,7 +105,7 @@
  @see categoryByName:
  @see protocols
  */
-- (GBClassData *)protocolByName:(NSString *)name;
+- (GBProtocolData *)protocolByName:(NSString *)name;
 
 /** The list of all registered classes as instances of `GBClassData`.
  

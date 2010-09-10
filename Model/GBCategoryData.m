@@ -46,7 +46,7 @@
 }
 
 - (NSString *)description {
-	return self.categoryID;
+	return self.idOfCategory;
 }
 
 #pragma mark Properties
@@ -55,7 +55,7 @@
 	return ([self nameOfCategory] == nil);
 }
 
-- (NSString *)categoryID {
+- (NSString *)idOfCategory {
 	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.nameOfClass];
 	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.nameOfCategory];
 }

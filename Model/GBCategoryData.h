@@ -60,7 +60,7 @@
 @property (readonly) NSString *nameOfClass;
 
 /** The ID of the category composed of class name followed by category name in parenthesis. */
-@property (readonly) NSString *categoryID;
+@property (readonly) NSString *idOfCategory;
 
 /** Categories adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;
