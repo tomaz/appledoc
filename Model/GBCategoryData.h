@@ -47,7 +47,7 @@
 - (id)initWithName:(NSString *)name className:(NSString *)className;
 
 ///---------------------------------------------------------------------------------------
-/// @name Class data
+/// @name Category data
 ///---------------------------------------------------------------------------------------
 
 /** Determines whether this category is extension or not. */
@@ -58,6 +58,9 @@
 
 /** The name of the class the category extends. */
 @property (readonly) NSString *nameOfClass;
+
+/** The ID of the category composed of class name followed by category name in parenthesis. */
+@property (readonly) NSString *categoryID;
 
 /** Categories adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

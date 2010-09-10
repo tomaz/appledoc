@@ -13,10 +13,21 @@
 
 @implementation GBCategoryDataTesting
 
+#pragma mark Derived members testing
+
+- (void)testCategoryID_shouldReturnProperValue {
+	// setup
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
+	// execute & verify
+	assertThat(category.categoryID, is(@"Class(Category)"));
+	assertThat(extension.categoryID, is(@"Class()"));
+}
+
 #pragma mark Base data merging
 
 - (void)testMergeDataFromObject_shouldMergeImplementationDetails {
-	//setup
+	// setup
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	[source registerDeclaredFile:@"file"];
@@ -29,7 +40,7 @@
 #pragma mark Category components merging
 
 - (void)testMergeDataFromObject_categoryShouldMergeAdoptedProtocolsAndPreserveSourceData {
-	//setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
+	// setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
@@ -44,7 +55,7 @@
 }
 
 - (void)testMergeDataFromObject_categoryShouldMergeMethodsAndPreserveSourceData {
-	//setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
+	// setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
@@ -61,7 +72,7 @@
 #pragma mark Extension components merging
 
 - (void)testMergeDataFromObject_extensionShouldMergeAdoptedProtocolsAndPreserveSourceData {
-	//setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
+	// setup - only basic handling is done here; details are tested within GBAdoptedProtocolsProviderTesting!
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[original.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
@@ -76,7 +87,7 @@
 }
 
 - (void)testMergeDataFromObject_extensionShouldMergeMethodsAndPreserveSourceData {
-	//setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
+	// setup - only basic handling is done here; details are tested within GBIvarsProviderTesting!
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:nil className:@"MyClass"];
 	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
 	[original.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
