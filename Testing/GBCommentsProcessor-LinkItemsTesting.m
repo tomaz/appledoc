@@ -340,4 +340,45 @@
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"Class( )", nil];
 }
 
+#pragma mark Protocols processing testing
+
+- (void)testProcessCommentWithStore_protocol_shouldDetectLocalLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+	GBComment *comment = [GBComment commentWithStringValue:@"Protocol"];
+	// execute
+	[processor processComment:comment withContext:protocol store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Protocol", protocol, GBNULL, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_protocol_shouldDetectRemoteLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
+	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerProtocol:protocol1];
+	[store registerProtocol:protocol2];
+	GBComment *comment = [GBComment commentWithStringValue:@"Protocol2"];
+	// execute
+	[processor processComment:comment withContext:protocol1 store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"Protocol2", protocol2, GBNULL, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_protocol_shouldIgnoreIfNotRegisteredToStoreEvenIfPassedAsCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"Protocol"];
+	// execute
+	[processor processComment:comment withContext:protocol store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Protocol", nil];
+}
+
 @end
