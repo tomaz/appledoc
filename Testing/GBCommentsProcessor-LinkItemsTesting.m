@@ -62,7 +62,7 @@
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @"suffix", nil];
 }
 
-#pragma mark URL testing
+#pragma mark URL processing testing
 
 - (void)testProcessCommentWithStore_url_shouldDetectVariousPrefixes {
 	// setup
@@ -81,6 +81,16 @@
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"https://gentlebytes.com", nil];
 	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"ftp://user:pass@gentlebytes.com", nil];
 	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"file://gentlebytes.com", nil];
+}
+
+- (void)testProcessCommentWithStore_url_shouldDetectMarkedUrl {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"<http://gentlebytes.com>"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"http://gentlebytes.com", nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldIgnoreUnknownPrefixes {

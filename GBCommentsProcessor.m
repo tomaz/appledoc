@@ -305,7 +305,7 @@
 		if ([word length] == 0) return;
 		
 		// Test for URL reference.
-		NSString *url = [word stringByMatching:provider.urlCrossReferenceRegex];
+		NSString *url = [word stringByMatching:provider.urlCrossReferenceRegex capture:1];
 		if (url) {
 			GBCREATE_TEXT_ITEM;
 			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
