@@ -18,7 +18,7 @@
 
 #pragma mark Description processing testing
 
-- (void)testProcessCommentWithStore_bugs_shouldAttachBugToPreviousParagraph {
+- (void)testProcessCommentWithStore_shouldAttachBugToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n@bug Description"];
@@ -33,7 +33,7 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
-- (void)testProcessCommentWithStore_bugs_shouldDetectMultipleLinesDescriptions {
+- (void)testProcessCommentWithStore_shouldDetectMultipleLinesDescriptions {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n@bug Line1\nLine2"];
@@ -48,7 +48,7 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
 }
 
-- (void)testProcessCommentWithStore_bugs_shouldCreateParagraphIfNoneSpecifiedBefore {
+- (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"@bug Description"];
@@ -65,7 +65,7 @@
 
 #pragma mark Requirements before/after testing
 
-- (void)testProcessCommentWithStore_bugs_requiresEmptyLineAfterPreviousParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineAfterPreviousParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n@bug Line"];
@@ -77,7 +77,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph @bug Line", nil];
 }
 
-- (void)testProcessCommentWithStore_bugs_requiresEmptyLineBeforeNextParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"@bug Description\nNext"];

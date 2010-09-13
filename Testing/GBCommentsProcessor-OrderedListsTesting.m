@@ -18,7 +18,7 @@
 
 #pragma mark List processing testing
 
-- (void)testProcessCommentWithStore_orderedLists_shouldAttachListToPreviousParagraph {
+- (void)testProcessCommentWithStore_shouldAttachListToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1. Item"];
@@ -31,7 +31,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_shouldDetectMultipleLinesLists {
+- (void)testProcessCommentWithStore_shouldDetectMultipleLinesLists {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1. Item1\n2. Item2"];
@@ -44,7 +44,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_shouldDetectMultipleLinesListsRegardlessOfLineNumbers {
+- (void)testProcessCommentWithStore_shouldDetectMultipleLinesListsRegardlessOfLineNumbers {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n999. Item1\n12. Item2"];
@@ -57,7 +57,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_shouldDetectItemsSpanningMutlipleLines {
+- (void)testProcessCommentWithStore_shouldDetectItemsSpanningMutlipleLines {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n1. Item1\nContinued\n2. Item2"];
@@ -70,7 +70,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_shouldCreateParagraphIfNoneSpecifiedBefore {
+- (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"1. Item"];
@@ -85,7 +85,7 @@
 
 #pragma mark Requirements testing
 
-- (void)testProcessCommentWithStore_orderedLists_requiresWhitespaceBetweenMarkerAndDescription {
+- (void)testProcessCommentWithStore_requiresWhitespaceBetweenMarkerAndDescription {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"1.Line"];
@@ -97,7 +97,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"1.Line", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_requiresEmptyLineAfterPreviousParagraph {
+- (void)testProcessCommentWithStore_requiresEmptyLineAfterPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n1. Line"];
@@ -109,7 +109,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph 1. Line", nil];
 }
 
-- (void)testProcessCommentWithStore_orderedLists_requiresEmptyLineBeforeNextParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"1. Description\nNext"];

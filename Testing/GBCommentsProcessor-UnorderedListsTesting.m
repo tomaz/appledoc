@@ -18,7 +18,7 @@
 
 #pragma mark List processing testing
 
-- (void)testProcessCommentWithStore_unorderedLists_shouldAttachListToPreviousParagraph {
+- (void)testProcessCommentWithStore_shouldAttachListToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n- Item"];
@@ -31,7 +31,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_shouldDetectMultipleLinesLists {
+- (void)testProcessCommentWithStore_shouldDetectMultipleLinesLists {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n- Item1\n- Item2"];
@@ -44,7 +44,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_shouldDetectItemsSpanningMutlipleLines {
+- (void)testProcessCommentWithStore_shouldDetectItemsSpanningMutlipleLines {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n- Item1\nContinued\n- Item2"];
@@ -57,7 +57,7 @@
 	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_shouldCreateParagraphIfNoneSpecifiedBefore {
+- (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"- Item"];
@@ -72,7 +72,7 @@
 
 #pragma mark Requirements testing
 
-- (void)testProcessCommentWithStore_unorderedLists_requiresWhitespaceBetweenMarkerAndDescription {
+- (void)testProcessCommentWithStore_requiresWhitespaceBetweenMarkerAndDescription {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"-Line"];
@@ -84,7 +84,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"-Line", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_requiresEmptyLineAfterPreviousParagraph {
+- (void)testProcessCommentWithStore_requiresEmptyLineAfterPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n- Line"];
@@ -96,7 +96,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph - Line", nil];
 }
 
-- (void)testProcessCommentWithStore_unorderedLists_requiresEmptyLineBeforeNextParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"- Description\nNext"];

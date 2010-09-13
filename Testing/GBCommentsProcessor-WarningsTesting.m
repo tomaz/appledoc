@@ -18,7 +18,7 @@
 
 #pragma mark Description processing testing
 
-- (void)testProcessCommentWithStore_warnings_shouldAttachWarningToPreviousParagraph {
+- (void)testProcessCommentWithStore_shouldAttachWarningToPreviousParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n@warning Description"];
@@ -33,7 +33,7 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
-- (void)testProcessCommentWithStore_warnings_shouldDetectMultipleLinesDescriptions {
+- (void)testProcessCommentWithStore_shouldDetectMultipleLinesDescriptions {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n@warning Line1\nLine2"];
@@ -48,7 +48,7 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
 }
 
-- (void)testProcessCommentWithStore_warnings_shouldCreateParagraphIfNoneSpecifiedBefore {
+- (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"@warning Description"];
@@ -65,7 +65,7 @@
 
 #pragma mark Requirements before/after testing
 
-- (void)testProcessCommentWithStore_warnings_requiresEmptyLineAfterPreviousParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineAfterPreviousParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n@warning Line"];
@@ -77,7 +77,7 @@
 	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph @warning Line", nil];
 }
 
-- (void)testProcessCommentWithStore_warnings_requiresEmptyLineBeforeNextParagraphItem {
+- (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"@warning Description\nNext"];
