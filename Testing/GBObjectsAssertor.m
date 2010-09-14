@@ -12,7 +12,7 @@
 @interface GBObjectsAssertor ()
 
 - (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index;
-- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index;
+- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)level;
 
 @end
 
@@ -210,38 +210,45 @@
 	va_list args;
 	va_start(args,first);
 	while (YES) {
-		NSNumber *ordered = [NSNumber numberWithBool:va_arg(args, BOOL)];		
-		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", ordered, @"ordered", nil];
+		NSNumber *ordered = [NSNumber numberWithBool:va_arg(args, BOOL)];
+		NSNumber *level = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", ordered, @"ordered", level, @"level", nil];
 		[arguments addObject:data];		
 		value = va_arg(args, NSString *);
 		if (!value) break;
 	}
 	va_end(args);
 	
-	NSUInteger index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:0];
+	NSUInteger index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:0 atLevel:1];
 	assertThatInteger(index, equalToInteger([arguments count]));
 }
 
-- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index {
+- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)expectedLevel {
 	// Get current expected values.
 	NSDictionary *data = [arguments objectAtIndex:index];
 	NSString *value = [data objectForKey:@"value"];
 	BOOL ordered = [[data objectForKey:@"ordered"] boolValue];
+	NSUInteger level = [[data objectForKey:@"level"] unsignedIntValue];
 	
-	// Increment the index.
-	index++;
-
 	// Verify item's values. Note that each item must have at least one paragraph with item's text description!
 	assertThat([item class], is([GBParagraphListItem class]));
 	assertThatBool([item isOrdered], equalToBool(ordered));	
 	assertThatBool([item.items count] > 0, equalToBool(YES));
-	assertThat([[item.items objectAtIndex:0] stringValue], is(value));
+	assertThatBool([[[item.items objectAtIndex:0] items] count] > 0, equalToBool(YES));
+	assertThat([[[[item.items objectAtIndex:0] items] objectAtIndex:0] stringValue], is(value));
+	assertThatInteger(expectedLevel, equalToInteger(level));
 	
-	// Recursively follow subitems hierarchy.
-	for (NSUInteger i=1; i<[item.items count]; i++) {
-		index = [self assertListItem:[item.items objectAtIndex:i] describesHierarchy:arguments startingAtIndex:index];
+	// Recursively follow all paragraphs and their subitems hierarchy (skip text items).
+	for (GBCommentParagraph *paragraph in item.items) {
+		for (GBParagraphItem *paragraphsItem in paragraph.items) {
+			if ([paragraphsItem isKindOfClass:[GBParagraphListItem class]]) {
+				GBParagraphListItem *list = (GBParagraphListItem *)paragraphsItem;
+				index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:index atLevel:expectedLevel+1];
+			} else {
+				index++;
+			}
+		}
 	}
-	
 	return index;
 }
 

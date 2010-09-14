@@ -146,7 +146,8 @@
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
 			item = [GBParagraphListItem paragraphItemWithStringValue:string];
 			item.isOrdered = ordered;
-			[[[stack lastObject] objectForKey:@"item"] registerItem:item];
+			GBParagraphListItem *parent = [[stack lastObject] objectForKey:@"item"];
+			[[[parent items] lastObject] registerItem:item];
 			[data setObject:indent forKey:@"indent"];
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];

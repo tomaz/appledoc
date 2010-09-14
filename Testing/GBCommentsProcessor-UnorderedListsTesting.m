@@ -75,12 +75,62 @@
 - (void)testProcessCommentWithStore_shouldDetectNestedUnorderedList {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"- Parent\n\t- Child"];
+	GBComment *comment = [GBComment commentWithStringValue:@"- p\n\t- c1\n\t- c2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"Parent", NO, @"Child", NO, nil];
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",NO,2, @"c2",NO,2, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldDetectNestedOrderedList {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"- p\n\t1. c1\n\t2. c2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",YES,2, @"c2",YES,2, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldJumpBackLevels {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"- i1\n\t- i11\n\t\t- i111\n- i2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",NO,1, @"i11",NO,2, @"i111",NO,3, @"i1",NO,1, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldManageComplexLists {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:
+						  @"- a\n"
+						  @"  - a1\n"
+						  @"    1. a11\n"
+						  @"    2. a12\n"
+						  @"- b\n"
+						  @"- c\n"
+						  @"  - c1\n"
+						  @"    - c11\n"
+						  @"    - c12\n"
+						  @"  - c2\n"
+						  @"- d\n"
+						  @"- e"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:
+	 @"a",NO,1, @"a1",NO,2, @"a11",YES,3, @"a12",YES,3, 
+	 @"b",NO,1, 
+	 @"c",NO,1, @"c1",NO,2, @"c11",NO,3, @"c12",NO,3, @"c2",NO,2, 
+	 @"d",NO,1, 
+	 @"e",NO,1, nil];
 }
 
 #pragma mark Requirements testing
