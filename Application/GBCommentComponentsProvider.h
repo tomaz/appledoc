@@ -26,17 +26,17 @@
 /// @name Lists definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching ordered lists with capture 1 containing list text. */
+/** Returns the regex used for matching ordered lists with capture 1 containing lists indent and capture 2 string value. */
 @property (readonly) NSString *orderedListRegex;
 
-/** Returns the regex used for matching ordered list prefix. */
-@property (readonly) NSString *orderedListPrefixRegex;
+/** Returns the regex used for testing whether a string matches an ordered lists. */
+@property (readonly) NSString *orderedListMatchRegex;
 
-/** Returns the regex used for matching unordered lists with capture 1 containing list text. */
+/** Returns the regex used for matching unordered lists with capture 1 containing list indent and capture 2 string value. */
 @property (readonly) NSString *unorderedListRegex;
 
-/** Returns the regex used for matching unordered list prefix. */
-@property (readonly) NSString *unorderedListPrefixRegex;
+/** Returns the regex used for testing whether a string matches an unordered list. */
+@property (readonly) NSString *unorderedListMatchRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Sections definitions

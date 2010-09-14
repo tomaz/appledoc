@@ -70,6 +70,19 @@
 	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
+#pragma mark Nested lists testing
+
+- (void)testProcessCommentWithStore_shouldDetectNestedUnorderedList {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"- Parent\n\t- Child"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"Parent", NO, @"Child", NO, nil];
+}
+
 #pragma mark Requirements testing
 
 - (void)testProcessCommentWithStore_requiresWhitespaceBetweenMarkerAndDescription {

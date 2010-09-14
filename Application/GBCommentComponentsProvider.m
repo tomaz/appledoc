@@ -38,19 +38,19 @@
 #pragma mark Lists detection
 
 - (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"^%@(.*)", self.orderedListPrefixRegex]));
-}
-
-- (NSString *)orderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"\\s*[0-9]+\\.\\s+");
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@(.*))", self.orderedListMatchRegex]));
 }
 
 - (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"^%@(.*)", self.unorderedListPrefixRegex]));
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@(.*))", self.unorderedListMatchRegex]));
 }
 
-- (NSString *)unorderedListPrefixRegex {
-	GBRETURN_ON_DEMAND(@"\\s*[-+*]\\s+");
+- (NSString *)orderedListMatchRegex {
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+");
+}
+
+- (NSString *)unorderedListMatchRegex {
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+");
 }
 
 #pragma mark Sections detection
