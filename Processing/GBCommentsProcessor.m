@@ -134,14 +134,19 @@
 		
 		// Determine level from indentation. If we use the same indentation, we need to create a new list item for the current list (also create the list item object if this is the first item). If indentation is greater, we need to create a sublist, otherwise we need to close sublist(s).
 		GBParagraphListItem *item = nil;
-		if ([stack count] == 0 || [indent length] > [[[stack lastObject] objectForKey:@"indent"] length]) {
-			// Create the item and register it to paragraph if this is top level item.
+		if ([stack count] == 0) {
+			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
 			item = [GBParagraphListItem paragraphItemWithStringValue:string];
 			item.isOrdered = ordered;
-			if ([stack count] == 0) [paragraph registerItem:item];
-			
-			// Prepare stack data.
+			[paragraph registerItem:item];
+			[data setObject:indent forKey:@"indent"];
+			[data setObject:item forKey:@"item"];
+			[stack addObject:data];
+		} else if ([indent length] > [[[stack lastObject] objectForKey:@"indent"] length]) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
+			item = [GBParagraphListItem paragraphItemWithStringValue:string];
+			item.isOrdered = ordered;
+			[[[stack lastObject] objectForKey:@"item"] registerItem:item];
 			[data setObject:indent forKey:@"indent"];
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];
