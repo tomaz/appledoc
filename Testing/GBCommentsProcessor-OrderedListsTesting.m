@@ -83,6 +83,69 @@
 	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:YES containsParagraphs:@"Item", nil];
 }
 
+#pragma mark Nested lists testing
+
+- (void)testProcessCommentWithStore_shouldDetectNestedOrderedList {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"1. p\n\t1. c1\n\t2. c2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",YES,2, @"c2",YES,2, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldDetectNestedUnorderedList {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"1. p\n\t- c1\n\t- c2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",NO,2, @"c2",NO,2, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldJumpBackLevels {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"1. i1\n\t1. i11\n\t\t1. i111\n2. i2"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",YES,1, @"i11",YES,2, @"i111",YES,3, @"i1",YES,1, nil];
+}
+
+- (void)testProcessCommentWithStore_shouldManageComplexLists {
+	// setup - note that we use spaces instead of tabs, doesn't matter as long as same ammount is applied for each level!
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:
+						  @"1. a\n"
+						  @"  1. a1\n"
+						  @"    - a11\n"
+						  @"    - a12\n"
+						  @"2. b\n"
+						  @"3. c\n"
+						  @"  1. c1\n"
+						  @"    1. c11\n"
+						  @"    2. c12\n"
+						  @"  2. c2\n"
+						  @"4. d\n"
+						  @"5. e"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:
+	 @"a",YES,1, @"a1",YES,2, @"a11",NO,3, @"a12",NO,3, 
+	 @"b",YES,1, 
+	 @"c",YES,1, @"c1",YES,2, @"c11",YES,3, @"c12",YES,3, @"c2",YES,2, 
+	 @"d",YES,1, 
+	 @"e",YES,1, nil];
+}
+
 #pragma mark Requirements testing
 
 - (void)testProcessCommentWithStore_requiresWhitespaceBetweenMarkerAndDescription {

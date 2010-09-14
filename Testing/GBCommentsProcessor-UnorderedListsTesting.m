@@ -106,7 +106,7 @@
 }
 
 - (void)testProcessCommentWithStore_shouldManageComplexLists {
-	// setup
+	// setup - note that we use spaces instead of tabs, doesn't matter as long as same ammount is applied for each level!
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:
 						  @"- a\n"
