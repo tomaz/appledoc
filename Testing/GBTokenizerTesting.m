@@ -54,7 +54,7 @@
 	assertThat([tokenizer2 lastCommentString], is(@"comment"));
 }
 
-#pragma mark lookahead testing
+#pragma mark Lookahead testing
 
 - (void)testLookahead_shouldReturnNextToken {
 	// setup
@@ -287,6 +287,18 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"]];
 	// verify
 	assertThat([tokenizer lastCommentString], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
+}
+
+- (void)testLastCommentString_shouldHandlePrefixedComments {
+	NSString *string = 
+	@"/**\n"
+	@" * first line of text,\n"
+	@" * second line of text\n"
+	@" **/"	
+	@"TOKEN";
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:string]];
+	// verify
+	assertThat([tokenizer lastCommentString], is(@"\nfirst line of text,\nsecond line of text\n"));
 }
 
 #pragma mark Creation methods
