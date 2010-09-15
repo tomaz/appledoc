@@ -151,6 +151,11 @@
 			[data setObject:indent forKey:@"indent"];
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];
+		} else if ([indent length] < [[[stack lastObject] objectForKey:@"indent"] length]) {
+			while ([stack count] > 0 && [indent length] < [[[stack lastObject] objectForKey:@"indent"] length]) {
+				[stack removeLastObject];
+			}
+			item = [[stack lastObject] objectForKey:@"item"];
 		} else {
 			item = [[stack lastObject] objectForKey:@"item"];
 		}

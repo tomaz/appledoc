@@ -223,29 +223,28 @@
 	assertThatInteger(index, equalToInteger([arguments count]));
 }
 
-- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)expectedLevel {
-	// Get current expected values.
-	NSDictionary *data = [arguments objectAtIndex:index];
-	NSString *value = [data objectForKey:@"value"];
-	BOOL ordered = [[data objectForKey:@"ordered"] boolValue];
-	NSUInteger level = [[data objectForKey:@"level"] unsignedIntValue];
-	
+- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)expectedLevel {	
 	// Verify item's values. Note that each item must have at least one paragraph with item's text description!
 	assertThat([item class], is([GBParagraphListItem class]));
-	assertThatBool([item isOrdered], equalToBool(ordered));	
-	assertThatBool([item.items count] > 0, equalToBool(YES));
-	assertThatBool([[[item.items objectAtIndex:0] items] count] > 0, equalToBool(YES));
-	assertThat([[[[item.items objectAtIndex:0] items] objectAtIndex:0] stringValue], is(value));
-	assertThatInteger(expectedLevel, equalToInteger(level));
 	
 	// Recursively follow all paragraphs and their subitems hierarchy (skip text items).
 	for (GBCommentParagraph *paragraph in item.items) {
 		for (GBParagraphItem *paragraphsItem in paragraph.items) {
-			if ([paragraphsItem isKindOfClass:[GBParagraphListItem class]]) {
+			if ([paragraphsItem isKindOfClass:[GBParagraphTextItem class]]) {
+				// Get current expected values.
+				NSDictionary *data = [arguments objectAtIndex:index];
+				NSString *value = [data objectForKey:@"value"];
+				BOOL ordered = [[data objectForKey:@"ordered"] boolValue];
+				NSUInteger level = [[data objectForKey:@"level"] unsignedIntValue];
+				
+				// Verify values, note that we also verify parent-list item's values here...
+				assertThat([paragraphsItem stringValue], is(value));
+				assertThatBool([item isOrdered], equalToBool(ordered));
+				assertThatInteger(expectedLevel, equalToInteger(level));
+				index++;
+			} else if ([paragraphsItem isKindOfClass:[GBParagraphListItem class]]) {
 				GBParagraphListItem *list = (GBParagraphListItem *)paragraphsItem;
 				index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:index atLevel:expectedLevel+1];
-			} else {
-				index++;
 			}
 		}
 	}

@@ -115,7 +115,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",YES,1, @"i11",YES,2, @"i111",YES,3, @"i1",YES,1, nil];
+	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",YES,1, @"i11",YES,2, @"i111",YES,3, @"i2",YES,1, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldManageComplexLists {
