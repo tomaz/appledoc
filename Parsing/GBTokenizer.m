@@ -162,22 +162,26 @@
 	NSMutableArray *comments = [NSMutableArray arrayWithCapacity:[lines count]];
 	
 	// First pass: removes delimiters. We simply detect 3+ delimiter chars in any combination. If removing delimiter yields empty line, discard it.
-	[lines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		NSString *delimited = [stripped stringByReplacingOccurrencesOfRegex:self.commentDelimiterRegex withString:@""];
 		if ([stripped length] > [delimited length]) {
 			if ([delimited length] > 0) [comments addObject:delimited];
 			return;
 		}
-		[comments addObject:obj];
+		[comments addObject:line];
 	}];
 	
-	// If all lines start with a *, ignore that part.
+	// If all lines start with a *, ignore the prefix. Note that we ignore first line as it can only contain /** and text! We also ignore last line as if it only contains */
+	NSString *prefixRegex = @"(?m:^\\s*\\*\\s*)";
 	__block BOOL stripPrefix = ([comments count] > 1);
 	if (stripPrefix) {
-		[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			NSString *line = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([line length] > 0 && ![line hasPrefix:@"*"] && idx > 0) {
+		[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+			NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+			if (idx == [comments count]-1 && [stripped length] == 0) {
+				return;
+			}
+			if (idx > 0 && ![stripped isMatchedByRegex:prefixRegex]) {
 				stripPrefix = NO;
 				*stop = YES;
 			}
@@ -187,13 +191,11 @@
 	// Finally remove common line prefix including all spaces and compose all objects into final comment.
 	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
 	NSMutableString *result = [NSMutableString stringWithCapacity:[self.lastComment length]];
-	[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		if (stripPrefix) {
-			obj = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([obj hasPrefix:@"*"]) obj = [obj substringFromIndex:1];
-		}
-		obj = [obj stringByTrimmingCharactersInSet:spacesSet];
-		[result appendString:obj];
+	[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		if (stripPrefix)
+			line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
+		line = [line stringByTrimmingCharactersInSet:spacesSet];
+		[result appendString:line];
 		if (idx < [comments count] - 1) [result appendString:@"\n"];
 	}];	
 	

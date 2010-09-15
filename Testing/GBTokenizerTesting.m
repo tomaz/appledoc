@@ -276,10 +276,13 @@
 }
 
 - (void)testLastCommentString_shouldRemoveCommonPrefix {
-	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n * line2\n * line3\n */\n   ONE"]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** first\n * second */ ONE"]];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second */ ONE"]];
+	GBTokenizer *tokenizer3 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second\n */ ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line1\nline2\nline3\n"));
+	assertThat([tokenizer1 lastCommentString], is(@"first\nsecond"));
+	assertThat([tokenizer2 lastCommentString], is(@"\nfirst\nsecond"));
+	assertThat([tokenizer3 lastCommentString], is(@"\nfirst\nsecond\n"));
 }
 
 - (void)testLastCommentString_shouldKeepExampleTabs {
@@ -287,18 +290,6 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"]];
 	// verify
 	assertThat([tokenizer lastCommentString], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
-}
-
-- (void)testLastCommentString_shouldHandlePrefixedComments {
-	NSString *string = 
-	@"/**\n"
-	@" * first line of text,\n"
-	@" * second line of text\n"
-	@" **/"	
-	@"TOKEN";
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:string]];
-	// verify
-	assertThat([tokenizer lastCommentString], is(@"\nfirst line of text,\nsecond line of text\n"));
 }
 
 #pragma mark Creation methods
