@@ -387,7 +387,7 @@ static RKL_STRONG_REF void * RKL_GC_VOLATILE rkl_scratchBuffer[_RKL_SCRATCH_BUFF
 // The split strings are created, but not autoreleased.  The (immutable) array is created using these callbacks, which skips the CFRetain() call, effectively transferring ownership to the CFArray object.
 // For each split string this saves the overhead of an autorelease, then an array retain, then an NSAutoreleasePool release. This is good for a ~30% speed increase.
 
-static void  rkl_CFCallbackRelease(CFAllocatorRef allocator RKL_UNUSED_ARG, const void *ptr) { CFRelease((CFTypeRef)ptr);                                                   }
+static void  rkl_CFCallbackRelease(CFAllocatorRef allocator RKL_UNUSED_ARG, const void *ptr) { /*CFRelease((CFTypeRef)ptr); */                                                  }
 static const CFArrayCallBacks           rkl_transferOwnershipArrayCallBacks           =      { (CFIndex)0L, NULL, rkl_CFCallbackRelease, CFCopyDescription, CFEqual         };
 static const CFDictionaryKeyCallBacks   rkl_transferOwnershipDictionaryKeyCallBacks   =      { (CFIndex)0L, NULL, rkl_CFCallbackRelease, CFCopyDescription, CFEqual, CFHash };
 static const CFDictionaryValueCallBacks rkl_transferOwnershipDictionaryValueCallBacks =      { (CFIndex)0L, NULL, rkl_CFCallbackRelease, CFCopyDescription, CFEqual         };
