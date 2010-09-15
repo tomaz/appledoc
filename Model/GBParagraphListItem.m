@@ -51,6 +51,15 @@
 
 #pragma mark Overriden methods
 
+- (NSString *)stringValue {
+	NSMutableString *description = [NSMutableString stringWithCapacity:1000];	
+	[self.items enumerateObjectsUsingBlock:^(GBCommentParagraph *paragraph, NSUInteger idx, BOOL *stop) {
+		[description appendFormat:@"%@ %@ ", self.isOrdered ? @"#" : @"-", [paragraph stringValue]];
+	}];
+	NSString *trimmed = [description stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+	return [self descriptionStringValueFromValue:trimmed];
+}
+
 - (NSString *)descriptionStringValue {
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [super descriptionStringValue]];
 	if ([self.items count] > 1) [result appendString:@"\n"];

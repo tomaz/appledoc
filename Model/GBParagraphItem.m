@@ -30,11 +30,16 @@
 }
 
 - (NSString *)descriptionStringValue {
-	NSString *extract = [self.stringValue stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+	NSString *extract = [self descriptionStringValueFromValue:self.stringValue];
+	return [NSString stringWithFormat:@"'%@'", extract];
+}
+
+- (NSString *)descriptionStringValueFromValue:(NSString *)value {
+	NSString *extract = [value stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
 	extract = [extract substringToIndex:MIN(35,[extract length])];
+	BOOL missing = ([extract length] < [value length]);
 	extract = [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	BOOL missing = ([extract length] < [self.stringValue length]);
-	return [NSString stringWithFormat:@"'%@%@'", extract, missing ? @"*" : @""];
+	return [NSString stringWithFormat:@"%@%@", extract, missing ? @"*" : @""];
 }
 
 #pragma mark Properties

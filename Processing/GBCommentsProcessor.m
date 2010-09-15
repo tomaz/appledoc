@@ -136,7 +136,7 @@
 		GBParagraphListItem *item = nil;
 		if ([stack count] == 0) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
-			item = [GBParagraphListItem paragraphItemWithStringValue:string];
+			item = [GBParagraphListItem paragraphItem];
 			item.isOrdered = ordered;
 			[paragraph registerItem:item];
 			[data setObject:indent forKey:@"indent"];
@@ -144,7 +144,7 @@
 			[stack addObject:data];
 		} else if ([indent length] > [[[stack lastObject] objectForKey:@"indent"] length]) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
-			item = [GBParagraphListItem paragraphItemWithStringValue:string];
+			item = [GBParagraphListItem paragraphItem];
 			item.isOrdered = ordered;
 			GBParagraphListItem *parent = [[stack lastObject] objectForKey:@"item"];
 			[[[parent items] lastObject] registerItem:item];
@@ -152,9 +152,8 @@
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];
 		} else if ([indent length] < [[[stack lastObject] objectForKey:@"indent"] length]) {
-			while ([stack count] > 0 && [indent length] < [[[stack lastObject] objectForKey:@"indent"] length]) {
+			while ([stack count] > 0 && [indent length] < [[[stack lastObject] objectForKey:@"indent"] length])
 				[stack removeLastObject];
-			}
 			item = [[stack lastObject] objectForKey:@"item"];
 		} else {
 			item = [[stack lastObject] objectForKey:@"item"];

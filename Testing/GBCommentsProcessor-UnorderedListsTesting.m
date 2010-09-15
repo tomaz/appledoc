@@ -169,7 +169,7 @@
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
 	// verify - comment1 should continue warning
 	assertThatInteger([[comment1 paragraphs] count], equalToInteger(1));
-	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description\nNext", nil];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description Next", nil];
 	// verify - comment2 should start new paragraph
 	assertThatInteger([[comment2 paragraphs] count], equalToInteger(2));
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description", nil];
