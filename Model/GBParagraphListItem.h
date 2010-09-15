@@ -8,6 +8,8 @@
 
 #import "GBParagraphItem.h"
 
+@class GBCommentParagraph;
+
 /** Handles ordered and unordered lists for a `GBCommentParagraph`.
  
  Lists are containers for list items which are instances of `GBCommentParagraph`. This allows us to form a tree structure with nested lists and other paragraph items. Lists can be ordered or unordered, the type can be determined by testing the value of `isOrdered` property.

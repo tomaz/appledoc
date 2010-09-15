@@ -109,6 +109,7 @@
 		73F2CA75123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
 		73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
 		73F2CA77123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
+		73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
@@ -920,6 +921,7 @@
 				73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */,
 				73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
+				73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

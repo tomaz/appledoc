@@ -23,7 +23,6 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
-- (void)initializeSettingsProvider;
 - (void)validateArguments:(NSArray *)arguments;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
