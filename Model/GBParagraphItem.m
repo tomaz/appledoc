@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GBParagraphItem.h"
 
 @implementation GBParagraphItem
@@ -25,14 +26,15 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	NSUInteger length = [self.stringValue length];
-	NSString *extract = (length > 0) ? [self.stringValue substringToIndex:MIN(15,length)] : @"";
-	BOOL missing = ([extract length] < length);
-	return [NSString stringWithFormat:@"%@: %@%@%@", [self className], self.descriptionPrefix, extract, missing ? @"..." : @""];
+	return [NSString stringWithFormat:@"%@ %@", [self className], [self descriptionStringValue]];
 }
 
-- (NSString *)descriptionPrefix {
-	return @"";
+- (NSString *)descriptionStringValue {
+	NSString *extract = [self.stringValue stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+	extract = [extract substringToIndex:MIN(35,[extract length])];
+	extract = [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	BOOL missing = ([extract length] < [self.stringValue length]);
+	return [NSString stringWithFormat:@"'%@%@'", extract, missing ? @"*" : @""];
 }
 
 #pragma mark Properties

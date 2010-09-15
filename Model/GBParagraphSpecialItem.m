@@ -30,6 +30,12 @@
 	_specialItemDescription = [paragraph retain];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)descriptionStringValue {
+	return [NSString stringWithFormat:@"%@{ %@ }", [super descriptionStringValue], self.specialItemDescription];
+}
+
 #pragma mark Properties
 
 @synthesize specialItemDescription = _specialItemDescription;

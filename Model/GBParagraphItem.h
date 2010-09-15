@@ -45,10 +45,10 @@
 /// @name Debugging aids
 ///---------------------------------------------------------------------------------------
 
-/** Prefix to use in debug description, just before `stringValue` extract.
+/** String value as used in debug description.
  
- By default we return empty string, but subclasses can override and provide more meaningful description is applicable. If empty string is returned, no prefix is inserted. This value is only used for debugging purposes and should not be used for any output generation! See `description` implementation for details!
+ By default this returns string value trimmed to some maximum chars, but subclasses can override to provide their specific implementation. This is only used for debugging purposes and should not be used for any output generation! See `description` method implementation for details.
  */
-@property (readonly) NSString *descriptionPrefix;
+@property (readonly) NSString *descriptionStringValue;
 
 @end

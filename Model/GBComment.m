@@ -35,7 +35,14 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@: %ld paragraphs", [self className], [self.paragraphs count]];
+	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [self className]];
+	if ([self.paragraphs count] > 1) [result appendString:@"\n"];
+	[self.paragraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[result appendString:[obj description]];
+		if (idx < [self.paragraphs count]-1) [result appendString:@",\n"];
+	}];
+	[result appendString:([self.paragraphs count] > 1) ? @"\n}" : @" }"];
+	return result;
 }
 
 #pragma mark Properties

@@ -10,6 +10,8 @@
 
 @implementation GBParagraphLinkItem
 
+#pragma mark Properties
+
 @synthesize context;
 @synthesize member;
 @synthesize isLocal;

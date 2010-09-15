@@ -51,8 +51,15 @@
 
 #pragma mark Overriden methods
 
-- (NSString *)descriptionPrefix {
-	return [NSString stringWithFormat:@"%ld items ", [self.items count]];
+- (NSString *)descriptionStringValue {
+	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [super descriptionStringValue]];
+	if ([self.items count] > 1) [result appendString:@"\n"];
+	[self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[result appendString:[obj description]];
+		if (idx < [self.items count]-1) [result appendString:@",\n"];
+	}];
+	[result appendString:([self.items count] > 1) ? @"\n}" : @" }"];
+	return result;
 }
 
 #pragma mark Properties

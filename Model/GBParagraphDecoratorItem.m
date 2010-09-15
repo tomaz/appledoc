@@ -37,6 +37,19 @@
 	}];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)descriptionStringValue {
+	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{", [super descriptionStringValue]];
+	if ([self.decoratedItems count] > 1) [result appendString:@"\n"];
+	[self.decoratedItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[result appendString:[obj description]];
+		if (idx < [self.decoratedItems count]-1) [result appendString:@",\n"];
+	}];
+	[result appendString:([self.decoratedItems count] > 1) ? @"\n}" : @" }"];
+	return result;
+}
+
 #pragma mark Properties
 
 @synthesize decoratedItems = _decoratedItems;
