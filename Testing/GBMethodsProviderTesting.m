@@ -64,6 +64,38 @@
 	assertThatInteger([[provider.methods objectAtIndex:1] methodType], equalToInteger(GBMethodTypeClass));
 }
 
+- (void)testRegisterMethod_shouldMapMethodBySelectorToInstanceMethodRegardlessOfRegistrationOrder {
+	// setup
+	GBMethodsProvider *provider1 = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodsProvider *provider2 = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	// execute
+	[provider1 registerMethod:method1];
+	[provider1 registerMethod:method2];
+	[provider2 registerMethod:method2];
+	[provider2 registerMethod:method1];
+	// verify
+	assertThat([provider1 methodBySelector:@"method:"], is(method1));
+	assertThat([provider2 methodBySelector:@"method:"], is(method1));
+}
+
+- (void)testRegisterMethod_shouldMapMethodBySelectorToPropertyRegardlessOfRegistrationOrder {
+	// setup
+	GBMethodsProvider *provider1 = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodsProvider *provider2 = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithArguments:[GBMethodArgument methodArgumentWithName:@"method"],  nil];
+	// execute
+	[provider1 registerMethod:method1];
+	[provider1 registerMethod:method2];
+	[provider2 registerMethod:method2];
+	[provider2 registerMethod:method1];
+	// verify
+	assertThat([provider1 methodBySelector:@"method"], is(method1));
+	assertThat([provider2 methodBySelector:@"method"], is(method1));
+}
+
 - (void)testRegisterMethod_shouldMergeDifferentInstanceWithSameName {
 	// setup
 	GBMethodType expectedType = GBMethodTypeInstance;
@@ -102,6 +134,28 @@
 	assertThat([provider methodBySelector:@"single"], is(nil));
 	assertThat([provider methodBySelector:@""], is(nil));
 	assertThat([provider methodBySelector:nil], is(nil));
+}
+
+- (void)testMethodBySelector_prefersInstanceMethodToClassMethod {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute & verify
+	assertThat([provider methodBySelector:@"method:"], is(method1));
+}
+
+- (void)testMethodBySelector_prefersPropertyToClassMethod {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithArguments:[GBMethodArgument methodArgumentWithName:@"method"], nil];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute & verify
+	assertThat([provider methodBySelector:@"method"], is(method1));
 }
 
 #pragma mark Method merging testing
