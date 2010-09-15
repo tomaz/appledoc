@@ -46,14 +46,18 @@
 }
 
 - (NSString *)description {
-	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.nameOfClass];
-	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.nameOfCategory];
+	return self.idOfCategory;
 }
 
 #pragma mark Properties
 
 - (BOOL)isExtension {
 	return ([self nameOfCategory] == nil);
+}
+
+- (NSString *)idOfCategory {
+	if (self.isExtension) return [NSString stringWithFormat:@"%@()", self.nameOfClass];
+	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.nameOfCategory];
 }
 
 @synthesize nameOfCategory = _categoryName;

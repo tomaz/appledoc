@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBClassDataTesting : SenTestCase
+@interface GBClassDataTesting : GHTestCase
 @end
 
 @implementation GBClassDataTesting
@@ -24,14 +24,6 @@
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
-}
-
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClassName {
-	//setup
-	GBClassData *original = [GBClassData classDataWithName:@"MyClass"];
-	GBClassData *source = [GBClassData classDataWithName:@"AnotherClass"];
-	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 #pragma mark Superclass data merging

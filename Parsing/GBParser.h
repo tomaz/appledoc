@@ -37,7 +37,7 @@
 
 /** Scans the given array of paths and parses all code files into in-memory objects.
  
- This is the main parsing method. It is intended to be invoked from the top level application code. It accepts an array of paths - either directories or file names - and parses them for code. If it detects an object within any file, it's data is parsed into in-memory representation suited for further processing. Parsed data is available through `GBObjectsGraph` shared instance.
+ This is the main parsing method. It is intended to be invoked from the top level application code. It accepts an array of paths - either directories or file names - and parses them for code. If it detects an object within any file, it's data is parsed into in-memory representation suited for further processing. Parsed data is registered to the given `GBStore`.
  
  If any kind of inconsistency is detected in source code, a warning is logged and parsing continues. This allows us to extract as much information as possible, while ignoring problems.
  

@@ -7,12 +7,22 @@
 //
 
 #import "GBComment.h"
+#import "GBCommentParagraph.h"
+#import "GBParagraphItem.h"
+#import "GBParagraphTextItem.h"
+#import "GBParagraphListItem.h"
+#import "GBParagraphSpecialItem.h"
+#import "GBParagraphDecoratorItem.h"
+#import "GBParagraphLinkItem.h"
+
 #import "GBClassData.h"
 #import "GBCategoryData.h"
 #import "GBProtocolData.h"
+
 #import "GBIvarData.h"
 #import "GBMethodData.h"
 #import "GBMethodArgument.h"
+
 #import "GBAdoptedProtocolsProvider.h"
 #import "GBIvarsProvider.h"
 #import "GBMethodsProvider.h"

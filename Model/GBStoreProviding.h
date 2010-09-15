@@ -18,6 +18,10 @@
  */
 @protocol GBStoreProviding
 
+///---------------------------------------------------------------------------------------
+/// @name Registrations handling
+///---------------------------------------------------------------------------------------
+
 /** Registers the given class to the providers data.
  
  If provider doesn't yet have the given class instance registered, the object is added to `classes` list. If the same object is already registered, nothing happens.
@@ -26,6 +30,10 @@
  
  @param class The class to register.
  @exception NSException Thrown if the given class is already registered.
+ @see registerCategory:
+ @see registerProtocol:
+ @see classByName:
+ @see classes
  */
 - (void)registerClass:(GBClassData *)class;
 
@@ -37,6 +45,10 @@
  
  @param category The category to register.
  @exception NSException Thrown if the given category is already registered.
+ @see registerClass:
+ @see registerProtocol:
+ @see categoryByName:
+ @see categories
  */
 - (void)registerCategory:(GBCategoryData *)category;
 
@@ -48,16 +60,72 @@
  
  @param category The category to register.
  @exception NSException Thrown if the given protocol is already registered.
+ @see registerClass:
+ @see registerCategory:
+ @see protocolByName:
+ @see protocols
  */
 - (void)registerProtocol:(GBProtocolData *)protocol;
 
-/** The list of all registered classes as instances of `GBClassData`. */
+///---------------------------------------------------------------------------------------
+/// @name Data handling
+///---------------------------------------------------------------------------------------
+
+/** Returns the class instance that matches the given name.
+ 
+ If no registered class matches the given name, `nil` is returned.
+ 
+ @param name The name of the class to return.
+ @return Returns class instance or `nil` if no match is found.
+ @see categoryByName:
+ @see protocolByName:
+ @see classes
+ */
+- (GBClassData *)classByName:(NSString *)name;
+
+/** Returns the category instance that matches the given name.
+ 
+ If no registered category matches the given name, `nil` is returned.
+ 
+ @param name The name of the category to return.
+ @return Returns category instance or `nil` if no match is found.
+ @see classByName:
+ @see protocolByName:
+ @see categories
+ */
+- (GBCategoryData *)categoryByName:(NSString *)name;
+
+/** Returns the protocol instance that matches the given name.
+ 
+ If no registered protocol matches the given name, `nil` is returned.
+ 
+ @param name The name of the protocol to return.
+ @return Returns protocol instance or `nil` if no match is found.
+ @see classByName:
+ @see categoryByName:
+ @see protocols
+ */
+- (GBProtocolData *)protocolByName:(NSString *)name;
+
+/** The list of all registered classes as instances of `GBClassData`.
+ 
+ @see classByName:
+ @see registerClass:
+ */
 @property (readonly) NSSet *classes;
 
-/** The list of all registered categories and extensions as instances of `GBCategoryData`. */
+/** The list of all registered categories and extensions as instances of `GBCategoryData`.
+ 
+ @see categoryByName:
+ @see registerCategory:
+ */
 @property (readonly) NSSet *categories;
 
-/** The list of all registered protocols as instances of `GBProtocolData`. */
+/** The list of all registered protocols as instances of `GBProtocolData`.
+ 
+ @see protocolByName:
+ @see registerProtocol:
+ */
 @property (readonly) NSSet *protocols;
 
 @end

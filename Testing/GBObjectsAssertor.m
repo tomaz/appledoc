@@ -9,7 +9,18 @@
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 
+@interface GBObjectsAssertor ()
+
+- (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index;
+- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)level;
+
+@end
+
+#pragma mark -
+
 @implementation GBObjectsAssertor
+
+#pragma mark Store objects
 
 - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... {
 	NSMutableArray *arguments = [NSMutableArray array];
@@ -51,7 +62,7 @@
 - (void)assertMethod:(GBMethodData *)method matchesType:(GBMethodType)type start:(NSString *)first components:(va_list)args {
 	// Note that we flatten all the arguments to make assertion methods simpler; nice trick but we do need to
 	// use custom macros instead of hamcrest to get more meaningful description in case of failure :(
-	STAssertEquals(method.methodType, type, @"Method type doesn't match!");
+	GHAssertEquals(method.methodType, type, @"Method %@ type doesn't match!", method);
 	
 	NSMutableArray *arguments = [NSMutableArray arrayWithObject:first];
 	NSString *arg;
@@ -62,32 +73,241 @@
 	NSUInteger i=0;
 	
 	for (NSString *attribute in method.methodAttributes) {
-		STAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property attribute doesn't match at flat idx %ld!", i-1);
+		GHAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property %@ attribute doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (NSString *type in method.methodResultTypes) {
-		STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method result doesn't match at flat idx %ld!", i-1);
+		GHAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ result doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (GBMethodArgument *argument in method.methodArguments) {
-		STAssertEqualObjects(argument.argumentName, [arguments objectAtIndex:i++], @"Method argument name doesn't match at flat idx %ld!", i-1);
+		GHAssertEqualObjects(argument.argumentName, [arguments objectAtIndex:i++], @"Method %@ argument name doesn't match at flat idx %ld!", method, i-1);
 		if (argument.argumentTypes) {
 			for (NSString *type in argument.argumentTypes) {
-				STAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method argument type doesn't match at flat idx %ld!", i-1);
+				GHAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ argument type doesn't match at flat idx %ld!", method, i-1);
 			}
 		}
 		if (argument.argumentVar) {
-			STAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method argument var doesn't match at flat idx %ld!", i-1);
+			GHAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method %@ argument var doesn't match at flat idx %ld!", method, i-1);
 		}
 		if (argument.isVariableArg) {
-			STAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method argument va_arg ... doesn't match at flat idx %ld!", i-1);
+			GHAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method %@ argument va_arg ... doesn't match at flat idx %ld!", method, i-1);
 			for (NSString *macro in argument.terminationMacros) {
-				STAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method argument va_arg termination macro doesn't match at flat isx %ld!", i-1);
+				GHAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method %@ argument va_arg termination macro doesn't match at flat isx %ld!", method, i-1);
 			}
 		}
 	}
 	
-	STAssertEquals(i, [arguments count], @"Flattened method has %ld components, expected %ld!", i, [arguments count]);
+	GHAssertEquals(i, [arguments count], @"Flattened method %@ has %ld components, expected %ld!", method, i, [arguments count]);
+}
+
+#pragma mark Paragraph testing
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(Class)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	Class class = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSString *value = va_arg(args, NSString *);
+		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [arguments count] * 2];
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:class, @"class", value, @"value", nil];
+		[arguments addObject:data];
+		
+		class = va_arg(args, Class);
+		if (!class) break;
+	}
+	va_end(args);
+	
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
+		NSDictionary *data = [arguments objectAtIndex:i];
+		assertThat([item class], is([data objectForKey:@"class"]));
+		if ([data objectForKey:@"value"] == GBNULL) continue;
+		assertThat([item stringValue], is([data objectForKey:@"value"]));
+	}
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsLinks:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	NSString *value = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		id context = va_arg(args, id);
+		if (!context) [NSException raise:@"Context not given for value %@ at index %ld!", value, [arguments count] * 4];
+		
+		id member = va_arg(args, id);
+		if (!member) [NSException raise:@"Member not given for value %@ at index %ld!", value, [arguments count] * 4];
+		
+		BOOL local = va_arg(args, BOOL);
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", context, @"context", member, @"member", [NSNumber numberWithBool:local], @"local", nil];
+		[arguments addObject:data];
+		
+		value = va_arg(args, NSString *);
+		if (!value) break;
+	}
+	va_end(args);
+	
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphLinkItem *item = [paragraph.items objectAtIndex:i];
+		NSDictionary *data = [arguments objectAtIndex:i];
+		NSString *value = [data objectForKey:@"value"];
+		id context = [data objectForKey:@"context"];
+		id member = [data objectForKey:@"member"];
+		BOOL local = [[data objectForKey:@"local"] boolValue];
+		assertThat([item class], is([GBParagraphLinkItem class]));
+		assertThat(item.stringValue, is(value));
+		assertThat(item.context, is(context != GBNULL ? context : nil));
+		assertThat(item.member, is(member != GBNULL ? member : nil));
+		assertThatBool(item.isLocal, equalToBool(local));
+	}
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsTexts:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	va_list args;
+	va_start(args,first);
+	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString*)) {
+		[arguments addObject:arg];
+	}
+	va_end(args);
+	
+	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
+		GBParagraphTextItem *item = [paragraph.items objectAtIndex:i];
+		assertThat([item class], is([GBParagraphTextItem class]));
+		assertThat(item.stringValue, is([arguments objectAtIndex:i]));
+	}
+}
+
+#pragma mark Lists testing
+
+- (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsParagraphs:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	va_list args;
+	va_start(args,first);
+	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString*)) {
+		[arguments addObject:arg];
+	}
+	va_end(args);
+	
+	assertThatBool(list.isOrdered, equalToBool(ordered));
+	assertThatInteger([arguments count], equalToInteger([list.items count]));
+	for (NSUInteger i=0; i<[list.items count]; i++) {
+		assertThat([[list.items objectAtIndex:i] class], is([GBCommentParagraph class]));
+		assertThat([[list.items objectAtIndex:i] stringValue], is([arguments objectAtIndex:i]));
+	}
+}
+
+- (void)assertList:(GBParagraphListItem *)list describesHierarchy:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	NSString *value = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSNumber *ordered = [NSNumber numberWithBool:va_arg(args, BOOL)];
+		NSNumber *level = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", ordered, @"ordered", level, @"level", nil];
+		[arguments addObject:data];		
+		value = va_arg(args, NSString *);
+		if (!value) break;
+	}
+	va_end(args);
+	
+	NSUInteger index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:0 atLevel:1];
+	assertThatInteger(index, equalToInteger([arguments count]));
+}
+
+- (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)expectedLevel {	
+	// Verify item's values. Note that each item must have at least one paragraph with item's text description!
+	assertThat([item class], is([GBParagraphListItem class]));
+	
+	// Recursively follow all paragraphs and their subitems hierarchy (skip text items).
+	for (GBCommentParagraph *paragraph in item.items) {
+		for (GBParagraphItem *paragraphsItem in paragraph.items) {
+			if ([paragraphsItem isKindOfClass:[GBParagraphTextItem class]]) {
+				// Get current expected values.
+				NSDictionary *data = [arguments objectAtIndex:index];
+				NSString *value = [data objectForKey:@"value"];
+				BOOL ordered = [[data objectForKey:@"ordered"] boolValue];
+				NSUInteger level = [[data objectForKey:@"level"] unsignedIntValue];
+				
+				// Verify values, note that we also verify parent-list item's values here...
+				assertThat([paragraphsItem stringValue], is(value));
+				assertThatBool([item isOrdered], equalToBool(ordered));
+				assertThatInteger(expectedLevel, equalToInteger(level));
+				index++;
+			} else if ([paragraphsItem isKindOfClass:[GBParagraphListItem class]]) {
+				GBParagraphListItem *list = (GBParagraphListItem *)paragraphsItem;
+				index = [self assertListItem:list describesHierarchy:arguments startingAtIndex:index atLevel:expectedLevel+1];
+			}
+		}
+	}
+	return index;
+}
+
+#pragma mark Decorated items testing
+
+- (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	Class class = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSNumber *type = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSString *value = va_arg(args, NSString *);
+		if (!value) [NSException raise:@"Value not given for type %@ at index %ld!", class, [arguments count] * 2];
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:class, @"class", type, @"type", value, @"value", nil];
+		[arguments addObject:data];
+		
+		class = va_arg(args, Class);
+		if (!class) break;
+	}
+	va_end(args);
+	NSUInteger index = [self assertDecoratedItem:item describesHierarchy:arguments startingAtIndex:0];
+	assertThatInteger(index, equalToInteger([arguments count]));
+}
+
+- (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index {
+	// Get current expected values.
+	NSDictionary *data = [arguments objectAtIndex:index];
+	Class class = [data objectForKey:@"class"];
+	NSUInteger type = [[data objectForKey:@"type"] unsignedIntValue];
+	NSString *value = [data objectForKey:@"value"];		
+	//NSLog(@"Expecting %@, type %ld, text %@ at index %ld.", class, type, value, index);
+	
+	// Increment the index (as we're relying on cached values we can do so before verifying).
+	index++;
+	
+	// Verify common values.
+	assertThat([item class], is(class));
+	assertThat([item stringValue], is(value));
+	
+	// Verify decorator values and all children.
+	if (type != GBDecorationTypeNone) {
+		GBParagraphDecoratorItem *decorator = (GBParagraphDecoratorItem *)item;
+		assertThatInteger(decorator.decorationType, equalToInteger(type));
+		for (GBParagraphItem *child in [decorator decoratedItems]) {
+			index = [self assertDecoratedItem:child describesHierarchy:arguments startingAtIndex:index];
+		}
+	}
+	
+	return index;
+}
+
+#pragma mark Other comment items testing
+
+- (void)assertLinkItem:(GBParagraphLinkItem *)item hasLink:(NSString *)link context:(id)context member:(id)member local:(BOOL)local {
+	assertThat([item stringValue], is(link));
+	assertThat([item context], is(context));
+	assertThat([item member], is(member));
+	assertThatBool([item isLocal], equalToBool(local));
 }
 
 @end

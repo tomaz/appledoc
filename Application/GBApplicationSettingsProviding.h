@@ -6,12 +6,16 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import "GBCommentComponentsProvider.h"
 
 /** Defines the requirements for application-level settings providers.
  
  Application-level settings providers provide application-wide settings and properties that affect application handling.
  */
 @protocol GBApplicationSettingsProviding
+
+/** Returns the `GBCommentComponentsProvider` object that identifies comment components. */
+@property (retain) GBCommentComponentsProvider *commentComponents;
 
 @end

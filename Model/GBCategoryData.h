@@ -7,13 +7,14 @@
 //
 
 #import "GBModelBase.h"
+#import "GBObjectDataProviding.h"
 
 @class GBAdoptedProtocolsProvider;
 @class GBMethodsProvider;
 
 /** Describes a category.
  */
-@interface GBCategoryData : GBModelBase {
+@interface GBCategoryData : GBModelBase <GBObjectDataProviding> {
 	@private
 	NSString *_categoryName;
 	NSString *_className;
@@ -46,7 +47,7 @@
 - (id)initWithName:(NSString *)name className:(NSString *)className;
 
 ///---------------------------------------------------------------------------------------
-/// @name Class data
+/// @name Category data
 ///---------------------------------------------------------------------------------------
 
 /** Determines whether this category is extension or not. */
@@ -57,6 +58,9 @@
 
 /** The name of the class the category extends. */
 @property (readonly) NSString *nameOfClass;
+
+/** The ID of the category composed of class name followed by category name in parenthesis. */
+@property (readonly) NSString *idOfCategory;
 
 /** Categories adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

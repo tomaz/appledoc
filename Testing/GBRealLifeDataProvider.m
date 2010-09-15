@@ -64,4 +64,52 @@
 	@"\n";
 }
 
++ (NSString *)fullMethodComment {
+	return
+	// Short description.
+	@"Short description.\n"
+	@"\n"
+	
+	// Second paragraph with several empty lines to make sure empty paragraphs are not created.
+	@"Second paragraph with lot's of text\n"
+	@"split into two lines.\n"
+	@"\n\n\n"
+	
+	// Two unordered list separated with an empty line.
+	@"- Unordered item 1.\n"
+	@"- Unordered item 2.\n"
+	@"\n\n"
+	@"- Second unordered list\n"
+	
+	// Ordered list (should work even if no empty line before unordered list!)
+	@"1. Ordered item 1.\n"
+	@"999. Ordered item 2.\n"
+	@"\n"
+	
+	// Example with empty line and tabs.
+	@"\tSource line 1\n"
+	@"\t\n"
+	@"\t\tSource line with tab\n"
+	@"\n"
+	
+	// Second example without empty line before next paragraph.
+	@"\tSecond example\n"
+	
+	// Third paragraph.
+	@"Third paragraph.\n"
+	
+	// Warning and bug.
+	@"@warning Warning\n"
+	@"@bug Bug\n"
+	
+	// Parameters block, note there's no empty line before!
+	@"@param name1 Description1\n"
+	@"@param name2 Description2\n"
+	@"@return Return\n"
+	@"@exception exc1 Exception1\n"
+	@"@exception exc2 Exception2\n"
+	@"@see link1\n"
+	@"@sa link2\n";
+}
+
 @end

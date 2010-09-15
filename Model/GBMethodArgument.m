@@ -13,15 +13,15 @@
 #pragma mark Initialization & disposal
 
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
-	return [[self alloc] initWithName:name types:types var:var terminationMacros:macros];
+	return [[[self alloc] initWithName:name types:types var:var terminationMacros:macros] autorelease];
 }
 
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var {
-	return [[self alloc] initWithName:name types:types var:var terminationMacros:nil];
+	return [self methodArgumentWithName:name types:types var:var terminationMacros:nil];
 }
 
 + (id)methodArgumentWithName:(NSString *)name {
-	return [[self alloc] initWithName:name types:nil var:nil terminationMacros:nil];
+	return [self methodArgumentWithName:name types:nil var:nil terminationMacros:nil];
 }
 
 - (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {

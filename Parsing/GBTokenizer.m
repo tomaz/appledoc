@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "PKToken+GBToken.h"
 #import "GBTokenizer.h"
 
@@ -16,6 +17,9 @@
 @property (retain) NSArray *tokens;
 @property (assign) NSUInteger tokenIndex;
 @property (retain) NSMutableString *lastComment;
+@property (retain) NSString *singleLineCommentRegex;
+@property (retain) NSString *multiLineCommentRegex;
+@property (retain) NSString *commentDelimiterRegex;
 
 @end
 
@@ -34,6 +38,9 @@
 	GBLogDebug(@"Initializing tokenizer using %@...", tokenizer);
 	self = [super init];
 	if (self) {
+		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
+		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
+		self.commentDelimiterRegex = @"[!@#$%^&*()-_=+`~,<.>/?;:'\"]{3,}";
 		self.tokenIndex = 0;
 		self.lastComment = [NSMutableString string];
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
@@ -121,29 +128,29 @@
 	NSUInteger previousSingleLineEndOffset = 0;
 	while (![self eof] && [[self currentToken] isComment]) {
 		PKToken *token = [self currentToken];
-		NSString *value = [[token stringValue] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		NSString *value = nil;
 		
-		// Is this continuation of previous single line comment?
-		BOOL isSingleLiner = [value hasPrefix:@"///"];
-		BOOL isContinuingPreviousSingleLiner = (isSingleLiner && [token offset] == previousSingleLineEndOffset + 1);
-		if (!isContinuingPreviousSingleLiner) [self.lastComment setString:@""];
-
-		// Strip comment prefixes and suffixes.
-		if ([value hasPrefix:@"/// "]) value = [value substringFromIndex:4];
-		if ([value hasPrefix:@"///"]) value = [value substringFromIndex:3];
-		if ([value hasPrefix:@"/** "]) value = [value substringFromIndex:4];
-		if ([value hasPrefix:@"/**"]) value = [value substringFromIndex:3];
-		if ([value hasSuffix:@"*/"]) value = [value substringToIndex:[value length] - 2];
-		value = [value stringByTrimmingCharactersInSetFromEnd:[NSCharacterSet whitespaceCharacterSet]];
-
-		// Append comment string and new line if we're continuing previous single line comment.
-		if (isContinuingPreviousSingleLiner) [self.lastComment appendString:@"\n"];
+		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments if unless they start at the beginning of the line!
+		NSArray *singleLiners = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentRegex capture:1];
+		if ([singleLiners count] > 0) {
+			value = [NSString string];
+			for (NSString *match in singleLiners) value = [value stringByAppendingString:match];
+			BOOL isContinuingPreviousSingleLiner = ([token offset] == previousSingleLineEndOffset + 1);
+			if (!isContinuingPreviousSingleLiner) [self.lastComment setString:@""];
+			if (isContinuingPreviousSingleLiner) [self.lastComment appendString:@"\n"];
+			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
+		}
+		
+		// Match multiple line comments and only process last one. 
+		else {
+			NSArray *multiLiners = [[token stringValue] componentsMatchedByRegex:self.multiLineCommentRegex capture:1];
+			value = [multiLiners lastObject];
+			[self.lastComment setString:@""];
+		}
+		
+		// Append string value to current comment and proceed with next token.
+		value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		[self.lastComment appendString:value];
-		
-		// If we have single line comment, we should remember previous single line end offset.
-		if (isSingleLiner) previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
-		
-		// Proceed with next token.
 		self.tokenIndex++;
 	}
 	return YES;
@@ -154,30 +161,27 @@
 	NSArray *lines = [self.lastComment componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	NSMutableArray *comments = [NSMutableArray arrayWithCapacity:[lines count]];
 	
-	// First pass: removes lines that are irrelevant and get common prefix of all lines.
-	[lines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		BOOL firstLine = (idx == 0);
-		BOOL lastLine = (idx == [lines count] - 1);
-
-		// Skip first and last line if we only have some common char in it. This is very basic - it tests if the line only contains a single character and ignores it if so.
-		if (firstLine || lastLine) {
-			NSString *stripped = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([stripped length] > 0) {
-				NSString *delimiter = [stripped substringToIndex:1];
-				stripped = [stripped stringByReplacingOccurrencesOfString:delimiter withString:@""];
-				if ([stripped length] == 0) return;
-			}
+	// First pass: removes delimiters. We simply detect 3+ delimiter chars in any combination. If removing delimiter yields empty line, discard it.
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+		NSString *delimited = [stripped stringByReplacingOccurrencesOfRegex:self.commentDelimiterRegex withString:@""];
+		if ([stripped length] > [delimited length]) {
+			if ([delimited length] > 0) [comments addObject:delimited];
+			return;
 		}
-		
-		[comments addObject:obj];
+		[comments addObject:line];
 	}];
 	
-	// If all lines start with a *, ignore that part.
+	// If all lines start with a *, ignore the prefix. Note that we ignore first line as it can only contain /** and text! We also ignore last line as if it only contains */
+	NSString *prefixRegex = @"(?m:^\\s*\\*\\s*)";
 	__block BOOL stripPrefix = ([comments count] > 1);
 	if (stripPrefix) {
-		[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			NSString *line = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([line length] > 0 && ![line hasPrefix:@"*"] && idx > 0) {
+		[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+			NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+			if (idx == [comments count]-1 && [stripped length] == 0) {
+				return;
+			}
+			if (idx > 0 && ![stripped isMatchedByRegex:prefixRegex]) {
 				stripPrefix = NO;
 				*stop = YES;
 			}
@@ -187,13 +191,11 @@
 	// Finally remove common line prefix including all spaces and compose all objects into final comment.
 	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
 	NSMutableString *result = [NSMutableString stringWithCapacity:[self.lastComment length]];
-	[comments enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		if (stripPrefix) {
-			obj = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if ([obj hasPrefix:@"*"]) obj = [obj substringFromIndex:1];
-		}
-		obj = [obj stringByTrimmingCharactersInSet:spacesSet];
-		[result appendString:obj];
+	[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		if (stripPrefix)
+			line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
+		line = [line stringByTrimmingCharactersInSet:spacesSet];
+		[result appendString:line];
 		if (idx < [comments count] - 1) [result appendString:@"\n"];
 	}];	
 	
@@ -223,5 +225,8 @@
 @synthesize tokens;
 @synthesize tokenIndex;
 @synthesize lastComment;
+@synthesize singleLineCommentRegex;
+@synthesize multiLineCommentRegex;
+@synthesize commentDelimiterRegex;
 
 @end

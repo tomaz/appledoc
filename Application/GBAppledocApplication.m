@@ -10,6 +10,7 @@
 #import "DDGetoptLongParser.h"
 #import "GBStore.h"
 #import "GBParser.h"
+#import "GBProcessor.h"
 #import "GBAppledocApplication.h"
 
 static NSString *kGBArgLogFormat = @"logformat";
@@ -51,6 +52,7 @@ static NSString *kGBArgHelp = @"help";
 	if (self) {
 		self.logformat = @"1";
 		self.verbose = @"2";
+		self.commentComponents = [GBCommentComponentsProvider provider];
 	}
 	return self;
 }
@@ -78,10 +80,10 @@ static NSString *kGBArgHelp = @"help";
 		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
 		[parser parseObjectsFromPaths:arguments toStore:store];
 		
-//		GBLogNormal(@"Processing parsed data...");
-//		GBProcessor *processor = [[GBProcessor alloc] init];
-//		[processor processObjectsFromParser:parser];
-//		
+		GBLogNormal(@"Processing parsed data...");
+		GBProcessor *processor = [[GBProcessor alloc] initWithSettingsProvider:self];
+		[processor processObjectsFromStore:store];
+		
 //		GBLogNormal(@"Generating output...");
 //		GBGenerator *generator = [[GBGenerator alloc] init];
 //		[generator generateOutputFromProcessor:processor];
@@ -132,6 +134,10 @@ static NSString *kGBArgHelp = @"help";
 	return [self className];
 }
 
+#pragma mark Application settings provider implementation
+
+@synthesize commentComponents;
+
 #pragma mark Properties
 
 @synthesize logformat;
@@ -163,6 +169,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- DDCli by Dave Dribin\n");
 	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
+	ddprintf(@"- RegexKitLite by John Engelhart\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!");
 }

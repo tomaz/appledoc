@@ -8,7 +8,7 @@
 
 #import "GBIvarData.h"
 
-@interface GBIvarDataTesting : SenTestCase
+@interface GBIvarDataTesting : GHTestCase
 @end
 
 @implementation GBIvarDataTesting
@@ -22,22 +22,6 @@
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
 	assertThatInteger([original.declaredFiles count], equalToInteger(1));
-}
-
-- (void)testMergeDataFromObject_shouldThrowIfDifferentNameIfPassed {
-	// setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_different", nil];
-	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
-}
-
-- (void)testMergeDataFromObject_shouldThrowIfDifferentTypeIfPassed {
-	// setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"*", @"_name", nil];
-	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"NSString", @"&", @"_name", nil];
-	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

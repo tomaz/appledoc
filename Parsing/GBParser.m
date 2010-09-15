@@ -37,7 +37,7 @@
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
-		self.objectiveCParser = [[GBObjectiveCParser alloc] initWithSettingsProvider:self.settings];
+		self.objectiveCParser = [GBObjectiveCParser parserWithSettingsProvider:self.settings];
 	}
 	return self;
 }
@@ -47,7 +47,7 @@
 - (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id<GBStoreProviding>)store {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(store != nil);
-	GBLogVerbose(@"Parsing objects from %u paths to store...", [paths count], store);
+	GBLogVerbose(@"Parsing objects from %u paths to %@...", [paths count], store);
 	self.store = store;
 	self.numberOfParsedFiles = 0;
 	for (NSString *path in paths) {

@@ -9,23 +9,91 @@
 /* Begin PBXBuildFile section */
 		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
+		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
+		73329AA6122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */; };
+		73329B30122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */; };
+		73329B33122EE18C00AEBA2B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
+		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
+		733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
+		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
+		733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
+		733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98B11FCC97100966C4A /* Cocoa.framework */; };
+		733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98911FCC97100966C4A /* AppKit.framework */; };
+		733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA138122BDE980060CBDE /* GHUnitTestMain.m */; };
+		733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */; };
+		733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */; };
+		733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
+		733EA141122BDEC60060CBDE /* AppledocTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */; };
+		733EA143122BDEC80060CBDE /* GBCommentsProcessor-TextItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */; };
+		733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FB8122B9D510060CBDE /* GBCommentTesting.m */; };
+		733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */; };
+		733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */; };
+		733EA147122BDEC90060CBDE /* GBMethodDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */; };
+		733EA148122BDECA0060CBDE /* GBMethodsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */; };
+		733EA149122BDECA0060CBDE /* GBModelBaseTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB5112004058005ED6CD /* GBModelBaseTesting.m */; };
+		733EA14A122BDECC0060CBDE /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */; };
+		733EA14B122BDECC0060CBDE /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */; };
+		733EA14C122BDECD0060CBDE /* GBObjectiveCParser-ClassParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */; };
+		733EA14D122BDECD0060CBDE /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */; };
+		733EA14E122BDECE0060CBDE /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */; };
+		733EA14F122BDECE0060CBDE /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */; };
+		733EA150122BDECF0060CBDE /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
+		733EA151122BDECF0060CBDE /* GBProcessor-AdoptedProtocolsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */; };
+		733EA152122BDED10060CBDE /* GBProcessor-CommentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */; };
+		733EA153122BDED10060CBDE /* GBProtocolDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */; };
+		733EA154122BDED20060CBDE /* GBRealLifeDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */; };
+		733EA155122BDED20060CBDE /* GBStoreTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */; };
+		733EA156122BDED30060CBDE /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
+		733EA157122BDED30060CBDE /* GBTokenizerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */; };
+		733EA175122BE14B0060CBDE /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
+		733EA176122BE14C0060CBDE /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
+		733EA177122BE15D0060CBDE /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9D11F8D22B00CCDDB0 /* DDLog.m */; };
+		733EA178122BE15E0060CBDE /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
+		733EA17A122BE1650060CBDE /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
+		733EA17B122BE1660060CBDE /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
+		733EA17C122BE1670060CBDE /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
+		733EA17D122BE1680060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
+		733EA17E122BE1680060CBDE /* GBCommentParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC01701228561B0076B7B3 /* GBCommentParagraph.m */; };
+		733EA180122BE1720060CBDE /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
+		733EA181122BE1720060CBDE /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
+		733EA182122BE1730060CBDE /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
+		733EA183122BE1740060CBDE /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
+		733EA184122BE1750060CBDE /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
+		733EA185122BE17A0060CBDE /* GBIvarData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC731211FDADD600AAD0B9 /* GBIvarData.m */; };
+		733EA186122BE17A0060CBDE /* GBIvarsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */; };
+		733EA187122BE17B0060CBDE /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
+		733EA188122BE17B0060CBDE /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
+		733EA189122BE17C0060CBDE /* GBMethodsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */; };
+		733EA18A122BE17C0060CBDE /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
+		733EA18B122BE17D0060CBDE /* GBProtocolData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */; };
+		733EA18C122BE17E0060CBDE /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
+		733EA18D122BE1800060CBDE /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
+		733EA18E122BE1810060CBDE /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
+		733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
+		733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
+		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
+		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
+		733EA2E1122C00370060CBDE /* GBParagraphItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA2E0122C00370060CBDE /* GBParagraphItem.m */; };
+		733EA2E2122C00370060CBDE /* GBParagraphItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA2E0122C00370060CBDE /* GBParagraphItem.m */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
-		7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
-		7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B82211FEEB52005ED6CD /* GBObjectsAssertor.m */; };
-		7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B83611FEEE27005ED6CD /* GBRealLifeDataProvider.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
-		7367B86011FEF772005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */; };
-		7367B89A11FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */; };
-		7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */; };
-		7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */; };
-		7367B8D411FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */; };
-		7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
-		7367BAB912001BF7005ED6CD /* GBProtocolDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */; };
-		7367BAFC12002854005ED6CD /* GBIvarDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
-		7367BB5212004058005ED6CD /* GBModelBaseTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB5112004058005ED6CD /* GBModelBaseTesting.m */; };
-		7367BBB712004928005ED6CD /* GBCategoryDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */; };
+		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
+		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
+		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
+		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
+		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
+		73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
+		73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */; };
+		73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */; };
+		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
+		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
+		73CF81D3122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */; };
+		73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */; };
+		73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
+		73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
 		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
@@ -36,56 +104,29 @@
 		73D54D2011F8D53E00CCDDB0 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
+		73EC01711228561B0076B7B3 /* GBCommentParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 73EC01701228561B0076B7B3 /* GBCommentParagraph.m */; };
+		73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
+		73F2CA75123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
+		73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
+		73F2CA77123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
+		73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
 		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
-		73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */; };
-		73FC6E5E11FCD69C00AAD0B9 /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 		73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
-		73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */; };
-		73FC6EE011FCE01E00AAD0B9 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
-		73FC6FAA11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
-		73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */; };
 		73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
 		73FC72AB11FD95A200AAD0B9 /* GBProtocolData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72AA11FD95A200AAD0B9 /* GBProtocolData.m */; };
-		73FC72D911FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */; };
 		73FC730811FDAACD00AAD0B9 /* GBIvarsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730711FDAACD00AAD0B9 /* GBIvarsProvider.m */; };
-		73FC731011FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */; };
 		73FC731311FDADD600AAD0B9 /* GBIvarData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC731211FDADD600AAD0B9 /* GBIvarData.m */; };
 		73FC741111FE1FDF00AAD0B9 /* GBMethodsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */; };
-		73FC741A11FE210100AAD0B9 /* GBMethodsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */; };
 		73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
 		73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
-		73FC743611FE2CEB00AAD0B9 /* GBMethodDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		73FC718511FD7A8A00AAD0B9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
-			remoteInfo = appledoc;
-		};
-/* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		73FC6E5811FCD63F00AAD0B9 /* Copy Bundle Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Copy Bundle Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -93,6 +134,20 @@
 		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
 		731E7CE711F9962D00AAF15D /* NSException+GBException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+GBException.m"; sourceTree = "<group>"; };
+		73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-UnorderedListsTesting.m"; sourceTree = "<group>"; };
+		73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-OrderedListsTesting.m"; sourceTree = "<group>"; };
+		73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-WarningsTesting.m"; sourceTree = "<group>"; };
+		73329B31122EE18C00AEBA2B /* GBParagraphSpecialItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphSpecialItem.h; sourceTree = "<group>"; };
+		73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphSpecialItem.m; sourceTree = "<group>"; };
+		733E9FB8122B9D510060CBDE /* GBCommentTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentTesting.m; sourceTree = "<group>"; };
+		733E9FD9122BA9B00060CBDE /* GBCommentComponentsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsProvider.h; sourceTree = "<group>"; };
+		733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsProvider.m; sourceTree = "<group>"; };
+		733EA0F1122BDC5B0060CBDE /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GHUnit.framework; sourceTree = "<group>"; };
+		733EA125122BDD020060CBDE /* AppledocTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppledocTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		733EA138122BDE980060CBDE /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
+		733EA2DF122C00370060CBDE /* GBParagraphItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphItem.h; sourceTree = "<group>"; };
+		733EA2E0122C00370060CBDE /* GBParagraphItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphItem.m; sourceTree = "<group>"; };
+		733EA47D122CE8E70060CBDE /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+GBFileManager.h"; sourceTree = "<group>"; };
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
@@ -118,6 +173,20 @@
 		7367BB5112004058005ED6CD /* GBModelBaseTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBaseTesting.m; sourceTree = "<group>"; };
 		7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryDataTesting.m; sourceTree = "<group>"; };
 		7367BC4212005888005ED6CD /* GBDataObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDataObjects.h; sourceTree = "<group>"; };
+		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
+		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
+		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
+		73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-LinkItemsTesting.m"; sourceTree = "<group>"; };
+		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
+		73A32FFE1236532500040070 /* GBParagraphLinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphLinkItem.h; sourceTree = "<group>"; };
+		73A32FFF1236532500040070 /* GBParagraphLinkItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphLinkItem.m; sourceTree = "<group>"; };
+		73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-BugsTesting.m"; sourceTree = "<group>"; };
+		73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-ExamplesTesting.m"; sourceTree = "<group>"; };
+		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
+		73CF81D1122D72ED005B7E26 /* GBParagraphTextItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphTextItem.h; sourceTree = "<group>"; };
+		73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphTextItem.m; sourceTree = "<group>"; };
+		73CF822B122D79AB005B7E26 /* GBParagraphListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphListItem.h; sourceTree = "<group>"; };
+		73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphListItem.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
@@ -141,9 +210,17 @@
 		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
 		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-AdoptedProtocolsTesting.m"; sourceTree = "<group>"; };
+		73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-CommentsTesting.m"; sourceTree = "<group>"; };
+		73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-TextItemsTesting.m"; sourceTree = "<group>"; };
+		73EC016F1228561B0076B7B3 /* GBCommentParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentParagraph.h; sourceTree = "<group>"; };
+		73EC01701228561B0076B7B3 /* GBCommentParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentParagraph.m; sourceTree = "<group>"; };
+		73F2CA70123E4161009B406B /* GBCommentsProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentsProcessor.h; sourceTree = "<group>"; };
+		73F2CA71123E4161009B406B /* GBCommentsProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessor.m; sourceTree = "<group>"; };
+		73F2CA72123E4161009B406B /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
+		73F2CA73123E4161009B406B /* GBProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBProcessor.m; sourceTree = "<group>"; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
 		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
-		73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		73FC6DB311FCCCC600AAD0B9 /* GBParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParser.h; sourceTree = "<group>"; };
 		73FC6DB411FCCCC600AAD0B9 /* GBParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParser.m; sourceTree = "<group>"; };
@@ -242,13 +319,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		73FC6D8911FCCB7000AAD0B9 /* Frameworks */ = {
+		733EA123122BDD020060CBDE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73FC6E5E11FCD69C00AAD0B9 /* OCHamcrest.framework in Frameworks */,
-				73FC6EE011FCE01E00AAD0B9 /* OCMock.framework in Frameworks */,
-				73FC6FAA11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
+				733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */,
+				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
+				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
+				733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */,
+				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
+				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
+				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,31 +375,26 @@
 			isa = PBXGroup;
 			children = (
 				8DD76FA10486AA7600D96B5E /* appledoc */,
-				73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */,
+				733EA125122BDD020060CBDE /* AppledocTests.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		733EA47C122CE8C40060CBDE /* RegexKitLite */ = {
+			isa = PBXGroup;
+			children = (
+				733EA47D122CE8E70060CBDE /* RegexKitLite.h */,
+				73CF8130122D3824005B7E26 /* RegexKitLite.m */,
+			);
+			path = RegexKitLite;
 			sourceTree = "<group>";
 		};
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
-				7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */,
-				7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */,
-				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
-				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
-				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
-				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
-				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
-				7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */,
-				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
-				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
-				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
-				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
-				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
-				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
-				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
-				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+				73F70E2F1227C7B200D19EBA /* Model */,
+				73F70E221227C7A600D19EBA /* Parsing */,
+				73F70E301227C7C700D19EBA /* Processing */,
 				7367B6C611FE3750005ED6CD /* Creation & Assertion */,
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
@@ -354,6 +430,7 @@
 				73D54D1411F8D4FF00CCDDB0 /* Application */,
 				73FC6DDD11FCCF1500AAD0B9 /* Model */,
 				73FC6DB211FCCC8D00AAD0B9 /* Parsing */,
+				73F70DF41227C23900D19EBA /* Processing */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -381,6 +458,7 @@
 			children = (
 				73D54C9611F8D21000CCDDB0 /* DDLog */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
+				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -420,6 +498,8 @@
 				73FC6DB911FCCD0400AAD0B9 /* GBApplicationSettingsProviding.h */,
 				73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */,
 				73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */,
+				733E9FD9122BA9B00060CBDE /* GBCommentComponentsProvider.h */,
+				733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -428,7 +508,7 @@
 			isa = PBXGroup;
 			children = (
 				73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */,
-				7367BC4212005888005ED6CD /* GBDataObjects.h */,
+				73A32FB112364BC100040070 /* GBObjectDataProviding.h */,
 				73FC6E0D11FCD54400AAD0B9 /* GBStore.h */,
 				73FC6E0E11FCD54400AAD0B9 /* GBStore.m */,
 				73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */,
@@ -452,8 +532,82 @@
 			children = (
 				73F70DB51227B34300D19EBA /* GBComment.h */,
 				73F70DB61227B34300D19EBA /* GBComment.m */,
+				73EC016F1228561B0076B7B3 /* GBCommentParagraph.h */,
+				73EC01701228561B0076B7B3 /* GBCommentParagraph.m */,
+				733EA2DF122C00370060CBDE /* GBParagraphItem.h */,
+				733EA2E0122C00370060CBDE /* GBParagraphItem.m */,
+				73CF81D1122D72ED005B7E26 /* GBParagraphTextItem.h */,
+				73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */,
+				73CF822B122D79AB005B7E26 /* GBParagraphListItem.h */,
+				73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */,
+				73329B31122EE18C00AEBA2B /* GBParagraphSpecialItem.h */,
+				73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */,
+				7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */,
+				7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */,
+				73A32FFE1236532500040070 /* GBParagraphLinkItem.h */,
+				73A32FFF1236532500040070 /* GBParagraphLinkItem.m */,
 			);
 			name = Comments;
+			sourceTree = "<group>";
+		};
+		73F70DF41227C23900D19EBA /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				73F2CA72123E4161009B406B /* GBProcessor.h */,
+				73F2CA73123E4161009B406B /* GBProcessor.m */,
+				73F2CA70123E4161009B406B /* GBCommentsProcessor.h */,
+				73F2CA71123E4161009B406B /* GBCommentsProcessor.m */,
+			);
+			path = Processing;
+			sourceTree = "<group>";
+		};
+		73F70E221227C7A600D19EBA /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */,
+				7367B85E11FEF76A005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m */,
+				7367B8D311FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m */,
+				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
+				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
+				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
+				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+			);
+			name = Parsing;
+			sourceTree = "<group>";
+		};
+		73F70E2F1227C7B200D19EBA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */,
+				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
+				7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */,
+				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
+				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
+				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
+				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
+				73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */,
+				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
+				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
+				733E9FB8122B9D510060CBDE /* GBCommentTesting.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		73F70E301227C7C700D19EBA /* Processing */ = {
+			isa = PBXGroup;
+			children = (
+				73EC00BF1227EB0E0076B7B3 /* GBProcessor-AdoptedProtocolsTesting.m */,
+				73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */,
+				73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */,
+				73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */,
+				73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */,
+				73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */,
+				73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */,
+				73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */,
+				7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */,
+				73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */,
+			);
+			name = Processing;
 			sourceTree = "<group>";
 		};
 		73FC6DB211FCCC8D00AAD0B9 /* Parsing */ = {
@@ -474,6 +628,7 @@
 		73FC6DDD11FCCF1500AAD0B9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				7367BC4212005888005ED6CD /* GBDataObjects.h */,
 				73F70DB31227B32100D19EBA /* Store */,
 				73F70DB41227B33300D19EBA /* Comments */,
 				73FC730911FDAB5800AAD0B9 /* Helpers */,
@@ -484,6 +639,7 @@
 		73FC6DFE11FCD2D300AAD0B9 /* Bundle */ = {
 			isa = PBXGroup;
 			children = (
+				733EA138122BDE980060CBDE /* GHUnitTestMain.m */,
 				73FC6DC511FCCD7B00AAD0B9 /* AppledocTests_prefix.pch */,
 				73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */,
 			);
@@ -554,6 +710,7 @@
 		73FC720411FD7FB200AAD0B9 /* CopyToSharedFrameworks! */ = {
 			isa = PBXGroup;
 			children = (
+				733EA0F1122BDC5B0060CBDE /* GHUnit.framework */,
 				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
@@ -578,25 +735,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		73FC6D8B11FCCB7000AAD0B9 /* AppledocTests */ = {
+		733EA124122BDD020060CBDE /* AppledocTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 73FC6D9011FCCB7000AAD0B9 /* Build configuration list for PBXNativeTarget "AppledocTests" */;
+			buildConfigurationList = 733EA12A122BDD110060CBDE /* Build configuration list for PBXNativeTarget "AppledocTests" */;
 			buildPhases = (
-				73FC6D8711FCCB7000AAD0B9 /* Resources */,
-				73FC6E5811FCD63F00AAD0B9 /* Copy Bundle Frameworks */,
-				73FC6D8811FCCB7000AAD0B9 /* Sources */,
-				73FC6D8911FCCB7000AAD0B9 /* Frameworks */,
-				73FC6D8A11FCCB7000AAD0B9 /* ShellScript */,
+				733EA121122BDD020060CBDE /* Resources */,
+				733EA122122BDD020060CBDE /* Sources */,
+				733EA123122BDD020060CBDE /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				73FC718611FD7A8A00AAD0B9 /* PBXTargetDependency */,
 			);
 			name = AppledocTests;
 			productName = AppledocTests;
-			productReference = 73FC6D8C11FCCB7000AAD0B9 /* AppledocTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 733EA125122BDD020060CBDE /* AppledocTests.app */;
+			productType = "com.apple.product-type.application";
 		};
 		8DD76F960486AA7600D96B5E /* appledoc */ = {
 			isa = PBXNativeTarget;
@@ -631,62 +785,95 @@
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* appledoc */,
-				73FC6D8B11FCCB7000AAD0B9 /* AppledocTests */,
+				733EA124122BDD020060CBDE /* AppledocTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		73FC6D8711FCCB7000AAD0B9 /* Resources */ = {
+		733EA121122BDD020060CBDE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				733EA141122BDEC60060CBDE /* AppledocTests-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		73FC6D8A11FCCB7000AAD0B9 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		73FC6D8811FCCB7000AAD0B9 /* Sources */ = {
+		733EA122122BDD020060CBDE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				73FC6EAC11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m in Sources */,
-				73FC6E1311FCD59200AAD0B9 /* GBStoreTesting.m in Sources */,
-				73FC702D11FCEDDD00AAD0B9 /* GBTokenizerTesting.m in Sources */,
-				73FC72D911FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m in Sources */,
-				73FC731011FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m in Sources */,
-				73FC741A11FE210100AAD0B9 /* GBMethodsProviderTesting.m in Sources */,
-				73FC743611FE2CEB00AAD0B9 /* GBMethodDataTesting.m in Sources */,
-				7367B6EC11FE3788005ED6CD /* GBTestObjectsRegistry.m in Sources */,
-				7367B82311FEEB52005ED6CD /* GBObjectsAssertor.m in Sources */,
-				7367B83711FEEE27005ED6CD /* GBRealLifeDataProvider.m in Sources */,
-				7367B86011FEF772005ED6CD /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */,
-				7367B89A11FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */,
-				7367B8A311FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
-				7367B8A911FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */,
-				7367B8D411FF07FF005ED6CD /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */,
-				7367BA771200135B005ED6CD /* GBClassDataTesting.m in Sources */,
-				7367BAB912001BF7005ED6CD /* GBProtocolDataTesting.m in Sources */,
-				7367BAFC12002854005ED6CD /* GBIvarDataTesting.m in Sources */,
-				7367BB5212004058005ED6CD /* GBModelBaseTesting.m in Sources */,
-				7367BBB712004928005ED6CD /* GBCategoryDataTesting.m in Sources */,
+				733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */,
+				733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */,
+				733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */,
+				733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */,
+				733EA143122BDEC80060CBDE /* GBCommentsProcessor-TextItemsTesting.m in Sources */,
+				733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */,
+				733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */,
+				733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */,
+				733EA147122BDEC90060CBDE /* GBMethodDataTesting.m in Sources */,
+				733EA148122BDECA0060CBDE /* GBMethodsProviderTesting.m in Sources */,
+				733EA149122BDECA0060CBDE /* GBModelBaseTesting.m in Sources */,
+				733EA14A122BDECC0060CBDE /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
+				733EA14B122BDECC0060CBDE /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */,
+				733EA14C122BDECD0060CBDE /* GBObjectiveCParser-ClassParsingTesting.m in Sources */,
+				733EA14D122BDECD0060CBDE /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */,
+				733EA14E122BDECE0060CBDE /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */,
+				733EA14F122BDECE0060CBDE /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */,
+				733EA150122BDECF0060CBDE /* GBObjectsAssertor.m in Sources */,
+				733EA151122BDECF0060CBDE /* GBProcessor-AdoptedProtocolsTesting.m in Sources */,
+				733EA152122BDED10060CBDE /* GBProcessor-CommentsTesting.m in Sources */,
+				733EA153122BDED10060CBDE /* GBProtocolDataTesting.m in Sources */,
+				733EA154122BDED20060CBDE /* GBRealLifeDataProvider.m in Sources */,
+				733EA155122BDED20060CBDE /* GBStoreTesting.m in Sources */,
+				733EA156122BDED30060CBDE /* GBTestObjectsRegistry.m in Sources */,
+				733EA157122BDED30060CBDE /* GBTokenizerTesting.m in Sources */,
+				733EA175122BE14B0060CBDE /* DDConsoleLogger.m in Sources */,
+				733EA176122BE14C0060CBDE /* DDFileLogger.m in Sources */,
+				733EA177122BE15D0060CBDE /* DDLog.m in Sources */,
+				733EA178122BE15E0060CBDE /* GBAdoptedProtocolsProvider.m in Sources */,
+				733EA17A122BE1650060CBDE /* GBCategoryData.m in Sources */,
+				733EA17B122BE1660060CBDE /* GBClassData.m in Sources */,
+				733EA17C122BE1670060CBDE /* GBComment.m in Sources */,
+				733EA17D122BE1680060CBDE /* GBCommentComponentsProvider.m in Sources */,
+				733EA17E122BE1680060CBDE /* GBCommentParagraph.m in Sources */,
+				733EA180122BE1720060CBDE /* GBLog.m in Sources */,
+				733EA181122BE1720060CBDE /* NSException+GBException.m in Sources */,
+				733EA182122BE1730060CBDE /* NSFileManager+GBFileManager.m in Sources */,
+				733EA183122BE1740060CBDE /* NSObject+GBObject.m in Sources */,
+				733EA184122BE1750060CBDE /* NSString+GBString.m in Sources */,
+				733EA185122BE17A0060CBDE /* GBIvarData.m in Sources */,
+				733EA186122BE17A0060CBDE /* GBIvarsProvider.m in Sources */,
+				733EA187122BE17B0060CBDE /* GBMethodArgument.m in Sources */,
+				733EA188122BE17B0060CBDE /* GBMethodData.m in Sources */,
+				733EA189122BE17C0060CBDE /* GBMethodsProvider.m in Sources */,
+				733EA18A122BE17C0060CBDE /* GBModelBase.m in Sources */,
+				733EA18B122BE17D0060CBDE /* GBProtocolData.m in Sources */,
+				733EA18C122BE17E0060CBDE /* GBStore.m in Sources */,
+				733EA18D122BE1800060CBDE /* GBObjectiveCParser.m in Sources */,
+				733EA18E122BE1810060CBDE /* GBParser.m in Sources */,
+				733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */,
+				733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */,
+				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
+				733EA2E2122C00370060CBDE /* GBParagraphItem.m in Sources */,
+				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
+				73CF81D3122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
+				73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
+				73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */,
+				73329AA6122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m in Sources */,
+				73329B30122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m in Sources */,
+				73329B33122EE18C00AEBA2B /* GBParagraphSpecialItem.m in Sources */,
+				73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */,
+				73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */,
+				7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
+				7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */,
+				73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */,
+				73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */,
+				73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */,
+				73F2CA75123E4161009B406B /* GBProcessor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -724,18 +911,21 @@
 				7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */,
 				731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */,
 				73F70DB71227B34300D19EBA /* GBComment.m in Sources */,
+				73EC01711228561B0076B7B3 /* GBCommentParagraph.m in Sources */,
+				733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */,
+				733EA2E1122C00370060CBDE /* GBParagraphItem.m in Sources */,
+				73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */,
+				73CF81D4122D72ED005B7E26 /* GBParagraphTextItem.m in Sources */,
+				73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */,
+				7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */,
+				73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */,
+				73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */,
+				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
+				73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		73FC718611FD7A8A00AAD0B9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8DD76F960486AA7600D96B5E /* appledoc */;
-			targetProxy = 73FC718511FD7A8A00AAD0B9 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
@@ -789,8 +979,9 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx10.6;
 			};
 			name = Debug;
@@ -804,32 +995,32 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_LDFLAGS = "-licucore";
 				PREBINDING = NO;
-				RUN_CLANG_STATIC_ANALYZER = YES;
+				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
-		73FC6D8E11FCCB7000AAD0B9 /* Debug */ = {
+		733EA127122BDD020060CBDE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/appledoc";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppledocTests_prefix.pch;
 				HEADER_SEARCH_PATHS = Libraries;
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
@@ -838,47 +1029,44 @@
 					"-framework",
 					Foundation,
 					"-framework",
-					SenTestingKit,
+					AppKit,
+					"-licucore",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
-		73FC6D8F11FCCB7000AAD0B9 /* Release */ = {
+		733EA128122BDD020060CBDE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/appledoc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
-					Cocoa,
+					Foundation,
 					"-framework",
-					SenTestingKit,
+					AppKit,
+					"-licucore",
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = AppledocTests;
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -904,11 +1092,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		73FC6D9011FCCB7000AAD0B9 /* Build configuration list for PBXNativeTarget "AppledocTests" */ = {
+		733EA12A122BDD110060CBDE /* Build configuration list for PBXNativeTarget "AppledocTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				73FC6D8E11FCCB7000AAD0B9 /* Debug */,
-				73FC6D8F11FCCB7000AAD0B9 /* Release */,
+				733EA127122BDD020060CBDE /* Debug */,
+				733EA128122BDD020060CBDE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

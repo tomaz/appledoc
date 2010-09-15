@@ -26,6 +26,12 @@
 	return self;
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@ with %u classes, %u categories, %u protocols", [self className], [self.classes count], [self.categories count], [self.protocols count]];
+}
+
 #pragma mark Helper methods
 
 - (NSArray *)classesSortedByName {
@@ -64,7 +70,7 @@
 	NSParameterAssert(category != nil);
 	GBLogDebug(@"Registering category %@...", category);
 	if ([_categories containsObject:category]) return;
-	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory];
+	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory ? category.nameOfCategory : @""];
 	GBCategoryData *existingCategory = [_categoriesByName objectForKey:categoryID];
 	if (existingCategory) {
 		[existingCategory mergeDataFromObject:category];
@@ -85,6 +91,18 @@
 	}
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
+}
+
+- (GBClassData *)classByName:(NSString *)name {
+	return [_classesByName objectForKey:name];
+}
+
+- (GBCategoryData *)categoryByName:(NSString *)name {
+	return [_categoriesByName objectForKey:name];
+}
+
+- (GBProtocolData *)protocolByName:(NSString *)name {
+	return [_protocolsByName objectForKey:name];
 }
 
 @synthesize classes = _classes;

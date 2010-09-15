@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBProtocolDataTesting : SenTestCase
+@interface GBProtocolDataTesting : GHTestCase
 @end
 
 @implementation GBProtocolDataTesting
@@ -52,14 +52,6 @@
 	// verify
 	assertThatInteger([[original.methods methods] count], equalToInteger(3));
 	assertThatInteger([[source.methods methods] count], equalToInteger(2));
-}
-
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentProtocolName {
-	//setup
-	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"AnotherProtocol"];
-	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 @end

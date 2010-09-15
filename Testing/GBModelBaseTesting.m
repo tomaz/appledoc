@@ -8,7 +8,7 @@
 
 #import "GBDataObjects.h"
 
-@interface GBModelBaseTesting : SenTestCase
+@interface GBModelBaseTesting : GHTestCase
 @end
 
 @implementation GBModelBaseTesting
@@ -48,14 +48,6 @@
 	assertThatInteger([files count], equalToInteger(2));
 	assertThat([files objectAtIndex:0], is(@"f1"));
 	assertThat([files objectAtIndex:1], is(@"f3"));
-}
-
-- (void)testMergeDataFromObject_shouldRaiseExceptionOnDifferentClass {
-	//setup
-	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	// execute & verify
-	STAssertThrows([original mergeDataFromObject:source], nil);
 }
 
 #pragma mark Comments merging handling

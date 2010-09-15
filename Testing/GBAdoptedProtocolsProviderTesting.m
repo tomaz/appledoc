@@ -9,7 +9,7 @@
 #import "GBProtocolData.h"
 #import "GBAdoptedProtocolsProvider.h"
 
-@interface GBAdoptedProtocolsProviderTesting : SenTestCase
+@interface GBAdoptedProtocolsProviderTesting : GHTestCase
 @end
 
 @implementation GBAdoptedProtocolsProviderTesting
@@ -87,6 +87,25 @@
 	NSArray *protocols = [source protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
 	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P1"));
+	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P3"));
+}
+
+#pragma mark Protocols replacing handling
+
+- (void)testReplaceProtocolWithProtocol_shouldReplaceObjects {
+	// setup
+	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
+	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"P1"];
+	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"P2"];
+	GBProtocolData *protocol3 = [GBProtocolData protocolDataWithName:@"P3"];
+	[provider registerProtocol:protocol1];
+	[provider registerProtocol:protocol2];
+	// execute
+	[provider replaceProtocol:protocol1 withProtocol:protocol3];
+	// verify
+	NSArray *protocols = [provider protocolsSortedByName];
+	assertThatInteger([protocols count], equalToInteger(2));
+	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P2"));
 	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P3"));
 }
 

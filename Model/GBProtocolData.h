@@ -7,12 +7,13 @@
 //
 
 #import "GBModelBase.h"
+#import "GBObjectDataProviding.h"
 
 @class GBAdoptedProtocolsProvider;
 @class GBMethodsProvider;
 
 /** Describes a protocol. */
-@interface GBProtocolData : GBModelBase {
+@interface GBProtocolData : GBModelBase <GBObjectDataProviding> {
 	@private
 	NSString *_protocolName;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;

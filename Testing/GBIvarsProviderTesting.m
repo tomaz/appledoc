@@ -8,7 +8,7 @@
 
 #import "GBIvarsProvider.h"
 
-@interface GBIvarsProviderTesting : SenTestCase
+@interface GBIvarsProviderTesting : GHTestCase
 @end
 
 @implementation GBIvarsProviderTesting
