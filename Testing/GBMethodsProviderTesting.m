@@ -43,16 +43,35 @@
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	// execute
 	[provider registerMethod:method];
+	[provider registerMethod:method];
 	// verify
 	assertThatInteger([provider.methods count], equalToInteger(1));
 }
 
+- (void)testRegisterMethod_shouldAllowSameSelectorIfDifferentType {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	// execute
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// verify
+	assertThatInteger([provider.methods count], equalToInteger(2));
+	assertThat([[provider.methods objectAtIndex:0] methodSelector], is(@"method:"));
+	assertThatInteger([[provider.methods objectAtIndex:0] methodType], equalToInteger(GBMethodTypeInstance));
+	assertThat([[provider.methods objectAtIndex:1] methodSelector], is(@"method:"));
+	assertThatInteger([[provider.methods objectAtIndex:1] methodType], equalToInteger(GBMethodTypeClass));
+}
+
 - (void)testRegisterMethod_shouldMergeDifferentInstanceWithSameName {
 	// setup
+	GBMethodType expectedType = GBMethodTypeInstance;
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	OCMockObject *destination = [OCMockObject niceMockForClass:[GBMethodData class]];
 	[[[destination stub] andReturn:@"method:"] methodSelector];
+	[[[destination stub] andReturnValue:[NSValue value:&expectedType withObjCType:@encode(GBMethodType)]] methodType];
 	[[destination expect] mergeDataFromObject:source];
 	[provider registerMethod:(GBMethodData *)destination];
 	// execute

@@ -28,16 +28,18 @@
 #pragma mark Helper methods
 
 - (void)registerMethod:(GBMethodData *)method {
+	// Note that we allow adding several methods with the same selector as long as the type is different (i.e. class and instance methods). In such case, methodBySelector will preffer instance method or property to class method!
 	NSParameterAssert(method != nil);
 	GBLogDebug(@"Registering method %@...", method);
 	if ([_methods containsObject:method]) return;
 	GBMethodData *existingMethod = [_methodsBySelectors objectForKey:method.methodSelector];
-	if (existingMethod) {
+	if (existingMethod && existingMethod.methodType == method.methodType) {
 		[existingMethod mergeDataFromObject:method];
 		return;
 	}
 	method.parentObject = _parent;
 	[_methods addObject:method];
+	if (existingMethod && existingMethod.methodType == GBMethodTypeInstance) return;
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
 }
 
