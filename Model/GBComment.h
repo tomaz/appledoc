@@ -10,6 +10,7 @@
 
 @protocol GBStoreProviding;
 @class GBCommentParagraph;
+@class GBCommentArgument;
 
 /** Handles all comment related stuff.
  
@@ -30,6 +31,8 @@
 @interface GBComment : NSObject {
 	@private
 	NSMutableArray *_paragraphs;
+	NSMutableArray *_parameters;
+	NSMutableArray *_exceptions;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -66,18 +69,62 @@
  */
 @property (retain) GBCommentParagraph *firstParagraph;
 
-///---------------------------------------------------------------------------------------
-/// @name Derived values
-///---------------------------------------------------------------------------------------
-
 /** `NSArray` containing all paragraphs of the comment.
  
- The paragraphs are in same order as in the source code. First paragraph is used for short description and is also available via `firstParagraph`. Each object is a `GBCommentParagraph` instance and should be registered through `registerParagraph:`.
+ The paragraphs are in same order as in the source code. First paragraph is used for short description and is also available via `firstParagraph`. Each object is a `GBCommentParagraph` instance and should be registered through `registerParagraph:` method.
 
  @see firstParagraph
  @see registerParagraph:
+ @see parameters
+ @see exceptions
  */
-@property (retain) NSArray *paragraphs;
+@property (readonly) NSArray *paragraphs;
+
+///---------------------------------------------------------------------------------------
+/// @name Method arguments handling
+///---------------------------------------------------------------------------------------
+
+/** Registers the `GBCommentArgument` that describes a parameter and adds it to the end of `parameters` array.
+ 
+ If `parameters` is `nil`, a new array is created before adding the given object to it.
+ 
+ @param parameter Parameter to register.
+ @exception NSException Thrown if the given parameter is `nil`.
+ @see parameters
+ @see registerException:
+ */
+- (void)registerParameter:(GBCommentArgument *)parameter;
+
+/** Registers the `GBCommentArgument` that describes an exception the method can raise and adds it to the end of `exceptions` array.
+ 
+ If `exceptions` is `nil`, a new array is created before adding the given object to it.
+ 
+ @param exception Exception to register.
+ @exception NSException Thrown if the given exception is `nil`.
+ @see exceptions
+ @see registerParameter:
+ */
+- (void)registerException:(GBCommentArgument *)exception;
+
+/** `NSArray` containing all method parameters described within the comment.
+ 
+ Parameters are in the order of declaration within code regardless of the order declared in the comment! Each object is a `GBCommentArgument` instance and should be registered through `registerParameter:` method.
+ 
+ @see registerParameter:
+ @see exceptions
+ @see paragraphs
+ */
+@property (readonly) NSArray *parameters;
+
+/** `NSArray` containing all exceptions commented method can raise as described within the comment.
+ 
+ Exceptions are in the order of declaration in the comment. Each object is a `GBCommentArgument` instance and should be registered through `registerException:` method.
+ 
+ @see registerException:
+ @see parameters
+ @see paragraphs
+ */
+@property (readonly) NSArray *exceptions;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

@@ -7,6 +7,7 @@
 //
 
 #import "GBCommentParagraph.h"
+#import "GBCommentArgument.h"
 #import "GBStoreProviding.h"
 #import "GBComment.h"
 
@@ -32,6 +33,20 @@
 	[_paragraphs addObject:paragraph];
 }
 
+- (void)registerParameter:(GBCommentArgument *)parameter {
+	NSParameterAssert(parameter != nil);
+	GBLogDebug(@"Registering parameter %@...", parameter);
+	if (!_parameters) _parameters = [[NSMutableArray alloc] init];
+	[_parameters addObject:parameter];
+}
+
+- (void)registerException:(GBCommentArgument *)exception {
+	NSParameterAssert(exception != nil);
+	GBLogDebug(@"Registering exception %@...", exception);
+	if (!_exceptions) _exceptions = [[NSMutableArray alloc] init];
+	[_exceptions addObject:exception];
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -48,6 +63,8 @@
 #pragma mark Properties
 
 @synthesize paragraphs = _paragraphs;
+@synthesize parameters = _parameters;
+@synthesize exceptions = _exceptions;
 @synthesize firstParagraph;
 @synthesize stringValue;
 

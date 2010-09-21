@@ -310,4 +310,21 @@
 	assertThatBool([item isLocal], equalToBool(local));
 }
 
+#pragma mark Arguments testing
+
+- (void)assertArgument:(GBCommentArgument *)argument hasName:(NSString *)name descriptions:(NSString *)first,... {
+	NSMutableArray *descriptions = [NSMutableArray array];
+	va_list args;
+	va_start(args,first);
+	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString*)) {
+		[descriptions addObject:arg];
+	}
+	va_end(args);
+	assertThat([argument class], is([GBCommentArgument class]));
+	assertThatInteger([argument.argumentDescription.items count], equalToInteger([descriptions count]));
+	[argument.argumentDescription.items enumerateObjectsUsingBlock:^(GBParagraphItem *item, NSUInteger idx, BOOL *stop) {
+		assertThat([item stringValue], is([descriptions objectAtIndex:idx]));
+	}];
+}
+
 @end

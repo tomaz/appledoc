@@ -18,6 +18,7 @@
 
 @interface GBCommentComponentsProvider ()
 
+- (NSString *)argumentsCommonRegex;
 - (NSString *)exampleRegexWithoutFlags;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
@@ -63,10 +64,6 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
 }
 
-- (NSString *)crossReferenceSectionRegex {
-	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
-}
-
 - (NSString *)exampleSectionRegex {
 	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?s:%@)", [self exampleRegexWithoutFlags]]));
 }
@@ -81,6 +78,18 @@
 
 #pragma mark Method specific detection
 
+- (NSString *)argumentsCommonRegex {
+	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|see|sa)");
+}
+
+- (NSString *)argumentsMatchingRegex {
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?:^%@)", [self argumentsCommonRegex]]));
+}
+
+- (NSString *)nextArgumentRegex {
+	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:^%@)", [self argumentsCommonRegex]]));
+}
+
 - (NSString *)parameterDescriptionRegex {
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"param"]);
 }
@@ -91,6 +100,10 @@
 
 - (NSString *)exceptionDescriptionRegex {
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"exception"]);
+}
+
+- (NSString *)crossReferenceSectionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
 }
 
 #pragma mark Common detection
@@ -115,11 +128,11 @@
 #pragma mark Helper methods
 
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*.%@\\s+(?s:(.*))", keyword];
+	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(?s:(.*))", keyword];
 }
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*.%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
+	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
 }
 
 - (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex {

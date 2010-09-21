@@ -14,6 +14,8 @@
 	
 @implementation GBCommentTesting
 
+#pragma mark Paragraphs testing
+
 - (void)testRegisterParagraph_shouldAddParagraphToList {
 	// setup
 	GBComment *comment = [GBComment commentWithStringValue:@""];
@@ -59,6 +61,33 @@
 	[comment registerParagraph:paragraph2];
 	// verify
 	assertThat(comment.firstParagraph, is(paragraph1));
+}
+
+#pragma mark Parameters testing
+
+- (void)testRegisterParameter_shouldAddParameterToList {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *parameter = [GBCommentArgument argument];
+	// execute
+	[comment registerParameter:parameter];
+	// verify
+	assertThatInteger([comment.parameters count], equalToInteger(1));
+	assertThat([comment.parameters objectAtIndex:0], is(parameter));
+}
+
+- (void)testRegisterParagraph_shouldAddAllParametersToListInOrderRegistered {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *parameter1 = [GBCommentArgument argument];
+	GBCommentArgument *parameter2 = [GBCommentArgument argument];
+	// execute
+	[comment registerParameter:parameter1];
+	[comment registerParameter:parameter2];
+	// verify
+	assertThatInteger([comment.parameters count], equalToInteger(2));
+	assertThat([comment.parameters objectAtIndex:0], is(parameter1));
+	assertThat([comment.parameters objectAtIndex:1], is(parameter2));
 }
 
 @end

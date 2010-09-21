@@ -14,6 +14,10 @@
 
 @interface GBCommentsProcessor ()
 
+- (BOOL)registerParagraphItemFromString:(NSString *)string toParagraph:(GBCommentParagraph **)paragraph;
+- (GBCommentParagraph *)registerArgumentsFromString:(NSString *)string;
+- (GBCommentArgument *)namedArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
+
 - (void)registerListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)flattenedListItemsFromString:(NSString *)string;
 - (NSString *)regexMatchingFirstListItemInString:(NSString *)string matchedRange:(NSRange *)range ordered:(BOOL *)ordered;
@@ -35,6 +39,7 @@
 
 @property (retain) NSString *newLinesRegexSymbols;
 @property (retain) NSString *spaceAndNewLineTrimRegex;
+@property (retain) GBComment *currentComment;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -66,58 +71,124 @@
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store {
-#define GBRegister(code) \
-	BOOL shouldRegisterParagraph = (currentParagraph == nil); \
-	if (shouldRegisterParagraph) currentParagraph = [GBCommentParagraph paragraph]; \
-	code; \
-	if (shouldRegisterParagraph) [comment registerParagraph:currentParagraph]
+- (void)processComment:(GBComment *)comment withStore:(id)store {
+	[self processComment:comment withContext:nil store:store];
+}
 
+- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Processing comment with store %@...", store);
+	self.currentComment = comment;
 	self.currentContext = context;
 	self.store = store;	
-	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
-	NSArray *components = [self componentsSeparatedByEmptyLinesFromString:[comment stringValue]];
-	__block GBCommentParagraph *currentParagraph = nil;
+	NSArray *components = [self componentsSeparatedByEmptyLinesFromString:[self.currentComment stringValue]];
+	__block GBCommentParagraph *paragraph = nil;
 	[components enumerateObjectsUsingBlock:^(NSString *component, NSUInteger idx, BOOL *stop) {
-		// As most components are given with preceeding new line, we should remove it to get cleaner testing.
-		NSString *trimmed = [component stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
-
-		// Match known parts. Note that order is important for certain items (lists must be processed before examples for example).
-		if ([trimmed isMatchedByRegex:componizer.unorderedListMatchRegex]) {
-			GBRegister([self registerListFromString:trimmed toParagraph:currentParagraph]);
-			return;
+		if ([self registerParagraphItemFromString:component toParagraph:&paragraph]) {
+			[self.currentComment registerParagraph:paragraph];
 		}
-		if ([trimmed isMatchedByRegex:componizer.orderedListMatchRegex]) {
-			GBRegister([self registerListFromString:trimmed toParagraph:currentParagraph]);
-			return;
-		}
-		if ([trimmed isMatchedByRegex:componizer.warningSectionRegex]) {
-			GBRegister([self registerWarningFromString:trimmed toParagraph:currentParagraph]);
-			return;
-		}
-		if ([trimmed isMatchedByRegex:componizer.bugSectionRegex]) {
-			GBRegister([self registerBugFromString:trimmed toParagraph:currentParagraph]);
-			return;
-		}
-		if ([trimmed isMatchedByRegex:componizer.exampleSectionRegex]) {
-			GBRegister([self registerExampleFromString:trimmed toParagraph:currentParagraph]);
-			return;
-		}
-		
-		// If no other match was found, this is simple text, so start new paragraph.
-		currentParagraph = [GBCommentParagraph paragraph];
-		[self registerTextFromString:trimmed toParagraph:currentParagraph];
-		[comment registerParagraph:currentParagraph];
 	}];	
 	self.currentContext = nil;
 }
 
-- (void)processComment:(GBComment *)comment withStore:(id)store {
-	[self processComment:comment withContext:nil store:store];
+#pragma mark Processing method arguments
+
+- (BOOL)registerParagraphItemFromString:(NSString *)string toParagraph:(GBCommentParagraph **)paragraph {
+	// Registers a single paragraph item contained in the given string to the given paragraph. Optionally we can allow creating a new paragraph for text. At the end we return YES if a new paragraph was created, NO otherwise. If a new paragraph was created, the instance is returned through paragraph parameter. It's up to caller to handle the paragraph.
+	
+	// As most components are given with preceeding new line, we should remove it to get cleaner testing.
+	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
+	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
+	
+	// Match known paragraph parts. Note that order is important (like: lists must be processed before example sections).
+	if ([trimmed isMatchedByRegex:componizer.unorderedListMatchRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerListFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
+	if ([trimmed isMatchedByRegex:componizer.orderedListMatchRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerListFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
+	if ([trimmed isMatchedByRegex:componizer.warningSectionRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerWarningFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
+	if ([trimmed isMatchedByRegex:componizer.bugSectionRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerBugFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
+	if ([trimmed isMatchedByRegex:componizer.exampleSectionRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerExampleFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
+	
+	// Match known comment parts. Note that we should register all remaining paragraph items to the created paragraph but return no as we shouldn't register the created paragraph as normal comment paragraph!
+	if ([trimmed isMatchedByRegex:componizer.argumentsMatchingRegex]) {
+		*paragraph = [self registerArgumentsFromString:trimmed];
+		return NO;
+	}
+	
+	// If no other match was found, this is simple text, so start new paragraph.
+	*paragraph = [GBCommentParagraph paragraph];
+	[self registerTextFromString:trimmed toParagraph:*paragraph];
+	return YES;
+}
+
+- (GBCommentParagraph *)registerArgumentsFromString:(NSString *)string {
+	// Processes the given string which only contains method arguments or cross reference. Method returns the last created paragraph as we need to append any subsequent paragraph items to it!
+	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
+	GBCommentParagraph *result = nil;
+	while (YES) {
+		NSUInteger length = 0;
+		if ([string isMatchedByRegex:componizer.parameterDescriptionRegex])
+		{
+			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:componizer.parameterDescriptionRegex matchLength:&length];
+			[self.currentComment registerParameter:argument];
+			result = argument.argumentDescription;
+		}
+		if ([string isMatchedByRegex:componizer.exceptionDescriptionRegex]) {
+			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:componizer.exceptionDescriptionRegex matchLength:&length];
+			[self.currentComment registerException:argument];
+			result = argument.argumentDescription;
+		}
+		if (length == [string length]) break;
+		string = [string substringFromIndex:length];
+	}
+	return result;
+}
+
+- (GBCommentArgument *)namedArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length {
+	// Get argument name range from capture 1.
+	NSRange nameRange = [string rangeOfRegex:regex capture:1];
+	
+	// Get the range of the next argument in the string or end of the string if this is last argument.
+	NSUInteger location = nameRange.location + nameRange.length;
+	NSRange remainingRange = NSMakeRange(location, [string length] - location);
+	NSRange nextRange = [string rangeOfRegex:self.settings.commentComponents.nextArgumentRegex inRange:remainingRange];
+	if (nextRange.location == NSNotFound) nextRange.location = [string length];
+	
+	// Prepare the range of the description and extract argument data from string. Note that we trim the description to remove possible tabbed prefix. The following code would assume this is an example section otherwise.
+	NSRange descRange = NSMakeRange(location, nextRange.location - location);
+	NSString *name = [string substringWithRange:nameRange];
+	NSString *description = [self trimmedTextFromString:[string substringWithRange:descRange]];
+
+	// Get the description into a paragraph, then create the argument and register the data.
+	*length = descRange.location + descRange.length;
+	GBCommentParagraph *paragraph = nil;
+	[self registerParagraphItemFromString:description toParagraph:&paragraph];
+	return [GBCommentArgument argumentWithName:name description:paragraph];
 }
 
 #pragma mark Processing paragraph lists
@@ -565,6 +636,7 @@
 
 @synthesize newLinesRegexSymbols;
 @synthesize spaceAndNewLineTrimRegex;
+@synthesize currentComment;
 @synthesize currentContext;
 @synthesize settings;
 @synthesize store;

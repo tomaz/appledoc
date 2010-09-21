@@ -48,9 +48,6 @@
 /** Returns the regex used for matching bug section with capture 1 containing description. */
 @property (readonly) NSString *bugSectionRegex;
 
-/** Returns the regex used for matching cross reference directive with capture 2 containing link. */
-@property (readonly) NSString *crossReferenceSectionRegex;
-
 /** Returns the regex used for matching example section with capture 1 containing example text. */
 @property (readonly) NSString *exampleSectionRegex;
 
@@ -61,6 +58,12 @@
 /// @name Method specific definitions
 ///---------------------------------------------------------------------------------------
 
+/** Returns the regex used for matching different method parameter descriptions within the paragraph. */
+@property (readonly) NSString *argumentsMatchingRegex;
+
+/** Returns the regex used for finding next method parameter description within the paragraph. */
+@property (readonly) NSString *nextArgumentRegex;
+
 /** Returns the regex used for matching method parameter description with capture 1 containing parameter name and capture 2 description. */
 @property (readonly) NSString *parameterDescriptionRegex;
 
@@ -69,6 +72,9 @@
 
 /** Returns the regex used for matching method exception description with capture 1 containing exception name and capture 2 description. */
 @property (readonly) NSString *exceptionDescriptionRegex;
+
+/** Returns the regex used for matching cross reference directive with capture 2 containing link. */
+@property (readonly) NSString *crossReferenceSectionRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Common definitions

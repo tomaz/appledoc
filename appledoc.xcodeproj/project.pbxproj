@@ -83,6 +83,9 @@
 		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
+		738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
+		738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
+		7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */; };
 		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
 		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
 		73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
@@ -176,6 +179,9 @@
 		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
 		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
 		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
+		738945D41246857500A4A3A0 /* GBCommentArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentArgument.h; sourceTree = "<group>"; };
+		738945D51246857500A4A3A0 /* GBCommentArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentArgument.m; sourceTree = "<group>"; };
+		7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-MethodArgumentsTesting.m"; sourceTree = "<group>"; };
 		73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-LinkItemsTesting.m"; sourceTree = "<group>"; };
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
 		73A32FFE1236532500040070 /* GBParagraphLinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphLinkItem.h; sourceTree = "<group>"; };
@@ -532,6 +538,8 @@
 			children = (
 				73F70DB51227B34300D19EBA /* GBComment.h */,
 				73F70DB61227B34300D19EBA /* GBComment.m */,
+				738945D41246857500A4A3A0 /* GBCommentArgument.h */,
+				738945D51246857500A4A3A0 /* GBCommentArgument.m */,
 				73EC016F1228561B0076B7B3 /* GBCommentParagraph.h */,
 				73EC01701228561B0076B7B3 /* GBCommentParagraph.m */,
 				733EA2DF122C00370060CBDE /* GBParagraphItem.h */,
@@ -606,6 +614,7 @@
 				73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */,
 				7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */,
 				73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */,
+				7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -874,6 +883,8 @@
 				73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */,
 				73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA75123E4161009B406B /* GBProcessor.m in Sources */,
+				738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */,
+				7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -922,6 +933,7 @@
 				73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
 				73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */,
+				738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

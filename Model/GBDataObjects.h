@@ -7,6 +7,7 @@
 //
 
 #import "GBComment.h"
+#import "GBCommentArgument.h"
 #import "GBCommentParagraph.h"
 #import "GBParagraphItem.h"
 #import "GBParagraphTextItem.h"
