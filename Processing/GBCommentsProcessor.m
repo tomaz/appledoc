@@ -17,6 +17,7 @@
 - (BOOL)registerParagraphItemFromString:(NSString *)string toParagraph:(GBCommentParagraph **)paragraph;
 - (GBCommentParagraph *)registerArgumentsFromString:(NSString *)string;
 - (GBCommentArgument *)namedArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
+- (GBCommentParagraph *)simpleArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
 
 - (void)registerListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)flattenedListItemsFromString:(NSString *)string;
@@ -149,19 +150,24 @@
 - (GBCommentParagraph *)registerArgumentsFromString:(NSString *)string {
 	// Processes the given string which only contains method arguments or cross reference. Method returns the last created paragraph as we need to append any subsequent paragraph items to it!
 	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
+	NSString *parameterRegex = componizer.parameterDescriptionRegex;
+	NSString *exceptionRegex = componizer.exceptionDescriptionRegex;
+	NSString *returnRegex = componizer.returnDescriptionRegex;
 	GBCommentParagraph *result = nil;
 	while (YES) {
 		NSUInteger length = 0;
-		if ([string isMatchedByRegex:componizer.parameterDescriptionRegex])
+		if ([string isMatchedByRegex:parameterRegex])
 		{
-			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:componizer.parameterDescriptionRegex matchLength:&length];
+			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:parameterRegex matchLength:&length];
 			[self.currentComment registerParameter:argument];
 			result = argument.argumentDescription;
-		}
-		if ([string isMatchedByRegex:componizer.exceptionDescriptionRegex]) {
-			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:componizer.exceptionDescriptionRegex matchLength:&length];
+		} else if ([string isMatchedByRegex:exceptionRegex]) {
+			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:exceptionRegex matchLength:&length];
 			[self.currentComment registerException:argument];
 			result = argument.argumentDescription;
+		} else if ([string isMatchedByRegex:returnRegex]) {
+			result = [self simpleArgumentFromString:string usingRegex:returnRegex matchLength:&length];
+			self.currentComment.result = result;
 		}
 		if (length == [string length]) break;
 		string = [string substringFromIndex:length];
@@ -189,6 +195,23 @@
 	GBCommentParagraph *paragraph = nil;
 	[self registerParagraphItemFromString:description toParagraph:&paragraph];
 	return [GBCommentArgument argumentWithName:name description:paragraph];
+}
+
+- (GBCommentParagraph *)simpleArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length {
+	// Get the range of the next argument in the string or end of the string if this is last argument.
+	NSRange descRange = [string rangeOfRegex:regex capture:1];
+	NSRange remainingRange = NSMakeRange(1, [string length] - 1);
+	NSRange nextRange = [string rangeOfRegex:self.settings.commentComponents.nextArgumentRegex inRange:remainingRange];
+	if (nextRange.location != NSNotFound) descRange.length -= ([string length] - nextRange.location);
+	
+	// Prepare the range of the description and extract argument data from string. Note that we trim the description to remove possible tabbed prefix. The following code would assume this is an example section otherwise.
+	NSString *description = [self trimmedTextFromString:[string substringWithRange:descRange]];
+	
+	// Get the description into a paragraph, then create the argument and register the data.
+	*length = descRange.location + descRange.length;
+	GBCommentParagraph *paragraph = nil;
+	[self registerParagraphItemFromString:description toParagraph:&paragraph];
+	return paragraph;
 }
 
 #pragma mark Processing paragraph lists

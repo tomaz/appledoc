@@ -79,7 +79,7 @@
 #pragma mark Method specific detection
 
 - (NSString *)argumentsCommonRegex {
-	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|see|sa)");
+	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|see|sa)\\s+");
 }
 
 - (NSString *)argumentsMatchingRegex {

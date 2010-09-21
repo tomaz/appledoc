@@ -77,6 +77,7 @@
  @see registerParagraph:
  @see parameters
  @see exceptions
+ @see result
  */
 @property (readonly) NSArray *paragraphs;
 
@@ -112,6 +113,7 @@
  
  @see registerParameter:
  @see exceptions
+ @see result
  @see paragraphs
  */
 @property (readonly) NSArray *parameters;
@@ -122,9 +124,20 @@
  
  @see registerException:
  @see parameters
+ @see result
  @see paragraphs
  */
 @property (readonly) NSArray *exceptions;
+
+/** The description of the method result or `nil` if this is not method comment or method has no result.
+ 
+ If multiple results are registered, a warning is issued.
+ 
+ @see parameters
+ @see exceptions
+ @see paragraphs
+ */
+@property (retain) GBCommentParagraph *result;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

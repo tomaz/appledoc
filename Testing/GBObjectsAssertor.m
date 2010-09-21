@@ -13,6 +13,7 @@
 
 - (NSUInteger)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index;
 - (NSUInteger)assertListItem:(GBParagraphListItem *)item describesHierarchy:(NSArray *)arguments startingAtIndex:(NSUInteger)index atLevel:(NSUInteger)level;
+- (void)assertParagraph:(GBCommentParagraph *)paragraph contains:(NSString*)first descriptions:(va_list)args assertItemClass:(Class)class;
 
 @end
 
@@ -169,18 +170,30 @@
 }
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsTexts:(NSString *)first,... {
-	NSMutableArray *arguments = [NSMutableArray array];
 	va_list args;
 	va_start(args,first);
-	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString*)) {
+	[self assertParagraph:paragraph contains:first descriptions:args assertItemClass:[GBParagraphTextItem class]];
+	va_end(args);	
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph containsDescriptions:(NSString *)first,... {
+	va_list args;
+	va_start(args,first);
+	[self assertParagraph:paragraph contains:first descriptions:args assertItemClass:NULL];
+	va_end(args);	
+}
+
+- (void)assertParagraph:(GBCommentParagraph *)paragraph contains:(NSString*)first descriptions:(va_list)args assertItemClass:(Class)class {
+	NSMutableArray *arguments = [NSMutableArray arrayWithObject:first];
+	NSString *arg;
+	while ((arg = va_arg(args, NSString*))) {
 		[arguments addObject:arg];
 	}
-	va_end(args);
 	
 	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
 	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
-		GBParagraphTextItem *item = [paragraph.items objectAtIndex:i];
-		assertThat([item class], is([GBParagraphTextItem class]));
+		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
+		if (class) assertThat([item class], is(class));
 		assertThat(item.stringValue, is([arguments objectAtIndex:i]));
 	}
 }

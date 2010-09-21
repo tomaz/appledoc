@@ -254,8 +254,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	assertThatInteger([comment.result count], equalToInteger(1));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description", nil];
 }
 
 - (void)testProcesCommentWithStore_return_shouldUseAllRemainingTextAsResultDescription {
@@ -266,8 +265,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	assertThatInteger([comment.result count], equalToInteger(1));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name" descriptions:@"Description Following", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description Following", nil];
 }
 
 - (void)testProcesCommentWithStore_return_shouldDetectNormalParagraphIfDelimitedWithEmptyLine {
@@ -279,8 +277,7 @@
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Following", nil];
-	assertThatInteger([comment.result count], equalToInteger(1));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description", nil];
 }
 
 - (void)testProcesCommentWithStore_return_shouldDetectDescriptionParagraphItems {
@@ -291,11 +288,10 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	assertThatInteger([comment.result count], equalToInteger(1));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name" descriptions:@"Description", @"- Item", @"Example", nil];
+	[self assertParagraph:comment.result containsDescriptions:@"Description", @"- Item", @"Example", nil];
 }
 
-- (void)testProcesCommentWithStore_return_shouldUseLastResultIfMultipleDetected {
+- (void)testProcesCommentWithStore_return_shouldUseLastResultIfMultipleDetected1 {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"@return Description1\n@return Description2"];
@@ -303,22 +299,18 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method and have multiple return!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	assertThatInteger([comment.result count], equalToInteger(2));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name1" descriptions:@"Description1", nil];
-	[self assertArgument:[comment.result objectAtIndex:1] hasName:@"name2" descriptions:@"Description2", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description2", nil];
 }
 
-- (void)testProcesCommentWithStore_return_shouldDetectParametersEvenIfDelimitedWithEmptyLines {
+- (void)testProcesCommentWithStore_return_shouldUseLastResultIfMultipleDetected2 {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"@return1 Description1\n\n@return2 Description2"];
+	GBComment *comment = [GBComment commentWithStringValue:@"@return Description1\n\n@return Description2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
-	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	// verify - note that we would get a warning normally as current context doesn't point to a method and have multiple return!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	assertThatInteger([comment.result count], equalToInteger(2));
-	[self assertArgument:[comment.result objectAtIndex:0] hasName:@"name1" descriptions:@"Description1", nil];
-	[self assertArgument:[comment.result objectAtIndex:1] hasName:@"name2" descriptions:@"Description2", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description2", nil];
 }
 
 @end
