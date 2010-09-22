@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7307B2A6124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B2A5124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m */; };
 		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
 		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
@@ -133,6 +134,7 @@
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		7307B2A5124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-ComplexTesting.m"; sourceTree = "<group>"; };
 		731D2BF312045A61003180E7 /* NSString+GBString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GBString.h"; sourceTree = "<group>"; };
 		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
@@ -615,6 +617,7 @@
 				7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */,
 				73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */,
 				7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */,
+				7307B2A5124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -885,6 +888,7 @@
 				73F2CA75123E4161009B406B /* GBProcessor.m in Sources */,
 				738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */,
 				7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */,
+				7307B2A6124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

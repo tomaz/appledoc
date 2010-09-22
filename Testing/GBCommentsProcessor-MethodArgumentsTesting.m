@@ -1,5 +1,5 @@
 //
-//  GBCommentsProcessor-LinkItemsTesting.m
+//  GBCommentsProcessor-MethodItemsTesting.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 19.9.10.

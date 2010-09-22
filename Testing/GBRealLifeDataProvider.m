@@ -64,7 +64,7 @@
 	@"\n";
 }
 
-+ (NSString *)fullMethodComment {
++ (NSString *)trickyMethodComment {
 	return
 	// Short description.
 	@"Short description.\n"
@@ -75,15 +75,13 @@
 	@"split into two lines.\n"
 	@"\n\n\n"
 	
-	// Two unordered list separated with an empty line.
-	@"- Unordered item 1.\n"
-	@"- Unordered item 2.\n"
-	@"\n\n"
-	@"- Second unordered list\n"
-	
-	// Ordered list (should work even if no empty line before unordered list!)
-	@"1. Ordered item 1.\n"
-	@"999. Ordered item 2.\n"
+	// Nested lists.
+	@"- Nested 1\n"
+	@"	- Nested 1.1\n"
+	@"- Nested 2\n"
+	@"	999. Nested 2.1\n"
+	@"		1. Nested 2.1.1\n"
+	@"	2. Nested 2.2\n"
 	@"\n"
 	
 	// Example with empty line and tabs.
@@ -92,22 +90,26 @@
 	@"\t\tSource line with tab\n"
 	@"\n"
 	
-	// Second example without empty line before next paragraph.
-	@"\tSecond example\n"
-	
 	// Third paragraph.
 	@"Third paragraph.\n"
+	@"\n"
 	
 	// Warning and bug.
-	@"@warning Warning\n"
-	@"@bug Bug\n"
+	@"@warning *Important:* There is something important about this!\n"
+	@"We even write it in two lines!\n"
+	@"\n"
+	@"@bug *ID215:* Khm, still not working...\n"
+	@"\n"
 	
-	// Parameters block, note there's no empty line before!
+	// Method block.
 	@"@param name1 Description1\n"
 	@"@param name2 Description2\n"
-	@"@return Return\n"
+	@"@return Return value\n"
+	@"\tsplit into several lines.\n"
 	@"@exception exc1 Exception1\n"
 	@"@exception exc2 Exception2\n"
+	
+	// Cross references.
 	@"@see link1\n"
 	@"@sa link2\n";
 }

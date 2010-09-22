@@ -31,9 +31,7 @@
 
 - (void)assertList:(GBParagraphListItem *)list isOrdered:(BOOL)ordered containsParagraphs:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertList:(GBParagraphListItem *)list describesHierarchy:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
-
 - (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
-
 - (void)assertLinkItem:(GBParagraphLinkItem *)item hasLink:(NSString *)link context:(id)context member:(id)member local:(BOOL)local;
 
 - (void)assertArgument:(GBCommentArgument *)argument hasName:(NSString *)name descriptions:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;

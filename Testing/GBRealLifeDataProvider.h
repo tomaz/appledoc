@@ -12,6 +12,6 @@
 
 + (NSString *)headerWithClassCategoryAndProtocol;
 + (NSString *)codeWithClassAndCategory;
-+ (NSString *)fullMethodComment;
++ (NSString *)trickyMethodComment;
 
 @end
