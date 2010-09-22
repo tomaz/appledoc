@@ -122,7 +122,7 @@
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"((?:http|https|ftp|file)://[^>\\s]*)"];
+	return [self crossReferenceRegexByEmbeddingRegex:@"(((?:(?:http|https|ftp|file)://)|(?:mailto:))[^>\\s]*)"];
 }
 
 #pragma mark Helper methods

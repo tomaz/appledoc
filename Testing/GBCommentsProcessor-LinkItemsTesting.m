@@ -71,16 +71,19 @@
 	GBComment *comment2 = [GBComment commentWithStringValue:@"https://gentlebytes.com"];
 	GBComment *comment3 = [GBComment commentWithStringValue:@"ftp://user:pass@gentlebytes.com"];
 	GBComment *comment4 = [GBComment commentWithStringValue:@"file://gentlebytes.com"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"mailto:tomaz@gentlebytes.com"];
 	// execute
 	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment3 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment4 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment5 withStore:[GBTestObjectsRegistry store]];
 	// verify
 	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"https://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsLinks:@"ftp://user:pass@gentlebytes.com", GBNULL, GBNULL, NO, nil];
 	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsLinks:@"mailto:tomaz@gentlebytes.com", GBNULL, GBNULL, NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldDetectMarkedUrl {
