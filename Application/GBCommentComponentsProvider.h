@@ -73,8 +73,8 @@
 /** Returns the regex used for matching method exception description with capture 1 containing exception name and capture 2 description. */
 @property (readonly) NSString *exceptionDescriptionRegex;
 
-/** Returns the regex used for matching cross reference directive with capture 2 containing link. */
-@property (readonly) NSString *crossReferenceSectionRegex;
+/** Returns the regex used for matching cross reference directive with capture 1 containing link. */
+@property (readonly) NSString *crossReferenceRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Common definitions

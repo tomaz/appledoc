@@ -313,4 +313,118 @@
 	[self assertParagraph:comment.result containsTexts:@"Description2", nil];
 }
 
+#pragma mark Cross reference values testing
+
+- (void)testProcesCommentWithStore_crossref_requiresEmptyLineBeforePreceedingParagraph {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n\n@see Class"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix", nil];
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class" context:class member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldRegisterNormalParameterIfEmptyLineNotInserted {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n@see Class"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify - note that link item is properly detected but as part of a paragraph!
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"Prefix @see", [GBParagraphLinkItem class], @"Class", nil];
+	assertThatInteger([comment.crossrefs count], equalToInteger(0));
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldRegisterResultIfNothingElseIsFoundInComment {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@see Class"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(0));
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class" context:class member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldDetectNormalParagraphIfDelimitedWithEmptyLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@see Class\n\nFollowing"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Following", nil];
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class" context:class member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldDetectMultipleReferencesDelimitedWithNewLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@see Class1\n@see Class2"];
+	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerClass:class1];
+	[store registerClass:class2];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(0));
+	assertThatInteger([comment.crossrefs count], equalToInteger(2));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class1" context:class1 member:nil local:NO];
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:1] hasLink:@"Class2" context:class2 member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldDetectMultipleReferencesDelimitedWithEmptyLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@see Class1\n\n@see Class2"];
+	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerClass:class1];
+	[store registerClass:class2];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(0));
+	assertThatInteger([comment.crossrefs count], equalToInteger(2));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class1" context:class1 member:nil local:NO];
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:1] hasLink:@"Class2" context:class2 member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldRegisterAllPossibleKeywords {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@see Class1\n@sa Class2"];
+	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerClass:class1];
+	[store registerClass:class2];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(0));
+	assertThatInteger([comment.crossrefs count], equalToInteger(2));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class1" context:class1 member:nil local:NO];
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:1] hasLink:@"Class2" context:class2 member:nil local:NO];
+}
+
 @end

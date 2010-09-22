@@ -18,6 +18,7 @@
 - (GBCommentParagraph *)registerArgumentsFromString:(NSString *)string;
 - (GBCommentArgument *)namedArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
 - (GBCommentParagraph *)simpleArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
+- (GBParagraphLinkItem *)linkArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length;
 
 - (void)registerListFromString:(NSString *)string toParagraph:(GBCommentParagraph *)paragraph;
 - (NSArray *)flattenedListItemsFromString:(NSString *)string;
@@ -156,6 +157,7 @@
 	NSString *parameterRegex = componizer.parameterDescriptionRegex;
 	NSString *exceptionRegex = componizer.exceptionDescriptionRegex;
 	NSString *returnRegex = componizer.returnDescriptionRegex;
+	NSString *crossrefRegex = componizer.crossReferenceRegex;
 	GBCommentParagraph *result = nil;
 	while (YES) {
 		NSUInteger length = 0;
@@ -171,6 +173,9 @@
 		} else if ([string isMatchedByRegex:returnRegex]) {
 			result = [self simpleArgumentFromString:string usingRegex:returnRegex matchLength:&length];
 			self.currentComment.result = result;
+		} else if ([string isMatchedByRegex:crossrefRegex]) {
+			GBParagraphLinkItem *link = [self linkArgumentFromString:string usingRegex:crossrefRegex matchLength:&length];
+			if (link) [self.currentComment registerCrossReference:link];
 		}
 		if (length == [string length]) break;
 		string = [string substringFromIndex:length];
@@ -194,7 +199,7 @@
 	NSString *description = [self trimmedTextFromString:[string substringWithRange:descRange]];
 
 	// Get the description into a paragraph, then create the argument and register the data.
-	*length = descRange.location + descRange.length;
+	if (length) *length = descRange.location + descRange.length;
 	GBCommentParagraph *paragraph = nil;
 	[self registerParagraphItemFromString:description toParagraph:&paragraph];
 	return [GBCommentArgument argumentWithName:name description:paragraph];
@@ -211,10 +216,27 @@
 	NSString *description = [self trimmedTextFromString:[string substringWithRange:descRange]];
 	
 	// Get the description into a paragraph, then create the argument and register the data.
-	*length = descRange.location + descRange.length;
+	if (length) *length = descRange.location + descRange.length;
 	GBCommentParagraph *paragraph = nil;
 	[self registerParagraphItemFromString:description toParagraph:&paragraph];
 	return paragraph;
+}
+
+- (GBParagraphLinkItem *)linkArgumentFromString:(NSString *)string usingRegex:(NSString *)regex matchLength:(NSUInteger *)length {
+	// Get the range of the next argument in the string or end of the string if this is last argument.
+	NSRange linkRange = [string rangeOfRegex:regex capture:1];
+	NSRange remainingRange = NSMakeRange(1, [string length] - 1);
+	NSRange nextRange = [string rangeOfRegex:self.settings.commentComponents.nextArgumentRegex inRange:remainingRange];
+	if (nextRange.location != NSNotFound) linkRange.length -= ([string length] - nextRange.location);
+	
+	// Prepare the reference and extract data from string.
+	NSString *reference = [string substringWithRange:linkRange];
+	
+	// Prepare the resulting link item. Note that we must first test for remote member reference!
+	if (length) *length = linkRange.location + linkRange.length;
+	GBParagraphLinkItem *item = [self remoteMemberLinkItemFromString:reference matchRange:NULL];
+	if (!item) item = [self simpleLinkItemFromString:reference matchRange:NULL];
+	return item;
 }
 
 #pragma mark Processing paragraph lists

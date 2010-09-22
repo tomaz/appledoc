@@ -47,10 +47,17 @@
 	[_exceptions addObject:exception];
 }
 
+- (void)registerCrossReference:(GBParagraphLinkItem *)ref {
+	NSParameterAssert(ref != nil);
+	GBLogDebug(@"Registering cross referece %@...", ref);
+	if (!_crossrefs) _crossrefs = [[NSMutableArray alloc] init];
+	[_crossrefs addObject:ref];
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	BOOL multiline = ([self.paragraphs count] + [self.parameters count] + [self.exceptions count] + (self.result ? 1 : 0)) > 1;
+	BOOL multiline = ([self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0)) > 1;
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@", [self className]];
 	
 	// Paragraphs.
@@ -90,6 +97,16 @@
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
 	}
 	
+	// Cross references.
+	if ([self.crossrefs count] > 0) {
+		[result appendFormat:@"{ref%@", multiline ? @"\n" : @" "];
+		[self.crossrefs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			[result appendString:[obj description]];
+			if (idx < [self.crossrefs count]-1) [result appendString:@",\n"];
+		}];
+		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
+	}
+	
 	return result;
 }
 
@@ -98,6 +115,7 @@
 @synthesize paragraphs = _paragraphs;
 @synthesize parameters = _parameters;
 @synthesize exceptions = _exceptions;
+@synthesize crossrefs = _crossrefs;
 @synthesize result;
 @synthesize firstParagraph;
 @synthesize stringValue;

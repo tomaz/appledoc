@@ -34,6 +34,8 @@
 
 - (void)assertDecoratedItem:(GBParagraphItem *)item describesHierarchy:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
 
+- (void)assertLinkItem:(GBParagraphLinkItem *)item hasLink:(NSString *)link context:(id)context member:(id)member local:(BOOL)local;
+
 - (void)assertArgument:(GBCommentArgument *)argument hasName:(NSString *)name descriptions:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 
 @end

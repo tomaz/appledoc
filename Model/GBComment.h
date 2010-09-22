@@ -11,6 +11,7 @@
 @protocol GBStoreProviding;
 @class GBCommentParagraph;
 @class GBCommentArgument;
+@class GBParagraphLinkItem;
 
 /** Handles all comment related stuff.
  
@@ -20,7 +21,7 @@
  - `parameters`: An array of `GBCommentParameter` objects. Only applicable for methods with parameters.
  - `return`: A single `GBCommentParameter` object. Only applicable for methods with return value.
  - `exceptions`: An array of `GBCommentParameter` objects. Only applicable for methods with exceptions.
- - `seealso`: An array of `GBCommentLink` objects.
+ - `crossrefs`: An array of `GBParameterLinkItem` objects.
  
  All arrays must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
  
@@ -33,6 +34,7 @@
 	NSMutableArray *_paragraphs;
 	NSMutableArray *_parameters;
 	NSMutableArray *_exceptions;
+	NSMutableArray *_crossrefs;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -93,6 +95,7 @@
  @exception NSException Thrown if the given parameter is `nil`.
  @see parameters
  @see registerException:
+ @see registerCrossReference:
  */
 - (void)registerParameter:(GBCommentArgument *)parameter;
 
@@ -104,8 +107,21 @@
  @exception NSException Thrown if the given exception is `nil`.
  @see exceptions
  @see registerParameter:
+ @see registerCrossReference:
  */
 - (void)registerException:(GBCommentArgument *)exception;
+
+/** Registers the `GBParagraphLinkItem` as an explicit, comment-wide, cross reference and adds it to the end of `crossrefs` array.
+ 
+ If `crossrefs` is `nil`, a new array is created before adding the given object to it. If a reference to the same object is already registered, a warning is logged and nothing happens. If the reference is not valid (i.e. points to non-existing local or remote member or non-existent object), a warning is logged but the reference is anyway added.
+ 
+ @param ref The cross reference to register.
+ @see crossrefs
+ @see registerParameter:
+ @see registerException:
+ @exception NSException Thrown if the given reference is `nil`.
+ */
+- (void)registerCrossReference:(GBParagraphLinkItem *)ref;
 
 /** `NSArray` containing all method parameters described within the comment.
  
@@ -114,9 +130,21 @@
  @see registerParameter:
  @see exceptions
  @see result
+ @see crossrefs
  @see paragraphs
  */
 @property (readonly) NSArray *parameters;
+
+/** The description of the method result or `nil` if this is not method comment or method has no result.
+ 
+ If multiple results are registered, a warning is issued.
+ 
+ @see parameters
+ @see exceptions
+ @see crossrefs
+ @see paragraphs
+ */
+@property (retain) GBCommentParagraph *result;
 
 /** `NSArray` containing all exceptions commented method can raise as described within the comment.
  
@@ -125,19 +153,22 @@
  @see registerException:
  @see parameters
  @see result
+ @see crossrefs
  @see paragraphs
  */
 @property (readonly) NSArray *exceptions;
 
-/** The description of the method result or `nil` if this is not method comment or method has no result.
+/** `NSArray` containing all explicit cross references as described within the comment.
  
- If multiple results are registered, a warning is issued.
+ Cross references can point to an URL, local member, another object or remote member. They are listed in the order as declared in the comment. Each object is a `GBParagraphLinkItem` instance and should be registered through `registerCrossReference:` method.
  
+ @see registerCrossReference:
  @see parameters
+ @see result
  @see exceptions
  @see paragraphs
  */
-@property (retain) GBCommentParagraph *result;
+@property (readonly) NSArray *crossrefs;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

@@ -102,8 +102,8 @@
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"exception"]);
 }
 
-- (NSString *)crossReferenceSectionRegex {
-	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(sa|see)"]);
+- (NSString *)crossReferenceRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 
 #pragma mark Common detection
