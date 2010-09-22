@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBStoreProviding;
 @class GBCommentParagraph;
 @class GBCommentArgument;
 @class GBParagraphLinkItem;
@@ -89,7 +88,7 @@
 
 /** Registers the `GBCommentArgument` that describes a parameter and adds it to the end of `parameters` array.
  
- If `parameters` is `nil`, a new array is created before adding the given object to it.
+ If `parameters` is `nil`, a new array is created before adding the given object to it. If a parameter with the same name is already registered, a warning is logged and previous item is replaced with the given one.
  
  @param parameter Parameter to register.
  @exception NSException Thrown if the given parameter is `nil`.
@@ -101,7 +100,7 @@
 
 /** Registers the `GBCommentArgument` that describes an exception the method can raise and adds it to the end of `exceptions` array.
  
- If `exceptions` is `nil`, a new array is created before adding the given object to it.
+ If `exceptions` is `nil`, a new array is created before adding the given object to it. If an exception with the same name is already registered, a warning is logged and previous item is replaced with the given one.
  
  @param exception Exception to register.
  @exception NSException Thrown if the given exception is `nil`.
@@ -113,7 +112,7 @@
 
 /** Registers the `GBParagraphLinkItem` as an explicit, comment-wide, cross reference and adds it to the end of `crossrefs` array.
  
- If `crossrefs` is `nil`, a new array is created before adding the given object to it. If a reference to the same object is already registered, a warning is logged and nothing happens. If the reference is not valid (i.e. points to non-existing local or remote member or non-existent object), a warning is logged but the reference is anyway added.
+ If `crossrefs` is `nil`, a new array is created before adding the given object to it. If a reference to the same object is already registered, a warning is logged and nothing happens.
  
  @param ref The cross reference to register.
  @see crossrefs

@@ -68,7 +68,7 @@
 - (void)testRegisterParameter_shouldAddParameterToList {
 	// setup
 	GBComment *comment = [GBComment commentWithStringValue:@""];
-	GBCommentArgument *parameter = [GBCommentArgument argument];
+	GBCommentArgument *parameter = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
 	// execute
 	[comment registerParameter:parameter];
 	// verify
@@ -79,8 +79,8 @@
 - (void)testRegisterParagraph_shouldAddAllParametersToListInOrderRegistered {
 	// setup
 	GBComment *comment = [GBComment commentWithStringValue:@""];
-	GBCommentArgument *parameter1 = [GBCommentArgument argument];
-	GBCommentArgument *parameter2 = [GBCommentArgument argument];
+	GBCommentArgument *parameter1 = [GBCommentArgument argumentWithName:@"name1" description:[GBCommentParagraph paragraph]];
+	GBCommentArgument *parameter2 = [GBCommentArgument argumentWithName:@"name2" description:[GBCommentParagraph paragraph]];
 	// execute
 	[comment registerParameter:parameter1];
 	[comment registerParameter:parameter2];
@@ -88,6 +88,99 @@
 	assertThatInteger([comment.parameters count], equalToInteger(2));
 	assertThat([comment.parameters objectAtIndex:0], is(parameter1));
 	assertThat([comment.parameters objectAtIndex:1], is(parameter2));
+}
+
+- (void)testRegisterParameter_shouldReplaceExistingParameter {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *parameter1 = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
+	GBCommentArgument *parameter2 = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
+	// execute
+	[comment registerParameter:parameter1];
+	[comment registerParameter:parameter2];
+	// verify
+	assertThatInteger([comment.parameters count], equalToInteger(1));
+	assertThat([comment.parameters objectAtIndex:0], is(parameter2));
+}
+
+#pragma mark Exceptions testing
+
+- (void)testRegisterException_shouldAddExceptionToList {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *exception = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
+	// execute
+	[comment registerException:exception];
+	// verify
+	assertThatInteger([comment.exceptions count], equalToInteger(1));
+	assertThat([comment.exceptions objectAtIndex:0], is(exception));
+}
+
+- (void)testRegisterParagraph_shouldAddAllExceptionsToListInOrderRegistered {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *exception1 = [GBCommentArgument argumentWithName:@"name1" description:[GBCommentParagraph paragraph]];
+	GBCommentArgument *exception2 = [GBCommentArgument argumentWithName:@"name2" description:[GBCommentParagraph paragraph]];
+	// execute
+	[comment registerException:exception1];
+	[comment registerException:exception2];
+	// verify
+	assertThatInteger([comment.exceptions count], equalToInteger(2));
+	assertThat([comment.exceptions objectAtIndex:0], is(exception1));
+	assertThat([comment.exceptions objectAtIndex:1], is(exception2));
+}
+
+- (void)testRegisterException_shouldReplaceExistingException {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *exception1 = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
+	GBCommentArgument *exception2 = [GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]];
+	// execute
+	[comment registerException:exception1];
+	[comment registerException:exception2];
+	// verify
+	assertThatInteger([comment.exceptions count], equalToInteger(1));
+	assertThat([comment.exceptions objectAtIndex:0], is(exception2));
+}
+
+#pragma mark CrossReferences testing
+
+- (void)testRegisterCrossReference_shouldAddCrossReferenceToList {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBParagraphLinkItem *ref = [GBParagraphLinkItem paragraphItem];
+	// execute
+	[comment registerCrossReference:ref];
+	// verify
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	assertThat([comment.crossrefs objectAtIndex:0], is(ref));
+}
+
+- (void)testRegisterParagraph_shouldAddAllCrossReferencesToListInOrderRegistered {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBParagraphLinkItem *ref1 = [GBParagraphLinkItem paragraphItemWithStringValue:@"link1"];
+	GBParagraphLinkItem *ref2 = [GBParagraphLinkItem paragraphItemWithStringValue:@"link2"];
+	// execute
+	[comment registerCrossReference:ref1];
+	[comment registerCrossReference:ref2];
+	// verify
+	assertThatInteger([comment.crossrefs count], equalToInteger(2));
+	assertThat([comment.crossrefs objectAtIndex:0], is(ref1));
+	assertThat([comment.crossrefs objectAtIndex:1], is(ref2));
+}
+
+- (void)testRegisterCrossReference_shouldReplaceExistingCrossReference {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBParagraphLinkItem *ref1 = [GBParagraphLinkItem paragraphItemWithStringValue:@"link"];
+	GBParagraphLinkItem *ref2 = [GBParagraphLinkItem paragraphItemWithStringValue:@"link"];
+	// execute
+	[comment registerCrossReference:ref1];
+	[comment registerCrossReference:ref2];
+	// verify
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	assertThat([comment.crossrefs objectAtIndex:0], is(ref1));
 }
 
 @end

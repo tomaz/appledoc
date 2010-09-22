@@ -8,8 +8,15 @@
 
 #import "GBCommentParagraph.h"
 #import "GBCommentArgument.h"
-#import "GBStoreProviding.h"
 #import "GBComment.h"
+
+@interface GBComment ()
+
+- (BOOL)replaceArgumentWithSameNameInList:(NSMutableArray *)list withArgument:(GBCommentArgument *)argument;
+
+@end
+
+#pragma mark -
 
 @implementation GBComment
 
@@ -35,8 +42,13 @@
 
 - (void)registerParameter:(GBCommentArgument *)parameter {
 	NSParameterAssert(parameter != nil);
+	NSParameterAssert([parameter.argumentName length] > 0);	
 	GBLogDebug(@"Registering parameter %@...", parameter);
 	if (!_parameters) _parameters = [[NSMutableArray alloc] init];
+	if ([self replaceArgumentWithSameNameInList:_parameters withArgument:parameter]) {
+		GBLogWarn(@"Parameter with name %@ is already registered, replacing existing!", parameter.argumentName);
+		return;
+	}
 	[_parameters addObject:parameter];
 }
 
@@ -44,6 +56,10 @@
 	NSParameterAssert(exception != nil);
 	GBLogDebug(@"Registering exception %@...", exception);
 	if (!_exceptions) _exceptions = [[NSMutableArray alloc] init];
+	if ([self replaceArgumentWithSameNameInList:_exceptions withArgument:exception]) {
+		GBLogWarn(@"Exception with name %@ is already registered, replacing existing!", exception.argumentName);
+		return;
+	}
 	[_exceptions addObject:exception];
 }
 
@@ -51,7 +67,28 @@
 	NSParameterAssert(ref != nil);
 	GBLogDebug(@"Registering cross referece %@...", ref);
 	if (!_crossrefs) _crossrefs = [[NSMutableArray alloc] init];
+	for (NSUInteger i=0; i<[_crossrefs count]; i++) {
+		GBParagraphLinkItem *existing = [_crossrefs objectAtIndex:i];
+		if ([existing.stringValue isEqualToString:ref.stringValue]) {
+			GBLogWarn(@"Cross reference %@ is already registered, ignoring!", ref.stringValue);
+			return;
+		}
+	}
 	[_crossrefs addObject:ref];
+}
+
+#pragma mark Helper methods
+
+- (BOOL)replaceArgumentWithSameNameInList:(NSMutableArray *)list withArgument:(GBCommentArgument *)argument {
+	__block BOOL result = NO;
+	[list enumerateObjectsUsingBlock:^(GBCommentArgument *existing, NSUInteger idx, BOOL *stop) {
+		if ([existing.argumentName isEqualToString:argument.argumentName]) {
+			[list replaceObjectAtIndex:idx withObject:argument];
+			result = YES;
+			*stop = YES;
+		}
+	}];
+	return result;
 }
 
 #pragma mark Overriden methods
