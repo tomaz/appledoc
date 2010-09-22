@@ -572,13 +572,7 @@
 - (NSString *)wordifiedTextFromString:(NSString *)string {
 	// Strips the given text of all whitespace and returns all words separated by a single space. If text only contains whitespace, nil is returned.
 	if ([string length] == 0) return nil;
-	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
-	NSArray *words = [string componentsSeparatedByRegex:@"\\s+"];
-	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
-		if ([word length] == 0) return;
-		if ([result length] > 0) [result appendString:@" "];
-		[result appendString:word];
-	}];
+	NSString *result = [string stringByWordifyingWithSpaces];
 	return ([result length] > 0) ? result : nil;
 }
 

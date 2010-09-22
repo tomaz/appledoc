@@ -19,6 +19,10 @@
 	NSMutableArray *_methods;
 }
 
+///---------------------------------------------------------------------------------------
+/// @name Section data handling
+///---------------------------------------------------------------------------------------
+
 /** Registers the given method to the end of the section's methods list.
  
  As `GBMethodSectionData` is a thin wrapper over an `NSArray`, no validation is done, the given object is simply added to the end of the `methods` array. Client should make sure there is no duplication and implement other constraints. If the array is `nil`, a new instance is created before adding.

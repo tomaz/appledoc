@@ -78,6 +78,10 @@
 
 #pragma mark Method specific detection
 
+- (NSString *)methodGroupRegex {
+	GBRETURN_ON_DEMAND(@"(?s:\\Sname\\s+(.*))");
+}
+
 - (NSString *)argumentsCommonRegex {
 	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|see|sa)\\s+");
 }

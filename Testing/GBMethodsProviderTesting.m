@@ -112,24 +112,12 @@
 	[destination verify];
 }
 
-#pragma mark Sections and methods handling
-
-- (void)testRegisterSection_shouldCreateSectionWithGivenName {
-	// setup
-	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
-	// execute
-	GBMethodSectionData *section = [provider registerSection:@"section"];
-	// verify
-	assertThatInteger([[provider sections] count], equalToInteger(1));
-	assertThat(section.sectionName, is(@"section"));
-}
-
 - (void)testRegisterMethod_shouldAddMethodToLastSection {
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	GBMethodSectionData *section1 = [provider registerSection:@"section"];
-	GBMethodSectionData *section2 = [provider registerSection:@"section"];
+	GBMethodSectionData *section1 = [provider registerSectionWithName:@"section"];
+	GBMethodSectionData *section2 = [provider registerSectionWithName:@"section"];
 	// execute
 	[provider registerMethod:method];
 	// verify
@@ -149,6 +137,38 @@
 	GBMethodSectionData *section = [[provider sections] objectAtIndex:0];
 	assertThatInteger([[section methods] count], equalToInteger(1));
 	assertThat([section.methods objectAtIndex:0], is(method));
+}
+
+#pragma mark Sections handling
+
+- (void)testRegisterSectionWithName_shouldCreateEmptySectionWithGivenName {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute
+	GBMethodSectionData *section = [provider registerSectionWithName:@"section"];
+	// verify
+	assertThatInteger([[provider sections] count], equalToInteger(1));
+	assertThat(section.sectionName, is(@"section"));
+	assertThatInteger([section.methods count], equalToInteger(0));
+}
+
+- (void)testRegisterSectionIfNameIsValid_shouldAcceptNonEmptyString {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute
+	GBMethodSectionData *section = [provider registerSectionIfNameIsValid:@"s"];
+	// verify
+	assertThat(section, isNot(nil));
+	assertThat(section.sectionName, is(@"s"));
+}
+
+- (void)testRegisterSectionIfNameIsValid_shouldRejectNilWhitespaceOnlyOrEmptyString {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThat([provider registerSectionIfNameIsValid:nil], is(nil));
+	assertThat([provider registerSectionIfNameIsValid:@" \t\n\r"], is(nil));
+	assertThat([provider registerSectionIfNameIsValid:@""], is(nil));
 }
 
 #pragma mark Helper methods testing

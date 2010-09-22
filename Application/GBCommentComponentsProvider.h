@@ -58,6 +58,9 @@
 /// @name Method specific definitions
 ///---------------------------------------------------------------------------------------
 
+/** Returns the regex used for matching method groups with capture 1 containing section name. */
+@property (readonly) NSString *methodGroupRegex;
+
 /** Returns the regex used for matching different method parameter descriptions within the paragraph. */
 @property (readonly) NSString *argumentsMatchingRegex;
 

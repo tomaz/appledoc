@@ -28,12 +28,19 @@
 
 #pragma mark Registration methods
 
-- (GBMethodSectionData *)registerSection:(NSString *)name {
+- (GBMethodSectionData *)registerSectionWithName:(NSString *)name {
 	GBLogDebug(@"Registering section %@...", name);
 	GBMethodSectionData *section = [[[GBMethodSectionData alloc] init] autorelease];
 	section.sectionName = name;
 	[_sections addObject:section];
 	return section;
+}
+
+- (GBMethodSectionData *)registerSectionIfNameIsValid:(NSString *)string {
+	if (!string) return nil;
+	string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	if ([string length] == 0) return nil;
+	return [self registerSectionWithName:string];
 }
 
 - (void)registerMethod:(GBMethodData *)method {
@@ -49,7 +56,7 @@
 	
 	method.parentObject = _parent;
 	[_methods addObject:method];	
-	if ([self.sections count] == 0) [self registerSection:nil];
+	if ([self.sections count] == 0) [self registerSectionWithName:nil];
 	[[self.sections lastObject] registerMethod:method];
 	
 	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;

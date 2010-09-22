@@ -18,6 +18,12 @@
 	[_methods addObject:method];
 }
 
+#pragma mark Overiden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"%@: %@", [self className], self.sectionName];
+}
+
 #pragma mark Properties
 
 @synthesize sectionName;

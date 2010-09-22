@@ -51,14 +51,27 @@
  
  @param name The name of the section.
  @return Returns created `GBMethodSectionData` object.
+ @see registerSectionIfNameIsValid:
+ @see sections
  */
-- (GBMethodSectionData *)registerSection:(NSString *)name;
+- (GBMethodSectionData *)registerSectionWithName:(NSString *)name;
+
+/** Registers a new section if the given name is valid section name.
+ 
+ The method validates the name string to have at least one char in it. If so, it sends the receiver `registerSectionWithName:` message, passing it the given name and returns generated `GBMethodSectionData` object.. If the name is `nil` or empty string, no section is registered and `nil` is returned. This is provided only to simplify client code - i.e. no need for testing in each place where section should be registered, while on the other hand, validation tests are nicely encapsulated within the class itself, so no functionality is exposed.
+ 
+ @param name The name of the section.
+ @return Returns created `GBMethodSectionData` object or `nil` if name is not valid.
+ @see registerSectionWithName:
+ @see sections
+ */
+- (GBMethodSectionData *)registerSectionIfNameIsValid:(NSString *)name;
 
 /** The array of all registered sections in the order of registration.
  
  Each section is represented as `GBMethodSectionData` object containing the name of the section and the list of all methods registered for that section.
  
- @see registerSection:
+ @see registerSectionWithName:
  @see registerMethod:
  @see methods
  */
@@ -76,7 +89,8 @@
  
  @param method The method to register.
  @exception NSException Thrown if a method with the same selector is already registered.
- @see registerSection:
+ @see registerSectionWithName:
+ @see registerSectionIfNameIsValid:
  @see methods
  */
 - (void)registerMethod:(GBMethodData *)method;

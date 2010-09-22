@@ -21,4 +21,10 @@
  */
 - (NSString *)stringByTrimmingCharactersInSetFromEnd:(NSCharacterSet *)set;
 
+/** Splits the string to words and returns all words separed by single space.
+ 
+ @return Returns wordified string.
+ */
+- (NSString *)stringByWordifyingWithSpaces;
+
 @end
