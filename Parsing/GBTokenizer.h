@@ -23,7 +23,7 @@
  
  This example simply iterates over all tokens and prints each one to the log. If you want to parse a block of input with known start and/or end token, you can use one of the block consuming methods instead.
  
- To make comments parsing simpler, `GBTokenizer` automatically enables comment reporting to the underlying `PKTokenizer`, however to prevent higher level parsers dealing with complexity of comments, any lookahead and consume method doesn't report them. Instead these methods skip all comment tokens, however they do make them accessible through properties, so if the client wants to check whether there's any comment associated with current token, it can simply ask by sending `lastCommentString`. This value is automatically cleared when another non-comment token is consumed, so make sure to read it before consuming any further token! `GBTokenizer` goes even further when dealing with comments - it automatically groups single line comments into a single comment group and removes all prefixes and suffixes.
+ To make comments parsing simpler, `GBTokenizer` automatically enables comment reporting to the underlying `PKTokenizer`, however to prevent higher level parsers dealing with complexity of comments, any lookahead and consume method doesn't report them. Instead these methods skip all comment tokens, however they do make them accessible through properties, so if the client wants to check whether there's any comment associated with current token, it can simply ask by sending `lastCommentString`. Additionally, the client can also get the value of a comment just before the last one by sending `previousCommentString` - this can be used to get any method section comments which aren't associated with any element. If there is no "stand-alone" comment before the last one, `previousCommentString` returns `nil`. Both value are automatically cleared when another non-comment token is consumed, so make sure to read it before consuming any further token! `GBTokenizer` goes even further when dealing with comments - it automatically groups single line comments into a single comment group and removes all prefixes and suffixes.
  */
 @interface GBTokenizer : NSObject
 
@@ -114,12 +114,22 @@
 
 /** Returns the last comment string or `nil` if comment is not available.
  
- This returns the whole last comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. However you should cache returned value if possible to avoid any overhead.
+ This returns the whole last comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
  
  If there's no comment available for current token, `nil` is returned.
  
- @return Returns comment string or `nil` if no comment is available.
+ @see previousCommentString
  */
 @property (readonly) NSString *lastCommentString;
+
+/** Returns "stand-alone" comment found immediately before the comment returned from `lastCommentString`.
+ 
+ Previous comment is a "stand-alon" comment which is found immediately before `lastCommentString` but isn't associated with any language element. These are ussually used to provide meta data and other instructions for formatting or grouping of "normal" comments returned with `lastCommentString`. The value should be used at the same time as `lastCommentString` as it is automatically cleared on the next consuming! If there's no stand-alone comment immediately before last comment, the value returned is `nil`.
+ 
+ This returns the whole previous comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
+ 
+ @see lastCommentString
+ */
+@property (readonly) NSString *previousCommentString;
 
 @end

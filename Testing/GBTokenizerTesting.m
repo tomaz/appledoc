@@ -13,6 +13,7 @@
 - (PKTokenizer *)defaultTokenizer;
 - (PKTokenizer *)longTokenizer;
 - (PKTokenizer *)commentsTokenizer;
+- (PKTokenizer *)succesiveCommentsTokenizer;
 
 @end
 
@@ -144,6 +145,21 @@
 	[tokenizer consume:1];
 	assertThat([tokenizer lastCommentString], is(@"third"));
 	[tokenizer consume:1];
+	assertThat([tokenizer lastCommentString], is(nil));
+}
+
+- (void)testConsume_shouldSetPreviousComment {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self succesiveCommentsTokenizer]];
+	// execute & verify - note that we initially position on the first token!
+	[tokenizer consume:1];
+	assertThat([tokenizer previousCommentString], is(@"first\nfirst1"));
+	assertThat([tokenizer lastCommentString], is(@"second"));
+	[tokenizer consume:1];
+	assertThat([tokenizer previousCommentString], is(nil));
+	assertThat([tokenizer lastCommentString], is(@"third"));
+	[tokenizer consume:1];
+	assertThat([tokenizer previousCommentString], is(nil));
 	assertThat([tokenizer lastCommentString], is(nil));
 }
 
@@ -304,6 +320,10 @@
 
 - (PKTokenizer *)commentsTokenizer {
 	return [PKTokenizer tokenizerWithString:@"/// first1\n/// first2\nONE\n/// second\nTWO\n///third\nTHREE /// -------------------\nFOUR"];
+}
+
+- (PKTokenizer *)succesiveCommentsTokenizer {
+	return [PKTokenizer tokenizerWithString:@"ONE\n/// first\n/// first1\n\n/// second\nTWO\n/// third\nTHREE FOUR"];
 }
 
 @end
