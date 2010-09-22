@@ -35,6 +35,9 @@
 - (NSString *)wordifiedTextFromString:(NSString *)string;
 - (NSString *)trimmedTextFromString:(NSString *)string;
 
+- (GBParagraphLinkItem *)remoteMemberLinkItemFromString:(NSString *)string matchRange:(NSRange *)range;
+- (GBParagraphLinkItem *)simpleLinkItemFromString:(NSString *)string matchRange:(NSRange *)range;
+
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string;
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
 
@@ -409,61 +412,21 @@
 	// We only handle links for GBParagraphTextItem which we convert into an array of text/link items as needed. Note that if we detect a link, we don't even return the original item, but we create new items instead! We progressively scan item's string value for complex references and then we check the remaining text for local members or other objects links. We first split the original text with remote member links, then we scan the rest for other references.
 	else if ([item isKindOfClass:[GBParagraphTextItem class]]) {
 		NSMutableArray *items = [NSMutableArray array];
-		NSString *regex = self.settings.commentComponents.remoteMemberCrossReferenceRegex;
+		NSRange range;
 		NSString *string = [item stringValue];
 		while (YES) {
-			// Get the first occurence of the match within current range. Exit if no more found.
-			NSArray *components = [string captureComponentsMatchedByRegex:regex];
-			if ([components count] == 0) break;
-			
-			// Get reference components.
-			NSString *reference = [components objectAtIndex:0]; // Idx. 0 = full value of match.
-			NSString *objectName = [components objectAtIndex:1];
-			NSString *memberName = [components objectAtIndex:2];
+			GBParagraphLinkItem *link = [self remoteMemberLinkItemFromString:string matchRange:&range];
+			if (!link) break;
 			
 			// If there's some skipped text in front of the match, linkify it.
-			NSRange range = [string rangeOfString:reference];
 			if (range.location > 0) {
 				NSString *skipped = [string substringWithRange:NSMakeRange(0, range.location)];
 				NSArray *children = [self paragraphSimpleLinkItemsFromString:skipped];
 				[items addObjectsFromArray:children];
 			}
 			
-			// Find remote object first.
-			id objectRefence = [self.store classByName:objectName];
-			if (!objectRefence) {
-				objectRefence = [self.store categoryByName:objectName];
-				if (!objectRefence) {
-					objectRefence = [self.store protocolByName:objectName];
-				}
-			}
-			
-			// If found, get the member reference.
-			id memberReference = nil;
-			if (objectRefence) {
-				memberReference = [[objectRefence methods] methodBySelector:memberName];
-				if (memberReference) {
-					NSString *stringValue = [reference stringByReplacingOccurrencesOfString:@"<" withString:@""];
-					stringValue = [stringValue stringByReplacingOccurrencesOfString:@">" withString:@""];
-					GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
-					link.context = objectRefence;
-					link.member = memberReference;
-					link.isLocal = NO;
-					[items addObject:link];
-				} else {
-					GBLogWarn(@"Invalid object reference for %@: member %@ not found!", objectRefence, memberName);
-				}
-			} else {
-				GBLogWarn(@"Invalid object reference: %@ object not found!", objectName);
-			}
-			
-			// If not found, add static text instead!
-			if (!objectRefence || !memberReference) {
-				GBParagraphTextItem *item = [GBParagraphTextItem paragraphItemWithStringValue:string];
-				[items addObject:item];
-			}
-			
-			// Search within the text after the match if there is some more.
+			// Add the link item and continue search within remaining text.
+			[items addObject:link];
 			string = [string substringFromIndex:range.location + range.length];
 		}
 		
@@ -492,72 +455,26 @@
 		[result addObject:item]; \
 		[staticText removeAllObjects]; \
 	}
-#define GBCREATE_OBJECT_LINK_ITEM(obj,str) \
-	GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:str]; \
-	item.context = obj; \
-	item.isLocal = (obj == self.currentContext); \
-	[result addObject:item]
 	// Matches all known simple links (i.e. local member, object or URL) and prepares the array of all paragraph items.	
 	NSMutableArray *result = [NSMutableArray array];
 	NSMutableArray *staticText = [NSMutableArray array];
-	GBCommentComponentsProvider *provider = self.settings.commentComponents;
 	NSArray *words = [string componentsSeparatedByRegex:@"\\s+"];
 	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
 		if ([word length] == 0) return;
 		
-		// Test for URL reference.
-		NSString *url = [word stringByMatching:provider.urlCrossReferenceRegex capture:1];
-		if (url) {
+		// If word is a link, create static text item if we have some prefix data, then add link.
+		GBParagraphLinkItem *item = [self simpleLinkItemFromString:word matchRange:NULL];
+		if (item) {
 			GBCREATE_TEXT_ITEM;
-			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
 			[result addObject:item];
 			return;
 		}
 		
-		// Test for local member reference (only if current context is given).
-		if (self.currentContext) {
-			NSString *selector = [word stringByMatching:provider.localMemberCrossReferenceRegex capture:1];
-			if (selector) {
-				GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
-				if (method) {
-					GBCREATE_TEXT_ITEM;
-					GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
-					item.context = self.currentContext;
-					item.member = method;
-					item.isLocal = YES;
-					[result addObject:item];
-					return;
-				}
-			}
-		}
-		
-		// Test for local or remote object reference.
-		NSString *objectName = [word stringByMatching:provider.objectCrossReferenceRegex capture:1];
-		if (objectName) {
-			GBClassData *class = [self.store classByName:objectName];
-			if (class) {
-				GBCREATE_TEXT_ITEM;
-				GBCREATE_OBJECT_LINK_ITEM(class, class.nameOfClass);
-				return;
-			}
-			GBCategoryData *category = [self.store categoryByName:objectName];
-			if (category) {
-				GBCREATE_TEXT_ITEM;
-				GBCREATE_OBJECT_LINK_ITEM(category, category.idOfCategory);
-				return;
-			}
-			GBProtocolData *protocol = [self.store protocolByName:objectName];
-			if (protocol) {
-				GBCREATE_TEXT_ITEM;
-				GBCREATE_OBJECT_LINK_ITEM(protocol, protocol.nameOfProtocol);
-				return;
-			}
-		}
-		
-		// If word is no link, just add it to the list.
+		// If word is no link, just add it to the list of static text.
 		[staticText addObject:word];
 	}];
 	
+	// Append remaining static text and exit.
 	GBCREATE_TEXT_ITEM;
 	return result;
 }
@@ -642,6 +559,111 @@
 	// Returns trimmed text where all occurences of whitespace at the start and end are stripped out. If text only contains whitespace, nil is returned.
 	NSString *result = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 	return ([result length] > 0) ? result : nil;
+}
+
+#pragma mark Processing cross references
+
+- (GBParagraphLinkItem *)remoteMemberLinkItemFromString:(NSString *)string matchRange:(NSRange *)range {
+	// Returns remote member link item or nil if not found within the string. Link is found regardless of the position of the link!
+	NSString *regex = self.settings.commentComponents.remoteMemberCrossReferenceRegex;
+	NSArray *components = [string captureComponentsMatchedByRegex:regex];
+	if ([components count] == 0) return nil;
+	
+	// Get reference components and return match range within the string if requested.
+	NSString *reference = [components objectAtIndex:0]; // Idx. 0 = full value of match.
+	NSString *objectName = [components objectAtIndex:1];
+	NSString *memberName = [components objectAtIndex:2];
+	if (range) *range = [string rangeOfString:reference];
+	
+	// Find remote object first. If not found, issue a warning and exit.
+	id objectRefence = [self.store classByName:objectName];
+	if (!objectRefence) {
+		objectRefence = [self.store categoryByName:objectName];
+		if (!objectRefence) {
+			objectRefence = [self.store protocolByName:objectName];
+		}
+	}
+	if (!objectRefence) {
+		GBLogWarn(@"Invalid object reference: %@ object not found!", objectName);
+		return nil;
+	}
+	
+	// If found, get the member reference.
+	id memberReference = [[objectRefence methods] methodBySelector:memberName];
+	if (memberReference) {
+		NSString *stringValue = [reference stringByReplacingOccurrencesOfString:@"<" withString:@""];
+		stringValue = [stringValue stringByReplacingOccurrencesOfString:@">" withString:@""];
+		GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
+		link.context = objectRefence;
+		link.member = memberReference;
+		link.isLocal = NO;
+		return link;
+	} else {
+		GBLogWarn(@"Invalid object reference for %@: member %@ not found!", objectRefence, memberName);
+		return nil;
+	}
+	
+	return nil;
+}
+
+- (GBParagraphLinkItem *)simpleLinkItemFromString:(NSString *)string matchRange:(NSRange *)range {
+	// Returns URL, local member or another known object link item or nil if the string doesn't represent the item.
+	GBCommentComponentsProvider *provider = self.settings.commentComponents;
+
+	// Test for URL reference.
+	NSString *url = [string stringByMatching:provider.urlCrossReferenceRegex capture:1];
+	if (url) {
+		GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
+		if (range) *range = NSMakeRange(0, [string length]);
+		return item;
+	}
+	
+	// Test for local member reference (only if current context is given).
+	if (self.currentContext) {
+		NSString *selector = [string stringByMatching:provider.localMemberCrossReferenceRegex capture:1];
+		if (selector) {
+			GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
+			if (method) {
+				GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
+				item.context = self.currentContext;
+				item.member = method;
+				item.isLocal = YES;
+				if (range) *range = NSMakeRange(0, [string length]);
+				return item;
+			}
+		}
+	}
+	
+	// Test for local or remote object reference.
+	NSString *objectName = [string stringByMatching:provider.objectCrossReferenceRegex capture:1];
+	if (objectName) {
+		GBClassData *class = [self.store classByName:objectName];
+		if (class) {
+			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:class.nameOfClass];
+			item.context = class;
+			item.isLocal = (class == self.currentContext);
+			if (range) *range = NSMakeRange(0, [string length]);
+			return item;
+		}
+		GBCategoryData *category = [self.store categoryByName:objectName];
+		if (category) {
+			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:category.idOfCategory];
+			item.context = category;
+			item.isLocal = (category == self.currentContext);
+			if (range) *range = NSMakeRange(0, [string length]);
+			return item;
+		}
+		GBProtocolData *protocol = [self.store protocolByName:objectName];
+		if (protocol) {
+			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:protocol.nameOfProtocol];
+			item.context = protocol;
+			item.isLocal = (protocol == self.currentContext);
+			if (range) *range = NSMakeRange(0, [string length]);
+			return item;
+		}
+	}
+	
+	return nil;
 }
 
 #pragma mark Helper methods
