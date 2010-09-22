@@ -19,13 +19,22 @@
 	self = [super init];
 	if (self) {
 		_parent = [parent retain];
+		_sections = [[NSMutableArray alloc] init];
 		_methods = [[NSMutableArray alloc] init];
 		_methodsBySelectors = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
-#pragma mark Helper methods
+#pragma mark Registration methods
+
+- (GBMethodSectionData *)registerSection:(NSString *)name {
+	GBLogDebug(@"Registering section %@...", name);
+	GBMethodSectionData *section = [[[GBMethodSectionData alloc] init] autorelease];
+	section.sectionName = name;
+	[_sections addObject:section];
+	return section;
+}
 
 - (void)registerMethod:(GBMethodData *)method {
 	// Note that we allow adding several methods with the same selector as long as the type is different (i.e. class and instance methods). In such case, methodBySelector will preffer instance method or property to class method! Note that this could be implemented more inteligently by prefixing selectors with some char or similar and then handling that within methodBySelector: and prefer instance/property in there. However at the time being current code seems sufficient and simpler, so let's stick with it for a while...
@@ -37,11 +46,17 @@
 		[existingMethod mergeDataFromObject:method];
 		return;
 	}
+	
 	method.parentObject = _parent;
-	[_methods addObject:method];
+	[_methods addObject:method];	
+	if ([self.sections count] == 0) [self registerSection:nil];
+	[[self.sections lastObject] registerMethod:method];
+	
 	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
 }
+
+#pragma mark Helper methods
 
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source {
 	// If a method with the same selector is found while merging from source, we should check if the type also matches. If so, we can merge the data from the source's method. However if the type doesn't match, we should ignore the method alltogether (ussually this is due to custom property implementation). We should probably deal with this scenario more inteligently, but it seems it works...
@@ -64,5 +79,6 @@
 #pragma mark Properties
 
 @synthesize methods = _methods;
+@synthesize sections = _sections;
 
 @end

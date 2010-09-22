@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7307B2A6124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B2A5124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m */; };
+		7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */; };
+		7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
+		7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
 		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
 		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
@@ -135,6 +138,9 @@
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		7307B2A5124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-ComplexTesting.m"; sourceTree = "<group>"; };
+		7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-SectionsParsingTesting.m"; sourceTree = "<group>"; };
+		7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodSectionData.h; sourceTree = "<group>"; };
+		7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodSectionData.m; sourceTree = "<group>"; };
 		731D2BF312045A61003180E7 /* NSString+GBString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GBString.h"; sourceTree = "<group>"; };
 		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
@@ -580,6 +586,7 @@
 				7367B8A211FEFFB5005ED6CD /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m */,
 				7367B89911FEFE4D005ED6CD /* GBObjectiveCParser-IvarsParsingTesting.m */,
 				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
+				7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */,
 				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
 			);
 			name = Parsing;
@@ -740,6 +747,8 @@
 				73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */,
 				7367BB3412003CAB005ED6CD /* GBModelBase.h */,
 				7367BB3512003CAB005ED6CD /* GBModelBase.m */,
+				7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */,
+				7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -889,6 +898,8 @@
 				738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */,
 				7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */,
 				7307B2A6124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m in Sources */,
+				7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */,
+				7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -938,6 +949,7 @@
 				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
 				73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */,
 				738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */,
+				7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

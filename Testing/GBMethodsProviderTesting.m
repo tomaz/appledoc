@@ -112,6 +112,45 @@
 	[destination verify];
 }
 
+#pragma mark Sections and methods handling
+
+- (void)testRegisterSection_shouldCreateSectionWithGivenName {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute
+	GBMethodSectionData *section = [provider registerSection:@"section"];
+	// verify
+	assertThatInteger([[provider sections] count], equalToInteger(1));
+	assertThat(section.sectionName, is(@"section"));
+}
+
+- (void)testRegisterMethod_shouldAddMethodToLastSection {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodSectionData *section1 = [provider registerSection:@"section"];
+	GBMethodSectionData *section2 = [provider registerSection:@"section"];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThatInteger([[section1 methods] count], equalToInteger(0));
+	assertThatInteger([[section2 methods] count], equalToInteger(1));
+	assertThat([section2.methods objectAtIndex:0], is(method));
+}
+
+- (void)testRegisterMethod_shouldCreateDefaultSectionIfNoneExists {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThatInteger([[provider sections] count], equalToInteger(1));
+	GBMethodSectionData *section = [[provider sections] objectAtIndex:0];
+	assertThatInteger([[section methods] count], equalToInteger(1));
+	assertThat([section.methods objectAtIndex:0], is(method));
+}
+
 #pragma mark Helper methods testing
 
 - (void)testMethodBySelector_shouldReturnProperInstanceOrNil {
