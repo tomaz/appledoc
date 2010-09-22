@@ -178,6 +178,9 @@
 			GBParagraphLinkItem *link = [self linkArgumentFromString:string usingRegex:crossrefRegex matchLength:&length];
 			if (link) [self.currentComment registerCrossReference:link];
 			result = nil;
+		} else {
+			NSString *directive = [string stringByMatching:componizer.argumentsMatchingRegex];
+			GBLogWarn(@"Directive %@ has invalid syntax in %@!", directive, string);
 		}
 		if (length == [string length]) break;
 		string = [string substringFromIndex:length];
