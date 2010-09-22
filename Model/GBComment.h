@@ -18,7 +18,7 @@
  
  - `paragraphs`: An array of `GBCommentParagraph` objects. The first entry is considered a short description, also available through `shortDescription`.
  - `parameters`: An array of `GBCommentParameter` objects. Only applicable for methods with parameters.
- - `return`: A single `GBCommentParameter` object. Only applicable for methods with return value.
+ - `result`: A single `GBCommentParameter` object. Only applicable for methods with return value.
  - `exceptions`: An array of `GBCommentParameter` objects. Only applicable for methods with exceptions.
  - `crossrefs`: An array of `GBParameterLinkItem` objects.
  
@@ -93,10 +93,24 @@
  @param parameter Parameter to register.
  @exception NSException Thrown if the given parameter is `nil`.
  @see parameters
+ @see registerResult:
  @see registerException:
  @see registerCrossReference:
  */
 - (void)registerParameter:(GBCommentArgument *)parameter;
+
+/** Registers the `GBCommentParagraph` that describes method return value.
+ 
+ If a result is already registered, a warning is logged and previous result is replaced with the given one.
+ 
+ @param result Result to register.
+ @exception NSException Thrown if the given result is `nil`.
+ @see result
+ @see registerParameter:
+ @see registerException:
+ @see registerCrossReference:
+ */
+- (void)registerResult:(GBCommentParagraph *)result;
 
 /** Registers the `GBCommentArgument` that describes an exception the method can raise and adds it to the end of `exceptions` array.
  
@@ -106,6 +120,7 @@
  @exception NSException Thrown if the given exception is `nil`.
  @see exceptions
  @see registerParameter:
+ @see registerResult:
  @see registerCrossReference:
  */
 - (void)registerException:(GBCommentArgument *)exception;
@@ -117,6 +132,7 @@
  @param ref The cross reference to register.
  @see crossrefs
  @see registerParameter:
+ @see registerResult:
  @see registerException:
  @exception NSException Thrown if the given reference is `nil`.
  */
@@ -136,14 +152,15 @@
 
 /** The description of the method result or `nil` if this is not method comment or method has no result.
  
- If multiple results are registered, a warning is issued.
+ The description is a `GBCommentParagraph` instance and should be `registerResult:` to register the result.
  
+ @see registerResult:
  @see parameters
  @see exceptions
  @see crossrefs
  @see paragraphs
  */
-@property (retain) GBCommentParagraph *result;
+@property (readonly,retain) GBCommentParagraph *result;
 
 /** `NSArray` containing all exceptions commented method can raise as described within the comment.
  

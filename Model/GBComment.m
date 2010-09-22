@@ -13,6 +13,7 @@
 @interface GBComment ()
 
 - (BOOL)replaceArgumentWithSameNameInList:(NSMutableArray *)list withArgument:(GBCommentArgument *)argument;
+@property (readwrite,retain) GBCommentParagraph *result;
 
 @end
 
@@ -50,6 +51,13 @@
 		return;
 	}
 	[_parameters addObject:parameter];
+}
+
+- (void)registerResult:(GBCommentParagraph *)value {
+	NSParameterAssert(value != nil);
+	GBLogDebug(@"Registering result %@...", value);
+	if (self.result) GBLogWarn(@"Result is already registered, replacing existing!");
+	self.result = value;
 }
 
 - (void)registerException:(GBCommentArgument *)exception {

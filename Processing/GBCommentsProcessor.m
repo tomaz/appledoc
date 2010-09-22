@@ -171,11 +171,13 @@
 			[self.currentComment registerException:argument];
 			result = argument.argumentDescription;
 		} else if ([string isMatchedByRegex:returnRegex]) {
-			result = [self simpleArgumentFromString:string usingRegex:returnRegex matchLength:&length];
-			self.currentComment.result = result;
+			GBCommentParagraph *value = [self simpleArgumentFromString:string usingRegex:returnRegex matchLength:&length];
+			[self.currentComment registerResult:value];
+			result = value;
 		} else if ([string isMatchedByRegex:crossrefRegex]) {
 			GBParagraphLinkItem *link = [self linkArgumentFromString:string usingRegex:crossrefRegex matchLength:&length];
 			if (link) [self.currentComment registerCrossReference:link];
+			result = nil;
 		}
 		if (length == [string length]) break;
 		string = [string substringFromIndex:length];
