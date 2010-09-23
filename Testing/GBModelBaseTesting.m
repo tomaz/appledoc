@@ -15,39 +15,44 @@
 
 #pragma mark Common merging testing
 
-- (void)testMergeDataFromObject_shouldMergeImplementationDetails {
+- (void)testMergeDataFromObject_shouldMergeDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerDeclaredFile:@"f1"];
-	[original registerDeclaredFile:@"f2"];
+	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:1]];
+	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f2" lineNumber:2]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerDeclaredFile:@"f1"];
-	[source registerDeclaredFile:@"f3"];
+	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:3]];
+	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f3" lineNumber:4]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
 	NSArray *files = [original declaredFilesSortedByName];
 	assertThatInteger([files count], equalToInteger(3));
-	assertThat([files objectAtIndex:0], is(@"f1"));
-	assertThat([files objectAtIndex:1], is(@"f2"));
-	assertThat([files objectAtIndex:2], is(@"f3"));
+	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
+	assertThat([[files objectAtIndex:1] filename], is(@"f2"));
+	assertThat([[files objectAtIndex:2] filename], is(@"f3"));
+	assertThatInteger([[files objectAtIndex:0] lineNumber], equalToInteger(3));
+	assertThatInteger([[files objectAtIndex:1] lineNumber], equalToInteger(2));
+	assertThatInteger([[files objectAtIndex:2] lineNumber], equalToInteger(4));
 }
 
-- (void)testMergeDataFromObject_shouldPreserveSourceImplementationDetails {
+- (void)testMergeDataFromObject_shouldPreserveSourceDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerDeclaredFile:@"f1"];
-	[original registerDeclaredFile:@"f2"];
+	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:4]];
+	 [original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f2" lineNumber:3]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerDeclaredFile:@"f1"];
-	[source registerDeclaredFile:@"f3"];
+	 [source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:2]];
+	 [source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f3" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
 	NSArray *files = [source declaredFilesSortedByName];
 	assertThatInteger([files count], equalToInteger(2));
-	assertThat([files objectAtIndex:0], is(@"f1"));
-	assertThat([files objectAtIndex:1], is(@"f3"));
+	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
+	assertThat([[files objectAtIndex:1] filename], is(@"f3"));
+	assertThatInteger([[files objectAtIndex:0] lineNumber], equalToInteger(2));
+	assertThatInteger([[files objectAtIndex:1] lineNumber], equalToInteger(1));
 }
 
 #pragma mark Comments merging handling

@@ -17,6 +17,7 @@
 	self = [super init];
 	if (self) {
 		_declaredFiles = [[NSMutableSet alloc] init];
+		_declaredFilesByFilenames = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -25,7 +26,24 @@
 
 - (void)mergeDataFromObject:(id)source {
 	NSParameterAssert([source isKindOfClass:[self class]]);
-	[_declaredFiles unionSet:[source declaredFiles]];
+	
+	// Merge declared files.
+	NSArray *sourceFiles = [[source declaredFiles] allObjects];
+	for (GBDeclaredFileData *filedata in sourceFiles) {
+		GBDeclaredFileData *ourfiledata = [_declaredFilesByFilenames objectForKey:filedata.filename];
+		if (ourfiledata) {
+			if (ourfiledata.lineNumber < filedata.lineNumber) {
+				[_declaredFilesByFilenames setObject:filedata forKey:filedata.filename];
+				[_declaredFiles removeObject:ourfiledata];
+				[_declaredFiles addObject:filedata];
+			}
+			continue;
+		}
+		[_declaredFilesByFilenames setObject:filedata forKey:filedata.filename];
+		[_declaredFiles addObject:filedata];
+	}
+	
+	// Merge comment.
 	GBComment *comment = [(GBModelBase *)source comment];
 	if (self.comment && comment) {
 		GBLogWarn(@"%@: Comment string found in definition and declaration!", self);
@@ -36,10 +54,19 @@
 
 #pragma mark Declared files handling
 
-- (void)registerDeclaredFile:(NSString *)filename {
-	NSParameterAssert(filename != nil && [filename length] > 0);
-	if ([_declaredFiles member:filename]) return;
-	[_declaredFiles addObject:filename];
+- (void)registerDeclaredFile:(GBDeclaredFileData *)data {
+	NSParameterAssert(data != nil);
+	
+	// Ignore already registered objects.
+	if ([_declaredFiles member:data]) return;
+	
+	// Replace data with same filename.
+	GBDeclaredFileData *existing = [_declaredFilesByFilenames objectForKey:data.filename];
+	if (existing) [_declaredFiles removeObject:existing];
+	
+	// Add object.
+	[_declaredFilesByFilenames setObject:data forKey:data.filename];
+	[_declaredFiles addObject:data];
 }
 
 - (NSArray *)declaredFilesSortedByName {

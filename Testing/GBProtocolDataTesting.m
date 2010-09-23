@@ -17,7 +17,7 @@
 	// setup - protocols don't merge any data, except they need to send base class merging message!
 	GBProtocolData *original = [GBProtocolData protocolDataWithName:@"MyProtocol"];
 	GBProtocolData *source = [GBProtocolData protocolDataWithName:@"MyProtocol"];
-	[source registerDeclaredFile:@"file"];
+	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"file" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!

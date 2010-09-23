@@ -9,11 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class GBComment;
+@class GBDeclaredFileData;
 
 /** Provides common functionality for model objects. */
 @interface GBModelBase : NSObject {
 	@private
 	NSMutableSet *_declaredFiles;
+	NSMutableDictionary *_declaredFilesByFilenames;
 	GBComment *_comment;
 }
 
@@ -21,14 +23,14 @@
 /// @name Declared files handling
 ///---------------------------------------------------------------------------------------
 
-/** Registers the given filename to `declaredFiles` list.
+/** Registers the given `GBDeclaredFileData` to `declaredFiles` list.
  
- If the same filename already exists in the set, nothing happens.
+ If file data with the same filename already exists in the set, it is replaced with the given one.
  
  @param filename The name of the file to register.
  @exception NSException Thrown if the given filename is `nil` or empty.
  */
-- (void)registerDeclaredFile:(NSString *)filename;
+- (void)registerDeclaredFile:(GBDeclaredFileData *)data;
 
 /** Returns the array of all `declaredFiles` sorted by file name.
  
@@ -37,7 +39,7 @@
  */
 - (NSArray *)declaredFilesSortedByName;
 
-/** The list of all file names without path the object definition or declaration was found in. 
+/** The list of all declared file data as `GBDeclaredFileData` objects. 
  
  @see registerDeclaredFile:
  @see declaredFilesSortedByName
