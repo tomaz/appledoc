@@ -31,6 +31,30 @@
 	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterClassDefinitionSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterClassDefinitionProperSourceLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllClassDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -78,6 +102,30 @@
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
 	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterClassDeclarationSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterClassDeclarationProperSourceLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@implementation MyClass @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllClassDeclarations {

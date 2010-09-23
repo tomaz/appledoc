@@ -22,7 +22,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** @name Section1 */ /** */ -(id)method1; -(id)method2; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** @name Section1 */ /** */ -(id)method1; -(id)method2; @end" sourceFile:@"file" toStore:store];
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
@@ -38,7 +38,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** @name Section1 */ /** */ -(id)method1; /** */ -(id)method2; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** @name Section1 */ /** */ -(id)method1; /** */ -(id)method2; @end" sourceFile:@"file" toStore:store];
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
@@ -54,7 +54,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** @name Long section name */ /** */ -(id)method1; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** @name Long section name */ /** */ -(id)method1; @end" sourceFile:@"file" toStore:store];
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
@@ -66,7 +66,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** Some prefix @name Section */ /** */ -(id)method1; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** Some prefix @name Section */ /** */ -(id)method1; @end" sourceFile:@"file" toStore:store];
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
@@ -78,7 +78,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** @name\nSection\n\tspanning   multiple\n\n\n\nlines\rwhoa!    */ /** */ -(id)method1; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** @name\nSection\n\tspanning   multiple\n\n\n\nlines\rwhoa!    */ /** */ -(id)method1; @end" sourceFile:@"file" toStore:store];
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
@@ -90,7 +90,7 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** @name Section */ -(id)method1; @end" sourceFile:@"" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass /** @name Section */ -(id)method1; @end" sourceFile:@"file" toStore:store];
 	// verify - note that comment is aded to method in such case but default section is created anyway!
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];

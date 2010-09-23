@@ -31,6 +31,30 @@
 	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol"));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterProtocolSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterProtocolProperSourceLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
+}
+
 - (void)testParseObjectsFromString_shouldRegisterAllProtocolDefinitions {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];

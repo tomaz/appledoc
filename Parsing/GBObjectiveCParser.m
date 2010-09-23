@@ -19,6 +19,7 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
+@property (retain) NSString *input;
 @property (retain) NSString *filename;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -56,6 +57,8 @@
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
+- (void)registerDeclaredDataFromToken:(PKToken *)token toObject:(GBModelBase *)object;
+- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (NSString *)sectionNameFromCommentString:(NSString *)string;
 
@@ -90,6 +93,8 @@
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Parsing objective-c objects to store %@...", store);
+	self.input = input;
+	self.filename = [filename lastPathComponent];
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input]];
 	while (![self.tokenizer eof]) {
@@ -108,6 +113,7 @@
 
 #pragma mark Properties
 
+@synthesize input;
 @synthesize tokenizer;
 @synthesize filename;
 @synthesize settings;
@@ -124,6 +130,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class definition.", className);
+	[self registerDeclaredDataFromCurrentTokenToObject:class];
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
@@ -139,6 +146,7 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matched %@(%@) category definition...", className, categoryName);
+	[self registerDeclaredDataFromCurrentTokenToObject:category];
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
@@ -151,6 +159,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
 	GBLogVerbose(@"Matched %@() extension definition.", className);
+	[self registerDeclaredDataFromCurrentTokenToObject:extension];
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
@@ -163,6 +172,7 @@
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
 	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
+	[self registerDeclaredDataFromCurrentTokenToObject:protocol];
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
@@ -257,6 +267,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class declaration.", className);
+	[self registerDeclaredDataFromCurrentTokenToObject:class];
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchMethodDeclarationsForProvider:class.methods];
@@ -269,6 +280,7 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matched %@(%@) category declaration.", className, categoryName);
+	[self registerDeclaredDataFromCurrentTokenToObject:category];
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchMethodDeclarationsForProvider:category.methods];
@@ -461,6 +473,17 @@
 		result = YES;
 	}];
 	return result;
+}
+
+- (void)registerDeclaredDataFromToken:(PKToken *)token toObject:(GBModelBase *)object {
+	NSString *substring = [self.input substringToIndex:[token offset]];
+	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
+	GBDeclaredFileData *data = [GBDeclaredFileData fileDataWithFilename:self.filename lineNumber:lines];
+	[object registerDeclaredFile:data];
+}
+
+- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
+	[self registerDeclaredDataFromToken:[self.tokenizer currentToken] toObject:object];
 }
 
 - (void)registerLastCommentToObject:(GBModelBase *)object {
