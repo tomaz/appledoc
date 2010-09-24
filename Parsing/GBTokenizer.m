@@ -8,6 +8,8 @@
 
 #import "RegexKitLite.h"
 #import "PKToken+GBToken.h"
+#import "GBSourceInfo.h"
+#import "GBComment.h"
 #import "GBTokenizer.h"
 
 @interface GBTokenizer ()

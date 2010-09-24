@@ -120,7 +120,7 @@
 
 - (void)processComment:(GBComment *)comment {
 	if (!comment) return;
-	GBLogDebug(@"Processing comment...");
+	GBLogDebug(@"Processing comment %@...", comment);
 	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
 }
 

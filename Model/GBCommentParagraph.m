@@ -29,7 +29,7 @@
 
 - (void)registerItem:(GBParagraphItem *)item {
 	NSParameterAssert(item != nil);
-	GBLogDebug(@"Registering paragraph item of type %@...", [item className]);
+	GBLogDebug(@"%@: Registering paragraph item of type %@...", self, [item className]);
 	[_items addObject:item];
 }
 

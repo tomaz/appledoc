@@ -16,4 +16,10 @@
  */
 @property (readonly) NSFileManager *fileManager;
 
+/** Description that can be used for debugging output.
+ 
+ By default the value of `[NSObject description]` is returned, but some classes may override and provide more detailed information.
+ */
+@property (readonly) NSString *debugDescription;
+
 @end

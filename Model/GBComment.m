@@ -8,6 +8,7 @@
 
 #import "GBCommentParagraph.h"
 #import "GBCommentArgument.h"
+#import "GBParagraphLinkItem.h"
 #import "GBComment.h"
 
 @interface GBComment ()
@@ -38,7 +39,7 @@
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
 	NSParameterAssert(paragraph != nil);
-	GBLogDebug(@"Registering paragraph %@...", paragraph);
+	GBLogDebug(@"%@: Registering paragraph %@...", self, paragraph);
 	if (!_paragraphs) {
 		_paragraphs = [[NSMutableArray alloc] init];
 		self.firstParagraph = paragraph;
@@ -49,10 +50,10 @@
 - (void)registerParameter:(GBCommentArgument *)parameter {
 	NSParameterAssert(parameter != nil);
 	NSParameterAssert([parameter.argumentName length] > 0);	
-	GBLogDebug(@"Registering parameter %@...", parameter);
+	GBLogDebug(@"%@: Registering parameter %@...", self, parameter);
 	if (!_parameters) _parameters = [[NSMutableArray alloc] init];
 	if ([self replaceArgumentWithSameNameInList:_parameters withArgument:parameter]) {
-		GBLogWarn(@"Parameter with name %@ is already registered, replacing existing!", parameter.argumentName);
+		GBLogWarn(@"%@: Parameter with name %@ is already registered, replacing existing!", self, parameter.argumentName);
 		return;
 	}
 	[_parameters addObject:parameter];
@@ -60,17 +61,17 @@
 
 - (void)registerResult:(GBCommentParagraph *)value {
 	NSParameterAssert(value != nil);
-	GBLogDebug(@"Registering result %@...", value);
-	if (self.result) GBLogWarn(@"Result is already registered, replacing existing!");
+	GBLogDebug(@"%@: Registering result %@...", self, value);
+	if (self.result) GBLogWarn(@"%@: Result is already registered, replacing existing!", self);
 	self.result = value;
 }
 
 - (void)registerException:(GBCommentArgument *)exception {
 	NSParameterAssert(exception != nil);
-	GBLogDebug(@"Registering exception %@...", exception);
+	GBLogDebug(@"%@: Registering exception %@...", self, exception);
 	if (!_exceptions) _exceptions = [[NSMutableArray alloc] init];
 	if ([self replaceArgumentWithSameNameInList:_exceptions withArgument:exception]) {
-		GBLogWarn(@"Exception with name %@ is already registered, replacing existing!", exception.argumentName);
+		GBLogWarn(@"%@: Exception with name %@ is already registered, replacing existing!", self, exception.argumentName);
 		return;
 	}
 	[_exceptions addObject:exception];
@@ -78,12 +79,12 @@
 
 - (void)registerCrossReference:(GBParagraphLinkItem *)ref {
 	NSParameterAssert(ref != nil);
-	GBLogDebug(@"Registering cross referece %@...", ref);
+	GBLogDebug(@"%@: Registering cross referece %@...", self, ref);
 	if (!_crossrefs) _crossrefs = [[NSMutableArray alloc] init];
 	for (NSUInteger i=0; i<[_crossrefs count]; i++) {
 		GBParagraphLinkItem *existing = [_crossrefs objectAtIndex:i];
 		if ([existing.stringValue isEqualToString:ref.stringValue]) {
-			GBLogWarn(@"Cross reference %@ is already registered, ignoring!", ref.stringValue);
+			GBLogWarn(@"%@: Cross reference %@ is already registered, ignoring!", self, ref.stringValue);
 			return;
 		}
 	}

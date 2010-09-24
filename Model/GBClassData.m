@@ -23,7 +23,7 @@
 	self = [super init];
 	if (self) {
 		_className = [name copy];
-		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
+		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 		_ivars = [[GBIvarsProvider alloc] initWithParentObject:self];
 		_methods = [[GBMethodsProvider alloc] initWithParentObject:self];
 	}
@@ -34,7 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging data from implementation...", self);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	[super mergeDataFromObject:source];
 	
@@ -44,7 +44,7 @@
 	if (![self nameOfSuperclass]) {
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
 	} else if (sourceClass.nameOfSuperclass && ![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
-		GBLogWarn(@"%@: Merged class's superclass %@ is different from ours %@!", self, sourceClass.nameOfSuperclass, self.nameOfSuperclass);
+		GBLogWarn(@"%@: Merged class's %@ superclass is different from ours!", self, sourceClass);
 	}
 	
 	// Forward merging request to components.

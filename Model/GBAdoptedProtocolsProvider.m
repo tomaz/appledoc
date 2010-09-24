@@ -13,20 +13,28 @@
 
 #pragma mark Initialization & disposal
 
-- (id)init {
+- (id)initWithParentObject:(id)parent {
+	NSParameterAssert(parent != nil);
+	GBLogDebug(@"Initializing adopted protocols provider for %@...", parent);
 	self = [super init];
 	if (self) {
+		_parent = [parent retain];
 		_protocols = [[NSMutableSet alloc] init];
 		_protocolsByName = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
+- (id)init {
+	[NSException raise:@"Initializer 'init' is not valid, use 'initWithParentObject:' instead!"];
+	return nil;
+}
+
 #pragma mark Helper methods
 
 - (void)registerProtocol:(GBProtocolData *)protocol {
 	NSParameterAssert(protocol != nil);
-	GBLogDebug(@"Registering protocol %@...", protocol);
+	GBLogDebug(@"%@: Registering protocol %@...", _parent, protocol);
 	if ([_protocols containsObject:protocol]) return;
 	GBProtocolData *existingProtocol = [_protocolsByName objectForKey:protocol.nameOfProtocol];
 	if (existingProtocol) {
@@ -41,7 +49,7 @@
 
 - (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from implementation...");
+	GBLogDebug(@"%@: Merging adopted protocols from %@...", _parent, source->_parent);
 	for (GBProtocolData *sourceProtocol in source.protocols) {
 		GBProtocolData *existingProtocol = [_protocolsByName objectForKey:sourceProtocol.nameOfProtocol];
 		if (existingProtocol) {

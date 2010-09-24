@@ -15,7 +15,7 @@
 
 - (id)initWithParentObject:(id)parent {
 	NSParameterAssert(parent != nil);
-	GBLogDebug(@"Initializing provider for %@...", parent);
+	GBLogDebug(@"Initializing ivars provider for %@...", parent);
 	self = [super init];
 	if (self) {
 		_parent = [parent retain];
@@ -29,7 +29,7 @@
 
 - (void)registerIvar:(GBIvarData *)ivar {
 	NSParameterAssert(ivar != nil);
-	GBLogDebug(@"Registering ivar %@...", ivar);
+	GBLogDebug(@"%@: Registering ivar %@...", _parent, ivar);
 	if ([_ivars containsObject:ivar]) return;
 	GBIvarData *existingIvar = [_ivarsByName objectForKey:ivar.nameOfIvar];
 	if (existingIvar) {
@@ -43,7 +43,7 @@
 
 - (void)mergeDataFromIvarsProvider:(GBIvarsProvider *)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"Merging data from implementation...");
+	GBLogDebug(@"%@: Merging ivars from %@...", _parent, source->_parent);
 	for (GBIvarData *sourceIvar in source.ivars) {
 		GBIvarData *existingIvar = [_ivarsByName objectForKey:sourceIvar.nameOfIvar];
 		if (existingIvar) {

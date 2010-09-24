@@ -7,6 +7,7 @@
 //
 
 #import "GBComment.h"
+#import "GBSourceInfo.h"
 #import "GBModelBase.h"
 
 @implementation GBModelBase
@@ -46,7 +47,7 @@
 	// Merge comment.
 	GBComment *comment = [(GBModelBase *)source comment];
 	if (self.comment && comment) {
-		GBLogWarn(@"%@: Comment string found in definition and declaration!", self);
+		GBLogWarn(@"%@: Comment found in %@ and %@!", self, self.comment.sourceInfo, comment.sourceInfo);
 		return;
 	}
 	if (!self.comment && comment) self.comment = comment;

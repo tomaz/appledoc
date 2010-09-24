@@ -24,12 +24,12 @@
 
 - (void)registerItem:(GBParagraphItem *)item {
 	NSParameterAssert(item != nil);
-	GBLogDebug(@"Registering item %@...", item);
+	GBLogDebug(@"%@: Registering item %@...", self, item);
 	[_decoratedItems addObject:item];
 }
 
 - (void)replaceItemsByRegisteringItemsFromArray:(NSArray *)items {
-	GBLogDebug(@"Registering %ld items...", [items count]);
+	GBLogDebug(@"%@: Registering %ld items...", self, [items count]);
 	if (!items || [items count] == 0) return;
 	[_decoratedItems removeAllObjects];
 	[items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

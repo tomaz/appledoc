@@ -20,7 +20,26 @@
 	@private
 	NSMutableSet *_protocols;
 	NSMutableDictionary *_protocolsByName;
+	id _parent;
 }
+
+///---------------------------------------------------------------------------------------
+/// @name Initialization & disposal
+///---------------------------------------------------------------------------------------
+
+/** Initializes ivars provider with the given parent object.
+ 
+ The given parent object is set to each `GBIvarData` registered through `registerIvar:`. This is the designated initializer.
+ 
+ @param parent The parent object to be used for all registered ivars.
+ @return Returns initialized object.
+ @exception NSException Thrown if the given parent is `nil`.
+ */
+- (id)initWithParentObject:(id)parent;
+
+///---------------------------------------------------------------------------------------
+/// @name Adopted protocols handling
+///---------------------------------------------------------------------------------------
 
 /** Registers the given protocol to the providers data.
  

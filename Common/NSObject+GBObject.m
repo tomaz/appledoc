@@ -14,4 +14,8 @@
 	return [NSFileManager defaultManager];
 }
 
+- (NSString *)debugDescription {
+	return [self description];
+}
+
 @end

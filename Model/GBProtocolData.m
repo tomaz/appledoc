@@ -23,7 +23,7 @@
 	self = [super init];
 	if (self) {
 		_protocolName = [name copy];
-		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
+		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 		_methods = [[GBMethodsProvider alloc] initWithParentObject:self];
 	}
 	return self;
@@ -33,7 +33,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging data from implementation...", self);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfProtocol] isEqualToString:self.nameOfProtocol]);
 	[super mergeDataFromObject:source];
 	GBProtocolData *sourceProtocol = (GBProtocolData *)source;

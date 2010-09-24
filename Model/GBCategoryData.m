@@ -24,7 +24,7 @@
 	if (self) {
 		_categoryName = name ? [name copy] : nil;
 		_className = [className copy];
-		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] init];
+		_adoptedProtocols = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 		_methods = [[GBMethodsProvider alloc] initWithParentObject:self];
 	}
 	return self;
@@ -34,7 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging data from implementation...", self);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	NSParameterAssert([source nameOfCategory] == self.nameOfCategory || [[source nameOfCategory] isEqualToString:self.nameOfCategory]); // allow nil for extensions!
 	[super mergeDataFromObject:source];

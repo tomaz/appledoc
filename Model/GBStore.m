@@ -55,7 +55,7 @@
 
 - (void)registerClass:(GBClassData *)class {
 	NSParameterAssert(class != nil);
-	GBLogDebug(@"Registering class %@...", class);
+	GBLogDebug(@"%Registering class %@...", class);
 	if ([_classes containsObject:class]) return;
 	GBClassData *existingClass = [_classesByName objectForKey:class.nameOfClass];
 	if (existingClass) {

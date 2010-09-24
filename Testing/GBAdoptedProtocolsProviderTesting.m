@@ -18,7 +18,7 @@
 
 - (void)testRegisterProtocol_shouldAddProtocolToList {
 	// setup
-	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
 	// execute
 	[provider registerProtocol:protocol];
@@ -30,7 +30,7 @@
 
 - (void)testRegisterProtocol_shouldIgnoreSameInstance {
 	// setup
-	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
 	// execute
 	[provider registerProtocol:protocol];
@@ -41,7 +41,7 @@
 
 - (void)testRegisterProtocol_shouldMergeDifferentInstanceWithSameName {
 	// setup
-	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	GBProtocolData *source = [[GBProtocolData alloc] initWithName:@"MyProtocol"];
 	OCMockObject *original = [OCMockObject niceMockForClass:[GBProtocolData class]];
 	[[[original stub] andReturn:@"MyProtocol"] nameOfProtocol];
@@ -57,10 +57,10 @@
 
 - (void)testMergeDataFromProtocolProvider_shouldMergeAllDifferentProtocols {
 	// setup
-	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
-	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
 	// execute
@@ -75,10 +75,10 @@
 
 - (void)testMergeDataFromProtocolProvider_shouldPreserveSourceData {
 	// setup
-	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *original = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[original registerProtocol:[GBProtocolData protocolDataWithName:@"P2"]];
-	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *source = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P1"]];
 	[source registerProtocol:[GBProtocolData protocolDataWithName:@"P3"]];
 	// execute
@@ -94,7 +94,7 @@
 
 - (void)testReplaceProtocolWithProtocol_shouldReplaceObjects {
 	// setup
-	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] init];
+	GBAdoptedProtocolsProvider *provider = [[GBAdoptedProtocolsProvider alloc] initWithParentObject:self];
 	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"P2"];
 	GBProtocolData *protocol3 = [GBProtocolData protocolDataWithName:@"P3"];
