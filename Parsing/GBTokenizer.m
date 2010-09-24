@@ -148,6 +148,8 @@
 	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
 	[self.previousCommentBuilder setString:@""];
 	[self.lastCommentBuilder setString:@""];
+	self.previousCommentSourceInfo = nil;
+	self.lastCommentSourceInfo = nil;
 	if ([self eof]) return NO;
 	if (![[self currentToken] isComment]) return NO;
 	NSUInteger previousSingleLineEndOffset = 0;
@@ -157,6 +159,7 @@
 		
 		// Set the value of last comment to previous comment. As we already reset last comment before the loop, the value is properly set to empty string in case only a single comment is detected (remember, the value is only "valid" if at least two consequtive comments are detected).
 		[self.previousCommentBuilder setString:self.lastCommentBuilder];
+		if (!self.previousCommentSourceInfo) self.previousCommentSourceInfo = self.lastCommentSourceInfo;
 		
 		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments unless they start at the beginning of the line!
 		NSArray *singleLiners = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentRegex capture:1];
@@ -179,6 +182,7 @@
 		// Append string value to current comment and proceed with next token.
 		value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		[self.lastCommentBuilder appendString:value];
+		if (!self.lastCommentSourceInfo) self.lastCommentSourceInfo = [self fileDataForToken:token];
 		self.tokenIndex++;
 	}	
 	return YES;

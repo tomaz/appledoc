@@ -208,6 +208,42 @@
 	assertThat(category.comment.stringValue, is(@"Comment"));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterCategoryDefinitionCommentSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n/** comment */ @interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *category = [[store categories] anyObject];
+	assertThat(category.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(category.comment.sourceInfo.lineNumber, equalToInteger(5));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterCategoryDeclarationCommentProperSourceLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n/** comment */ @implementation MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *category = [[store categories] anyObject];
+	assertThat(category.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(category.comment.sourceInfo.lineNumber, equalToInteger(5));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterExtensionDefinitionCommentSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n/** comment */ @interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *category = [[store categories] anyObject];
+	assertThat(category.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(category.comment.sourceInfo.lineNumber, equalToInteger(5));
+}
+
 #pragma mark Category definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryAdoptedProtocols {

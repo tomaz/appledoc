@@ -381,4 +381,43 @@
 	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionCommentSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n@interface MyClass\n/** comment */\n-(void)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	GBMethodData *method = [[[class methods] methods] objectAtIndex:0];
+	assertThat(method.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(method.comment.sourceInfo.lineNumber, equalToInteger(6));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationCommentProperSourceLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n@implementation MyClass\n/** comment */\n-(void)method{} @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	GBMethodData *method = [[[class methods] methods] objectAtIndex:0];
+	assertThat(method.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(method.comment.sourceInfo.lineNumber, equalToInteger(6));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterPropertyDefinitionCommentSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n@interface MyClass\n/** comment */\n@property(readonly)int p1; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	GBMethodData *method = [[[class methods] methods] objectAtIndex:0];
+	assertThat(method.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(method.comment.sourceInfo.lineNumber, equalToInteger(6));
+}
+
 @end

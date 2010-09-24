@@ -81,6 +81,18 @@
 	assertThat(protocol.comment.stringValue, is(@"Comment"));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterProtocolDefinitionCommentSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/// comment\n\n#define SOMETHING\n\n/** comment */ @protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *protocol = [[store protocols] anyObject];
+	assertThat(protocol.comment.sourceInfo.filename, is(@"filename.h"));
+	assertThatInteger(protocol.comment.sourceInfo.lineNumber, equalToInteger(5));
+}
+
 #pragma mark Protocol components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocols {

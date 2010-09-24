@@ -24,8 +24,13 @@
 #pragma mark Initialization & disposal
 
 + (id)commentWithStringValue:(NSString *)value {
+	return [self commentWithStringValue:value sourceInfo:nil];
+}
+
++ (id)commentWithStringValue:(NSString *)value sourceInfo:(GBSourceInfo *)info {
 	GBComment *result = [[[self alloc] init] autorelease];
 	result.stringValue = value;
+	result.sourceInfo = info;
 	return result;
 }
 
@@ -163,6 +168,7 @@
 @synthesize crossrefs = _crossrefs;
 @synthesize result;
 @synthesize firstParagraph;
+@synthesize sourceInfo;
 @synthesize stringValue;
 
 @end

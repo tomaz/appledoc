@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class GBSourceInfo;
 @class GBCommentParagraph;
 @class GBCommentArgument;
 @class GBParagraphLinkItem;
@@ -40,14 +41,26 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Initializes the comment with the given string value.
+/** Returns a new autoreleased instance of the comment with the given string value.
  
- This is a helper initializer which allows setting string value with a single message.
+ This is a helper initializer which allows setting string value with a single message. Sending this message is equivalent to sending `commentWithStringValue:sourceInfo:`, passing the given _value_ and `nil` for source info.
  
  @param value String value to set.
  @return Returns initialized object or `nil` if initialization fails.
+ @see commentWithStringValue:sourceInfo:
  */
 + (id)commentWithStringValue:(NSString *)value;
+
+/** Returns a new autoreleased instance of the comment with the given string value and source info.
+ 
+ This is a helper initializer which allows setting default values with a single message.
+ 
+ @param value String value to set.
+ @param info Source info to set.
+ @return Returns initialized object or `nil` if initialization fails.
+ @see commentWithStringValue:
+ */
++ (id)commentWithStringValue:(NSString *)value sourceInfo:(GBSourceInfo *)info;
 
 ///---------------------------------------------------------------------------------------
 /// @name Paragraphs handling
@@ -189,6 +202,9 @@
 ///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------
+
+/** Comment's source file info. */
+@property (retain) GBSourceInfo *sourceInfo;
 
 /** Comment's raw string value as declared in source code. */
 @property (copy) NSString *stringValue;
