@@ -43,7 +43,6 @@
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string;
 
 @property (retain) NSString *newLinesRegexSymbols;
-@property (retain) NSString *spaceAndNewLineTrimRegex;
 @property (retain) GBComment *currentComment;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -67,8 +66,7 @@
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
-		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"(?:\\r\n|[ \n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}])+"];
-		self.spaceAndNewLineTrimRegex = [NSString stringWithFormat:@"^%1$@|%1$@$", self.newLinesRegexSymbols];
+		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"\\r\n|[\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"];
 		self.settings = settingsProvider;
 	}
 	return self;
@@ -105,9 +103,15 @@
 	
 	// As most components are given with preceeding new line, we should remove it to get cleaner testing.
 	GBCommentComponentsProvider *componizer = self.settings.commentComponents;
-	NSString *trimmed = [string stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""];
+	NSString *trimmed = [string stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 	
-	// Match known paragraph parts. Note that order is important (like: lists must be processed before example sections).
+	// Match known paragraph parts. Note that order is important (like: examples before lists).
+	if ([trimmed isMatchedByRegex:componizer.exampleSectionRegex]) {
+		BOOL create = (*paragraph == nil);
+		if (create) *paragraph = [GBCommentParagraph paragraph];
+		[self registerExampleFromString:trimmed toParagraph:*paragraph];
+		return create;
+	}
 	if ([trimmed isMatchedByRegex:componizer.unorderedListMatchRegex]) {
 		BOOL create = (*paragraph == nil);
 		if (create) *paragraph = [GBCommentParagraph paragraph];
@@ -130,12 +134,6 @@
 		BOOL create = (*paragraph == nil);
 		if (create) *paragraph = [GBCommentParagraph paragraph];
 		[self registerBugFromString:trimmed toParagraph:*paragraph];
-		return create;
-	}
-	if ([trimmed isMatchedByRegex:componizer.exampleSectionRegex]) {
-		BOOL create = (*paragraph == nil);
-		if (create) *paragraph = [GBCommentParagraph paragraph];
-		[self registerExampleFromString:trimmed toParagraph:*paragraph];
 		return create;
 	}
 	
@@ -377,7 +375,7 @@
 	}
 	if ([example length] < [string length] - [lines count]) {
 		NSString *remaining = [string substringFromIndex:[example length] + [lines count]];
-		GBLogWarn(@"%@: Not all text was processed in comment - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", self.currentComment.sourceInfo, [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""]);
+		GBLogWarn(@"%@: Not all text was processed in comment - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", self.currentComment.sourceInfo, [remaining stringByWordifyingWithSpaces]);
 	}
 	
 	// Prepare paragraph item and process the text. Note that we don't use standard text processing here as it would interfere with example formatting.
@@ -691,17 +689,20 @@
 
 - (NSArray *)componentsSeparatedByEmptyLinesFromString:(NSString *)string {
 	// We need to allow lines with tabs to properly detect empty example lines!
-	return [string componentsSeparatedByRegex:[NSString stringWithFormat:@"(?m:^[ %@]*$)", self.newLinesRegexSymbols]];
+	static NSString *regex = nil;
+	if (!regex) regex = [NSString stringWithFormat:@"(?m:^(?: |%@)*$)", self.newLinesRegexSymbols];
+	return [string componentsSeparatedByRegex:regex];
 }
 
 - (NSArray *)componentsSeparatedByNewLinesFromString:(NSString *)string {
-	return [string componentsSeparatedByRegex:[NSString stringWithFormat:@"(?:%@)", self.newLinesRegexSymbols]];
+	static NSString *regex = nil;
+	if (!regex) regex = [NSString stringWithFormat:@"(?:%@)", self.newLinesRegexSymbols];
+	return [string componentsSeparatedByRegex:regex];
 }
 
 #pragma mark Properties
 
 @synthesize newLinesRegexSymbols;
-@synthesize spaceAndNewLineTrimRegex;
 @synthesize currentComment;
 @synthesize currentContext;
 @synthesize settings;

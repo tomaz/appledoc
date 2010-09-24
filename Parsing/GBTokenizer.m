@@ -50,7 +50,7 @@
 	if (self) {
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
 		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
-		self.commentDelimiterRegex = @"[!@#$%^&*()-_=+`~,<.>/?;:'\"]{3,}";
+		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}";
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];
 		self.previousCommentBuilder = [NSMutableString string];
@@ -207,7 +207,7 @@
 	}];
 	
 	// If all lines start with a *, ignore the prefix. Note that we ignore first line as it can only contain /** and text! We also ignore last line as if it only contains */
-	NSString *prefixRegex = @"(?m:^\\s*\\*\\s*)";
+	NSString *prefixRegex = @"(?m:^\\s*\\*[ ]*)";
 	__block BOOL stripPrefix = ([comments count] > 1);
 	if (stripPrefix) {
 		[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
