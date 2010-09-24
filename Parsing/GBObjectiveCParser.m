@@ -19,7 +19,6 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
-@property (retain) NSString *input;
 @property (retain) NSString *filename;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -59,7 +58,6 @@
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
-- (GBDeclaredFileData *)fileDataFromToken:(PKToken *)token;
 - (NSString *)sectionNameFromCommentString:(NSString *)string;
 
 @end
@@ -93,7 +91,6 @@
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Parsing objective-c objects to store %@...", store);
-	self.input = input;
 	self.filename = [filename lastPathComponent];
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input]];
@@ -113,7 +110,6 @@
 
 #pragma mark Properties
 
-@synthesize input;
 @synthesize tokenizer;
 @synthesize filename;
 @synthesize settings;
@@ -223,7 +219,7 @@
 	__block BOOL result = NO;
 	__block GBDeclaredFileData *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self fileDataFromToken:token];
+		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
 		
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
@@ -408,7 +404,7 @@
 	__block GBDeclaredFileData *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self fileDataFromToken:token];
+		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
 		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
@@ -488,14 +484,7 @@
 }
 
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
-	GBDeclaredFileData *data = [self fileDataFromToken:[self.tokenizer currentToken]];
-	[object registerDeclaredFile:data];
-}
-
-- (GBDeclaredFileData *)fileDataFromToken:(PKToken *)token {
-	NSString *substring = [self.input substringToIndex:[token offset]];
-	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
-	return [GBDeclaredFileData fileDataWithFilename:self.filename lineNumber:lines];
+	[object registerDeclaredFile:[self.tokenizer fileDataForCurrentTokenWithFilename:self.filename]];
 }
 
 - (NSString *)sectionNameFromCommentString:(NSString *)string {

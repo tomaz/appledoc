@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "ParseKit.h"
 
+@class GBDeclaredFileData;
+
 /** Provides common methods for tokenizing input source strings.
  
  Main responsibilities of the class are to split the given source string into tokens and provide simple methods for iterating over the tokens stream. It works upon ParseKit framework's `PKTokenizer`. As different parsers require different tokenizers and setups, the class itself doesn't create a tokenizer, but instead requires the client to provide one. Here's an example of simple usage:
@@ -107,6 +109,31 @@
  @return Returns `YES` if we're at EOF, `NO` otherwise.
  */
 - (BOOL)eof;
+
+///---------------------------------------------------------------------------------------
+/// @name Information handling
+///---------------------------------------------------------------------------------------
+
+/** Returns `GBDeclaredFileData` for current token and given filename.
+ 
+ This is equivalent to sending `fileDataForToken:filename:` and passing `currentToken` as the _token_ parameter.
+ 
+ @param filename The name of the file without path to use.
+ @return Returns declared file data.
+ @exception NSException Thrown if current token is `nil` or the given filename is `nil` or empty string.
+ */
+- (GBDeclaredFileData *)fileDataForCurrentTokenWithFilename:(NSString *)filename;
+
+/** Returns `GBDeclaredFileData` object describing the given token source information.
+ 
+ The method converts the given token's offset within the input string to line number and uses that information together with the given file name to prepare the token info object.
+ 
+ @param token The token for which to get file data.
+ @param filename The name of the file without path to use.
+ @return Returns declared file data.
+ @exception NSException Thrown if the given token is `nil` or the given filename is `nil` or empty string.
+ */
+- (GBDeclaredFileData *)fileDataForToken:(PKToken *)token filename:(NSString *)filename;
 
 ///---------------------------------------------------------------------------------------
 /// @name Comments handling

@@ -15,6 +15,7 @@
 - (BOOL)consumeComments;
 - (NSString *)commentValueFromString:(NSString *)value;
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer;
+@property (retain) NSString *input;
 @property (retain) NSArray *tokens;
 @property (assign) NSUInteger tokenIndex;
 @property (retain) NSMutableString *lastComment;
@@ -46,6 +47,7 @@
 		self.tokenIndex = 0;
 		self.lastComment = [NSMutableString string];
 		self.previousComment = [NSMutableString string];
+		self.input = tokenizer.string;
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
 		[self consumeComments];
 	}
@@ -119,6 +121,19 @@
 
 - (BOOL)eof {
 	return (self.tokenIndex >= [self.tokens count]);
+}
+
+#pragma mark Token information handling
+
+- (GBDeclaredFileData *)fileDataForCurrentTokenWithFilename:(NSString *)filename {
+	return [self fileDataForToken:[self currentToken] filename:filename];
+}
+
+- (GBDeclaredFileData *)fileDataForToken:(PKToken *)token filename:(NSString *)filename {
+	NSParameterAssert(token != nil);
+	NSString *substring = [self.input substringToIndex:[token offset]];
+	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
+	return [GBDeclaredFileData fileDataWithFilename:filename lineNumber:lines];
 }
 
 #pragma mark Comments handling
@@ -237,6 +252,7 @@
 
 #pragma mark Properties
 
+@synthesize input;
 @synthesize tokens;
 @synthesize tokenIndex;
 @synthesize lastComment;
