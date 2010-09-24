@@ -54,7 +54,7 @@
 
 - (void)processObjectsFromStore:(id<GBStoreProviding>)store {
 	NSParameterAssert(store != nil);
-	GBLogVerbose(@"Processing objects from %@...", store);
+	GBLogVerbose(@"Processing objects...");
 	self.currentContext = nil;
 	self.store = store;
 	[self processClasses];
@@ -119,7 +119,7 @@
 #pragma mark Comments processing
 
 - (void)processComment:(GBComment *)comment {
-	if (!comment) return;
+	if (!comment || [comment.stringValue length] == 0) return;
 	GBLogDebug(@"Processing comment %@...", comment);
 	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
 }

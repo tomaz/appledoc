@@ -19,7 +19,7 @@
 
 - (id)initWithName:(NSString *)name className:(NSString *)className {
 	NSParameterAssert(className && [className length] > 0);
-	GBLogDebug(@"Initializing category %@ for class %@...", name, className);
+	GBLogDebug(@"Initializing %@%@ for class %@...", name ? @"category " : @"extension", name ? name : @"", className);
 	self = [super init];
 	if (self) {
 		_categoryName = name ? [name copy] : nil;

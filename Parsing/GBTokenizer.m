@@ -239,11 +239,13 @@
 }
 
 - (GBComment *)lastComment {
+	if ([self.lastCommentBuilder length] == 0) return nil;
 	NSString *value = [self commentValueFromString:self.lastCommentBuilder];
 	return [GBComment commentWithStringValue:value sourceInfo:self.lastCommentSourceInfo];
 }
 
 - (GBComment *)previousComment {
+	if ([self.previousCommentBuilder length] == 0) return nil;
 	NSString *value = [self commentValueFromString:self.previousCommentBuilder];
 	return [GBComment commentWithStringValue:value sourceInfo:self.previousCommentSourceInfo];
 }

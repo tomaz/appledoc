@@ -45,15 +45,6 @@
 /// @name Debugging aids
 ///---------------------------------------------------------------------------------------
 
-/** Prepares the given string value for debug description.
- 
- The method replaces all whitespace with single spaces and trims the value to a maximum size. This makes the value more suitable for debug description. This is only used for debugging purposes and should not be used for any output generation! See `description` and `descriptionStringValue` for further details.
- 
- @param value The value to format.
- @return Returns formatted string value.
- */
-- (NSString *)descriptionStringValueFromValue:(NSString *)value;
-
 /** String value as used in debug description.
  
  By default this returns string value trimmed to some maximum chars, but subclasses can override to provide their specific implementation. This is only used for debugging purposes and should not be used for any output generation! See `description` method implementation for details.

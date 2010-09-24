@@ -84,7 +84,7 @@
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
-	GBLogDebug(@"Processing comment %@ with store %@...", comment, store);
+	GBLogDebug(@"Processing comment %@...", comment);
 	self.currentComment = comment;
 	self.currentContext = context;
 	self.store = store;	
@@ -180,7 +180,7 @@
 			result = nil;
 		} else {
 			NSString *directive = [string stringByMatching:componizer.argumentsMatchingRegex];
-			GBLogWarn(@"%@: Directive %@ has invalid syntax in %@!", self.currentComment, directive, string);
+			GBLogWarn(@"%@: Comment directive %@ has invalid syntax in %@!", self.currentComment.sourceInfo, directive, string);
 		}
 		if (length == [string length]) break;
 		string = [string substringFromIndex:length];
@@ -300,7 +300,7 @@
 			NSString *previousDesc = [previousData objectForKey:@"description"]; \
 			[previousData setObject:[NSString stringWithFormat:@"%@%@", previousDesc, text] forKey:@"description"]; \
 		} else { \
-			GBLogWarn(@"%@: Found text '%@' at the start of the list:\n%@", self.currentComment, string); \
+			GBLogWarn(@"%@: Found text '%@' in comment at the start of the list:\n%@", self.currentComment.sourceInfo, string); \
 		} \
 	}
 	NSMutableArray *result = [NSMutableArray array];
@@ -372,12 +372,12 @@
 	
 	// Warn if empty example was found or not all text was processed (note that we calculate remaining text by checking source and processed string length and taking into account all leading tabs that were removed!).
 	if ([example length] == 0) {
-		GBLogWarn(@"%@: Empty example section found!", self.currentComment);
+		GBLogWarn(@"%@: Empty example section found in comment!", self.currentComment.sourceInfo);
 		return;
 	}
 	if ([example length] < [string length] - [lines count]) {
 		NSString *remaining = [string substringFromIndex:[example length] + [lines count]];
-		GBLogWarn(@"%@: Not all text was processed - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", self.currentComment, [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""]);
+		GBLogWarn(@"%@: Not all text was processed in comment - '%@' was left, make sure an empty line without tabs is inserted before next paragraph!", self.currentComment.sourceInfo, [remaining stringByReplacingOccurrencesOfRegex:self.spaceAndNewLineTrimRegex withString:@""]);
 	}
 	
 	// Prepare paragraph item and process the text. Note that we don't use standard text processing here as it would interfere with example formatting.
@@ -394,7 +394,7 @@
 	// Get the description from the string. If empty, warn and exit.
 	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
-		GBLogWarn(@"%@: Empty special section of type %ld found!", self.currentComment, type);
+		GBLogWarn(@"%@: Empty special section of type %ld found in comment!", self.currentComment.sourceInfo, type);
 		return;
 	}
 	
@@ -605,7 +605,7 @@
 		}
 	}
 	if (!objectRefence) {
-		GBLogWarn(@"%@: Invalid object reference: %@ object not found!", self.currentComment, objectName);
+		GBLogWarn(@"%@: Invalid object reference: %@ object not found!", self.currentComment.sourceInfo, objectName);
 		return nil;
 	}
 	
@@ -620,7 +620,7 @@
 		link.isLocal = NO;
 		return link;
 	} else {
-		GBLogWarn(@"%@: Invalid object reference for %@: member %@ not found!", self.currentComment, objectRefence, memberName);
+		GBLogWarn(@"%@: Invalid object reference for %@: member %@ not found!", self.currentComment.sourceInfo, objectRefence, memberName);
 		return nil;
 	}
 	

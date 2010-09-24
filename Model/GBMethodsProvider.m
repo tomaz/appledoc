@@ -30,7 +30,7 @@
 #pragma mark Registration methods
 
 - (GBMethodSectionData *)registerSectionWithName:(NSString *)name {
-	GBLogDebug(@"%@: Registering section %@...", _parent, name);
+	GBLogDebug(@"%@: Registering section %@...", _parent, name ? name : @"default");
 	GBMethodSectionData *section = [[[GBMethodSectionData alloc] init] autorelease];
 	section.sectionName = name;
 	[_sections addObject:section];

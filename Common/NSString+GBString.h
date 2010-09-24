@@ -27,4 +27,30 @@
  */
 - (NSString *)stringByWordifyingWithSpaces;
 
+/** Returns normalized description from the receiver.
+ 
+ The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
+ 
+ @param string String to strip.
+ @return Returns stripped description.
+ @see normalizedDescriptionFromString:
+ @see maxNormalizedDescriptionLength
+ */
+- (NSString *)normalizedDescription;
+
+/** Returns normalized description from the given string.
+ 
+ The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
+ 
+ @param string String to strip.
+ @return Returns stripped description.
+ @see normalizedDescription
+ @see maxNormalizedDescriptionLength
+ */
++ (NSString *)normalizedDescriptionFromString:(NSString *)string;
+
+/** Returns maximum length of normalized string.
+ */
++ (NSUInteger)maxNormalizedDescriptionLength;
+
 @end

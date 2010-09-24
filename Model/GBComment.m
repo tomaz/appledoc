@@ -39,7 +39,10 @@
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
 	NSParameterAssert(paragraph != nil);
-	GBLogDebug(@"%@: Registering paragraph %@...", self, paragraph);
+	if ([self.paragraphs count] > 0)
+		GBLogDebug(@"%@: Registering paragraph %@...", self, paragraph);
+	else
+		GBLogDebug(@"Registering first paragraph %@...", paragraph);
 	if (!_paragraphs) {
 		_paragraphs = [[NSMutableArray alloc] init];
 		self.firstParagraph = paragraph;
@@ -108,6 +111,10 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
+	return [NSString stringWithFormat:@"'%@'", [self.stringValue normalizedDescription]];
+}
+
+- (NSString *)debugDescription {
 	BOOL multiline = ([self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0)) > 1;
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@", [self className]];
 	

@@ -45,6 +45,22 @@
 	return result;
 }
 
+- (NSString *)normalizedDescription {
+	return [[self class] normalizedDescriptionFromString:self];
+}
+
++ (NSString *)normalizedDescriptionFromString:(NSString *)string {
+	NSString *extract = [string stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+	extract = [extract substringToIndex:MIN([self maxNormalizedDescriptionLength],[extract length])];
+	BOOL missing = ([extract length] < [string length]);
+	extract = [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	return [NSString stringWithFormat:@"%@%@", extract, missing ? @"*" : @""];
+}
+
++ (NSUInteger)maxNormalizedDescriptionLength {
+	return 25;
+}
+
 @end
 
 #pragma mark -

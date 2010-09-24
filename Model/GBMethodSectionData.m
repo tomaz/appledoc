@@ -21,6 +21,10 @@
 #pragma mark Overiden methods
 
 - (NSString *)description {
+	return self.sectionName;
+}
+
+- (NSString *)debugDescription {
 	return [NSString stringWithFormat:@"%@: %@", [self className], self.sectionName];
 }
 

@@ -90,7 +90,7 @@
 	NSParameterAssert([filename length] > 0);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
-	GBLogDebug(@"Parsing objective-c objects to store %@...", store);
+	GBLogDebug(@"Parsing objective-c objects...");
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename];
 	while (![self.tokenizer eof]) {

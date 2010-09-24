@@ -26,20 +26,15 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@ %@", [self className], [self descriptionStringValue]];
+	return [self.stringValue normalizedDescription];
+}
+
+- (NSString *)debugDescription {
+	return [NSString stringWithFormat:@"%@ '%@'", [self className], [self descriptionStringValue]];
 }
 
 - (NSString *)descriptionStringValue {
-	NSString *extract = [self descriptionStringValueFromValue:self.stringValue];
-	return [NSString stringWithFormat:@"'%@'", extract];
-}
-
-- (NSString *)descriptionStringValueFromValue:(NSString *)value {
-	NSString *extract = [value stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
-	extract = [extract substringToIndex:MIN(35,[extract length])];
-	BOOL missing = ([extract length] < [value length]);
-	extract = [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	return [NSString stringWithFormat:@"%@%@", extract, missing ? @"*" : @""];
+	return [NSString stringWithFormat:@"%@", [self.stringValue normalizedDescription]];
 }
 
 #pragma mark Properties

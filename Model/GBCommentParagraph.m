@@ -29,13 +29,20 @@
 
 - (void)registerItem:(GBParagraphItem *)item {
 	NSParameterAssert(item != nil);
-	GBLogDebug(@"%@: Registering paragraph item of type %@...", self, [item className]);
+	if ([self.items count] > 0)
+		GBLogDebug(@"%@: Registering paragraph item %@...", self, item);
+	else
+		GBLogDebug(@"Registering first paragraph item %@...", item);
 	[_items addObject:item];
 }
 
 #pragma mark Overriden methods
 
 - (NSString *)description {
+	return [self.stringValue length] > 0 ? [self.stringValue normalizedDescription] : @"";
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [self className]];
 	if ([self.items count] > 1) [result appendString:@"\n"];
 	[self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {

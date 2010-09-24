@@ -57,7 +57,7 @@
 		[description appendFormat:@"%@ %@ ", self.isOrdered ? @"#" : @"-", [paragraph stringValue]];
 	}];
 	NSString *trimmed = [description stringByReplacingOccurrencesOfString:@"  " withString:@" "];
-	return [self descriptionStringValueFromValue:trimmed];
+	return [trimmed normalizedDescription];
 }
 
 - (NSString *)descriptionStringValue {
