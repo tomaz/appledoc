@@ -15,6 +15,7 @@
 - (BOOL)consumeComments;
 - (NSString *)commentValueFromString:(NSString *)value;
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer;
+@property (retain) NSString *filename;
 @property (retain) NSString *input;
 @property (retain) NSArray *tokens;
 @property (assign) NSUInteger tokenIndex;
@@ -34,12 +35,14 @@
 
 #pragma mark Initialization & disposal
 
-+ (id)tokenizerWithSource:(PKTokenizer *)tokenizer {
-	return [[[self alloc] initWithSourceTokenizer:tokenizer] autorelease];
++ (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename {
+	return [[[self alloc] initWithSourceTokenizer:tokenizer filename:filename] autorelease];
 }
 
-- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer {
+- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename {
 	NSParameterAssert(tokenizer != nil);
+	NSParameterAssert(filename != nil);
+	NSParameterAssert([filename length] > 0);
 	GBLogDebug(@"Initializing tokenizer using %@...", tokenizer);
 	self = [super init];
 	if (self) {
@@ -49,6 +52,7 @@
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];
 		self.previousCommentBuilder = [NSMutableString string];
+		self.filename = [filename lastPathComponent];
 		self.input = tokenizer.string;
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
 		[self consumeComments];
@@ -127,15 +131,15 @@
 
 #pragma mark Token information handling
 
-- (GBSourceInfo *)fileDataForCurrentTokenWithFilename:(NSString *)filename {
-	return [self fileDataForToken:[self currentToken] filename:filename];
+- (GBSourceInfo *)fileDataForCurrentToken {
+	return [self fileDataForToken:[self currentToken]];
 }
 
-- (GBSourceInfo *)fileDataForToken:(PKToken *)token filename:(NSString *)filename {
+- (GBSourceInfo *)fileDataForToken:(PKToken *)token {
 	NSParameterAssert(token != nil);
 	NSString *substring = [self.input substringToIndex:[token offset]];
 	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
-	return [GBSourceInfo fileDataWithFilename:filename lineNumber:lines];
+	return [GBSourceInfo fileDataWithFilename:self.filename lineNumber:lines];
 }
 
 #pragma mark Comments handling
@@ -256,6 +260,7 @@
 
 #pragma mark Properties
 
+@synthesize filename;
 @synthesize input;
 @synthesize tokens;
 @synthesize tokenIndex;

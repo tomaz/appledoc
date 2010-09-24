@@ -16,15 +16,16 @@
  
  Main responsibilities of the class are to split the given source string into tokens and provide simple methods for iterating over the tokens stream. It works upon ParseKit framework's `PKTokenizer`. As different parsers require different tokenizers and setups, the class itself doesn't create a tokenizer, but instead requires the client to provide one. Here's an example of simple usage:
  
+	NSString *filename = ...
 	NSString *input = ...
 	PKTokenizer *worker = [PKTokenizer tokenizerWithString:input];
-	GBTokenizer *tokenizer = [[GBTokenizer allow] initWithTokenizer:worker];
+	GBTokenizer *tokenizer = [[GBTokenizer allow] initWithTokenizer:worker filename:filename];
 	while (![tokenizer eof]) {
 		NSLog(@"%@", [tokenizer currentToken]);
 		[tokenizer consume:1];
 	}
  
- This example simply iterates over all tokens and prints each one to the log. If you want to parse a block of input with known start and/or end token, you can use one of the block consuming methods instead.
+ This example simply iterates over all tokens and prints each one to the log. If you want to parse a block of input with known start and/or end token, you can use one of the block consuming methods instead. Note that you still need to provide the name of the file as this is used for creating `GBSourceInfo` objects for parsed objects!
  
  To make comments parsing simpler, `GBTokenizer` automatically enables comment reporting to the underlying `PKTokenizer`, however to prevent higher level parsers dealing with complexity of comments, any lookahead and consume method doesn't report them. Instead these methods skip all comment tokens, however they do make them accessible through properties, so if the client wants to check whether there's any comment associated with current token, it can simply ask by sending `lastCommentString`. Additionally, the client can also get the value of a comment just before the last one by sending `previousCommentString` - this can be used to get any method section comments which aren't associated with any element. If there is no "stand-alone" comment before the last one, `previousCommentString` returns `nil`. Both value are automatically cleared when another non-comment token is consumed, so make sure to read it before consuming any further token! `GBTokenizer` goes even further when dealing with comments - it automatically groups single line comments into a single comment group and removes all prefixes and suffixes.
  */
@@ -38,19 +39,20 @@
  
  @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
  @return Returns initialized instance or `nil` if failed.
- @exception NSException Thrown if the given tokenizer is `nil`.
+ @exception NSException Thrown if the given tokenizer or filename is `nil` or filename is empty string.
  */
-+ (id)tokenizerWithSource:(PKTokenizer *)tokenizer;
++ (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename;
 
 /** Initializes tokenizer with the given source `PKTokenizer`.
  
  This is designated initializer.
  
  @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
+ @param filename The name of the file without path that's the source for _tokenizer_'s input string.
  @return Returns initialized instance or `nil` if failed.
- @exception NSException Thrown if the given tokenizer is `nil`.
+ @exception NSException Thrown if the given tokenizer or filename is `nil` or filename is empty string.
  */
-- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer;
+- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename;
 
 ///---------------------------------------------------------------------------------------
 /// @name Tokenizing handling
@@ -115,26 +117,26 @@
 /// @name Information handling
 ///---------------------------------------------------------------------------------------
 
-/** Returns `GBDeclaredFileData` for current token and given filename.
+/** Returns `GBDeclaredFileData` for current token and filename.
  
- This is equivalent to sending `fileDataForToken:filename:` and passing `currentToken` as the _token_ parameter.
+ This is equivalent to sending `fileDataForToken:` and passing `currentToken` as the _token_ parameter.
  
- @param filename The name of the file without path to use.
  @return Returns declared file data.
- @exception NSException Thrown if current token is `nil` or the given filename is `nil` or empty string.
+ @exception NSException Thrown if current token is `nil`.
+ @see fileDataForToken:
  */
-- (GBSourceInfo *)fileDataForCurrentTokenWithFilename:(NSString *)filename;
+- (GBSourceInfo *)fileDataForCurrentToken;
 
 /** Returns `GBDeclaredFileData` object describing the given token source information.
  
- The method converts the given token's offset within the input string to line number and uses that information together with the given file name to prepare the token info object.
+ The method converts the given token's offset within the input string to line number and uses that information together with assigned `filename` to prepare the token info object.
  
  @param token The token for which to get file data.
- @param filename The name of the file without path to use.
  @return Returns declared file data.
- @exception NSException Thrown if the given token is `nil` or the given filename is `nil` or empty string.
+ @exception NSException Thrown if the given token is `nil`.
+ @see fileDataForCurrentToken
  */
-- (GBSourceInfo *)fileDataForToken:(PKToken *)token filename:(NSString *)filename;
+- (GBSourceInfo *)fileDataForToken:(PKToken *)token;
 
 ///---------------------------------------------------------------------------------------
 /// @name Comments handling

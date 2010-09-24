@@ -23,15 +23,15 @@
 
 - (void)testInitWithTokenizer_shouldInitializeToFirstToken {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// verify
 	assertThat([tokenizer.currentToken stringValue], is(@"one"));
 }
 
 - (void)testInitWithTokenizer_shouldSkipOrdinaryComments {
 	// setup & execute
-	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"// comment\n bla"]];
-	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/* comment */\n bla"]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"// comment\n bla"] filename:@"file"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/* comment */\n bla"] filename:@"file"];
 	// verify
 	assertThat([tokenizer1.currentToken stringValue], is(@"bla"));
 	assertThat([tokenizer2.currentToken stringValue], is(@"bla"));
@@ -39,8 +39,8 @@
 
 - (void)testInitWithTokenizer_shouldPositionOnFirstNonCommentToken {
 	// setup & execute
-	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment\n bla"]];
-	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment */\n bla"]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment\n bla"] filename:@"file"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment */\n bla"] filename:@"file"];
 	// verify
 	assertThat([tokenizer1.currentToken stringValue], is(@"bla"));
 	assertThat([tokenizer2.currentToken stringValue], is(@"bla"));
@@ -48,18 +48,27 @@
 
 - (void)testInitWithTokenizer_shouldSetupLastComment {
 	// setup & execute
-	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment\n bla"]];
-	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment */\n bla"]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment\n bla"] filename:@"file"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment */\n bla"] filename:@"file"];
 	// verify
 	assertThat([tokenizer1.lastComment stringValue], is(@"comment"));
 	assertThat([tokenizer2.lastComment stringValue], is(@"comment"));
+}
+
+- (void)testInitWithTokenizer_shouldUseLastPathComponentAsFilename {
+	// setup & execute
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"/Users/Path/to/filename.h"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"filename.h"];
+	// verify
+	assertThat([tokenizer1 valueForKey:@"filename"], is(@"filename.h"));
+	assertThat([tokenizer2 valueForKey:@"filename"], is(@"filename.h"));
 }
 
 #pragma mark Lookahead testing
 
 - (void)testLookahead_shouldReturnNextToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// execute & verify
 	assertThat([[tokenizer lookahead:0] stringValue], is(@"one"));
 	assertThat([[tokenizer lookahead:1] stringValue], is(@"two"));
@@ -68,7 +77,7 @@
 
 - (void)testLookahead_shouldReturnEOFToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// execute & verify
 	assertThat([[tokenizer lookahead:3] stringValue], is([[PKToken EOFToken] stringValue]));
 	assertThat([[tokenizer lookahead:4] stringValue], is([[PKToken EOFToken] stringValue]));
@@ -77,7 +86,7 @@
 
 - (void)testLookahead_shouldNotMovePosition {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// execute & verify
 	[tokenizer lookahead:1];
 	assertThat([[tokenizer currentToken] stringValue], is(@"one"));
@@ -91,7 +100,7 @@
 
 - (void)testLookahead_shouldSkipComments {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer] filename:@"file"];
 	// execute & verify
 	assertThat([[tokenizer lookahead:0] stringValue], is(@"ONE"));
 	assertThat([[tokenizer lookahead:1] stringValue], is(@"TWO"));
@@ -104,7 +113,7 @@
 
 - (void)testConsume_shouldMoveToNextToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// execute & verify
 	[tokenizer consume:1];
 	assertThat([tokenizer.currentToken stringValue], is(@"two"));
@@ -114,7 +123,7 @@
 
 - (void)testConsume_shouldReturnEOF {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"file"];
 	// execute
 	[tokenizer consume:1];
 	[tokenizer consume:1];
@@ -126,7 +135,7 @@
 
 - (void)testConsume_shouldSkipComments {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer] filename:@"file"];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer consume:1];
 	assertThat([[tokenizer currentToken] stringValue], is(@"TWO"));
@@ -138,7 +147,7 @@
 
 - (void)testConsume_shouldSetLastComment {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer] filename:@"file"];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer consume:1];
 	assertThat([tokenizer.lastComment stringValue], is(@"second"));
@@ -150,7 +159,7 @@
 
 - (void)testConsume_shouldSetPreviousComment {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self succesiveCommentsTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self succesiveCommentsTokenizer] filename:@"file"];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer consume:1];
 	assertThat([tokenizer.previousComment stringValue], is(@"first\nfirst1"));
@@ -165,8 +174,8 @@
 
 - (void)testConsume_shouldSetProperCommentWhenConsumingMultipleTokens {
 	// setup
-	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
-	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[self commentsTokenizer] filename:@"file"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[self commentsTokenizer] filename:@"file"];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer1 consume:2];
 	assertThat([tokenizer1.lastComment stringValue], is(@"third"));
@@ -179,7 +188,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldReportAllTokens {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	NSMutableArray *tokens = [NSMutableArray array];
 	// execute
 	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -195,7 +204,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldReportAllTokensFromTo {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	NSMutableArray *tokens = [NSMutableArray array];
 	// execute
 	[tokenizer consumeFrom:@"one" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -210,7 +219,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldReturnIfStartTokenDoesntMatch {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	__block NSUInteger count = 0;
 	// execute
 	[tokenizer consumeFrom:@"two" to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -223,7 +232,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldConsumeEndToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	// execute
 	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 	}];
@@ -233,7 +242,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldQuitAndConsumeCurrentToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	// execute
 	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		*stop = YES;
@@ -244,7 +253,7 @@
 
 - (void)testConsumeFromToUsingBlock_shouldQuitWithoutConsumingCurrentToken {
 	// setup
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
 	// execute
 	[tokenizer consumeFrom:nil to:@"five" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		*consume = NO;
@@ -258,43 +267,43 @@
 
 - (void)testLastCommentString_shouldTrimSpacesFromBothEnds {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///     comment     \n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///     comment     \n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"comment"));
 }
 
 - (void)testLastCommentString_shouldGroupSingleLineComments {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n/// line2\n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n/// line2\n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"line1\nline2"));
 }
 
 - (void)testLastCommentString_shouldIgnoreSingleLineCommentsIfEmptyLineFoundInBetween {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n\n/// line2\n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n\n/// line2\n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"line2"));
 }
 
 - (void)testLastCommentString_shouldRemovePrefixLine {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** -----------------\n line */\n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** -----------------\n line */\n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"line"));
 }
 
 - (void)testLastCommentString_shouldRemoveSuffixLine {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line\n ----------------- */\n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line\n ----------------- */\n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"line"));
 }
 
 - (void)testLastCommentString_shouldRemoveCommonPrefix {
-	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** first\n * second */ ONE"]];
-	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second */ ONE"]];
-	GBTokenizer *tokenizer3 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second\n */ ONE"]];
+	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** first\n * second */ ONE"] filename:@"file"];
+	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second */ ONE"] filename:@"file"];
+	GBTokenizer *tokenizer3 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second\n */ ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer1.lastComment stringValue], is(@"first\nsecond"));
 	assertThat([tokenizer2.lastComment stringValue], is(@"\nfirst\nsecond"));
@@ -303,7 +312,7 @@
 
 - (void)testLastCommentString_shouldKeepExampleTabs {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"]];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
 }

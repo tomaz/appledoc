@@ -19,7 +19,6 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
-@property (retain) NSString *filename;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -57,7 +56,7 @@
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
-- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
+- (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object;
 - (NSString *)sectionNameFromComment:(GBComment *)comment;
 
 @end
@@ -88,12 +87,12 @@
 - (void)parseObjectsFromString:(NSString *)input sourceFile:(NSString *)filename toStore:(id)store {
 	NSParameterAssert(input != nil);
 	NSParameterAssert(filename != nil);
+	NSParameterAssert([filename length] > 0);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Parsing objective-c objects to store %@...", store);
-	self.filename = [filename lastPathComponent];
 	self.store = store;
-	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input]];
+	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename];
 	while (![self.tokenizer eof]) {
 		if (![self matchNextObject]) {
 			[self.tokenizer consume:1];
@@ -111,7 +110,6 @@
 #pragma mark Properties
 
 @synthesize tokenizer;
-@synthesize filename;
 @synthesize settings;
 @synthesize store;
 
@@ -126,7 +124,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class definition.", className);
-	[self registerDeclaredDataFromCurrentTokenToObject:class];
+	[self registerSourceInfoFromCurrentTokenToObject:class];
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
@@ -142,7 +140,7 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matched %@(%@) category definition...", className, categoryName);
-	[self registerDeclaredDataFromCurrentTokenToObject:category];
+	[self registerSourceInfoFromCurrentTokenToObject:category];
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
@@ -155,7 +153,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
 	GBLogVerbose(@"Matched %@() extension definition.", className);
-	[self registerDeclaredDataFromCurrentTokenToObject:extension];
+	[self registerSourceInfoFromCurrentTokenToObject:extension];
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
@@ -168,7 +166,7 @@
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
 	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
-	[self registerDeclaredDataFromCurrentTokenToObject:protocol];
+	[self registerSourceInfoFromCurrentTokenToObject:protocol];
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
@@ -218,7 +216,7 @@
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
+		if (!filedata) filedata = [self.tokenizer fileDataForToken:token];
 		
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
@@ -266,7 +264,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
 	GBLogVerbose(@"Matched %@ class declaration.", className);
-	[self registerDeclaredDataFromCurrentTokenToObject:class];
+	[self registerSourceInfoFromCurrentTokenToObject:class];
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchMethodDeclarationsForProvider:class.methods];
@@ -279,7 +277,7 @@
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
 	GBLogVerbose(@"Matched %@(%@) category declaration.", className, categoryName);
-	[self registerDeclaredDataFromCurrentTokenToObject:category];
+	[self registerSourceInfoFromCurrentTokenToObject:category];
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchMethodDeclarationsForProvider:category.methods];
@@ -403,7 +401,7 @@
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
+		if (!filedata) filedata = [self.tokenizer fileDataForToken:token];
 		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
@@ -482,8 +480,9 @@
 	[object setComment:[self.tokenizer lastComment]];
 }
 
-- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
-	[object registerSourceInfo:[self.tokenizer fileDataForCurrentTokenWithFilename:self.filename]];
+- (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {
+	GBSourceInfo *info = [self.tokenizer fileDataForCurrentToken];
+	[object registerSourceInfo:info];
 }
 
 - (NSString *)sectionNameFromComment:(GBComment *)comment {
