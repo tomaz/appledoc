@@ -12,7 +12,7 @@
 
 @interface GBProcessorCommentsTesting : GHTestCase
 
-- (OCMockObject *)niceCommentMockExpectingStringValueAndRegisterParagraph;
+- (OCMockObject *)niceCommentMockExpectingRegisterParagraph;
 
 @end
 
@@ -25,7 +25,7 @@
 - (void)testProcessObjectsFromStore_shouldProcessClassComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment = [self niceCommentMockExpectingRegisterParagraph];
 	GBStore *store = [GBTestObjectsRegistry storeWithClassWithComment:comment];
 	// execute
 	[processor processObjectsFromStore:store];
@@ -36,8 +36,8 @@
 - (void)testProcessObjectsFromStore_shouldProcessClassMethodComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment1 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
-	OCMockObject *comment2 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment1 = [self niceCommentMockExpectingRegisterParagraph];
+	OCMockObject *comment2 = [self niceCommentMockExpectingRegisterParagraph];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[class.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[class.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
@@ -54,7 +54,7 @@
 - (void)testProcessObjectsFromStore_shouldProcessCategoryComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment = [self niceCommentMockExpectingRegisterParagraph];
 	GBStore *store = [GBTestObjectsRegistry storeWithCategoryWithComment:comment];
 	// execute
 	[processor processObjectsFromStore:store];
@@ -65,8 +65,8 @@
 - (void)testProcessObjectsFromStore_shouldProcessCategoryMethodComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment1 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
-	OCMockObject *comment2 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment1 = [self niceCommentMockExpectingRegisterParagraph];
+	OCMockObject *comment2 = [self niceCommentMockExpectingRegisterParagraph];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
@@ -83,7 +83,7 @@
 - (void)testProcessObjectsFromStore_shouldProcessProtocolComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment = [self niceCommentMockExpectingRegisterParagraph];
 	GBStore *store = [GBTestObjectsRegistry storeWithProtocolWithComment:comment];
 	// execute
 	[processor processObjectsFromStore:store];
@@ -94,8 +94,8 @@
 - (void)testProcessObjectsFromStore_shouldProcessProtocolMethodComments {
 	// setup
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	OCMockObject *comment1 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
-	OCMockObject *comment2 = [self niceCommentMockExpectingStringValueAndRegisterParagraph];
+	OCMockObject *comment1 = [self niceCommentMockExpectingRegisterParagraph];
+	OCMockObject *comment2 = [self niceCommentMockExpectingRegisterParagraph];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	[protocol.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[protocol.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
@@ -109,9 +109,9 @@
 
 #pragma mark Creation methods
 
-- (OCMockObject *)niceCommentMockExpectingStringValueAndRegisterParagraph {
+- (OCMockObject *)niceCommentMockExpectingRegisterParagraph {
 	OCMockObject *result = [OCMockObject niceMockForClass:[GBComment class]];
-	[[[result expect] andReturn:@"Paragraph"] stringValue];
+	[[[result stub] andReturn:@"Paragraph"] stringValue];
 	[[result expect] registerParagraph:OCMOCK_ANY];
 	return result;
 }
