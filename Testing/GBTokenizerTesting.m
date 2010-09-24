@@ -317,6 +317,30 @@
 	assertThat([tokenizer.lastComment stringValue], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
 }
 
+- (void)testLastCommentString_shouldDetectSingleLineCommentSourceInformation {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"\n\n\n/// comment\nONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment.sourceInfo filename], is(@"file"));
+	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(4));
+}
+
+- (void)testLastCommentString_shouldAssignSingleLineCommentLineNumberOfFirstLine {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n/// line2\n/// line3\nONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment.sourceInfo filename], is(@"file"));
+	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(1));
+}
+
+- (void)testLastCommentString_shouldDetectMultipleLineCommentSourceInformation {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"\n\n\n/** comment */\nONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment.sourceInfo filename], is(@"file"));
+	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(4));
+}
+
 #pragma mark Creation methods
 
 - (PKTokenizer *)defaultTokenizer {
