@@ -98,32 +98,6 @@
 	[self assertMethod:[methods objectAtIndex:1] matchesClassComponents:@"void", @"method2", nil];
 }
 
-- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionComment {
-	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBStore *store = [[GBStore alloc] init];
-	// execute
-	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ -(id)method1; /** Comment2 */ +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
-	// verify
-	GBClassData *class = [[store classes] anyObject];
-	NSArray *methods = [[class methods] methods];
-	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
-	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
-}
-
-- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationComment {
-	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
-	GBStore *store = [[GBStore alloc] init];
-	// execute
-	[parser parseObjectsFromString:@"@implementation MyClass /** Comment1 */ -(id)method1{} /** Comment2 */ +(void)method2{} @end" sourceFile:@"filename.m" toStore:store];
-	// verify
-	GBClassData *class = [[store classes] anyObject];
-	NSArray *methods = [[class methods] methods];
-	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
-	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
-}
-
 #pragma mark Method declarations parsing
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithNoArguments {
@@ -284,6 +258,114 @@
 	assertThatInteger([methods count], equalToInteger(2));
 	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"readonly", @"int", @"name1", nil];
 	[self assertMethod:[methods objectAtIndex:1] matchesPropertyComponents:@"readwrite", @"long", @"name2", nil];
+}
+
+#pragma mark Methods & properties extras parsing
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass -(id)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionProperLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@interface MyClass\n\n-(id)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass -(id)method {} @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationProperLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@implementation MyClass\n\n-(id)method {} @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterProperyDefinitionSourceFileAndLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass @property(readonly)int p1; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([files count], equalToInteger(1));
+	assertThat([[files anyObject] filename], is(@"filename.h"));
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
+}
+
+- (void)testParseObjectsFromString_shouldRegisterPropertyDefinitionProperLineNumber {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@interface MyClass\n\n@property(readonly)int p1; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
+	NSSet *files = [method declaredFiles];
+	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
+}
+
+#pragma mark Method & properties comments parsing
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDefinitionComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ -(id)method1; /** Comment2 */ +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMethodDeclarationComment {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@implementation MyClass /** Comment1 */ -(id)method1{} /** Comment2 */ +(void)method2{} @end" sourceFile:@"filename.m" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterPropertyDefinitionComment {

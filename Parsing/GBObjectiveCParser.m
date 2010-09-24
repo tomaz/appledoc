@@ -57,9 +57,9 @@
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
-- (void)registerDeclaredDataFromToken:(PKToken *)token toObject:(GBModelBase *)object;
-- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
+- (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
+- (GBDeclaredFileData *)fileDataFromToken:(PKToken *)token;
 - (NSString *)sectionNameFromCommentString:(NSString *)string;
 
 @end
@@ -221,7 +221,10 @@
 	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
 	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
 	__block BOOL result = NO;
+	__block GBDeclaredFileData *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		if (!filedata) filedata = [self fileDataFromToken:token];
+		
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
 		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -246,6 +249,7 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		GBLogDebug(@"Matched property definition %@.", propertyData);
+		[propertyData registerDeclaredFile:filedata];
 		[propertyData registerCommentString:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
@@ -401,8 +405,11 @@
 	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
 	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
 	__block BOOL result = NO;
+	__block GBDeclaredFileData *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
-	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {		
+	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		if (!filedata) filedata = [self fileDataFromToken:token];
+		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
 		[self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -465,6 +472,7 @@
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
+		[methodData registerDeclaredFile:filedata];
 		[methodData registerCommentString:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
@@ -475,19 +483,19 @@
 	return result;
 }
 
-- (void)registerDeclaredDataFromToken:(PKToken *)token toObject:(GBModelBase *)object {
-	NSString *substring = [self.input substringToIndex:[token offset]];
-	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
-	GBDeclaredFileData *data = [GBDeclaredFileData fileDataWithFilename:self.filename lineNumber:lines];
-	[object registerDeclaredFile:data];
+- (void)registerLastCommentToObject:(GBModelBase *)object {
+	[object registerCommentString:[self.tokenizer lastCommentString]];
 }
 
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
-	[self registerDeclaredDataFromToken:[self.tokenizer currentToken] toObject:object];
+	GBDeclaredFileData *data = [self fileDataFromToken:[self.tokenizer currentToken]];
+	[object registerDeclaredFile:data];
 }
 
-- (void)registerLastCommentToObject:(GBModelBase *)object {
-	[object registerCommentString:[self.tokenizer lastCommentString]];
+- (GBDeclaredFileData *)fileDataFromToken:(PKToken *)token {
+	NSString *substring = [self.input substringToIndex:[token offset]];
+	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
+	return [GBDeclaredFileData fileDataWithFilename:self.filename lineNumber:lines];
 }
 
 - (NSString *)sectionNameFromCommentString:(NSString *)string {
