@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ParseKit.h"
 
-@class GBDeclaredFileData;
+@class GBSourceInfo;
 
 /** Provides common methods for tokenizing input source strings.
  
@@ -122,7 +122,7 @@
  @return Returns declared file data.
  @exception NSException Thrown if current token is `nil` or the given filename is `nil` or empty string.
  */
-- (GBDeclaredFileData *)fileDataForCurrentTokenWithFilename:(NSString *)filename;
+- (GBSourceInfo *)fileDataForCurrentTokenWithFilename:(NSString *)filename;
 
 /** Returns `GBDeclaredFileData` object describing the given token source information.
  
@@ -133,7 +133,7 @@
  @return Returns declared file data.
  @exception NSException Thrown if the given token is `nil` or the given filename is `nil` or empty string.
  */
-- (GBDeclaredFileData *)fileDataForToken:(PKToken *)token filename:(NSString *)filename;
+- (GBSourceInfo *)fileDataForToken:(PKToken *)token filename:(NSString *)filename;
 
 ///---------------------------------------------------------------------------------------
 /// @name Comments handling

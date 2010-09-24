@@ -16,8 +16,8 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		_declaredFiles = [[NSMutableSet alloc] init];
-		_declaredFilesByFilenames = [[NSMutableDictionary alloc] init];
+		_sourceInfos = [[NSMutableSet alloc] init];
+		_sourceInfosByFilenames = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -28,19 +28,19 @@
 	NSParameterAssert([source isKindOfClass:[self class]]);
 	
 	// Merge declared files.
-	NSArray *sourceFiles = [[source declaredFiles] allObjects];
-	for (GBDeclaredFileData *filedata in sourceFiles) {
-		GBDeclaredFileData *ourfiledata = [_declaredFilesByFilenames objectForKey:filedata.filename];
+	NSArray *sourceFiles = [[source sourceInfos] allObjects];
+	for (GBSourceInfo *filedata in sourceFiles) {
+		GBSourceInfo *ourfiledata = [_sourceInfosByFilenames objectForKey:filedata.filename];
 		if (ourfiledata) {
 			if (ourfiledata.lineNumber < filedata.lineNumber) {
-				[_declaredFilesByFilenames setObject:filedata forKey:filedata.filename];
-				[_declaredFiles removeObject:ourfiledata];
-				[_declaredFiles addObject:filedata];
+				[_sourceInfosByFilenames setObject:filedata forKey:filedata.filename];
+				[_sourceInfos removeObject:ourfiledata];
+				[_sourceInfos addObject:filedata];
 			}
 			continue;
 		}
-		[_declaredFilesByFilenames setObject:filedata forKey:filedata.filename];
-		[_declaredFiles addObject:filedata];
+		[_sourceInfosByFilenames setObject:filedata forKey:filedata.filename];
+		[_sourceInfos addObject:filedata];
 	}
 	
 	// Merge comment.
@@ -54,23 +54,23 @@
 
 #pragma mark Declared files handling
 
-- (void)registerDeclaredFile:(GBDeclaredFileData *)data {
+- (void)registerSourceInfo:(GBSourceInfo *)data {
 	NSParameterAssert(data != nil);
 	
 	// Ignore already registered objects.
-	if ([_declaredFiles member:data]) return;
+	if ([_sourceInfos member:data]) return;
 	
 	// Replace data with same filename.
-	GBDeclaredFileData *existing = [_declaredFilesByFilenames objectForKey:data.filename];
-	if (existing) [_declaredFiles removeObject:existing];
+	GBSourceInfo *existing = [_sourceInfosByFilenames objectForKey:data.filename];
+	if (existing) [_sourceInfos removeObject:existing];
 	
 	// Add object.
-	[_declaredFilesByFilenames setObject:data forKey:data.filename];
-	[_declaredFiles addObject:data];
+	[_sourceInfosByFilenames setObject:data forKey:data.filename];
+	[_sourceInfos addObject:data];
 }
 
-- (NSArray *)declaredFilesSortedByName {
-	return [[self.declaredFiles allObjects] sortedArrayUsingSelector:@selector(compare:)];
+- (NSArray *)sourceInfosSortedByName {
+	return [[self.sourceInfos allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
 #pragma mark Comments handling
@@ -88,7 +88,7 @@
 #pragma mark Properties
 
 @synthesize comment = _comment;
-@synthesize declaredFiles = _declaredFiles;
+@synthesize sourceInfos = _sourceInfos;
 @synthesize parentObject;
 
 @end

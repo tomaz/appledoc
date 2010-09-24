@@ -18,15 +18,15 @@
 - (void)testMergeDataFromObject_shouldMergeDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:1]];
-	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f2" lineNumber:2]];
+	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:1]];
+	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f2" lineNumber:2]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:3]];
-	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f3" lineNumber:4]];
+	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:3]];
+	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f3" lineNumber:4]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	NSArray *files = [original declaredFilesSortedByName];
+	NSArray *files = [original sourceInfosSortedByName];
 	assertThatInteger([files count], equalToInteger(3));
 	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
 	assertThat([[files objectAtIndex:1] filename], is(@"f2"));
@@ -39,15 +39,15 @@
 - (void)testMergeDataFromObject_shouldPreserveSourceDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:4]];
-	 [original registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f2" lineNumber:3]];
+	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:4]];
+	 [original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f2" lineNumber:3]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	 [source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f1" lineNumber:2]];
-	 [source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"f3" lineNumber:1]];
+	 [source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:2]];
+	 [source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f3" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	NSArray *files = [source declaredFilesSortedByName];
+	NSArray *files = [source sourceInfosSortedByName];
 	assertThatInteger([files count], equalToInteger(2));
 	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
 	assertThat([[files objectAtIndex:1] filename], is(@"f3"));

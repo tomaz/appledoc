@@ -84,8 +84,8 @@
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
-		736B2BF6124BCBB6009145B1 /* GBDeclaredFileData.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBDeclaredFileData.m */; };
-		736B2BF7124BCBB6009145B1 /* GBDeclaredFileData.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBDeclaredFileData.m */; };
+		736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */; };
+		736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */; };
 		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
@@ -186,8 +186,8 @@
 		7367BB5112004058005ED6CD /* GBModelBaseTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBModelBaseTesting.m; sourceTree = "<group>"; };
 		7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCategoryDataTesting.m; sourceTree = "<group>"; };
 		7367BC4212005888005ED6CD /* GBDataObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDataObjects.h; sourceTree = "<group>"; };
-		736B2BF4124BCBB6009145B1 /* GBDeclaredFileData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDeclaredFileData.h; sourceTree = "<group>"; };
-		736B2BF5124BCBB6009145B1 /* GBDeclaredFileData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDeclaredFileData.m; sourceTree = "<group>"; };
+		736B2BF4124BCBB6009145B1 /* GBSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSourceInfo.h; sourceTree = "<group>"; };
+		736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSourceInfo.m; sourceTree = "<group>"; };
 		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
 		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
 		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
@@ -751,8 +751,8 @@
 				73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */,
 				7367BB3412003CAB005ED6CD /* GBModelBase.h */,
 				7367BB3512003CAB005ED6CD /* GBModelBase.m */,
-				736B2BF4124BCBB6009145B1 /* GBDeclaredFileData.h */,
-				736B2BF5124BCBB6009145B1 /* GBDeclaredFileData.m */,
+				736B2BF4124BCBB6009145B1 /* GBSourceInfo.h */,
+				736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */,
 				7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */,
 				7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */,
 			);
@@ -906,7 +906,7 @@
 				7307B2A6124A0888007EC6B8 /* GBCommentsProcessor-ComplexTesting.m in Sources */,
 				7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */,
 				7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
-				736B2BF6124BCBB6009145B1 /* GBDeclaredFileData.m in Sources */,
+				736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,7 +957,7 @@
 				73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */,
 				738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */,
 				7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
-				736B2BF7124BCBB6009145B1 /* GBDeclaredFileData.m in Sources */,
+				736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

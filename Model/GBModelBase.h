@@ -9,13 +9,13 @@
 #import <Foundation/Foundation.h>
 
 @class GBComment;
-@class GBDeclaredFileData;
+@class GBSourceInfo;
 
 /** Provides common functionality for model objects. */
 @interface GBModelBase : NSObject {
 	@private
-	NSMutableSet *_declaredFiles;
-	NSMutableDictionary *_declaredFilesByFilenames;
+	NSMutableSet *_sourceInfos;
+	NSMutableDictionary *_sourceInfosByFilenames;
 	GBComment *_comment;
 }
 
@@ -23,28 +23,28 @@
 /// @name Declared files handling
 ///---------------------------------------------------------------------------------------
 
-/** Registers the given `GBDeclaredFileData` to `declaredFiles` list.
+/** Registers the given `GBDeclaredFileData` to `sourceInfos` list.
  
  If file data with the same filename already exists in the set, it is replaced with the given one.
  
  @param filename The name of the file to register.
  @exception NSException Thrown if the given filename is `nil` or empty.
  */
-- (void)registerDeclaredFile:(GBDeclaredFileData *)data;
+- (void)registerSourceInfo:(GBSourceInfo *)data;
 
-/** Returns the array of all `declaredFiles` sorted by file name.
+/** Returns the array of all `sourceInfos` sorted by file name.
  
- @see declaredFiles
- @see registerDeclaredFile:
+ @see sourceInfos
+ @see registerSourceInfo:
  */
-- (NSArray *)declaredFilesSortedByName;
+- (NSArray *)sourceInfosSortedByName;
 
 /** The list of all declared file data as `GBDeclaredFileData` objects. 
  
- @see registerDeclaredFile:
- @see declaredFilesSortedByName
+ @see registerSourceInfo:
+ @see sourceInfosSortedByName
  */
-@property (readonly) NSSet *declaredFiles;
+@property (readonly) NSSet *sourceInfos;
 
 ///---------------------------------------------------------------------------------------
 /// @name Comments handling

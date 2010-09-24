@@ -17,11 +17,11 @@
 	// setup - ivars don't merge any data, except they need to send base class merging message!
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"file" lineNumber:1]];
+	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"file" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
-	assertThatInteger([original.declaredFiles count], equalToInteger(1));
+	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
 @end

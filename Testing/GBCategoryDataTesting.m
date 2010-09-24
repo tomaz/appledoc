@@ -30,11 +30,11 @@
 	// setup
 	GBCategoryData *original = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
 	GBCategoryData *source = [GBCategoryData categoryDataWithName:@"MyCategory" className:@"MyClass"];
-	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"file" lineNumber:1]];
+	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"file" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
-	assertThatInteger([original.declaredFiles count], equalToInteger(1));
+	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
 #pragma mark Category components merging

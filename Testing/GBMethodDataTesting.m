@@ -71,11 +71,11 @@
 	// setup - methods don't merge any data, except they need to send base class merging message!
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	[source registerDeclaredFile:[GBDeclaredFileData fileDataWithFilename:@"file" lineNumber:1]];
+	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"file" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!
-	assertThatInteger([original.declaredFiles count], equalToInteger(1));
+	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
 @end

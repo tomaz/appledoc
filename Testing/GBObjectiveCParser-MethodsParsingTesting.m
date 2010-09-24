@@ -270,7 +270,7 @@
 	[parser parseObjectsFromString:@"@interface MyClass -(id)method; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
@@ -284,7 +284,7 @@
 	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@interface MyClass\n\n-(id)method; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
 }
 
@@ -296,7 +296,7 @@
 	[parser parseObjectsFromString:@"@implementation MyClass -(id)method {} @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
@@ -310,7 +310,7 @@
 	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@implementation MyClass\n\n-(id)method {} @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
 }
 
@@ -322,7 +322,7 @@
 	[parser parseObjectsFromString:@"@interface MyClass @property(readonly)int p1; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));	
@@ -336,7 +336,7 @@
 	[parser parseObjectsFromString:@"// comment\n#define SOMETHING\n\n@interface MyClass\n\n@property(readonly)int p1; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBMethodData *method = [[[[[store classes] anyObject] methods] methods] objectAtIndex:0];
-	NSSet *files = [method declaredFiles];
+	NSSet *files = [method sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(6));
 }
 

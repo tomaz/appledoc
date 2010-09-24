@@ -125,15 +125,15 @@
 
 #pragma mark Token information handling
 
-- (GBDeclaredFileData *)fileDataForCurrentTokenWithFilename:(NSString *)filename {
+- (GBSourceInfo *)fileDataForCurrentTokenWithFilename:(NSString *)filename {
 	return [self fileDataForToken:[self currentToken] filename:filename];
 }
 
-- (GBDeclaredFileData *)fileDataForToken:(PKToken *)token filename:(NSString *)filename {
+- (GBSourceInfo *)fileDataForToken:(PKToken *)token filename:(NSString *)filename {
 	NSParameterAssert(token != nil);
 	NSString *substring = [self.input substringToIndex:[token offset]];
 	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
-	return [GBDeclaredFileData fileDataWithFilename:filename lineNumber:lines];
+	return [GBSourceInfo fileDataWithFilename:filename lineNumber:lines];
 }
 
 #pragma mark Comments handling

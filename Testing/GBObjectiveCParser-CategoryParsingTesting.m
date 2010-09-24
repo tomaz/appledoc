@@ -39,7 +39,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -52,7 +52,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -91,7 +91,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@implementation MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -104,7 +104,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@implementation MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -143,7 +143,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -156,7 +156,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 

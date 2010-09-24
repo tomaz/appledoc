@@ -1,5 +1,5 @@
 //
-//  GBDeclaredFileData.h
+//  GBSourceInfo.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 23.9.10.
@@ -12,7 +12,7 @@
  
  Declared file provides information about where an object was declared - i.e. source file name and line number. This can be used for generating output and for diagnostics and as debug information.
  */
-@interface GBDeclaredFileData : NSObject
+@interface GBSourceInfo : NSObject
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
@@ -40,7 +40,7 @@
  @param data `GBDeclaredFileData` to compare with.
  @return `NSOrderedAscending` if the value of _data_ is greater than the receiver, `NSOrderedSame` if they’re equal, and `NSOrderedDescending` if the _data_ is less than the receiver.
  */
-- (NSComparisonResult)compare:(GBDeclaredFileData *)data;
+- (NSComparisonResult)compare:(GBSourceInfo *)data;
 
 /** The name of the file, without path.
  

@@ -217,7 +217,7 @@
 	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
 	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
 	__block BOOL result = NO;
-	__block GBDeclaredFileData *filedata = nil;
+	__block GBSourceInfo *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
 		
@@ -245,7 +245,7 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		GBLogDebug(@"Matched property definition %@.", propertyData);
-		[propertyData registerDeclaredFile:filedata];
+		[propertyData registerSourceInfo:filedata];
 		[propertyData registerCommentString:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
@@ -401,7 +401,7 @@
 	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
 	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
 	__block BOOL result = NO;
-	__block GBDeclaredFileData *filedata = nil;
+	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if (!filedata) filedata = [self.tokenizer fileDataForToken:token filename:self.filename];
@@ -468,7 +468,7 @@
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
-		[methodData registerDeclaredFile:filedata];
+		[methodData registerSourceInfo:filedata];
 		[methodData registerCommentString:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
@@ -484,7 +484,7 @@
 }
 
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
-	[object registerDeclaredFile:[self.tokenizer fileDataForCurrentTokenWithFilename:self.filename]];
+	[object registerSourceInfo:[self.tokenizer fileDataForCurrentTokenWithFilename:self.filename]];
 }
 
 - (NSString *)sectionNameFromCommentString:(NSString *)string {

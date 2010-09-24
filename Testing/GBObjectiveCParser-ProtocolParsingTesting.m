@@ -38,7 +38,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -51,7 +51,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] declaredFiles];
+	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
