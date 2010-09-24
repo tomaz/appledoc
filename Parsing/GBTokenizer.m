@@ -18,8 +18,10 @@
 @property (retain) NSString *input;
 @property (retain) NSArray *tokens;
 @property (assign) NSUInteger tokenIndex;
-@property (retain) NSMutableString *lastComment;
-@property (retain) NSMutableString *previousComment;
+@property (retain) NSMutableString *lastCommentBuilder;
+@property (retain) NSMutableString *previousCommentBuilder;
+@property (retain) GBSourceInfo *lastCommentSourceInfo;
+@property (retain) GBSourceInfo *previousCommentSourceInfo;
 @property (retain) NSString *singleLineCommentRegex;
 @property (retain) NSString *multiLineCommentRegex;
 @property (retain) NSString *commentDelimiterRegex;
@@ -45,8 +47,8 @@
 		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
 		self.commentDelimiterRegex = @"[!@#$%^&*()-_=+`~,<.>/?;:'\"]{3,}";
 		self.tokenIndex = 0;
-		self.lastComment = [NSMutableString string];
-		self.previousComment = [NSMutableString string];
+		self.lastCommentBuilder = [NSMutableString string];
+		self.previousCommentBuilder = [NSMutableString string];
 		self.input = tokenizer.string;
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
 		[self consumeComments];
@@ -140,8 +142,8 @@
 
 - (BOOL)consumeComments {
 	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
-	[self.previousComment setString:@""];
-	[self.lastComment setString:@""];
+	[self.previousCommentBuilder setString:@""];
+	[self.lastCommentBuilder setString:@""];
 	if ([self eof]) return NO;
 	if (![[self currentToken] isComment]) return NO;
 	NSUInteger previousSingleLineEndOffset = 0;
@@ -150,16 +152,16 @@
 		NSString *value = nil;
 		
 		// Set the value of last comment to previous comment. As we already reset last comment before the loop, the value is properly set to empty string in case only a single comment is detected (remember, the value is only "valid" if at least two consequtive comments are detected).
-		[self.previousComment setString:self.lastComment];
+		[self.previousCommentBuilder setString:self.lastCommentBuilder];
 		
-		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments if unless they start at the beginning of the line!
+		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments unless they start at the beginning of the line!
 		NSArray *singleLiners = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentRegex capture:1];
 		if ([singleLiners count] > 0) {
 			value = [NSString string];
 			for (NSString *match in singleLiners) value = [value stringByAppendingString:match];
 			BOOL isContinuingPreviousSingleLiner = ([token offset] == previousSingleLineEndOffset + 1);
-			if (!isContinuingPreviousSingleLiner)[self.lastComment setString:@""];
-			if (isContinuingPreviousSingleLiner) [self.lastComment appendString:@"\n"];
+			if (!isContinuingPreviousSingleLiner)[self.lastCommentBuilder setString:@""];
+			if (isContinuingPreviousSingleLiner) [self.lastCommentBuilder appendString:@"\n"];
 			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
 		}
 		
@@ -167,23 +169,15 @@
 		else {
 			NSArray *multiLiners = [[token stringValue] componentsMatchedByRegex:self.multiLineCommentRegex capture:1];
 			value = [multiLiners lastObject];
-			[self.lastComment setString:@""];
+			[self.lastCommentBuilder setString:@""];
 		}
 		
 		// Append string value to current comment and proceed with next token.
 		value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-		[self.lastComment appendString:value];
+		[self.lastCommentBuilder appendString:value];
 		self.tokenIndex++;
-	}
+	}	
 	return YES;
-}
-
-- (NSString *)lastCommentString {
-	return [self commentValueFromString:self.lastComment];
-}
-
-- (NSString *)previousCommentString {
-	return [self commentValueFromString:self.previousComment];
 }
 
 - (NSString *)commentValueFromString:(NSString *)value {
@@ -234,6 +228,16 @@
 	return result;
 }
 
+- (GBComment *)lastComment {
+	NSString *value = [self commentValueFromString:self.lastCommentBuilder];
+	return [GBComment commentWithStringValue:value sourceInfo:self.lastCommentSourceInfo];
+}
+
+- (GBComment *)previousComment {
+	NSString *value = [self commentValueFromString:self.previousCommentBuilder];
+	return [GBComment commentWithStringValue:value sourceInfo:self.previousCommentSourceInfo];
+}
+
 #pragma mark Helper methods
 
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer {
@@ -256,7 +260,11 @@
 @synthesize tokens;
 @synthesize tokenIndex;
 @synthesize lastComment;
+@synthesize lastCommentBuilder;
+@synthesize lastCommentSourceInfo;
 @synthesize previousComment;
+@synthesize previousCommentBuilder;
+@synthesize previousCommentSourceInfo;
 @synthesize singleLineCommentRegex;
 @synthesize multiLineCommentRegex;
 @synthesize commentDelimiterRegex;

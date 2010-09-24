@@ -49,7 +49,7 @@
 		GBLogWarn(@"%@: Comment string found in definition and declaration!", self);
 		return;
 	}
-	if (!self.comment && comment) _comment = [comment retain];
+	if (!self.comment && comment) self.comment = comment;
 }
 
 #pragma mark Declared files handling
@@ -73,21 +73,9 @@
 	return [[self.sourceInfos allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
-#pragma mark Comments handling
-
-- (void)registerCommentString:(NSString *)value {
-	if (value) {
-		if (!_comment) _comment = [[GBComment alloc] init];
-		[self.comment setStringValue:value];
-	}
-	else if (_comment) {
-		[_comment release], _comment = nil;
-	}
-}
-
 #pragma mark Properties
 
-@synthesize comment = _comment;
+@synthesize comment;
 @synthesize sourceInfos = _sourceInfos;
 @synthesize parentObject;
 

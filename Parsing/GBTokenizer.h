@@ -10,6 +10,7 @@
 #import "ParseKit.h"
 
 @class GBSourceInfo;
+@class GBComment;
 
 /** Provides common methods for tokenizing input source strings.
  
@@ -139,24 +140,24 @@
 /// @name Comments handling
 ///---------------------------------------------------------------------------------------
 
-/** Returns the last comment string or `nil` if comment is not available.
+/** Returns the last comment or `nil` if comment is not available.
  
- This returns the whole last comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
+ The returned `[GBComment stringValue]` contains the whole last comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
  
  If there's no comment available for current token, `nil` is returned.
  
- @see previousCommentString
+ @see previousComment
  */
-@property (readonly) NSString *lastCommentString;
+@property (readonly) GBComment *lastComment;
 
 /** Returns "stand-alone" comment found immediately before the comment returned from `lastCommentString`.
  
- Previous comment is a "stand-alon" comment which is found immediately before `lastCommentString` but isn't associated with any language element. These are ussually used to provide meta data and other instructions for formatting or grouping of "normal" comments returned with `lastCommentString`. The value should be used at the same time as `lastCommentString` as it is automatically cleared on the next consuming! If there's no stand-alone comment immediately before last comment, the value returned is `nil`.
+ Previous comment is a "stand-alone" comment which is found immediately before `lastCommentString` but isn't associated with any language element. These are ussually used to provide meta data and other instructions for formatting or grouping of "normal" comments returned with `lastCommentString`. The value should be used at the same time as `lastCommentString` as it is automatically cleared on the next consuming! If there's no stand-alone comment immediately before last comment, the value returned is `nil`.
  
- This returns the whole previous comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
+ The returned `[GBComment stringValue]` contains the whole previous comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
  
- @see lastCommentString
+ @see lastComment
  */
-@property (readonly) NSString *previousCommentString;
+@property (readonly) GBComment *previousComment;
 
 @end

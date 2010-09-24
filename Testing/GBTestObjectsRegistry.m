@@ -21,7 +21,7 @@
 }
 
 + (void)registerComment:(id)comment forObject:(GBModelBase *)object {
-	[object setValue:comment forKey:@"_comment"];
+	object.comment = comment;
 }
 
 #pragma mark GBIvarData creation methods

@@ -60,7 +60,7 @@
 - (void)testMergeDataFromObject_shouldUseOriginalCommentIfSourceIsNotGiven {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerCommentString:@"Comment"];
+	original.comment = [GBComment commentWithStringValue:@"Comment"];
 	GBModelBase *source = [[GBModelBase alloc] init];
 	// execute
 	[original mergeDataFromObject:source];
@@ -73,7 +73,7 @@
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerCommentString:@"Comment"];
+	source.comment = [GBComment commentWithStringValue:@"Comment"];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
@@ -84,9 +84,9 @@
 - (void)testMergeDataFromObject_shouldKeepOriginalCommentIfBothObjectsHaveComments {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerCommentString:@"Comment1"];
+	original.comment = [GBComment commentWithStringValue:@"Comment1"];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerCommentString:@"Comment2"];
+	source.comment = [GBComment commentWithStringValue:@"Comment2"];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify

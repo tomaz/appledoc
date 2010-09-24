@@ -51,8 +51,8 @@
 	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment\n bla"]];
 	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment */\n bla"]];
 	// verify
-	assertThat([tokenizer1 lastCommentString], is(@"comment"));
-	assertThat([tokenizer2 lastCommentString], is(@"comment"));
+	assertThat([tokenizer1.lastComment stringValue], is(@"comment"));
+	assertThat([tokenizer2.lastComment stringValue], is(@"comment"));
 }
 
 #pragma mark Lookahead testing
@@ -141,11 +141,11 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer consume:1];
-	assertThat([tokenizer lastCommentString], is(@"second"));
+	assertThat([tokenizer.lastComment stringValue], is(@"second"));
 	[tokenizer consume:1];
-	assertThat([tokenizer lastCommentString], is(@"third"));
+	assertThat([tokenizer.lastComment stringValue], is(@"third"));
 	[tokenizer consume:1];
-	assertThat([tokenizer lastCommentString], is(nil));
+	assertThat([tokenizer.lastComment stringValue], is(nil));
 }
 
 - (void)testConsume_shouldSetPreviousComment {
@@ -153,14 +153,14 @@
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self succesiveCommentsTokenizer]];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer consume:1];
-	assertThat([tokenizer previousCommentString], is(@"first\nfirst1"));
-	assertThat([tokenizer lastCommentString], is(@"second"));
+	assertThat([tokenizer.previousComment stringValue], is(@"first\nfirst1"));
+	assertThat([tokenizer.lastComment stringValue], is(@"second"));
 	[tokenizer consume:1];
-	assertThat([tokenizer previousCommentString], is(nil));
-	assertThat([tokenizer lastCommentString], is(@"third"));
+	assertThat([tokenizer.previousComment stringValue], is(nil));
+	assertThat([tokenizer.lastComment stringValue], is(@"third"));
 	[tokenizer consume:1];
-	assertThat([tokenizer previousCommentString], is(nil));
-	assertThat([tokenizer lastCommentString], is(nil));
+	assertThat([tokenizer.previousComment stringValue], is(nil));
+	assertThat([tokenizer.lastComment stringValue], is(nil));
 }
 
 - (void)testConsume_shouldSetProperCommentWhenConsumingMultipleTokens {
@@ -169,10 +169,10 @@
 	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[self commentsTokenizer]];
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer1 consume:2];
-	assertThat([tokenizer1 lastCommentString], is(@"third"));
+	assertThat([tokenizer1.lastComment stringValue], is(@"third"));
 	// execute & verify - note that we initially position on the first token!
 	[tokenizer2 consume:3];
-	assertThat([tokenizer2 lastCommentString], is(nil));
+	assertThat([tokenizer2.lastComment stringValue], is(nil));
 }
 
 #pragma mark Block consuming testing
@@ -260,35 +260,35 @@
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///     comment     \n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"comment"));
+	assertThat([tokenizer.lastComment stringValue], is(@"comment"));
 }
 
 - (void)testLastCommentString_shouldGroupSingleLineComments {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n/// line2\n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line1\nline2"));
+	assertThat([tokenizer.lastComment stringValue], is(@"line1\nline2"));
 }
 
 - (void)testLastCommentString_shouldIgnoreSingleLineCommentsIfEmptyLineFoundInBetween {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n\n/// line2\n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line2"));
+	assertThat([tokenizer.lastComment stringValue], is(@"line2"));
 }
 
 - (void)testLastCommentString_shouldRemovePrefixLine {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** -----------------\n line */\n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line"));
+	assertThat([tokenizer.lastComment stringValue], is(@"line"));
 }
 
 - (void)testLastCommentString_shouldRemoveSuffixLine {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line\n ----------------- */\n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line"));
+	assertThat([tokenizer.lastComment stringValue], is(@"line"));
 }
 
 - (void)testLastCommentString_shouldRemoveCommonPrefix {
@@ -296,16 +296,16 @@
 	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second */ ONE"]];
 	GBTokenizer *tokenizer3 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second\n */ ONE"]];
 	// verify
-	assertThat([tokenizer1 lastCommentString], is(@"first\nsecond"));
-	assertThat([tokenizer2 lastCommentString], is(@"\nfirst\nsecond"));
-	assertThat([tokenizer3 lastCommentString], is(@"\nfirst\nsecond\n"));
+	assertThat([tokenizer1.lastComment stringValue], is(@"first\nsecond"));
+	assertThat([tokenizer2.lastComment stringValue], is(@"\nfirst\nsecond"));
+	assertThat([tokenizer3.lastComment stringValue], is(@"\nfirst\nsecond\n"));
 }
 
 - (void)testLastCommentString_shouldKeepExampleTabs {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** line1\n\n\texample1\n\texample2\n\nline2 */\n   ONE"]];
 	// verify
-	assertThat([tokenizer lastCommentString], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
+	assertThat([tokenizer.lastComment stringValue], is(@"line1\n\n\texample1\n\texample2\n\nline2"));
 }
 
 #pragma mark Creation methods

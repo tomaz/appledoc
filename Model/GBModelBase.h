@@ -16,7 +16,6 @@
 	@private
 	NSMutableSet *_sourceInfos;
 	NSMutableDictionary *_sourceInfosByFilenames;
-	GBComment *_comment;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -50,24 +49,8 @@
 /// @name Comments handling
 ///---------------------------------------------------------------------------------------
 
-/** Registers the given comment string.
- 
- This allows parsers to register comment string to the associated `comment`. The method created a new `GBComment` instance associated with the receiver and passes it the given string value, but doesn't yet process the value yet. Processing needs to be initiated manually via `GBProcessor` instance. The reason for splitting the functionality is to simplify parsers - they can register comment strings as they appear in current context. Processing comments does take some time, so postponing allows us to parse quicker and the user can see parsing warnings immediately. Further more, processing comments requires the whole object's graph being present so that we can prepare links to other objects, so splitting the two makes even more sense.
- 
- Note that in case `nil` is given for string value and a comment is already associated, the comment is changed to `nil` as well!
- 
- @param value Comment string or `nil` to clear the comment.
- @see comment
- */
-- (void)registerCommentString:(NSString *)value;
-
-/** The comment associated with this object or `nil` if no comment is associated. 
- 
- To register a comment, send `registerCommentString:` to receiver. To process the comment send `processParsedData` to receiver.
- 
- @see registerCommentString:
- */
-@property (readonly) GBComment *comment;
+/** The comment associated with this object or `nil` if no comment is associated. */
+@property (retain) GBComment *comment;
 
 ///---------------------------------------------------------------------------------------
 /// @name Data handling

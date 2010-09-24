@@ -58,7 +58,7 @@
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object;
-- (NSString *)sectionNameFromCommentString:(NSString *)string;
+- (NSString *)sectionNameFromComment:(GBComment *)comment;
 
 @end
 
@@ -213,9 +213,8 @@
 }
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider {
-	NSString *comment = [[self.tokenizer lastCommentString] copy];
-	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
-	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
+	GBComment *comment = [self.tokenizer lastComment];
+	NSString *sectionName = [self sectionNameFromComment:[self.tokenizer previousComment]];
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -245,8 +244,8 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		GBLogDebug(@"Matched property definition %@.", propertyData);
+		[propertyData setComment:comment];
 		[propertyData registerSourceInfo:filedata];
-		[propertyData registerCommentString:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
 		*consume = NO;
@@ -397,9 +396,9 @@
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
 	// This method only matches class or instance methods, not properties!
 	// - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
-	NSString *comment = [[self.tokenizer lastCommentString] copy];
-	NSString *sectionComment = [[self.tokenizer previousCommentString] copy];
-	NSString *sectionName = [self sectionNameFromCommentString:sectionComment];
+	GBComment *comment = [self.tokenizer lastComment];
+	GBComment *sectionComment = [self.tokenizer previousComment];
+	NSString *sectionName = [self sectionNameFromComment:sectionComment];
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
@@ -469,7 +468,7 @@
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
 		[methodData registerSourceInfo:filedata];
-		[methodData registerCommentString:comment];
+		[methodData setComment:comment];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
 		*consume = NO;
@@ -480,17 +479,20 @@
 }
 
 - (void)registerLastCommentToObject:(GBModelBase *)object {
-	[object registerCommentString:[self.tokenizer lastCommentString]];
+	[object setComment:[self.tokenizer lastComment]];
 }
 
 - (void)registerDeclaredDataFromCurrentTokenToObject:(GBModelBase *)object {
 	[object registerSourceInfo:[self.tokenizer fileDataForCurrentTokenWithFilename:self.filename]];
 }
 
-- (NSString *)sectionNameFromCommentString:(NSString *)string {
-	NSCharacterSet* trimSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-	if ([[string stringByTrimmingCharactersInSet:trimSet] length] == 0) return nil;
-	NSString *name = [string stringByMatching:self.settings.commentComponents.methodGroupRegex capture:1];
+- (NSString *)sectionNameFromComment:(GBComment *)comment {
+	// If comment has nil or whitespace-only string value, ignore it.
+	NSCharacterSet* trimSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];	
+	if ([[comment.stringValue stringByTrimmingCharactersInSet:trimSet] length] == 0) return nil;
+	
+	// If comment doesn't contain section name, ignore it, otherwise return the name.
+	NSString *name = [comment.stringValue stringByMatching:self.settings.commentComponents.methodGroupRegex capture:1];
 	if ([[name stringByTrimmingCharactersInSet:trimSet] length] == 0) return nil;
 	return [name stringByWordifyingWithSpaces];
 }
