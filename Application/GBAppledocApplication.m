@@ -13,6 +13,7 @@
 #import "GBProcessor.h"
 #import "GBAppledocApplication.h"
 
+static NSString *kGBArgIgnorePath = @"ignore";
 static NSString *kGBArgLogFormat = @"logformat";
 static NSString *kGBArgVerbose = @"verbose";
 static NSString *kGBArgVersion = @"version";
@@ -52,6 +53,7 @@ static NSString *kGBArgHelp = @"help";
 	if (self) {
 		self.logformat = @"1";
 		self.verbose = @"2";
+		self.ignoredPaths = [NSMutableSet set];
 		self.commentComponents = [GBCommentComponentsProvider provider];
 	}
 	return self;
@@ -100,6 +102,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {
 	DDGetoptOption options[] = {
+		{ kGBArgIgnorePath,				'i',	DDGetoptRequiredArgument },
 		{ kGBArgLogFormat,				'f',	DDGetoptRequiredArgument },
 		{ kGBArgVerbose,				'v',	DDGetoptRequiredArgument },
 		{ kGBArgVersion,				0,		DDGetoptNoArgument },
@@ -134,16 +137,22 @@ static NSString *kGBArgHelp = @"help";
 	return [self className];
 }
 
-#pragma mark Application settings provider implementation
+#pragma mark Callbacks API for DDCliApplication
 
-@synthesize commentComponents;
-
-#pragma mark Properties
+- (void)setIgnore:(NSString *)path {
+	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
+	[self.ignoredPaths addObject:path];
+}
 
 @synthesize logformat;
 @synthesize verbose;
 @synthesize version;
 @synthesize help;
+
+#pragma mark Application settings provider implementation
+
+@synthesize ignoredPaths;
+@synthesize commentComponents;
 
 @end
 
@@ -159,6 +168,7 @@ static NSString *kGBArgHelp = @"help";
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:long argument:arg description:desc]
 	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", DDCliApp);
 	ddprintf(@"\n");
+	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
 	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-4]");
 	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level [0-6]");
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");

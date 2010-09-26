@@ -15,6 +15,7 @@
 
 - (void)parseDirectory:(NSString *)path;
 - (void)parseFile:(NSString *)path;
+- (BOOL)isPathIgnored:(NSString *)path;
 - (BOOL)isFileIgnored:(NSString *)filename;
 - (BOOL)isDirectoryIgnored:(NSString *)filename;
 - (BOOL)isSourceCodeFile:(NSString *)path;
@@ -60,8 +61,13 @@
 	}
 }
 
-- (void)parseDirectory:(NSString *)path {
+- (void)parseDirectory:(NSString *)path {	
 	GBLogDebug(@"Parsing path '%@'...", path);
+	if ([self isPathIgnored:path]) {
+		GBLogNormal(@"Ignoring path '%@'...", path);
+		return;
+	}
+
 	NSError *error = nil;
 	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
 	if (error) {
@@ -88,6 +94,10 @@
 
 - (void)parseFile:(NSString *)path {
 	GBLogDebug(@"Parsing file '%@'...", path);
+	if ([self isPathIgnored:path]) {
+		GBLogNormal(@"Ignoring file '%@'...", path);
+		return;
+	}
 	if (![self isSourceCodeFile:path]) return;	
 	
 	GBLogInfo(@"Parsing source code from '%@'...", path);
@@ -100,6 +110,13 @@
 	
 	[self.objectiveCParser parseObjectsFromString:input sourceFile:[path lastPathComponent] toStore:self.store];
 	self.numberOfParsedFiles++;
+}
+
+- (BOOL)isPathIgnored:(NSString *)path {
+	for (NSString *ignored in self.settings.ignoredPaths) {
+		if ([path hasSuffix:ignored]) return YES;
+	}
+	return NO;
 }
 
 - (BOOL)isFileIgnored:(NSString *)filename {

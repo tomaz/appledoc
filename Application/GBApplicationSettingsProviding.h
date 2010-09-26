@@ -15,6 +15,12 @@
  */
 @protocol GBApplicationSettingsProviding
 
+/** The list of all full or partial paths to be ignored. 
+ 
+ It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
+ */
+@property (retain) NSMutableArray *ignoredPaths;
+
 /** Returns the `GBCommentComponentsProvider` object that identifies comment components. */
 @property (retain) GBCommentComponentsProvider *commentComponents;
 
