@@ -63,7 +63,8 @@
 }
 
 - (void)replaceParametersWithParametersFromArray:(NSArray *)array {
-	GBLogDebug(@"%@: Replacing parameters with %ld objects...", [array count]);
+	if ([_parameters count] == 0 && [array count] == 0) return;
+	GBLogDebug(@"%@: Replacing parameters with %ld objects...", self, [array count]);
 	[_parameters removeAllObjects];
 	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		[self registerParameter:obj];
