@@ -18,7 +18,7 @@
  use specialized exception names, this makes sense...
  
  @param format A human readable message string representing exception reason.
- @param ... Variable information to be inserted into the formatted reason.
+ @param ... A comma separated list of arguments to substitute into the format.
  @exception NSException Always thrown ;)
  */
 + (void)raise:(NSString *)format, ...;
@@ -32,7 +32,7 @@
 
  @param error The error that describes the reason.
  @param format A human readable message string explaining the context of the error.
- @param ... Variable information to be inserted into the formatted reason.
+ @param ... A comma separated list of arguments to substitute into the format.
  @exception NSException Always thrown ;)
  @see exceptionWithError:format:
  */

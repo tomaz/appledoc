@@ -47,7 +47,7 @@
  
  @warning *Note:* If another instance of the ivar with the same name is registered, an exception is thrown.
  
- @param protocol The ivar to register.
+ @param ivar The ivar to register.
  @exception NSException Thrown if the given ivar is already registered.
  */
 - (void)registerIvar:(GBIvarData *)ivar;

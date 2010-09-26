@@ -58,7 +58,7 @@
  
  @warning *Note:* If another instance of the protocol with the same name name is registered, an exception is thrown.
  
- @param category The category to register.
+ @param protocol The protocol to register.
  @exception NSException Thrown if the given protocol is already registered.
  @see registerClass:
  @see registerCategory:

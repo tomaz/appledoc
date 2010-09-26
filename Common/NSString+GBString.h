@@ -31,7 +31,6 @@
  
  The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
  
- @param string String to strip.
  @return Returns stripped description.
  @see normalizedDescriptionFromString:
  @see maxNormalizedDescriptionLength

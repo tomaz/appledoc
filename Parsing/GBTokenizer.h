@@ -38,6 +38,7 @@
 /** Returns initialized autoreleased instance using the given source `PKTokenizer`.
  
  @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
+ @param filename The name of the file without path used for generating source info.
  @return Returns initialized instance or `nil` if failed.
  @exception NSException Thrown if the given tokenizer or filename is `nil` or filename is empty string.
  */
@@ -117,7 +118,7 @@
 /// @name Information handling
 ///---------------------------------------------------------------------------------------
 
-/** Returns `GBDeclaredFileData` for current token and filename.
+/** Returns `GBSourceInfo` for current token and filename.
  
  This is equivalent to sending `fileDataForToken:` and passing `currentToken` as the _token_ parameter.
  
@@ -127,7 +128,7 @@
  */
 - (GBSourceInfo *)fileDataForCurrentToken;
 
-/** Returns `GBDeclaredFileData` object describing the given token source information.
+/** Returns `GBSourceInfo` object describing the given token source information.
  
  The method converts the given token's offset within the input string to line number and uses that information together with assigned `filename` to prepare the token info object.
  

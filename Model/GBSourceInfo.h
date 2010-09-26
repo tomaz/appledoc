@@ -18,7 +18,7 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Returns a new autoreleased `GBDeclaredFileData` with the given values.
+/** Returns a new autoreleased `GBSourceInfo` with the given values.
  
  @param filename The name of the file without path.
  @param lineNumber Line number within the file.
@@ -37,7 +37,7 @@
  
  @warning *Important:* Note that the given _data_ must not be `nil`. The behavior is undefined in such case!
  
- @param data `GBDeclaredFileData` to compare with.
+ @param data `GBSourceInfo` to compare with.
  @return `NSOrderedAscending` if the value of _data_ is greater than the receiver, `NSOrderedSame` if they’re equal, and `NSOrderedDescending` if the _data_ is less than the receiver.
  */
 - (NSComparisonResult)compare:(GBSourceInfo *)data;

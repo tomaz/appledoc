@@ -56,7 +56,7 @@ typedef NSUInteger GBMethodType;
 
 /** Returns autoreleased property data with the given parameters.
  
- @param type The type of method defined by `GBMethodType` enumeration.
+ @param attributes Array of property attributes in the form of `NSString` instances.
  @param components Array of resulting types with last item as property name in the form of `NSString` instances.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.

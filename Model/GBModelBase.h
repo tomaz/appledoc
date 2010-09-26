@@ -22,11 +22,11 @@
 /// @name Declared files handling
 ///---------------------------------------------------------------------------------------
 
-/** Registers the given `GBDeclaredFileData` to `sourceInfos` list.
+/** Registers the given `GBSourceInfo` to `sourceInfos` list.
  
  If file data with the same filename already exists in the set, it is replaced with the given one.
  
- @param filename The name of the file to register.
+ @param data Source information data.
  @exception NSException Thrown if the given filename is `nil` or empty.
  */
 - (void)registerSourceInfo:(GBSourceInfo *)data;
@@ -38,7 +38,7 @@
  */
 - (NSArray *)sourceInfosSortedByName;
 
-/** The list of all declared file data as `GBDeclaredFileData` objects. 
+/** The list of all declared file data as `GBSourceInfo` objects. 
  
  @see registerSourceInfo:
  @see sourceInfosSortedByName

@@ -25,7 +25,7 @@
  
  Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
  
- @param argument The name of the method argument, part of method selector.
+ @param name The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
  @param macros Array of variable arg termination macros or `nil` if not variable arg.
@@ -39,7 +39,7 @@
  
  Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
  
- @param argument The name of the method argument, part of method selector.
+ @param name The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
  @return Returns initialized object or `nil` if initialization fails.
@@ -52,7 +52,7 @@
  
  Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
  
- @param argument The name of the method argument, part of method selector.
+ @param name The name of the method argument, part of method selector.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if the argument is `nil` or empty string.
  @see initWithName:
