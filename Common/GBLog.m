@@ -87,19 +87,19 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 
 @implementation GBLogFormat0Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ %@", GBLogLevel(logMessage), GBLogMessage(logMessage)];
+	return [NSString stringWithFormat:@"%@", GBLogMessage(logMessage)];
 }
 @end
 
 @implementation GBLogFormat1Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ %@ | %@", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogMessage(logMessage)];
+	return [NSString stringWithFormat:@"%@ | %@", GBLogLevel(logMessage), GBLogMessage(logMessage)];
 }
 @end
 
 @implementation GBLogFormat2Formatter
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ %@ | %@ @ %@:%i", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
+	return [NSString stringWithFormat:@"%@ | %@ @ %@:%i", GBLogLevel(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
 }
 @end
 
