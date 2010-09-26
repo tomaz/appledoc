@@ -136,6 +136,7 @@
 	[method.methodArguments enumerateObjectsUsingBlock:^(GBMethodArgument *argument, NSUInteger idx, BOOL *stop) {
 		if (!argument.argumentVar) return;
 		[names addObject:argument.argumentVar];
+		if (idx == [method.methodArguments count] - 1 && [argument isVariableArg]) [names addObject:@"..."];
 	}];
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.parameters count]];
 	[comment.parameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
