@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "timing.h"
 #import "DDCliUtil.h"
 #import "DDGetoptLongParser.h"
 #import "GBStore.h"
@@ -71,26 +72,37 @@ static NSString *kGBArgHelp = @"help";
 		return EXIT_SUCCESS;
 	}
 	
-	@try {
+	@try {		
 		[self validateArguments:arguments];
 		[self initializeLoggingSystem];
 		
 		GBLogNormal(@"Initializing...");
-		GBStore *store = [[GBStore alloc] init];
+		GBStore *store = [[GBStore alloc] init];		
+		GBAbsoluteTime startTime = GetCurrentTime();
 		
 		GBLogNormal(@"Parsing source files...");
 		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
 		[parser parseObjectsFromPaths:arguments toStore:store];
+		GBAbsoluteTime parseTime = GetCurrentTime();
+		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
 		
 		GBLogNormal(@"Processing parsed data...");
 		GBProcessor *processor = [[GBProcessor alloc] initWithSettingsProvider:self];
 		[processor processObjectsFromStore:store];
+		GBAbsoluteTime processTime = GetCurrentTime();
+		NSUInteger timeForProcessing = SubtractTime(processTime, parseTime) * 1000.0;
 		
 //		GBLogNormal(@"Generating output...");
 //		GBGenerator *generator = [[GBGenerator alloc] init];
 //		[generator generateOutputFromProcessor:processor];
+		GBAbsoluteTime generateTime = GetCurrentTime();
+		NSUInteger timeForGeneration = SubtractTime(generateTime, processTime) * 1000.0;
 		
-		GBLogNormal(@"Finished.");
+		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;		
+		GBLogNormal(@"Finished in %ldms.", timeForEverything);
+		GBLogInfo(@"Parsing:    %ldms.", timeForParsing);
+		GBLogInfo(@"Processing: %ldms.", timeForProcessing);
+		GBLogInfo(@"Generating: %ldms", timeForGeneration);
 	}
 	@catch (NSException *e) {
 		GBLogException(e, @"Oops, something went wrong...");
@@ -180,6 +192,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
 	ddprintf(@"- RegexKitLite by John Engelhart\n");
+	ddprintf(@"- Timing functions from Apple examples\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!");
 }

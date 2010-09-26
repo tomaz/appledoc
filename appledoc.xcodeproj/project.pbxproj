@@ -165,6 +165,7 @@
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
 		7340F02711FCC63100E712A4 /* NSObject+GBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GBObject.m"; sourceTree = "<group>"; };
+		735BCB49124EE92F00FB6C4A /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timing.h; sourceTree = "<group>"; };
 		7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTestObjectsRegistry.h; sourceTree = "<group>"; };
 		7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTestObjectsRegistry.m; sourceTree = "<group>"; };
 		7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectsAssertor.h; sourceTree = "<group>"; };
@@ -419,6 +420,14 @@
 			path = Testing;
 			sourceTree = "<group>";
 		};
+		735BCB48124EE91700FB6C4A /* Miscellaneous */ = {
+			isa = PBXGroup;
+			children = (
+				735BCB49124EE92F00FB6C4A /* timing.h */,
+			);
+			path = Miscellaneous;
+			sourceTree = "<group>";
+		};
 		7367B6C611FE3750005ED6CD /* Creation & Assertion */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,6 +486,7 @@
 				73D54C9611F8D21000CCDDB0 /* DDLog */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 				733EA47C122CE8C40060CBDE /* RegexKitLite */,
+				735BCB48124EE91700FB6C4A /* Miscellaneous */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
