@@ -107,6 +107,31 @@
 	[comment2 verify];
 }
 
+#pragma mark Method comment processing
+
+- (void)testProcesObjectsFromStore_shouldMatchParameterDirectivesWithActualOrder {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@param arg2 Description2\n@param arg3 Description3\n@param arg1 Description1"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"arg1", @"arg2", @"arg3", nil];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatInteger([comment.parameters count], equalToInteger(3));
+	assertThat([[comment.parameters objectAtIndex:0] argumentName], is(@"arg1"));
+	assertThat([[comment.parameters objectAtIndex:1] argumentName], is(@"arg2"));
+	assertThat([[comment.parameters objectAtIndex:2] argumentName], is(@"arg3"));
+	assertThat([[[comment.parameters objectAtIndex:0] argumentDescription] stringValue], is(@"Description1"));
+	assertThat([[[comment.parameters objectAtIndex:1] argumentDescription] stringValue], is(@"Description2"));
+	assertThat([[[comment.parameters objectAtIndex:2] argumentDescription] stringValue], is(@"Description3"));
+}
+
+
+
 #pragma mark Creation methods
 
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph {

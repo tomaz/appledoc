@@ -21,6 +21,8 @@
 
 @implementation GBCommentsProcessorComplexTesting
 
+#pragma mark Common comment processing testing
+
 - (void)testProcesCommentWithStore_shouldProcessTrickyComment {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -36,6 +38,8 @@
 	[self assertSecondParagraph:[comment.paragraphs objectAtIndex:1]];
 	[self assertThirdParagraph:[comment.paragraphs objectAtIndex:2]];
 }
+
+#pragma mark Assertion methods
 
 - (void)assertFirstParagraph:(GBCommentParagraph *)paragraph {
 	[self assertParagraph:paragraph containsTexts:@"Short description.", nil];

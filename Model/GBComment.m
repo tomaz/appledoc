@@ -62,6 +62,14 @@
 	[_parameters addObject:parameter];
 }
 
+- (void)replaceParametersWithParametersFromArray:(NSArray *)array {
+	GBLogDebug(@"%@: Replacing parameters with %ld objects...", [array count]);
+	[_parameters removeAllObjects];
+	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		[self registerParameter:obj];
+	}];
+}
+
 - (void)registerResult:(GBCommentParagraph *)value {
 	NSParameterAssert(value != nil);
 	GBLogDebug(@"%@: Registering result %@...", self, value);

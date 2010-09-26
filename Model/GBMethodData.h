@@ -21,7 +21,15 @@ typedef NSUInteger GBMethodType;
 
 #pragma mark -
 
-/** Describes a method or property. */
+/** Describes a method or property.
+ 
+ Each instance or class method or property description contains at least one argument in the form of `GBMethodArgument` instance. Note that arguments should not be confused with method parameters, although they are very similar. In objective-c each method has a selector with optional parameter, followed by more parameters if applicable, with each parameter's selector delimited with a colon. appledoc on the other hand groups even the first part of the selector as an argument, however if the method doesn't have parameters, the argument's type and variable remain `nil`. This is how you can easily distinguish between different methods and properties:
+ 
+ - Method without parameters: `methodArguments` array contains a single object with `[GBMethodArgument argumentName]` value assigned as method name and both, `[GBMethodArgument argumentTypes]` and `[GBMethodArgument argumentVar]` set to `nil`. Result is optional. Example: `- (void)method;`.
+ - Method with single parameter: `methodArguments` array contains a single object with `[GBMethodArgument argumentName]` value assigned as method name, `[GBMethodArgument argumentTypes]` contains an array with at least one object describing the type of the parameter and `[GBMethodArgument argumentVar]` describing the name of the parameter variable. Result is optional. Example: `- (void)method:(NSString *)var;`, where argument types would contain _NSString_ and _*_ strings and argument variable _var_.
+ - Method with multiple parameters: `methodArguments` array contains at least two objects, each describing it's parameter. First instance describes the base method selector name including first parameter type and variable name. Result is optional. Example `- (void)method:(NSUInteger)var1 withValue:(id)var2`, where first argument would have name _method_, types _NSUInteger_ and variable name _var1_ and second argument _withValue_, _id_ and _var2_.
+ - Properties have the same signature as methods without parameters but always have at least one result object.
+ */
 @interface GBMethodData : GBModelBase {
 	@private
 	GBMethodType _methodType;

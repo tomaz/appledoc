@@ -103,6 +103,20 @@
 	assertThat([comment.parameters objectAtIndex:0], is(parameter2));
 }
 
+- (void)testReplaceParametersWithParametersFromArray_shouldReplaceParameters {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentArgument *parameter1 = [GBCommentArgument argumentWithName:@"name1" description:[GBCommentParagraph paragraph]];
+	GBCommentArgument *parameter2 = [GBCommentArgument argumentWithName:@"name2" description:[GBCommentParagraph paragraph]];
+	[comment registerParameter:parameter1];
+	// execute
+	[comment replaceParametersWithParametersFromArray:[NSArray arrayWithObjects:parameter2, parameter1, nil]];
+	// verify
+	assertThatInteger([comment.parameters count], equalToInteger(2));
+	assertThat([comment.parameters objectAtIndex:0], is(parameter2));
+	assertThat([comment.parameters objectAtIndex:1], is(parameter1));
+}
+
 #pragma mark Exceptions testing
 
 - (void)testRegisterException_shouldAddExceptionToList {

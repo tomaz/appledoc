@@ -104,13 +104,23 @@
  If `parameters` is `nil`, a new array is created before adding the given object to it. If a parameter with the same name is already registered, a warning is logged and previous item is replaced with the given one.
  
  @param parameter Parameter to register.
- @exception NSException Thrown if the given parameter is `nil`.
+ @exception NSException Thrown if the given parameter is `nil` or `[GBCommentArgument argumentName]` is `nil` or empty string.
  @see parameters
+ @see replaceParametersWithParametersFromArray:
  @see registerResult:
  @see registerException:
  @see registerCrossReference:
  */
 - (void)registerParameter:(GBCommentArgument *)parameter;
+
+/** Replaces all registered `parameters` with the objects from the given array.
+ 
+ The given array should only contain `GBCommentArgument` objects. If there are any parameters registered, they will be removed first! If `nil` or empty array is passed, current parameters are removed only.
+ 
+ @param array The array of parameters to register.
+ @exception NSException Thrown if any of the objects is invalid, see registerParameter: for details.
+ */
+- (void)replaceParametersWithParametersFromArray:(NSArray *)array;
 
 /** Registers the `GBCommentParagraph` that describes method return value.
  

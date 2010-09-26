@@ -603,7 +603,7 @@
 		}
 	}
 	if (!objectRefence) {
-		GBLogWarn(@"%@: Invalid object reference: %@ object not found!", self.currentComment.sourceInfo, objectName);
+		GBLogWarn(@"%@: Invalid object reference: %@ not found!", self.currentComment.sourceInfo, objectName);
 		return nil;
 	}
 	
