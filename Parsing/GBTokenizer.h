@@ -126,7 +126,7 @@
  @exception NSException Thrown if current token is `nil`.
  @see fileDataForToken:
  */
-- (GBSourceInfo *)fileDataForCurrentToken;
+- (GBSourceInfo *)sourceInfoForCurrentToken;
 
 /** Returns `GBSourceInfo` object describing the given token source information.
  
@@ -137,7 +137,7 @@
  @exception NSException Thrown if the given token is `nil`.
  @see fileDataForCurrentToken
  */
-- (GBSourceInfo *)fileDataForToken:(PKToken *)token;
+- (GBSourceInfo *)sourceInfoForToken:(PKToken *)token;
 
 ///---------------------------------------------------------------------------------------
 /// @name Comments handling

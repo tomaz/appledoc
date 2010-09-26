@@ -341,6 +341,14 @@
 	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(4));
 }
 
+- (void)testLastCommentString_shouldDetectPreviousAndLastCommentSourceInformation {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// previous\n\n/** last */\nONE"] filename:@"file"];
+	// verify
+	assertThatInteger([tokenizer.previousComment.sourceInfo lineNumber], equalToInteger(1));
+	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(3));
+}
+
 #pragma mark Creation methods
 
 - (PKTokenizer *)defaultTokenizer {

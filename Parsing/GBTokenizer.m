@@ -133,11 +133,11 @@
 
 #pragma mark Token information handling
 
-- (GBSourceInfo *)fileDataForCurrentToken {
-	return [self fileDataForToken:[self currentToken]];
+- (GBSourceInfo *)sourceInfoForCurrentToken {
+	return [self sourceInfoForToken:[self currentToken]];
 }
 
-- (GBSourceInfo *)fileDataForToken:(PKToken *)token {
+- (GBSourceInfo *)sourceInfoForToken:(PKToken *)token {
 	NSParameterAssert(token != nil);
 	NSString *substring = [self.input substringToIndex:[token offset]];
 	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
@@ -154,14 +154,13 @@
 	self.lastCommentSourceInfo = nil;
 	if ([self eof]) return NO;
 	if (![[self currentToken] isComment]) return NO;
+
+	PKToken *startingPreviousToken = nil;
+	PKToken *startingLastToken = nil;
 	NSUInteger previousSingleLineEndOffset = 0;
 	while (![self eof] && [[self currentToken] isComment]) {
 		PKToken *token = [self currentToken];
 		NSString *value = nil;
-		
-		// Set the value of last comment to previous comment. As we already reset last comment before the loop, the value is properly set to empty string in case only a single comment is detected (remember, the value is only "valid" if at least two consequtive comments are detected).
-		[self.previousCommentBuilder setString:self.lastCommentBuilder];
-		if (!self.previousCommentSourceInfo) self.previousCommentSourceInfo = self.lastCommentSourceInfo;
 		
 		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments unless they start at the beginning of the line!
 		NSArray *singleLiners = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentRegex capture:1];
@@ -169,8 +168,14 @@
 			value = [NSString string];
 			for (NSString *match in singleLiners) value = [value stringByAppendingString:match];
 			BOOL isContinuingPreviousSingleLiner = ([token offset] == previousSingleLineEndOffset + 1);
-			if (!isContinuingPreviousSingleLiner)[self.lastCommentBuilder setString:@""];
-			if (isContinuingPreviousSingleLiner) [self.lastCommentBuilder appendString:@"\n"];
+			if (isContinuingPreviousSingleLiner) {
+				[self.lastCommentBuilder appendString:@"\n"];
+			} else {
+				[self.previousCommentBuilder setString:self.lastCommentBuilder];
+				startingPreviousToken = startingLastToken;
+				[self.lastCommentBuilder setString:@""];
+				startingLastToken = token;
+			}
 			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
 		}
 		
@@ -178,15 +183,20 @@
 		else {
 			NSArray *multiLiners = [[token stringValue] componentsMatchedByRegex:self.multiLineCommentRegex capture:1];
 			value = [multiLiners lastObject];
+			[self.previousCommentBuilder setString:self.lastCommentBuilder];
+			startingPreviousToken = startingLastToken;
 			[self.lastCommentBuilder setString:@""];
+			startingLastToken = token;
 		}
 		
 		// Append string value to current comment and proceed with next token.
 		value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		[self.lastCommentBuilder appendString:value];
-		if (!self.lastCommentSourceInfo) self.lastCommentSourceInfo = [self fileDataForToken:token];
 		self.tokenIndex++;
-	}	
+	}
+	
+	if (startingPreviousToken) self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
+	if (startingLastToken) self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
 	return YES;
 }
 

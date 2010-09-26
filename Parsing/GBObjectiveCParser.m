@@ -216,7 +216,7 @@
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self.tokenizer fileDataForToken:token];
+		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
 		
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
@@ -401,7 +401,7 @@
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self.tokenizer fileDataForToken:token];
+		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
 		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
@@ -481,7 +481,7 @@
 }
 
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {
-	GBSourceInfo *info = [self.tokenizer fileDataForCurrentToken];
+	GBSourceInfo *info = [self.tokenizer sourceInfoForCurrentToken];
 	[object registerSourceInfo:info];
 }
 
