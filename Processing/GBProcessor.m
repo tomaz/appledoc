@@ -131,7 +131,7 @@
 	if (!comment || [comment.stringValue length] == 0) return;
 	GBLogDebug(@"Processing parameters from method %@ comment %@", method, comment);
 	
-	// Prepare names of all argument variables from the method and parameter descriptions from the comment and warn user if method defines more parameters than there are descriptions (we'll warn about the opposite later on), but continue anyway.
+	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.
 	NSMutableArray *names = [NSMutableArray arrayWithCapacity:[method.methodArguments count]];
 	[method.methodArguments enumerateObjectsUsingBlock:^(GBMethodArgument *argument, NSUInteger idx, BOOL *stop) {
 		if (!argument.argumentVar) return;
@@ -141,22 +141,13 @@
 	[comment.parameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
 		[parameters setObject:parameter forKey:parameter.argumentName];
 	}];
-	if ([names count] > [parameters count]) {
-		NSMutableString *description = [NSMutableString string];
-		[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
-			if ([parameters objectForKey:name]) return;
-			if ([description length] > 0) [description appendString:@", "];
-			[description appendString:name];
-		}];
-		GBLogWarn(@"%@: %ld parameter descriptions (%@) missing for method %@!", comment.sourceInfo, [names count], description, method);
-	}
 	
 	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
 	NSMutableArray *sorted = [NSMutableArray arrayWithCapacity:[parameters count]];
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = [parameters objectForKey:name];
 		if (!parameter) {
-			GBLogWarn(@"%@: Parameter %@ description missing for method %@!", comment.sourceInfo, name, method);
+			GBLogWarn(@"%@: Description for parameter '%@' missing for method %@!", comment.sourceInfo, name, method);
 			return;
 		}
 		[sorted addObject:parameter];
