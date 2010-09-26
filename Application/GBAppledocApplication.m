@@ -100,9 +100,9 @@ static NSString *kGBArgHelp = @"help";
 		
 		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;		
 		GBLogNormal(@"Finished in %ldms.", timeForEverything);
-		GBLogInfo(@"Parsing:    %ldms.", timeForParsing);
-		GBLogInfo(@"Processing: %ldms.", timeForProcessing);
-		GBLogInfo(@"Generating: %ldms", timeForGeneration);
+		GBLogInfo(@"Parsing:    %ldms (%ld%%)", timeForParsing, timeForParsing * 100 / timeForEverything);
+		GBLogInfo(@"Processing: %ldms (%ld%%)", timeForProcessing, timeForProcessing * 100 / timeForEverything);
+		GBLogInfo(@"Generating: %ldms (%ld%%)", timeForGeneration, timeForGeneration * 100 / timeForEverything);
 	}
 	@catch (NSException *e) {
 		GBLogException(e, @"Oops, something went wrong...");
