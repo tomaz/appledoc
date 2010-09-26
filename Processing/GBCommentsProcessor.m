@@ -603,7 +603,7 @@
 		}
 	}
 	if (!objectRefence) {
-		GBLogWarn(@"%@: Invalid object reference: %@ not found!", self.currentComment.sourceInfo, objectName);
+		GBLogWarn(@"%@: Invalid %@ reference: %@ not found!", self.currentComment.sourceInfo, reference, objectName);
 		return nil;
 	}
 	
@@ -618,7 +618,7 @@
 		link.isLocal = NO;
 		return link;
 	} else {
-		GBLogWarn(@"%@: Invalid object reference for %@: member %@ not found!", self.currentComment.sourceInfo, objectRefence, memberName);
+		GBLogWarn(@"%@: Invalid %@ reference: member %@ not found for %@!", self.currentComment.sourceInfo, reference, memberName, objectRefence);
 		return nil;
 	}
 	
