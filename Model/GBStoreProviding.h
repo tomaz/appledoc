@@ -32,7 +32,7 @@
  @exception NSException Thrown if the given class is already registered.
  @see registerCategory:
  @see registerProtocol:
- @see classByName:
+ @see classWithName:
  @see classes
  */
 - (void)registerClass:(GBClassData *)class;
@@ -47,7 +47,7 @@
  @exception NSException Thrown if the given category is already registered.
  @see registerClass:
  @see registerProtocol:
- @see categoryByName:
+ @see categoryWithName:
  @see categories
  */
 - (void)registerCategory:(GBCategoryData *)category;
@@ -62,7 +62,7 @@
  @exception NSException Thrown if the given protocol is already registered.
  @see registerClass:
  @see registerCategory:
- @see protocolByName:
+ @see protocolWithName:
  @see protocols
  */
 - (void)registerProtocol:(GBProtocolData *)protocol;
@@ -77,11 +77,11 @@
  
  @param name The name of the class to return.
  @return Returns class instance or `nil` if no match is found.
- @see categoryByName:
- @see protocolByName:
+ @see categoryWithName:
+ @see protocolWithName:
  @see classes
  */
-- (GBClassData *)classByName:(NSString *)name;
+- (GBClassData *)classWithName:(NSString *)name;
 
 /** Returns the category instance that matches the given name.
  
@@ -89,11 +89,11 @@
  
  @param name The name of the category to return.
  @return Returns category instance or `nil` if no match is found.
- @see classByName:
- @see protocolByName:
+ @see classWithName:
+ @see protocolWithName:
  @see categories
  */
-- (GBCategoryData *)categoryByName:(NSString *)name;
+- (GBCategoryData *)categoryWithName:(NSString *)name;
 
 /** Returns the protocol instance that matches the given name.
  
@@ -101,29 +101,29 @@
  
  @param name The name of the protocol to return.
  @return Returns protocol instance or `nil` if no match is found.
- @see classByName:
- @see categoryByName:
+ @see classWithName:
+ @see categoryWithName:
  @see protocols
  */
-- (GBProtocolData *)protocolByName:(NSString *)name;
+- (GBProtocolData *)protocolWithName:(NSString *)name;
 
 /** The list of all registered classes as instances of `GBClassData`.
  
- @see classByName:
+ @see classWithName:
  @see registerClass:
  */
 @property (readonly) NSSet *classes;
 
 /** The list of all registered categories and extensions as instances of `GBCategoryData`.
  
- @see categoryByName:
+ @see categoryWithName:
  @see registerCategory:
  */
 @property (readonly) NSSet *categories;
 
 /** The list of all registered protocols as instances of `GBProtocolData`.
  
- @see protocolByName:
+ @see protocolWithName:
  @see registerProtocol:
  */
 @property (readonly) NSSet *protocols;

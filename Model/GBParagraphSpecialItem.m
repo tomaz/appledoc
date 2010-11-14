@@ -27,6 +27,8 @@
 #pragma mark Helper methods
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
+	NSParameterAssert(paragraph != nil);
+	GBLogDebug(@"%@: Registering %@...", self, paragraph);
 	_specialItemDescription = [paragraph retain];
 }
 
@@ -34,6 +36,25 @@
 
 - (NSString *)descriptionStringValue {
 	return [NSString stringWithFormat:@"%@{ %@ }", [super descriptionStringValue], self.specialItemDescription];
+}
+
+- (NSString *)description {
+	NSString *type = nil;
+	switch (self.specialItemType) {
+		case GBSpecialItemTypeWarning:
+			type = @"Warning";
+			break;
+		case GBSpecialItemTypeBug:
+			type = @"Bug";
+			break;
+		case GBSpecialItemTypeExample:
+			type = @"Example";
+			break;
+		default:
+			type = @"Special";
+			break;
+	}
+	return [NSString stringWithFormat:@"%@ '%@'", type, [super description]];
 }
 
 #pragma mark Properties

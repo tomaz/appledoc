@@ -61,6 +61,7 @@
 
 @synthesize nameOfClass = _className;
 @synthesize nameOfSuperclass;
+@synthesize superclass;
 @synthesize adoptedProtocols = _adoptedProtocols;
 @synthesize ivars = _ivars;
 @synthesize methods = _methods;

@@ -102,6 +102,47 @@
 	GHAssertEquals(i, [arguments count], @"Flattened method %@ has %ld components, expected %ld!", method, i, [arguments count]);
 }
 
+- (void)assertFormattedComponents:(NSArray *)components match:(NSString *)first,... {
+	NSMutableArray *arguments = [NSMutableArray array];
+	NSString *value = first;
+	va_list args;
+	va_start(args,first);
+	while (YES) {
+		NSNumber *style = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSString *href = va_arg(args, NSString *);
+		if (!href) [NSException raise:@"Href not given for value %@ at index %ld!", value, [arguments count]];
+		
+		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", style, @"style", href, @"href", nil];
+		[arguments addObject:data];
+		
+		value = va_arg(args, NSString *);
+		if (!value) break;
+	}
+	va_end(args);
+	
+	assertThatInteger([components count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[components count]; i++) {
+		NSDictionary *actual = [components objectAtIndex:i];
+		NSDictionary *expected = [arguments objectAtIndex:i];
+		
+		assertThat([actual objectForKey:@"value"], is([expected objectForKey:@"value"]));
+		
+		NSNumber *expectedStyle = [expected objectForKey:@"style"];
+		NSNumber *actualStyle = [actual objectForKey:@"style"];
+		if ([expectedStyle unsignedIntValue] != 0)
+			assertThat(actualStyle, is(expectedStyle));
+		else
+			assertThat(actualStyle, is(nil));
+		
+		NSString *expectedHref = [expected objectForKey:@"href"];
+		NSString *actualHref = [actual objectForKey:@"href"];
+		if ((NSNull *)expectedHref != GBNULL)
+			assertThat(actualHref, is(expectedHref));
+		else
+			assertThat(actualHref, is(nil));
+	}
+}
+
 #pragma mark Paragraph testing
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(Class)first,... {

@@ -29,17 +29,15 @@
 
 - (void)registerItem:(GBParagraphItem *)item {
 	NSParameterAssert(item != nil);
-	if ([self.items count] > 0)
-		GBLogDebug(@"%@: Registering paragraph item %@...", self, item);
-	else
-		GBLogDebug(@"Registering first paragraph item %@...", item);
+	GBLogDebug(@"%@: Registering %@...", self, item);
 	[_items addObject:item];
 }
 
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return [self.stringValue length] > 0 ? [self.stringValue normalizedDescription] : @"";
+	NSString *desc = [self.stringValue length] > 0 ? [self.stringValue normalizedDescription] : @"";
+	return [NSString stringWithFormat:@"Paragraph '%@'", desc];
 }
 
 - (NSString *)debugDescription {

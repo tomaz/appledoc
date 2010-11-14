@@ -31,7 +31,7 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return self.argumentName;
+	return [NSString stringWithFormat:@"Argument %@", self.argumentName];
 }
 
 - (NSString *)debugDescription {

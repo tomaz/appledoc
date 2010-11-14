@@ -14,6 +14,7 @@
 @interface GBComment ()
 
 - (BOOL)replaceArgumentWithSameNameInList:(NSMutableArray *)list withArgument:(GBCommentArgument *)argument;
+- (NSUInteger)processedItemsCount;
 @property (readwrite,retain) GBCommentParagraph *result;
 
 @end
@@ -39,10 +40,7 @@
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
 	NSParameterAssert(paragraph != nil);
-	if ([self.paragraphs count] > 0)
-		GBLogDebug(@"%@: Registering paragraph %@...", self, paragraph);
-	else
-		GBLogDebug(@"Registering first paragraph %@...", paragraph);
+	GBLogDebug(@"Registering %@...", paragraph);
 	if (!_paragraphs) {
 		_paragraphs = [[NSMutableArray alloc] init];
 		self.firstParagraph = paragraph;
@@ -53,7 +51,7 @@
 - (void)registerParameter:(GBCommentArgument *)parameter {
 	NSParameterAssert(parameter != nil);
 	NSParameterAssert([parameter.argumentName length] > 0);	
-	GBLogDebug(@"%@: Registering parameter %@...", self, parameter);
+	GBLogDebug(@"Registering parameter %@...", parameter);
 	if (!_parameters) _parameters = [[NSMutableArray alloc] init];
 	if ([self replaceArgumentWithSameNameInList:_parameters withArgument:parameter]) {
 		GBLogWarn(@"%@: Parameter with name %@ is already registered, replacing existing!", self, parameter.argumentName);
@@ -64,7 +62,7 @@
 
 - (void)replaceParametersWithParametersFromArray:(NSArray *)array {
 	if ([_parameters count] == 0 && [array count] == 0) return;
-	GBLogDebug(@"%@: Replacing parameters with %ld objects...", self, [array count]);
+	GBLogDebug(@"Replacing parameters with %ld objects...", [array count]);
 	[_parameters removeAllObjects];
 	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		[self registerParameter:obj];
@@ -73,14 +71,14 @@
 
 - (void)registerResult:(GBCommentParagraph *)value {
 	NSParameterAssert(value != nil);
-	GBLogDebug(@"%@: Registering result %@...", self, value);
+	GBLogDebug(@"Registering result %@...", value);
 	if (self.result) GBLogWarn(@"%@: Result is already registered, replacing existing!", self);
 	self.result = value;
 }
 
 - (void)registerException:(GBCommentArgument *)exception {
 	NSParameterAssert(exception != nil);
-	GBLogDebug(@"%@: Registering exception %@...", self, exception);
+	GBLogDebug(@"Registering exception %@...", exception);
 	if (!_exceptions) _exceptions = [[NSMutableArray alloc] init];
 	if ([self replaceArgumentWithSameNameInList:_exceptions withArgument:exception]) {
 		GBLogWarn(@"%@: Exception with name %@ is already registered, replacing existing!", self, exception.argumentName);
@@ -91,16 +89,20 @@
 
 - (void)registerCrossReference:(GBParagraphLinkItem *)ref {
 	NSParameterAssert(ref != nil);
-	GBLogDebug(@"%@: Registering cross referece %@...", self, ref);
+	GBLogDebug(@"Registering cross reference %@...", ref);
 	if (!_crossrefs) _crossrefs = [[NSMutableArray alloc] init];
 	for (NSUInteger i=0; i<[_crossrefs count]; i++) {
 		GBParagraphLinkItem *existing = [_crossrefs objectAtIndex:i];
 		if ([existing.stringValue isEqualToString:ref.stringValue]) {
-			GBLogWarn(@"%@: Cross reference %@ is already registered, ignoring!", self, ref.stringValue);
+			GBLogWarn(@"%@: %@ is already registered, ignoring!", self, ref.stringValue);
 			return;
 		}
 	}
 	[_crossrefs addObject:ref];
+}
+
+- (BOOL)hasResult {
+	return (self.result != nil);
 }
 
 #pragma mark Helper methods
@@ -117,14 +119,18 @@
 	return result;
 }
 
+- (NSUInteger)processedItemsCount {
+	return [self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"'%@'", [self.stringValue normalizedDescription]];
+	return [NSString stringWithFormat:@"Comment '%@'", [self.stringValue normalizedDescription]];
 }
 
 - (NSString *)debugDescription {
-	BOOL multiline = ([self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0)) > 1;
+	BOOL multiline = ([self processedItemsCount] > 1);
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@", [self className]];
 	
 	// Paragraphs.

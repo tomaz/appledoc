@@ -24,13 +24,13 @@
 
 - (void)registerItem:(GBParagraphItem *)item {
 	NSParameterAssert(item != nil);
-	GBLogDebug(@"%@: Registering item %@...", self, item);
+	GBLogDebug(@"%@: Registering %@...", self, item);
 	[_decoratedItems addObject:item];
 }
 
 - (void)replaceItemsByRegisteringItemsFromArray:(NSArray *)items {
-	GBLogDebug(@"%@: Registering %ld items...", self, [items count]);
 	if (!items || [items count] == 0) return;
+	GBLogDebug(@"%@: Replacing items with %ld items...", self, [items count]);
 	[_decoratedItems removeAllObjects];
 	[items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		[self registerItem:obj];
@@ -48,6 +48,10 @@
 	}];
 	[result appendString:([self.decoratedItems count] > 1) ? @"\n}" : @" }"];
 	return result;
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"Decorator '%@'", [super description]];
 }
 
 #pragma mark Properties

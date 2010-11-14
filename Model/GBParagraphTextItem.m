@@ -10,4 +10,8 @@
 
 @implementation GBParagraphTextItem
 
+- (NSString *)description {
+	return [NSString stringWithFormat:@"Text '%@'", [super description]];
+}
+
 @end

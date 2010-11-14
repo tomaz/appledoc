@@ -17,11 +17,13 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processSubclassForClass:(GBClassData *)class;
 - (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment;
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processComment:(GBComment *)comment;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
+- (void)processHtmlReferencesForObject:(GBModelBase *)object;
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -36,7 +38,7 @@
 #pragma mark Initialization & disposal
 
 + (id)processorWithSettingsProvider:(id)settingsProvider {
-	return [[self alloc] initWithSettingsProvider:settingsProvider];
+	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
@@ -55,7 +57,7 @@
 
 - (void)processObjectsFromStore:(id<GBStoreProviding>)store {
 	NSParameterAssert(store != nil);
-	GBLogVerbose(@"Processing objects...");
+	GBLogVerbose(@"Processing parsed objects...");
 	self.currentContext = nil;
 	self.store = store;
 	[self processClasses];
@@ -67,7 +69,10 @@
 	// No need to process ivars as they are not used for output.
 	for (GBClassData *class in self.store.classes) {
 		GBLogInfo(@"Processing class %@...", class);
+		[self processSubclassForClass:class];
 		[self processDataProvider:class withComment:class.comment];
+		[self processHtmlReferencesForObject:class];
+		GBLogDebug(@"Finished processing class %@.", class);
 	}
 }
 
@@ -75,6 +80,8 @@
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Processing category %@...", category);
 		[self processDataProvider:category withComment:category.comment];
+		[self processHtmlReferencesForObject:category];
+		GBLogDebug(@"Finished processing category %@.", category);
 	}
 }
 
@@ -82,10 +89,21 @@
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		[self processDataProvider:protocol withComment:protocol.comment];
+		[self processHtmlReferencesForObject:protocol];
+		GBLogDebug(@"Finished processing protocol %@.", protocol);
 	}
 }
 
 #pragma mark Common data processing
+
+- (void)processSubclassForClass:(GBClassData *)class {
+	if ([class.nameOfSuperclass length] == 0) return;
+	GBClassData *superclass = [self.store classWithName:class.nameOfSuperclass];
+	if (superclass) {
+		GBLogDebug(@"Setting superclass link of %@ to %@...", class, superclass);
+		class.superclass = superclass;
+	}
+}
 
 - (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment {
 	// Set current context then process all data. Note that processing order is only important for nicer logging messages.
@@ -102,7 +120,7 @@
 	for (GBProtocolData *adopted in [provider.protocols allObjects]) {
 		for (GBProtocolData *registered in registeredProtocols) {
 			if ([registered.nameOfProtocol isEqualToString:adopted.nameOfProtocol]) {
-				GBLogDebug(@"Replacing adopted protocol %@ with data from store...", registered);
+				GBLogDebug(@"Replacing %@ placeholder with known data from store...", registered);
 				[provider replaceProtocol:adopted withProtocol:registered];
 				break;
 			}
@@ -115,21 +133,27 @@
 		GBLogVerbose(@"Processing method %@...", method);
 		[self processComment:method.comment];
 		[self processParametersFromComment:method.comment matchingMethod:method];
+		[self processHtmlReferencesForObject:method];
+		GBLogDebug(@"Finished processing method %@.", method);
 	}
+}
+
+- (void)processHtmlReferencesForObject:(GBModelBase *)object {
+	object.htmlReferenceName = [self.settings htmlReferenceNameForObject:object];
+	object.htmlLocalReference = [self.settings htmlReferenceForObject:object fromSource:object];
 }
 
 #pragma mark Comments processing
 
 - (void)processComment:(GBComment *)comment {
 	if (!comment || [comment.stringValue length] == 0) return;
-	GBLogDebug(@"Processing comment %@...", comment);
 	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
 	// This is where we validate comment parameters and sort them in proper order.
 	if (!comment || [comment.stringValue length] == 0) return;
-	GBLogDebug(@"Processing parameters from method %@ comment %@", method, comment);
+	GBLogDebug(@"Validating processed parameters...");
 	
 	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.
 	NSMutableArray *names = [NSMutableArray arrayWithCapacity:[method.methodArguments count]];
@@ -148,7 +172,7 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = [parameters objectForKey:name];
 		if (!parameter) {
-			GBLogWarn(@"%@: Description for parameter '%@' missing for method %@!", comment.sourceInfo, name, method);
+			GBLogWarn(@"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
 		}
 		[sorted addObject:parameter];
@@ -161,11 +185,11 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
-		GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for method %@", comment.sourceInfo, [parameters count], description, method);
+		GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
-	// Finaly re-register parameters to the comment.
-	[comment replaceParametersWithParametersFromArray:sorted];
+	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
+	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
 }
 
 #pragma mark Properties

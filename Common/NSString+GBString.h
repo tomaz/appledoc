@@ -11,6 +11,10 @@
 /** Provides string extensions that make the rest of parsing code simpler. */
 @interface NSString (GBString)
 
+///---------------------------------------------------------------------------------------
+/// @name Simplifying strings
+///---------------------------------------------------------------------------------------
+
 /** Trims all characters from the given set from the string end.
  
  Works the same way as `[NSString stringByTrimmingCharactersInSetFromEnd:]` except it trims from end only.
@@ -27,29 +31,53 @@
  */
 - (NSString *)stringByWordifyingWithSpaces;
 
+///---------------------------------------------------------------------------------------
+/// @name Preparing nice descriptions
+///---------------------------------------------------------------------------------------
+
 /** Returns normalized description from the receiver.
  
  The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
  
  @return Returns stripped description.
- @see normalizedDescriptionFromString:
+ @see normalizedDescriptionWithMaxLength:
  @see maxNormalizedDescriptionLength
  */
 - (NSString *)normalizedDescription;
 
-/** Returns normalized description from the given string.
+/** Returns normalized description from the receiver.
  
  The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
- 
- @param string String to strip.
+  
+ @param length Maximum length of the description.
  @return Returns stripped description.
- @see normalizedDescription
+ @see normalizedDescriptionWithMaxLength:
  @see maxNormalizedDescriptionLength
  */
-+ (NSString *)normalizedDescriptionFromString:(NSString *)string;
+- (NSString *)normalizedDescriptionWithMaxLength:(NSUInteger)length;
 
-/** Returns maximum length of normalized string.
+/** Returns default maximum length of normalized string.
  */
-+ (NSUInteger)maxNormalizedDescriptionLength;
++ (NSUInteger)defaultNormalizedDescriptionLength;
+
+///---------------------------------------------------------------------------------------
+/// @name Getting information
+///---------------------------------------------------------------------------------------
+
+/** Returns the number of all lines in the receiver.
+ 
+ @return Returns the number of all lines in the receiver.
+ @see numberOfLinesInRange:
+ */
+- (NSUInteger)numberOfLines;
+
+/** Calculates the numer of lines in the given range of the receiver.
+ 
+ @param range The range to use for calculation.
+ @return Returns the number of lines in the given range.
+ @exception NSException Thrown if the given range is invalid.
+ @see numberOfLines
+ */
+- (NSUInteger)numberOfLinesInRange:(NSRange)range;
 
 @end

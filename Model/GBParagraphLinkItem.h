@@ -15,11 +15,17 @@
  Link items wrap a cross reference link with all the data. There are several types of links:
  
  - Link to a URL: Points to a http, ftp or file objects. `stringValue` value represents the link value, while all other properties are `nil`. `isLocal` is `NO`.
- - Link to a object: Points to a known top-level object. `stringValue` value represents nicely formatted object's name and `context` points to the object instance while all other properties are `nil` and `isLocal` is either `YES` if the link's origin is the same object or `NO` if it's a link to another object.
+ - Link to an object: Points to a known top-level object. `stringValue` value represents nicely formatted object's name and `context` points to the object instance while all other properties are `nil` and `isLocal` is either `YES` if the link's origin is the same object or `NO` if it's a link to another object.
  - Link to a local member: Points to another member of the same known top-level object. `stringValue` value represents nicely formatted link value, `context` points to the object instance and `member` to the object's member instance. `isLocal` value is `YES`.
  - Link to a member of another object: Points to a member of another object. Values representation is the same as in previous option, only `isLocal` value is `NO` in this case.
  */
 @interface GBParagraphLinkItem : GBParagraphItem
+
+/** The href value to which the link "points" to. 
+ 
+ This can actually be used when generating output to get proper URL of the link item.
+ */
+@property (retain) NSString *href;
 
 /** The context to which the link's `member` points to or `nil` if this is a `stringValue` link.
  

@@ -139,9 +139,8 @@
 
 - (GBSourceInfo *)sourceInfoForToken:(PKToken *)token {
 	NSParameterAssert(token != nil);
-	NSString *substring = [self.input substringToIndex:[token offset]];
-	NSUInteger lines = [[substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] count];
-	return [GBSourceInfo fileDataWithFilename:self.filename lineNumber:lines];
+	NSUInteger lines = [self.input numberOfLinesInRange:NSMakeRange(0, [token offset])];
+	return [GBSourceInfo infoWithFilename:self.filename lineNumber:lines];
 }
 
 #pragma mark Comments handling

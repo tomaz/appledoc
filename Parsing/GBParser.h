@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBApplicationSettingsProviding;
 @protocol GBStoreProviding;
 
 /** Handles loading class data from source files.
@@ -21,6 +20,14 @@
 /// @name ￼Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
+/** Returns autoreleased parser that work with the given `GBApplicationSettingsProvider` implementor.
+ 
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
+ */
++ (id)parserWithSettingsProvider:(id)settingsProvider;
+
 /** Initializes the parser to work with the given `GBApplicationSettingsProvider` implementor.
  
  This is the designated initializer.
@@ -29,7 +36,7 @@
  @return Returns initialized instance or `nil` if initialization fails.
  @exception NSException Thrown if the given application is `nil`.
  */
-- (id)initWithSettingsProvider:(id<GBApplicationSettingsProviding>)settingsProvider;
+- (id)initWithSettingsProvider:(id)settingsProvider;
 
 ///---------------------------------------------------------------------------------------
 /// @name Parsing handling

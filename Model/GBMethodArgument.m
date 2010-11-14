@@ -21,19 +21,19 @@
 }
 
 + (id)methodArgumentWithName:(NSString *)name {
-	return [self methodArgumentWithName:name types:nil var:nil terminationMacros:nil];
+	return [self methodArgumentWithName:name types:[NSArray array] var:nil terminationMacros:nil];
 }
 
 - (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
 	NSParameterAssert(name != nil);
-	NSParameterAssert((types == nil && var == nil) || (types != nil && var != nil));
+	NSParameterAssert(([types count] == 0 && var == nil) || ([types count] > 0 && var != nil));
 	self = [super init];
 	if (self) {
 		_argumentName = [name copy];
 		_argumentTypes = [types retain];
 		_argumentVar = [var copy];
-		_terminationMacros = [macros retain];
-		self.isVariableArg = (self.terminationMacros != nil);
+		_terminationMacros = macros ? [macros retain] : [[NSArray alloc] init];
+		self.isVariableArg = (macros != nil);
 	}
 	return self;
 }
@@ -41,7 +41,7 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	if (self.argumentTypes && self.argumentVar) {
+	if ([self.argumentTypes count] && self.argumentVar) {
 		__block NSMutableString *typeValue = [NSMutableString string];
 		[self.argumentTypes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			[typeValue appendFormat:@"%@", obj];
@@ -60,7 +60,7 @@
 #pragma mark Properties
 
 - (BOOL)isTyped {
-	return (self.argumentTypes != nil && self.argumentVar != nil);
+	return ([self.argumentTypes count] > 0 && self.argumentVar != nil);
 }
 
 @synthesize argumentName = _argumentName;

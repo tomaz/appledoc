@@ -53,7 +53,7 @@
 	if (!self.comment && comment) self.comment = comment;
 }
 
-#pragma mark Declared files handling
+#pragma mark Source info handling
 
 - (void)registerSourceInfo:(GBSourceInfo *)data {
 	NSParameterAssert(data != nil);
@@ -79,5 +79,7 @@
 @synthesize comment;
 @synthesize sourceInfos = _sourceInfos;
 @synthesize parentObject;
+@synthesize htmlLocalReference;
+@synthesize htmlReferenceName;
 
 @end

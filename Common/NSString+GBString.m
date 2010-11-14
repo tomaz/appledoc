@@ -18,11 +18,17 @@
  */
 - (unichar)lastCharacter;
 
+/** Returns the array contaiing all words of the receiver.
+ */
+- (NSArray *)arrayOfWords;
+
 @end
 
 #pragma mark -
 
 @implementation NSString (GBString)
+
+#pragma mark Simplifying string
 
 - (NSString *)stringByTrimmingCharactersInSetFromEnd:(NSCharacterSet *)set {
 	NSParameterAssert(set != nil);
@@ -36,7 +42,7 @@
 - (NSString *)stringByWordifyingWithSpaces {
 	if ([self length] == 0) return self;
 	NSMutableString *result = [NSMutableString stringWithCapacity:[self length]];
-	NSArray *words = [self componentsSeparatedByRegex:@"\\s+"];
+	NSArray *words = [self arrayOfWords];
 	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
 		if ([word length] == 0) return;
 		if ([result length] > 0) [result appendString:@" "];
@@ -45,20 +51,51 @@
 	return result;
 }
 
+#pragma mark Preparing nice descriptions
+
 - (NSString *)normalizedDescription {
-	return [[self class] normalizedDescriptionFromString:self];
+	return [self normalizedDescriptionWithMaxLength:[[self class] defaultNormalizedDescriptionLength]];
 }
 
-+ (NSString *)normalizedDescriptionFromString:(NSString *)string {
-	NSString *extract = [string stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
-	extract = [extract substringToIndex:MIN([self maxNormalizedDescriptionLength],[extract length])];
-	BOOL missing = ([extract length] < [string length]);
-	extract = [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-	return [NSString stringWithFormat:@"%@%@", extract, missing ? @"*" : @""];
+- (NSString *)normalizedDescriptionWithMaxLength:(NSUInteger)length {
+	NSString *extract = [self stringByReplacingOccurrencesOfRegex:@"\\s+" withString:@" "];
+	if ([extract length] <= length) return [extract stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	
+	NSArray *words = [extract arrayOfWords];
+	length /= 2;
+	
+	NSMutableString *prefix = [NSMutableString stringWithCapacity:[extract length] / 2];
+	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
+		if ([prefix length] > 0) [prefix appendString:@" "];
+		[prefix appendString:word];
+		if ([prefix length] >= length) *stop = YES;
+	}];
+	
+	NSMutableString *suffix = [NSMutableString stringWithCapacity:[prefix length]];
+	[words enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
+		if ([suffix length] > 0) [suffix insertString:@" " atIndex:0];
+		[suffix insertString:word atIndex:0];
+		if ([suffix length] >= length) *stop = YES;
+	}];
+	
+	return [NSString stringWithFormat:@"%@…%@", prefix, suffix];
 }
 
-+ (NSUInteger)maxNormalizedDescriptionLength {
-	return 25;
++ (NSUInteger)defaultNormalizedDescriptionLength {
+	return 35;
+}
+
+#pragma mark Getting information
+
+- (NSUInteger)numberOfLines {
+	if ([self length] == 0) return 0;
+	return [self numberOfLinesInRange:NSMakeRange(0, [self length])];
+}
+
+- (NSUInteger)numberOfLinesInRange:(NSRange)range {
+	NSString *substring = [self substringWithRange:range];
+	NSArray *lines = [substring componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+	return [lines count];
 }
 
 @end
@@ -69,6 +106,10 @@
 
 - (unichar)lastCharacter {
 	return [self characterAtIndex:[self length] - 1];
+}
+
+- (NSArray *)arrayOfWords {
+	return [self componentsSeparatedByRegex:@"\\s+"];
 }
 
 @end

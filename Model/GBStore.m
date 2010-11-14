@@ -93,15 +93,15 @@
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
-- (GBClassData *)classByName:(NSString *)name {
+- (GBClassData *)classWithName:(NSString *)name {
 	return [_classesByName objectForKey:name];
 }
 
-- (GBCategoryData *)categoryByName:(NSString *)name {
+- (GBCategoryData *)categoryWithName:(NSString *)name {
 	return [_categoriesByName objectForKey:name];
 }
 
-- (GBProtocolData *)protocolByName:(NSString *)name {
+- (GBProtocolData *)protocolWithName:(NSString *)name {
 	return [_protocolsByName objectForKey:name];
 }
 

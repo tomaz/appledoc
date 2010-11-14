@@ -25,7 +25,7 @@
  @return Returns autoreleased object.
  @exception NSException Thrown if the given filename is `nil` or empty string.
  */
-+ (id)fileDataWithFilename:(NSString *)filename lineNumber:(NSUInteger)lineNumber;
++ (id)infoWithFilename:(NSString *)filename lineNumber:(NSUInteger)lineNumber;
 
 ///---------------------------------------------------------------------------------------
 /// @name Data handling

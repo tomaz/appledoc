@@ -37,7 +37,7 @@
 
 /** Item's string value.
  
- This is mainly used for debugging and unit tests.
+ String value is used for output generation in case of leaf items. For container items, string value should not be used for output generation unless specified otherwise!
  */
 @property (copy) NSString *stringValue;
 
@@ -47,7 +47,7 @@
 
 /** String value as used in debug description.
  
- By default this returns string value trimmed to some maximum chars, but subclasses can override to provide their specific implementation. This is only used for debugging purposes and should not be used for any output generation! See `description` method implementation for details.
+ By default this returns string value trimmed to a predefined maximum length, but subclasses can override to provide their specific implementation. This is only used for debugging purposes and should not be used for any output generation! See `description` method implementation for details.
  
  Sending this message is equivalent to sending `descriptionForStringValue:` to receiver and passing it `stringValue` as the parameter.
  

@@ -32,8 +32,13 @@
 
 #pragma mark Initialization & disposal
 
-- (id)initWithSettingsProvider:(id<GBApplicationSettingsProviding>)settingsProvider {
++ (id)parserWithSettingsProvider:(id)settingsProvider {
+	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+}
+
+- (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
+	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

@@ -12,6 +12,8 @@
 #import "GBStore.h"
 #import "GBParser.h"
 #import "GBProcessor.h"
+#import "GBGenerator.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
 
 static NSString *kGBArgIgnorePath = @"ignore";
@@ -26,6 +28,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)initializeLoggingSystem;
 - (void)validateArguments:(NSArray *)arguments;
+@property (retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
 @property (assign) BOOL version;
@@ -52,10 +55,9 @@ static NSString *kGBArgHelp = @"help";
 - (id)init {
 	self = [super init];
 	if (self) {
+		self.settings = [GBApplicationSettingsProvider provider];
 		self.logformat = @"1";
 		self.verbose = @"2";
-		self.ignoredPaths = [NSMutableSet set];
-		self.commentComponents = [GBCommentComponentsProvider provider];
 	}
 	return self;
 }
@@ -81,22 +83,25 @@ static NSString *kGBArgHelp = @"help";
 		GBAbsoluteTime startTime = GetCurrentTime();
 		
 		GBLogNormal(@"Parsing source files...");
-		GBParser *parser = [[GBParser alloc] initWithSettingsProvider:self];
+		GBParser *parser = [GBParser parserWithSettingsProvider:self.settings];
 		[parser parseObjectsFromPaths:arguments toStore:store];
 		GBAbsoluteTime parseTime = GetCurrentTime();
 		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
+		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
 		
 		GBLogNormal(@"Processing parsed data...");
-		GBProcessor *processor = [[GBProcessor alloc] initWithSettingsProvider:self];
+		GBProcessor *processor = [GBProcessor processorWithSettingsProvider:self.settings];
 		[processor processObjectsFromStore:store];
 		GBAbsoluteTime processTime = GetCurrentTime();
 		NSUInteger timeForProcessing = SubtractTime(processTime, parseTime) * 1000.0;
+		GBLogInfo(@"Finished processing in %ldms.\n", timeForProcessing);
 		
-//		GBLogNormal(@"Generating output...");
-//		GBGenerator *generator = [[GBGenerator alloc] init];
-//		[generator generateOutputFromProcessor:processor];
+		GBLogNormal(@"Generating output...");
+		GBGenerator *generator = [GBGenerator generatorWithSettingsProvider:self.settings];
+		[generator generateOutputFromStore:store];
 		GBAbsoluteTime generateTime = GetCurrentTime();
 		NSUInteger timeForGeneration = SubtractTime(generateTime, processTime) * 1000.0;
+		GBLogInfo(@"Finished generating in %ldms.\n", timeForGeneration);
 		
 		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;		
 		GBLogNormal(@"Finished in %ldms.", timeForEverything);
@@ -153,7 +158,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
-	[self.ignoredPaths addObject:path];
+	[self.settings.ignoredPaths addObject:path];
 }
 
 @synthesize logformat;
@@ -161,10 +166,9 @@ static NSString *kGBArgHelp = @"help";
 @synthesize version;
 @synthesize help;
 
-#pragma mark Application settings provider implementation
+#pragma mark Properties
 
-@synthesize ignoredPaths;
-@synthesize commentComponents;
+@synthesize settings;
 
 @end
 
@@ -193,6 +197,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
 	ddprintf(@"- RegexKitLite by John Engelhart\n");
 	ddprintf(@"- Timing functions from Apple examples\n");
+	ddprintf(@"- MGTemplateEnding by Matt Legend Gemmell\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!");
 }

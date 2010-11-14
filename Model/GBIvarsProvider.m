@@ -54,6 +54,12 @@
 	}
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [_parent description];
+}
+
 #pragma mark Properties
 
 @synthesize ivars = _ivars;

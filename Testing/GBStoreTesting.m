@@ -62,11 +62,11 @@
 	[store registerClass:class1];
 	[store registerClass:class2];
 	// execute & verify
-	assertThat([store classByName:@"Class1"], is(class1));
-	assertThat([store classByName:@"Class2"], is(class2));
-	assertThat([store classByName:@"Class3"], is(nil));
-	assertThat([store classByName:@""], is(nil));
-	assertThat([store classByName:nil], is(nil));
+	assertThat([store classWithName:@"Class1"], is(class1));
+	assertThat([store classWithName:@"Class2"], is(class2));
+	assertThat([store classWithName:@"Class3"], is(nil));
+	assertThat([store classWithName:@""], is(nil));
+	assertThat([store classWithName:nil], is(nil));
 }
 
 #pragma mark Category registration testing
@@ -172,13 +172,13 @@
 	[store registerCategory:category2];
 	[store registerCategory:extension];
 	// execute & verify
-	assertThat([store categoryByName:@"Class(Category1)"], is(category1));
-	assertThat([store categoryByName:@"Class(Category2)"], is(category2));
-	assertThat([store categoryByName:@"Class()"], is(extension));
-	assertThat([store categoryByName:@"Class(Category3)"], is(nil));
-	assertThat([store categoryByName:@"Class1()"], is(nil));
-	assertThat([store categoryByName:@"()"], is(nil));
-	assertThat([store categoryByName:nil], is(nil));
+	assertThat([store categoryWithName:@"Class(Category1)"], is(category1));
+	assertThat([store categoryWithName:@"Class(Category2)"], is(category2));
+	assertThat([store categoryWithName:@"Class()"], is(extension));
+	assertThat([store categoryWithName:@"Class(Category3)"], is(nil));
+	assertThat([store categoryWithName:@"Class1()"], is(nil));
+	assertThat([store categoryWithName:@"()"], is(nil));
+	assertThat([store categoryWithName:nil], is(nil));
 }
 
 #pragma mark Protocol registration testing
@@ -229,11 +229,11 @@
 	[store registerProtocol:protocol1];
 	[store registerProtocol:protocol2];
 	// execute & verify
-	assertThat([store protocolByName:@"Protocol1"], is(protocol1));
-	assertThat([store protocolByName:@"Protocol2"], is(protocol2));
-	assertThat([store protocolByName:@"Protocol3"], is(nil));
-	assertThat([store protocolByName:@""], is(nil));
-	assertThat([store protocolByName:nil], is(nil));
+	assertThat([store protocolWithName:@"Protocol1"], is(protocol1));
+	assertThat([store protocolWithName:@"Protocol2"], is(protocol2));
+	assertThat([store protocolWithName:@"Protocol3"], is(nil));
+	assertThat([store protocolWithName:@""], is(nil));
+	assertThat([store protocolWithName:nil], is(nil));
 }
 
 @end

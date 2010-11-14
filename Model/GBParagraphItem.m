@@ -26,6 +26,7 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
+	if (!self.stringValue) return @"";
 	return [self.stringValue normalizedDescription];
 }
 

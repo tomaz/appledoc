@@ -260,6 +260,88 @@
 	[self assertMethod:[methods objectAtIndex:1] matchesPropertyComponents:@"readwrite", @"long", @"name2", nil];
 }
 
+#pragma mark Methods & properties required/optional parsing
+
+- (void)testParseObjectsFromString_shouldRegisterRequiredMethodDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol -(id)m1; -(id)m2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(YES));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(YES));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterOptionalMethodDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol @optional -(id)m1; -(id)m2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(NO));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(NO));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMixedRequiredOptionalMethodDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol -(id)m1; @optional -(id)m2; @required -(id)m3; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(YES));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(NO));
+	assertThatBool([[methods objectAtIndex:2] isRequired], equalToBool(YES));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterRequiredPropertyDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol @property(readonly)int p1; @property(readonly)int p2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(YES));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(YES));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterOptionalPropertyDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol @optional @property(readonly)int p1; @property(readonly)int p2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(NO));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(NO));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterMixedRequiredOptionalPropertyDefinitionForProtocols {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@protocol Protocol @property(readonly)int p1; @optional @property(readonly)int p2; @required @property(readonly)int p3; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [[store protocols] anyObject];
+	NSArray *methods = [[protocol methods] methods];
+	assertThatBool([[methods objectAtIndex:0] isRequired], equalToBool(YES));
+	assertThatBool([[methods objectAtIndex:1] isRequired], equalToBool(NO));
+	assertThatBool([[methods objectAtIndex:2] isRequired], equalToBool(YES));
+}
+
 #pragma mark Methods & properties extras parsing
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDefinitionSourceFileAndLineNumber {

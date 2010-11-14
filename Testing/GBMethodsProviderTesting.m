@@ -112,6 +112,71 @@
 	[destination verify];
 }
 
+#pragma mark Class methods, instance methods & properties handling
+
+- (void)testRegisterMethod_shouldRegisterClassMethod {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThatInteger([provider.classMethods count], equalToInteger(1));
+	assertThat([provider.classMethods objectAtIndex:0], is(method));
+}
+
+- (void)testRegisterMethod_shouldRegisterInstanceMethod {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThatInteger([provider.instanceMethods count], equalToInteger(1));
+	assertThat([provider.instanceMethods objectAtIndex:0], is(method));
+}
+
+- (void)testRegisterMethod_shouldRegisterProperty {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"name"];
+	// execute
+	[provider registerMethod:method];
+	// verify
+	assertThatInteger([provider.properties count], equalToInteger(1));
+	assertThat([provider.properties objectAtIndex:0], is(method));
+}
+
+- (void)testRegisterMethod_shouldRegisterDifferentTypesOfMethodsAndUseProperSorting {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *class1 = [GBTestObjectsRegistry classMethodWithNames:@"class1", nil];
+	GBMethodData *class2 = [GBTestObjectsRegistry classMethodWithNames:@"class2", nil];
+	GBMethodData *instance1 = [GBTestObjectsRegistry instanceMethodWithNames:@"instance1", nil];
+	GBMethodData *instance2 = [GBTestObjectsRegistry instanceMethodWithNames:@"instance2", nil];
+	GBMethodData *property1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"name1"];
+	GBMethodData *property2 = [GBTestObjectsRegistry propertyMethodWithArgument:@"name2"];
+	// execute
+	[provider registerMethod:class1];
+	[provider registerMethod:instance2];
+	[provider registerMethod:property2];
+	[provider registerMethod:class2];
+	[provider registerMethod:property1];
+	[provider registerMethod:instance1];
+	// verify
+	assertThatInteger([provider.classMethods count], equalToInteger(2));
+	assertThat([provider.classMethods objectAtIndex:0], is(class1));
+	assertThat([provider.classMethods objectAtIndex:1], is(class2));
+	assertThatInteger([provider.instanceMethods count], equalToInteger(2));
+	assertThat([provider.instanceMethods objectAtIndex:0], is(instance1));
+	assertThat([provider.instanceMethods objectAtIndex:1], is(instance2));
+	assertThatInteger([provider.properties count], equalToInteger(2));
+	assertThat([provider.properties objectAtIndex:0], is(property1));
+	assertThat([provider.properties objectAtIndex:1], is(property2));
+}
+
+#pragma mark Sections handling
+
 - (void)testRegisterMethod_shouldAddMethodToLastSection {
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
@@ -138,8 +203,6 @@
 	assertThatInteger([[section methods] count], equalToInteger(1));
 	assertThat([section.methods objectAtIndex:0], is(method));
 }
-
-#pragma mark Sections handling
 
 - (void)testRegisterSectionWithName_shouldCreateEmptySectionWithGivenName {
 	// setup
@@ -169,6 +232,127 @@
 	assertThat([provider registerSectionIfNameIsValid:nil], is(nil));
 	assertThat([provider registerSectionIfNameIsValid:@" \t\n\r"], is(nil));
 	assertThat([provider registerSectionIfNameIsValid:@""], is(nil));
+}
+
+#pragma mark Method merging testing
+
+- (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify - only basic testing here, details at GBMethodDataTesting!
+	NSArray *methods = [original methods];
+	assertThatInteger([methods count], equalToInteger(3));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m2:"));
+	assertThat([[methods objectAtIndex:2] methodSelector], is(@"m3:"));
+}
+
+- (void)testMergeDataFromObjectsProvider_shouldPreserveSourceData {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify - only basic testing here, details at GBMethodDataTesting!
+	NSArray *methods = [source methods];
+	assertThatInteger([methods count], equalToInteger(2));
+	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m3:"));
+}
+
+- (void)testMergeDataFromObjectsProvider_shouldMergeSections {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerSectionWithName:@"Section1"];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerSectionWithName:@"Section2"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	[source registerSectionWithName:@"Section1"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m4", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify
+	GBMethodSectionData *section = nil;
+	NSArray *sections = [original sections];
+	assertThatInteger([sections count], equalToInteger(2));
+	section = [sections objectAtIndex:0];
+	assertThat([section sectionName], is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(2));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m4:"));
+	section = [sections objectAtIndex:1];
+	assertThat([section sectionName], is(@"Section2"));
+	assertThatInteger([section.methods count], equalToInteger(2));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
+	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
+}
+
+- (void)testMergeDataFromObjectsProvider_shouldAddMergedSectionsToEndOfOriginalSections {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerSectionWithName:@"Section2"];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerSectionWithName:@"Section1"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	[source registerSectionWithName:@"Section2"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify
+	GBMethodSectionData *section = nil;
+	NSArray *sections = [original sections];
+	assertThatInteger([sections count], equalToInteger(2));
+	section = [sections objectAtIndex:0];
+	assertThat([section sectionName], is(@"Section2"));
+	assertThatInteger([section.methods count], equalToInteger(2));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
+	section = [sections objectAtIndex:1];
+	assertThat([section sectionName], is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
+}
+
+- (void)testMergeDataFromObjectsProvider_shouldPreserveCurrentSectionForNewMethods {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerSectionWithName:@"Section1"];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerSectionWithName:@"Section2"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
+	[original mergeDataFromMethodsProvider:source];
+	// execute
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m4", nil]];
+	// verify
+	GBMethodSectionData *section = nil;
+	NSArray *sections = [original sections];
+	assertThatInteger([sections count], equalToInteger(2));
+	section = [sections objectAtIndex:0];
+	assertThat([section sectionName], is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(3));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
+	assertThat([[section.methods objectAtIndex:2] methodSelector], is(@"m4:"));
+	section = [sections objectAtIndex:1];
+	assertThat([section sectionName], is(@"Section2"));
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
 }
 
 #pragma mark Helper methods testing
@@ -215,43 +399,6 @@
 	[provider registerMethod:method2];
 	// execute & verify
 	assertThat([provider methodBySelector:@"method"], is(method1));
-}
-
-#pragma mark Method merging testing
-
-- (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {
-	// setup
-	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
-	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
-	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
-	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
-	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
-	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
-	// execute
-	[original mergeDataFromMethodsProvider:source];
-	// verify - only basic testing here, details at GBMethodDataTesting!
-	NSArray *methods = [original methods];
-	assertThatInteger([methods count], equalToInteger(3));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m2:"));
-	assertThat([[methods objectAtIndex:2] methodSelector], is(@"m3:"));
-}
-
-- (void)testMergeDataFromObjectsProvider_shouldPreserveSourceData {
-	// setup
-	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
-	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
-	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m2", nil]];
-	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
-	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
-	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m3", nil]];
-	// execute
-	[original mergeDataFromMethodsProvider:source];
-	// verify - only basic testing here, details at GBMethodDataTesting!
-	NSArray *methods = [source methods];
-	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m3:"));
 }
 
 @end

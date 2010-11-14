@@ -86,7 +86,7 @@
 
 /** Array of argument types.
  
- Types array define -(result)arg:(*type*)var part of method. If argument doesn't use types, this is `nil`.
+ Types array define -(result)arg:(*type*)var part of method. If argument doesn't use types, this is empty array.
  */
 @property (readonly) NSArray *argumentTypes;
 

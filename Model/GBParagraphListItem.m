@@ -46,6 +46,7 @@
 
 - (void)registerItem:(GBCommentParagraph *)item {
 	NSParameterAssert(item != nil);
+	GBLogDebug(@"%@: Registering %@...", self, item);
 	[_items addObject:item];
 }
 
@@ -69,6 +70,10 @@
 	}];
 	[result appendString:([self.items count] > 1) ? @"\n}" : @" }"];
 	return result;
+}
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"List '%@'", [super description]];
 }
 
 #pragma mark Properties

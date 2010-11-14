@@ -33,9 +33,9 @@
 - (void)matchSuperclassForClass:(GBClassData *)class;
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider;
-- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider;
-- (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider;
-- (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider;
+- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required;
+- (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required;
+- (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required;
 
 @end
 
@@ -43,8 +43,8 @@
 
 - (void)matchClassDeclaration;
 - (void)matchCategoryDeclaration;
-- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider;
-- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider;
+- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required;
+- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider required:(BOOL)required;
 - (void)consumeMethodBody;
 
 @end
@@ -54,7 +54,7 @@
 - (BOOL)matchNextObject;
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
-- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end;
+- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object;
 - (NSString *)sectionNameFromComment:(GBComment *)comment;
@@ -130,7 +130,7 @@
 	[self matchSuperclassForClass:class];
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
-	[self matchMethodDefinitionsForProvider:class.methods];
+	[self matchMethodDefinitionsForProvider:class.methods defaultsRequired:NO];
 	[self.store registerClass:class];
 }
 
@@ -144,7 +144,7 @@
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:category.methods];
+	[self matchMethodDefinitionsForProvider:category.methods defaultsRequired:NO];
 	[self.store registerCategory:category];
 }
 
@@ -157,7 +157,7 @@
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:extension.methods];
+	[self matchMethodDefinitionsForProvider:extension.methods defaultsRequired:NO];
 	[self.store registerCategory:extension];
 }
 
@@ -170,7 +170,7 @@
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:protocol.methods];
+	[self matchMethodDefinitionsForProvider:protocol.methods defaultsRequired:YES];
 	[self.store registerProtocol:protocol];
 }
 
@@ -196,21 +196,28 @@
 	}];
 }
 
-- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider {
+- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required {
+	__block BOOL isRequired = required;
 	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if ([self matchMethodDefinitionForProvider:provider] || [self matchPropertyDefinitionForProvider:provider]) {
+		if ([token matches:@"@required"]) {
+			isRequired = YES;
+		} else if ([token matches:@"@optional"]) {
+			isRequired = NO;
+		} else if ([self matchMethodDefinitionForProvider:provider required:isRequired]) {
+			*consume = NO;
+		} else if ([self matchPropertyDefinitionForProvider:provider required:isRequired]) {
 			*consume = NO;
 		}
 	}];
 }
 
-- (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider {
-	if ([self matchMethodDataForProvider:provider from:@"+" to:@";"]) return YES;
-	if ([self matchMethodDataForProvider:provider from:@"-" to:@";"]) return YES;
+- (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
+	if ([self matchMethodDataForProvider:provider from:@"+" to:@";" required:required]) return YES;
+	if ([self matchMethodDataForProvider:provider from:@"-" to:@";" required:required]) return YES;
 	return NO;
 }
 
-- (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider {
+- (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
 	GBComment *comment = [self.tokenizer lastComment];
 	NSString *sectionName = [self sectionNameFromComment:[self.tokenizer previousComment]];
 	__block BOOL result = NO;
@@ -244,6 +251,7 @@
 		GBLogDebug(@"Matched property definition %@.", propertyData);
 		[propertyData setComment:comment];
 		[propertyData registerSourceInfo:filedata];
+		[propertyData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
 		*consume = NO;
@@ -267,7 +275,7 @@
 	[self registerSourceInfoFromCurrentTokenToObject:class];
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
-	[self matchMethodDeclarationsForProvider:class.methods];
+	[self matchMethodDeclarationsForProvider:class.methods defaultsRequired:NO];
 	[self.store registerClass:class];
 }
 
@@ -280,24 +288,25 @@
 	[self registerSourceInfoFromCurrentTokenToObject:category];
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
-	[self matchMethodDeclarationsForProvider:category.methods];
+	[self matchMethodDeclarationsForProvider:category.methods defaultsRequired:NO];
 	[self.store registerCategory:category];
 }
 
-- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider {
+- (void)matchMethodDeclarationsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required {
+	__block BOOL isRequired = required;
 	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if ([self matchMethodDeclarationForProvider:provider]) {
+		if ([self matchMethodDeclarationForProvider:provider required:isRequired]) {
 			*consume = NO;
 		}
 	}];
 }
 
-- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider {
-	if ([self matchMethodDataForProvider:provider from:@"+" to:@"{"]) {
+- (BOOL)matchMethodDeclarationForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
+	if ([self matchMethodDataForProvider:provider from:@"+" to:@"{" required:required]) {
 		[self consumeMethodBody];
 		return YES;
 	}
-	if ([self matchMethodDataForProvider:provider from:@"-" to:@"{"]) {
+	if ([self matchMethodDataForProvider:provider from:@"-" to:@"{" required:required]) {
 		[self consumeMethodBody];
 		return YES;
 	}
@@ -391,7 +400,7 @@
 	return NO;
 }
 
-- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end {
+- (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required {
 	// This method only matches class or instance methods, not properties!
 	// - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
 	GBComment *comment = [self.tokenizer lastComment];
@@ -467,6 +476,7 @@
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
 		[methodData registerSourceInfo:filedata];
 		[methodData setComment:comment];
+		[methodData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
 		*consume = NO;

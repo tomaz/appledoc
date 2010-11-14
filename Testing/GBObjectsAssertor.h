@@ -23,6 +23,7 @@
 - (void)assertMethod:(GBMethodData *)method matchesClassComponents:(NSString *)firstItem,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertMethod:(GBMethodData *)method matchesPropertyComponents:(NSString *)firstItem,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertMethod:(GBMethodData *)method matchesType:(GBMethodType)type start:(NSString *)first components:(va_list)args;
+- (void)assertFormattedComponents:(NSArray *)components match:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;
 
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsItems:(Class)first,... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertParagraph:(GBCommentParagraph *)paragraph containsLinks:(NSString *)first,... NS_REQUIRES_NIL_TERMINATION;

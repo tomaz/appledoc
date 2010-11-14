@@ -10,8 +10,15 @@
 
 @implementation GBParagraphLinkItem
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [NSString stringWithFormat:@"Link '%@'", [super description]];
+}
+
 #pragma mark Properties
 
+@synthesize href;
 @synthesize context;
 @synthesize member;
 @synthesize isLocal;

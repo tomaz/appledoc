@@ -1,0 +1,87 @@
+//
+//  GBTemplateVariablesProvider.h
+//  appledoc
+//
+//  Created by Tomaz Kragelj on 1.10.10.
+//  Copyright (C) 2010, Gentle Bytes. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+
+@class GBClassData;
+@protocol GBStoreProviding;
+
+/** Provides variables for template string for given objects.
+ 
+ The main purpose of this class is to prepare an intermediate variables from given objects suitable for template generation. Although original object could easily be used within templates, using simplified, intermediate, form greatly simplifies template files. Think of the variables as the controlley layer for the template engine.
+ 
+ This class is intended to be reused, create a single instance and pass it the objects - one by one - for which you'd like to get template variables.
+ */
+@interface GBTemplateVariablesProvider : NSObject
+
+///---------------------------------------------------------------------------------------
+/// @name Initialization & disposal
+///---------------------------------------------------------------------------------------
+
+/** Returns autoreleased provider that work with the given `GBApplicationSettingsProvider` implementor.
+ 
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
+ */
++ (id)providerWithSettingsProvider:(id)settingsProvider;
+
+/** Initializes the provider to work with the given `GBApplicationSettingsProvider` implementor.
+ 
+ This is the designated initializer.
+ 
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
+ */
+- (id)initWithSettingsProvider:(id)settingsProvider;
+
+///---------------------------------------------------------------------------------------
+/// @name Variables handling
+///---------------------------------------------------------------------------------------
+
+/** Returns the variables for the given `GBClassData` using the given `GBStoreProviding` for links. 
+ 
+ The result can be used with `GBTemplateWriter` to generate class specific output.
+ 
+ @param object The class for which to return variables.
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForCategory:withStore:
+ @see variablesForProtocol:withStore:
+ */
+- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store;
+
+/** Returns the variables for the given `GBCategoryData` using the given `GBStoreProviding` for links. 
+ 
+ The result can be used with `GBTemplateWriter` to generate category specific output.
+ 
+ @param object The category for which to return variables.
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForClass:withStore:
+ @see variablesForProtocol:withStore:
+ */
+- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id<GBStoreProviding>)store;
+
+/** Returns the variables for the given `GBProtocolData` using the given `GBStoreProviding` for links. 
+ 
+ The result can be used with `GBTemplateWriter` to generate protocol specific output.
+ 
+ @param object The protocol for which to return variables.
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForClass:withStore:
+ @see variablesForCategory:withStore:
+ */
+- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id<GBStoreProviding>)store;
+
+@end

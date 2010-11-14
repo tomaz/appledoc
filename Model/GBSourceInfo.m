@@ -21,7 +21,7 @@
 
 #pragma mark Initialization & disposal
 
-+ (id)fileDataWithFilename:(NSString *)filename lineNumber:(NSUInteger)lineNumber {
++ (id)infoWithFilename:(NSString *)filename lineNumber:(NSUInteger)lineNumber {
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
 	GBSourceInfo *result = [[[GBSourceInfo alloc] init] autorelease];

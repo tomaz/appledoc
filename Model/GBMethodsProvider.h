@@ -21,7 +21,12 @@
 	@private
 	NSMutableArray *_sections;
 	NSMutableArray *_methods;
+	NSMutableArray *_classMethods;
+	NSMutableArray *_instanceMethods;
+	NSMutableArray *_properties;
 	NSMutableDictionary *_methodsBySelectors;
+	NSMutableDictionary *_sectionsByNames;
+	GBMethodSectionData *_registeringSection;
 	id _parent;
 }
 
@@ -106,8 +111,43 @@
  */
 - (GBMethodData *)methodBySelector:(NSString *)selector;
 
-/** The array of all registered methods as `GBMethodData` instances in the order of registration. */
+/** The array of all registered methods as `GBMethodData` instances in the order of registration.
+ 
+ @see classMethods
+ @see instanceMethods
+ @see properties
+ */
 @property (readonly) NSArray *methods;
+
+/** The array of all registered class methods as `GBMethodData` instances sorten by method selector strings.
+ 
+ This array is automatically filled when methods are registered by sending `registerMethod:` to the receiver. If there is no class method registered, empty array is returned.
+ 
+ @see methods
+ @see instanceMethods
+ @see properties
+ */
+@property (readonly) NSArray *classMethods;
+
+/** The array of all registered instance methods as `GBMethodData` instances sorten by method selector strings.
+ 
+ This array is automatically filled when methods are registered by sending `registerMethod:` to the receiver. If there is no isntance method registered, empty array is returned.
+ 
+ @see methods
+ @see classMethods
+ @see properties
+ */
+@property (readonly) NSArray *instanceMethods;
+
+/** The array of all registered properties as `GBMethodData` instances sorten by property name strings.
+ 
+ This array is automatically filled when properties are registered by sending `registerMethod:` to the receiver. If there is no property registered, empty array is returned.
+ 
+ @see methods
+ @see classMethods
+ @see instanceMethods
+ */
+@property (readonly) NSArray *properties;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper methods

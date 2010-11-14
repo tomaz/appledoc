@@ -17,6 +17,7 @@
 + (OCMockObject *)mockSettingsProvider {
 	OCMockObject *result = [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
 	[[[result stub] andReturn:[GBCommentComponentsProvider provider]] commentComponents];
+	[[[result stub] andReturn:[GBApplicationStringsProvider provider]] stringTemplates];
 	return result;
 }
 

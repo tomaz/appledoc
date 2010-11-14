@@ -72,6 +72,12 @@
 	return [[self.protocols allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [_parent description];
+}
+
 #pragma mark Properties
 
 @synthesize protocols = _protocols;

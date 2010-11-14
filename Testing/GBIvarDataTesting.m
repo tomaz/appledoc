@@ -17,7 +17,7 @@
 	// setup - ivars don't merge any data, except they need to send base class merging message!
 	GBIvarData *original = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
 	GBIvarData *source = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
-	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"file" lineNumber:1]];
+	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"file" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - simple testing here, fully tested in GBModelBaseTesting!

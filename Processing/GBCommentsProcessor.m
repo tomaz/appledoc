@@ -82,7 +82,7 @@
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
-	GBLogDebug(@"Processing comment %@...", comment);
+	GBLogDebug(@"Processing %@...", comment);
 	self.currentComment = comment;
 	self.currentContext = context;
 	self.store = store;	
@@ -161,14 +161,17 @@
 		NSUInteger length = 0;
 		if ([string isMatchedByRegex:parameterRegex])
 		{
+			GBLogDebug(@"Found parameter description...");
 			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:parameterRegex matchLength:&length];
 			[self.currentComment registerParameter:argument];
 			result = argument.argumentDescription;
 		} else if ([string isMatchedByRegex:exceptionRegex]) {
+			GBLogDebug(@"Found exception description...");
 			GBCommentArgument *argument = [self namedArgumentFromString:string usingRegex:exceptionRegex matchLength:&length];
 			[self.currentComment registerException:argument];
 			result = argument.argumentDescription;
 		} else if ([string isMatchedByRegex:returnRegex]) {
+			GBLogDebug(@"Found result description...");
 			GBCommentParagraph *value = [self simpleArgumentFromString:string usingRegex:returnRegex matchLength:&length];
 			[self.currentComment registerResult:value];
 			result = value;
@@ -429,8 +432,8 @@
 			NSArray *childsLinkifiedChildren = [self linkifiedParagraphItemsFromItem:child];
 			[linkifiedChildren addObjectsFromArray:childsLinkifiedChildren];
 		}];
-		[decorator replaceItemsByRegisteringItemsFromArray:linkifiedChildren];
-		decorator.stringValue = [self wordifiedTextFromString:decorator.stringValue];
+		if (![linkifiedChildren isEqualToArray:decorator.decoratedItems]) [decorator replaceItemsByRegisteringItemsFromArray:linkifiedChildren];
+		[decorator setStringValue:[self wordifiedTextFromString:decorator.stringValue]];
 		return [NSArray arrayWithObject:decorator];
 	}
 	
@@ -447,6 +450,11 @@
 			if (range.location > 0) {
 				NSString *skipped = [string substringWithRange:NSMakeRange(0, range.location)];
 				NSArray *children = [self paragraphSimpleLinkItemsFromString:skipped];
+				if (!children) {
+					skipped = [self wordifiedTextFromString:skipped];
+					GBParagraphTextItem *text = [GBParagraphTextItem paragraphItemWithStringValue:skipped];
+					children = [NSArray arrayWithObject:text];
+				}
 				[items addObjectsFromArray:children];
 			}
 			
@@ -458,8 +466,14 @@
 		// Linkify remaining text if any.
 		if ([string length] > 0) {
 			NSArray *children = [self paragraphSimpleLinkItemsFromString:string];
+			if (!children) {
+				item.stringValue = [self wordifiedTextFromString:item.stringValue];
+				children = [NSArray arrayWithObject:item];
+			}
 			[items addObjectsFromArray:children];
 		}
+		
+		// If we didn't find a
 		return items;
 	}
 	
@@ -480,7 +494,9 @@
 		[result addObject:item]; \
 		[staticText removeAllObjects]; \
 	}
+	
 	// Matches all known simple links (i.e. local member, object or URL) and prepares the array of all paragraph items.	
+	__block BOOL foundLinks = NO;
 	NSMutableArray *result = [NSMutableArray array];
 	NSMutableArray *staticText = [NSMutableArray array];
 	NSArray *words = [string componentsSeparatedByRegex:@"\\s+"];
@@ -492,6 +508,7 @@
 		if (item) {
 			GBCREATE_TEXT_ITEM;
 			[result addObject:item];
+			foundLinks = YES;
 			return;
 		}
 		
@@ -499,7 +516,8 @@
 		[staticText addObject:word];
 	}];
 	
-	// Append remaining static text and exit.
+	// Append remaining static text and exit if we found links, otherwise return nil to indicate there are no links here.
+	if (!foundLinks) return nil;
 	GBCREATE_TEXT_ITEM;
 	return result;
 }
@@ -529,27 +547,35 @@
 		if ([value length] > 0) {
 			NSString *text = [self trimmedTextFromString:value];
 			if (text) {
-				GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
+				GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItem];
 				if ([type isEqualToString:@"*"]) {
+					GBLogDebug(@"Found '%@' formatted as bold...", [text normalizedDescription]);
 					decorator.decorationType = GBDecorationTypeBold;
 					[decorator registerItem:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 				} else if ([type isEqualToString:@"_"]) {
+					GBLogDebug(@"Found '%@' formatted as italics...", [text normalizedDescription]);
 					decorator.decorationType = GBDecorationTypeItalics;
 					[decorator registerItem:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 				} else if ([type isEqualToString:@"`"]) {
+					GBLogDebug(@"Found '%@' formatted as code...", [text normalizedDescription]);
 					decorator.decorationType = GBDecorationTypeCode;
 					[decorator registerItem:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 				} else if ([type isEqualToString:@"=!="]) {
-					GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
+					GBLogDebug(@"Found '%@' formatted as bold-italics...", [text normalizedDescription]);
+					GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItem];
 					decorator.decorationType = GBDecorationTypeBold;
 					[decorator registerItem:inner];
 					inner.decorationType = GBDecorationTypeItalics;
 					[inner registerItem:[GBParagraphTextItem paragraphItemWithStringValue:text]];
+					[inner setStringValue:text];
 				} else {
 					GBLogError(@"%@: Unknown text decorator type %@ detected!", self.currentComment, type);
 					decorator = nil;
 				}
-				if (decorator) [result addObject:decorator];
+				if (decorator) {
+					[decorator setStringValue:text];
+					[result addObject:decorator];
+				}
 			}
 		}
 		
@@ -595,11 +621,11 @@
 	if (range) *range = [string rangeOfString:reference];
 	
 	// Find remote object first. If not found, issue a warning and exit.
-	id objectRefence = [self.store classByName:objectName];
+	id objectRefence = [self.store classWithName:objectName];
 	if (!objectRefence) {
-		objectRefence = [self.store categoryByName:objectName];
+		objectRefence = [self.store categoryWithName:objectName];
 		if (!objectRefence) {
-			objectRefence = [self.store protocolByName:objectName];
+			objectRefence = [self.store protocolWithName:objectName];
 		}
 	}
 	if (!objectRefence) {
@@ -613,6 +639,7 @@
 		NSString *stringValue = [reference stringByReplacingOccurrencesOfString:@"<" withString:@""];
 		stringValue = [stringValue stringByReplacingOccurrencesOfString:@">" withString:@""];
 		GBParagraphLinkItem *link = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
+		link.href = [self.settings htmlReferenceForObject:memberReference fromSource:(GBModelBase *)self.currentContext];
 		link.context = objectRefence;
 		link.member = memberReference;
 		link.isLocal = NO;
@@ -628,11 +655,13 @@
 - (GBParagraphLinkItem *)simpleLinkItemFromString:(NSString *)string matchRange:(NSRange *)range {
 	// Returns URL, local member or another known object link item or nil if the string doesn't represent the item.
 	GBCommentComponentsProvider *provider = self.settings.commentComponents;
+	GBModelBase *hrefSourceObject = (GBModelBase *)self.currentContext;
 
 	// Test for URL reference.
 	NSString *url = [string stringByMatching:provider.urlCrossReferenceRegex capture:1];
 	if (url) {
 		GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
+		item.href = url;
 		if (range) *range = NSMakeRange(0, [string length]);
 		return item;
 	}
@@ -644,6 +673,7 @@
 			GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
 			if (method) {
 				GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
+				item.href = [self.settings htmlReferenceForObject:method fromSource:hrefSourceObject];
 				item.context = self.currentContext;
 				item.member = method;
 				item.isLocal = YES;
@@ -656,25 +686,28 @@
 	// Test for local or remote object reference.
 	NSString *objectName = [string stringByMatching:provider.objectCrossReferenceRegex capture:1];
 	if (objectName) {
-		GBClassData *class = [self.store classByName:objectName];
+		GBClassData *class = [self.store classWithName:objectName];
 		if (class) {
 			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:class.nameOfClass];
+			item.href = [self.settings htmlReferenceForObject:class fromSource:hrefSourceObject];
 			item.context = class;
 			item.isLocal = (class == self.currentContext);
 			if (range) *range = NSMakeRange(0, [string length]);
 			return item;
 		}
-		GBCategoryData *category = [self.store categoryByName:objectName];
+		GBCategoryData *category = [self.store categoryWithName:objectName];
 		if (category) {
 			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:category.idOfCategory];
+			item.href = [self.settings htmlReferenceForObject:category fromSource:hrefSourceObject];
 			item.context = category;
 			item.isLocal = (category == self.currentContext);
 			if (range) *range = NSMakeRange(0, [string length]);
 			return item;
 		}
-		GBProtocolData *protocol = [self.store protocolByName:objectName];
+		GBProtocolData *protocol = [self.store protocolWithName:objectName];
 		if (protocol) {
 			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:protocol.nameOfProtocol];
+			item.href = [self.settings htmlReferenceForObject:protocol fromSource:hrefSourceObject];
 			item.context = protocol;
 			item.isLocal = (protocol == self.currentContext);
 			if (range) *range = NSMakeRange(0, [string length]);

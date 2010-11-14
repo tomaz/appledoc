@@ -10,6 +10,14 @@
 #import "GBMethodSectionData.h"
 #import "GBMethodsProvider.h"
 
+@interface GBMethodsProvider ()
+
+- (void)addMethod:(GBMethodData *)method toSortedArray:(NSMutableArray *)array;
+
+@end
+
+#pragma mark -
+
 @implementation GBMethodsProvider
 
 #pragma mark Initialization & disposal
@@ -22,7 +30,11 @@
 		_parent = [parent retain];
 		_sections = [[NSMutableArray alloc] init];
 		_methods = [[NSMutableArray alloc] init];
+		_classMethods = [[NSMutableArray alloc] init];
+		_instanceMethods = [[NSMutableArray alloc] init];
+		_properties = [[NSMutableArray alloc] init];
 		_methodsBySelectors = [[NSMutableDictionary alloc] init];
+		_sectionsByNames = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -33,7 +45,9 @@
 	GBLogDebug(@"%@: Registering section %@...", _parent, name ? name : @"default");
 	GBMethodSectionData *section = [[[GBMethodSectionData alloc] init] autorelease];
 	section.sectionName = name;
+	_registeringSection = section;
 	[_sections addObject:section];
+	if (name) [_sectionsByNames setObject:section forKey:name];
 	return section;
 }
 
@@ -57,11 +71,31 @@
 	
 	method.parentObject = _parent;
 	[_methods addObject:method];	
-	if ([self.sections count] == 0) [self registerSectionWithName:nil];
-	[[self.sections lastObject] registerMethod:method];
+	if ([self.sections count] == 0) _registeringSection = [self registerSectionWithName:nil];
+	if (!_registeringSection) _registeringSection = [self.sections lastObject];
+	[_registeringSection registerMethod:method];
+	
+	switch (method.methodType) {
+		case GBMethodTypeClass:
+			[self addMethod:method toSortedArray:_classMethods];
+			break;
+		case GBMethodTypeInstance:
+			[self addMethod:method toSortedArray:_instanceMethods];
+			break;
+		case GBMethodTypeProperty:
+			[self addMethod:method toSortedArray:_properties];
+			break;
+	}
 	
 	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
+}
+
+- (void)addMethod:(GBMethodData *)method toSortedArray:(NSMutableArray *)array {
+	[array addObject:method];
+	[array sortUsingComparator:^(GBMethodData *obj1, GBMethodData *obj2) {
+		return [obj1.methodSelector compare:obj2.methodSelector];
+	}];
 }
 
 #pragma mark Helper methods
@@ -70,23 +104,40 @@
 	// If a method with the same selector is found while merging from source, we should check if the type also matches. If so, we can merge the data from the source's method. However if the type doesn't match, we should ignore the method alltogether (ussually this is due to custom property implementation). We should probably deal with this scenario more inteligently, but it seems it works...
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging methods from %@...", _parent, source->_parent);
-	for (GBMethodData *sourceMethod in source.methods) {
-		GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
-		if (existingMethod) {
-			if (existingMethod.methodType == sourceMethod.methodType) [existingMethod mergeDataFromObject:sourceMethod];
-			continue;
-		}
-		[self registerMethod:sourceMethod];
-	}
+	GBMethodSectionData *previousSection = _registeringSection;
+	[source.sections enumerateObjectsUsingBlock:^(GBMethodSectionData *sourceSection, NSUInteger idx, BOOL *stop) {
+		GBMethodSectionData *existingSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
+		if (!existingSection) existingSection = [self registerSectionWithName:sourceSection.sectionName];
+		_registeringSection = existingSection;
+		
+		[sourceSection.methods enumerateObjectsUsingBlock:^(GBMethodData *sourceMethod, NSUInteger idx, BOOL *stop) {
+			GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
+			if (existingMethod) {
+				if (existingMethod.methodType == sourceMethod.methodType) [existingMethod mergeDataFromObject:sourceMethod];
+				return;
+			}
+			[self registerMethod:sourceMethod];
+		}];
+	}];
+	_registeringSection = previousSection;
 }
 
 - (GBMethodData *)methodBySelector:(NSString *)selector {
 	return [_methodsBySelectors objectForKey:selector];
 }
 
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [_parent description];
+}
+
 #pragma mark Properties
 
 @synthesize methods = _methods;
+@synthesize classMethods = _classMethods;
+@synthesize instanceMethods = _instanceMethods;
+@synthesize properties = _properties;
 @synthesize sections = _sections;
 
 @end

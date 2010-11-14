@@ -18,11 +18,11 @@
 - (void)testMergeDataFromObject_shouldMergeDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:1]];
-	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f2" lineNumber:2]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"f1" lineNumber:1]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"f2" lineNumber:2]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:3]];
-	[source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f3" lineNumber:4]];
+	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"f1" lineNumber:3]];
+	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"f3" lineNumber:4]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
@@ -39,11 +39,11 @@
 - (void)testMergeDataFromObject_shouldPreserveSourceDeclaredFiles {
 	// setup
 	GBModelBase *original = [[GBModelBase alloc] init];
-	[original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:4]];
-	 [original registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f2" lineNumber:3]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"f1" lineNumber:4]];
+	 [original registerSourceInfo:[GBSourceInfo infoWithFilename:@"f2" lineNumber:3]];
 	GBModelBase *source = [[GBModelBase alloc] init];
-	 [source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f1" lineNumber:2]];
-	 [source registerSourceInfo:[GBSourceInfo fileDataWithFilename:@"f3" lineNumber:1]];
+	 [source registerSourceInfo:[GBSourceInfo infoWithFilename:@"f1" lineNumber:2]];
+	 [source registerSourceInfo:[GBSourceInfo infoWithFilename:@"f3" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
