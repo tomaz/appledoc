@@ -62,6 +62,7 @@
 	NSMutableDictionary *_markers;
 	NSMutableDictionary *_templateVariables;
 	BOOL _literal;
+	BOOL _trimOutput;
 @public
 	NSRange remainingRange;
 	id <MGTemplateEngineDelegate> delegate;
@@ -80,6 +81,7 @@
 @property(assign) id <MGTemplateEngineDelegate> delegate;	// weak ref
 @property(retain) id <MGTemplateEngineMatcher> matcher;
 @property(retain, readonly) NSString *templateContents;
+@property(assign) BOOL trimOutput;
 
 // Creation.
 + (NSString *)version;

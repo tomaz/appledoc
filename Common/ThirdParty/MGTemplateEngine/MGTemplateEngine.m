@@ -427,6 +427,7 @@
 	// Tell our matcher to take note of our settings.
 	[matcher engineSettingsChanged];
 	NSMutableString *output = [NSMutableString string];
+	NSCharacterSet *trimOutputSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 	
 	while (remainingRange.location != NSNotFound) {
 		NSDictionary *matchInfo = [matcher firstMarkerWithinRange:remainingRange];
@@ -607,7 +608,13 @@ but current block was started by \"%@\" marker",
 				}
 				
 				// Output result.
-				[output appendFormat:@"%@", val];
+				if (self.trimOutput) {
+					NSString *string = [[val description] stringByTrimmingCharactersInSet:trimOutputSet];
+					output = [[output stringByTrimmingCharactersInSet:trimOutputSet] mutableCopy];
+					[output appendString:string];
+				} else {
+					[output appendFormat:@"%@", val];
+				}
 			} else if ((!val && !isMarker && _outputDisabledCount == 0) || (isMarker && !markerHandler)) {
 				// Call delegate's error-reporting method, if implemented.
 				[self reportError:[NSString stringWithFormat:@"\"%@\" is not a valid %@", 
@@ -617,7 +624,14 @@ but current block was started by \"%@\" marker",
 		} else {
 			// Append output to end of template.
 			if (_outputDisabledCount == 0) {
-				[output appendFormat:@"%@", [templateContents substringWithRange:remainingRange]];
+				NSString *string = [templateContents substringWithRange:remainingRange];
+				if (self.trimOutput) {
+					string = [string stringByTrimmingCharactersInSet:trimOutputSet];
+					output = [[output stringByTrimmingCharactersInSet:trimOutputSet] mutableCopy];
+					[output appendString:string];
+				} else {
+					[output appendFormat:@"%@", string];
+				}
 			}
 			
 			// Check to see if there are open blocks left over.
@@ -671,6 +685,7 @@ but current block was started by \"%@\" marker",
 @synthesize delegate;
 @synthesize matcher;
 @synthesize templateContents;
+@synthesize trimOutput = _trimOutput;
 
 
 @end

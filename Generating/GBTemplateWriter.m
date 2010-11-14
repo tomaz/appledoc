@@ -117,6 +117,7 @@
 - (NSString *)processTemplate:(NSString *)template withVariables:(NSDictionary *)variables {
 	MGTemplateEngine *engine = [[[MGTemplateEngine alloc] init] autorelease];
 	[engine setDelegate:self];
+	[engine setTrimOutput:YES];
 	[engine setMatcher:[ICUTemplateMatcher matcherWithTemplateEngine:engine]];
 	[engine setObject:self.settings.stringTemplates forKey:@"strings"];
 	return [engine processTemplate:template withVariables:variables];
