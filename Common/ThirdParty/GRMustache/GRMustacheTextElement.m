@@ -37,7 +37,7 @@
 }
 
 - (id)initWithString:(NSString *)theText {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		self.text = theText;
 	}
 	return self;

@@ -41,7 +41,7 @@
 }
 
 - (id)initWithName:(NSString *)theName raw:(BOOL)theRaw {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		self.name = theName;
 		self.raw = theRaw;
 	}

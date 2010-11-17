@@ -111,7 +111,7 @@ static NSInteger BOOLPropertyType = NSNotFound;
 }
 
 - (id)initWithObject:(id)theObject parent:(GRMustacheContext *)theParent {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		object = [theObject retain];
 		parent = [theParent retain];
 	}

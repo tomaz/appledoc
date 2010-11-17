@@ -49,7 +49,7 @@
 }
 
 - (id)initWithName:(NSString *)theName string:(NSString *)theTemplateString templateLoader:(GRMustacheTemplateLoader *)theTemplateLoader inverted:(BOOL)theInverted elements:(NSArray *)theElems {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		self.name = theName;
 		self.templateString = theTemplateString;
 		self.templateLoader = theTemplateLoader;

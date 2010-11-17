@@ -36,7 +36,7 @@
 }
 
 - (id)initWithBlock:(GRMustacheLambdaBlock)theBlock {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		block = [theBlock copy];
 	}
 	return self;
