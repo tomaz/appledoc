@@ -43,6 +43,7 @@
 		7321D12512944F9E00796DEC /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D10912944F9E00796DEC /* GRMustacheVariableElement.m */; };
 		7321D12612944F9E00796DEC /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D10B12944F9E00796DEC /* GRMustacheVersion.m */; };
 		7321D12712944F9E00796DEC /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D10B12944F9E00796DEC /* GRMustacheVersion.m */; };
+		7321D12A1294592200796DEC /* GBTemplateLoaderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D1291294592200796DEC /* GBTemplateLoaderTesting.m */; };
 		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
 		73329AA6122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */; };
 		73329B30122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */; };
@@ -191,7 +192,6 @@
 		7321D0E612944CF500796DEC /* GBTemplateLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateLoader.m; sourceTree = "<group>"; };
 		7321D0EA12944F9E00796DEC /* GRBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRBoolean.h; sourceTree = "<group>"; };
 		7321D0EB12944F9E00796DEC /* GRBoolean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRBoolean.m; sourceTree = "<group>"; };
-		7321D0EC12944F9E00796DEC /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache_private.h; sourceTree = "<group>"; };
 		7321D0ED12944F9E00796DEC /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
 		7321D0EE12944F9E00796DEC /* GRMustache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustache.m; sourceTree = "<group>"; };
 		7321D0EF12944F9E00796DEC /* GRMustacheBundleTemplateLoader_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheBundleTemplateLoader_private.h; sourceTree = "<group>"; };
@@ -223,6 +223,8 @@
 		7321D10912944F9E00796DEC /* GRMustacheVariableElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustacheVariableElement.m; sourceTree = "<group>"; };
 		7321D10A12944F9E00796DEC /* GRMustacheVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheVersion.h; sourceTree = "<group>"; };
 		7321D10B12944F9E00796DEC /* GRMustacheVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GRMustacheVersion.m; sourceTree = "<group>"; };
+		7321D128129451B000796DEC /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache_private.h; sourceTree = "<group>"; };
+		7321D1291294592200796DEC /* GBTemplateLoaderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateLoaderTesting.m; sourceTree = "<group>"; };
 		73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-UnorderedListsTesting.m"; sourceTree = "<group>"; };
 		73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-OrderedListsTesting.m"; sourceTree = "<group>"; };
 		73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-WarningsTesting.m"; sourceTree = "<group>"; };
@@ -494,7 +496,7 @@
 			children = (
 				7321D0EA12944F9E00796DEC /* GRBoolean.h */,
 				7321D0EB12944F9E00796DEC /* GRBoolean.m */,
-				7321D0EC12944F9E00796DEC /* GRMustache_private.h */,
+				7321D128129451B000796DEC /* GRMustache_private.h */,
 				7321D0ED12944F9E00796DEC /* GRMustache.h */,
 				7321D0EE12944F9E00796DEC /* GRMustache.m */,
 				7321D0EF12944F9E00796DEC /* GRMustacheBundleTemplateLoader_private.h */,
@@ -586,6 +588,7 @@
 		739AD428125455BC00B642C3 /* Generating */ = {
 			isa = PBXGroup;
 			children = (
+				7321D1291294592200796DEC /* GBTemplateLoaderTesting.m */,
 				739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */,
 				736A2750125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */,
 			);
@@ -1123,6 +1126,7 @@
 				7321D12312944F9E00796DEC /* GRMustacheURLTemplateLoader.m in Sources */,
 				7321D12512944F9E00796DEC /* GRMustacheVariableElement.m in Sources */,
 				7321D12712944F9E00796DEC /* GRMustacheVersion.m in Sources */,
+				7321D12A1294592200796DEC /* GBTemplateLoaderTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

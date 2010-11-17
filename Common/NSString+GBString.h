@@ -31,6 +31,12 @@
  */
 - (NSString *)stringByWordifyingWithSpaces;
 
+/** Trims all whitespace from the start and end of the string and returns trimmed value.
+ 
+ @return Returns trimmed string.
+ */
+- (NSString *)stringByTrimmingWhitespace;
+
 ///---------------------------------------------------------------------------------------
 /// @name Preparing nice descriptions
 ///---------------------------------------------------------------------------------------

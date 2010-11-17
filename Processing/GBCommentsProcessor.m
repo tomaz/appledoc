@@ -602,7 +602,7 @@
 
 - (NSString *)trimmedTextFromString:(NSString *)string {
 	// Returns trimmed text where all occurences of whitespace at the start and end are stripped out. If text only contains whitespace, nil is returned.
-	NSString *result = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	NSString *result = [string stringByTrimmingWhitespace];
 	return ([result length] > 0) ? result : nil;
 }
 
