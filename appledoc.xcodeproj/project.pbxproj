@@ -95,32 +95,14 @@
 		738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
 		738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
 		7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */; };
-		739AD3C512544BB500B642C3 /* GBTemplateReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD3C412544BB500B642C3 /* GBTemplateReader.m */; };
-		739AD42D125455F400B642C3 /* GBTemplateReaderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD42C125455F400B642C3 /* GBTemplateReaderTesting.m */; };
-		739AD4361254573500B642C3 /* GBTemplateReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD3C412544BB500B642C3 /* GBTemplateReader.m */; };
-		739AD4391254574500B642C3 /* ICUTemplateMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F311253B8E600074152 /* ICUTemplateMatcher.m */; };
-		739AD43A1254574600B642C3 /* MGTemplateEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F181253B8B200074152 /* MGTemplateEngine.m */; };
-		739AD43B1254574700B642C3 /* MGTemplateStandardFilters.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F1E1253B8B200074152 /* MGTemplateStandardFilters.m */; };
-		739AD43C1254574800B642C3 /* MGTemplateStandardMarkers.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F1C1253B8B200074152 /* MGTemplateStandardMarkers.m */; };
-		739AD43D1254574900B642C3 /* NSArray_DeepMutableCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F361253B90A00074152 /* NSArray_DeepMutableCopy.m */; };
-		739AD43E1254574A00B642C3 /* NSDictionary_DeepMutableCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F381253B90A00074152 /* NSDictionary_DeepMutableCopy.m */; };
-		739AD4DE12548DF400B642C3 /* GBTemplateWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD4DD12548DF400B642C3 /* GBTemplateWriter.m */; };
-		739AD4DF12548DF400B642C3 /* GBTemplateWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD4DD12548DF400B642C3 /* GBTemplateWriter.m */; };
 		739AD57F1255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */; };
 		739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */; };
-		739AD5841255C6BD00B642C3 /* GBTemplateWriterTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD5831255C6BD00B642C3 /* GBTemplateWriterTesting.m */; };
 		739AD62F1255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */; };
 		739AD6301255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */; };
 		739AD6521255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */; };
 		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
 		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
 		73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
-		73AA9F1F1253B8B200074152 /* MGTemplateEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F181253B8B200074152 /* MGTemplateEngine.m */; };
-		73AA9F201253B8B200074152 /* MGTemplateStandardMarkers.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F1C1253B8B200074152 /* MGTemplateStandardMarkers.m */; };
-		73AA9F211253B8B200074152 /* MGTemplateStandardFilters.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F1E1253B8B200074152 /* MGTemplateStandardFilters.m */; };
-		73AA9F321253B8E600074152 /* ICUTemplateMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F311253B8E600074152 /* ICUTemplateMatcher.m */; };
-		73AA9F391253B90A00074152 /* NSArray_DeepMutableCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F361253B90A00074152 /* NSArray_DeepMutableCopy.m */; };
-		73AA9F3A1253B90A00074152 /* NSDictionary_DeepMutableCopy.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F381253B90A00074152 /* NSDictionary_DeepMutableCopy.m */; };
 		73AA9F731253BF4000074152 /* GBGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F721253BF4000074152 /* GBGenerator.m */; };
 		73AAACD2122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */; };
 		73AAACFD122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AAACFC122F904400EAF358 /* GBCommentsProcessor-ExamplesTesting.m */; };
@@ -226,14 +208,8 @@
 		738945D41246857500A4A3A0 /* GBCommentArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentArgument.h; sourceTree = "<group>"; };
 		738945D51246857500A4A3A0 /* GBCommentArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentArgument.m; sourceTree = "<group>"; };
 		7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-MethodArgumentsTesting.m"; sourceTree = "<group>"; };
-		739AD3C312544BB500B642C3 /* GBTemplateReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTemplateReader.h; sourceTree = "<group>"; };
-		739AD3C412544BB500B642C3 /* GBTemplateReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateReader.m; sourceTree = "<group>"; };
-		739AD42C125455F400B642C3 /* GBTemplateReaderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateReaderTesting.m; sourceTree = "<group>"; };
-		739AD4DC12548DF400B642C3 /* GBTemplateWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTemplateWriter.h; sourceTree = "<group>"; };
-		739AD4DD12548DF400B642C3 /* GBTemplateWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateWriter.m; sourceTree = "<group>"; };
 		739AD57D1255C3E600B642C3 /* GBApplicationStringsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBApplicationStringsProvider.h; sourceTree = "<group>"; };
 		739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationStringsProvider.m; sourceTree = "<group>"; };
-		739AD5831255C6BD00B642C3 /* GBTemplateWriterTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateWriterTesting.m; sourceTree = "<group>"; };
 		739AD62D1255D8CB00B642C3 /* GBTemplateVariablesProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTemplateVariablesProvider.h; sourceTree = "<group>"; };
 		739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateVariablesProvider.m; sourceTree = "<group>"; };
 		739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-CommonTesting.m"; sourceTree = "<group>"; };
@@ -241,21 +217,6 @@
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
 		73A32FFE1236532500040070 /* GBParagraphLinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphLinkItem.h; sourceTree = "<group>"; };
 		73A32FFF1236532500040070 /* GBParagraphLinkItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphLinkItem.m; sourceTree = "<group>"; };
-		73AA9F171253B8B200074152 /* MGTemplateEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTemplateEngine.h; sourceTree = "<group>"; };
-		73AA9F181253B8B200074152 /* MGTemplateEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGTemplateEngine.m; sourceTree = "<group>"; };
-		73AA9F191253B8B200074152 /* MGTemplateMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTemplateMarker.h; sourceTree = "<group>"; };
-		73AA9F1A1253B8B200074152 /* MGTemplateFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTemplateFilter.h; sourceTree = "<group>"; };
-		73AA9F1B1253B8B200074152 /* MGTemplateStandardMarkers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTemplateStandardMarkers.h; sourceTree = "<group>"; };
-		73AA9F1C1253B8B200074152 /* MGTemplateStandardMarkers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGTemplateStandardMarkers.m; sourceTree = "<group>"; };
-		73AA9F1D1253B8B200074152 /* MGTemplateStandardFilters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MGTemplateStandardFilters.h; sourceTree = "<group>"; };
-		73AA9F1E1253B8B200074152 /* MGTemplateStandardFilters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MGTemplateStandardFilters.m; sourceTree = "<group>"; };
-		73AA9F301253B8E600074152 /* ICUTemplateMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICUTemplateMatcher.h; sourceTree = "<group>"; };
-		73AA9F311253B8E600074152 /* ICUTemplateMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICUTemplateMatcher.m; sourceTree = "<group>"; };
-		73AA9F341253B90A00074152 /* DeepMutableCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeepMutableCopy.h; sourceTree = "<group>"; };
-		73AA9F351253B90A00074152 /* NSArray_DeepMutableCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSArray_DeepMutableCopy.h; sourceTree = "<group>"; };
-		73AA9F361253B90A00074152 /* NSArray_DeepMutableCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSArray_DeepMutableCopy.m; sourceTree = "<group>"; };
-		73AA9F371253B90A00074152 /* NSDictionary_DeepMutableCopy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDictionary_DeepMutableCopy.h; sourceTree = "<group>"; };
-		73AA9F381253B90A00074152 /* NSDictionary_DeepMutableCopy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDictionary_DeepMutableCopy.m; sourceTree = "<group>"; };
 		73AA9F711253BF4000074152 /* GBGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBGenerator.h; sourceTree = "<group>"; };
 		73AA9F721253BF4000074152 /* GBGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBGenerator.m; sourceTree = "<group>"; };
 		73AAACD1122F8E8B00EAF358 /* GBCommentsProcessor-BugsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-BugsTesting.m"; sourceTree = "<group>"; };
@@ -518,8 +479,6 @@
 		739AD428125455BC00B642C3 /* Generating */ = {
 			isa = PBXGroup;
 			children = (
-				739AD42C125455F400B642C3 /* GBTemplateReaderTesting.m */,
-				739AD5831255C6BD00B642C3 /* GBTemplateWriterTesting.m */,
 				739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */,
 				736A2750125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */,
 			);
@@ -531,52 +490,10 @@
 			children = (
 				73AA9F711253BF4000074152 /* GBGenerator.h */,
 				73AA9F721253BF4000074152 /* GBGenerator.m */,
-				739AD3C312544BB500B642C3 /* GBTemplateReader.h */,
-				739AD3C412544BB500B642C3 /* GBTemplateReader.m */,
-				739AD4DC12548DF400B642C3 /* GBTemplateWriter.h */,
-				739AD4DD12548DF400B642C3 /* GBTemplateWriter.m */,
 				739AD62D1255D8CB00B642C3 /* GBTemplateVariablesProvider.h */,
 				739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */,
 			);
 			path = Generating;
-			sourceTree = "<group>";
-		};
-		73AA9F0C1253B82B00074152 /* MGTemplateEngine */ = {
-			isa = PBXGroup;
-			children = (
-				73AA9F171253B8B200074152 /* MGTemplateEngine.h */,
-				73AA9F181253B8B200074152 /* MGTemplateEngine.m */,
-				73AA9F191253B8B200074152 /* MGTemplateMarker.h */,
-				73AA9F1A1253B8B200074152 /* MGTemplateFilter.h */,
-				73AA9F1B1253B8B200074152 /* MGTemplateStandardMarkers.h */,
-				73AA9F1C1253B8B200074152 /* MGTemplateStandardMarkers.m */,
-				73AA9F1D1253B8B200074152 /* MGTemplateStandardFilters.h */,
-				73AA9F1E1253B8B200074152 /* MGTemplateStandardFilters.m */,
-				73AA9F291253B8D600074152 /* Matchers */,
-				73AA9F331253B8F700074152 /* Helpers */,
-			);
-			path = MGTemplateEngine;
-			sourceTree = "<group>";
-		};
-		73AA9F291253B8D600074152 /* Matchers */ = {
-			isa = PBXGroup;
-			children = (
-				73AA9F301253B8E600074152 /* ICUTemplateMatcher.h */,
-				73AA9F311253B8E600074152 /* ICUTemplateMatcher.m */,
-			);
-			name = Matchers;
-			sourceTree = "<group>";
-		};
-		73AA9F331253B8F700074152 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				73AA9F341253B90A00074152 /* DeepMutableCopy.h */,
-				73AA9F351253B90A00074152 /* NSArray_DeepMutableCopy.h */,
-				73AA9F361253B90A00074152 /* NSArray_DeepMutableCopy.m */,
-				73AA9F371253B90A00074152 /* NSDictionary_DeepMutableCopy.h */,
-				73AA9F381253B90A00074152 /* NSDictionary_DeepMutableCopy.m */,
-			);
-			name = Helpers;
 			sourceTree = "<group>";
 		};
 		73D54BDF11F8CE2300CCDDB0 /* Startup */ = {
@@ -625,7 +542,6 @@
 				73D54C9611F8D21000CCDDB0 /* DDLog */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 				733EA47C122CE8C40060CBDE /* RegexKitLite */,
-				73AA9F0C1253B82B00074152 /* MGTemplateEngine */,
 				735BCB48124EE91700FB6C4A /* Miscellaneous */,
 			);
 			path = ThirdParty;
@@ -1076,17 +992,7 @@
 				7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */,
 				7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
-				739AD42D125455F400B642C3 /* GBTemplateReaderTesting.m in Sources */,
-				739AD4361254573500B642C3 /* GBTemplateReader.m in Sources */,
-				739AD4391254574500B642C3 /* ICUTemplateMatcher.m in Sources */,
-				739AD43A1254574600B642C3 /* MGTemplateEngine.m in Sources */,
-				739AD43B1254574700B642C3 /* MGTemplateStandardFilters.m in Sources */,
-				739AD43C1254574800B642C3 /* MGTemplateStandardMarkers.m in Sources */,
-				739AD43D1254574900B642C3 /* NSArray_DeepMutableCopy.m in Sources */,
-				739AD43E1254574A00B642C3 /* NSDictionary_DeepMutableCopy.m in Sources */,
-				739AD4DE12548DF400B642C3 /* GBTemplateWriter.m in Sources */,
 				739AD57F1255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
-				739AD5841255C6BD00B642C3 /* GBTemplateWriterTesting.m in Sources */,
 				739AD62F1255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */,
 				739AD6521255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m in Sources */,
 				736A2751125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m in Sources */,
@@ -1143,15 +1049,7 @@
 				738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */,
 				7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
-				73AA9F1F1253B8B200074152 /* MGTemplateEngine.m in Sources */,
-				73AA9F201253B8B200074152 /* MGTemplateStandardMarkers.m in Sources */,
-				73AA9F211253B8B200074152 /* MGTemplateStandardFilters.m in Sources */,
-				73AA9F321253B8E600074152 /* ICUTemplateMatcher.m in Sources */,
-				73AA9F391253B90A00074152 /* NSArray_DeepMutableCopy.m in Sources */,
-				73AA9F3A1253B90A00074152 /* NSDictionary_DeepMutableCopy.m in Sources */,
 				73AA9F731253BF4000074152 /* GBGenerator.m in Sources */,
-				739AD3C512544BB500B642C3 /* GBTemplateReader.m in Sources */,
-				739AD4DF12548DF400B642C3 /* GBTemplateWriter.m in Sources */,
 				739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
 				739AD6301255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */,
 				736A2760125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */,
