@@ -17,9 +17,8 @@
 	// setup
 	GBTemplateLoader *loader = [GBTemplateLoader loader];
 	NSString *template = @"Section name text EndSection";
-	// execute
-	[loader parseTemplate:template error:nil];
-	// verify
+	// execute & verify
+	assertThatBool([loader parseTemplate:template error:nil], equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
 	assertThat([loader.templateSections objectForKey:@"name"], is(@"text"));
 }
@@ -28,9 +27,8 @@
 	// setup
 	GBTemplateLoader *loader = [GBTemplateLoader loader];
 	NSString *template = @"Prefix \n Section name1 text1 EndSection \n Intermediate \n Section name2 text2 EndSection \n Suffix";
-	// execute
-	[loader parseTemplate:template error:nil];
-	// verify
+	// execute & verify
+	assertThatBool([loader parseTemplate:template error:nil], equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(2));
 	assertThat([loader.templateSections objectForKey:@"name1"], is(@"text1"));
 	assertThat([loader.templateSections objectForKey:@"name2"], is(@"text2"));
@@ -40,9 +38,8 @@
 	// setup
 	GBTemplateLoader *loader = [GBTemplateLoader loader];
 	NSString *template = @"Section name \nfirst line\nsecond line\nEndSection";
-	// execute
-	[loader parseTemplate:template error:nil];
-	// verify
+	// execute & verify
+	assertThatBool([loader parseTemplate:template error:nil], equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
 	assertThat([loader.templateSections objectForKey:@"name"], is(@"first line\nsecond line"));
 }
@@ -51,9 +48,8 @@
 	// setup
 	GBTemplateLoader *loader = [GBTemplateLoader loader];
 	[loader parseTemplate:@"Section name1 text1 EndSection" error:nil];
-	// execute
-	[loader parseTemplate:@"Section name2 text2 EndSection" error:nil];
-	// verify
+	// execute & verify
+	assertThatBool([loader parseTemplate:@"Section name2 text2 EndSection" error:nil], equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
 	assertThat([loader.templateSections objectForKey:@"name1"], is(nil));
 	assertThat([loader.templateSections objectForKey:@"name2"], isNot(nil));

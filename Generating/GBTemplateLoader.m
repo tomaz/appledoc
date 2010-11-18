@@ -76,7 +76,7 @@ static NSString *kGBValueKey = @"value";
 		clean = [NSString stringWithFormat:@"%@%@", prefix, suffix];
 		if ([clean length] == 0) break;
 	}
-	return NO;
+	return YES;
 }
 
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template {
