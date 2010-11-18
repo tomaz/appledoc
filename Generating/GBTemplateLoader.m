@@ -9,6 +9,12 @@
 #import "RegexKitLite.h"
 #import "GBTemplateLoader.h"
 
+static NSString *kGBSectionKey = @"section";
+static NSString *kGBNameKey = @"name";
+static NSString *kGBValueKey = @"value";
+
+#pragma mark -
+
 @interface GBTemplateLoader ()
 
 - (void)clearParsedValues;
@@ -47,22 +53,23 @@
 - (BOOL)parseTemplate:(NSString *)template error:(NSError **)error {
 	[self clearParsedValues];
 	if ([template length] == 0) return YES;
-	NSString *regex = @"(Section\\s+(\\w+)\\s+(.*)\\s+EndSection)";
+	NSString *regex = @"(Section\\s+(\\w+)\\s+(.*?)\\s+EndSection)";
 	NSString *clean = [template copy];
 	while (YES) {
 		// Get all components of the regex.
-		NSDictionary *sectionData = [clean dictionaryByMatchingRegex:regex withKeysAndCaptures:@"section", 1, @"name", 2, @"value", 3, nil];
+		NSRange searchRange = NSMakeRange(0, [clean length]);
+		NSDictionary *sectionData = [clean dictionaryByMatchingRegex:regex options:RKLDotAll range:searchRange error:nil withKeysAndCaptures:kGBSectionKey, 1, kGBNameKey, 2, kGBValueKey, 3, nil];
 		if ([sectionData count] == 0) break;
 
 		// If section data is valid, use it.
 		if ([self validateSectionData:sectionData withTemplate:template]) {
-			NSString *name = [sectionData objectForKey:@"name"];
-			NSString *value = [[sectionData objectForKey:@"value"] stringByTrimmingWhitespace];
+			NSString *name = [sectionData objectForKey:kGBNameKey];
+			NSString *value = [[sectionData objectForKey:kGBValueKey] stringByTrimmingWhitespace];
 			[_templateSections setObject:value forKey:name];
 		}
 		
 		// Get the range of the regex within the clean string and remove the substring from it.
-		NSString *section = [sectionData objectForKey:@"section"];
+		NSString *section = [sectionData objectForKey:kGBSectionKey];
 		NSRange range = [clean rangeOfString:section];
 		NSString *prefix = [clean substringToIndex:range.location];
 		NSString *suffix = [clean substringFromIndex:range.location + range.length];
@@ -73,8 +80,8 @@
 }
 
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template {
-	NSString *section = [data objectForKey:@"section"];
-	NSString *name = [data objectForKey:@"name"];
+	NSString *section = [data objectForKey:kGBSectionKey];
+	NSString *name = [data objectForKey:kGBNameKey];
 
 	if ([name length] == 0) {
 		NSRange range = [template rangeOfString:section];
@@ -83,7 +90,7 @@
 		return NO;
 	}
 
-	NSString *value = [[data objectForKey:@"value"] stringByTrimmingWhitespace];
+	NSString *value = [[data objectForKey:kGBValueKey] stringByTrimmingWhitespace];
 	if ([value length] == 0) {
 		NSRange range = [template rangeOfString:section];
 		NSUInteger line = [template numberOfLinesInRange:NSMakeRange(0, range.location)];

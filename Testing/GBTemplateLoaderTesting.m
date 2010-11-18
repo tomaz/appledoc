@@ -36,6 +36,17 @@
 	assertThat([loader.templateSections objectForKey:@"name2"], is(@"text2"));
 }
 
+- (void)testParseTemplate_shouldReadComplexValue {
+	// setup
+	GBTemplateLoader *loader = [GBTemplateLoader loader];
+	NSString *template = @"Section name \nfirst line\nsecond line\nEndSection";
+	// execute
+	[loader parseTemplate:template error:nil];
+	// verify
+	assertThatInteger([loader.templateSections count], equalToInteger(1));
+	assertThat([loader.templateSections objectForKey:@"name"], is(@"first line\nsecond line"));
+}
+
 - (void)testParseTemplate_shouldClearBeforeReading {
 	// setup
 	GBTemplateLoader *loader = [GBTemplateLoader loader];
