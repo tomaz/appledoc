@@ -71,11 +71,13 @@ static NSString *kGBValueKey = @"value";
 		// Get the range of the regex within the clean string and remove the substring from it.
 		NSString *section = [sectionData objectForKey:kGBSectionKey];
 		NSRange range = [clean rangeOfString:section];
-		NSString *prefix = [clean substringToIndex:range.location];
-		NSString *suffix = [clean substringFromIndex:range.location + range.length];
-		clean = [NSString stringWithFormat:@"%@%@", prefix, suffix];
+		NSString *prefix = [[clean substringToIndex:range.location] stringByTrimmingWhitespaceAndNewLine];
+		NSString *suffix = [[clean substringFromIndex:range.location + range.length] stringByTrimmingWhitespaceAndNewLine];
+		NSString *delimiter = ([prefix length] > 0 && [suffix length] > 0) ? @"\n" : @"";
+		clean = [NSString stringWithFormat:@"%@%@%@", prefix, delimiter, suffix];
 		if ([clean length] == 0) break;
 	}
+	_templateString = [clean copy];
 	return YES;
 }
 
@@ -103,7 +105,7 @@ static NSString *kGBValueKey = @"value";
 
 - (void)clearParsedValues {
 	GBLogDebug(@"Clearing parsed values...");
-	_templateString = nil;
+	_templateString = @"";
 	[_templateSections removeAllObjects];
 }
 

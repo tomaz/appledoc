@@ -34,8 +34,16 @@
 /** Trims all whitespace from the start and end of the string and returns trimmed value.
  
  @return Returns trimmed string.
+ @see stringByTrimmingWhitespaceAndNewLine
  */
 - (NSString *)stringByTrimmingWhitespace;
+
+/** Trims all whitespace and new lines from the start and end of the string and returns trimmed value.
+ 
+ @return Returns trimmed string.
+ @see stringByTrimmingWhitespace
+ */
+- (NSString *)stringByTrimmingWhitespaceAndNewLine;
 
 ///---------------------------------------------------------------------------------------
 /// @name Preparing nice descriptions
