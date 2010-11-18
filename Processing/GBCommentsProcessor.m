@@ -66,7 +66,7 @@
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
-		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"\\r\n|[\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"];
+		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"\\r\\n|[\\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"];
 		self.settings = settingsProvider;
 	}
 	return self;
