@@ -125,6 +125,10 @@
 
 #pragma mark Output helper method
 
+- (BOOL)hasParagraphs {
+	return ([self.paragraphs count] > 0);
+}
+
 - (BOOL)hasParameters {
 	return ([self.parameters count] > 0);
 }

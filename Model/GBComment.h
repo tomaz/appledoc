@@ -213,6 +213,14 @@
 /// @name Output generator helpers
 ///---------------------------------------------------------------------------------------
 
+/** Indicates whether the comment has at least one paragraph or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraph` count is greater than 0, like this: `[object.paragraphs count] > 0`.
+ 
+ @see paragraphs
+ */
+@property (readonly) BOOL hasParagraphs;
+
 /** Indicates whether the comment has at least one parameter or not.
  
  This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `parameters` count is greater than 0, like this: `[object.parameters count] > 0`.

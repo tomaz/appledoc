@@ -63,6 +63,15 @@
 	assertThat(comment.firstParagraph, is(paragraph1));
 }
 
+- (void)testHasParagraphs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasParagraphs, equalToBool(YES));
+}
+
 #pragma mark Parameters testing
 
 - (void)testRegisterParameter_shouldAddParameterToList {
