@@ -87,7 +87,7 @@ static NSString *kGBValueKey = @"value";
 	}
 	
 	// Prepare template string and warn if it's empty.
-	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [self.templateSections count]);
+	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [_templateSections count]);
 	_templateString = [clean copy];
 	return YES;
 }
@@ -121,10 +121,5 @@ static NSString *kGBValueKey = @"value";
 	_templateString = @"";
 	[_templateSections removeAllObjects];
 }
-
-#pragma mark Properties
-
-@synthesize templateString = _templateString;
-@synthesize templateSections = _templateSections;
 
 @end

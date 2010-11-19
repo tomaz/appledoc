@@ -8,9 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-/** Loads a template file and prepares it for output generation.
+/** Loads a template file, prepares it for output generation and renders the output on any given object.
  
- The main responsibilities of this class are loading template from file to string, scanning for all template subsections and extracting them to internal dictionary. Finally, it prepares clean template file, without all template subsections. Note that processed template can be reused - it's enough to process a single template file once and then reuse the `GBTemplateLoader` instance for all cases where the given template is needed.
+ The main responsibilities of this class are loading template from file to string, parsing and extractng all template sections and rendering the template for any given object. As the first two tasks are actually combined into a single method, public API is even simpler: just create one instance of the class for each different template by sending `parseTemplateFromPath:error:` or `parseTemplate:error:` which loads, parses and verifies the template. Then send `renderObject:` to generate output from a concrete object. 
+ 
+ Note that, as said above, there is no need to create a new `GBTemplateLoader` instance for each object for which we want to render output. It's enough and much more efficient to create a single instance for each different type of template and use it to generate as many objects from that template as needed.
  */
 @interface GBTemplateLoader : NSObject {
 	@private
@@ -37,8 +39,6 @@
  @param error If reading or parsing fails, error message is returned here.
  @return Returns `YES` if parsing was sucesful, `NO` otherwise.
  @see parseTemplate:error:
- @see templateString
- @see templateSections
  */
 - (BOOL)parseTemplateFromPath:(NSString *)path error:(NSError **)error;
 
@@ -50,25 +50,7 @@
  @param error If parsing fails, error message is returned here.
  @return Returns `YES` if parsing was sucesful, `NO` otherwise.
  @see parseTemplateFromPath:error:
- @see templateString
- @see templateSections
  */
 - (BOOL)parseTemplate:(NSString *)template error:(NSError **)error;
-
-/** Template string without all sections as parsed the last time `parseTemplateFromPath:error:` was sent.
- 
- @see parseTemplateFromPath:error:
- @see parseTemplate:error:
- @see templateSections
- */
-@property (readonly) NSString *templateString;
-
-/** Template sections from the template as parsed the last time `parseTemplateFromPath:error:` was sent.
- 
- @see parseTemplateFromPath:error:
- @see parseTemplate:error:
- @see templateString
- */
-@property (readonly) NSDictionary *templateSections;
 
 @end

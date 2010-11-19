@@ -8,6 +8,18 @@
 
 #import "GBTemplateLoader.h"
 
+@interface GBTemplateLoader (TestingAPI)
+@property (readonly) NSString *templateString;
+@property (readonly) NSDictionary *templateSections;
+@end
+
+@implementation GBTemplateLoader (TestingAPI)
+- (NSString *)templateString { return [self valueForKey:@"_templateString"]; }
+- (NSDictionary *)templateSections { return [self valueForKey:@"_templateSections"]; }
+@end
+
+#pragma mark -
+
 @interface GBTemplateLoaderTesting : GHTestCase
 @end
 
