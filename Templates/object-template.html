@@ -14,7 +14,7 @@
 
 		{{#page/specifications}}
 			{{#used}}<div class="section section-specification"><table cellspacing="0"><tbody>{{/used}}
-			{{#values}}{{>ObjectSpecification}}{{/values}}
+				{{#values}}{{>ObjectSpecification}}{{/values}}
 			{{#used}}</tbody></table></div>{{/used}}
 		{{/page/specifications}}
 
@@ -32,9 +32,7 @@
 				{{#sections}}
 					{{>TaskTitle}}
 					<ul class="task-list">
-					{{#methods}}
-						{{>TaskMethod}}
-					{{/methods}}
+					{{#methods}}{{>TaskMethod}}{{/methods}}
 					</ul>
 				{{/sections}}
 		</div>
@@ -149,11 +147,7 @@ Section Method
 EndSection
 
 Section MethodDeclaration
-	{{#formattedComponents}}
-		{{#emphasized}}<em>{{/emphasized}}
-		{{#href}}<a href="{{href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}
-		{{#emphasized}}</em>{{/emphasized}}
-	{{/formattedComponents}}
+	{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
 EndSection
 
 Section MethodSelector
@@ -162,28 +156,17 @@ EndSection
 
 
 Section TaskTitle
-	{{#hasMultipleSections}}
-		<h3 class="subsubtitle task-title">
-		{{#sectionName}}{{.}}{{/sectionName}}
-		{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}
-		</h3>
-	{{/hasMultipleSections}}
-	{{^hasMultipleSections}}
-		{{#sectionName}}<h3 class="subsubtitle task-title">{{.}}</h3>{{/sectionName}}
-	{{/hasMultipleSections}}
+	{{#hasMultipleSections}}<h3 class="subsubtitle task-title">{{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}</h3>{{/hasMultipleSections}}
+	{{^hasMultipleSections}}{{#sectionName}}<h3 class="subsubtitle task-title">{{.}}</h3>{{/sectionName}}{{/hasMultipleSections}}
 EndSection
 
 Section TaskMethod
 <li>
 	<span class="tooltip">
 		<code><a href="{{htmlLocalReference}}">{{>MethodSelector}}</a></code>
-		{{#firstParagraph}}							
-		<span class="tooltip">{{>GBCommentParagraph}}</span>
-		{{/firstParagraph}}
+		{{#comment/firstParagraph}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/firstParagraph}}
 	</span>
-	{{#isRequired}}
-		<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>
-	{{/isRequired}}
+	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}
 </li>
 EndSection
 
@@ -195,28 +178,15 @@ Section GBComment
 EndSection
 
 Section GBCommentParagraph
-	{{#paragraphItems}}
-		{{>GBParagraphItem}}
-	{{/paragraphItems}}
+	{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
 EndSection
 
 Section GBParagraphItem
-	{{#isTextItem}}{{stringValue}}{{/isTextItem}}
-	{{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}
-	{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}
-	{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}
-	{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}
-	{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}
-	{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}
-	{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}
-	{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}
-	{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
+	{{#isTextItem}} {{stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
 EndSection
 
 Section GBParagraphListItem
-	{{#listItems}}
-	<li>{{>GBCommentParagraph}}</li>
-	{{/listItems}}
+	{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
 EndSection
 
 Section GBParagraphSpecialItem
@@ -224,20 +194,13 @@ Section GBParagraphSpecialItem
 EndSection
 
 Section GBParagraphDecoratorItem
-	{{#decoratedItems}}
-		{{>GBParagraphItem}}
-	{{/decoratedItems}}
+	{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
 EndSection
 
 
 Section ObjectSpecification
 <tr>
 	<td class="specification-title">{{title}}</td>
-	<td class="specification-value">
-		{{#values}}
-			{{#href}}<a href="{{href}}">{{/href}}{{string}}{{#href}}</a>{{/href}}
-			{{delimiter}}
-		{{/values}}
-	</td>
+	<td class="specification-value">{{#values}}{{#href}}<a href="{{href}}">{{/href}}{{string}}{{#href}}</a>{{/href}}{{delimiter}}{{/values}}</td>
 </tr>
 EndSection
