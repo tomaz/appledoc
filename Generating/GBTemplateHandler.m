@@ -31,7 +31,7 @@ static NSString *kGBValueKey = @"value";
 
 #pragma mark Initialization & disposal
 
-+ (id)loader {
++ (id)handler {
 	return [[[self alloc] init] autorelease];
 }
 

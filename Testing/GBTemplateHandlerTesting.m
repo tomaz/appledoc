@@ -32,7 +32,7 @@
 
 - (void)testParseTemplate_empty_shouldIndicateSuccess {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	// execute
 	BOOL result = [loader parseTemplate:@"" error:nil];
 	// verify
@@ -43,7 +43,7 @@
 
 - (void)testParseTemplate_empty_shouldClearBeforeReading {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"Something Section name text EndSection" error:nil];
 	// execute
 	BOOL result = [loader parseTemplate:@"" error:nil];
@@ -57,7 +57,7 @@
 
 - (void)testParseTemplate_sections_shouldReadSimpleTemplateSection {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Section name text EndSection";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -69,7 +69,7 @@
 
 - (void)testParseTemplateError_sections_shouldReadAllTemplateSections {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Prefix \n Section name1 text1 EndSection \n Intermediate \n Section name2 text2 EndSection \n Suffix";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -82,7 +82,7 @@
 
 - (void)testParseTemplate_sections_shouldReadComplexTemplateSectionValue {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Section name \nfirst line\nsecond line\nEndSection";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -94,7 +94,7 @@
 
 - (void)testParseTemplate_sections_shouldClearBeforeReading {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"Section name1 text1 EndSection" error:nil];
 	// execute
 	BOOL result = [loader parseTemplate:@"Section name2 text2 EndSection" error:nil];
@@ -109,7 +109,7 @@
 
 - (void)testParseTemplate_string_shouldCopyWholeTextIfNoTemplateSectionFound {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"This is template text";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -121,7 +121,7 @@
 
 - (void)testParseTemplate_string_shouldTrimStringBeforeTemplateSections {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"This is template text Section name text EndSection";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -132,7 +132,7 @@
 
 - (void)testParseTemplate_string_shouldTrimStringBetweenTemplateSections {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Section name1 text EndSection This is text in the middle Section name2 text EndSection";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -143,7 +143,7 @@
 
 - (void)testParseTemplate_string_shouldTrimStringAfterTemplateSections {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Section name text EndSection This is template text";
 	// execute
 	BOOL result = [loader parseTemplate:template error:nil];
@@ -156,7 +156,7 @@
 
 - (void)testParseTemplate_complex_shouldHandleComplexStrings {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = 
 		@"Some text\nin multiple lines\n\n"
 		@"Section name1 text\nline2\n\nEndSection\n\n"
@@ -177,7 +177,7 @@
 
 - (void)testParsetTemplate_template_shouldCreateTemplateInstance {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	NSString *template = @"Something Section name text EndSection";
 	// execute
 	[loader parseTemplate:template error:nil];
@@ -187,7 +187,7 @@
 
 - (void)testParseTemplate_template_shouldSetEmptyTemplateIfEmptyTemplateIsGiven {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	// execute
 	[loader parseTemplate:@"" error:nil];
 	// verify
@@ -196,7 +196,7 @@
 
 - (void)testParseTemplate_template_shouldResetTemplateInstanceIfEmptyTemplateIsGiven {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"Something" error:nil];
 	// execute
 	[loader parseTemplate:@"" error:nil];
@@ -208,7 +208,7 @@
 
 - (void)testRenderObject_shouldRenderSimpleTemplate {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix {{var1}}---{{var2}} suffix" error:nil];
 	// execute
 	NSString *result = [loader renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"var1", @"value2", @"var2", nil]];
@@ -218,7 +218,7 @@
 
 - (void)testRenderObject_shouldRenderSectionIfCalled {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix {{>name}}! Section name text EndSection" error:nil];
 	// execute
 	NSString *result = [loader renderObject:nil];
@@ -228,7 +228,7 @@
 
 - (void)testRenderObject_shouldNotRenderSectionIfNotCalled {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix Section name text EndSection" error:nil];
 	// execute
 	NSString *result = [loader renderObject:nil];
@@ -238,7 +238,7 @@
 
 - (void)testRenderObject_shouldPassProperObjectToSections {
 	// setup
-	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix {{#var1}}{{>name}}{{/var1}}! {{#var2}}{{>name}}{{/var2}}? Section name {{value}} EndSection" error:nil];
 	NSDictionary *var1 = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"value", nil];
 	NSDictionary *var2 = [NSDictionary dictionaryWithObjectsAndKeys:@"value2", @"value", nil];
