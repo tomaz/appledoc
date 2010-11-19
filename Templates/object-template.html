@@ -86,10 +86,10 @@ Section Method
 			<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
 	
 			{{#hasParameters}}
-				<div class="method-subsection parameter-section parameter">
+				<div class="method-subsection arguments-section parameters">
 					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
 					{{#parameters}}
-						<dl class="parameter-def">
+						<dl class="argument-def parameter-def">
 							<dt><em>{{argumentName}}</em></dt>
 							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
 						</dl>
@@ -98,7 +98,7 @@ Section Method
 			{{/hasParameters}}
 	
 			{{#result}}
-				<div class="method-subsection parameter-section return">
+				<div class="method-subsection return">
 					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
 					<p>{{>GBCommentParagraph}}</p>
 				</div>
@@ -114,10 +114,10 @@ Section Method
 			{{/hasParagraphs}}
 
 			{{#hasExceptions}}
-				<div class="method-subsection exception-section parameter">
+				<div class="method-subsection arguments-section exceptions">
 					<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
 					{{#exceptions}}
-						<dl class="exception-def">
+						<dl class="argument-def exception-def">
 							<dt><em>{{argumentName}}</em></dt>
 							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
 						</dl>
