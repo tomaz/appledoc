@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 
@@ -112,7 +113,11 @@
 		NSString *href = va_arg(args, NSString *);
 		if (!href) [NSException raise:@"Href not given for value %@ at index %ld!", value, [arguments count]];
 		
-		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", style, @"style", href, @"href", nil];
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+		[data setObject:value forKey:@"value"];
+		[data setObject:style forKey:@"style"];
+		[data setObject:href forKey:@"href"];
+		if ([style unsignedIntValue] == 1) [data setObject:[GRYes yes] forKey:@"emphasized"];
 		[arguments addObject:data];
 		
 		value = va_arg(args, NSString *);
@@ -126,6 +131,7 @@
 		NSDictionary *expected = [arguments objectAtIndex:i];
 		
 		assertThat([actual objectForKey:@"value"], is([expected objectForKey:@"value"]));
+		assertThat([actual objectForKey:@"emphasized"], is([expected objectForKey:@"emphasized"]));
 		
 		NSNumber *expectedStyle = [expected objectForKey:@"style"];
 		NSNumber *actualStyle = [actual objectForKey:@"style"];
