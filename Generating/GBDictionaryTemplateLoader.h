@@ -10,7 +10,7 @@
 
 /** Encapsulates template loading with partials provided through a dictionary.
  
- This is almost straight from `GRMustache` example, with just a bit of cleanup and garbage collector modifications. Although the functionality could easily be implemented by `GBTemplateLoader`, it was moved to a separate class to better encapsulate `GRMustache` logic and prevent bloating public interface of `GBTemplateLoader` with all specifics of `GRMustacheTemplateLoader` that are not needed for creating output.
+ This is almost straight from `GRMustache` example, with just a bit of cleanup and garbage collector modifications. Although the functionality could easily be implemented by `GBTemplateHandler`, it was moved to a separate class to better encapsulate `GRMustache` logic and prevent bloating public interface of `GBTemplateHandler` with all specifics of `GRMustacheTemplateLoader` that are not needed for creating output.
  */
 @interface GBDictionaryTemplateLoader : GRMustacheTemplateLoader {
 	@private

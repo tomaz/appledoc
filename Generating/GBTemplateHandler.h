@@ -1,5 +1,5 @@
 //
-//  GBTemplateLoader.h
+//  GBTemplateHandler.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 17.11.10.
@@ -14,9 +14,9 @@
  
  The main responsibilities of this class are loading template from file to string, parsing and extractng all template sections and rendering the template for any given object. As the first two tasks are actually combined into a single method, public API is even simpler: just create one instance of the class for each different template by sending `parseTemplateFromPath:error:` or `parseTemplate:error:` which loads, parses and verifies the template. Then send `renderObject:` to generate output from a concrete object. 
  
- Note that, as said above, there is no need to create a new `GBTemplateLoader` instance for each object for which we want to render output. It's enough and much more efficient to create a single instance for each different type of template and use it to generate as many objects from that template as needed.
+ Note that, as said above, there is no need to create a new `GBTemplateHandler` instance for each object for which we want to render output. It's enough and much more efficient to create a single instance for each different type of template and use it to generate as many objects from that template as needed.
  */
-@interface GBTemplateLoader : NSObject {
+@interface GBTemplateHandler : NSObject {
 	@private
 	NSString *_templateString;
 	NSMutableDictionary *_templateSections;
@@ -27,7 +27,7 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Returns a new autoreleased `GBTemplateLoader`. */
+/** Returns a new autoreleased `GBTemplateHandler`. */
 + (id)loader;
 
 ///---------------------------------------------------------------------------------------

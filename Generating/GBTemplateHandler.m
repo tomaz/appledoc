@@ -1,5 +1,5 @@
 //
-//  GBTemplateLoader.m
+//  GBTemplateHandler.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 17.11.10.
@@ -9,7 +9,7 @@
 #import "RegexKitLite.h"
 #import "GRMustache.h"
 #import "GBDictionaryTemplateLoader.h"
-#import "GBTemplateLoader.h"
+#import "GBTemplateHandler.h"
 
 static NSString *kGBSectionKey = @"section";
 static NSString *kGBNameKey = @"name";
@@ -17,7 +17,7 @@ static NSString *kGBValueKey = @"value";
 
 #pragma mark -
 
-@interface GBTemplateLoader ()
+@interface GBTemplateHandler ()
 
 - (void)clearParsedValues;
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template;
@@ -27,7 +27,7 @@ static NSString *kGBValueKey = @"value";
 
 #pragma mark -
 
-@implementation GBTemplateLoader
+@implementation GBTemplateHandler
 
 #pragma mark Initialization & disposal
 
