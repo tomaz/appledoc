@@ -137,6 +137,10 @@
 	return ([self.parameters count] > 0);
 }
 
+- (BOOL)hasExceptions {
+	return ([self.exceptions count] > 0);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

@@ -186,6 +186,15 @@
 	assertThat([comment.exceptions objectAtIndex:0], is(exception2));
 }
 
+- (void)testHasExceptions_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasExceptions, equalToBool(NO));
+	[comment registerException:[GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]]];
+	assertThatBool(comment.hasExceptions, equalToBool(YES));
+}
+
 #pragma mark CrossReferences testing
 
 - (void)testRegisterCrossReference_shouldAddCrossReferenceToList {

@@ -239,6 +239,14 @@
  */
 @property (readonly) BOOL hasParameters;
 
+/** Indicates whether the comment has at least one exception or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `exceptions` count is greater than 0, like this: `[object.exceptions count] > 0`.
+ 
+ @see exceptions
+ */
+@property (readonly) BOOL hasExceptions;
+
 ///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------
