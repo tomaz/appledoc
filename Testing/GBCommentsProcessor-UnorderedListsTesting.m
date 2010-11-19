@@ -28,7 +28,7 @@
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectMultipleLinesLists {
@@ -41,7 +41,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectItemsSpanningMutlipleLines {
@@ -54,7 +54,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
@@ -67,7 +67,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:NO containsParagraphs:@"Item", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] isOrdered:NO containsParagraphs:@"Item", nil];
 }
 
 #pragma mark Nested lists testing
@@ -80,7 +80,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",NO,2, @"c2",NO,2, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",NO,2, @"c2",NO,2, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectNestedOrderedList {
@@ -91,7 +91,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",YES,2, @"c2",YES,2, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"p",NO,1, @"c1",YES,2, @"c2",YES,2, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldJumpBackLevels {
@@ -102,7 +102,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",NO,1, @"i11",NO,2, @"i111",NO,3, @"i2",NO,1, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"i1",NO,1, @"i11",NO,2, @"i111",NO,3, @"i2",NO,1, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldManageComplexLists {
@@ -125,7 +125,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:
 	 @"a",NO,1, @"a1",NO,2, @"a11",YES,3, @"a12",YES,3, 
 	 @"b",NO,1, 
 	 @"c",NO,1, @"c1",NO,2, @"c11",NO,3, @"c12",NO,3, @"c2",NO,2, 

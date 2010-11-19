@@ -16,6 +16,12 @@
 	return [NSString stringWithFormat:@"Link '%@'", [super description]];
 }
 
+#pragma mark Helper methods
+
+- (BOOL)isLinkItem {
+	return YES;
+}
+
 #pragma mark Properties
 
 @synthesize href;

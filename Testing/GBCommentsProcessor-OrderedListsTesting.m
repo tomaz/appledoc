@@ -28,7 +28,7 @@
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectMultipleLinesLists {
@@ -41,7 +41,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectMultipleLinesListsRegardlessOfLineNumbers {
@@ -54,7 +54,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectItemsSpanningMutlipleLines {
@@ -67,7 +67,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1 Continued", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:YES containsParagraphs:@"Item1 Continued", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
@@ -80,7 +80,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.items objectAtIndex:0] isOrdered:YES containsParagraphs:@"Item", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] isOrdered:YES containsParagraphs:@"Item", nil];
 }
 
 #pragma mark Nested lists testing
@@ -93,7 +93,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",YES,2, @"c2",YES,2, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",YES,2, @"c2",YES,2, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldDetectNestedUnorderedList {
@@ -104,7 +104,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",NO,2, @"c2",NO,2, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"p",YES,1, @"c1",NO,2, @"c2",NO,2, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldJumpBackLevels {
@@ -115,7 +115,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:@"i1",YES,1, @"i11",YES,2, @"i111",YES,3, @"i2",YES,1, nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:@"i1",YES,1, @"i11",YES,2, @"i111",YES,3, @"i2",YES,1, nil];
 }
 
 - (void)testProcessCommentWithStore_shouldManageComplexLists {
@@ -138,7 +138,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	GBCommentParagraph *paragraph = comment.firstParagraph;
-	[self assertList:[paragraph.items objectAtIndex:0] describesHierarchy:
+	[self assertList:[paragraph.paragraphItems objectAtIndex:0] describesHierarchy:
 	 @"a",YES,1, @"a1",YES,2, @"a11",NO,3, @"a12",NO,3, 
 	 @"b",YES,1, 
 	 @"c",YES,1, @"c1",YES,2, @"c11",YES,3, @"c12",YES,3, @"c2",YES,2, 

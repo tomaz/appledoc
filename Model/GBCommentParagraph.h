@@ -41,7 +41,7 @@
  
  Each object is a subclass of `GBParagraphItem`.
  */
-@property (readonly) NSArray *items;
+@property (readonly) NSArray *paragraphItems;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

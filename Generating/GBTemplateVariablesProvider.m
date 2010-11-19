@@ -81,6 +81,7 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
 
@@ -93,6 +94,7 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
 
@@ -105,6 +107,7 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
 

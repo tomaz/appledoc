@@ -55,4 +55,38 @@
  */
 @property (readonly) NSString *descriptionStringValue;
 
+///---------------------------------------------------------------------------------------
+/// @name Output generator helpers
+///---------------------------------------------------------------------------------------
+
+/** Returns `YES` if this item is text. This is only used to simplify output generation! */
+@property (readonly) BOOL isTextItem;
+
+/** Returns `YES` if this is ordered list item. This is only used to simplify output generation! */
+@property (readonly) BOOL isOrderedListItem;
+
+/** Returns `YES` if this is unordered list item. This is only used to simplify output generation! */
+@property (readonly) BOOL isUnorderedListItem;
+
+/** Returns `YES` if this is warning special item. This is only used to simplify output generation! */
+@property (readonly) BOOL isWarningSpecialItem;
+
+/** Returns `YES` if this is bug special item. This is only used to simplify output generation! */
+@property (readonly) BOOL isBugSpecialItem;
+
+/** Returns `YES` if this is example special item. This is only used to simplify output generation! */
+@property (readonly) BOOL isExampleSpecialItem;
+
+/** Returns `YES` if this is bold decorator item. This is only used to simplify output generation! */
+@property (readonly) BOOL isBoldDecoratorItem;
+
+/** Returns `YES` if this is italics decorator item. This is only used to simplify output generation! */
+@property (readonly) BOOL isItalicsDecoratorItem;
+
+/** Returns `YES` if this is code decorator item. This is only used to simplify output generation! */
+@property (readonly) BOOL isCodeDecoratorItem;
+
+/** Returns `YES` if this is link item. This is only used to simplify output generation! */
+@property (readonly) BOOL isLinkItem;
+
 @end

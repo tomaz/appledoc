@@ -42,12 +42,12 @@
 
 - (NSString *)debugDescription {
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [self className]];
-	if ([self.items count] > 1) [result appendString:@"\n"];
-	[self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+	if ([self.paragraphItems count] > 1) [result appendString:@"\n"];
+	[self.paragraphItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		[result appendString:[obj description]];
-		if (idx < [self.items count]-1) [result appendString:@",\n"];
+		if (idx < [self.paragraphItems count]-1) [result appendString:@",\n"];
 	}];
-	[result appendString:([self.items count] > 1) ? @"\n}" : @" }"];
+	[result appendString:([self.paragraphItems count] > 1) ? @"\n}" : @" }"];
 	return result;
 }
 
@@ -55,14 +55,14 @@
 
 - (NSString *)stringValue {
 	NSMutableString *result = [NSMutableString stringWithCapacity:1000];
-	for (GBParagraphItem *item in self.items) {
+	for (GBParagraphItem *item in self.paragraphItems) {
 		NSString *string = [item stringValue];
-		if (item != [self.items lastObject] && ![string hasSuffix:@"\n"]) string = [string stringByAppendingString:@"\n"];
+		if (item != [self.paragraphItems lastObject] && ![string hasSuffix:@"\n"]) string = [string stringByAppendingString:@"\n"];
 		[result appendString:string];
 	}
 	return result;
 }
 
-@synthesize items = _items;
+@synthesize paragraphItems = _items;
 
 @end

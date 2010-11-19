@@ -13,4 +13,5 @@
  Use `stringValue` to get the text value of the item.
  */
 @interface GBParagraphTextItem : GBParagraphItem
+
 @end

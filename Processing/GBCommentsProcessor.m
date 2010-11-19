@@ -272,7 +272,7 @@
 			item = [GBParagraphListItem paragraphItem];
 			item.isOrdered = ordered;
 			GBParagraphListItem *parent = [[stack lastObject] objectForKey:@"item"];
-			[[[parent items] lastObject] registerItem:item];
+			[[[parent listItems] lastObject] registerItem:item];
 			[data setObject:indent forKey:@"indent"];
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];
