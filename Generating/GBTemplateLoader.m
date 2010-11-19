@@ -19,6 +19,7 @@ static NSString *kGBValueKey = @"value";
 
 - (void)clearParsedValues;
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template;
+- (NSUInteger)lineOfSectionData:(NSDictionary *)data withinTemplate:(NSString *)template;
 
 @end
 
@@ -46,7 +47,10 @@ static NSString *kGBValueKey = @"value";
 	GBLogVerbose(@"Parsing template from %@...", path);
 	[self clearParsedValues];
 	NSString *template = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:error];
-	if (!template) return NO;
+	if (!template) {
+		if (error) GBLogNSError(*error, @"Loading template %@ failed!", path);
+		return NO;	
+	}
 	return [self parseTemplate:template error:error];
 }
 
@@ -64,10 +68,14 @@ static NSString *kGBValueKey = @"value";
 		// If section data is valid, use it.
 		if ([self validateSectionData:sectionData withTemplate:template]) {
 			NSString *name = [sectionData objectForKey:kGBNameKey];
-			NSString *value = [[sectionData objectForKey:kGBValueKey] stringByTrimmingWhitespace];
+			NSString *value = [[sectionData objectForKey:kGBValueKey] stringByTrimmingWhitespaceAndNewLine];
 			[_templateSections setObject:value forKey:name];
 		}
 		
+		// If the section is valid, log it.
+		NSUInteger line = [self lineOfSectionData:sectionData withinTemplate:template];
+		GBLogDebug(@"Found section template %@ at line %ld...", [sectionData objectForKey:kGBNameKey], line);
+
 		// Get the range of the regex within the clean string and remove the substring from it.
 		NSString *section = [sectionData objectForKey:kGBSectionKey];
 		NSRange range = [clean rangeOfString:section];
@@ -77,30 +85,35 @@ static NSString *kGBValueKey = @"value";
 		clean = [NSString stringWithFormat:@"%@%@%@", prefix, delimiter, suffix];
 		if ([clean length] == 0) break;
 	}
+	
+	// Prepare template string and warn if it's empty.
+	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [self.templateSections count]);
 	_templateString = [clean copy];
 	return YES;
 }
 
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template {
-	NSString *section = [data objectForKey:kGBSectionKey];
 	NSString *name = [data objectForKey:kGBNameKey];
-
 	if ([name length] == 0) {
-		NSRange range = [template rangeOfString:section];
-		NSUInteger line = [template numberOfLinesInRange:NSMakeRange(0, range.location)];
+		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
 		GBLogWarn(@"Unnamed section found at line %ld, ignoring!", line);
 		return NO;
 	}
 
 	NSString *value = [[data objectForKey:kGBValueKey] stringByTrimmingWhitespace];
 	if ([value length] == 0) {
-		NSRange range = [template rangeOfString:section];
-		NSUInteger line = [template numberOfLinesInRange:NSMakeRange(0, range.location)];
+		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
 		GBLogWarn(@"Empty section %@ found at line %ld, ignoring!", name, line);
 		return NO;
 	}
 	
 	return YES;
+}
+
+- (NSUInteger)lineOfSectionData:(NSDictionary *)data withinTemplate:(NSString *)template {
+	NSString *section = [data objectForKey:kGBSectionKey];
+	NSRange range = [template rangeOfString:section];
+	return [template numberOfLinesInRange:NSMakeRange(0, range.location)];
 }
 
 - (void)clearParsedValues {
