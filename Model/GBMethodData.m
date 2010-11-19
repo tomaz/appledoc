@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBMethodArgument.h"
 #import "GBMethodData.h"
 
@@ -123,7 +124,10 @@
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href {
 	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:3];
 	[result setObject:value forKey:@"value"];
-	if (style > 0) [result setObject:[NSNumber numberWithUnsignedInt:style] forKey:@"style"];
+	if (style > 0) {
+		[result setObject:[NSNumber numberWithUnsignedInt:style] forKey:@"style"];
+		[result setObject:[GRYes yes] forKey:@"emphasized"];
+	}
 	if (href) [result setObject:href forKey:@"href"];
 	return result;
 }

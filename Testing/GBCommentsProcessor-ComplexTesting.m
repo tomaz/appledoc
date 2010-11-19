@@ -52,7 +52,7 @@
 	 [GBParagraphListItem class], [NSNull null],
 	 [GBParagraphSpecialItem class], @"Source line 1\n\n\tSource line with tab",
 	 nil];
-	[self assertList:[paragraph.items objectAtIndex:2] describesHierarchy:
+	[self assertList:[paragraph.paragraphItems objectAtIndex:2] describesHierarchy:
 	 @"Nested 1", NO, 1,
 	 @"Nested 1.1", NO, 2,
 	 @"Nested 2", NO, 1,
@@ -69,14 +69,14 @@
 	 [GBParagraphSpecialItem class], [NSNull null],
 	 nil];
 	
-	GBParagraphSpecialItem *warning = [paragraph.items objectAtIndex:1];
+	GBParagraphSpecialItem *warning = [paragraph.paragraphItems objectAtIndex:1];
 	assertThatInteger(warning.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:warning.specialItemDescription containsItems:
 	 [GBParagraphDecoratorItem class], @"Important:", 
 	 [GBParagraphTextItem class], @"There is something important about this! We even write it in two lines!",
 	 nil];
 	
-	GBParagraphSpecialItem *bug = [paragraph.items objectAtIndex:2];
+	GBParagraphSpecialItem *bug = [paragraph.paragraphItems objectAtIndex:2];
 	assertThatInteger(bug.specialItemType, equalToInteger(GBSpecialItemTypeBug));
 	[self assertParagraph:bug.specialItemDescription containsItems:
 	 [GBParagraphDecoratorItem class], @"ID215:", 

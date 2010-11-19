@@ -171,12 +171,12 @@ span.tooltip:hover span.tooltip {
 	color: #000;
 }
 
-.parameter-def {
+.argument-def {
 	margin-top: 0.3em;
 	margin-bottom: 0.3em;
 }
 
-.parameter-def dd {
+.argument-def dd {
 	margin-left: 1.25em;
 }
 

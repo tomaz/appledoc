@@ -38,6 +38,48 @@
 	return [NSString stringWithFormat:@"%@", [self.stringValue normalizedDescription]];
 }
 
+#pragma mark Output generator helpers
+
+- (BOOL)isTextItem {
+	return NO;
+}
+
+- (BOOL)isOrderedListItem {
+	return NO;
+}
+
+- (BOOL)isUnorderedListItem {
+	return NO;
+}
+
+- (BOOL)isWarningSpecialItem {
+	return NO;
+}
+
+- (BOOL)isBugSpecialItem {
+	return NO;
+}
+
+- (BOOL)isExampleSpecialItem {
+	return NO;
+}
+
+- (BOOL)isBoldDecoratorItem {
+	return NO;
+}
+
+- (BOOL)isItalicsDecoratorItem {
+	return NO;
+}
+
+- (BOOL)isCodeDecoratorItem {
+	return NO;
+}
+
+- (BOOL)isLinkItem {
+	return NO;
+}
+
 #pragma mark Properties
 
 @synthesize stringValue;

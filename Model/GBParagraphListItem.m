@@ -50,11 +50,19 @@
 	[_items addObject:item];
 }
 
+- (BOOL)isOrderedListItem {
+	return self.isOrdered;
+}
+
+- (BOOL)isUnorderedListItem {
+	return !self.isOrdered;
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)stringValue {
 	NSMutableString *description = [NSMutableString stringWithCapacity:1000];	
-	[self.items enumerateObjectsUsingBlock:^(GBCommentParagraph *paragraph, NSUInteger idx, BOOL *stop) {
+	[self.listItems enumerateObjectsUsingBlock:^(GBCommentParagraph *paragraph, NSUInteger idx, BOOL *stop) {
 		[description appendFormat:@"%@ %@ ", self.isOrdered ? @"#" : @"-", [paragraph stringValue]];
 	}];
 	NSString *trimmed = [description stringByReplacingOccurrencesOfString:@"  " withString:@" "];
@@ -63,12 +71,12 @@
 
 - (NSString *)descriptionStringValue {
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [super descriptionStringValue]];
-	if ([self.items count] > 1) [result appendString:@"\n"];
-	[self.items enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+	if ([self.listItems count] > 1) [result appendString:@"\n"];
+	[self.listItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 		[result appendString:[obj description]];
-		if (idx < [self.items count]-1) [result appendString:@",\n"];
+		if (idx < [self.listItems count]-1) [result appendString:@",\n"];
 	}];
-	[result appendString:([self.items count] > 1) ? @"\n}" : @" }"];
+	[result appendString:([self.listItems count] > 1) ? @"\n}" : @" }"];
 	return result;
 }
 
@@ -78,7 +86,7 @@
 
 #pragma mark Properties
 
-@synthesize items = _items;
+@synthesize listItems = _items;
 @synthesize isOrdered;
 
 @end

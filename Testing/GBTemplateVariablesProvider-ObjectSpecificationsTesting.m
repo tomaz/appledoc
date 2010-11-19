@@ -23,7 +23,7 @@
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	assertThatInteger([specifications count], equalToInteger(0));
 }
@@ -35,7 +35,7 @@
 	class.nameOfSuperclass = @"NSObject";
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -55,7 +55,7 @@
 	class.superclass = superclass;
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -80,7 +80,7 @@
 	[store registerClass:level2];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify - note that href is created even if superclass is not registered to store as long as a superclass property is non-nil.
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -101,7 +101,7 @@
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	assertThatInteger([specifications count], equalToInteger(0));
 }
@@ -113,7 +113,7 @@
 	[class.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"Protocol"]];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -132,7 +132,7 @@
 	[class.adoptedProtocols registerProtocol:protocol];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -156,7 +156,7 @@
 	[class.adoptedProtocols registerProtocol:protocol3];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -178,7 +178,7 @@
 	[class registerSourceInfo:[GBSourceInfo infoWithFilename:@"file.h" lineNumber:10]];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];
@@ -195,7 +195,7 @@
 	[class registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2.h" lineNumber:55]];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
-	NSArray *specifications = [vars valueForKeyPath:@"page.specifications"];
+	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
 	NSDictionary *specification = [specifications objectAtIndex:0];
 	NSArray *values = [specification objectForKey:@"values"];

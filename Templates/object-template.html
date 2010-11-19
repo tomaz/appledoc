@@ -1,236 +1,206 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>{{ page.title }}</title>
+		<title>{{page/title}}</title>
 		<meta http-equiv="Content-Type" content="application/xhtml+xml;charset=utf-8" />
-		<link rel="stylesheet" type="text/css" href="{{ page.cssPath }}" />
+		<link rel="stylesheet" type="text/css" href="{{page/cssPath}}" />
 		<meta name="generator" content="appledoc" />
 	</head>
 	<body>
 	
 		<div class="section-header">
-			<h1 class="title title-header">{{ page.title }}</h1>
+			<h1 class="title title-header">{{page/title}}</h1>
 		</div>
 
-		{% if page.specifications.@count > 0 %}
-			<div class="section section-specification">
-				<table cellspacing="0">
-					<tbody>
-						{% for specification in page.specifications %}
-							{% section execute ObjectSpecification specification specification %}{% /section %}
-						{% /for %}
-					</tbody>
-				</table>
-			</div>
-		{% /if %}
+		{{#page/specifications}}
+			{{#used}}<div class="section section-specification"><table cellspacing="0"><tbody>{{/used}}
+				{{#values}}{{>ObjectSpecification}}{{/values}}
+			{{#used}}</tbody></table></div>{{/used}}
+		{{/page/specifications}}
+
+		{{#object/comment}}
+		<div class="section section-overview">
+			<h2 class="subtitle subtitle-overview">{{strings/objectOverview/title}}</h2>
+			{{>GBComment}}
+		</div>
+		{{/object/comment}}
 		
-		{% if object.comment %}
-			<div class="section section-overview">
-				<h2 class="subtitle subtitle-overview">{{ strings.objectOverview.title }}</h2>
-				{% section execute GBComment comment object.comment %}{% /section %}
-			</div>
-		{% /if %}
-
-		{% if object.methods.sections.@count > 0 %}
-			<div class="section section-tasks">
-				<h2 class="subtitle subtitle-tasks">{{ strings.objectTasks.title }}</h2>
-				{% for section in object.methods.sections %}
-					{% if object.methods.sections.@count > 1 %}
-						<h3 class="subsubtitle task-title">
-						{% if section.sectionName %}
-							{{ section.sectionName }}
-						{% else %}
-							{{ strings.objectTasks.otherMethodsSectionName }}
-						{% /if %}
-						</h3>
-					{% else %}
-						{% if section.sectionName %}
-							<h3 class="subsubtitle task-title">{{ section.sectionName }}</h3>
-						{% /if %}
-					{% /if %}
-					</h3>
+		{{#object/methods}}
+			{{#hasSections}}
+		<div class="section section-tasks">
+			<h2 class="subtitle subtitle-tasks">{{strings/objectTasks/title}}</h2>
+				{{#sections}}
+					{{>TaskTitle}}
 					<ul class="task-list">
-					{% for method in section.methods %}
-						<li>
-							<span class="tooltip">
-								<code><a href="{{ method.htmlLocalReference }}">{% section execute MethodSelector method method %}{% /section %}</a></code>
-								{% if method.comment.firstParagraph %}
-									<span class="tooltip">{% section execute GBCommentParagraph paragraph method.comment.firstParagraph %}{% /section %}</span>
-								{% /if %}
-							</span>
-							{% if method.isRequired %}
-								<span class="task-item-suffix">{{ strings.objectTasks.requiredMethod }}</span>
-							{% /if %}
-						</li>
-					{% /for %}
+					{{#methods}}{{>TaskMethod}}{{/methods}}
 					</ul>
-				{% /for %}
-			</div>
-		{% /if %}
+				{{/sections}}
+		</div>
+			{{/hasSections}}
+		{{/object/methods}}
 
-		{% section execute MethodsSection methods object.methods.classMethods title strings.objectMethods.classMethodsTitle %}{% /section %}
-		{% section execute MethodsSection methods object.methods.instanceMethods title strings.objectMethods.instanceMethodsTitle %}{% /section %}
-		{% section execute MethodsSection methods object.methods.properties title strings.objectMethods.propertiesTitle %}{% /section %}
+		{{#object/methods}}
+			{{#hasClassMethods}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/classMethodsTitle}}</h2>
+				{{#classMethods}}
+					{{>Method}}
+				{{/classMethods}}
+		</div>
+			{{/hasClassMethods}}
+			
+			{{#hasInstanceMethods}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/instanceMethodsTitle}}</h2>
+				{{#instanceMethods}}
+					{{>Method}}
+				{{/instanceMethods}}
+		</div>
+			{{/hasInstanceMethods}}
+			
+			{{#hasProperties}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/propertiesTitle}}</h2>
+				{{#properties}}
+					{{>Method}}
+				{{/properties}}
+		</div>
+			{{/hasProperties}}
+		{{/object/methods}}
 	</body>
 </html>
 
-{% comment %} -------------- METHODS SECTIONS -------------- {% /comment %}
 
-{% section template MethodsSection methods title %}
-	{% if methods.@count > 0 %}
-		<div class="section section-methods">
-			<h2 class="subtitle subtitle-methods">{{ title }}</h2>
-			{% for method in methods %}
-				{% section execute Method method method %}{% /section %}
-			{% /for %}
-		</div>
-	{% /if %}
-{% /section %}
-
-{% section template Method method %}
+Section Method
 	<div class="section-method">
-		<a name="{{ method.htmlReferenceName }}" title="{{ method.methodSelector }}"></a>
-		<h3 class="subsubtitle method-title">{{ method.methodSelector }}</h3>
-		{% if method.comment.firstParagraph %}
-			<div class="method-subsection brief-description">
-				<p>{% section execute GBCommentParagraph paragraph method.comment.firstParagraph %}{% /section %}</p>
-			</div>
-		{% /if %}
-		<div class="method-subsection method-declaration"><code>{% section execute MethodDeclaration method method %}{% /section %}</code></div>
-		{% if method.comment.parameters.@count > 0 %}
-			<div class="method-subsection parameter-section parameter">
-				<h4 class="method-subtitle parameter-title">{{ strings.objectMethods.parametersTitle }}</h4>
-				{% for parameter in method.comment.parameters %}
-					<dl class="parameter-def">
-						<dt><em>{{ parameter.argumentName }}</em></dt>
-						<dd>{% section execute GBCommentParagraph paragraph parameter.argumentDescription %}{% /section %}</dd>
-					</dl>
-				{% /for %}
-			</div>
-		{% /if %}
-		{% if method.comment.result %}
-			<div class="method-subsection parameter-section return">
-				<h4 class="method-subtitle parameter-title">{{ strings.objectMethods.resultTitle }}</h4>
-				<p>{% section execute GBCommentParagraph paragraph method.comment.result %}{% /section %}</p>
-			</div>
-		{% /if %}
-		{% if method.comment.paragraphs.@count > 1 %}
-			<div class="method-subsection discussion-section">
-				<h4 class="method-subtitle">{{ strings.objectMethods.discussionTitle }}</h4>
-				{% for paragraph in method.comment.paragraphs %}
-				<p>{% section execute GBCommentParagraph paragraph paragraph %}{% /section %}</p>
-				{% /for %}
-			</div>
-		{% /if %}
-		{% if method.comment.exceptions.@count > 0 %}
-			<div class="method-subsection exception-section parameter">
-				<h4 class="method-subtitle exception-title">{{ strings.objectMethods.exceptionsTitle }}</h4>
-				{% for exception in method.comment.exceptions %}
-					<dl class="exception-def">
-						<dt><em>{{ exception.argumentName }}</em></dt>
-						<dd>{% section execute GBCommentParagraph paragraph exception.argumentDescription %}{% /section %}</dd>
-					</dl>
-				{% /for %}
-			</div>
-		{% /if %}
-		{% if method.comment.crossrefs.@count > 0 %}
-			<div class="method-subsection see-also-section">
-				<h4 class="method-subtitle">{{ strings.objectMethods.seeAlsoTitle }}</h4>
-				<ul>
-					{% for crossref in method.comment.crossrefs %}					
-					<li><code><a href="{{ crossref.href }}">{{ crossref.stringValue }}</a></code></li>
-					{% /for %}
-				</ul>
-			</div>
-		{% /if %}
-		<div class="method-subsection declared-in-section">
-			<h4 class="method-subtitle">{{ strings.objectMethods.declaredInTitle }}</h4>
-			{% for sourceInfo in method.sourceInfosSortedByName %}
-				<code class="declared-in-ref">{{ sourceInfo.filename }}</code><br />
-			{% /for %}
-		</div>				
+		<a name="{{htmlReferenceName}}" title="{{methodSelector}}"></a>
+		<h3 class="subsubtitle method-title">{{methodSelector}}</h3>
+		
+		{{#comment}}
+			{{#firstParagraph}}
+				<div class="method-subsection brief-description">
+					<p>{{>GBCommentParagraph}}</p>
+				</div>		
+			{{/firstParagraph}}
+			
+			<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
+	
+			{{#hasParameters}}
+				<div class="method-subsection arguments-section parameters">
+					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
+					{{#parameters}}
+						<dl class="argument-def parameter-def">
+							<dt><em>{{argumentName}}</em></dt>
+							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+						</dl>
+					{{/parameters}}
+				</div>
+			{{/hasParameters}}
+	
+			{{#result}}
+				<div class="method-subsection return">
+					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
+					<p>{{>GBCommentParagraph}}</p>
+				</div>
+			{{/result}}
+
+			{{#hasParagraphs}}
+				<div class="method-subsection discussion-section">
+					<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
+					{{#paragraphs}}
+					<p>{{>GBCommentParagraph}}</p>
+					{{/paragraphs}}
+				</div>
+			{{/hasParagraphs}}
+
+			{{#hasExceptions}}
+				<div class="method-subsection arguments-section exceptions">
+					<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
+					{{#exceptions}}
+						<dl class="argument-def exception-def">
+							<dt><em>{{argumentName}}</em></dt>
+							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+						</dl>
+					{{/exceptions}}
+				</div>
+			{{/hasExceptions}}
+
+			{{#hasCrossrefs}}
+				<div class="method-subsection see-also-section">
+					<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+					<ul>
+						{{#crossrefs}}
+						<li><code><a href="{{href}}">{{stringValue}}</a></code></li>
+						{{/crossrefs}}
+					</ul>
+				</div>
+			{{/hasCrossrefs}}
+
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+				{{#sourceInfosSortedByName}}
+					<code class="declared-in-ref">{{filename}}</code><br />
+				{{/sourceInfosSortedByName}}
+			</div>				
+		{{/comment}}
 	</div>
-{% /section %}
+EndSection
 
-{% section template MethodDeclaration method %}
-	{% for component in method.formattedComponents %}
-		{% if component.style == 1) %}<em>{% /if %}
-		{% if component.href.length > 0) %}<a href="{{ component.href }}">{% /if %}
-		{{ component.value }}
-		{% if component.href.length > 0) %}</a>{% /if %}
-		{% if component.style == 1) %}</em>{% /if %}
-	{% /for %}
-{% /section %}
+Section MethodDeclaration
+	{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
+EndSection
 
-{% section template MethodSelector method %}
-	{{ method.methodPrefix }} {{ method.methodSelector }}
-{% /section %}
+Section MethodSelector
+	{{methodPrefix}} {{methodSelector}}
+EndSection
 
-{% comment %} -------------- COMMENTS SECTIONS -------------- {% /comment %}
 
-{% section template GBComment comment %}
-	{% for paragraph in comment.paragraphs %}
-		<p>{% section execute GBCommentParagraph paragraph paragraph %}{% /section %}</p>
-	{% /for %}
-{% /section %}
+Section TaskTitle
+	{{#hasMultipleSections}}<h3 class="subsubtitle task-title">{{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}</h3>{{/hasMultipleSections}}
+	{{^hasMultipleSections}}{{#sectionName}}<h3 class="subsubtitle task-title">{{.}}</h3>{{/sectionName}}{{/hasMultipleSections}}
+EndSection
 
-{% section template GBCommentParagraph paragraph %}
-	{% for paragraphItem in paragraph.items %}
-		{% section execute GBParagraphItem item paragraphItem %}{% /section %}
-	{% /for %}
-{% /section %}
+Section TaskMethod
+<li>
+	<span class="tooltip">
+		<code><a href="{{htmlLocalReference}}">{{>MethodSelector}}</a></code>
+		{{#comment/firstParagraph}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/firstParagraph}}
+	</span>
+	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}
+</li>
+EndSection
 
-{% section template GBParagraphItem item %}
-	{% set tagName "invalid" %}
-	{% if item.className equalsString "GBParagraphTextItem" %}
-		{{ item.stringValue }}
-	{% /if %}	
-	{% if item.className equalsString "GBParagraphListItem" %}
-		{% set tagName "ul" %}
-		{% if item.isOrdered %}{% set tagName "ol" %}{% /if %}
-		<{{ tagName }}>
-			{% for listItemDescription in item.items %}
-				<li>{% section execute GBCommentParagraph paragraph listItemDescription %}{% /section %}</li>
-			{% /for %}
-		</{{ tagName }}>
-	{% /if %}	
-	{% if item.className equalsString "GBParagraphSpecialItem" %}
-		{% if item.specialItemType == 0 %}
-			<p class="warning">{% section execute GBCommentParagraph paragraph item.specialItemDescription %}{% /section %}</p>
-		{% /if %}
-		{% if item.specialItemType == 1 %}
-			<p class="bug">{% section execute GBCommentParagraph paragraph item.specialItemDescription %}{% /section %}</p>
-		{% /if %}
-		{% if item.specialItemType == 2 %}
-			<pre>{% section execute GBCommentParagraph paragraph item.specialItemDescription %}{% /section %}</pre>
-		{% /if %}
-	{% /if %}
-	{% if item.className equalsString "GBParagraphDecoratorItem" %}
-		{% if item.decorationType == 0 %}{% set tagName "strong" %}{% /if %}
-		{% if item.decorationType == 1 %}{% set tagName "em" %}{% /if %}
-		{% if item.decorationType == 2 %}{% set tagName "code" %}{% /if %}
-		<{{ tagName }}>
-			{% for decoratedItem in item.decoratedItems %}
-				{% section execute GBParagraphItem item decoratedItem %}{% /section %}
-			{% /for %}
-		</{{ tagName }}>
-	{% /if %}	
-	{% if item.className equalsString "GBParagraphLinkItem" %}
-		<a href="{{ item.href }}">{{ item.stringValue }}</a>
-	{% /if %}	
-{% /section %}
 
-{% comment %} -------------- GENERAL SECTIONS -------------- {% /comment %}
+Section GBComment
+	{{#paragraphs}}
+		<p>{{>GBCommentParagraph}}</p>
+	{{/paragraphs}}
+EndSection
 
-{% section template ObjectSpecification specification %}
-	<tr>
-		<td class="specification-title">{{ specification.title }}</td>
-		<td class="specification-value">
-			{% for value in specification.values %}
-				{% if value.href %}<a href="{{ value.href }}">{% /if %}
-				{{ value.string }}{{ value.delimiter }}
-				{% if value.href %}</a>{% /if %}
-			{% /for %}
-		</td>
-	</tr>
-{% /section %}
+Section GBCommentParagraph
+	{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
+EndSection
+
+Section GBParagraphItem
+	{{#isTextItem}} {{stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
+EndSection
+
+Section GBParagraphListItem
+	{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
+EndSection
+
+Section GBParagraphSpecialItem
+	{{#specialItemDescription}}{{>GBCommentParagraph}}{{/specialItemDescription}}
+EndSection
+
+Section GBParagraphDecoratorItem
+	{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
+EndSection
+
+
+Section ObjectSpecification
+<tr>
+	<td class="specification-title">{{title}}</td>
+	<td class="specification-value">{{#values}}{{#href}}<a href="{{href}}">{{/href}}{{string}}{{#href}}</a>{{/href}}{{delimiter}}{{/values}}</td>
+</tr>
+EndSection

@@ -123,6 +123,28 @@
 	return [self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0);
 }
 
+#pragma mark Output helper method
+
+- (BOOL)hasParagraphs {
+	return ([self.paragraphs count] > 0);
+}
+
+- (BOOL)hasMultipleParagraphs {
+	return ([self.paragraphs count] > 1);
+}
+
+- (BOOL)hasParameters {
+	return ([self.parameters count] > 0);
+}
+
+- (BOOL)hasExceptions {
+	return ([self.exceptions count] > 0);
+}
+
+- (BOOL)hasCrossrefs {
+	return ([self.crossrefs count] > 0);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

@@ -66,7 +66,7 @@
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
-		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"\\r\n|[\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"];
+		self.newLinesRegexSymbols = [NSString stringWithUTF8String:"\\r\\n|[\\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"];
 		self.settings = settingsProvider;
 	}
 	return self;
@@ -272,7 +272,7 @@
 			item = [GBParagraphListItem paragraphItem];
 			item.isOrdered = ordered;
 			GBParagraphListItem *parent = [[stack lastObject] objectForKey:@"item"];
-			[[[parent items] lastObject] registerItem:item];
+			[[[parent listItems] lastObject] registerItem:item];
 			[data setObject:indent forKey:@"indent"];
 			[data setObject:item forKey:@"item"];
 			[stack addObject:data];
@@ -602,7 +602,7 @@
 
 - (NSString *)trimmedTextFromString:(NSString *)string {
 	// Returns trimmed text where all occurences of whitespace at the start and end are stripped out. If text only contains whitespace, nil is returned.
-	NSString *result = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+	NSString *result = [string stringByTrimmingWhitespace];
 	return ([result length] > 0) ? result : nil;
 }
 

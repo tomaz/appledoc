@@ -63,6 +63,26 @@
 	assertThat(comment.firstParagraph, is(paragraph1));
 }
 
+- (void)testHasParagraphs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasParagraphs, equalToBool(YES));
+}
+
+- (void)testHasMultipleParagraphs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(YES));
+}
+
 #pragma mark Parameters testing
 
 - (void)testRegisterParameter_shouldAddParameterToList {
@@ -117,6 +137,15 @@
 	assertThat([comment.parameters objectAtIndex:1], is(parameter1));
 }
 
+- (void)testHasParameters_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasParameters, equalToBool(NO));
+	[comment registerParameter:[GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]]];
+	assertThatBool(comment.hasParameters, equalToBool(YES));
+}
+
 #pragma mark Exceptions testing
 
 - (void)testRegisterException_shouldAddExceptionToList {
@@ -157,6 +186,15 @@
 	assertThat([comment.exceptions objectAtIndex:0], is(exception2));
 }
 
+- (void)testHasExceptions_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasExceptions, equalToBool(NO));
+	[comment registerException:[GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]]];
+	assertThatBool(comment.hasExceptions, equalToBool(YES));
+}
+
 #pragma mark CrossReferences testing
 
 - (void)testRegisterCrossReference_shouldAddCrossReferenceToList {
@@ -195,6 +233,15 @@
 	// verify
 	assertThatInteger([comment.crossrefs count], equalToInteger(1));
 	assertThat([comment.crossrefs objectAtIndex:0], is(ref1));
+}
+
+- (void)testHasCrossrefs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasCrossrefs, equalToBool(NO));
+	[comment registerCrossReference:[GBParagraphLinkItem paragraphItemWithStringValue:@"link"]];
+	assertThatBool(comment.hasCrossrefs, equalToBool(YES));
 }
 
 @end

@@ -51,6 +51,14 @@
 	return result;
 }
 
+- (NSString *)stringByTrimmingWhitespace {
+	return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
+- (NSString *)stringByTrimmingWhitespaceAndNewLine {
+	return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 #pragma mark Preparing nice descriptions
 
 - (NSString *)normalizedDescription {

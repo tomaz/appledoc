@@ -54,6 +54,20 @@
 	return [NSString stringWithFormat:@"Decorator '%@'", [super description]];
 }
 
+#pragma mark Helper methods
+
+- (BOOL)isBoldDecoratorItem {
+	return (self.decorationType == GBDecorationTypeBold);
+}
+
+- (BOOL)isItalicsDecoratorItem {
+	return (self.decorationType == GBDecorationTypeItalics);
+}
+
+- (BOOL)isCodeDecoratorItem {
+	return (self.decorationType == GBDecorationTypeCode);
+}
+
 #pragma mark Properties
 
 @synthesize decoratedItems = _decoratedItems;

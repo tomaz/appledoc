@@ -210,6 +210,52 @@
 @property (readonly) NSArray *crossrefs;
 
 ///---------------------------------------------------------------------------------------
+/// @name Output generator helpers
+///---------------------------------------------------------------------------------------
+
+/** Indicates whether the comment has at least one paragraph or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraph` count is greater than 0, like this: `[object.paragraphs count] > 0`.
+ 
+ @see hasMultipleParagraphs
+ @see paragraphs
+ */
+@property (readonly) BOOL hasParagraphs;
+
+/** Indicates whether the comment has at least two paragraphs or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraph` count is greater than 1, like this: `[object.paragraphs count] > 1`.
+ 
+ @see hasParagraphs
+ @see paragraphs
+ */
+@property (readonly) BOOL hasMultipleParagraphs;
+
+/** Indicates whether the comment has at least one parameter or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `parameters` count is greater than 0, like this: `[object.parameters count] > 0`.
+ 
+ @see parameters
+ */
+@property (readonly) BOOL hasParameters;
+
+/** Indicates whether the comment has at least one exception or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `exceptions` count is greater than 0, like this: `[object.exceptions count] > 0`.
+ 
+ @see exceptions
+ */
+@property (readonly) BOOL hasExceptions;
+
+/** Indicates whether the comment has at least one cross reference or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `crossrefs` count is greater than 0, like this: `[object.crossrefs count] > 0`.
+ 
+ @see exceptions
+ */
+@property (readonly) BOOL hasCrossrefs;
+
+///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------
 

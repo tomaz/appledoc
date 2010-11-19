@@ -79,6 +79,7 @@
  @see registerSectionWithName:
  @see registerMethod:
  @see methods
+ @see hadSections
  */
 @property (readonly) NSArray *sections;
 
@@ -160,5 +161,57 @@
  @param source `GBMethodsProvider` to merge from.
  */
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source;
+
+///---------------------------------------------------------------------------------------
+/// @name Output helpers
+///---------------------------------------------------------------------------------------
+
+/** Specifies whether there is at least one section registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of sections and check if the value is greater than 0, like this: `[object.sections count] > 0`.
+ 
+ @see hasMultipleSections
+ @see sections
+ */
+@property (readonly) BOOL hasSections;
+
+/** Specifies whether there is are at least two sections registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of sections and check if the value is greater than 1, like this: `[object.sections count] > 1`.
+ 
+ @see hasSections
+ @see sections
+ */
+@property (readonly) BOOL hasMultipleSections;
+
+/** Specifies whether there is are at least one class method registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of class methods and check if the value is greater than 1, like this: `[object.classMethods count] > 0`.
+ 
+ @see hasInstanceMethods
+ @see hasProperties
+ @see classMethods
+ */
+@property (readonly) BOOL hasClassMethods;
+
+/** Specifies whether there is are at least one instance method registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of instance methods and check if the value is greater than 1, like this: `[object.instanceMethods count] > 0`.
+ 
+ @see hasClassMethods
+ @see hasProperties
+ @see instanceMethods
+ */
+@property (readonly) BOOL hasInstanceMethods;
+
+/** Specifies whether there is are at least one property registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of propeties and check if the value is greater than 1, like this: `[object.properties count] > 0`.
+ 
+ @see hasClassMethods
+ @see hasInstanceMethods
+ @see properties
+ */
+@property (readonly) BOOL hasProperties;
 
 @end

@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 
@@ -112,7 +113,11 @@
 		NSString *href = va_arg(args, NSString *);
 		if (!href) [NSException raise:@"Href not given for value %@ at index %ld!", value, [arguments count]];
 		
-		NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:value, @"value", style, @"style", href, @"href", nil];
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+		[data setObject:value forKey:@"value"];
+		[data setObject:style forKey:@"style"];
+		[data setObject:href forKey:@"href"];
+		if ([style unsignedIntValue] == 1) [data setObject:[GRYes yes] forKey:@"emphasized"];
 		[arguments addObject:data];
 		
 		value = va_arg(args, NSString *);
@@ -126,6 +131,7 @@
 		NSDictionary *expected = [arguments objectAtIndex:i];
 		
 		assertThat([actual objectForKey:@"value"], is([expected objectForKey:@"value"]));
+		assertThat([actual objectForKey:@"emphasized"], is([expected objectForKey:@"emphasized"]));
 		
 		NSNumber *expectedStyle = [expected objectForKey:@"style"];
 		NSNumber *actualStyle = [actual objectForKey:@"style"];
@@ -162,9 +168,9 @@
 	}
 	va_end(args);
 	
-	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
-	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
-		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
+	assertThatInteger([paragraph.paragraphItems count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.paragraphItems count]; i++) {
+		GBParagraphItem *item = [paragraph.paragraphItems objectAtIndex:i];
 		NSDictionary *data = [arguments objectAtIndex:i];
 		assertThat([item class], is([data objectForKey:@"class"]));
 		if ([data objectForKey:@"value"] == GBNULL) continue;
@@ -194,9 +200,9 @@
 	}
 	va_end(args);
 	
-	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
-	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
-		GBParagraphLinkItem *item = [paragraph.items objectAtIndex:i];
+	assertThatInteger([paragraph.paragraphItems count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.paragraphItems count]; i++) {
+		GBParagraphLinkItem *item = [paragraph.paragraphItems objectAtIndex:i];
 		NSDictionary *data = [arguments objectAtIndex:i];
 		NSString *value = [data objectForKey:@"value"];
 		id context = [data objectForKey:@"context"];
@@ -231,9 +237,9 @@
 		[arguments addObject:arg];
 	}
 	
-	assertThatInteger([paragraph.items count], equalToInteger([arguments count]));
-	for (NSUInteger i=0; i<[paragraph.items count]; i++) {
-		GBParagraphItem *item = [paragraph.items objectAtIndex:i];
+	assertThatInteger([paragraph.paragraphItems count], equalToInteger([arguments count]));
+	for (NSUInteger i=0; i<[paragraph.paragraphItems count]; i++) {
+		GBParagraphItem *item = [paragraph.paragraphItems objectAtIndex:i];
 		if (class) assertThat([item class], is(class));
 		assertThat(item.stringValue, is([arguments objectAtIndex:i]));
 	}
@@ -251,10 +257,10 @@
 	va_end(args);
 	
 	assertThatBool(list.isOrdered, equalToBool(ordered));
-	assertThatInteger([arguments count], equalToInteger([list.items count]));
-	for (NSUInteger i=0; i<[list.items count]; i++) {
-		assertThat([[list.items objectAtIndex:i] class], is([GBCommentParagraph class]));
-		assertThat([[list.items objectAtIndex:i] stringValue], is([arguments objectAtIndex:i]));
+	assertThatInteger([arguments count], equalToInteger([list.listItems count]));
+	for (NSUInteger i=0; i<[list.listItems count]; i++) {
+		assertThat([[list.listItems objectAtIndex:i] class], is([GBCommentParagraph class]));
+		assertThat([[list.listItems objectAtIndex:i] stringValue], is([arguments objectAtIndex:i]));
 	}
 }
 
@@ -282,8 +288,8 @@
 	assertThat([item class], is([GBParagraphListItem class]));
 	
 	// Recursively follow all paragraphs and their subitems hierarchy (skip text items).
-	for (GBCommentParagraph *paragraph in item.items) {
-		for (GBParagraphItem *paragraphsItem in paragraph.items) {
+	for (GBCommentParagraph *paragraph in item.listItems) {
+		for (GBParagraphItem *paragraphsItem in paragraph.paragraphItems) {
 			if ([paragraphsItem isKindOfClass:[GBParagraphTextItem class]]) {
 				// Get current expected values.
 				NSDictionary *data = [arguments objectAtIndex:index];
@@ -375,8 +381,8 @@
 	}
 	va_end(args);
 	assertThat([argument class], is([GBCommentArgument class]));
-	assertThatInteger([argument.argumentDescription.items count], equalToInteger([descriptions count]));
-	[argument.argumentDescription.items enumerateObjectsUsingBlock:^(GBParagraphItem *item, NSUInteger idx, BOOL *stop) {
+	assertThatInteger([argument.argumentDescription.paragraphItems count], equalToInteger([descriptions count]));
+	[argument.argumentDescription.paragraphItems enumerateObjectsUsingBlock:^(GBParagraphItem *item, NSUInteger idx, BOOL *stop) {
 		assertThat([item stringValue], is([descriptions objectAtIndex:idx]));
 	}];
 }

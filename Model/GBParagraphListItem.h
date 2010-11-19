@@ -50,6 +50,6 @@
 @property (assign) BOOL isOrdered;
 
 /** Array of all list items as instances of `GBCommentParagraph` in the same order as in comment text. */
-@property (readonly) NSArray *items;
+@property (readonly) NSArray *listItems;
 
 @end

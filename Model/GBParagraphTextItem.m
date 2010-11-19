@@ -14,4 +14,8 @@
 	return [NSString stringWithFormat:@"Text '%@'", [super description]];
 }
 
+- (BOOL)isTextItem {
+	return YES;
+}
+
 @end

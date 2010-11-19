@@ -138,6 +138,7 @@ typedef NSUInteger GBMethodType;
  
  - `value`: a `NSString` containing the actual value to be output. This value is always present and is neven empty string.
  - `style`: a `NSNumber` containing desired style. At this point, the only possible value is `1` for emphasized. If normal style is desired, this key is not present in the dictionary.
+ - `emphasized`: a `GRYes` indicating whether the `style` is `1`. If style is not `1`, this key is missing.
  - `href`: a `NSString` containing the HTML cross reference link that should be applied with the component. If no cross reference is attached, the key is not present in the dictionary.
  
  @return Returns formatted components of the receiver.

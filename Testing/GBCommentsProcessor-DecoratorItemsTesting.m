@@ -23,7 +23,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -37,7 +37,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -51,7 +51,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -65,7 +65,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -79,7 +79,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
@@ -93,7 +93,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text_under", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under", nil];
 }
@@ -114,7 +114,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -128,7 +128,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -142,7 +142,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -156,7 +156,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -170,7 +170,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
@@ -184,7 +184,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text*star", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text*star", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text*star", nil];
 }
@@ -205,7 +205,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
@@ -220,7 +220,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
@@ -235,7 +235,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
@@ -250,7 +250,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
@@ -265,7 +265,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bla word tab line", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
@@ -280,7 +280,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under*star", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"text_under*star", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"text_under*star", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under*star", nil];
@@ -302,7 +302,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -316,7 +316,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"normal", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -330,7 +330,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphDecoratorItem class], @"text", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -344,7 +344,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphDecoratorItem class], @"text", [GBParagraphTextItem class], @"suffix", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text", nil];
 }
@@ -358,7 +358,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"bla word tab line", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"bla word tab line", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bla word tab line", nil];
 }
@@ -372,7 +372,7 @@
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphDecoratorItem class], @"text_under*star", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:0] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:0] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"text_under*star", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"text_under*star", nil];
 }
@@ -401,16 +401,16 @@
 	 [GBParagraphDecoratorItem class], @"code", 
 	 [GBParagraphTextItem class], @"and", 
 	 [GBParagraphDecoratorItem class], @"bold_italics*with star", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:1] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:1] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"italics", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"italics", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:3] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:3] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bold", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bold", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:5] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:5] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeCode, @"code", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"code", nil];
-	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] items] objectAtIndex:7] describesHierarchy:
+	[self assertDecoratedItem:[[[comment.paragraphs objectAtIndex:0] paragraphItems] objectAtIndex:7] describesHierarchy:
 	 [GBParagraphDecoratorItem class], GBDecorationTypeBold, @"bold_italics*with star", 
 	 [GBParagraphDecoratorItem class], GBDecorationTypeItalics, @"bold_italics*with star", 
 	 [GBParagraphTextItem class], GBDecorationTypeNone, @"bold_italics*with star", nil];

@@ -21,6 +21,10 @@
  */
 @interface GBParagraphLinkItem : GBParagraphItem
 
+///---------------------------------------------------------------------------------------
+/// @name Values
+///---------------------------------------------------------------------------------------
+
 /** The href value to which the link "points" to. 
  
  This can actually be used when generating output to get proper URL of the link item.

@@ -30,6 +30,10 @@ typedef NSUInteger GBDecorationType;
 	NSMutableArray *_decoratedItems;
 }
 
+///---------------------------------------------------------------------------------------
+/// @name Item handling
+///---------------------------------------------------------------------------------------
+
 /** Registers the given item to the end of `decoratedItems` array.
  
  @param item The item to register.
@@ -44,6 +48,10 @@ typedef NSUInteger GBDecorationType;
  @see registerItem:
  */
 - (void)replaceItemsByRegisteringItemsFromArray:(NSArray *)items;
+
+///---------------------------------------------------------------------------------------
+/// @name Values
+///---------------------------------------------------------------------------------------
 
 /** The type of decoration to apply over assigned `decoratedItems`. */
 @property (assign) GBDecorationType decorationType;

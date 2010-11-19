@@ -234,6 +234,67 @@
 	assertThat([provider registerSectionIfNameIsValid:@""], is(nil));
 }
 
+#pragma mark Output helpers testing
+
+- (void)testHasSections_shouldReturnProperValue {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThatBool(provider.hasSections, equalToBool(NO));
+	[provider registerSectionWithName:@"name"];
+	assertThatBool(provider.hasSections, equalToBool(YES));
+}
+
+- (void)testHasMultipleSections_shouldReturnProperValue {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThatBool(provider.hasMultipleSections, equalToBool(NO));
+	[provider registerSectionWithName:@"name1"];
+	assertThatBool(provider.hasMultipleSections, equalToBool(NO));
+	[provider registerSectionWithName:@"name2"];
+	assertThatBool(provider.hasMultipleSections, equalToBool(YES));
+}
+
+- (void)testHasClassMethods_shouldReturnProperValue {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThatBool(provider.hasClassMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil]];
+	assertThatBool(provider.hasClassMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry propertyMethodWithArgument:@"value"]];
+	assertThatBool(provider.hasClassMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry classMethodWithNames:@"method", nil]];
+	assertThatBool(provider.hasClassMethods, equalToBool(YES));
+}
+
+- (void)testHasInstanceMethods_shouldReturnProperValue {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThatBool(provider.hasInstanceMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry classMethodWithNames:@"method1", nil]];
+	assertThatBool(provider.hasInstanceMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry propertyMethodWithArgument:@"value"]];
+	assertThatBool(provider.hasInstanceMethods, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil]];
+	assertThatBool(provider.hasInstanceMethods, equalToBool(YES));
+}
+
+- (void)testHasProperties_shouldReturnProperValue {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	// execute & verify
+	assertThatBool(provider.hasProperties, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	assertThatBool(provider.hasProperties, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry classMethodWithNames:@"method2", nil]];
+	assertThatBool(provider.hasProperties, equalToBool(NO));
+	[provider registerMethod:[GBTestObjectsRegistry propertyMethodWithArgument:@"value"]];
+	assertThatBool(provider.hasProperties, equalToBool(YES));
+}
+
 #pragma mark Method merging testing
 
 - (void)testMergeDataFromObjectsProvider_shouldMergeAllDifferentMethods {

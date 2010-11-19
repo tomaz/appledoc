@@ -32,6 +32,18 @@
 	_specialItemDescription = [paragraph retain];
 }
 
+- (BOOL)isWarningSpecialItem {
+	return (self.specialItemType == GBSpecialItemTypeWarning);
+}
+
+- (BOOL)isBugSpecialItem {
+	return (self.specialItemType == GBSpecialItemTypeBug);
+}
+
+- (BOOL)isExampleSpecialItem {
+	return (self.specialItemType == GBSpecialItemTypeExample);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)descriptionStringValue {
