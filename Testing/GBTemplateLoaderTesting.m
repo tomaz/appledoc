@@ -6,16 +6,19 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBTemplateLoader.h"
 
 @interface GBTemplateLoader (TestingAPI)
 @property (readonly) NSString *templateString;
 @property (readonly) NSDictionary *templateSections;
+@property (readonly) GRMustacheTemplate *template;
 @end
 
 @implementation GBTemplateLoader (TestingAPI)
 - (NSString *)templateString { return [self valueForKey:@"_templateString"]; }
 - (NSDictionary *)templateSections { return [self valueForKey:@"_templateSections"]; }
+- (GRMustacheTemplate *)template { return [self valueForKey:@"_template"]; }
 @end
 
 #pragma mark -
@@ -168,6 +171,37 @@
 	assertThatInteger([loader.templateSections count], equalToInteger(2));
 	assertThat([loader.templateSections objectForKey:@"name1"], is(@"text\nline2"));
 	assertThat([loader.templateSections objectForKey:@"name2"], is(@"text2\n\tline2"));
+}
+
+#pragma mark Template handling
+
+- (void)testParsetTemplate_template_shouldCreateTemplateInstance {
+	// setup
+	GBTemplateLoader *loader = [GBTemplateLoader loader];
+	NSString *template = @"Something Section name text EndSection";
+	// execute
+	[loader parseTemplate:template error:nil];
+	// verify
+	assertThat(loader.template, isNot(nil));
+}
+
+- (void)testParseTemplate_template_shouldSetEmptyTemplateIfEmptyTemplateIsGiven {
+	// setup
+	GBTemplateLoader *loader = [GBTemplateLoader loader];
+	// execute
+	[loader parseTemplate:@"" error:nil];
+	// verify
+	assertThat(loader.template, is(nil));
+}
+
+- (void)testParseTemplate_template_shouldResetTemplateInstanceIfEmptyTemplateIsGiven {
+	// setup
+	GBTemplateLoader *loader = [GBTemplateLoader loader];
+	[loader parseTemplate:@"Something" error:nil];
+	// execute
+	[loader parseTemplate:@"" error:nil];
+	// verify
+	assertThat(loader.template, is(nil));
 }
 
 @end

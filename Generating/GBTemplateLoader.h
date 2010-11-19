@@ -8,6 +8,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class GRMustacheTemplate;
+
 /** Loads a template file, prepares it for output generation and renders the output on any given object.
  
  The main responsibilities of this class are loading template from file to string, parsing and extractng all template sections and rendering the template for any given object. As the first two tasks are actually combined into a single method, public API is even simpler: just create one instance of the class for each different template by sending `parseTemplateFromPath:error:` or `parseTemplate:error:` which loads, parses and verifies the template. Then send `renderObject:` to generate output from a concrete object. 
@@ -18,6 +20,7 @@
 	@private
 	NSString *_templateString;
 	NSMutableDictionary *_templateSections;
+	GRMustacheTemplate *_template;
 }
 
 ///---------------------------------------------------------------------------------------

@@ -120,6 +120,8 @@
 		736A2760125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 736A275E125845000078F4FE /* GBApplicationSettingsProvider.m */; };
 		736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */; };
 		736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */; };
+		73734618129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */; };
+		73734619129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */; };
 		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
@@ -270,6 +272,8 @@
 		736A275E125845000078F4FE /* GBApplicationSettingsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationSettingsProvider.m; sourceTree = "<group>"; };
 		736B2BF4124BCBB6009145B1 /* GBSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSourceInfo.h; sourceTree = "<group>"; };
 		736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSourceInfo.m; sourceTree = "<group>"; };
+		73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDictionaryTemplateLoader.h; sourceTree = "<group>"; };
+		73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDictionaryTemplateLoader.m; sourceTree = "<group>"; };
 		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
 		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
 		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
@@ -602,6 +606,8 @@
 				73AA9F721253BF4000074152 /* GBGenerator.m */,
 				7321D0E512944CF500796DEC /* GBTemplateLoader.h */,
 				7321D0E612944CF500796DEC /* GBTemplateLoader.m */,
+				73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */,
+				73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */,
 				739AD62D1255D8CB00B642C3 /* GBTemplateVariablesProvider.h */,
 				739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */,
 			);
@@ -1127,6 +1133,7 @@
 				7321D12512944F9E00796DEC /* GRMustacheVariableElement.m in Sources */,
 				7321D12712944F9E00796DEC /* GRMustacheVersion.m in Sources */,
 				7321D12A1294592200796DEC /* GBTemplateLoaderTesting.m in Sources */,
+				73734619129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1197,6 +1204,7 @@
 				7321D12212944F9E00796DEC /* GRMustacheURLTemplateLoader.m in Sources */,
 				7321D12412944F9E00796DEC /* GRMustacheVariableElement.m in Sources */,
 				7321D12612944F9E00796DEC /* GRMustacheVersion.m in Sources */,
+				73734618129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

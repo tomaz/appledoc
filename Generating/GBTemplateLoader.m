@@ -7,6 +7,8 @@
 //
 
 #import "RegexKitLite.h"
+#import "GRMustache.h"
+#import "GBDictionaryTemplateLoader.h"
 #import "GBTemplateLoader.h"
 
 static NSString *kGBSectionKey = @"section";
@@ -89,8 +91,18 @@ static NSString *kGBValueKey = @"value";
 	// Prepare template string and warn if it's empty.
 	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [_templateSections count]);
 	_templateString = [clean copy];
+	
+	// Prepare template that will be used for rendering output.
+	GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
+	_template = [loader parseString:_templateString error:error];
+	if (error && *error) {
+		GBLogNSError(*error, @"Template contains errors!");
+		return NO;
+	}
 	return YES;
 }
+
+#pragma mark Helper methods
 
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template {
 	NSString *name = [data objectForKey:kGBNameKey];
@@ -118,6 +130,7 @@ static NSString *kGBValueKey = @"value";
 
 - (void)clearParsedValues {
 	GBLogDebug(@"Clearing parsed values...");
+	_template = nil;
 	_templateString = @"";
 	[_templateSections removeAllObjects];
 }
