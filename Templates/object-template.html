@@ -29,28 +29,139 @@
 			{{#hasSections}}
 		<div class="section section-tasks">
 			<h2 class="subtitle subtitle-tasks">{{strings/objectTasks/title}}</h2>
-			{{#sections}}
-				{{>SectionTitle}}
-				<ul class="task-list">
-				{{#methods}}
-					{{>SectionMethods}}
-				{{/methods}}
-				</ul>
-			{{/sections}}
+				{{#sections}}
+					{{>TaskTitle}}
+					<ul class="task-list">
+					{{#methods}}
+						{{>TaskMethod}}
+					{{/methods}}
+					</ul>
+				{{/sections}}
 		</div>
 			{{/hasSections}}
 		{{/object/methods}}
 
+		{{#object/methods}}
+			{{#hasClassMethods}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/classMethodsTitle}}</h2>
+				{{#classMethods}}
+					{{>Method}}
+				{{/classMethods}}
+		</div>
+			{{/hasClassMethods}}
+			
+			{{#hasInstanceMethods}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/instanceMethodsTitle}}</h2>
+				{{#instanceMethods}}
+					{{>Method}}
+				{{/instanceMethods}}
+		</div>
+			{{/hasInstanceMethods}}
+			
+			{{#hasProperties}}
+		<div class="section section-methods">
+			<h2 class="subtitle subtitle-methods">{{strings/objectMethods/propertiesTitle}}</h2>
+				{{#properties}}
+					{{>Method}}
+				{{/properties}}
+		</div>
+			{{/hasProperties}}
+		{{/object/methods}}
 	</body>
 </html>
 
+
+Section Method
+	<div class="section-method">
+		<a name="{{htmlReferenceName}}" title="{{methodSelector}}"></a>
+		<h3 class="subsubtitle method-title">{{methodSelector}}</h3>
+		
+		{{#comment}}
+			{{#firstParagraph}}
+				<div class="method-subsection brief-description">
+					<p>{{>GBCommentParagraph}}</p>
+				</div>		
+			{{/firstParagraph}}
+			
+			<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
+	
+			{{#hasParameters}}
+				<div class="method-subsection parameter-section parameter">
+					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
+					{{#parameters}}
+						<dl class="parameter-def">
+							<dt><em>{{argumentName}}</em></dt>
+							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+						</dl>
+					{{/parameters}}
+				</div>
+			{{/hasParameters}}
+	
+			{{#result}}
+				<div class="method-subsection parameter-section return">
+					<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
+					<p>{{>GBCommentParagraph}}</p>
+				</div>
+			{{/result}}
+
+			{{#hasParagraphs}}
+				<div class="method-subsection discussion-section">
+					<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
+					{{#paragraphs}}
+					<p>{{>GBCommentParagraph}}</p>
+					{{/paragraphs}}
+				</div>
+			{{/hasParagraphs}}
+
+			{{#hasExceptions}}
+				<div class="method-subsection exception-section parameter">
+					<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
+					{{#exceptions}}
+						<dl class="exception-def">
+							<dt><em>{{argumentName}}</em></dt>
+							<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+						</dl>
+					{{/exceptions}}
+				</div>
+			{{/hasExceptions}}
+
+			{{#hasCrossrefs}}
+				<div class="method-subsection see-also-section">
+					<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+					<ul>
+						{{#crossrefs}}
+						<li><code><a href="{{href}}">{{stringValue}}</a></code></li>
+						{{/crossrefs}}
+					</ul>
+				</div>
+			{{/hasCrossrefs}}
+
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+				{{#sourceInfosSortedByName}}
+					<code class="declared-in-ref">{{filename}}</code><br />
+				{{/sourceInfosSortedByName}}
+			</div>				
+		{{/comment}}
+	</div>
+EndSection
+
+Section MethodDeclaration
+	{{#formattedComponents}}
+		{{#emphasized}}<em>{{/emphasized}}
+		{{#href}}<a href="{{href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}
+		{{#emphasized}}</em>{{/emphasized}}
+	{{/formattedComponents}}
+EndSection
 
 Section MethodSelector
 	{{methodPrefix}} {{methodSelector}}
 EndSection
 
 
-Section SectionTitle
+Section TaskTitle
 	{{#hasMultipleSections}}
 		<h3 class="subsubtitle task-title">
 		{{#sectionName}}{{.}}{{/sectionName}}
@@ -62,7 +173,7 @@ Section SectionTitle
 	{{/hasMultipleSections}}
 EndSection
 
-Section SectionMethod
+Section TaskMethod
 <li>
 	<span class="tooltip">
 		<code><a href="{{htmlLocalReference}}">{{>MethodSelector}}</a></code>
