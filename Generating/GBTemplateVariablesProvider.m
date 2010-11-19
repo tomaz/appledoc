@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBApplicationSettingsProviding.h"
 #import "GBObjectDataProviding.h"
 #import "GBStoreProviding.h"
@@ -15,6 +16,7 @@
 @interface GBTemplateVariablesProvider ()
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
+- (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -27,9 +29,9 @@
 - (NSString *)pageTitleForClass:(GBClassData *)object;
 - (NSString *)pageTitleForCategory:(GBCategoryData *)object;
 - (NSString *)pageTitleForProtocol:(GBProtocolData *)object;
-- (NSArray *)specificationsForClass:(GBClassData *)object;
-- (NSArray *)specificationsForCategory:(GBCategoryData *)object;
-- (NSArray *)specificationsForProtocol:(GBProtocolData *)object;
+- (NSDictionary *)specificationsForClass:(GBClassData *)object;
+- (NSDictionary *)specificationsForCategory:(GBCategoryData *)object;
+- (NSDictionary *)specificationsForProtocol:(GBProtocolData *)object;
 
 @end
 
@@ -116,6 +118,18 @@
 	return [self.settings htmlReferenceForObject:object fromSource:source];
 }
 
+- (NSDictionary *)arrayDescriptorForArray:(NSArray *)array {
+	// Helps handling arrays in template by embedding two keys: "used" as boolean and "items" as the actual array (only if non-empty).
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	if ([array count] > 0) {
+		[result setObject:[GRYes yes] forKey:@"used"];
+		[result setObject:array forKey:@"values"];
+		return result;
+	}
+	[result setObject:[GRNo no] forKey:@"used"];
+	return result;
+}
+
 #pragma mark Properties
 
 @synthesize settings;
@@ -143,26 +157,26 @@
 	return [NSString stringWithFormat:template, object.nameOfProtocol];
 }
 
-- (NSArray *)specificationsForClass:(GBClassData *)object {
+- (NSDictionary *)specificationsForClass:(GBClassData *)object {
 	NSMutableArray *result = [NSMutableArray array];
 	[self registerObjectInheritsFromSpecificationForClass:object toArray:result];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
-	return result;
+	return [self arrayDescriptorForArray:result];
 }
 
-- (NSArray *)specificationsForCategory:(GBCategoryData *)object {
+- (NSDictionary *)specificationsForCategory:(GBCategoryData *)object {
 	NSMutableArray *result = [NSMutableArray array];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
-	return result;
+	return [self arrayDescriptorForArray:result];
 }
 
-- (NSArray *)specificationsForProtocol:(GBProtocolData *)object {
+- (NSDictionary *)specificationsForProtocol:(GBProtocolData *)object {
 	NSMutableArray *result = [NSMutableArray array];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
-	return result;
+	return [self arrayDescriptorForArray:result];
 }
 
 @end
