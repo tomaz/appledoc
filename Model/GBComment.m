@@ -129,6 +129,10 @@
 	return ([self.paragraphs count] > 0);
 }
 
+- (BOOL)hasMultipleParagraphs {
+	return ([self.paragraphs count] > 1);
+}
+
 - (BOOL)hasParameters {
 	return ([self.parameters count] > 0);
 }

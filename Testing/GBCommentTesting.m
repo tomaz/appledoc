@@ -72,6 +72,17 @@
 	assertThatBool(comment.hasParagraphs, equalToBool(YES));
 }
 
+- (void)testHasMultipleParagraphs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
+	[comment registerParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasMultipleParagraphs, equalToBool(YES));
+}
+
 #pragma mark Parameters testing
 
 - (void)testRegisterParameter_shouldAddParameterToList {
