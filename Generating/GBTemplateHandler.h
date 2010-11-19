@@ -42,6 +42,7 @@
  @param error If reading or parsing fails, error message is returned here.
  @return Returns `YES` if parsing was sucesful, `NO` otherwise.
  @see parseTemplate:error:
+ @see renderObject:
  */
 - (BOOL)parseTemplateFromPath:(NSString *)path error:(NSError **)error;
 
@@ -53,7 +54,25 @@
  @param error If parsing fails, error message is returned here.
  @return Returns `YES` if parsing was sucesful, `NO` otherwise.
  @see parseTemplateFromPath:error:
+ @see renderObject:
  */
 - (BOOL)parseTemplate:(NSString *)template error:(NSError **)error;
+
+///---------------------------------------------------------------------------------------
+/// @name Rendering
+///---------------------------------------------------------------------------------------
+
+/** Renders the given object using current template data.
+ 
+ This is where template placeholders get replaced with actual values from the given object and as thus the main focus of the `GBTemplateHandler` class. The object must contain all expected variables as defined by the template. Failing to provide required values will result in that part of the template being ignored, but may also result in unpredicted behavior, so it's better to make sure proper objects are passed to proper templates.
+ 
+ @warning *Important:* Note that this message can only be sent after parsing template with one of the parsing methods! Sending the message to a class with no parsed data results in a warning and empty string being returned.
+ 
+ @param object The object containins data to be replaced by template placeholders.
+ @return Returns generated output string.
+ @see parseTemplateFromPath:error:
+ @see parseTemplate:error:
+ */
+- (NSString *)renderObject:(id)object;
 
 @end

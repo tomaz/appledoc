@@ -93,13 +93,26 @@ static NSString *kGBValueKey = @"value";
 	_templateString = [clean copy];
 	
 	// Prepare template that will be used for rendering output.
-	GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
-	_template = [loader parseString:_templateString error:error];
-	if (error && *error) {
-		GBLogNSError(*error, @"Template contains errors!");
-		return NO;
+	if ([_templateString length] != 0) {
+		GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
+		_template = [loader parseString:_templateString error:error];
+		if (error && *error) {
+			GBLogNSError(*error, @"Template contains errors!");
+			return NO;
+		}
 	}
 	return YES;
+}
+
+#pragma Rendering handling
+
+- (NSString *)renderObject:(id)object {
+	GBLogVerbose(@"Rendering %@...", object);
+	if (!_template) {
+		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
+		return @"";
+	}
+	return [_template renderObject:object];
 }
 
 #pragma mark Helper methods

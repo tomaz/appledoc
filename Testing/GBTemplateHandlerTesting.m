@@ -204,4 +204,48 @@
 	assertThat(loader.template, is(nil));
 }
 
+#pragma mark Rendering handling (just simple testing, we rely on GRMustache for correct behavior!)
+
+- (void)testRenderObject_shouldRenderSimpleTemplate {
+	// setup
+	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	[loader parseTemplate:@"prefix {{var1}}---{{var2}} suffix" error:nil];
+	// execute
+	NSString *result = [loader renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"var1", @"value2", @"var2", nil]];
+	// verify
+	assertThat(result, is(@"prefix value1---value2 suffix"));
+}
+
+- (void)testRenderObject_shouldRenderSectionIfCalled {
+	// setup
+	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	[loader parseTemplate:@"prefix {{>name}}! Section name text EndSection" error:nil];
+	// execute
+	NSString *result = [loader renderObject:nil];
+	// verify
+	assertThat(result, is(@"prefix text!"));
+}
+
+- (void)testRenderObject_shouldNotRenderSectionIfNotCalled {
+	// setup
+	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	[loader parseTemplate:@"prefix Section name text EndSection" error:nil];
+	// execute
+	NSString *result = [loader renderObject:nil];
+	// verify
+	assertThat(result, is(@"prefix"));
+}
+
+- (void)testRenderObject_shouldPassProperObjectToSections {
+	// setup
+	GBTemplateHandler *loader = [GBTemplateHandler loader];
+	[loader parseTemplate:@"prefix {{#var1}}{{>name}}{{/var1}}! {{#var2}}{{>name}}{{/var2}}? Section name {{value}} EndSection" error:nil];
+	NSDictionary *var1 = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"value", nil];
+	NSDictionary *var2 = [NSDictionary dictionaryWithObjectsAndKeys:@"value2", @"value", nil];
+	// execute
+	NSString *result = [loader renderObject:[NSDictionary dictionaryWithObjectsAndKeys:var1, @"var1", var2, @"var2", nil]];
+	// verify
+	assertThat(result, is(@"prefix value1! value2?"));
+}
+
 @end
