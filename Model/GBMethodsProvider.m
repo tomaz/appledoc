@@ -98,6 +98,14 @@
 	}];
 }
 
+- (BOOL)hasSections {
+	return ([self.sections count] > 0);
+}
+
+- (BOOL)hasMultipleSections {
+	return ([self.sections count] > 1);
+}
+
 #pragma mark Helper methods
 
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source {

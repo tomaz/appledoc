@@ -24,9 +24,58 @@
 			{{>GBComment}}
 		</div>
 		{{/object/comment}}
+		
+		{{#object/methods}}
+			{{#hasSections}}
+		<div class="section section-tasks">
+			<h2 class="subtitle subtitle-tasks">{{strings/objectTasks/title}}</h2>
+			{{#sections}}
+				{{>SectionTitle}}
+				<ul class="task-list">
+				{{#methods}}
+					{{>SectionMethods}}
+				{{/methods}}
+				</ul>
+			{{/sections}}
+		</div>
+			{{/hasSections}}
+		{{/object/methods}}
 
 	</body>
 </html>
+
+
+Section MethodSelector
+	{{methodPrefix}} {{methodSelector}}
+EndSection
+
+
+Section SectionTitle
+	{{#hasMultipleSections}}
+		<h3 class="subsubtitle task-title">
+		{{#sectionName}}{{.}}{{/sectionName}}
+		{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}
+		</h3>
+	{{/hasMultipleSections}}
+	{{^hasMultipleSections}}
+		{{#sectionName}}<h3 class="subsubtitle task-title">{{.}}</h3>{{/sectionName}}
+	{{/hasMultipleSections}}
+EndSection
+
+Section SectionMethod
+<li>
+	<span class="tooltip">
+		<code><a href="{{htmlLocalReference}}">{{>MethodSelector}}</a></code>
+		{{#firstParagraph}}							
+		<span class="tooltip">{{>GBCommentParagraph}}</span>
+		{{/firstParagraph}}
+	</span>
+	{{#isRequired}}
+		<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>
+	{{/isRequired}}
+</li>
+EndSection
+
 
 Section GBComment
 	{{#paragraphs}}
@@ -68,6 +117,7 @@ Section GBParagraphDecoratorItem
 		{{>GBParagraphItem}}
 	{{/decoratedItems}}
 EndSection
+
 
 Section ObjectSpecification
 <tr>

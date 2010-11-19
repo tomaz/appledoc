@@ -79,8 +79,27 @@
  @see registerSectionWithName:
  @see registerMethod:
  @see methods
+ @see hadSections
  */
 @property (readonly) NSArray *sections;
+
+/** Specifies whether there is at least one section registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of sections and check if the value is greater than 0, like this: `[object.sections count] > 0`.
+ 
+ @see hasMultipleSections
+ @see sections
+ */
+@property (readonly) BOOL hasSections;
+
+/** Specifies whether there is are at least two sections registered.
+ 
+ This is mainly used as a helper for output generator. It is equivalent querrying for the number of sections and check if the value is greater than 1, like this: `[object.sections count] > 1`.
+ 
+ @see hasSections
+ @see sections
+ */
+@property (readonly) BOOL hasMultipleSections;
 
 ///---------------------------------------------------------------------------------------
 /// @name Methods handling
