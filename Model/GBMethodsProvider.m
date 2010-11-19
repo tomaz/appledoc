@@ -98,12 +98,26 @@
 	}];
 }
 
+#pragma mark Output generation helpers
+
 - (BOOL)hasSections {
 	return ([self.sections count] > 0);
 }
 
 - (BOOL)hasMultipleSections {
 	return ([self.sections count] > 1);
+}
+
+- (BOOL)hasClassMethods {
+	return ([self.classMethods count] > 0);
+}
+
+- (BOOL)hasInstanceMethods {
+	return ([self.instanceMethods count] > 0);
+}
+
+- (BOOL)hasProperties {
+	return ([self.properties count] > 0);
 }
 
 #pragma mark Helper methods
