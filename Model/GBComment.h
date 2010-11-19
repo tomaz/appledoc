@@ -210,6 +210,18 @@
 @property (readonly) NSArray *crossrefs;
 
 ///---------------------------------------------------------------------------------------
+/// @name Output generator helpers
+///---------------------------------------------------------------------------------------
+
+/** Indicates whether the comment has at least one parameter or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `parameters` count is greater than 0, like this: `[object.parameters count] > 0`.
+ 
+ @see parameters
+ */
+@property (readonly) BOOL hasParameters;
+
+///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------
 

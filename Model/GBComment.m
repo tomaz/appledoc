@@ -123,6 +123,12 @@
 	return [self.paragraphs count] + [self.parameters count] + [self.exceptions count] + [self.crossrefs count] + (self.result ? 1 : 0);
 }
 
+#pragma mark Output helper method
+
+- (BOOL)hasParameters {
+	return ([self.parameters count] > 0);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

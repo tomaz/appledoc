@@ -117,6 +117,15 @@
 	assertThat([comment.parameters objectAtIndex:1], is(parameter1));
 }
 
+- (void)testHasParameters_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasParameters, equalToBool(NO));
+	[comment registerParameter:[GBCommentArgument argumentWithName:@"name" description:[GBCommentParagraph paragraph]]];
+	assertThatBool(comment.hasParameters, equalToBool(YES));
+}
+
 #pragma mark Exceptions testing
 
 - (void)testRegisterException_shouldAddExceptionToList {
