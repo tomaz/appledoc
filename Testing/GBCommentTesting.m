@@ -235,4 +235,13 @@
 	assertThat([comment.crossrefs objectAtIndex:0], is(ref1));
 }
 
+- (void)testHasCrossrefs_shouldReturnProperValue {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute & verify
+	assertThatBool(comment.hasCrossrefs, equalToBool(NO));
+	[comment registerCrossReference:[GBParagraphLinkItem paragraphItemWithStringValue:@"link"]];
+	assertThatBool(comment.hasCrossrefs, equalToBool(YES));
+}
+
 @end

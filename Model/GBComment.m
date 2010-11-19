@@ -141,6 +141,10 @@
 	return ([self.exceptions count] > 0);
 }
 
+- (BOOL)hasCrossrefs {
+	return ([self.crossrefs count] > 0);
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {

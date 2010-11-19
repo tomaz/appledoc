@@ -247,6 +247,14 @@
  */
 @property (readonly) BOOL hasExceptions;
 
+/** Indicates whether the comment has at least one cross reference or not.
+ 
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `crossrefs` count is greater than 0, like this: `[object.crossrefs count] > 0`.
+ 
+ @see exceptions
+ */
+@property (readonly) BOOL hasCrossrefs;
+
 ///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------
