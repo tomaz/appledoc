@@ -96,10 +96,7 @@ static NSString *kGBValueKey = @"value";
 	if ([_templateString length] != 0) {
 		GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
 		_template = [loader parseString:_templateString error:error];
-		if (error && *error) {
-			GBLogNSError(*error, @"Template contains errors!");
-			return NO;
-		}
+		return (_template != nil);
 	}
 	return YES;
 }

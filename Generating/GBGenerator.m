@@ -10,6 +10,7 @@
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBTemplateVariablesProvider.h"
+#import "GBTemplateHandler.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
@@ -18,6 +19,8 @@
 - (void)processCategories;
 - (void)processProtocols;
 - (void)writeString:(NSString *)string toFile:(NSString *)path;
+- (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename;
+@property (readonly) GBTemplateHandler *objectTemplate;
 @property (readonly) GBTemplateVariablesProvider *variablesProvider;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -59,10 +62,10 @@
 - (void)processClasses {
 	for (GBClassData *class in self.store.classes) {
 		GBLogInfo(@"Generating output for class %@...", class);
-//		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
-//		NSString *output = [self.templateWriter outputStringWithReader:self.objectTemplateReader variables:vars];
-//		NSString *path = [self.settings htmlOutputPathForObject:class];
-//		[self writeString:output toFile:path];
+		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
+		NSString *output = [self.objectTemplate renderObject:vars];
+		NSString *path = [self.settings htmlOutputPathForObject:class];
+		[self writeString:output toFile:path];
 		GBLogDebug(@"Finished generating output for class %@.", class);
 	}
 }
@@ -70,10 +73,10 @@
 - (void)processCategories {
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Generating output for category %@...", category);
-//		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
-//		NSString *output = [self.templateWriter outputStringWithReader:self.objectTemplateReader variables:vars];
-//		NSString *path = [self.settings htmlOutputPathForObject:category];
-//		[self writeString:output toFile:path];
+		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
+		NSString *output = [self.objectTemplate renderObject:vars];
+		NSString *path = [self.settings htmlOutputPathForObject:category];
+		[self writeString:output toFile:path];
 		GBLogDebug(@"Finished generating output for category %@.", category);
 	}
 }
@@ -81,10 +84,10 @@
 - (void)processProtocols {
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Generating output for protocol %@...", protocol);
-//		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
-//		NSString *output = [self.templateWriter outputStringWithReader:self.objectTemplateReader variables:vars];
-//		NSString *path = [self.settings htmlOutputPathForObject:protocol];
-//		[self writeString:output toFile:path];
+		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
+		NSString *output = [self.objectTemplate renderObject:vars];
+		NSString *path = [self.settings htmlOutputPathForObject:protocol];
+		[self writeString:output toFile:path];
 		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
 	}
 }
@@ -94,6 +97,12 @@
 - (GBTemplateVariablesProvider *)variablesProvider {
 	static GBTemplateVariablesProvider *result = nil;
 	if (!result) result = [[GBTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
+	return result;
+}
+
+- (GBTemplateHandler *)objectTemplate {
+	static GBTemplateHandler *result = nil;
+	if (!result) result = [self templateHandlerFromTemplateFile:@"object-template.html"];
 	return result;
 }
 
@@ -113,6 +122,19 @@
 	
 	[string writeToFile:standardized atomically:YES encoding:NSUTF8StringEncoding error:&error];
 	if (error) GBLogNSError(error, @"Failed writing %@!", path);
+}
+
+- (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename {
+	NSError *error = nil;
+	NSString *path = self.settings.templatesPath;
+	GBLogDebug(@"Creating template handler for file %@ in template folder %@...", filename, path);
+	path = [path stringByAppendingPathComponent:filename];
+	GBTemplateHandler *result = [GBTemplateHandler handler];
+	if (![result parseTemplateFromPath:[path stringByStandardizingPath] error:&error]) {
+		GBLogNSError(error, @"Failed parsing template %@!", filename);
+		return nil;
+	}
+	return result;
 }
 
 #pragma mark Properties

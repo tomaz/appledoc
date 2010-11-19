@@ -33,8 +33,8 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		self.outputPath = @"~/Downloads/examples/objc/AppledocHtml";
-		self.templatesPath = @"~/Downloads/examples/objc/AppledocHtml";
+		self.outputPath = @"~/Downloads/examples/AppledocHtml";
+		self.templatesPath = @"~/Downloads/examples/AppledocHtml";
 		self.ignoredPaths = [NSMutableSet set];
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
