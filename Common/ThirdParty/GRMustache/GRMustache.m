@@ -37,7 +37,7 @@ static BOOL strictBooleanMode = NO;
 }
 
 + (GRMustacheObjectKind)objectKind:(id)object {
-	if (object == nil || object == [NSNull null] || object == [GRNo no] || [object description].length == 0) {
+	if (object == nil || object == [NSNull null] || object == [GRNo no] || ([object isKindOfClass:[NSString class]] && ((NSString*)object).length == 0)) {
 		return GRMustacheObjectKindFalseValue;
 	}
 	if ([object isKindOfClass:[NSDictionary class]]) {

@@ -49,12 +49,14 @@
 }
 
 - (NSString *)htmlEscape:(NSString *)string {
-    NSString *result = [string stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
-    result = [result stringByReplacingOccurrencesOfString:@"<" withString:@"&lt;"];
-    result = [result stringByReplacingOccurrencesOfString:@">" withString:@"&gt;"];
-    result = [result stringByReplacingOccurrencesOfString:@"\"" withString:@"&quot;"];
-    result = [result stringByReplacingOccurrencesOfString:@"\'" withString:@"&apos;"];
-    return result;
+	NSMutableString *result = [NSMutableString stringWithCapacity:5 + ceilf(string.length * 1.1)];
+	[result appendString:string];
+	[result replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	return result;
 }
 
 - (NSString *)renderContext:(GRMustacheContext *)context {

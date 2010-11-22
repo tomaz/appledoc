@@ -24,15 +24,12 @@
 #import "GRMustacheElement_private.h"
 
 
-@class GRMustacheTemplateLoader;
-
-@interface GRMustacheSectionElement: GRMustacheElement {
+@interface GRMustacheSectionElement: NSObject<GRMustacheElement> {
 @private
 	NSString *name;
 	NSString *templateString;
-	GRMustacheTemplateLoader *templateLoader;
 	BOOL inverted;
 	NSArray *elems;
 }
-+ (id)sectionElementWithName:(NSString *)name string:(NSString *)templateString templateLoader:(GRMustacheTemplateLoader *)templateLoader inverted:(BOOL)inverted elements:(NSArray *)elems;
++ (id)sectionElementWithName:(NSString *)name string:(NSString *)templateString inverted:(BOOL)inverted elements:(NSArray *)elems;
 @end

@@ -20,28 +20,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheBundleTemplateLoader_private.h"
+#import <Foundation/Foundation.h>
+#import "GRMustacheToken_private.h"
 
 
-@implementation GRMustacheBundleTemplateLoader
+@class GRMustacheTemplateLoader;
 
-- (id)initWithBundle:(NSBundle *)theBundle extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	if ((self = [self initWithExtension:ext encoding:encoding])) {
-		if (theBundle == nil) {
-			theBundle = [NSBundle mainBundle];
-		}
-		bundle = [theBundle retain];
-	}
-	return self;
+@interface GRMustacheCompiler : NSObject<GRMustacheTokenConsumer> {
+@private
+	NSError *error;
+	NSString *templateString;
+	GRMustacheTemplateLoader *templateLoader;
+	id templateId;
+	NSMutableArray *elementsStack;
+	NSMutableArray *sectionOpeningTokenStack;
+	NSMutableArray *currentElements;
+	GRMustacheToken *currentSectionOpeningToken;
 }
-
-- (id)templateIdForTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId {
-	return [bundle URLForResource:name withExtension:self.extension];
-}
-
-- (void)dealloc {
-	[bundle release];
-	[super dealloc];
-}
-
+- (NSArray *)parseString:(NSString *)templateString withTokenProducer:(id<GRMustacheTokenProducer>)tokenProducer templateLoader:(GRMustacheTemplateLoader *)templateLoader templateId:(id)templateId error:(NSError **)outError;
 @end

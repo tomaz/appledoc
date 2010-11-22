@@ -119,8 +119,23 @@ static NSInteger BOOLPropertyType = NSNotFound;
 }
 
 - (id)valueForKey:(NSString *)key {
-	GRMustacheContext *context = self;
 	NSArray *components = [key componentsSeparatedByString:@"/"];
+	
+	if (components.count == 1) {
+		if ([key isEqualToString:@"."]) {
+			return object;
+		}
+		if ([key isEqualToString:@".."]) {
+			if (parent == nil) {
+				// went too far
+				return nil;
+			}
+			return parent.object;
+		}
+		return [self valueForKeyComponent:key foundInContext:nil];
+	}
+	
+	GRMustacheContext *context = self;
 	for (NSString *component in components) {
 		if (component.length == 0) {
 			continue;
@@ -129,11 +144,11 @@ static NSInteger BOOLPropertyType = NSNotFound;
 			continue;
 		}
 		if ([component isEqualToString:@".."]) {
-			if (parent == nil) {
+			context = context.parent;
+			if (context == nil) {
 				// went too far
 				return nil;
 			}
-			context = parent;
 			continue;
 		}
 		GRMustacheContext *valueContext = nil;
@@ -198,7 +213,7 @@ static NSInteger BOOLPropertyType = NSNotFound;
 		return YES;
 	}
 	
-	if (![GRMustache strictBooleanMode] && [GRMustacheProperty class:[object class] hasBOOLPropertyNamed:key]) {
+	if (![GRMustache strictBooleanMode] && [value isKindOfClass:[NSNumber class]] && [GRMustacheProperty class:[object class] hasBOOLPropertyNamed:key]) {
 		if (outBool) {
 			*outBool = [(NSNumber *)value boolValue];
 		}

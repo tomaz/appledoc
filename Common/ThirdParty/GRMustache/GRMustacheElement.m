@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 #import "GRMustacheElement_private.h"
+#import "GRMustacheElement.h"
 
 
 @implementation GRMustacheElement

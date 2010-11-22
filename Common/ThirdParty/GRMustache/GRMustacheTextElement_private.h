@@ -24,7 +24,7 @@
 #import "GRMustacheElement_private.h"
 
 
-@interface GRMustacheTextElement : GRMustacheElement {
+@interface GRMustacheTextElement: NSObject<GRMustacheElement> {
 @private
 	NSString *text;
 }

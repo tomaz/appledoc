@@ -20,28 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheBundleTemplateLoader_private.h"
+#import "GRMustacheURLTemplateLoader_private.h"
 
 
-@implementation GRMustacheBundleTemplateLoader
-
-- (id)initWithBundle:(NSBundle *)theBundle extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	if ((self = [self initWithExtension:ext encoding:encoding])) {
-		if (theBundle == nil) {
-			theBundle = [NSBundle mainBundle];
-		}
-		bundle = [theBundle retain];
-	}
-	return self;
+@interface GRMustacheDirectoryTemplateLoader: GRMustacheURLTemplateLoader {
+@private
+	NSURL *url;
 }
-
-- (id)templateIdForTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId {
-	return [bundle URLForResource:name withExtension:self.extension];
-}
-
-- (void)dealloc {
-	[bundle release];
-	[super dealloc];
-}
-
+- (id)initWithURL:(NSURL *)url extension:(NSString *)ext encoding:(NSStringEncoding)encoding;
+- (GRMustacheTemplate *)parseContentsOfURL:(NSURL *)templateURL error:(NSError **)outError;
 @end

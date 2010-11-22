@@ -23,7 +23,7 @@
 #import "GRMustacheElement_private.h"
 
 
-@interface GRMustacheVariableElement: GRMustacheElement {
+@interface GRMustacheVariableElement: NSObject<GRMustacheElement> {
 @private
 	NSString *name;
 	BOOL raw;

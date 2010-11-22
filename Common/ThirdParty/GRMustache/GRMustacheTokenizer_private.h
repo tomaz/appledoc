@@ -20,28 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheBundleTemplateLoader_private.h"
+#import <Foundation/Foundation.h>
+#import "GRMustacheToken_private.h"
 
 
-@implementation GRMustacheBundleTemplateLoader
-
-- (id)initWithBundle:(NSBundle *)theBundle extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	if ((self = [self initWithExtension:ext encoding:encoding])) {
-		if (theBundle == nil) {
-			theBundle = [NSBundle mainBundle];
-		}
-		bundle = [theBundle retain];
-	}
-	return self;
+@interface GRMustacheTokenizer : NSObject<GRMustacheTokenProducer> {
+@private
+	id<GRMustacheTokenConsumer> tokenConsumer;
+	NSString *otag;
+	NSString *ctag;
 }
-
-- (id)templateIdForTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId {
-	return [bundle URLForResource:name withExtension:self.extension];
-}
-
-- (void)dealloc {
-	[bundle release];
-	[super dealloc];
-}
-
 @end

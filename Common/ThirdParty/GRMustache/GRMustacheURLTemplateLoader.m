@@ -25,47 +25,11 @@
 
 @implementation GRMustacheURLTemplateLoader
 
-- (id)initWithURL:(NSURL *)theURL extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	if ((self = [super initWithExtension:ext encoding:encoding])) {
-		url = [theURL retain];
-	}
-	return self;
-}
-
 - (NSString *)templateStringForTemplateId:(id)templateId error:(NSError **)outError {
 	NSAssert([templateId isKindOfClass:[NSURL class]], nil);
 	return [NSString stringWithContentsOfURL:(NSURL*)templateId
 									encoding:self.encoding
 									   error:outError];
-}
-
-- (id)templateIdForTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId {
-	if (baseTemplateId) {
-		NSAssert([baseTemplateId isKindOfClass:[NSURL class]], nil);
-		if (self.extension.length == 0) {
-			return [[NSURL URLWithString:name relativeToURL:(NSURL *)baseTemplateId] URLByStandardizingPath];
-		}
-		return [[NSURL URLWithString:[name stringByAppendingPathExtension:self.extension] relativeToURL:(NSURL *)baseTemplateId] URLByStandardizingPath];
-	}
-	if (self.extension.length == 0) {
-		return [[url URLByAppendingPathComponent:name] URLByStandardizingPath];
-	}
-	return [[[url URLByAppendingPathComponent:name] URLByAppendingPathExtension:self.extension] URLByStandardizingPath];
-}
-
-// override of a private GRMustacheTemplateLoader
-- (GRMustacheTemplate *)parseContentsOfURL:(NSURL *)templateURL error:(NSError **)outError {
-	GRMustacheTemplate *template = [super parseContentsOfURL:templateURL error:outError];
-	if (!template) {
-		return nil;
-	}
-	[self setTemplate:template forTemplateId:templateURL];
-	return template;
-}
-
-- (void)dealloc {
-	[url release];
-	[super dealloc];
 }
 
 @end

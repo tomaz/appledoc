@@ -26,9 +26,9 @@
 @implementation GRMustache(Version)
 
 + (GRMustacheVersion)version {
-	return (GRMustacheVersion){ .major=GRMUSTACHE_MAJOR_VERSION,
-								.minor=GRMUSTACHE_MINOR_VERSION,
-								.patch=GRMUSTACHE_PATCH_VERSION };
+	return (GRMustacheVersion){ .major = GRMUSTACHE_MAJOR_VERSION,
+								.minor = GRMUSTACHE_MINOR_VERSION,
+								.patch = GRMUSTACHE_PATCH_VERSION };
 }
 
 @end

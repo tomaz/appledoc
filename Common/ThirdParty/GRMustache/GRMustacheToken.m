@@ -20,28 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheBundleTemplateLoader_private.h"
+#import "GRMustacheToken_private.h"
 
 
-@implementation GRMustacheBundleTemplateLoader
+@interface GRMustacheToken()
+@property (nonatomic, retain) NSString *content;
+- (id)initWithType:(GRMustacheTokenType)type content:(NSString *)content line:(NSUInteger)line range:(NSRange)range;
+@end
 
-- (id)initWithBundle:(NSBundle *)theBundle extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	if ((self = [self initWithExtension:ext encoding:encoding])) {
-		if (theBundle == nil) {
-			theBundle = [NSBundle mainBundle];
-		}
-		bundle = [theBundle retain];
+@implementation GRMustacheToken
+@synthesize type;
+@synthesize content;
+@synthesize line;
+@synthesize range;
+
++ (id)tokenWithType:(GRMustacheTokenType)type content:(NSString *)content line:(NSUInteger)line range:(NSRange)range {
+	return [[[self alloc] initWithType:type content:content line:line range:range] autorelease];
+}
+
+- (id)initWithType:(GRMustacheTokenType)theType content:(NSString *)theContent line:(NSUInteger)theLine range:(NSRange)theRange {
+	if ((self = [self init])) {
+		type = theType;
+		content = [theContent retain];
+		line = theLine;
+		range = theRange;
 	}
 	return self;
 }
 
-- (id)templateIdForTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId {
-	return [bundle URLForResource:name withExtension:self.extension];
-}
-
 - (void)dealloc {
-	[bundle release];
+	[content release];
 	[super dealloc];
 }
 
 @end
+
