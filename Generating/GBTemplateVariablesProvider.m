@@ -51,6 +51,18 @@
 
 #pragma mark -
 
+@interface GBTemplateVariablesProvider (IndexVariables)
+
+- (NSString *)pageTitleForIndex;
+- (NSArray *)classesForIndex;
+- (NSArray *)categoriesForIndex;
+- (NSArray *)protocolsForIndex;
+- (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
+
+@end
+
+#pragma mark -
+
 @implementation GBTemplateVariablesProvider
 
 #pragma mark Initialization & disposal
@@ -70,7 +82,7 @@
 	return self;
 }
 
-#pragma mark Public interface
+#pragma mark Object variables handling
 
 - (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store {
 	self.store = store;
@@ -111,10 +123,27 @@
 	return result;
 }
 
+#pragma mark Index variables handling
+
+- (NSDictionary *)variablesForIndexWithStore:(id<GBStoreProviding>)store {
+	self.store = store;
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForIndex] forKey:@"title"];
+	[page setObject:self.settings.cssIndexTemplatePath forKey:@"cssPath"];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:[self classesForIndex] forKey:@"classes"];
+	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
+	[result setObject:[self categoriesForIndex] forKey:@"categories"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self registerObjectsUsageForIndexInDictionary:result];
+	return result;
+}
+
 #pragma mark Helper methods
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source {
-	if (!object || !source) return nil;
+	if (!object) return nil;
 	if ([object isKindOfClass:[GBClassData class]] && ![[self.store classes] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBCategoryData class]] && ![[self.store categories] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBProtocolData class]] && ![[self.store protocols] containsObject:object]) return nil;
@@ -267,6 +296,62 @@
 		if (idx < [values count] - 1) [data setObject:delimiter forKey:@"delimiter"];
 	}];
 	return values;
+}
+
+@end
+
+#pragma mark -
+
+@implementation GBTemplateVariablesProvider (IndexVariables)
+
+- (NSString *)pageTitleForIndex {
+	return @"Reference";
+}
+
+- (NSArray *)classesForIndex {
+	NSArray *classes = [self.store classesSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[classes count]];
+	for (GBClassData *class in classes) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:class fromObject:nil] forKey:@"href"];
+		[data setObject:class.nameOfClass forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (NSArray *)categoriesForIndex {
+	NSArray *categories = [self.store categoriesSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[categories count]];
+	for (GBCategoryData *category in categories) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:category fromObject:nil] forKey:@"href"];
+		[data setObject:category.idOfCategory forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (NSArray *)protocolsForIndex {
+	NSArray *protocols = [self.store protocolsSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[protocols count]];
+	for (GBProtocolData *protocol in protocols) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:protocol fromObject:nil] forKey:@"href"];
+		[data setObject:protocol.nameOfProtocol forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {
+	BOOL classes = [self.store.classes count] > 0;
+	BOOL categories = [self.store.categories count] > 0;
+	BOOL protocols = [self.store.protocols count] > 0; 
+	[dict setObject:classes ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+	[dict setObject:categories ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
+	[dict setObject:protocols ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[dict setObject:(protocols || categories) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocolsOrCategories"];
 }
 
 @end

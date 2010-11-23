@@ -29,6 +29,7 @@
  
  @see cssCategoryTemplatePath
  @see cssProtocolTemplatePath
+ @see cssIndexTemplatePath
  */
 @property (readonly) NSString *cssClassTemplatePath;
 
@@ -36,6 +37,7 @@
  
  @see cssClassTemplatePath
  @see cssProtocolTemplatePath
+ @see cssIndexTemplatePath
  */
 @property (readonly) NSString *cssCategoryTemplatePath;
 
@@ -43,8 +45,17 @@
  
  @see cssClassTemplatePath
  @see cssCategoryTemplatePath
+ @see cssIndexTemplatePath
  */
 @property (readonly) NSString *cssProtocolTemplatePath;
+
+/** The path to the CSS template file, relative from index html files.
+ 
+ @see cssClassTemplatePath
+ @see cssCategoryTemplatePath
+ @see cssProtocolTemplatePath
+ */
+@property (readonly) NSString *cssIndexTemplatePath;
 
 ///---------------------------------------------------------------------------------------
 /// @name Output paths handling
@@ -58,6 +69,7 @@
  This value depends on `outputPath` and is automatically calculated.
  
  @see htmlOutputPathForObject:
+ @see htmlOutputPathForIndex
  @see outputPath
  */
 @property (readonly) NSString *htmlOutputPath;
@@ -69,10 +81,18 @@
  @param object The object for which to return the path.
  @return Returns the path.
  @exception NSException Thrown if the given object is `nil` or not top-level object.
- @see htmlReferenceForObject:fromSource:
+ @see htmlOutputPathForIndex
  @see htmlOutputPath
  */
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
+
+/** Returns file name including full path for HTML file representing the main index.
+ 
+ @return Returns the path.
+ @see htmlOutputPathForObject:
+ @see htmlOutputPath
+ */
+- (NSString *)htmlOutputPathForIndex;
 
 /** Returns HTML reference name for the given object.
  
@@ -89,6 +109,8 @@
  
  This is useful for generating hrefs from one object HTML file to another. This is the swiss army knife king of a method for all hrefs generation. It works for any kind of links:
  
+ - Index to top-level object (if source is `nil`).
+ - Index to a member of a top-level object (if source is `nil`).
  - Top-level object to same top-level object.
  - Top-level object to a different top-level object.
  - Top-level object to one of it's members.
@@ -98,9 +120,9 @@
  - Member object to a member of another top-level object.
  
  @param object The object for which to generate the reference to.
- @param source The source object from which to generate the reference from.
+ @param source The source object from which to generate the reference from or `nil` for index to object reference.
  @return Returns the reference string.
- @exception NSException Thrown if any of the given objects is `nil`.
+ @exception NSException Thrown if object is `nil`.
  @see htmlReferenceNameForObject:
  */
 - (NSString *)htmlReferenceForObject:(GBModelBase *)object fromSource:(GBModelBase *)source;

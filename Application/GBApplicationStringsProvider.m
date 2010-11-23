@@ -77,4 +77,17 @@
 	return result;
 }
 
+#pragma mark Index output strings
+
+- (NSDictionary *)indexPage {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"Class References" forKey:@"classesTitle"];
+		[result setObject:@"Category References" forKey:@"categoriesTitle"];
+		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
+	}
+	return result;
+}
+
 @end

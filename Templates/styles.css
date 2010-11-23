@@ -39,6 +39,33 @@ a:hover {
 	text-decoration: underline;
 }
 
+/* @group Index formatting */
+
+.index-title {
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.index-column {
+	float: left;
+	width: 30%;
+	min-width: 200px;
+	font-size: 11px;
+}
+
+.index-column ul {
+	margin: 8px 0 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.index-column ul li {
+	margin: 0 0 3px 0;
+	padding: 0;
+}
+
+/* @end */
+
 /* @group Common formatting elements */
 
 .title {

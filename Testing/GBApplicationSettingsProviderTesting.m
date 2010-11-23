@@ -75,7 +75,45 @@
 	assertThat([settings htmlReferenceNameForObject:property], is(@"//api/name/value"));
 }
 
-#pragma mark HTML href references handling
+#pragma mark HTML href references handling - index
+
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForClassFromIndex {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	[class.methods registerMethod:method];
+	// execute & verify
+	assertThat([settings htmlReferenceForObject:class fromSource:nil], is(@"Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//api/name/method:"));
+}
+
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForCategoryFromIndex {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	[category.methods registerMethod:method];
+	// execute & verify
+	assertThat([settings htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class(Category).html#//api/name/method:"));
+}
+
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForProtocolFromIndex {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	[protocol.methods registerMethod:method];
+	// execute & verify
+	assertThat([settings htmlReferenceForObject:protocol fromSource:nil], is(@"Protocols/Protocol.html"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//api/name/method:"));
+}
+
+#pragma mark HTML href references handling - top level to top level
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToSameObjectReference {
 	// setup
@@ -112,6 +150,8 @@
 	assertThat([settings htmlReferenceForObject:protocol fromSource:class], is(@"../Protocols/Protocol.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:category], is(@"../Protocols/Protocol.html"));	
 }
+
+#pragma mark HTML href references handling - top level to members
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToItsMemberReference {
 	// setup

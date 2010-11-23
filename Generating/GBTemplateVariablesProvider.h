@@ -47,7 +47,7 @@
 
 /** Returns the variables for the given `GBClassData` using the given `GBStoreProviding` for links. 
  
- The result can be used with `GBTemplateWriter` to generate class specific output.
+ The result can be used with `GBTemplateHandler` to generate class specific output.
  
  @param object The class for which to return variables.
  @param store Store provider to be used for links generation.
@@ -55,12 +55,13 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForCategory:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForIndexWithStore:
  */
 - (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store;
 
 /** Returns the variables for the given `GBCategoryData` using the given `GBStoreProviding` for links. 
  
- The result can be used with `GBTemplateWriter` to generate category specific output.
+ The result can be used with `GBTemplateHandler` to generate category specific output.
  
  @param object The category for which to return variables.
  @param store Store provider to be used for links generation.
@@ -68,12 +69,13 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForClass:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForIndexWithStore:
  */
 - (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id<GBStoreProviding>)store;
 
 /** Returns the variables for the given `GBProtocolData` using the given `GBStoreProviding` for links. 
  
- The result can be used with `GBTemplateWriter` to generate protocol specific output.
+ The result can be used with `GBTemplateHandler` to generate protocol specific output.
  
  @param object The protocol for which to return variables.
  @param store Store provider to be used for links generation.
@@ -81,7 +83,21 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
+ @see variablesForIndexWithStore:
  */
 - (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id<GBStoreProviding>)store;
+
+/** Returns the variables for the index file using the given `GBStoreProviding` for links. 
+ 
+ The result can be used with `GBTemplateHandler` to generate protocol specific output.
+ 
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForClass:withStore:
+ @see variablesForCategory:withStore:
+ @see variablesForIndexWithStore:
+ */
+- (NSDictionary *)variablesForIndexWithStore:(id<GBStoreProviding>)store;
 
 @end

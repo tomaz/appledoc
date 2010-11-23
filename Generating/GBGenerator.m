@@ -18,9 +18,11 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processIndex;
 - (void)writeString:(NSString *)string toFile:(NSString *)path;
 - (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename;
 @property (readonly) GBTemplateHandler *objectTemplate;
+@property (readonly) GBTemplateHandler *indexTemplate;
 @property (readonly) GBTemplateVariablesProvider *variablesProvider;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
@@ -57,6 +59,7 @@
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
+	[self processIndex];
 }
 
 - (void)processClasses {
@@ -92,6 +95,17 @@
 	}
 }
 
+- (void)processIndex {
+	GBLogInfo(@"Generating output for index…");
+	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
+		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
+		NSString *output = [self.indexTemplate renderObject:vars];
+		NSString *path = [self.settings htmlOutputPathForIndex];
+		[self writeString:output toFile:path];
+	}
+	GBLogDebug(@"Finished generating output for index.");
+}
+
 #pragma mark Template files handling
 
 - (GBTemplateVariablesProvider *)variablesProvider {
@@ -103,6 +117,12 @@
 - (GBTemplateHandler *)objectTemplate {
 	static GBTemplateHandler *result = nil;
 	if (!result) result = [self templateHandlerFromTemplateFile:@"object-template.html"];
+	return result;
+}
+
+- (GBTemplateHandler *)indexTemplate {
+	static GBTemplateHandler *result = nil;
+	if (!result) result = [self templateHandlerFromTemplateFile:@"index-template.html"];
 	return result;
 }
 
