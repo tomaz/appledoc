@@ -53,9 +53,6 @@
 		733EA155122BDED20060CBDE /* GBStoreTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */; };
 		733EA156122BDED30060CBDE /* GBTestObjectsRegistry.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */; };
 		733EA157122BDED30060CBDE /* GBTokenizerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */; };
-		733EA175122BE14B0060CBDE /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
-		733EA176122BE14C0060CBDE /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
-		733EA177122BE15D0060CBDE /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9D11F8D22B00CCDDB0 /* DDLog.m */; };
 		733EA178122BE15E0060CBDE /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
 		733EA17A122BE1650060CBDE /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		733EA17B122BE1660060CBDE /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
@@ -155,9 +152,6 @@
 		73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
-		73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */; };
-		73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */; };
-		73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C9D11F8D22B00CCDDB0 /* DDLog.m */; };
 		73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
 		73D54D1E11F8D53E00CCDDB0 /* DDCliApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */; };
 		73D54D1F11F8D53E00CCDDB0 /* DDCliParseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */; };
@@ -171,6 +165,18 @@
 		73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
 		73F2CA77123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
 		73F2CF3C1240DD64009B406B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
+		73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
+		73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
+		73F568BF12A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; };
+		73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; };
+		73F568C112A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; };
+		73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; };
+		73F568C312A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; };
+		73F568C412A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; };
+		73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; };
+		73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; };
+		73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
+		73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
 		73FC6DB511FCCCC600AAD0B9 /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
@@ -320,12 +326,6 @@
 		73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphListItem.m; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
-		73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDConsoleLogger.h; sourceTree = "<group>"; };
-		73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDConsoleLogger.m; sourceTree = "<group>"; };
-		73D54C9A11F8D22B00CCDDB0 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
-		73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
-		73D54C9C11F8D22B00CCDDB0 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
-		73D54C9D11F8D22B00CCDDB0 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
 		73D54CA711F8D27F00CCDDB0 /* GBLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBLog.h; sourceTree = "<group>"; };
 		73D54CA811F8D27F00CCDDB0 /* GBLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBLog.m; sourceTree = "<group>"; };
 		73D54D1511F8D53E00CCDDB0 /* DDCliApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliApplication.h; sourceTree = "<group>"; };
@@ -351,6 +351,16 @@
 		73F2CA71123E4161009B406B /* GBCommentsProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessor.m; sourceTree = "<group>"; };
 		73F2CA72123E4161009B406B /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
 		73F2CA73123E4161009B406B /* GBProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBProcessor.m; sourceTree = "<group>"; };
+		73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
+		73F568B712A22A7900A72BB2 /* DDASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDASLLogger.h; sourceTree = "<group>"; };
+		73F568B812A22A7900A72BB2 /* DDASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDASLLogger.m; sourceTree = "<group>"; };
+		73F568B912A22A7900A72BB2 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
+		73F568BA12A22A7900A72BB2 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
+		73F568BB12A22A7900A72BB2 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
+		73F568BC12A22A7900A72BB2 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
+		73F568BD12A22A7900A72BB2 /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
+		73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
+		73F568D212A22CFF00A72BB2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
 		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
@@ -462,6 +472,8 @@
 				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
 				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
+				73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
+				73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +483,8 @@
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
 				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
+				73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
+				73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -499,6 +513,8 @@
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				73D8E98911FCC97100966C4A /* AppKit.framework */,
 				73D8E98B11FCC97100966C4A /* Cocoa.framework */,
+				73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */,
+				73F568D212A22CFF00A72BB2 /* CoreServices.framework */,
 			);
 			name = "Libraries & Frameworks";
 			path = Libraries;
@@ -683,7 +699,7 @@
 		73D54C9511F8D1F500CCDDB0 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				73D54C9611F8D21000CCDDB0 /* DDLog */,
+				73D54C9611F8D21000CCDDB0 /* CocoaLumberjack */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 				7359B11E129A59EC00F67AD1 /* GRMustache */,
@@ -692,17 +708,19 @@
 			path = ThirdParty;
 			sourceTree = "<group>";
 		};
-		73D54C9611F8D21000CCDDB0 /* DDLog */ = {
+		73D54C9611F8D21000CCDDB0 /* CocoaLumberjack */ = {
 			isa = PBXGroup;
 			children = (
-				73D54C9811F8D22B00CCDDB0 /* DDConsoleLogger.h */,
-				73D54C9911F8D22B00CCDDB0 /* DDConsoleLogger.m */,
-				73D54C9A11F8D22B00CCDDB0 /* DDFileLogger.h */,
-				73D54C9B11F8D22B00CCDDB0 /* DDFileLogger.m */,
-				73D54C9C11F8D22B00CCDDB0 /* DDLog.h */,
-				73D54C9D11F8D22B00CCDDB0 /* DDLog.m */,
+				73F568B712A22A7900A72BB2 /* DDASLLogger.h */,
+				73F568B812A22A7900A72BB2 /* DDASLLogger.m */,
+				73F568B912A22A7900A72BB2 /* DDFileLogger.h */,
+				73F568BA12A22A7900A72BB2 /* DDFileLogger.m */,
+				73F568BB12A22A7900A72BB2 /* DDLog.h */,
+				73F568BC12A22A7900A72BB2 /* DDLog.m */,
+				73F568BD12A22A7900A72BB2 /* DDTTYLogger.h */,
+				73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */,
 			);
-			path = DDLog;
+			path = CocoaLumberjack;
 			sourceTree = "<group>";
 		};
 		73D54CD511F8D43D00CCDDB0 /* DDCli */ = {
@@ -1089,9 +1107,6 @@
 				733EA155122BDED20060CBDE /* GBStoreTesting.m in Sources */,
 				733EA156122BDED30060CBDE /* GBTestObjectsRegistry.m in Sources */,
 				733EA157122BDED30060CBDE /* GBTokenizerTesting.m in Sources */,
-				733EA175122BE14B0060CBDE /* DDConsoleLogger.m in Sources */,
-				733EA176122BE14C0060CBDE /* DDFileLogger.m in Sources */,
-				733EA177122BE15D0060CBDE /* DDLog.m in Sources */,
 				733EA178122BE15E0060CBDE /* GBAdoptedProtocolsProvider.m in Sources */,
 				733EA17A122BE1650060CBDE /* GBCategoryData.m in Sources */,
 				733EA17B122BE1660060CBDE /* GBClassData.m in Sources */,
@@ -1166,6 +1181,10 @@
 				7359B168129A5A0700F67AD1 /* GRMustacheURLTemplateLoader.m in Sources */,
 				7359B16A129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */,
 				7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
+				73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */,
+				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
+				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
+				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1174,9 +1193,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */,
-				73D54C9E11F8D22B00CCDDB0 /* DDConsoleLogger.m in Sources */,
-				73D54C9F11F8D22B00CCDDB0 /* DDFileLogger.m in Sources */,
-				73D54CA011F8D22B00CCDDB0 /* DDLog.m in Sources */,
 				73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */,
 				73D54D1E11F8D53E00CCDDB0 /* DDCliApplication.m in Sources */,
 				73D54D1F11F8D53E00CCDDB0 /* DDCliParseException.m in Sources */,
@@ -1241,6 +1257,10 @@
 				7359B167129A5A0700F67AD1 /* GRMustacheURLTemplateLoader.m in Sources */,
 				7359B169129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */,
 				7359B16B129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
+				73F568BF12A22A7900A72BB2 /* DDASLLogger.m in Sources */,
+				73F568C112A22A7900A72BB2 /* DDFileLogger.m in Sources */,
+				73F568C312A22A7900A72BB2 /* DDLog.m in Sources */,
+				73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1252,6 +1272,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/Frameworks/CoreServices.framework/Versions/A/Frameworks\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -1277,6 +1301,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/Frameworks/CoreServices.framework/Versions/A/Frameworks\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = appledoc_prefix.pch;
@@ -1337,6 +1365,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SYSTEM_LIBRARY_DIR)/Frameworks/CoreServices.framework/Versions/A/Frameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -1376,6 +1405,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
+					"\"$(SYSTEM_LIBRARY_DIR)/Frameworks/CoreServices.framework/Versions/A/Frameworks\"",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
