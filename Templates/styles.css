@@ -39,6 +39,24 @@ a:hover {
 	text-decoration: underline;
 }
 
+/* @group Common page elements */
+
+#footer {
+	clear: left;
+	padding-top: 20px;
+	text-align: center;
+}
+
+.copyright {
+	font-size: 12px;
+}
+
+.generator {
+	font-size: 11px;
+}
+
+/* @end */
+
 /* @group Index formatting */
 
 .index-title {
@@ -101,7 +119,7 @@ a:hover {
 }
 
 /* @end */
-	
+
 /* @group Common layout */
 
 .section {

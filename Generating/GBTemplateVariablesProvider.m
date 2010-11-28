@@ -18,10 +18,8 @@
 @interface GBTemplateVariablesProvider ()
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
-- (NSString *)copyrightHolder;
-- (NSString *)copyrightDateString;
-- (NSString *)lastUpdatedDateString;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
+- (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -97,6 +95,7 @@
 	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
 	[page setObject:[self specificationsForClass:object] forKey:@"specifications"];
 	[page setObject:self.settings.cssClassTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -110,6 +109,7 @@
 	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
 	[page setObject:[self specificationsForCategory:object] forKey:@"specifications"];
 	[page setObject:self.settings.cssCategoryTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -122,10 +122,8 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
 	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
-	[page setObject:[self copyrightHolder] forKey:@"copyrightHolder"];
-	[page setObject:[self copyrightDateString] forKey:@"copyrightDate"];
-	[page setObject:[self lastUpdatedDateString] forKey:@"lastUpdatedDate"];
 	[page setObject:self.settings.cssProtocolTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -139,10 +137,8 @@
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];
-	[page setObject:[self copyrightHolder] forKey:@"copyrightHolder"];
-	[page setObject:[self copyrightDateString] forKey:@"copyrightDate"];
-	[page setObject:[self lastUpdatedDateString] forKey:@"lastUpdatedDate"];
 	[page setObject:self.settings.cssIndexTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:[self classesForIndex] forKey:@"classes"];
@@ -177,16 +173,10 @@
 
 #pragma mark Common values
 
-- (NSString *)copyrightHolder {
-	return @"Gentle Bytes";
-}
-
-- (NSString *)copyrightDateString {
-	return [self.yearDateFormatter stringFromDate:[NSDate date]];
-}
-
-- (NSString *)lastUpdatedDateString {
-	return [self.yearToDayDateFormatter stringFromDate:[NSDate date]];
+- (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
+	[dict setObject:@"Gentle Bytes" forKey:@"copyrightHolder"];
+	[dict setObject:[self.yearDateFormatter stringFromDate:[NSDate date]] forKey:@"copyrightDate"];
+	[dict setObject:[self.yearToDayDateFormatter stringFromDate:[NSDate date]] forKey:@"lastUpdatedDate"];
 }
 
 - (NSDateFormatter *)yearDateFormatter {
