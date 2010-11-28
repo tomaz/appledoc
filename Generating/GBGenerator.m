@@ -11,6 +11,7 @@
 #import "GBDataObjects.h"
 #import "GBTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"
+#import "GBOutputGenerator.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
@@ -56,10 +57,12 @@
 	NSParameterAssert(store != nil);
 	GBLogVerbose(@"Generating output from parsed objects...");	
 	self.store = store;
-	[self processClasses];
-	[self processCategories];
-	[self processProtocols];
-	[self processIndex];
+	GBOutputGenerator *g = [[GBOutputGenerator alloc] init];
+	[g copyTemplateFilesFromPath:self.settings.templatesPath toPath:self.settings.htmlOutputPath];
+//	[self processClasses];
+//	[self processCategories];
+//	[self processProtocols];
+//	[self processIndex];
 }
 
 - (void)processClasses {

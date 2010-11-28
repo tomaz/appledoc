@@ -35,7 +35,7 @@
 	self = [super init];
 	if (self) {
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
-		self.templatesPath = @"~/Downloads/examples/AppledocHtml";
+		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
 		self.ignoredPaths = [NSMutableSet set];
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
