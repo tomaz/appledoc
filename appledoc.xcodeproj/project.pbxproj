@@ -324,6 +324,7 @@
 		73CF81D2122D72ED005B7E26 /* GBParagraphTextItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphTextItem.m; sourceTree = "<group>"; };
 		73CF822B122D79AB005B7E26 /* GBParagraphListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphListItem.h; sourceTree = "<group>"; };
 		73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphListItem.m; sourceTree = "<group>"; };
+		73D2524212A2D38F0024F9F9 /* index-template.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "index-template.html"; sourceTree = "<group>"; };
 		73D54C6111F8CE6D00CCDDB0 /* appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = appledoc.m; sourceTree = "<group>"; };
 		73D54C6911F8CEEF00CCDDB0 /* appledoc_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = appledoc_prefix.pch; sourceTree = "<group>"; };
 		73D54CA711F8D27F00CCDDB0 /* GBLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBLog.h; sourceTree = "<group>"; };
@@ -627,6 +628,7 @@
 			children = (
 				73BC14C51268396E0024E3B9 /* styles.css */,
 				73BC14C41268395C0024E3B9 /* object-template.html */,
+				73D2524212A2D38F0024F9F9 /* index-template.html */,
 			);
 			path = Templates;
 			sourceTree = "<group>";
