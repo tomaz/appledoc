@@ -43,24 +43,6 @@
 	return self;
 }
 
-#pragma mark Template paths handling
-
-- (NSString *)cssClassTemplatePath {
-	return @"../../styles.css";
-}
-
-- (NSString *)cssCategoryTemplatePath {
-	return @"../../styles.css";
-}
-
-- (NSString *)cssProtocolTemplatePath {
-	return @"../../styles.css";
-}
-
-- (NSString *)cssIndexTemplatePath {
-	return @"styles.css";
-}
-
 #pragma mark HTML paths and references handling
 
 - (NSString *)htmlOutputPath {

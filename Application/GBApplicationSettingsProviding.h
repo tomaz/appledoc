@@ -25,38 +25,6 @@
 /** The base path to template files used for generating various output files. */
 @property (copy) NSString *templatesPath;
 
-/** The path to the CSS template file, relative from class html files. 
- 
- @see cssCategoryTemplatePath
- @see cssProtocolTemplatePath
- @see cssIndexTemplatePath
- */
-@property (readonly) NSString *cssClassTemplatePath;
-
-/** The path to the CSS template file, relative from category html files.
- 
- @see cssClassTemplatePath
- @see cssProtocolTemplatePath
- @see cssIndexTemplatePath
- */
-@property (readonly) NSString *cssCategoryTemplatePath;
-
-/** The path to the CSS template file, relative from protocol html files.
- 
- @see cssClassTemplatePath
- @see cssCategoryTemplatePath
- @see cssIndexTemplatePath
- */
-@property (readonly) NSString *cssProtocolTemplatePath;
-
-/** The path to the CSS template file, relative from index html files.
- 
- @see cssClassTemplatePath
- @see cssCategoryTemplatePath
- @see cssProtocolTemplatePath
- */
-@property (readonly) NSString *cssIndexTemplatePath;
-
 ///---------------------------------------------------------------------------------------
 /// @name Output paths handling
 ///---------------------------------------------------------------------------------------

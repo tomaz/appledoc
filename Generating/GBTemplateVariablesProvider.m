@@ -94,7 +94,6 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
 	[page setObject:[self specificationsForClass:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssClassTemplatePath forKey:@"cssPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -108,7 +107,6 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
 	[page setObject:[self specificationsForCategory:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssCategoryTemplatePath forKey:@"cssPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -122,7 +120,6 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
 	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssProtocolTemplatePath forKey:@"cssPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -137,7 +134,6 @@
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];
-	[page setObject:self.settings.cssIndexTemplatePath forKey:@"cssPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
