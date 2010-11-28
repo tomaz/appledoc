@@ -13,10 +13,17 @@
 #import "GBDataObjects.h"
 #import "GBTemplateVariablesProvider.h"
 
+#pragma mark -
+
 @interface GBTemplateVariablesProvider ()
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
+- (NSString *)copyrightHolder;
+- (NSString *)copyrightDateString;
+- (NSString *)lastUpdatedDateString;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
+@property (readonly) NSDateFormatter *yearDateFormatter;
+@property (readonly) NSDateFormatter *yearToDayDateFormatter;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -115,6 +122,9 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
 	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
+	[page setObject:[self copyrightHolder] forKey:@"copyrightHolder"];
+	[page setObject:[self copyrightDateString] forKey:@"copyrightDate"];
+	[page setObject:[self lastUpdatedDateString] forKey:@"lastUpdatedDate"];
 	[page setObject:self.settings.cssProtocolTemplatePath forKey:@"cssPath"];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -129,6 +139,9 @@
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];
+	[page setObject:[self copyrightHolder] forKey:@"copyrightHolder"];
+	[page setObject:[self copyrightDateString] forKey:@"copyrightDate"];
+	[page setObject:[self lastUpdatedDateString] forKey:@"lastUpdatedDate"];
 	[page setObject:self.settings.cssIndexTemplatePath forKey:@"cssPath"];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -159,6 +172,38 @@
 		return result;
 	}
 	[result setObject:[GRNo no] forKey:@"used"];
+	return result;
+}
+
+#pragma mark Common values
+
+- (NSString *)copyrightHolder {
+	return @"Gentle Bytes";
+}
+
+- (NSString *)copyrightDateString {
+	return [self.yearDateFormatter stringFromDate:[NSDate date]];
+}
+
+- (NSString *)lastUpdatedDateString {
+	return [self.yearToDayDateFormatter stringFromDate:[NSDate date]];
+}
+
+- (NSDateFormatter *)yearDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy"];
+	}
+	return result;
+}
+
+- (NSDateFormatter *)yearToDayDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy-MM-dd"];
+	}
 	return result;
 }
 
