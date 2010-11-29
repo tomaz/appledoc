@@ -82,6 +82,7 @@
 		733EA2E2122C00370060CBDE /* GBParagraphItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 733EA2E0122C00370060CBDE /* GBParagraphItem.m */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
+		73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
 		7359B149129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14A129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14B129A5A0700F67AD1 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B123129A5A0600F67AD1 /* GRMustache.m */; };
@@ -152,7 +153,6 @@
 		73CF822D122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73CF822E122D79AB005B7E26 /* GBParagraphListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF822C122D79AB005B7E26 /* GBParagraphListItem.m */; };
 		73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
-		73D2524712A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
 		73D54D1E11F8D53E00CCDDB0 /* DDCliApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */; };
@@ -228,6 +228,8 @@
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
 		7340F02711FCC63100E712A4 /* NSObject+GBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GBObject.m"; sourceTree = "<group>"; };
+		73473D2F12A38B730011336C /* GBHTMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBHTMLOutputGenerator.h; sourceTree = "<group>"; };
+		73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBHTMLOutputGenerator.m; sourceTree = "<group>"; };
 		7359B11F129A5A0600F67AD1 /* GRBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRBoolean.h; path = GRMustache/GRBoolean.h; sourceTree = "<group>"; };
 		7359B120129A5A0600F67AD1 /* GRBoolean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRBoolean.m; path = GRMustache/GRBoolean.m; sourceTree = "<group>"; };
 		7359B121129A5A0600F67AD1 /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache_private.h; path = GRMustache/GRMustache_private.h; sourceTree = "<group>"; };
@@ -650,6 +652,8 @@
 				73AA9F721253BF4000074152 /* GBGenerator.m */,
 				73D2524412A2ED610024F9F9 /* GBOutputGenerator.h */,
 				73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */,
+				73473D2F12A38B730011336C /* GBHTMLOutputGenerator.h */,
+				73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */,
 				7321D0E512944CF500796DEC /* GBTemplateHandler.h */,
 				7321D0E612944CF500796DEC /* GBTemplateHandler.m */,
 				73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */,
@@ -1189,7 +1193,6 @@
 				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
 				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
 				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
-				73D2524712A2ED610024F9F9 /* GBOutputGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1267,6 +1270,7 @@
 				73F568C312A22A7900A72BB2 /* DDLog.m in Sources */,
 				73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */,
+				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

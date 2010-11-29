@@ -23,7 +23,6 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	// verify - just basic tests...
 	assertThat([vars objectForKey:@"page"], isNot(nil));
-	assertThat([vars valueForKeyPath:@"page.cssPath"], isNot(nil));
 	assertThat([vars valueForKeyPath:@"page.title"], isNot(nil));
 	assertThat([vars valueForKeyPath:@"page.specifications"], isNot(nil));
 	assertThat([vars objectForKey:@"object"], is(class));

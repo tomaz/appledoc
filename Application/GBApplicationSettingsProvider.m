@@ -11,13 +11,11 @@
 
 @interface GBApplicationSettingsProvider ()
 
-- (BOOL)isTopLevelStoreObject:(id)object;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
 - (NSString *)relativePathPrefixFromObject:(GBModelBase *)source toObject:(GBModelBase *)destination;
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(GBModelBase *)member prefixedWith:(NSString *)prefix;
-- (NSString *)htmlExtension;
 
 @end
 
@@ -43,27 +41,11 @@
 	return self;
 }
 
-#pragma mark HTML paths and references handling
-
-- (NSString *)htmlOutputPath {
-	return [self.outputPath stringByAppendingPathComponent:@"html"];
-}
-
-- (NSString *)htmlOutputPathForIndex {
-	NSString *result = [self.htmlOutputPath stringByAppendingPathComponent:@"index"];
-	return [result stringByAppendingPathExtension:[self htmlExtension]];
-}
-
-- (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
-	NSParameterAssert(object != nil);
-	NSParameterAssert([self isTopLevelStoreObject:object]);
-	NSString *inner = [self htmlReferenceForObjectFromIndex:object];
-	return [self.htmlOutputPath stringByAppendingPathComponent:inner];
-}
+#pragma mark HTML references handling
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
 	NSParameterAssert(object != nil);
-	if ([self isTopLevelStoreObject:object]) return [self htmlReferenceForObject:object fromSource:object];
+	if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:object];
 	return [self htmlReferenceForMember:object prefixedWith:@""];
 }
 
@@ -73,7 +55,7 @@
 	// Generate hrefs from index to objects:
 	if (!source) {
 		// To top-level object.
-		if ([self isTopLevelStoreObject:object]) return [self htmlReferenceForObjectFromIndex:object];
+		if (object.isTopLevelObject) return [self htmlReferenceForObjectFromIndex:object];
 		
 		// To a member of top-level object.
 		NSString *path = [self htmlReferenceForObjectFromIndex:object.parentObject];
@@ -82,11 +64,11 @@
 	}
 	
 	// Generate hrefs from member to other objects:
-	if (![self isTopLevelStoreObject:source]) {
+	if (!source.isTopLevelObject) {
 		GBModelBase *sourceParent = source.parentObject;
 		
 		// To the parent or another top-level object.
-		if ([self isTopLevelStoreObject:object]) return [self htmlReferenceForObject:object fromSource:sourceParent];
+		if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:sourceParent];
 
 		// To same or another member of the same parent.
 		if (object.parentObject == sourceParent) return [self htmlReferenceForMember:object prefixedWith:@"#"];
@@ -98,7 +80,7 @@
 	}
 	
 	// From top-level object to samo or another top level object.
-	if (object == source || [self isTopLevelStoreObject:object]) {
+	if (object == source || object.isTopLevelObject) {
 		return [self htmlReferenceForTopLevelObject:object fromTopLevelObject:source];
 	}
 	

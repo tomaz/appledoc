@@ -14,32 +14,6 @@
 	
 @implementation GBApplicationSettingsProviderTesting
 
-#pragma mark HTML output paths handling
-
-- (void)testCssTemplatePath_shouldReturnProperValue {
-	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	// execute & verify
-	assertThat(settings.cssClassTemplatePath, is(@"../../styles.css"));
-	assertThat(settings.cssCategoryTemplatePath, is(@"../../styles.css"));
-	assertThat(settings.cssProtocolTemplatePath, is(@"../../styles.css"));
-}
-
-- (void)testHtmlOutputPathForObject_shouldReturnProperlyPrefixedPath {
-	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"./";
-	GBClassData *class = [GBClassData classDataWithName:@"Class"];
-	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
-	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:@"Class"];
-	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
-	// execute & verify
-	assertThat([settings htmlOutputPathForObject:class], is(@"./html/Classes/Class.html"));
-	assertThat([settings htmlOutputPathForObject:category], is(@"./html/Categories/Class(Category).html"));
-	assertThat([settings htmlOutputPathForObject:extension], is(@"./html/Categories/Class().html"));
-	assertThat([settings htmlOutputPathForObject:protocol], is(@"./html/Protocols/Protocol.html"));
-}
-
 #pragma mark HTML href names handling
 
 - (void)testHtmlReferenceNameForObject_shouldReturnProperValueForTopLevelObjects {

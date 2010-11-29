@@ -307,4 +307,11 @@
 	assertThat(([[GBTestObjectsRegistry classMethodWithNames:@"method", nil] methodPrefix]), is(@"+"));
 }
 
+- (void)testIsTopLevelObject_shouldReturnNO {
+	// setup & execute
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	// verify
+	assertThatBool(method.isTopLevelObject, equalToBool(NO));
+}
+
 @end

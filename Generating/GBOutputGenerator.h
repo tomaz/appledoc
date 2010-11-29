@@ -7,6 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GBStoreProviding.h"
+
+@protocol GBApplicationSettingsProviding;
 
 /** The base class for all output generators.
  
@@ -15,27 +18,120 @@
 @interface GBOutputGenerator : NSObject
 
 ///---------------------------------------------------------------------------------------
-/// @name Templates handling
+/// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Copies all files from the given templates path to the given output path, replicating the directory structure.
+/** Returns autoreleased generator that work with the given `GBApplicationSettingsProvider` implementor.
  
- The method uses `outputPath` to determine the source and destination subdirectories relative to the given paths. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages.
- 
- If copying fails, the error is logged to console and `NO` is returned.
- 
- @param sourcePath The source path to copy from.
- @param destPath The destination path to copy to.
- @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
  */
-- (BOOL)copyTemplateFilesFromPath:(NSString *)sourcePath toPath:(NSString *)destPath;
++ (id)generatorWithSettingsProvider:(id)settingsProvider;
+
+/** Initializes the generator to work with the given `GBApplicationSettingsProvider` implementor.
+ 
+ This is the designated initializer.
+ 
+ @param settingsProvider Application-wide settings provider to use for checking parameters.
+ @return Returns initialized instance or `nil` if initialization fails.
+ @exception NSException Thrown if the given application is `nil`.
+ */
+- (id)initWithSettingsProvider:(id)settingsProvider;
+
+///---------------------------------------------------------------------------------------
+/// @name Generation handling
+///---------------------------------------------------------------------------------------
+
+/** Copies all files from the templates path to the output path as defined in assigned `settings`, replicating the directory structure and stores all detected template files to `templateFiles` dictionary.
+ 
+ The method uses `outputPath` to determine the source and destination subdirectories relative to the common template and output paths. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages (i.e. before `generateOutput:`).
+ 
+ To further aid subclasses, the method reads out all template files in templates path and stores them to `templateFiles` dictionary. Each template file is stored with a key correspoding to it's filename, including the subdirectory within the base template path and extension.
+  
+ @warning *Note:* This message is intended to be sent from higher-level generator objects. Although it would present no error to run it several times, in most circumstances subclasses don't need to send it manually. If copying fails, a warning is logged and copying is stopped. Depending of type of failure, the method either returns `YES` or `NO`. If copying of all files is succesful, but reading or clearing template or ignored files fails, the operation is still considered succesful, so `YES` is returned. However if replicating the directory structure or copying files fails, this is considered an error and `NO` is returned. In such case, clients should abort further processing.
+
+
+ @param error If copying fails, error description is returned here.
+ @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
+ @see generateOutputWithStore:error:
+ */
+- (BOOL)copyTemplateFilesToOutputPath:(NSError **)error;
+
+/** Generates the output at the proper subdirectory of the output path as defined in assigned `settings`.
+ 
+ This is the most important method of the `GBOutputGenerator` class. It generates all required output. It is intended to be overriden in subclasses. Default implementation assigns the given store and returns YES. Subclasses must call super class implementation before anything else!
+ 
+ @param store The `GBStoreProviding` object that holds the store with all parsed and processed data.
+ @param error If generation fails, error description is returned here.
+ @see copyTemplateFilesToOutputPath:
+ @see writeString:toFile:error:
+ @see store
+ */
+- (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error;
+
+/** Writes the given string to the given path, creating all necessary directories if they don't exist.
+ 
+ This method is intended to be used from subclass, in most cases from `generateOutputWithStore:error:`.
+ 
+ @param string The string to write.
+ @param path The path and filename to write to.
+ @param error If writting fails, error description is returned here.
+ @return Returns `YES` is writting succeds, `NO` otherwise.
+ @see generateOutputWithStore:error:
+ */
+- (BOOL)writeString:(NSString *)string toFile:(NSString *)path error:(NSError **)error;
+
+///---------------------------------------------------------------------------------------
+/// @name Subclass parameters and helpers
+///---------------------------------------------------------------------------------------
+
+/** The dictionary of all template files detected within `copyTemplateFilesToOutputPath:`.
+ 
+ Each object has a key of template file name and relative path from `templateUserPath`. The keys are mapped to `GBTemplateHandler` instances associated with the template.
+ 
+ This is intended to be used within subclasses only. Dictionary contents are automatically updated and should not be changed by subclasses.
+ 
+ @see copyTemplateFilesToOutputPath:
+ */
+@property (readonly) NSMutableDictionary *templateFiles;
+
+/** Returns user-friendly template path string including `outputSubpath`. 
+ 
+ This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
+ 
+ @see outputUserPath
+ */
+@property (readonly) NSString *templateUserPath;
+
+/** Returns the output path including `outputSubpath`. 
+ 
+ This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
+ 
+ @see templateUserPath
+ */
+@property (readonly) NSString *outputUserPath;
+
+/** The store as assigned to `generateOutput`.
+ 
+ @see generateOutputWithStore:error:
+ */
+@property (readonly, retain) id<GBStoreProviding> store;
+
+///---------------------------------------------------------------------------------------
+/// @name Generation parameters
+///---------------------------------------------------------------------------------------
 
 /** Returns the path relative to main output path, where all generated data is stored.
  
  At the same this, this also defines the path relative to main templates path, where all template files for this output generator are stored. Default implementation simply returns empty string, each subclass is supposed to override and return prover value.
  
- @see copyTemplateFilesFromPath:toPath:
+ @see copyTemplateFilesToOutputPath:
   */
 @property (readonly) NSString *outputSubpath;
+
+/** The `GBApplicationSettingsProviding` object that provides application-wide settings for this session. 
+ */
+@property (retain) id<GBApplicationSettingsProviding> settings;
 
 @end

@@ -57,6 +57,10 @@
 	return self.nameOfClass;
 }
 
+- (BOOL)isTopLevelObject {
+	return YES;
+}
+
 #pragma mark Properties
 
 @synthesize nameOfClass = _className;

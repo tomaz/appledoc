@@ -45,6 +45,10 @@
 	return self.nameOfProtocol;
 }
 
+- (BOOL)isTopLevelObject {
+	return YES;
+}
+
 #pragma mark Properties
 
 @synthesize nameOfProtocol = _protocolName;

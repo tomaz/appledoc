@@ -54,4 +54,13 @@
 	assertThatInteger([[source.methods methods] count], equalToInteger(2));
 }
 
+#pragma mark Helper methods
+
+- (void)testIsTopLevelObject_shouldReturnYES {
+	// setup & execute
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	// verify
+	assertThatBool(protocol.isTopLevelObject, equalToBool(YES));
+}
+
 @end

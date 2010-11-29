@@ -49,6 +49,10 @@
 	return self.idOfCategory;
 }
 
+- (BOOL)isTopLevelObject {
+	return YES;
+}
+
 #pragma mark Properties
 
 - (BOOL)isExtension {

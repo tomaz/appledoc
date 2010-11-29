@@ -80,6 +80,11 @@
  */
 @property (retain) id parentObject;
 
+/** Specifies whether this is a top level object or not.
+ 
+ Top level objects are classes, categories and protocols.
+ */
+@property (readonly) BOOL isTopLevelObject;
 
 ///---------------------------------------------------------------------------------------
 /// @name Output generation helpers

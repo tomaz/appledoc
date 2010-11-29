@@ -19,48 +19,24 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
-/// @name Template paths handling
+/// @name Paths handling
 ///---------------------------------------------------------------------------------------
 
 /** The base path to template files used for generating various output files. */
 @property (copy) NSString *templatesPath;
 
-///---------------------------------------------------------------------------------------
-/// @name Output paths handling
-///---------------------------------------------------------------------------------------
-
 /** The base path of the generated files. */
 @property (copy) NSString *outputPath;
 
-/** The base path of the HTML generated files.
+/** The list of all full or partial paths to be ignored. 
  
- This value depends on `outputPath` and is automatically calculated.
- 
- @see htmlOutputPathForObject:
- @see htmlOutputPathForIndex
- @see outputPath
+ It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
  */
-@property (readonly) NSString *htmlOutputPath;
+@property (retain) NSMutableArray *ignoredPaths;
 
-/** Returns file name including full path for HTML file representing the given top-level object.
- 
- This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class.
- 
- @param object The object for which to return the path.
- @return Returns the path.
- @exception NSException Thrown if the given object is `nil` or not top-level object.
- @see htmlOutputPathForIndex
- @see htmlOutputPath
- */
-- (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
-
-/** Returns file name including full path for HTML file representing the main index.
- 
- @return Returns the path.
- @see htmlOutputPathForObject:
- @see htmlOutputPath
- */
-- (NSString *)htmlOutputPathForIndex;
+///---------------------------------------------------------------------------------------
+/// @name Application-wide HTML helpers
+///---------------------------------------------------------------------------------------
 
 /** Returns HTML reference name for the given object.
  
@@ -95,15 +71,9 @@
  */
 - (NSString *)htmlReferenceForObject:(GBModelBase *)object fromSource:(GBModelBase *)source;
 
-///---------------------------------------------------------------------------------------
-/// @name Other paths handling
-///---------------------------------------------------------------------------------------
-
-/** The list of all full or partial paths to be ignored. 
- 
- It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
+/** The file extension for html files.
  */
-@property (retain) NSMutableArray *ignoredPaths;
+@property (readonly) NSString *htmlExtension;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper classes

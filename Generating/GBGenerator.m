@@ -8,23 +8,14 @@
 
 #import "GBApplicationSettingsProviding.h"
 #import "GBStoreProviding.h"
-#import "GBDataObjects.h"
-#import "GBTemplateVariablesProvider.h"
-#import "GBTemplateHandler.h"
-#import "GBOutputGenerator.h"
+#import "GBHTMLOutputGenerator.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
 
-- (void)processClasses;
-- (void)processCategories;
-- (void)processProtocols;
-- (void)processIndex;
-- (void)writeString:(NSString *)string toFile:(NSString *)path;
-- (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename;
-@property (readonly) GBTemplateHandler *objectTemplate;
-@property (readonly) GBTemplateHandler *indexTemplate;
-@property (readonly) GBTemplateVariablesProvider *variablesProvider;
+- (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store;
+- (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store;
+@property (readonly) NSMutableArray *outputGenerators;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -55,107 +46,42 @@
 
 - (void)generateOutputFromStore:(id<GBStoreProviding>)store {
 	NSParameterAssert(store != nil);
-	GBLogVerbose(@"Generating output from parsed objects...");	
-	self.store = store;
-	GBOutputGenerator *g = [[GBOutputGenerator alloc] init];
-	[g copyTemplateFilesFromPath:self.settings.templatesPath toPath:self.settings.htmlOutputPath];
-//	[self processClasses];
-//	[self processCategories];
-//	[self processProtocols];
-//	[self processIndex];
+	GBLogInfo(@"Generating output from parsed objects...");
+	[self setupGeneratorStepsWithStore:store];
+	[self runGeneratorStepsWithStore:store];
 }
 
-- (void)processClasses {
-	for (GBClassData *class in self.store.classes) {
-		GBLogInfo(@"Generating output for class %@...", class);
-		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
-		NSString *output = [self.objectTemplate renderObject:vars];
-		NSString *path = [self.settings htmlOutputPathForObject:class];
-		[self writeString:output toFile:path];
-		GBLogDebug(@"Finished generating output for class %@.", class);
-	}
+- (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store {
+	GBLogDebug(@"Initializing generation steps...");
+	[self.outputGenerators addObject:[GBHTMLOutputGenerator generatorWithSettingsProvider:self.settings]];
 }
 
-- (void)processCategories {
-	for (GBCategoryData *category in self.store.categories) {
-		GBLogInfo(@"Generating output for category %@...", category);
-		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
-		NSString *output = [self.objectTemplate renderObject:vars];
-		NSString *path = [self.settings htmlOutputPathForObject:category];
-		[self writeString:output toFile:path];
-		GBLogDebug(@"Finished generating output for category %@.", category);
-	}
-}
-
-- (void)processProtocols {
-	for (GBProtocolData *protocol in self.store.protocols) {
-		GBLogInfo(@"Generating output for protocol %@...", protocol);
-		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
-		NSString *output = [self.objectTemplate renderObject:vars];
-		NSString *path = [self.settings htmlOutputPathForObject:protocol];
-		[self writeString:output toFile:path];
-		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
-	}
-}
-
-- (void)processIndex {
-	GBLogInfo(@"Generating output for index…");
-	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
-		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
-		NSString *output = [self.indexTemplate renderObject:vars];
-		NSString *path = [self.settings htmlOutputPathForIndex];
-		[self writeString:output toFile:path];
-	}
-	GBLogDebug(@"Finished generating output for index.");
+- (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store {
+	GBLogDebug(@"Running generation steps...");
+	NSUInteger stepsCount = [self.outputGenerators count];
+	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {
+		NSError *error = nil;
+		GBLogVerbose(@"Step %ld/%ld: Running %@...", idx, stepsCount, [generator className]);
+		if (![generator copyTemplateFilesToOutputPath:&error]) {
+			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed copying template files to output, aborting!", idx, stepsCount, [generator className]);
+			*stop = YES;
+			return;
+		}
+		if (![generator generateOutputWithStore:store error:&error]) {
+			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed generaing output, aborting!", idx, stepsCount, [generator className]);
+			*stop = YES;
+			return;
+		}
+	}];
 }
 
 #pragma mark Template files handling
 
-- (GBTemplateVariablesProvider *)variablesProvider {
-	static GBTemplateVariablesProvider *result = nil;
-	if (!result) result = [[GBTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
-	return result;
-}
-
-- (GBTemplateHandler *)objectTemplate {
-	static GBTemplateHandler *result = nil;
-	if (!result) result = [self templateHandlerFromTemplateFile:@"object-template.html"];
-	return result;
-}
-
-- (GBTemplateHandler *)indexTemplate {
-	static GBTemplateHandler *result = nil;
-	if (!result) result = [self templateHandlerFromTemplateFile:@"index-template.html"];
-	return result;
-}
-
-#pragma mark Helper methods
-
-- (void)writeString:(NSString *)string toFile:(NSString *)path {
-	// Writes the given string to the given path, creating all folders if they don't exist.
-	NSError *error = nil;
-	
-	NSString *standardized = [path stringByStandardizingPath];
-	NSString *directory = [standardized stringByDeletingLastPathComponent];
-	[self.fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:&error];
-	if (error) {
-		GBLogNSError(error, @"Failed creating directory while writting %@!", path);
-		return;
-	}
-	
-	[string writeToFile:standardized atomically:YES encoding:NSUTF8StringEncoding error:&error];
-	if (error) GBLogNSError(error, @"Failed writing %@!", path);
-}
-
-- (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename {
-	NSError *error = nil;
-	NSString *path = self.settings.templatesPath;
-	GBLogDebug(@"Creating template handler for file %@ in template folder %@...", filename, path);
-	path = [path stringByAppendingPathComponent:filename];
-	GBTemplateHandler *result = [GBTemplateHandler handler];
-	if (![result parseTemplateFromPath:[path stringByStandardizingPath] error:&error]) {
-		GBLogNSError(error, @"Failed parsing template %@!", filename);
-		return nil;
+- (NSMutableArray *)outputGenerators {
+	static NSMutableArray *result = nil;
+	if (!result) {
+		GBLogDebug(@"Initializing output generators array...");
+		result = [[NSMutableArray alloc] init];
 	}
 	return result;
 }
