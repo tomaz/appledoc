@@ -89,7 +89,7 @@
 		} else if ([self isPathRepresentingTemplateFile:path]) {
 			GBTemplateHandler *handler = [self templateHandlerFromTemplateFile:path error:error];
 			if (!handler) return NO;
-			[self.templateFiles setObject:path forKey:path];
+			[self.templateFiles setObject:handler forKey:path];
 			delete = YES;
 		}
 		

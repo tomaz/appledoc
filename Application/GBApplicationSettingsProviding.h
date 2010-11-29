@@ -46,6 +46,7 @@
  @return Returns the reference name of the object.
  @exception NSException Thrown if the given object is `nil`.
  @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceForObjectFromIndex:
  */
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object;
 
@@ -67,9 +68,22 @@
  @param source The source object from which to generate the reference from or `nil` for index to object reference.
  @return Returns the reference string.
  @exception NSException Thrown if object is `nil`.
+ @see htmlReferenceForObjectFromIndex:
  @see htmlReferenceNameForObject:
  */
 - (NSString *)htmlReferenceForObject:(GBModelBase *)object fromSource:(GBModelBase *)source;
+
+/** Returns relative HTML reference to the given object from the context of index file.
+ 
+ This is simply a helper method for `htmlReferenceForObject:fromSource:`, passing the given object as object parameter and `nil` as source.
+ 
+ @pram object The object for which to generate the reference to.
+ @return Returns the reference string.
+ @exception NSException Thrown if object is `nil`.
+ @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceNameForObject:
+ */
+- (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 
 /** The file extension for html files.
  */
