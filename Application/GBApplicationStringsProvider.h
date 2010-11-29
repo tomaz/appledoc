@@ -48,4 +48,11 @@
 /** Strings used for generating common page strings for index. */
 @property (readonly) NSDictionary *indexPage;
 
+///---------------------------------------------------------------------------------------
+/// @name DocSet output strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for generating common page strings for documentation set. */
+@property (readonly) NSDictionary *docset;
+
 @end

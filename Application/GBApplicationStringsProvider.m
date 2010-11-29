@@ -90,4 +90,17 @@
 	return result;
 }
 
+#pragma mark Documentation set output strings
+
+- (NSDictionary *)docset {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"Classes" forKey:@"classesTitle"];
+		[result setObject:@"Categories" forKey:@"categoriesTitle"];
+		[result setObject:@"Protocols" forKey:@"protocolsTitle"];
+	}
+	return result;
+}
+
 @end

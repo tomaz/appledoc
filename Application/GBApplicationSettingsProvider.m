@@ -42,7 +42,7 @@
 		self.docsetCertificateSigner = @"";
 		self.docsetDescription = @"";
 		self.docsetFallbackURL = @"";
-		self.docsetFeedName = @"";
+		self.docsetFeedName = @"$COMPANY Documentation";
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"macosx";

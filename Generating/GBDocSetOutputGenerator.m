@@ -6,7 +6,9 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GRMustache.h"
 #import "GBApplicationSettingsProvider.h"
+#import "GBDataObjects.h"
 #import "GBTemplateHandler.h"
 #import "GBDocSetOutputGenerator.h"
 
@@ -14,6 +16,8 @@
 
 - (BOOL)moveSourceFilesToDocuments:(NSError **)error;
 - (BOOL)processInfoPlist:(NSError **)error;
+- (BOOL)processNodesXml:(NSError **)error;
+- (NSArray *)dataObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)replacePlaceholdersInString:(NSString *)string;
 
 @end
@@ -29,6 +33,7 @@
 	if (![super generateOutputWithStore:store error:error]) return NO;
 	if (![self moveSourceFilesToDocuments:error]) return NO;
 	if (![self processInfoPlist:error]) return NO;
+	if (![self processNodesXml:error]) return NO;
 	return YES;
 }
 
@@ -90,6 +95,59 @@
 		return NO;
 	}
 	return YES;
+}
+
+- (BOOL)processNodesXml:(NSError **)error {
+	GBLogInfo(@"Writting DocSet Nodex.xml file...");
+	NSString *templatePath = [self templateFileKeyEndingWith:@"nodes-template.xml"];
+	if (!templatePath) {
+		if (error) *error = [NSError errorWithCode:2 description:@"Nodes.xml template is missing!" reason:@"nodes-template.xml file is required to specify document structure for DocSet!"];
+		GBLogWarn(@"Failed finding nodes-template.xml in '%@'!", self.templateUserPath);
+		return NO;
+	}
+	
+	// Prepare flat list of objects for library nodes.
+	NSUInteger index = 1;
+	NSArray *classes = [self dataObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
+	NSArray *categories = [self dataObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
+	NSArray *protocols = [self dataObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
+	
+	// Prepare the variables for the template.
+	NSMutableDictionary *vars = [NSMutableDictionary dictionary];
+	[vars setObject:self.settings.projectName forKey:@"projectName"];
+	[vars setObject:@"index.html" forKey:@"indexFilename"];
+	[vars setObject:([classes count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+	[vars setObject:([categories count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
+	[vars setObject:([protocols count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[vars setObject:classes forKey:@"classes"];
+	[vars setObject:categories forKey:@"categories"];
+	[vars setObject:protocols forKey:@"protocols"];
+	[vars setObject:self.settings.stringTemplates forKey:@"strings"];
+	
+	// Run the template and save the results as Info.plist.
+	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
+	NSString *output = [handler renderObject:vars];
+	NSString *path = [[templatePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"Nodes.xml"];
+	NSString *filename = [self.outputUserPath stringByAppendingPathComponent:path];
+	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
+		GBLogWarn(@"Failed writting Nodes.xml to '%@'!", filename);
+		return NO;
+	}
+	return YES;
+}
+
+- (NSArray *)dataObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
+	NSUInteger idx = *index;
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[objects count]];
+	for (id object in objects) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
+		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
+		[data setObject:[object valueForKey:value] forKey:@"name"];
+		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
+		[result addObject:data];
+	}
+	*index = idx;
+	return result;
 }
 
 #pragma mark Helper methods
