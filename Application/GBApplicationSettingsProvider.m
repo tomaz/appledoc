@@ -32,6 +32,8 @@
 - (id)init {
 	self = [super init];
 	if (self) {
+		self.projectName = @"PROJECT";
+		self.projectCompany = @"COMPANY";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
 		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
 		self.ignoredPaths = [NSMutableSet set];
@@ -164,6 +166,8 @@
 
 #pragma mark Properties
 
+@synthesize projectName;
+@synthesize projectCompany;
 @synthesize outputPath;
 @synthesize templatesPath;
 @synthesize ignoredPaths;

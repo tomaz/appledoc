@@ -19,6 +19,16 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
+/// @name Common values handling
+///---------------------------------------------------------------------------------------
+
+/** Human readable name of the project. */
+@property (copy) NSString *projectName;
+
+/** Human readable name of the project company. */
+@property (copy) NSString *projectCompany;
+
+///---------------------------------------------------------------------------------------
 /// @name Paths handling
 ///---------------------------------------------------------------------------------------
 

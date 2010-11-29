@@ -170,7 +170,7 @@
 #pragma mark Common values
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
-	[dict setObject:@"Gentle Bytes" forKey:@"copyrightHolder"];
+	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];
 	[dict setObject:[self.yearDateFormatter stringFromDate:[NSDate date]] forKey:@"copyrightDate"];
 	[dict setObject:[self.yearToDayDateFormatter stringFromDate:[NSDate date]] forKey:@"lastUpdatedDate"];
 }
@@ -336,7 +336,7 @@
 @implementation GBTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex {
-	return @"Reference";
+	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];
 }
 
 - (NSArray *)classesForIndex {
