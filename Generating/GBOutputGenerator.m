@@ -56,7 +56,7 @@
 	NSString *sourceUserPath = self.templateUserPath;
 	NSString *destUserPath = self.outputUserPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
-	NSString *destPath = [destUserPath stringByStandardizingPath];
+	NSString *destPath = [destUserPath stringByStandardizingPath];	
 	GBLogVerbose(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);	
 	
 	// Remove destination path if it exists. Exit if we fail.
@@ -66,6 +66,12 @@
 			GBLogWarn(@"Failed removing output files at '%@'!", destUserPath);
 			return NO;	
 		}
+	}
+	
+	// If there's no source file, there also no need to copy anything, so exit. In fact, copying would probably just result in errors.
+	if (![self.fileManager fileExistsAtPath:sourcePath]) {
+		GBLogDebug(@"No template file found at '%@', no need to copy.", sourceUserPath);
+		return YES;
 	}
 	
 	// Copy the whole source directory over to output. Exit if we fail.
@@ -170,6 +176,7 @@
 
 #pragma mark Properties
 
+@synthesize previousGenerator;
 @synthesize settings;
 
 @end

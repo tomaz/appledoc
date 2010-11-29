@@ -9,6 +9,7 @@
 #import "GBApplicationSettingsProviding.h"
 #import "GBStoreProviding.h"
 #import "GBHTMLOutputGenerator.h"
+#import "GBDocSetOutputGenerator.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
@@ -52,16 +53,20 @@
 }
 
 - (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store {
+	// Setups all output generators. The order of these is crucial as they are invoked in the order added to the list. This forms a dependency where each next generator can use
 	GBLogDebug(@"Initializing generation steps...");
 	[self.outputGenerators addObject:[GBHTMLOutputGenerator generatorWithSettingsProvider:self.settings]];
+	[self.outputGenerators addObject:[GBDocSetOutputGenerator generatorWithSettingsProvider:self.settings]];
 }
 
 - (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store {
 	GBLogDebug(@"Running generation steps...");
 	NSUInteger stepsCount = [self.outputGenerators count];
-	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {
+	__block GBOutputGenerator *previous = nil;
+	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {		
 		NSError *error = nil;
 		GBLogVerbose(@"Step %ld/%ld: Running %@...", idx, stepsCount, [generator className]);
+		generator.previousGenerator = previous;
 		if (![generator copyTemplateFilesToOutputPath:&error]) {
 			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed copying template files to output, aborting!", idx, stepsCount, [generator className]);
 			*stop = YES;
@@ -72,6 +77,7 @@
 			*stop = YES;
 			return;
 		}
+		previous = generator;
 	}];
 }
 

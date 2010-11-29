@@ -11,6 +11,7 @@
 		7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */; };
 		7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
 		7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
+		731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 731872C412A3B75C0035509F /* GBDocSetOutputGenerator.m */; };
 		731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */ = {isa = PBXBuildFile; fileRef = 731D2BF412045A61003180E7 /* NSString+GBString.m */; };
 		731E7CE811F9962D00AAF15D /* NSException+GBException.m in Sources */ = {isa = PBXBuildFile; fileRef = 731E7CE711F9962D00AAF15D /* NSException+GBException.m */; };
 		7321D0E712944CF500796DEC /* GBTemplateHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D0E612944CF500796DEC /* GBTemplateHandler.m */; };
@@ -203,6 +204,8 @@
 		7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-SectionsParsingTesting.m"; sourceTree = "<group>"; };
 		7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodSectionData.h; sourceTree = "<group>"; };
 		7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodSectionData.m; sourceTree = "<group>"; };
+		731872C312A3B75C0035509F /* GBDocSetOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDocSetOutputGenerator.h; sourceTree = "<group>"; };
+		731872C412A3B75C0035509F /* GBDocSetOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocSetOutputGenerator.m; sourceTree = "<group>"; };
 		731D2BF312045A61003180E7 /* NSString+GBString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GBString.h"; sourceTree = "<group>"; };
 		731D2BF412045A61003180E7 /* NSString+GBString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GBString.m"; sourceTree = "<group>"; };
 		731E7CE611F9962D00AAF15D /* NSException+GBException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+GBException.h"; sourceTree = "<group>"; };
@@ -273,6 +276,7 @@
 		7359B147129A5A0700F67AD1 /* GRMustacheVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustacheVersion.h; path = GRMustache/GRMustacheVersion.h; sourceTree = "<group>"; };
 		7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRMustacheVersion.m; path = GRMustache/GRMustacheVersion.m; sourceTree = "<group>"; };
 		735BCB49124EE92F00FB6C4A /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timing.h; sourceTree = "<group>"; };
+		7367298112A3BD9D00879D1B /* docset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docset; sourceTree = "<group>"; };
 		7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTestObjectsRegistry.h; sourceTree = "<group>"; };
 		7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTestObjectsRegistry.m; sourceTree = "<group>"; };
 		7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectsAssertor.h; sourceTree = "<group>"; };
@@ -630,6 +634,7 @@
 		739AD36F1254449D00B642C3 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
+				7367298112A3BD9D00879D1B /* docset */,
 				73D2524312A2EA340024F9F9 /* html */,
 			);
 			path = Templates;
@@ -656,6 +661,8 @@
 				73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */,
 				739AD62D1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.h */,
 				739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */,
+				731872C312A3B75C0035509F /* GBDocSetOutputGenerator.h */,
+				731872C412A3B75C0035509F /* GBDocSetOutputGenerator.m */,
 				7321D0E512944CF500796DEC /* GBTemplateHandler.h */,
 				7321D0E612944CF500796DEC /* GBTemplateHandler.m */,
 				73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */,
@@ -1271,6 +1278,7 @@
 				73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */,
 				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
+				731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
