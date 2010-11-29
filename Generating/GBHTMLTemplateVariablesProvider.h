@@ -1,5 +1,5 @@
 //
-//  GBTemplateVariablesProvider.h
+//  GBHTMLTemplateVariablesProvider.h
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 1.10.10.
@@ -11,13 +11,13 @@
 @class GBClassData;
 @protocol GBStoreProviding;
 
-/** Provides variables for template string for given objects.
+/** Provides variables for HTML template string for given objects.
  
  The main purpose of this class is to prepare an intermediate variables from given objects suitable for template generation. Although original object could easily be used within templates, using simplified, intermediate, form greatly simplifies template files. Think of the variables as the controlley layer for the template engine.
  
  This class is intended to be reused, create a single instance and pass it the objects - one by one - for which you'd like to get template variables.
  */
-@interface GBTemplateVariablesProvider : NSObject
+@interface GBHTMLTemplateVariablesProvider : NSObject
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

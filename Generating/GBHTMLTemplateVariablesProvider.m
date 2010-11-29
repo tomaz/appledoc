@@ -1,5 +1,5 @@
 //
-//  GBClassVariablesProvider.m
+//  GBHTMLTemplateVariablesProvider.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 1.10.10.
@@ -11,11 +11,11 @@
 #import "GBObjectDataProviding.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
-#import "GBTemplateVariablesProvider.h"
+#import "GBHTMLTemplateVariablesProvider.h"
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider ()
+@interface GBHTMLTemplateVariablesProvider ()
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
@@ -29,7 +29,7 @@
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider (ObjectVariables)
+@interface GBHTMLTemplateVariablesProvider (ObjectVariables)
 
 - (NSString *)pageTitleForClass:(GBClassData *)object;
 - (NSString *)pageTitleForCategory:(GBCategoryData *)object;
@@ -42,7 +42,7 @@
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider (ObjectSpecifications)
+@interface GBHTMLTemplateVariablesProvider (ObjectSpecifications)
 
 - (void)registerObjectInheritsFromSpecificationForClass:(GBClassData *)class toArray:(NSMutableArray *)array;
 - (void)registerObjectConformsToSpecificationForProvider:(id<GBObjectDataProviding>)provider toArray:(NSMutableArray *)array;
@@ -56,7 +56,7 @@
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider (IndexVariables)
+@interface GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex;
 - (NSArray *)classesForIndex;
@@ -68,7 +68,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider
+@implementation GBHTMLTemplateVariablesProvider
 
 #pragma mark Initialization & disposal
 
@@ -202,7 +202,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider (ObjectVariables)
+@implementation GBHTMLTemplateVariablesProvider (ObjectVariables)
 
 - (NSString *)pageTitleForClass:(GBClassData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"objectPage.classTitle"];
@@ -246,7 +246,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider (ObjectSpecifications)
+@implementation GBHTMLTemplateVariablesProvider (ObjectSpecifications)
 
 #pragma mark Specific specifications handling
 
@@ -333,7 +333,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider (IndexVariables)
+@implementation GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex {
 	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];

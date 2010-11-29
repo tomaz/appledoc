@@ -8,7 +8,7 @@
 
 #import "GBApplicationSettingsProviding.h"
 #import "GBDataObjects.h"
-#import "GBTemplateVariablesProvider.h"
+#import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"
 #import "GBHTMLOutputGenerator.h"
 
@@ -22,7 +22,7 @@
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
 @property (readonly) GBTemplateHandler *htmlObjectTemplate;
 @property (readonly) GBTemplateHandler *htmlIndexTemplate;
-@property (readonly) GBTemplateVariablesProvider *variablesProvider;
+@property (readonly) GBHTMLTemplateVariablesProvider *variablesProvider;
 
 @end
 
@@ -115,11 +115,11 @@
 	return [self.outputUserPath stringByAppendingPathComponent:inner];
 }
 
-- (GBTemplateVariablesProvider *)variablesProvider {
-	static GBTemplateVariablesProvider *result = nil;
+- (GBHTMLTemplateVariablesProvider *)variablesProvider {
+	static GBHTMLTemplateVariablesProvider *result = nil;
 	if (!result) {
 		GBLogDebug(@"Initializing variables provider...");
-		result = [[GBTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
+		result = [[GBHTMLTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
 	}
 	return result;
 }

@@ -7,7 +7,7 @@
 //
 
 #import "GBApplicationSettingsProvider.h"
-#import "GBTemplateVariablesProvider.h"
+#import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTokenizer.h"
 
 @interface GBTemplateVariablesProviderCommonTesting : GHTestCase
@@ -17,7 +17,7 @@
 
 - (void)testVariablesForClass_shouldPrepareDefaultVariables {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];	
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];

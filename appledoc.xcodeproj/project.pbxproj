@@ -137,8 +137,8 @@
 		7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */; };
 		739AD57F1255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */; };
 		739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */; };
-		739AD62F1255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */; };
-		739AD6301255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */; };
+		739AD62F1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */; };
+		739AD6301255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */; };
 		739AD6521255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */; };
 		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
 		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
@@ -310,8 +310,8 @@
 		7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-MethodArgumentsTesting.m"; sourceTree = "<group>"; };
 		739AD57D1255C3E600B642C3 /* GBApplicationStringsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBApplicationStringsProvider.h; sourceTree = "<group>"; };
 		739AD57E1255C3E600B642C3 /* GBApplicationStringsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationStringsProvider.m; sourceTree = "<group>"; };
-		739AD62D1255D8CB00B642C3 /* GBTemplateVariablesProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTemplateVariablesProvider.h; sourceTree = "<group>"; };
-		739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateVariablesProvider.m; sourceTree = "<group>"; };
+		739AD62D1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBHTMLTemplateVariablesProvider.h; sourceTree = "<group>"; };
+		739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBHTMLTemplateVariablesProvider.m; sourceTree = "<group>"; };
 		739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-CommonTesting.m"; sourceTree = "<group>"; };
 		73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-LinkItemsTesting.m"; sourceTree = "<group>"; };
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
@@ -654,12 +654,12 @@
 				73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */,
 				73473D2F12A38B730011336C /* GBHTMLOutputGenerator.h */,
 				73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */,
+				739AD62D1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.h */,
+				739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */,
 				7321D0E512944CF500796DEC /* GBTemplateHandler.h */,
 				7321D0E612944CF500796DEC /* GBTemplateHandler.m */,
 				73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */,
 				73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */,
-				739AD62D1255D8CB00B642C3 /* GBTemplateVariablesProvider.h */,
-				739AD62E1255D8CB00B642C3 /* GBTemplateVariablesProvider.m */,
 			);
 			path = Generating;
 			sourceTree = "<group>";
@@ -1162,7 +1162,7 @@
 				7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 				739AD57F1255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
-				739AD62F1255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */,
+				739AD62F1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */,
 				739AD6521255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m in Sources */,
 				736A2751125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m in Sources */,
 				736A275F125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */,
@@ -1243,7 +1243,7 @@
 				736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 				73AA9F731253BF4000074152 /* GBGenerator.m in Sources */,
 				739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
-				739AD6301255D8CB00B642C3 /* GBTemplateVariablesProvider.m in Sources */,
+				739AD6301255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */,
 				736A2760125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */,
 				7321D0E712944CF500796DEC /* GBTemplateHandler.m in Sources */,
 				73734618129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */,
