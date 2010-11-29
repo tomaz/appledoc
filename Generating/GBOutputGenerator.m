@@ -125,6 +125,13 @@
 
 #pragma mark Helper methods
 
+- (NSString *)templateFileKeyEndingWith:(NSString *)suffix {
+	for (NSString *template in [self.templateFiles allKeys]) {
+		if ([template hasSuffix:suffix]) return template;
+	}
+	return nil;
+}
+
 - (BOOL)writeString:(NSString *)string toFile:(NSString *)path error:(NSError **)error {
 	NSString *standardized = [path stringByStandardizingPath];
 	NSString *directory = [standardized stringByDeletingLastPathComponent];

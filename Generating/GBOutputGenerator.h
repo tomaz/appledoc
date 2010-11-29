@@ -86,6 +86,16 @@
 /// @name Subclass parameters and helpers
 ///---------------------------------------------------------------------------------------
 
+/** Searches `templateFiles` dictionary for a key ending with the given suffix and returns the whole key if found.
+ 
+ If the key is not found, `nil` is returned. This method is useful for finding keys for which we only know partial name (ussually the name of the file, but not the path to it).
+ 
+ @param suffix Template file suffix to search for.
+ @return Returns full key if found, `nil` otherwise.
+ @see templateFiles
+ */
+- (NSString *)templateFileKeyEndingWith:(NSString *)suffix;
+
 /** The dictionary of all template files detected within `copyTemplateFilesToOutputPath:`.
  
  Each object has a key of template file name and relative path from `templateUserPath`. The keys are mapped to `GBTemplateHandler` instances associated with the template.
@@ -93,6 +103,7 @@
  This is intended to be used within subclasses only. Dictionary contents are automatically updated and should not be changed by subclasses.
  
  @see copyTemplateFilesToOutputPath:
+ @see templateFileKeyEndingWith:
  */
 @property (readonly) NSMutableDictionary *templateFiles;
 

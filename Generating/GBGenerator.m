@@ -65,15 +65,16 @@
 	__block GBOutputGenerator *previous = nil;
 	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {		
 		NSError *error = nil;
-		GBLogVerbose(@"Step %ld/%ld: Running %@...", idx, stepsCount, [generator className]);
+		NSUInteger index = idx + 1;
+		GBLogVerbose(@"Step %ld/%ld: Running %@...", index, stepsCount, [generator className]);
 		generator.previousGenerator = previous;
 		if (![generator copyTemplateFilesToOutputPath:&error]) {
-			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed copying template files to output, aborting!", idx, stepsCount, [generator className]);
+			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed copying template files to output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;
 		}
 		if (![generator generateOutputWithStore:store error:&error]) {
-			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed generaing output, aborting!", idx, stepsCount, [generator className]);
+			GBLogNSError(error, @"Step %ld/%ld failed: %@ failed generaing output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;
 		}

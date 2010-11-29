@@ -20,8 +20,6 @@
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
-@property (readonly) NSDateFormatter *yearDateFormatter;
-@property (readonly) NSDateFormatter *yearToDayDateFormatter;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -171,26 +169,8 @@
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
 	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];
-	[dict setObject:[self.yearDateFormatter stringFromDate:[NSDate date]] forKey:@"copyrightDate"];
-	[dict setObject:[self.yearToDayDateFormatter stringFromDate:[NSDate date]] forKey:@"lastUpdatedDate"];
-}
-
-- (NSDateFormatter *)yearDateFormatter {
-	static NSDateFormatter *result = nil;
-	if (!result) {
-		result = [[NSDateFormatter alloc] init];
-		[result setDateFormat:@"yyyy"];
-	}
-	return result;
-}
-
-- (NSDateFormatter *)yearToDayDateFormatter {
-	static NSDateFormatter *result = nil;
-	if (!result) {
-		result = [[NSDateFormatter alloc] init];
-		[result setDateFormat:@"yyyy-MM-dd"];
-	}
-	return result;
+	[dict setObject:[self.settings yearStringFromDate:[NSDate date]] forKey:@"copyrightDate"];
+	[dict setObject:[self.settings yearToDayStringFromDate:[NSDate date]] forKey:@"lastUpdatedDate"];
 }
 
 #pragma mark Properties

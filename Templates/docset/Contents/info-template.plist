@@ -11,7 +11,7 @@
 	DocSetFeedName = "{{feedName}}";
 	DocSetFeedURL = "{{feedURL}}";
 	"DocSetMinimumXcodeVersion" = "{{minimumXcodeVersion}}";
-	DocSetPlatformFamily = macosx;
+	DocSetPlatformFamily = "{{platformFamily}}";
 	"DocSetPublisherIdentifier" = "{{publisherIdentifier}}";
 	DocSetPublisherName = "{{publisherName}}";
 	"NSHumanReadableCopyright" = "{{copyrightMessage}}";

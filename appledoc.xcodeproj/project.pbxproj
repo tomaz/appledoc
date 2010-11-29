@@ -120,6 +120,7 @@
 		7359B16A129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B146129A5A0600F67AD1 /* GRMustacheVariableElement.m */; };
 		7359B16B129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
 		7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
+		7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367298312A3D7A000879D1B /* NSError+GBError.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
 		736A2751125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 736A2750125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */; };
@@ -277,6 +278,8 @@
 		7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRMustacheVersion.m; path = GRMustache/GRMustacheVersion.m; sourceTree = "<group>"; };
 		735BCB49124EE92F00FB6C4A /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timing.h; sourceTree = "<group>"; };
 		7367298112A3BD9D00879D1B /* docset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docset; sourceTree = "<group>"; };
+		7367298212A3D7A000879D1B /* NSError+GBError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+GBError.h"; sourceTree = "<group>"; };
+		7367298312A3D7A000879D1B /* NSError+GBError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+GBError.m"; sourceTree = "<group>"; };
 		7367B6EA11FE3788005ED6CD /* GBTestObjectsRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTestObjectsRegistry.h; sourceTree = "<group>"; };
 		7367B6EB11FE3788005ED6CD /* GBTestObjectsRegistry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTestObjectsRegistry.m; sourceTree = "<group>"; };
 		7367B82111FEEB52005ED6CD /* GBObjectsAssertor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectsAssertor.h; sourceTree = "<group>"; };
@@ -706,6 +709,8 @@
 				7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */,
 				731E7CE611F9962D00AAF15D /* NSException+GBException.h */,
 				731E7CE711F9962D00AAF15D /* NSException+GBException.m */,
+				7367298212A3D7A000879D1B /* NSError+GBError.h */,
+				7367298312A3D7A000879D1B /* NSError+GBError.m */,
 				73D54C9511F8D1F500CCDDB0 /* ThirdParty */,
 			);
 			path = Common;
@@ -1279,6 +1284,7 @@
 				73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */,
 				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
 				731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */,
+				7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -16,6 +16,8 @@
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(GBModelBase *)member prefixedWith:(NSString *)prefix;
+@property (readonly) NSDateFormatter *yearDateFormatter;
+@property (readonly) NSDateFormatter *yearToDayDateFormatter;
 
 @end
 
@@ -34,6 +36,19 @@
 	if (self) {
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
+		self.docsetBundleIdentifier = @"com.company.project";
+		self.docsetBundleName = @"$PROJECT Documentation";
+		self.docsetCertificateIssuer = @"";
+		self.docsetCertificateSigner = @"";
+		self.docsetDescription = @"";
+		self.docsetFallbackURL = @"";
+		self.docsetFeedName = @"";
+		self.docsetFeedURL = @"";
+		self.docsetMinimumXcodeVersion = @"3.0";
+		self.docsetPlatformFamily = @"macosx";
+		self.docsetPublisherIdentifier = @"com.company.documentation";
+		self.docsetPublisherName = @"COMPANY";
+		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
 		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
 		self.ignoredPaths = [NSMutableSet set];
@@ -120,6 +135,34 @@
 
 - (NSString *)htmlExtension {
 	return @"html";
+}
+
+#pragma mark Date and time helpers
+
+- (NSString *)yearStringFromDate:(NSDate *)date {
+	return [self.yearDateFormatter stringFromDate:date];
+}
+
+- (NSString *)yearToDayStringFromDate:(NSDate *)date {
+	return [self.yearToDayDateFormatter stringFromDate:date];
+}
+
+- (NSDateFormatter *)yearDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy"];
+	}
+	return result;
+}
+
+- (NSDateFormatter *)yearToDayDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy-MM-dd"];
+	}
+	return result;
 }
 
 #pragma mark Paths helper methods

@@ -19,7 +19,7 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
-/// @name Common values handling
+/// @name Project values handling
 ///---------------------------------------------------------------------------------------
 
 /** Human readable name of the project. */
@@ -27,6 +27,59 @@
 
 /** Human readable name of the project company. */
 @property (copy) NSString *projectCompany;
+
+///---------------------------------------------------------------------------------------
+/// @name Documentation set handling
+///---------------------------------------------------------------------------------------
+
+/** Documentation set bundle identifier. */
+@property (copy) NSString *docsetBundleIdentifier;
+
+/** Documentation set bundle name. */
+@property (copy) NSString *docsetBundleName;
+
+/** Documentation set certificate issuer. */
+@property (copy) NSString *docsetCertificateIssuer;
+
+/** Documentation set certificate signer. */
+@property (copy) NSString *docsetCertificateSigner;
+
+/** Documentation set description. */
+@property (copy) NSString *docsetDescription;
+
+/** Documentation set fallback URL. */
+@property (copy) NSString *docsetFallbackURL;
+
+/** Documentation set feed name. */
+@property (copy) NSString *docsetFeedName;
+
+/** Documentation set feed URL. */
+@property (copy) NSString *docsetFeedURL;
+
+/** Documentation set minimum Xcode version. */
+@property (copy) NSString *docsetMinimumXcodeVersion;
+
+/** Documentation set platform family. */
+@property (copy) NSString *docsetPlatformFamily;
+
+/** Documentation set publisher identifier. */
+@property (copy) NSString *docsetPublisherIdentifier;
+
+/** Documentation set publisher name. */
+@property (copy) NSString *docsetPublisherName;
+
+/** Documentation set human readble copyright message. */
+@property (copy) NSString *docsetCopyrightMessage;
+
+///---------------------------------------------------------------------------------------
+/// @name Date and time handling
+///---------------------------------------------------------------------------------------
+
+/** Returns string representing the year of the given date. */
+- (NSString *)yearStringFromDate:(NSDate *)date;
+
+/** Returns string representing year-month-day of the given date. */
+- (NSString *)yearToDayStringFromDate:(NSDate *)date;
 
 ///---------------------------------------------------------------------------------------
 /// @name Paths handling
