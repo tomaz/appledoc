@@ -58,6 +58,22 @@
 	return self;
 }
 
+- (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
+	self.docsetBundleIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleIdentifier];
+	self.docsetBundleName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleName];
+	self.docsetCertificateIssuer = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCertificateIssuer];
+	self.docsetCertificateSigner = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCertificateSigner];
+	self.docsetDescription = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetDescription];
+	self.docsetFallbackURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFallbackURL];
+	self.docsetFeedName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedName];
+	self.docsetFeedURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedURL];
+	self.docsetMinimumXcodeVersion = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetMinimumXcodeVersion];
+	self.docsetPlatformFamily = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPlatformFamily];
+	self.docsetPublisherIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherIdentifier];
+	self.docsetPublisherName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherName];
+	self.docsetCopyrightMessage = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCopyrightMessage];
+}
+
 #pragma mark HTML references handling
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {

@@ -303,7 +303,7 @@
 		7367BC4212005888005ED6CD /* GBDataObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDataObjects.h; sourceTree = "<group>"; };
 		736A2750125841420078F4FE /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-ObjectSpecificationsTesting.m"; sourceTree = "<group>"; };
 		736A275D125845000078F4FE /* GBApplicationSettingsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBApplicationSettingsProvider.h; sourceTree = "<group>"; };
-		736A275E125845000078F4FE /* GBApplicationSettingsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationSettingsProvider.m; sourceTree = "<group>"; };
+		736A275E125845000078F4FE /* GBApplicationSettingsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBApplicationSettingsProvider.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		736B2BF4124BCBB6009145B1 /* GBSourceInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSourceInfo.h; sourceTree = "<group>"; };
 		736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSourceInfo.m; sourceTree = "<group>"; };
 		73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GBDictionaryTemplateLoader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -350,7 +350,7 @@
 		73D54D1C11F8D53E00CCDDB0 /* DDGetoptLongParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDGetoptLongParser.h; sourceTree = "<group>"; };
 		73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDGetoptLongParser.m; sourceTree = "<group>"; };
 		73D54D2711F8D59200CCDDB0 /* GBAppledocApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBAppledocApplication.h; sourceTree = "<group>"; };
-		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBAppledocApplication.m; sourceTree = "<group>"; };
+		73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBAppledocApplication.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		73D708871267226900355DB6 /* GBApplicationSettingsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationSettingsProviderTesting.m; sourceTree = "<group>"; };
 		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -378,7 +378,7 @@
 		73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "AppledocTests-Info.plist"; path = "../AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		73FC6DB311FCCCC600AAD0B9 /* GBParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParser.h; sourceTree = "<group>"; };
 		73FC6DB411FCCCC600AAD0B9 /* GBParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParser.m; sourceTree = "<group>"; };
-		73FC6DB911FCCD0400AAD0B9 /* GBApplicationSettingsProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBApplicationSettingsProviding.h; sourceTree = "<group>"; };
+		73FC6DB911FCCD0400AAD0B9 /* GBApplicationSettingsProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GBApplicationSettingsProviding.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		73FC6DC511FCCD7B00AAD0B9 /* AppledocTests_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTests_prefix.pch; sourceTree = SOURCE_ROOT; };
 		73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectiveCParser.h; sourceTree = "<group>"; };
 		73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectiveCParser.m; sourceTree = "<group>"; };

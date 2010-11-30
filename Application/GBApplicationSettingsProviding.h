@@ -146,6 +146,16 @@
 /// @name Helper methods
 ///---------------------------------------------------------------------------------------
 
+/** Replaces all occurences of placeholder strings in all related values of the receiver.
+ 
+ This message should be sent once all the values have been set. It is a convenience method that prepares all values that can use placeholder strings. From this point on, the rest of the application can simply use properties to get final values instead of sending `stringByReplacingOccurencesOfPlaceholdersInString:` all the time.
+ 
+ Note that `stringByReplacingOccurencesOfPlaceholdersInString:` is still available for cases where placeholder strings may be used elsewhere (template files for example).
+ 
+ @see stringByReplacingOccurencesOfPlaceholdersInString:
+ */
+- (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues;
+
 /** Replaces all placeholders occurences in the given string.
  
  This method provides application-wide string placeholders replacement functionality. It replaces all known placeholders with actual values from the receiver. Placeholders are identified by a dollar mark, followed by placeholder name. The following placeholders are supported (note that case is important!):
@@ -157,6 +167,7 @@
  
  @param string The string to replace placeholder occurences in.
  @return Returns new string with all placeholder occurences replaced.
+ @see replaceAllOccurencesOfPlaceholderStringsInSettingsValues
  */
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string;
 

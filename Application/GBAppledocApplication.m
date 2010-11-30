@@ -76,6 +76,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	@try {		
 		[self validateArguments:arguments];
+		[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 		[self initializeLoggingSystem];
 		
 		GBLogNormal(@"Initializing...");

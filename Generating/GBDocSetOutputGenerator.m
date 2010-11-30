@@ -80,19 +80,19 @@
 	
 	// Prepare template variables and replace all placeholders with actual values.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithCapacity:20];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetBundleIdentifier] forKey:@"bundleIdentifier"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetBundleName] forKey:@"bundleName"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCertificateIssuer] forKey:@"certificateIssuer"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCertificateSigner] forKey:@"certificateSigner"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetDescription] forKey:@"description"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFallbackURL] forKey:@"fallbackURL"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFeedName] forKey:@"feedName"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFeedURL] forKey:@"feedURL"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetMinimumXcodeVersion] forKey:@"minimumXcodeVersion"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPlatformFamily] forKey:@"platformFamily"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPublisherIdentifier] forKey:@"publisherIdentifier"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPublisherName] forKey:@"publisherName"];
-	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCopyrightMessage] forKey:@"copyrightMessage"];
+	[vars setObject:self.settings.docsetBundleIdentifier forKey:@"bundleIdentifier"];
+	[vars setObject:self.settings.docsetBundleName forKey:@"bundleName"];
+	[vars setObject:self.settings.docsetCertificateIssuer forKey:@"certificateIssuer"];
+	[vars setObject:self.settings.docsetCertificateSigner forKey:@"certificateSigner"];
+	[vars setObject:self.settings.docsetDescription forKey:@"description"];
+	[vars setObject:self.settings.docsetFallbackURL forKey:@"fallbackURL"];
+	[vars setObject:self.settings.docsetFeedName forKey:@"feedName"];
+	[vars setObject:self.settings.docsetFeedURL forKey:@"feedURL"];
+	[vars setObject:self.settings.docsetMinimumXcodeVersion forKey:@"minimumXcodeVersion"];
+	[vars setObject:self.settings.docsetPlatformFamily forKey:@"platformFamily"];
+	[vars setObject:self.settings.docsetPublisherIdentifier forKey:@"publisherIdentifier"];
+	[vars setObject:self.settings.docsetPublisherName forKey:@"publisherName"];
+	[vars setObject:self.settings.docsetCopyrightMessage forKey:@"copyrightMessage"];
 	
 	// Run the template and save the results as Info.plist.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
