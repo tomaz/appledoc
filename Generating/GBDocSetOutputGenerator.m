@@ -8,6 +8,7 @@
 
 #import "GRMustache.h"
 #import "GBApplicationSettingsProvider.h"
+#import "GBTask.h"
 #import "GBDataObjects.h"
 #import "GBTemplateHandler.h"
 #import "GBDocSetOutputGenerator.h"
@@ -18,6 +19,7 @@
 - (BOOL)processInfoPlist:(NSError **)error;
 - (BOOL)processNodesXml:(NSError **)error;
 - (BOOL)processTokensXml:(NSError **)error;
+- (BOOL)indexDocSet:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
 - (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
@@ -43,6 +45,7 @@
 	if (![self processInfoPlist:error]) return NO;
 	if (![self processNodesXml:error]) return NO;
 	if (![self processTokensXml:error]) return NO;
+	if (![self indexDocSet:error]) return NO;
 	return YES;
 }
 
@@ -154,6 +157,16 @@
 	if (![self processTokensXmlForObjects:self.classes type:@"cl" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.categories type:@"cat" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.protocols type:@"intf" template:templatePath index:&index error:error]) return NO;
+	return YES;
+}
+
+- (BOOL)indexDocSet:(NSError **)error {
+	GBLogInfo(@"Indexing DocSet...");
+	GBTask *task = [GBTask task];
+	if (![task runCommand:@"/Developer/usr/bin/docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil]) {
+		if (error) *error = [NSError errorWithCode:3 description:task.lastStandardError reason:@"docsetutil failed to index the documentation set!"];
+		return NO;
+	}
 	return YES;
 }
 

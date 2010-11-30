@@ -21,6 +21,7 @@
 		73329AA6122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */; };
 		73329B30122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */; };
 		73329B33122EE18C00AEBA2B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
+		73397A2812A5070700EDC035 /* GBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73397A2712A5070700EDC035 /* GBTask.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
 		733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
@@ -219,6 +220,8 @@
 		73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-WarningsTesting.m"; sourceTree = "<group>"; };
 		73329B31122EE18C00AEBA2B /* GBParagraphSpecialItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphSpecialItem.h; sourceTree = "<group>"; };
 		73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphSpecialItem.m; sourceTree = "<group>"; };
+		73397A2612A5070700EDC035 /* GBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTask.h; sourceTree = "<group>"; };
+		73397A2712A5070700EDC035 /* GBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTask.m; sourceTree = "<group>"; };
 		733E9FB8122B9D510060CBDE /* GBCommentTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentTesting.m; sourceTree = "<group>"; };
 		733E9FD9122BA9B00060CBDE /* GBCommentComponentsProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsProvider.h; sourceTree = "<group>"; };
 		733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsProvider.m; sourceTree = "<group>"; };
@@ -701,6 +704,8 @@
 			children = (
 				73D54CA711F8D27F00CCDDB0 /* GBLog.h */,
 				73D54CA811F8D27F00CCDDB0 /* GBLog.m */,
+				73397A2612A5070700EDC035 /* GBTask.h */,
+				73397A2712A5070700EDC035 /* GBTask.m */,
 				7340F02611FCC63100E712A4 /* NSObject+GBObject.h */,
 				7340F02711FCC63100E712A4 /* NSObject+GBObject.m */,
 				731D2BF312045A61003180E7 /* NSString+GBString.h */,
@@ -1285,6 +1290,7 @@
 				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
 				731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */,
 				7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */,
+				73397A2812A5070700EDC035 /* GBTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
