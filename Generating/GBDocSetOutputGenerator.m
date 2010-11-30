@@ -17,8 +17,15 @@
 - (BOOL)moveSourceFilesToDocuments:(NSError **)error;
 - (BOOL)processInfoPlist:(NSError **)error;
 - (BOOL)processNodesXml:(NSError **)error;
-- (NSArray *)dataObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
+- (BOOL)processTokensXml:(NSError **)error;
+- (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
+- (void)initializeSimplifiedObjects;
+- (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
+- (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
 - (NSString *)replacePlaceholdersInString:(NSString *)string;
+@property (retain) NSArray *classes;
+@property (retain) NSArray *categories;
+@property (retain) NSArray *protocols;
 
 @end
 
@@ -31,9 +38,11 @@
 - (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
 	if (![super generateOutputWithStore:store error:error]) return NO;
+	[self initializeSimplifiedObjects];
 	if (![self moveSourceFilesToDocuments:error]) return NO;
 	if (![self processInfoPlist:error]) return NO;
 	if (![self processNodesXml:error]) return NO;
+	if (![self processTokensXml:error]) return NO;
 	return YES;
 }
 
@@ -106,25 +115,19 @@
 		return NO;
 	}
 	
-	// Prepare flat list of objects for library nodes.
-	NSUInteger index = 1;
-	NSArray *classes = [self dataObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
-	NSArray *categories = [self dataObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
-	NSArray *protocols = [self dataObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
-	
 	// Prepare the variables for the template.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionary];
 	[vars setObject:self.settings.projectName forKey:@"projectName"];
 	[vars setObject:@"index.html" forKey:@"indexFilename"];
-	[vars setObject:([classes count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
-	[vars setObject:([categories count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
-	[vars setObject:([protocols count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
-	[vars setObject:classes forKey:@"classes"];
-	[vars setObject:categories forKey:@"categories"];
-	[vars setObject:protocols forKey:@"protocols"];
+	[vars setObject:([self.classes count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+	[vars setObject:([self.categories count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
+	[vars setObject:([self.protocols count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[vars setObject:self.classes forKey:@"classes"];
+	[vars setObject:self.categories forKey:@"categories"];
+	[vars setObject:self.protocols forKey:@"protocols"];
 	[vars setObject:self.settings.stringTemplates forKey:@"strings"];
 	
-	// Run the template and save the results as Info.plist.
+	// Run the template and save the results.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
 	NSString *output = [handler renderObject:vars];
 	NSString *path = [[templatePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"Nodes.xml"];
@@ -136,11 +139,90 @@
 	return YES;
 }
 
-- (NSArray *)dataObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
+- (BOOL)processTokensXml:(NSError **)error {
+	GBLogInfo(@"Writting DocSet Tokens.xml files...");
+	
+	// Get the template and prepare single Tokens.xml file for each object.
+	NSString *templatePath = [self templateFileKeyEndingWith:@"tokens-template.xml"];
+	if (!templatePath) {
+		GBLogWarn(@"Didn't find tokens-template.xml in '%@', DocSet will not be indexed!", self.templateUserPath);
+		return YES;
+	}
+
+	// Write each object as a separate token file.
+	NSUInteger index = 1;
+	if (![self processTokensXmlForObjects:self.classes type:@"cl" template:templatePath index:&index error:error]) return NO;
+	if (![self processTokensXmlForObjects:self.categories type:@"cat" template:templatePath index:&index error:error]) return NO;
+	if (![self processTokensXmlForObjects:self.protocols type:@"intf" template:templatePath index:&index error:error]) return NO;
+	return YES;
+}
+
+- (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error {
+	// Prepare the output path and template handler then generate file for each object.
+	GBTemplateHandler *handler = [self.templateFiles objectForKey:template];
+	NSString *outputPath = [template stringByDeletingLastPathComponent];
+	NSUInteger idx = *index;
+	for (NSMutableDictionary *simplifiedObjectData in objects) {
+		// Get the object's methods provider and prepare the array of all methods.
+		GBModelBase *topLevelObject = [simplifiedObjectData objectForKey:@"object"];
+		GBMethodsProvider *methodsProvider = [topLevelObject valueForKey:@"methods"];
+
+		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
+		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
+		[objectData setObject:[self tokenIdentifierForObject:topLevelObject] forKey:@"identifier"];
+		[objectData setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
+		[objectData setObject:[[topLevelObject.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
+		if (topLevelObject.comment && topLevelObject.comment.hasParagraphs) [objectData setObject:topLevelObject.comment.firstParagraph forKey:@"abstract"];
+
+		// Prepare the list of all members.
+		NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
+		for (GBMethodData *method in methodsProvider.methods) {
+			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+			[data setObject:[self tokenIdentifierForObject:method] forKey:@"identifier"];
+			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
+			[data setObject:[[method.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
+			if (method.comment && method.comment.hasParagraphs) [data setObject:method.comment.firstParagraph forKey:@"abstract"];
+			[membersData addObject:data];
+		}
+				
+		// Prepare the variables for the template.
+		NSMutableDictionary *vars = [NSMutableDictionary dictionary];
+		[vars setObject:objectData forKey:@"object"];
+		[vars setObject:membersData forKey:@"members"];
+		
+		// Run the template and save the results.
+		NSString *output = [handler renderObject:vars];
+		NSString *indexName = [NSString stringWithFormat:@"Tokens%ld.xml", idx++];
+		NSString *subpath = [outputPath stringByAppendingPathComponent:indexName];
+		NSString *filename = [self.outputUserPath stringByAppendingPathComponent:subpath];
+		if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
+			GBLogWarn(@"Failed writting tokens file '%@'!", filename);
+			*index = idx;
+			return NO;
+		}
+	}
+	*index = idx;
+	return YES;
+}
+
+#pragma mark Helper methods
+
+- (void)initializeSimplifiedObjects {
+	// Prepare flat list of objects for library nodes.
+	GBLogDebug(@"Initializing simplified object representations...");
+	NSUInteger index = 1;
+	self.classes = [self simplifiedObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
+	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
+	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
+}
+
+- (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
 	NSUInteger idx = *index;
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[objects count]];
 	for (id object in objects) {
-		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
+		GBLogDebug(@"Initializing simplified representation of %@ with id %ld...", object, idx);
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+		[data setObject:object forKey:@"object"];
 		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
 		[data setObject:[object valueForKey:value] forKey:@"name"];
 		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
@@ -150,7 +232,47 @@
 	return result;
 }
 
-#pragma mark Helper methods
+- (NSString *)tokenIdentifierForObject:(GBModelBase *)object {
+	if (object.isTopLevelObject) {
+		// Class, category and protocol have different prefix, but are straighforward. Note that category has it's class name specified for object name!
+		if ([object isKindOfClass:[GBClassData class]]) {
+			NSString *objectName = [(GBClassData *)object nameOfClass];
+			return [NSString stringWithFormat:@"//apple_ref/occ/cl/%@", objectName];
+		} else if ([object isKindOfClass:[GBCategoryData class]]) {
+			NSString *objectName = [(GBCategoryData *)object nameOfClass];
+			return [NSString stringWithFormat:@"//apple_ref/occ/cat/%@", objectName];
+		} else {
+			NSString *objectName = [(GBProtocolData *)object nameOfProtocol];
+			return [NSString stringWithFormat:@"//apple_ref/occ/intf/%@", objectName];
+		}
+	} else {
+		// Members are slighly more complex - their identifier is different regarding to whether they are part of class or category/protocol. Then it depends on whether they are method or property. Finally their parent object (class/category/protocol) name (again class name for category) and selector should be added.
+		if (!object.parentObject) [NSException raise:@"Can't create token identifier for %@; object is not top level and has no parent assigned!", object];
+		
+		// First handle parent related stuff.
+		GBModelBase *parent = object.parentObject;
+		NSString *objectName = nil;
+		NSString *objectID = nil;
+		if ([parent isKindOfClass:[GBClassData class]]) {
+			objectName = [(GBClassData *)parent nameOfClass];
+			objectID = @"inst";
+		} else if ([parent isKindOfClass:[GBCategoryData class]]) {
+			objectName = [(GBCategoryData *)parent nameOfClass];
+			objectID = @"intf";
+		} else {
+			objectName = [(GBProtocolData *)parent nameOfProtocol];
+			objectID = @"intf";
+		}
+
+		// Prepare the actual identifier based on method type.
+		GBMethodData *method = (GBMethodData *)object;
+		if (method.methodType == GBMethodTypeProperty)
+			return [NSString stringWithFormat:@"//apple_ref/occ/%@p/%@/%@", objectID, objectName, method.methodSelector];
+		else
+			return [NSString stringWithFormat:@"//apple_ref/occ/%@m/%@/%@", objectID, objectName, method.methodSelector];
+	}
+	return nil;
+}
 
 - (NSString *)replacePlaceholdersInString:(NSString *)string {
 	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.settings.projectName];
@@ -165,5 +287,11 @@
 - (NSString *)outputSubpath {
 	return @"docset";
 }
+
+#pragma mark Properties
+
+@synthesize classes;
+@synthesize categories;
+@synthesize protocols;
 
 @end
