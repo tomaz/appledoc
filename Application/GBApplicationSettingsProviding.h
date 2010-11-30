@@ -72,16 +72,6 @@
 @property (copy) NSString *docsetCopyrightMessage;
 
 ///---------------------------------------------------------------------------------------
-/// @name Date and time handling
-///---------------------------------------------------------------------------------------
-
-/** Returns string representing the year of the given date. */
-- (NSString *)yearStringFromDate:(NSDate *)date;
-
-/** Returns string representing year-month-day of the given date. */
-- (NSString *)yearToDayStringFromDate:(NSDate *)date;
-
-///---------------------------------------------------------------------------------------
 /// @name Paths handling
 ///---------------------------------------------------------------------------------------
 
@@ -151,6 +141,24 @@
 /** The file extension for html files.
  */
 @property (readonly) NSString *htmlExtension;
+
+///---------------------------------------------------------------------------------------
+/// @name Helper methods
+///---------------------------------------------------------------------------------------
+
+/** Replaces all placeholders occurences in the given string.
+ 
+ This method provides application-wide string placeholders replacement functionality. It replaces all known placeholders with actual values from the receiver. Placeholders are identified by a dollar mark, followed by placeholder name. The following placeholders are supported (note that case is important!):
+ 
+ - `$PROJECT`: Replaced by `projectName` value.
+ - `$COMPANY`: Replaced by `projectCompany` value.
+ - `$YEAR`: Replaced by current year as four digit string.
+ - `$UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
+ 
+ @param string The string to replace placeholder occurences in.
+ @return Returns new string with all placeholder occurences replaced.
+ */
+- (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper classes

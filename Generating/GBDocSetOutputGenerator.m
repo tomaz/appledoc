@@ -23,7 +23,6 @@
 - (void)initializeSimplifiedObjects;
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
-- (NSString *)replacePlaceholdersInString:(NSString *)string;
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
@@ -81,19 +80,19 @@
 	
 	// Prepare template variables and replace all placeholders with actual values.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithCapacity:20];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetBundleIdentifier] forKey:@"bundleIdentifier"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetBundleName] forKey:@"bundleName"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetCertificateIssuer] forKey:@"certificateIssuer"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetCertificateSigner] forKey:@"certificateSigner"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetDescription] forKey:@"description"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetFallbackURL] forKey:@"fallbackURL"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetFeedName] forKey:@"feedName"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetFeedURL] forKey:@"feedURL"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetMinimumXcodeVersion] forKey:@"minimumXcodeVersion"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetPlatformFamily] forKey:@"platformFamily"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetPublisherIdentifier] forKey:@"publisherIdentifier"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetPublisherName] forKey:@"publisherName"];
-	[vars setObject:[self replacePlaceholdersInString:self.settings.docsetCopyrightMessage] forKey:@"copyrightMessage"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetBundleIdentifier] forKey:@"bundleIdentifier"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetBundleName] forKey:@"bundleName"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCertificateIssuer] forKey:@"certificateIssuer"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCertificateSigner] forKey:@"certificateSigner"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetDescription] forKey:@"description"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFallbackURL] forKey:@"fallbackURL"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFeedName] forKey:@"feedName"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetFeedURL] forKey:@"feedURL"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetMinimumXcodeVersion] forKey:@"minimumXcodeVersion"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPlatformFamily] forKey:@"platformFamily"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPublisherIdentifier] forKey:@"publisherIdentifier"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetPublisherName] forKey:@"publisherName"];
+	[vars setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:self.settings.docsetCopyrightMessage] forKey:@"copyrightMessage"];
 	
 	// Run the template and save the results as Info.plist.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
@@ -290,14 +289,6 @@
 	}
 	*index = idx;
 	return result;
-}
-
-- (NSString *)replacePlaceholdersInString:(NSString *)string {
-	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.settings.projectName];
-	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.settings.projectCompany];
-	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self.settings yearStringFromDate:[NSDate date]]];
-	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self.settings yearToDayStringFromDate:[NSDate date]]];
-	return string;
 }
 
 #pragma mark Overriden methods

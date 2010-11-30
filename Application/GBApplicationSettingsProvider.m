@@ -42,12 +42,12 @@
 		self.docsetCertificateSigner = @"";
 		self.docsetDescription = @"";
 		self.docsetFallbackURL = @"";
-		self.docsetFeedName = @"$COMPANY Documentation";
+		self.docsetFeedName = @"";
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"macosx";
 		self.docsetPublisherIdentifier = @"com.company.documentation";
-		self.docsetPublisherName = @"COMPANY";
+		self.docsetPublisherName = @"$COMPANY";
 		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
 		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
@@ -199,6 +199,14 @@
 	if ([object isKindOfClass:[GBClassData class]] || [object isKindOfClass:[GBCategoryData class]] || [object isKindOfClass:[GBProtocolData class]])
 		return YES;
 	return NO;
+}
+
+- (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
+	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
+	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
+	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self yearStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
+	return string;
 }
 
 #pragma mark Overriden methods
