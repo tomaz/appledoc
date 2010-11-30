@@ -21,7 +21,7 @@
  * Define your logging level in your implementation file:
  * 
  * // Debug levels: off, error, warn, info, verbose
- * static const NSInteger ddLogLevel = LOG_LEVEL_VERBOSE;
+ * static const int ddLogLevel = LOG_LEVEL_VERBOSE;
  * 
  * Step 3:
  * Replace your NSLog statements with DDLog statements according to the severity of the message.
@@ -34,14 +34,98 @@
 
 
 // Can we use Grand Central Dispatch?
+// 
+// This question actually is actually composed of two parts:
+// 1. Is it available to the compiler?
+// 2. Is it available to the runtime?
+// 
+// For example, if we are building a universal iPad/iPhone app,
+// our base SDK may be iOS 4, but our deployment target would be iOS 3.2.
+// In this case we can compile against the GCD libraries (which are available starting with iOS 4),
+// but we can only use them at runtime if running on iOS 4 or later.
+// If running on an iPad using iOS 3.2, we need to use runtime checks for backwards compatibility.
+// 
+// The solution is to use a combination of compile-time and run-time macros.
+// 
+// Note that when the minimum supported SDK supports GCD
+// the run-time checks will be compiled out during optimization.
 
-#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 // Mac OS X 10.6
-  #define GCD_AVAILABLE 1
-#elif __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000 // iPhone 4.0
-  #define GCD_AVAILABLE 1
+#if TARGET_OS_IPHONE
+
+  // Compiling for iPod/iPhone/iPad
+
+  #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000 // 4.0 supported
+  
+    #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 40000 // 4.0 supported and required
+
+      #define IS_GCD_AVAILABLE      YES
+      #define GCD_MAYBE_AVAILABLE   1
+      #define GCD_MAYBE_UNAVAILABLE 0
+
+    #else                                         // 4.0 supported but not required
+
+      #ifndef NSFoundationVersionNumber_iPhoneOS_4_0
+        #define NSFoundationVersionNumber_iPhoneOS_4_0 751.32
+      #endif
+
+      #define IS_GCD_AVAILABLE     (NSFoundationVersionNumber >= NSFoundationVersionNumber_iPhoneOS_4_0)
+      #define GCD_MAYBE_AVAILABLE   1
+      #define GCD_MAYBE_UNAVAILABLE 1
+
+    #endif
+
+  #else                                        // 4.0 not supported
+
+    #define IS_GCD_AVAILABLE      NO
+    #define GCD_MAYBE_AVAILABLE   0
+    #define GCD_MAYBE_UNAVAILABLE 1
+
+  #endif
+
 #else
-  #define GCD_AVAILABLE 0
+
+  // Compiling for Mac OS X
+
+  #if MAC_OS_X_VERSION_MAX_ALLOWED >= 1060 // 10.6 supported
+  
+    #if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060 // 10.6 supported and required
+
+      #define IS_GCD_AVAILABLE      YES
+      #define GCD_MAYBE_AVAILABLE   1
+      #define GCD_MAYBE_UNAVAILABLE 0
+
+    #else                                     // 10.6 supported but not required
+
+      #ifndef NSFoundationVersionNumber10_6
+        #define NSFoundationVersionNumber10_6 751.00
+      #endif
+
+      #define IS_GCD_AVAILABLE     (NSFoundationVersionNumber >= NSFoundationVersionNumber10_6)
+      #define GCD_MAYBE_AVAILABLE   1
+      #define GCD_MAYBE_UNAVAILABLE 1
+
+    #endif
+  
+  #else                                    // 10.6 not supported
+
+    #define IS_GCD_AVAILABLE      NO
+    #define GCD_MAYBE_AVAILABLE   0
+    #define GCD_MAYBE_UNAVAILABLE 1
+
+  #endif
+
 #endif
+
+/*
+// Uncomment for quick temporary test to see if it builds for older OS targets
+#undef IS_GCD_AVAILABLE
+#undef GCD_MAYBE_AVAILABLE
+#undef GCD_MAYBE_UNAVAILABLE
+
+#define IS_GCD_AVAILABLE      NO
+#define GCD_MAYBE_AVAILABLE   0
+#define GCD_MAYBE_UNAVAILABLE 1
+*/
 
 @class DDLogMessage;
 
@@ -52,30 +136,29 @@
  * Define our big multiline macros so all the other macros will be easy to read.
 **/
 
-#define LOG_MACRO(isSynchronous, lvl, flg, obj, fnct, frmt, ...) \
+#define LOG_MACRO(isSynchronous, lvl, flg, fnct, frmt, ...) \
   [DDLog log:isSynchronous                                  \
        level:lvl                                            \
         flag:flg                                            \
         file:__FILE__                                       \
-      object:obj \
     function:fnct                                           \
         line:__LINE__                                       \
       format:(frmt), ##__VA_ARGS__]
 
-#define  SYNC_LOG_OBJC_MACRO(lvl, flg, frmt, ...) LOG_MACRO(YES, lvl, flg, self, sel_getName(_cmd), frmt, ##__VA_ARGS__)
-#define ASYNC_LOG_OBJC_MACRO(lvl, flg, frmt, ...) LOG_MACRO( NO, lvl, flg, self, sel_getName(_cmd), frmt, ##__VA_ARGS__)
+#define  SYNC_LOG_OBJC_MACRO(lvl, flg, frmt, ...) LOG_MACRO(YES, lvl, flg, sel_getName(_cmd), frmt, ##__VA_ARGS__)
+#define ASYNC_LOG_OBJC_MACRO(lvl, flg, frmt, ...) LOG_MACRO( NO, lvl, flg, sel_getName(_cmd), frmt, ##__VA_ARGS__)
 
-#define  SYNC_LOG_C_MACRO(lvl, flg, frmt, ...)    LOG_MACRO(YES, lvl, flg, nil, __FUNCTION__, frmt, ##__VA_ARGS__)
-#define ASYNC_LOG_C_MACRO(lvl, flg, frmt, ...)    LOG_MACRO( NO, lvl, flg, nil, __FUNCTION__, frmt, ##__VA_ARGS__)
+#define  SYNC_LOG_C_MACRO(lvl, flg, frmt, ...)    LOG_MACRO(YES, lvl, flg, __FUNCTION__, frmt, ##__VA_ARGS__)
+#define ASYNC_LOG_C_MACRO(lvl, flg, frmt, ...)    LOG_MACRO( NO, lvl, flg, __FUNCTION__, frmt, ##__VA_ARGS__)
 
-#define LOG_MAYBE(isSynchronous, lvl, flg, obj, fnct, frmt, ...) \
-  do { if(lvl & flg) LOG_MACRO(isSynchronous, lvl, flg, obj, fnct, frmt, ##__VA_ARGS__); } while(0)
+#define LOG_MAYBE(isSynchronous, lvl, flg, fnct, frmt, ...) \
+  do { if(lvl & flg) LOG_MACRO(isSynchronous, lvl, flg, fnct, frmt, ##__VA_ARGS__); } while(0)
 
-#define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, self, sel_getName(_cmd), frmt, ##__VA_ARGS__)
-#define ASYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE( NO, lvl, flg, self, sel_getName(_cmd), frmt, ##__VA_ARGS__)
+#define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, sel_getName(_cmd), frmt, ##__VA_ARGS__)
+#define ASYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE( NO, lvl, flg, sel_getName(_cmd), frmt, ##__VA_ARGS__)
 
-#define  SYNC_LOG_C_MAYBE(lvl, flg, frmt, ...)    LOG_MAYBE(YES, lvl, flg, nil, __FUNCTION__, frmt, ##__VA_ARGS__)
-#define ASYNC_LOG_C_MAYBE(lvl, flg, frmt, ...)    LOG_MAYBE( NO, lvl, flg, nil, __FUNCTION__, frmt, ##__VA_ARGS__)
+#define  SYNC_LOG_C_MAYBE(lvl, flg, frmt, ...)    LOG_MAYBE(YES, lvl, flg, __FUNCTION__, frmt, ##__VA_ARGS__)
+#define ASYNC_LOG_C_MAYBE(lvl, flg, frmt, ...)    LOG_MAYBE( NO, lvl, flg, __FUNCTION__, frmt, ##__VA_ARGS__)
 
 /**
  * Define our standard log levels.
@@ -147,7 +230,7 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 
 @interface DDLog : NSObject
 
-#if GCD_AVAILABLE
+#if GCD_MAYBE_AVAILABLE
 
 /**
  * Provides access to the underlying logging queue.
@@ -156,7 +239,9 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 
 + (dispatch_queue_t)loggingQueue;
 
-#else
+#endif
+
+#if GCD_MAYBE_UNAVAILABLE
 
 /**
  * Provides access to the underlying logging thread.
@@ -178,7 +263,6 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
       level:(int)level
        flag:(int)flag
        file:(const char *)file
-	 object:(id)object
    function:(const char *)function
        line:(int)line
      format:(NSString *)format, ...;
@@ -254,16 +338,22 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 - (void)didAddLogger;
 - (void)willRemoveLogger;
 
-#if GCD_AVAILABLE
+#if GCD_MAYBE_AVAILABLE
 
 /**
  * When Grand Central Dispatch is available
  * each logger is executed concurrently with respect to the other loggers.
- * Thus, a dedicated dispatch queue is created for each logger.
- * The dedicated dispatch queue will receive its name from this method.
+ * Thus, a dedicated dispatch queue is used for each logger.
+ * Logger implementations may optionally choose to provide their own dispatch queue.
+**/
+- (dispatch_queue_t)loggerQueue;
+
+/**
+ * If the logger implementation does not choose to provide its own queue,
+ * one will automatically be created for it.
+ * The created queue will receive its name from this method.
  * This may be helpful for debugging or profiling reasons.
 **/
-
 - (NSString *)loggerName;
 
 #endif
@@ -282,7 +372,11 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
  * This allows for increased flexibility in the logging environment.
  * For example, log messages for log files may be formatted differently than log messages for the console.
  * 
- * The formatter may also optionally filter the log message by returning nil.
+ * For more information about formatters, see the "Custom Formatters" page:
+ * http://code.google.com/p/cocoalumberjack/wiki/CustomFormatters
+ * 
+ * The formatter may also optionally filter the log message by returning nil,
+ * in which case the logger will not log the message.
 **/
 
 - (NSString *)formatLogMessage:(DDLogMessage *)logMessage;
@@ -344,7 +438,6 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 	NSDate *timestamp;
 	const char *file;
 	const char *function;
-	id object;
 	int lineNumber;
 	mach_port_t machThreadID;
 
@@ -354,7 +447,6 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 @private
 	NSString *threadID;
 	NSString *fileName;
-	NSString *fileNameExt;
 	NSString *methodName;
 }
 
@@ -370,7 +462,6 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
                level:(int)logLevel
                 flag:(int)logFlag
                 file:(const char *)file
-			  object:(id)object
             function:(const char *)function
                 line:(int)line;
 
@@ -382,19 +473,48 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 
 /**
  * Convenience method to get just the file name, as the file variable is generally the full file path.
- * This method does not include the file extension, which is generally not needed for logging purposes.
+ * This method does not include the file extension, which is generally unwanted for logging purposes.
 **/
 - (NSString *)fileName;
-
-/**
- * Convenience method to get just the file name, as the file variable is generally the full file path.
- * This method does not include the file extension, which is generally not needed for logging purposes.
- **/
-- (NSString *)fileNameExt;
 
 /**
  * Returns the function variable in NSString form.
 **/
 - (NSString *)methodName;
+
+@end
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * The DDLogger protocol specifies that an optional formatter can be added to a logger.
+ * Most (but not all) loggers will want to support formatters.
+ * 
+ * However, writting getters and setters in a thread safe manner,
+ * while still maintaining maximum speed for the logging process, is a difficult task.
+ * 
+ * To do it right, the implementation of the getter/setter has strict requiremenets:
+ * - Must NOT require the logMessage method to acquire a lock.
+ * - Must NOT require the logMessage method to access an atomic property (also a lock of sorts).
+ * 
+ * To simplify things, an abstract logger is provided that implements the getter and setter.
+ * 
+ * Logger implementations may simply extend this class,
+ * and they can ACCESS THE FORMATTER VARIABLE DIRECTLY from within their logMessage method!
+**/
+
+@interface DDAbstractLogger : NSObject <DDLogger>
+{
+	id <DDLogFormatter> formatter;
+	
+#if GCD_MAYBE_AVAILABLE
+	dispatch_queue_t loggerQueue;
+#endif
+}
+
+- (id <DDLogFormatter>)logFormatter;
+- (void)setLogFormatter:(id <DDLogFormatter>)formatter;
 
 @end

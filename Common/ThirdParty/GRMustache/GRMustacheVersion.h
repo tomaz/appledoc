@@ -42,7 +42,7 @@
  
  @since v1.0.0
  */
-#define GRMUSTACHE_PATCH_VERSION 0
+#define GRMUSTACHE_PATCH_VERSION 3
 
 
 /**
@@ -62,6 +62,11 @@ typedef struct {
  @since v1.0.0
  */
 @interface GRMustache(Version)
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Getting the GRMustache version
+//////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  @returns the version of GRMustache as a GRMustacheVersion.
  

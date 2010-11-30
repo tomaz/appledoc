@@ -41,4 +41,18 @@
 /** Strings used for generating methods sections for objects. */
 @property (readonly) NSDictionary *objectMethods;
 
+///---------------------------------------------------------------------------------------
+/// @name Index output strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for generating common page strings for index. */
+@property (readonly) NSDictionary *indexPage;
+
+///---------------------------------------------------------------------------------------
+/// @name DocSet output strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for generating common page strings for documentation set. */
+@property (readonly) NSDictionary *docset;
+
 @end

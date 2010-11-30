@@ -20,11 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheElement.h"
+#import <Foundation/Foundation.h>
 
 
 @class GRMustacheContext;
 
-@interface GRMustacheElement()
+@protocol GRMustacheElement
+@required
 - (NSString *)renderContext:(GRMustacheContext *)context;
 @end

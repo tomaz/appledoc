@@ -7,7 +7,7 @@
 //
 
 #import "DDLog.h"
-#import "DDConsoleLogger.h"
+#import "DDTTYLogger.h"
 #import "DDFileLogger.h"
 #import "DDCliUtil.h"
 
@@ -38,6 +38,8 @@
 #undef DDLogCInfo
 #undef DDLogCVerbose
 
+#undef SYNC_LOG_OBJC_MAYBE
+
 // Now define everything the way we want it...
 
 extern NSUInteger kGBLogLevel;
@@ -65,6 +67,8 @@ extern NSUInteger kGBLogLevel;
 #define LOG_INFO	(kGBLogLevel & LOG_FLAG_INFO)
 #define LOG_VERBOSE	(kGBLogLevel & LOG_FLAG_VERBOSE)
 #define LOG_DEBUG	(kGBLogLevel & LOG_FLAG_DEBUG)
+
+#define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 #define GBLogFatal(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__)
 #define GBLogError(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__)
@@ -143,7 +147,4 @@ extern NSUInteger kGBLogLevel;
 @end
 
 @interface GBLogFormat3Formatter : NSObject <DDLogFormatter>
-@end
-
-@interface GBLogFormat4Formatter : NSObject <DDLogFormatter>
 @end

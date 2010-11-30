@@ -1,10 +1,11 @@
-#import "DDCliUtil.h"
-#import "DDConsoleLogger.h"
+#import "DDASLLogger.h"
+
+#import <libkern/OSAtomic.h>
 
 
-@implementation DDConsoleLogger
+@implementation DDASLLogger
 
-static DDConsoleLogger *sharedInstance;
+static DDASLLogger *sharedInstance;
 
 /**
  * The runtime sends initialize to each class in a program exactly one time just before the class,
@@ -13,18 +14,19 @@ static DDConsoleLogger *sharedInstance;
  * classes in a thread-safe manner. Superclasses receive this message before their subclasses.
  *
  * This method may also be called directly (assumably by accident), hence the safety mechanism.
- **/
+**/
 + (void)initialize
 {
 	static BOOL initialized = NO;
 	if (!initialized)
 	{
 		initialized = YES;
-		sharedInstance = [[DDConsoleLogger alloc] init];
+		
+		sharedInstance = [[DDASLLogger alloc] init];
 	}
 }
 
-+ (DDConsoleLogger *)sharedInstance
++ (DDASLLogger *)sharedInstance
 {
 	return sharedInstance;
 }
@@ -37,7 +39,13 @@ static DDConsoleLogger *sharedInstance;
 		return nil;
 	}
 	
-	self = [super init];
+	if ((self = [super init]))
+	{
+		// A default asl client is provided for the main thread,
+		// but background threads need to create their own client.
+		
+		client = asl_open(NULL, "com.apple.console", 0);
+	}
 	return self;
 }
 
@@ -52,27 +60,27 @@ static DDConsoleLogger *sharedInstance;
 	
 	if (logMsg)
 	{
-		ddprintf(@"%@\n", logMsg);
-	}
-}
-
-- (id <DDLogFormatter>)logFormatter
-{
-	return formatter;
-}
-
-- (void)setLogFormatter:(id <DDLogFormatter>)logFormatter
-{
-	if (formatter != logFormatter)
-	{
-		[formatter release];
-		formatter = [logFormatter retain];
+		const char *msg = [logMsg UTF8String];
+		
+		int aslLogLevel;
+		switch (logMessage->logLevel)
+		{
+			// Note: By default ASL will filter anything above level 5 (Notice).
+			// So our mappings shouldn't go above that level.
+			
+			case 1  : aslLogLevel = ASL_LEVEL_CRIT;    break;
+			case 2  : aslLogLevel = ASL_LEVEL_ERR;     break;
+			case 3  : aslLogLevel = ASL_LEVEL_WARNING; break;
+			default : aslLogLevel = ASL_LEVEL_NOTICE;  break;
+		}
+		
+		asl_log(client, NULL, aslLogLevel, "%s", msg);
 	}
 }
 
 - (NSString *)loggerName
 {
-	return @"cocoa.lumberjack.consoleLogger";
+	return @"cocoa.lumberjack.aslLogger";
 }
 
 @end

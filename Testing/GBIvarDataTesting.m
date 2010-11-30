@@ -24,4 +24,11 @@
 	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
+- (void)testIsTopLevelObject_shouldReturnNO {
+	// setup & execute
+	GBIvarData *ivar = [GBTestObjectsRegistry ivarWithComponents:@"int", @"_name", nil];
+	// verify
+	assertThatBool(ivar.isTopLevelObject, equalToBool(NO));
+}
+
 @end

@@ -101,4 +101,13 @@
 	assertThatInteger([[source.methods methods] count], equalToInteger(2));
 }
 
+#pragma mark Helper methods
+
+- (void)testIsTopLevelObject_shouldReturnYES {
+	// setup & execute
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	// verify
+	assertThatBool(category.isTopLevelObject, equalToBool(YES));
+}
+
 @end

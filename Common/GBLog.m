@@ -50,13 +50,12 @@ NSUInteger kGBLogLevel = LOG_LEVEL_NORMAL;
 + (id<DDLogFormatter>)logFormatterForLogFormat:(NSString *)level {
 	NSInteger value = [level integerValue];
 	if (value < 0) value = 0;
-	if (value > 4) value = 4;
+	if (value > 3) value = 3;
 	switch (value) {
 		case 0: return [[[GBLogFormat0Formatter alloc] init] autorelease];
 		case 1: return [[[GBLogFormat1Formatter alloc] init] autorelease];
 		case 2: return [[[GBLogFormat2Formatter alloc] init] autorelease];
 		case 3: return [[[GBLogFormat3Formatter alloc] init] autorelease];
-		case 4: return [[[GBLogFormat4Formatter alloc] init] autorelease];
 	}
 	return nil;
 }
@@ -81,36 +80,29 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 #define GBLogFile(msg) [msg fileName]
 #define GBLogFileExt(msg) [msg fileNameExt]
 #define GBLogMessage(msg) msg->logMsg
-#define GBLogFunction(msg) msg->function
-#define GBLogSource(msg) msg->object ? [msg->object className] : GBLogFile(msg)
+#define GBLogMethod(msg) [msg methodName]
 #define GBLogLine(msg) msg->lineNumber
 
 @implementation GBLogFormat0Formatter
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@", GBLogMessage(logMessage)];
+- (NSString *)formatLogMessage:(DDLogMessage *)m {
+	return [NSString stringWithFormat:@"%@", GBLogMessage(m)];
 }
 @end
 
 @implementation GBLogFormat1Formatter
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ | %@", GBLogLevel(logMessage), GBLogMessage(logMessage)];
+- (NSString *)formatLogMessage:(DDLogMessage *)m {
+	return [NSString stringWithFormat:@"%@ | %@", GBLogLevel(m), GBLogMessage(m)];
 }
 @end
 
 @implementation GBLogFormat2Formatter
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ | %@ @ %@:%i", GBLogLevel(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
+- (NSString *)formatLogMessage:(DDLogMessage *)m {
+	return [NSString stringWithFormat:@"%@ | %@ > %@", GBLogLevel(m), GBLogMethod(m), GBLogMessage(m)];
 }
 @end
 
 @implementation GBLogFormat3Formatter
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ [%@ %s] | %@", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage)];
-}
-@end
-
-@implementation GBLogFormat4Formatter
-- (NSString *)formatLogMessage:(DDLogMessage *)logMessage {
-	return [NSString stringWithFormat:@"%@ [%@ %s] | %@ @ %@:%i", GBLogLevel(logMessage), GBLogSource(logMessage), GBLogFunction(logMessage), GBLogMessage(logMessage), GBLogFileExt(logMessage), GBLogLine(logMessage)];
+- (NSString *)formatLogMessage:(DDLogMessage *)m {
+	return [NSString stringWithFormat:@"%@ | %@ ln %i > %@", GBLogLevel(m), GBLogFile(m), GBLogLine(m), GBLogMessage(m)];
 }
 @end

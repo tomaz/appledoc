@@ -1,5 +1,5 @@
 //
-//  GBClassVariablesProvider.m
+//  GBHTMLTemplateVariablesProvider.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 1.10.10.
@@ -11,12 +11,15 @@
 #import "GBObjectDataProviding.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
-#import "GBTemplateVariablesProvider.h"
+#import "GBHTMLTemplateVariablesProvider.h"
 
-@interface GBTemplateVariablesProvider ()
+#pragma mark -
+
+@interface GBHTMLTemplateVariablesProvider ()
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
+- (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
 @property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
 
@@ -24,7 +27,7 @@
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider (ObjectVariables)
+@interface GBHTMLTemplateVariablesProvider (ObjectVariables)
 
 - (NSString *)pageTitleForClass:(GBClassData *)object;
 - (NSString *)pageTitleForCategory:(GBCategoryData *)object;
@@ -37,7 +40,7 @@
 
 #pragma mark -
 
-@interface GBTemplateVariablesProvider (ObjectSpecifications)
+@interface GBHTMLTemplateVariablesProvider (ObjectSpecifications)
 
 - (void)registerObjectInheritsFromSpecificationForClass:(GBClassData *)class toArray:(NSMutableArray *)array;
 - (void)registerObjectConformsToSpecificationForProvider:(id<GBObjectDataProviding>)provider toArray:(NSMutableArray *)array;
@@ -51,7 +54,19 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider
+@interface GBHTMLTemplateVariablesProvider (IndexVariables)
+
+- (NSString *)pageTitleForIndex;
+- (NSArray *)classesForIndex;
+- (NSArray *)categoriesForIndex;
+- (NSArray *)protocolsForIndex;
+- (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
+
+@end
+
+#pragma mark -
+
+@implementation GBHTMLTemplateVariablesProvider
 
 #pragma mark Initialization & disposal
 
@@ -70,14 +85,14 @@
 	return self;
 }
 
-#pragma mark Public interface
+#pragma mark Object variables handling
 
 - (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store {
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
 	[page setObject:[self specificationsForClass:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssClassTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -90,7 +105,7 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
 	[page setObject:[self specificationsForCategory:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssCategoryTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -103,7 +118,7 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
 	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
-	[page setObject:self.settings.cssProtocolTemplatePath forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
@@ -111,10 +126,27 @@
 	return result;
 }
 
+#pragma mark Index variables handling
+
+- (NSDictionary *)variablesForIndexWithStore:(id<GBStoreProviding>)store {
+	self.store = store;
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForIndex] forKey:@"title"];
+	[self addFooterVarsToDictionary:page];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:[self classesForIndex] forKey:@"classes"];
+	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
+	[result setObject:[self categoriesForIndex] forKey:@"categories"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self registerObjectsUsageForIndexInDictionary:result];
+	return result;
+}
+
 #pragma mark Helper methods
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source {
-	if (!object || !source) return nil;
+	if (!object) return nil;
 	if ([object isKindOfClass:[GBClassData class]] && ![[self.store classes] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBCategoryData class]] && ![[self.store categories] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBProtocolData class]] && ![[self.store protocols] containsObject:object]) return nil;
@@ -133,6 +165,14 @@
 	return result;
 }
 
+#pragma mark Common values
+
+- (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
+	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];
+	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:@"$YEAR"] forKey:@"copyrightDate"];
+	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:@"$UPDATEDATE"] forKey:@"lastUpdatedDate"];
+}
+
 #pragma mark Properties
 
 @synthesize settings;
@@ -142,7 +182,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider (ObjectVariables)
+@implementation GBHTMLTemplateVariablesProvider (ObjectVariables)
 
 - (NSString *)pageTitleForClass:(GBClassData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"objectPage.classTitle"];
@@ -186,7 +226,7 @@
 
 #pragma mark -
 
-@implementation GBTemplateVariablesProvider (ObjectSpecifications)
+@implementation GBHTMLTemplateVariablesProvider (ObjectSpecifications)
 
 #pragma mark Specific specifications handling
 
@@ -267,6 +307,62 @@
 		if (idx < [values count] - 1) [data setObject:delimiter forKey:@"delimiter"];
 	}];
 	return values;
+}
+
+@end
+
+#pragma mark -
+
+@implementation GBHTMLTemplateVariablesProvider (IndexVariables)
+
+- (NSString *)pageTitleForIndex {
+	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];
+}
+
+- (NSArray *)classesForIndex {
+	NSArray *classes = [self.store classesSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[classes count]];
+	for (GBClassData *class in classes) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:class fromObject:nil] forKey:@"href"];
+		[data setObject:class.nameOfClass forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (NSArray *)categoriesForIndex {
+	NSArray *categories = [self.store categoriesSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[categories count]];
+	for (GBCategoryData *category in categories) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:category fromObject:nil] forKey:@"href"];
+		[data setObject:category.idOfCategory forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (NSArray *)protocolsForIndex {
+	NSArray *protocols = [self.store protocolsSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[protocols count]];
+	for (GBProtocolData *protocol in protocols) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:protocol fromObject:nil] forKey:@"href"];
+		[data setObject:protocol.nameOfProtocol forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
+- (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {
+	BOOL classes = [self.store.classes count] > 0;
+	BOOL categories = [self.store.categories count] > 0;
+	BOOL protocols = [self.store.protocols count] > 0; 
+	[dict setObject:classes ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+	[dict setObject:categories ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
+	[dict setObject:protocols ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[dict setObject:(protocols || categories) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocolsOrCategories"];
 }
 
 @end

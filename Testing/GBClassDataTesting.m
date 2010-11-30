@@ -111,4 +111,13 @@
 	assertThatInteger([[source.methods methods] count], equalToInteger(2));
 }
 
+#pragma mark Helper methods
+
+- (void)testIsTopLevelObject_shouldReturnYES {
+	// setup & execute
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	// verify
+	assertThatBool(class.isTopLevelObject, equalToBool(YES));
+}
+
 @end

@@ -19,60 +19,80 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
-/// @name Template paths handling
+/// @name Project values handling
+///---------------------------------------------------------------------------------------
+
+/** Human readable name of the project. */
+@property (copy) NSString *projectName;
+
+/** Human readable name of the project company. */
+@property (copy) NSString *projectCompany;
+
+///---------------------------------------------------------------------------------------
+/// @name Documentation set handling
+///---------------------------------------------------------------------------------------
+
+/** Documentation set bundle identifier. */
+@property (copy) NSString *docsetBundleIdentifier;
+
+/** Documentation set bundle name. */
+@property (copy) NSString *docsetBundleName;
+
+/** Documentation set certificate issuer. */
+@property (copy) NSString *docsetCertificateIssuer;
+
+/** Documentation set certificate signer. */
+@property (copy) NSString *docsetCertificateSigner;
+
+/** Documentation set description. */
+@property (copy) NSString *docsetDescription;
+
+/** Documentation set fallback URL. */
+@property (copy) NSString *docsetFallbackURL;
+
+/** Documentation set feed name. */
+@property (copy) NSString *docsetFeedName;
+
+/** Documentation set feed URL. */
+@property (copy) NSString *docsetFeedURL;
+
+/** Documentation set minimum Xcode version. */
+@property (copy) NSString *docsetMinimumXcodeVersion;
+
+/** Documentation set platform family. */
+@property (copy) NSString *docsetPlatformFamily;
+
+/** Documentation set publisher identifier. */
+@property (copy) NSString *docsetPublisherIdentifier;
+
+/** Documentation set publisher name. */
+@property (copy) NSString *docsetPublisherName;
+
+/** Documentation set human readble copyright message. */
+@property (copy) NSString *docsetCopyrightMessage;
+
+///---------------------------------------------------------------------------------------
+/// @name Paths handling
 ///---------------------------------------------------------------------------------------
 
 /** The base path to template files used for generating various output files. */
 @property (copy) NSString *templatesPath;
 
-/** The path to the CSS template file, relative from class html files. 
- 
- @see cssCategoryTemplatePath
- @see cssProtocolTemplatePath
- */
-@property (readonly) NSString *cssClassTemplatePath;
-
-/** The path to the CSS template file, relative from category html files.
- 
- @see cssClassTemplatePath
- @see cssProtocolTemplatePath
- */
-@property (readonly) NSString *cssCategoryTemplatePath;
-
-/** The path to the CSS template file, relative from protocol html files.
- 
- @see cssClassTemplatePath
- @see cssCategoryTemplatePath
- */
-@property (readonly) NSString *cssProtocolTemplatePath;
-
-///---------------------------------------------------------------------------------------
-/// @name Output paths handling
-///---------------------------------------------------------------------------------------
-
 /** The base path of the generated files. */
 @property (copy) NSString *outputPath;
 
-/** The base path of the HTML generated files.
- 
- This value depends on `outputPath` and is automatically calculated.
- 
- @see htmlOutputPathForObject:
- @see outputPath
- */
-@property (readonly) NSString *htmlOutputPath;
+/** The path to which documentation set is to be installed. */
+@property (copy) NSString *docsetInstallPath;
 
-/** Returns file name including full path for HTML file representing the given top-level object.
+/** The list of all full or partial paths to be ignored. 
  
- This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class.
- 
- @param object The object for which to return the path.
- @return Returns the path.
- @exception NSException Thrown if the given object is `nil` or not top-level object.
- @see htmlReferenceForObject:fromSource:
- @see htmlOutputPath
+ It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
  */
-- (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
+@property (retain) NSMutableArray *ignoredPaths;
+
+///---------------------------------------------------------------------------------------
+/// @name Application-wide HTML helpers
+///---------------------------------------------------------------------------------------
 
 /** Returns HTML reference name for the given object.
  
@@ -82,6 +102,7 @@
  @return Returns the reference name of the object.
  @exception NSException Thrown if the given object is `nil`.
  @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceForObjectFromIndex:
  */
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object;
 
@@ -89,6 +110,8 @@
  
  This is useful for generating hrefs from one object HTML file to another. This is the swiss army knife king of a method for all hrefs generation. It works for any kind of links:
  
+ - Index to top-level object (if source is `nil`).
+ - Index to a member of a top-level object (if source is `nil`).
  - Top-level object to same top-level object.
  - Top-level object to a different top-level object.
  - Top-level object to one of it's members.
@@ -98,22 +121,58 @@
  - Member object to a member of another top-level object.
  
  @param object The object for which to generate the reference to.
- @param source The source object from which to generate the reference from.
+ @param source The source object from which to generate the reference from or `nil` for index to object reference.
  @return Returns the reference string.
- @exception NSException Thrown if any of the given objects is `nil`.
+ @exception NSException Thrown if object is `nil`.
+ @see htmlReferenceForObjectFromIndex:
  @see htmlReferenceNameForObject:
  */
 - (NSString *)htmlReferenceForObject:(GBModelBase *)object fromSource:(GBModelBase *)source;
 
+/** Returns relative HTML reference to the given object from the context of index file.
+ 
+ This is simply a helper method for `htmlReferenceForObject:fromSource:`, passing the given object as object parameter and `nil` as source.
+ 
+ @pram object The object for which to generate the reference to.
+ @return Returns the reference string.
+ @exception NSException Thrown if object is `nil`.
+ @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceNameForObject:
+ */
+- (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
+
+/** The file extension for html files.
+ */
+@property (readonly) NSString *htmlExtension;
+
 ///---------------------------------------------------------------------------------------
-/// @name Other paths handling
+/// @name Helper methods
 ///---------------------------------------------------------------------------------------
 
-/** The list of all full or partial paths to be ignored. 
+/** Replaces all occurences of placeholder strings in all related values of the receiver.
  
- It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
+ This message should be sent once all the values have been set. It is a convenience method that prepares all values that can use placeholder strings. From this point on, the rest of the application can simply use properties to get final values instead of sending `stringByReplacingOccurencesOfPlaceholdersInString:` all the time.
+ 
+ Note that `stringByReplacingOccurencesOfPlaceholdersInString:` is still available for cases where placeholder strings may be used elsewhere (template files for example).
+ 
+ @see stringByReplacingOccurencesOfPlaceholdersInString:
  */
-@property (retain) NSMutableArray *ignoredPaths;
+- (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues;
+
+/** Replaces all placeholders occurences in the given string.
+ 
+ This method provides application-wide string placeholders replacement functionality. It replaces all known placeholders with actual values from the receiver. Placeholders are identified by a dollar mark, followed by placeholder name. The following placeholders are supported (note that case is important!):
+ 
+ - `$PROJECT`: Replaced by `projectName` value.
+ - `$COMPANY`: Replaced by `projectCompany` value.
+ - `$YEAR`: Replaced by current year as four digit string.
+ - `$UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
+ 
+ @param string The string to replace placeholder occurences in.
+ @return Returns new string with all placeholder occurences replaced.
+ @see replaceAllOccurencesOfPlaceholderStringsInSettingsValues
+ */
+- (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper classes

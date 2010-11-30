@@ -76,6 +76,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	@try {		
 		[self validateArguments:arguments];
+		[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 		[self initializeLoggingSystem];
 		
 		GBLogNormal(@"Initializing...");
@@ -133,8 +134,8 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)initializeLoggingSystem {
 	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
-	[[DDConsoleLogger sharedInstance] setLogFormatter:formatter];
-	[DDLog addLogger:[DDConsoleLogger sharedInstance]];
+	[[DDTTYLogger sharedInstance] setLogFormatter:formatter];
+	[DDLog addLogger:[DDTTYLogger sharedInstance]];
 	[GBLog setLogLevelFromVerbose:self.verbose];
 	[formatter release];
 }
@@ -185,7 +186,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", DDCliApp);
 	ddprintf(@"\n");
 	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
-	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-4]");
+	PRINT_USAGE(@"-f,", kGBArgLogFormat, @"<format>", @"Log format [0-3]");
 	PRINT_USAGE(@"-v,", kGBArgVerbose, @"<level>", @"Log verbosity level [0-6]");
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");
 	PRINT_USAGE(@"-h,", kGBArgHelp, @"", @"Display this help and exit");

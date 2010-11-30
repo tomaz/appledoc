@@ -11,12 +11,13 @@
 
 @interface GBApplicationSettingsProvider ()
 
-- (BOOL)isTopLevelStoreObject:(id)object;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
 - (NSString *)relativePathPrefixFromObject:(GBModelBase *)source toObject:(GBModelBase *)destination;
+- (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(GBModelBase *)member prefixedWith:(NSString *)prefix;
-- (NSString *)htmlExtension;
+@property (readonly) NSDateFormatter *yearDateFormatter;
+@property (readonly) NSDateFormatter *yearToDayDateFormatter;
 
 @end
 
@@ -33,8 +34,24 @@
 - (id)init {
 	self = [super init];
 	if (self) {
+		self.projectName = @"PROJECT";
+		self.projectCompany = @"COMPANY";
+		self.docsetBundleIdentifier = @"com.company.project";
+		self.docsetBundleName = @"$PROJECT Documentation";
+		self.docsetCertificateIssuer = @"";
+		self.docsetCertificateSigner = @"";
+		self.docsetDescription = @"";
+		self.docsetFallbackURL = @"";
+		self.docsetFeedName = @"";
+		self.docsetFeedURL = @"";
+		self.docsetMinimumXcodeVersion = @"3.0";
+		self.docsetPlatformFamily = @"macosx";
+		self.docsetPublisherIdentifier = @"com.company.documentation";
+		self.docsetPublisherName = @"$COMPANY";
+		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
-		self.templatesPath = @"~/Downloads/examples/AppledocHtml";
+		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
+		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.ignoredPaths = [NSMutableSet set];
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -42,50 +59,50 @@
 	return self;
 }
 
-#pragma mark Template paths handling
-
-- (NSString *)cssClassTemplatePath {
-	return @"../../styles.css";
+- (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
+	self.docsetBundleIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleIdentifier];
+	self.docsetBundleName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleName];
+	self.docsetCertificateIssuer = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCertificateIssuer];
+	self.docsetCertificateSigner = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCertificateSigner];
+	self.docsetDescription = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetDescription];
+	self.docsetFallbackURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFallbackURL];
+	self.docsetFeedName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedName];
+	self.docsetFeedURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedURL];
+	self.docsetMinimumXcodeVersion = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetMinimumXcodeVersion];
+	self.docsetPlatformFamily = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPlatformFamily];
+	self.docsetPublisherIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherIdentifier];
+	self.docsetPublisherName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherName];
+	self.docsetCopyrightMessage = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCopyrightMessage];
 }
 
-- (NSString *)cssCategoryTemplatePath {
-	return @"../../styles.css";
-}
-
-- (NSString *)cssProtocolTemplatePath {
-	return @"../../styles.css";
-}
-
-#pragma mark HTML paths and references handling
-
-- (NSString *)htmlOutputPath {
-	return [self.outputPath stringByAppendingPathComponent:@"html"];
-}
-
-- (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
-	NSParameterAssert(object != nil);
-	NSParameterAssert([self isTopLevelStoreObject:object]);
-	NSString *inner = [self outputPathForObject:object withExtension:[self htmlExtension]];
-	return [self.htmlOutputPath stringByAppendingPathComponent:inner];
-}
+#pragma mark HTML references handling
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
 	NSParameterAssert(object != nil);
-	if ([self isTopLevelStoreObject:object])
-		return [self htmlReferenceForObject:object fromSource:object];
+	if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:object];
 	return [self htmlReferenceForMember:object prefixedWith:@""];
 }
 
 - (NSString *)htmlReferenceForObject:(GBModelBase *)object fromSource:(GBModelBase *)source {
 	NSParameterAssert(object != nil);
-	NSParameterAssert(source != nil);
+	
+	// Generate hrefs from index to objects:
+	if (!source) {
+		// To top-level object.
+		if (object.isTopLevelObject) return [self htmlReferenceForObjectFromIndex:object];
+		
+		// To a member of top-level object.
+		NSString *path = [self htmlReferenceForObjectFromIndex:object.parentObject];
+		NSString *memberReference = [self htmlReferenceForMember:object prefixedWith:@"#"];
+		return [NSString stringWithFormat:@"%@%@", path, memberReference];
+	}
 	
 	// Generate hrefs from member to other objects:
-	if (![self isTopLevelStoreObject:source]) {
+	if (!source.isTopLevelObject) {
 		GBModelBase *sourceParent = source.parentObject;
 		
 		// To the parent or another top-level object.
-		if ([self isTopLevelStoreObject:object]) return [self htmlReferenceForObject:object fromSource:sourceParent];
+		if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:sourceParent];
 
 		// To same or another member of the same parent.
 		if (object.parentObject == sourceParent) return [self htmlReferenceForMember:object prefixedWith:@"#"];
@@ -97,7 +114,7 @@
 	}
 	
 	// From top-level object to samo or another top level object.
-	if (object == source || [self isTopLevelStoreObject:object]) {
+	if (object == source || object.isTopLevelObject) {
 		return [self htmlReferenceForTopLevelObject:object fromTopLevelObject:source];
 	}
 	
@@ -110,6 +127,10 @@
 	
 	// From top-level object to one of it's members.
 	return memberPath;
+}
+
+- (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object {
+	return [self outputPathForObject:object withExtension:[self htmlExtension]];
 }
 
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source {
@@ -131,6 +152,34 @@
 
 - (NSString *)htmlExtension {
 	return @"html";
+}
+
+#pragma mark Date and time helpers
+
+- (NSString *)yearStringFromDate:(NSDate *)date {
+	return [self.yearDateFormatter stringFromDate:date];
+}
+
+- (NSString *)yearToDayStringFromDate:(NSDate *)date {
+	return [self.yearToDayDateFormatter stringFromDate:date];
+}
+
+- (NSDateFormatter *)yearDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy"];
+	}
+	return result;
+}
+
+- (NSDateFormatter *)yearToDayDateFormatter {
+	static NSDateFormatter *result = nil;
+	if (!result) {
+		result = [[NSDateFormatter alloc] init];
+		[result setDateFormat:@"yyyy-MM-dd"];
+	}
+	return result;
 }
 
 #pragma mark Paths helper methods
@@ -169,6 +218,14 @@
 	return NO;
 }
 
+- (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
+	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
+	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
+	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self yearStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
+	return string;
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -177,7 +234,10 @@
 
 #pragma mark Properties
 
+@synthesize projectName;
+@synthesize projectCompany;
 @synthesize outputPath;
+@synthesize docsetInstallPath;
 @synthesize templatesPath;
 @synthesize ignoredPaths;
 @synthesize commentComponents;

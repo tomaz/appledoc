@@ -23,7 +23,7 @@
 #import "GRMustache_private.h"
 #import "GRMustacheTemplateLoader_private.h"
 #import "GRMustacheTemplate_private.h"
-#import "GRMustacheURLTemplateLoader_private.h"
+#import "GRMustacheDirectoryTemplateLoader_private.h"
 #import "GRMustacheBundleTemplateLoader_private.h"
 
 
@@ -42,15 +42,15 @@ NSString* const GRMustacheDefaultExtension = @"mustache";
 }
 
 + (id)templateLoaderWithBaseURL:(NSURL *)url {
-	return [[[GRMustacheURLTemplateLoader alloc] initWithURL:url extension:nil encoding:NSUTF8StringEncoding] autorelease];
+	return [[[GRMustacheDirectoryTemplateLoader alloc] initWithURL:url extension:nil encoding:NSUTF8StringEncoding] autorelease];
 }
 
 + (id)templateLoaderWithBaseURL:(NSURL *)url extension:(NSString *)ext {
-	return [[[GRMustacheURLTemplateLoader alloc] initWithURL:url extension:ext encoding:NSUTF8StringEncoding] autorelease];
+	return [[[GRMustacheDirectoryTemplateLoader alloc] initWithURL:url extension:ext encoding:NSUTF8StringEncoding] autorelease];
 }
 
 + (id)templateLoaderWithBaseURL:(NSURL *)url extension:(NSString *)ext encoding:(NSStringEncoding)encoding {
-	return [[[GRMustacheURLTemplateLoader alloc] initWithURL:url extension:ext encoding:encoding] autorelease];
+	return [[[GRMustacheDirectoryTemplateLoader alloc] initWithURL:url extension:ext encoding:encoding] autorelease];
 }
 
 + (id)templateLoaderWithBundle:(NSBundle *)bundle {
@@ -77,8 +77,8 @@ NSString* const GRMustacheDefaultExtension = @"mustache";
 	return self;
 }
 
-- (GRMustacheTemplate *)parseTemplateNamed:(NSString *)name relativeToTemplate:(GRMustacheTemplate *)baseTemplate error:(NSError **)outError {
-	id templateId = [self templateIdForTemplateNamed:name relativeToTemplateId:baseTemplate.templateId];
+- (GRMustacheTemplate *)parseTemplateNamed:(NSString *)name relativeToTemplateId:(id)baseTemplateId error:(NSError **)outError {
+	id templateId = [self templateIdForTemplateNamed:name relativeToTemplateId:baseTemplateId];
 	if (templateId == nil) {
 		if (outError != NULL) {
 			*outError = [NSError errorWithDomain:GRMustacheErrorDomain
@@ -127,7 +127,7 @@ NSString* const GRMustacheDefaultExtension = @"mustache";
 }
 
 - (GRMustacheTemplate *)parseTemplateNamed:(NSString *)name error:(NSError **)outError {
-	return [self parseTemplateNamed:name relativeToTemplate:nil error:outError];
+	return [self parseTemplateNamed:name relativeToTemplateId:nil error:outError];
 }
 
 - (GRMustacheTemplate *)parseString:(NSString *)templateString error:(NSError **)outError {
@@ -136,14 +136,6 @@ NSString* const GRMustacheDefaultExtension = @"mustache";
 		return nil;
 	}
 	return template;
-}
-
-- (GRMustacheTemplate *)parseContentsOfURL:(NSURL *)url error:(NSError **)outError {
-	NSString *templateString = [NSString stringWithContentsOfURL:url encoding:encoding error:outError];
-	if (!templateString) {
-		return nil;
-	}
-	return [self parseString:templateString error:outError];
 }
 
 - (void)setTemplate:(GRMustacheTemplate *)template forTemplateId:(id)templateId {

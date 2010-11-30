@@ -20,13 +20,4 @@
 	NSMutableDictionary *_protocolsByName;
 }
 
-/** Returns all registered classes sorted by their name. */
-- (NSArray *)classesSortedByName;
-
-/** Returns all registered categories sorted by their name. */
-- (NSArray *)categoriesSortedByName;
-
-/** Returns all registered protocols sorted by their name. */
-- (NSArray *)protocolsSortedByName;
-
 @end

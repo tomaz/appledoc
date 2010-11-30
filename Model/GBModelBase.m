@@ -53,7 +53,7 @@
 	if (!self.comment && comment) self.comment = comment;
 }
 
-#pragma mark Source info handling
+#pragma mark Declared files handling
 
 - (void)registerSourceInfo:(GBSourceInfo *)data {
 	NSParameterAssert(data != nil);
@@ -72,6 +72,12 @@
 
 - (NSArray *)sourceInfosSortedByName {
 	return [[self.sourceInfos allObjects] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+#pragma Helper methods
+
+- (BOOL)isTopLevelObject {
+	return NO;
 }
 
 #pragma mark Properties

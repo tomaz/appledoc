@@ -7,7 +7,7 @@
 //
 
 #import "GBApplicationSettingsProvider.h"
-#import "GBTemplateVariablesProvider.h"
+#import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTokenizer.h"
 
 @interface GBTemplateVariablesProviderObjectSpecificationsTesting : GHTestCase
@@ -19,7 +19,7 @@
 
 - (void)testVariablesForClass_inheritsFrom_shouldIgnoreSpecificationForRootClass {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
@@ -30,7 +30,7 @@
 
 - (void)testVariablesForClass_inheritsFrom_shouldPrepareSpecificationForUnknownSuperclass {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	class.nameOfSuperclass = @"NSObject";
 	// execute
@@ -46,7 +46,7 @@
 
 - (void)testVariablesForClass_inheritsFrom_shouldPrepareSpecificationForKnownSuperclass {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *superclass = [GBClassData classDataWithName:@"Base"];
 	GBStore *store = [GBTestObjectsRegistry store];
 	[store registerClass:superclass];
@@ -66,7 +66,7 @@
 
 - (void)testVariablesForClass_inheritsFrom_shouldPrepareSpecificationForClassHierarchy {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *level2 = [GBClassData classDataWithName:@"Level2"];
 	level2.nameOfSuperclass = @"NSObject";
 	GBClassData *level1 = [GBClassData classDataWithName:@"Level1"];
@@ -97,7 +97,7 @@
 
 - (void)testVariablesForClass_conformsTo_shouldIgnoreSpecificationForNonAdoptingClass {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
@@ -108,7 +108,7 @@
 
 - (void)testVariablesForClass_conformsTo_shouldPrepareSpecificationForUnknownProtocol {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[class.adoptedProtocols registerProtocol:[GBProtocolData protocolDataWithName:@"Protocol"]];
 	// execute
@@ -124,7 +124,7 @@
 
 - (void)testVariablesForClass_conformsTo_shouldPrepareSpecificationForKnownProtocol {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	GBStore *store = [GBTestObjectsRegistry store];
 	[store registerProtocol:protocol];
@@ -143,7 +143,7 @@
 
 - (void)testVariablesForClass_conformsTo_shouldPrepareSpecificationForComplexProtocolsList {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
 	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
 	GBProtocolData *protocol3 = [GBProtocolData protocolDataWithName:@"Protocol3"];
@@ -173,7 +173,7 @@
 
 - (void)testVariablesForClass_declaredIn_shouldPrepareSpecificationForSingleSourceInfo {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[class registerSourceInfo:[GBSourceInfo infoWithFilename:@"file.h" lineNumber:10]];
 	// execute
@@ -189,7 +189,7 @@
 
 - (void)testVariablesForClass_declaredIn_shouldPrepareSpecificationForMultipleSourceInfos {
 	// setup
-	GBTemplateVariablesProvider *provider = [GBTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[class registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1.h" lineNumber:10]];
 	[class registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2.h" lineNumber:55]];

@@ -20,17 +20,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "GRMustacheElement.h"
+#import "GRMustacheElement_private.h"
 
 
 @class GRMustacheTemplateLoader;
+
 
 /**
  The GRMustacheTemplate class provides with Mustache template rendering services.
  
  @since v1.0.0
  */
-@interface GRMustacheTemplate: GRMustacheElement {
+@interface GRMustacheTemplate: NSObject<GRMustacheElement> {
 @private
 	GRMustacheTemplateLoader *templateLoader;
 	NSString *templateId;
@@ -41,6 +42,10 @@
 	NSInteger curline;
 	NSMutableArray *elems;
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Rendering
+//////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  Renders a context object from a template string
@@ -108,6 +113,29 @@
 + (NSString *)renderObject:(id)object fromResource:(NSString *)name withExtension:(NSString *)ext bundle:(NSBundle *)bundle error:(NSError **)outError;
 
 /**
+ Renders a template with a context object.
+ 
+ @returns A string containing the rendered template
+ @param object A context object used for interpreting Mustache tags
+ 
+ @since v1.0.0
+ */
+- (NSString *)renderObject:(id)object;
+
+/**
+ Renders a template without any context object for interpreting Mustache tags.
+ 
+ @returns A string containing the rendered template
+ 
+ @since v1.0.0
+ */
+- (NSString *)render;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Parsing
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
  Parses a template string, and returns a compiled template.
  
  @returns A GRMustacheTemplate instance
@@ -167,23 +195,4 @@
  @since v1.0.0
  */
 + (id)parseResource:(NSString *)name withExtension:(NSString *)ext bundle:(NSBundle *)bundle error:(NSError **)outError;
-
-/**
- Renders a template with a context object.
- 
- @returns A string containing the rendered template
- @param object A context object used for interpreting Mustache tags
- 
- @since v1.0.0
- */
-- (NSString *)renderObject:(id)object;
-
-/**
- Renders a template without any context object for interpreting Mustache tags.
- 
- @returns A string containing the rendered template
- 
- @since v1.0.0
- */
-- (NSString *)render;
 @end
