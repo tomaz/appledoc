@@ -52,11 +52,11 @@
 	[task setStandardOutput:stdOutPipe];
 	[task setStandardError:stdErrPipe];
 	[task launch];
-	[task waitUntilExit];
-	
-	// Get the output && error from the command.
 	self.lastStandardOutput = [self stringFromPipe:stdOutPipe];
 	self.lastStandardError = [self stringFromPipe:stdErrPipe];
+	[task waitUntilExit];
+	
+	// If we got something on standard error, report error, otherwise success.
 	return ([self.lastStandardError length] == 0);
 }
 
