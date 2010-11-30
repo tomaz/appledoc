@@ -19,6 +19,7 @@
 - (BOOL)processNodesXml:(NSError **)error;
 - (BOOL)processTokensXml:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
+- (void)addCommonModelObjectDataFromObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
@@ -169,19 +170,15 @@
 
 		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
 		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
-		[objectData setObject:[self tokenIdentifierForObject:topLevelObject] forKey:@"identifier"];
 		[objectData setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
-		[objectData setObject:[[topLevelObject.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
-		if (topLevelObject.comment && topLevelObject.comment.hasParagraphs) [objectData setObject:topLevelObject.comment.firstParagraph forKey:@"abstract"];
+		[self addCommonModelObjectDataFromObject:topLevelObject toData:objectData];
 
 		// Prepare the list of all members.
 		NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
 		for (GBMethodData *method in methodsProvider.methods) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-			[data setObject:[self tokenIdentifierForObject:method] forKey:@"identifier"];
 			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
-			[data setObject:[[method.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
-			if (method.comment && method.comment.hasParagraphs) [data setObject:method.comment.firstParagraph forKey:@"abstract"];
+			[self addCommonModelObjectDataFromObject:method toData:data];
 			[membersData addObject:data];
 		}
 				
@@ -206,6 +203,27 @@
 }
 
 #pragma mark Helper methods
+
+- (void)addCommonModelObjectDataFromObject:(GBModelBase *)object toData:(NSMutableDictionary *)data {
+	[data setObject:[self tokenIdentifierForObject:object] forKey:@"identifier"];
+	[data setObject:[[object.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
+	if (object.comment) {
+		if (object.comment.hasParagraphs) [data setObject:object.comment.firstParagraph forKey:@"abstract"];
+		if ([object.comment.crossrefs count] > 0) {
+			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.crossrefs count]];
+			for (GBParagraphLinkItem *crossref in object.comment.crossrefs) {
+				if (crossref.member)
+					[related addObject:[self tokenIdentifierForObject:crossref.member]];
+				else if (crossref.context)
+					[related addObject:[self tokenIdentifierForObject:crossref.context]];
+			}
+			if ([related count] > 0) {
+				[data setObject:[GRYes yes] forKey:@"hasRelatedTokens"];
+				[data setObject:related forKey:@"relatedTokens"];
+			}
+		}
+	}
+}
 
 - (void)initializeSimplifiedObjects {
 	// Prepare flat list of objects for library nodes.
