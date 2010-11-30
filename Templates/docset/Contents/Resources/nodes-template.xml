@@ -56,5 +56,5 @@ Section Node
 EndSection
 
 Section NodeRef
-	<NodeRef refid={{id}}/>
+	<NodeRef refid="{{id}}"/>
 EndSection
