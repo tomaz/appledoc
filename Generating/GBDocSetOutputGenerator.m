@@ -19,7 +19,7 @@
 - (BOOL)processNodesXml:(NSError **)error;
 - (BOOL)processTokensXml:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
-- (void)addCommonModelObjectDataFromObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
+- (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
@@ -158,6 +158,8 @@
 	return YES;
 }
 
+#pragma mark Helper methods
+
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error {
 	// Prepare the output path and template handler then generate file for each object.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:template];
@@ -167,21 +169,21 @@
 		// Get the object's methods provider and prepare the array of all methods.
 		GBModelBase *topLevelObject = [simplifiedObjectData objectForKey:@"object"];
 		GBMethodsProvider *methodsProvider = [topLevelObject valueForKey:@"methods"];
-
+		
 		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
 		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
 		[objectData setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
-		[self addCommonModelObjectDataFromObject:topLevelObject toData:objectData];
-
+		[self addTokensXmlModelObjectDataForObject:topLevelObject toData:objectData];
+		
 		// Prepare the list of all members.
 		NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
 		for (GBMethodData *method in methodsProvider.methods) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
 			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
-			[self addCommonModelObjectDataFromObject:method toData:data];
+			[self addTokensXmlModelObjectDataForObject:method toData:data];
 			[membersData addObject:data];
 		}
-				
+		
 		// Prepare the variables for the template.
 		NSMutableDictionary *vars = [NSMutableDictionary dictionary];
 		[vars setObject:objectData forKey:@"object"];
@@ -202,9 +204,7 @@
 	return YES;
 }
 
-#pragma mark Helper methods
-
-- (void)addCommonModelObjectDataFromObject:(GBModelBase *)object toData:(NSMutableDictionary *)data {
+- (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data {
 	[data setObject:[self tokenIdentifierForObject:object] forKey:@"identifier"];
 	[data setObject:[[object.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
 	if (object.comment) {
@@ -223,31 +223,6 @@
 			}
 		}
 	}
-}
-
-- (void)initializeSimplifiedObjects {
-	// Prepare flat list of objects for library nodes.
-	GBLogDebug(@"Initializing simplified object representations...");
-	NSUInteger index = 1;
-	self.classes = [self simplifiedObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
-	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
-	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
-}
-
-- (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
-	NSUInteger idx = *index;
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[objects count]];
-	for (id object in objects) {
-		GBLogDebug(@"Initializing simplified representation of %@ with id %ld...", object, idx);
-		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-		[data setObject:object forKey:@"object"];
-		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
-		[data setObject:[object valueForKey:value] forKey:@"name"];
-		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
-		[result addObject:data];
-	}
-	*index = idx;
-	return result;
 }
 
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object {
@@ -281,7 +256,7 @@
 			objectName = [(GBProtocolData *)parent nameOfProtocol];
 			objectID = @"intf";
 		}
-
+		
 		// Prepare the actual identifier based on method type.
 		GBMethodData *method = (GBMethodData *)object;
 		if (method.methodType == GBMethodTypeProperty)
@@ -290,6 +265,31 @@
 			return [NSString stringWithFormat:@"//apple_ref/occ/%@m/%@/%@", objectID, objectName, method.methodSelector];
 	}
 	return nil;
+}
+
+- (void)initializeSimplifiedObjects {
+	// Prepare flat list of objects for library nodes.
+	GBLogDebug(@"Initializing simplified object representations...");
+	NSUInteger index = 1;
+	self.classes = [self simplifiedObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
+	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
+	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
+}
+
+- (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
+	NSUInteger idx = *index;
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[objects count]];
+	for (id object in objects) {
+		GBLogDebug(@"Initializing simplified representation of %@ with id %ld...", object, idx);
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+		[data setObject:object forKey:@"object"];
+		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
+		[data setObject:[object valueForKey:value] forKey:@"name"];
+		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
+		[result addObject:data];
+	}
+	*index = idx;
+	return result;
 }
 
 - (NSString *)replacePlaceholdersInString:(NSString *)string {
