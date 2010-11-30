@@ -51,6 +51,7 @@
 		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
 		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
+		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.ignoredPaths = [NSMutableSet set];
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -236,6 +237,7 @@
 @synthesize projectName;
 @synthesize projectCompany;
 @synthesize outputPath;
+@synthesize docsetInstallPath;
 @synthesize templatesPath;
 @synthesize ignoredPaths;
 @synthesize commentComponents;

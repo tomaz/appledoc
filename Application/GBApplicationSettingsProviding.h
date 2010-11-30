@@ -81,6 +81,9 @@
 /** The base path of the generated files. */
 @property (copy) NSString *outputPath;
 
+/** The path to which documentation set is to be installed. */
+@property (copy) NSString *docsetInstallPath;
+
 /** The list of all full or partial paths to be ignored. 
  
  It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.

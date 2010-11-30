@@ -20,6 +20,8 @@
 - (BOOL)processNodesXml:(NSError **)error;
 - (BOOL)processTokensXml:(NSError **)error;
 - (BOOL)indexDocSet:(NSError **)error;
+- (BOOL)removeTemporaryFiles:(NSError **)error;
+- (BOOL)installDocSet:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
 - (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
@@ -28,6 +30,7 @@
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
+@property (readonly) NSMutableSet *temporaryFiles;
 
 @end
 
@@ -40,12 +43,15 @@
 - (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
 	if (![super generateOutputWithStore:store error:error]) return NO;
+	[self.temporaryFiles removeAllObjects];
 	[self initializeSimplifiedObjects];
 	if (![self moveSourceFilesToDocuments:error]) return NO;
 	if (![self processInfoPlist:error]) return NO;
 	if (![self processNodesXml:error]) return NO;
 	if (![self processTokensXml:error]) return NO;
 	if (![self indexDocSet:error]) return NO;
+	if (![self removeTemporaryFiles:error]) return NO;
+	if (![self installDocSet:error]) return NO;
 	return YES;
 }
 
@@ -135,6 +141,7 @@
 	NSString *output = [handler renderObject:vars];
 	NSString *path = [[templatePath stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"Nodes.xml"];
 	NSString *filename = [self.outputUserPath stringByAppendingPathComponent:path];
+	[self.temporaryFiles addObject:filename];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
 		GBLogWarn(@"Failed writting Nodes.xml to '%@'!", filename);
 		return NO;
@@ -164,7 +171,63 @@
 	GBLogInfo(@"Indexing DocSet...");
 	GBTask *task = [GBTask task];
 	if (![task runCommand:@"/Developer/usr/bin/docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil]) {
-		if (error) *error = [NSError errorWithCode:3 description:task.lastStandardError reason:@"docsetutil failed to index the documentation set!"];
+		if (error) *error = [NSError errorWithCode:3 description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
+		return NO;
+	}
+	return YES;
+}
+
+- (BOOL)removeTemporaryFiles:(NSError **)error {
+	// We delete all registered temporary files and clear the list. If there are some problems, we simply log but always return YES - if these files remain, documentation set is still usable, so it's no point of aborting...
+	GBLogInfo(@"Removing temporary DocSet files...");
+	NSError *err = nil;
+	for (NSString *filename in self.temporaryFiles) {
+		GBLogDebug(@"Removing '%@'...", filename);
+		if (![self.fileManager removeItemAtPath:[filename stringByStandardizingPath] error:&err]) {
+			GBLogNSError(err, @"Failed removing temporary file '%@'!", filename);
+		}
+	}
+	return YES;
+}
+
+- (BOOL)installDocSet:(NSError **)error {
+	GBLogInfo(@"Installing DocSet...");
+	
+	// Prepare destination directory path and documentation set name.
+	NSString *destDir = self.settings.docsetInstallPath;
+	NSString *destSubDir = [self.settings.docsetBundleIdentifier stringByAppendingPathExtension:@"docset"];
+
+	// Prepare source and destination paths and file names.
+	NSString *sourceUserPath = self.outputUserPath;
+	NSString *destUserPath = [destDir stringByAppendingPathComponent:destSubDir];
+	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
+	NSString *destPath = [destUserPath stringByStandardizingPath];
+	
+	// Create destination directory and move files to it.
+	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
+	if (![self.fileManager createDirectoryAtPath:[destDir stringByStandardizingPath] withIntermediateDirectories:YES attributes:nil error:error]) {
+		GBLogWarn(@"Failed creating DocSet installation directory '%@'!", destDir);
+		return NO;
+	}
+	if (![self.fileManager moveItemAtPath:sourcePath toPath:destPath error:error]) {
+		GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", sourceUserPath, destUserPath);
+		return  NO;
+	}
+	
+	// Prepare AppleScript for loading the documentation into the Xcode.
+	GBLogVerbose(@"Installing DocSet to Xcode...");
+	NSMutableString* installScript  = [NSMutableString string];
+	[installScript appendString:@"tell application \"Xcode\"\n"];
+	[installScript appendFormat:@"\tload documentation set with path \"%@\"\n", destPath];
+	[installScript appendString:@"end tell"];
+	
+	// Run the AppleScript for loading the documentation into the Xcode.
+	NSDictionary* errorDict = nil;
+	NSAppleScript* script = [[NSAppleScript alloc] initWithSource:installScript];
+	if (![script executeAndReturnError:&errorDict])
+	{
+		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
+		if (error) *error = [NSError errorWithCode:4 description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
 		return NO;
 	}
 	return YES;
@@ -206,6 +269,7 @@
 		NSString *indexName = [NSString stringWithFormat:@"Tokens%ld.xml", idx++];
 		NSString *subpath = [outputPath stringByAppendingPathComponent:indexName];
 		NSString *filename = [self.outputUserPath stringByAppendingPathComponent:subpath];
+		[self.temporaryFiles addObject:filename];
 		if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting tokens file '%@'!", filename);
 			*index = idx;
@@ -301,6 +365,12 @@
 		[result addObject:data];
 	}
 	*index = idx;
+	return result;
+}
+
+- (NSMutableSet *)temporaryFiles {
+	static NSMutableSet *result = nil;
+	if (!result) result = [[NSMutableSet alloc] init];
 	return result;
 }
 
