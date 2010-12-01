@@ -19,6 +19,22 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
+/// @name Behavior handling
+///---------------------------------------------------------------------------------------
+
+/* Indicates whether HTML files should be generated or not. If YES, HTML files are generated in `outputPath` from parsed and processed data. 
+ */
+@property (assign) BOOL createHTML;
+
+/** Specifies whether documentation set should be created from the HTML files. If YES, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If not, HTML files are left in the output path.
+ */
+@property (assign) BOOL createDocSet;
+
+/** Specifies whether the documentation set should be installed or not. If YES, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If not, all documentation set files are left in output path.
+ */
+@property (assign) BOOL installDocSet;
+
+///---------------------------------------------------------------------------------------
 /// @name Project values handling
 ///---------------------------------------------------------------------------------------
 

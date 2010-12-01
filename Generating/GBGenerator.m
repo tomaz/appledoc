@@ -55,13 +55,20 @@
 - (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store {
 	// Setups all output generators. The order of these is crucial as they are invoked in the order added to the list. This forms a dependency where each next generator can use
 	GBLogDebug(@"Initializing generation steps...");
+	if (!self.settings.createHTML) return;
 	[self.outputGenerators addObject:[GBHTMLOutputGenerator generatorWithSettingsProvider:self.settings]];
+	if (!self.settings.createDocSet) return;
 	[self.outputGenerators addObject:[GBDocSetOutputGenerator generatorWithSettingsProvider:self.settings]];
 }
 
 - (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store {
 	GBLogDebug(@"Running generation steps...");
 	NSUInteger stepsCount = [self.outputGenerators count];
+	if (stepsCount == 0) {
+		GBLogNormal(@"No generation step defined, ending.");
+		return;
+	}
+	
 	__block GBOutputGenerator *previous = nil;
 	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {		
 		NSError *error = nil;

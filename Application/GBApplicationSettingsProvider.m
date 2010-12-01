@@ -34,6 +34,9 @@
 - (id)init {
 	self = [super init];
 	if (self) {
+		self.createHTML = YES;
+		self.createDocSet = YES;
+		self.installDocSet = NO;
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
 		self.docsetBundleIdentifier = @"com.company.project";
@@ -234,6 +237,9 @@
 
 #pragma mark Properties
 
+@synthesize createHTML;
+@synthesize createDocSet;
+@synthesize installDocSet;
 @synthesize projectName;
 @synthesize projectCompany;
 @synthesize outputPath;
