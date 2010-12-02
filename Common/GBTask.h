@@ -43,10 +43,19 @@
  @param ... A comma separated list of arguments to substitute into the format.
  @return Returns `YES` if command succedded, `NO` otherwise.
  @exception NSException Thrown if the given command is invalid or cannot be started.
+ @see lastCommandLine
  @see lastStandardOutput
  @see lastStandardError
  */
 - (BOOL)runCommand:(NSString *)command, ... NS_REQUIRES_NIL_TERMINATION;
+
+/** Returns last command line including all arguments as passed to `runCommand:` the last it was sent.
+ 
+ @see runCommand:
+ @see lastStandardOutput
+ @see lastStandardError
+ */
+@property (readonly, retain) NSString *lastCommandLine;
 
 /** Returns string emited to standard output pipe the last time `runCommand:` was sent. 
  

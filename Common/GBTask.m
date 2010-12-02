@@ -12,6 +12,7 @@
 
 - (NSString *)stringFromPipe:(NSPipe *)pipe;
 - (NSArray *)commandLineArgumentsFromList:(va_list)args;
+@property (readwrite, retain) NSString *lastCommandLine;
 @property (readwrite, retain) NSString *lastStandardOutput;
 @property (readwrite, retain) NSString *lastStandardError;
 
@@ -37,11 +38,10 @@
 	va_end(args);
 	
 	// Log the command we're about to run.
-	if (GBLogIsEnabled(LOG_LEVEL_DEBUG)) {
-		NSMutableString *string = [NSMutableString string];
-		for (id argument in arguments) [string appendFormat:@" %@", argument];
-		GBLogDebug(@"Running command '%@%@'", command, string);
-	}
+	NSMutableString *commandLine = [NSMutableString string];
+	for (id argument in arguments) [commandLine appendFormat:@" %@", argument];
+	self.lastCommandLine = [NSString stringWithFormat:@"%@%@", command, commandLine];
+	GBLogDebug(@"Running command '%@'", self.lastCommandLine);
 	
 	// Ok, now prepare the NSTask and really run the command... Note that [NSTask launch] raises exception if it can't launch, we just pass it on.
 	NSPipe *stdOutPipe = [NSPipe pipe];

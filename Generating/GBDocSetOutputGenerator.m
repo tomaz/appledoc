@@ -177,7 +177,10 @@
 - (BOOL)indexDocSet:(NSError **)error {
 	GBLogInfo(@"Indexing DocSet...");
 	GBTask *task = [GBTask task];
-	if (![task runCommand:@"/Developer/usr/bin/docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil]) {
+	BOOL result = [task runCommand:@"/Developer/usr/bin/docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil];
+	if ([task.lastStandardOutput length] > 0) GBLogDebug(@"'%@' results:\n%@", task.lastCommandLine, task.lastStandardOutput);
+	if ([task.lastStandardError length] > 0) GBLogError(@"'%@' ERRORS:\n%@", task.lastCommandLine, task.lastStandardError);
+	if (!result) {
 		if (error) *error = [NSError errorWithCode:3 description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
 		return NO;
 	}
