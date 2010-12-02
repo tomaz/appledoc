@@ -12,6 +12,8 @@
 
 - (NSString *)stringFromPipe:(NSPipe *)pipe;
 - (NSArray *)commandLineArgumentsFromList:(va_list)args;
+- (NSArray *)linesFromString:(NSString *)string;
+@property (copy) GBTaskReportBlock reportBlock;
 @property (readwrite, retain) NSString *lastCommandLine;
 @property (readwrite, retain) NSString *lastStandardOutput;
 @property (readwrite, retain) NSString *lastStandardError;
@@ -36,6 +38,12 @@
 	va_start(args, command);
 	NSArray *arguments = [self commandLineArgumentsFromList:args];
 	va_end(args);
+	return [self runCommand:command arguments:arguments block:nil];
+}
+
+- (BOOL)runCommand:(NSString *)command arguments:(NSArray *)arguments block:(GBTaskReportBlock)block {
+	// If nil is passed for arguments, convert it to empty array.
+	if (!arguments) arguments = [NSArray array];
 	
 	// Log the command we're about to run.
 	NSMutableString *commandLine = [NSMutableString string];
@@ -43,21 +51,64 @@
 	self.lastCommandLine = [NSString stringWithFormat:@"%@%@", command, commandLine];
 	GBLogDebug(@"Running command '%@'", self.lastCommandLine);
 	
-	// Ok, now prepare the NSTask and really run the command... Note that [NSTask launch] raises exception if it can't launch, we just pass it on.
+	// Prepare deviation pipes so that we can extract the data from the task. If requested, prepare everything for continuous updating.
 	NSPipe *stdOutPipe = [NSPipe pipe];
 	NSPipe *stdErrPipe = [NSPipe pipe];
+	if (block) {
+		NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+		[center addObserver:self selector:@selector(outputHandleDataReceived:) name:NSFileHandleReadCompletionNotification object:[stdOutPipe fileHandleForReading]];
+		[center addObserver:self selector:@selector(errorHandleDataReceived:) name:NSFileHandleReadCompletionNotification object:[stdErrPipe fileHandleForReading]];
+		self.lastStandardOutput = @"";
+		self.lastStandardError = @"";
+		self.reportBlock = block;
+	}
+	
+	// Ok, now prepare the NSTask and really run the command... Note that [NSTask launch] raises exception if it can't launch, we just pass it on.
 	NSTask *task = [[[NSTask alloc] init] autorelease];
 	[task setLaunchPath:command];
 	[task setArguments:arguments];
 	[task setStandardOutput:stdOutPipe];
 	[task setStandardError:stdErrPipe];
 	[task launch];
-	self.lastStandardOutput = [self stringFromPipe:stdOutPipe];
-	self.lastStandardError = [self stringFromPipe:stdErrPipe];
+	if (block) {
+		[[stdOutPipe fileHandleForReading] readInBackgroundAndNotify];
+		[[stdErrPipe fileHandleForReading] readInBackgroundAndNotify];
+	} else {
+		self.lastStandardOutput = [self stringFromPipe:stdOutPipe];
+		self.lastStandardError = [self stringFromPipe:stdErrPipe];
+	}
 	[task waitUntilExit];
 	
 	// If we got something on standard error, report error, otherwise success.
 	return ([self.lastStandardError length] == 0);
+}
+
+#pragma mark Continuous reporting handling
+
+- (void)outputHandleDataReceived:(NSNotification *)note {
+	NSData *data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+	self.lastStandardOutput = [self.lastStandardOutput stringByAppendingFormat:@"%@\n", string];
+	if (self.reportIndividualLines) {
+		NSArray *lines = [self linesFromString:string];
+		for (NSString *line in lines) self.reportBlock(line, nil);
+	} else {
+		self.reportBlock(string, nil);
+	}
+	[[note object] readInBackgroundAndNotify];
+}
+
+- (void)errorHandleDataReceived:(NSNotification *)note {
+	NSData *data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+	self.lastStandardError = [self.lastStandardError stringByAppendingFormat:@"%@\n", string];
+	if (self.reportIndividualLines) {
+		NSArray *lines = [self linesFromString:string];
+		for (NSString *line in lines) self.reportBlock(nil, line);
+	} else {
+		self.reportBlock(nil, string);
+	}
+	[[note object] readInBackgroundAndNotify];
 }
 
 #pragma mark Helper methods
@@ -78,8 +129,24 @@
 	return result;
 }
 
+- (NSArray *)linesFromString:(NSString *)string {
+	// This is copied from Apple documentation.
+	NSUInteger length = [string length];
+	NSUInteger paraStart = 0, paraEnd = 0, contentsEnd = 0;
+	NSMutableArray *result = [NSMutableArray array];
+	NSRange currentRange;
+	while (paraEnd < length) {
+		[string getParagraphStart:&paraStart end:&paraEnd contentsEnd:&contentsEnd forRange:NSMakeRange(paraEnd, 0)];
+		currentRange = NSMakeRange(paraStart, contentsEnd - paraStart);
+		[result addObject:[string substringWithRange:currentRange]];
+	}
+	return result;
+}
+
 #pragma mark Properties
 
+@synthesize reportBlock;
+@synthesize reportIndividualLines;
 @synthesize lastStandardOutput;
 @synthesize lastStandardError;
 

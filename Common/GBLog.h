@@ -60,14 +60,6 @@ extern NSUInteger kGBLogLevel;
 #define LOG_LEVEL_VERBOSE	(LOG_FLAG_VERBOSE | LOG_LEVEL_INFO)		// 0...0111111
 #define LOG_LEVEL_DEBUG		(LOG_FLAG_DEBUG   | LOG_LEVEL_VERBOSE)	// 0...1111111
 
-#define LOG_FATAL	(kGBLogLevel & LOG_FLAG_FATAL)
-#define LOG_ERROR	(kGBLogLevel & LOG_FLAG_ERROR)
-#define LOG_WARN	(kGBLogLevel & LOG_FLAG_WARN)
-#define LOG_NORMAL	(kGBLogLevel & LOG_FLAG_NORMAL)
-#define LOG_INFO	(kGBLogLevel & LOG_FLAG_INFO)
-#define LOG_VERBOSE	(kGBLogLevel & LOG_FLAG_VERBOSE)
-#define LOG_DEBUG	(kGBLogLevel & LOG_FLAG_DEBUG)
-
 #define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
 #define GBLogFatal(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__)
