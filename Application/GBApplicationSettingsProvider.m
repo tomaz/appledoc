@@ -34,9 +34,6 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		self.createHTML = YES;
-		self.createDocSet = YES;
-		self.installDocSet = YES;
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
 		self.projectVersion = @"1.0";
@@ -57,6 +54,13 @@
 		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.ignoredPaths = [NSMutableSet set];
+		self.createHTML = YES;
+		self.createDocSet = YES;
+		self.installDocSet = YES;
+		self.processUndocumentedObjects = NO;
+		self.processUndocumentedMembers = NO;
+		self.warnOnUndocumentedObject = YES;
+		self.warnOnUndocumentedMember = YES;
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
 	}
@@ -243,15 +247,34 @@
 @synthesize projectCompany;
 @synthesize projectVersion;
 
-@synthesize createHTML;
-@synthesize createDocSet;
-@synthesize installDocSet;
-
 @synthesize outputPath;
 @synthesize docsetInstallPath;
 @synthesize templatesPath;
 @synthesize ignoredPaths;
 @synthesize commentComponents;
 @synthesize stringTemplates;
+
+@synthesize docsetBundleIdentifier;
+@synthesize docsetBundleName;
+@synthesize docsetCertificateIssuer;
+@synthesize docsetCertificateSigner;
+@synthesize docsetDescription;
+@synthesize docsetFallbackURL;
+@synthesize docsetFeedName;
+@synthesize docsetFeedURL;
+@synthesize docsetMinimumXcodeVersion;
+@synthesize docsetPlatformFamily;
+@synthesize docsetPublisherIdentifier;
+@synthesize docsetPublisherName;
+@synthesize docsetCopyrightMessage;
+
+@synthesize processUndocumentedObjects;
+@synthesize processUndocumentedMembers;
+@synthesize createHTML;
+@synthesize createDocSet;
+@synthesize installDocSet;
+
+@synthesize warnOnUndocumentedObject;
+@synthesize warnOnUndocumentedMember;
 
 @end

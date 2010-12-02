@@ -24,6 +24,8 @@
 - (void)processComment:(GBComment *)comment;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
 - (void)processHtmlReferencesForObject:(GBModelBase *)object;
+- (void)validateCommentForObject:(GBModelBase *)object;
+- (BOOL)isCommentValid:(GBComment *)comment;
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -69,6 +71,7 @@
 	// No need to process ivars as they are not used for output.
 	for (GBClassData *class in self.store.classes) {
 		GBLogInfo(@"Processing class %@...", class);
+		[self validateCommentForObject:class];
 		[self processSubclassForClass:class];
 		[self processDataProvider:class withComment:class.comment];
 		[self processHtmlReferencesForObject:class];
@@ -79,6 +82,7 @@
 - (void)processCategories {
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Processing category %@...", category);
+		[self validateCommentForObject:category];
 		[self processDataProvider:category withComment:category.comment];
 		[self processHtmlReferencesForObject:category];
 		GBLogDebug(@"Finished processing category %@.", category);
@@ -88,6 +92,7 @@
 - (void)processProtocols {
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
+		[self validateCommentForObject:protocol];
 		[self processDataProvider:protocol withComment:protocol.comment];
 		[self processHtmlReferencesForObject:protocol];
 		GBLogDebug(@"Finished processing protocol %@.", protocol);
@@ -131,6 +136,7 @@
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
 	for (GBMethodData *method in provider.methods) {
 		GBLogVerbose(@"Processing method %@...", method);
+		[self validateCommentForObject:method];
 		[self processComment:method.comment];
 		[self processParametersFromComment:method.comment matchingMethod:method];
 		[self processHtmlReferencesForObject:method];
@@ -146,7 +152,7 @@
 #pragma mark Comments processing
 
 - (void)processComment:(GBComment *)comment {
-	if (!comment || [comment.stringValue length] == 0) return;
+	if (![self isCommentValid:comment]) return;
 	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
 }
 
@@ -190,6 +196,21 @@
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
 	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
+}
+
+#pragma mark Helper methods
+
+- (void)validateCommentForObject:(GBModelBase *)object {
+	// Checks if the object is commented and warns if not.
+	if (![self isCommentValid:object.comment]) {
+		if ((object.isTopLevelObject && self.settings.warnOnUndocumentedObject) || self.settings.warnOnUndocumentedMember) {
+			GBLogWarn(@"%@ is not documented!", object);
+		}
+	}
+}
+
+- (BOOL)isCommentValid:(GBComment *)comment {
+	return (comment && [comment.stringValue length] > 0);
 }
 
 #pragma mark Properties

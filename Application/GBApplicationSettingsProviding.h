@@ -19,22 +19,6 @@
 @protocol GBApplicationSettingsProviding
 
 ///---------------------------------------------------------------------------------------
-/// @name Behavior handling
-///---------------------------------------------------------------------------------------
-
-/* Indicates whether HTML files should be generated or not. If YES, HTML files are generated in `outputPath` from parsed and processed data. 
- */
-@property (assign) BOOL createHTML;
-
-/** Specifies whether documentation set should be created from the HTML files. If YES, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If not, HTML files are left in the output path.
- */
-@property (assign) BOOL createDocSet;
-
-/** Specifies whether the documentation set should be installed or not. If YES, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If not, all documentation set files are left in output path.
- */
-@property (assign) BOOL installDocSet;
-
-///---------------------------------------------------------------------------------------
 /// @name Project values handling
 ///---------------------------------------------------------------------------------------
 
@@ -108,6 +92,69 @@
  It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
  */
 @property (retain) NSMutableArray *ignoredPaths;
+
+///---------------------------------------------------------------------------------------
+/// @name Behavior handling
+///---------------------------------------------------------------------------------------
+
+/* Indicates whether undocumented classes, categories or protocols should be processed or not.
+ 
+ If `YES` undocumented objects are still used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members. Note that this works regardless of `processUndocumentedMembers` value: if an object is not documented and none of it's members are documented, then the object is not processed for output, even if `processUndocumentedMembes` is `YES`!
+ 
+ @see processUndocumentedMembers
+ @see warnOnUndocumentedObject
+ */
+@property (assign) BOOL processUndocumentedObjects;
+
+/* Indicates whether undocumented methods or properties should be processed or not.
+ 
+ If `YES`, undocumented members are still used for output generation. If `NO`, these members are ignored, as if they are not part of the object. Note that this only affects documented objects: if an object is not documented and none of it's members is documented, the object is not processed for output, even if this value is `YES`!
+ 
+ @see processUndocumentedObjects
+ @see warnOnUndocumentedMember
+ */
+@property (assign) BOOL processUndocumentedMembers;
+
+/* Indicates whether HTML files should be generated or not.
+ 
+ If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
+ 
+ @see createDocSet
+ */
+@property (assign) BOOL createHTML;
+
+/** Specifies whether documentation set should be created from the HTML files.
+ 
+ If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
+ 
+ @see createHtml
+ @see installDocSet
+ */
+@property (assign) BOOL createDocSet;
+
+/** Specifies whether the documentation set should be installed or not.
+ 
+ If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
+ 
+ @see createDocSet
+ */
+@property (assign) BOOL installDocSet;
+
+///---------------------------------------------------------------------------------------
+/// @name Warnings handling
+///---------------------------------------------------------------------------------------
+
+/** Indicates whether appledoc will warn if it encounters an undocumented class, category or protocol.
+ 
+ @see warnOnUndocumentedMember
+ */
+@property (assign) BOOL warnOnUndocumentedObject;
+
+/** Indicates whether appldoc will warn if it encounters an undocumented method or property.
+ 
+ @see warnOnUndocumentedObject
+ */
+@property (assign) BOOL warnOnUndocumentedMember;
 
 ///---------------------------------------------------------------------------------------
 /// @name Application-wide HTML helpers
