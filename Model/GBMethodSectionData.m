@@ -18,6 +18,14 @@
 	[_methods addObject:method];
 }
 
+- (BOOL)unregisterMethod:(GBMethodData *)method {
+	if ([_methods containsObject:method]) {
+		[_methods removeObject:method];
+		return YES;
+	}
+		 return NO;
+}
+
 #pragma mark Overiden methods
 
 - (NSString *)description {

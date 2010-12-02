@@ -91,6 +91,25 @@
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
 }
 
+- (void)unregisterMethod:(GBMethodData *)method {
+	// Remove from all our lists.
+	[_methods removeObject:method];
+	[_classMethods removeObject:method];
+	[_instanceMethods removeObject:method];
+	[_properties removeObject:method];
+	
+	// Ask all sections to remove the method from their lists.
+	[_sections enumerateObjectsUsingBlock:^(GBMethodSectionData *section, NSUInteger idx, BOOL *stop) {
+		if ([section unregisterMethod:method]) {
+			if ([section.methods count] == 0) {
+				[_sections removeObject:section];
+				[_sectionsByNames removeObjectForKey:section.sectionName];
+			}
+			*stop = YES;
+		}
+	}];
+}
+
 - (void)addMethod:(GBMethodData *)method toSortedArray:(NSMutableArray *)array {
 	[array addObject:method];
 	[array sortUsingComparator:^(GBMethodData *obj1, GBMethodData *obj2) {

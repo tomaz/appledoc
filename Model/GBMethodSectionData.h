@@ -29,10 +29,21 @@
  
  @param method The method to register.
  @exception NSException Thrown if the given method is `nil`.
+ @see unregisterMethod:
  @see methods
  @see sectionName
  */
 - (void)registerMethod:(GBMethodData *)method;
+
+/** Unregisters the given method from the section's methods list.
+ 
+ If the method isn't part of the section, nothing happens.
+ 
+ @param method The method to remove.
+ @return Returns `YES` if the method was found in the list (and was consequently deleted), `NO` otherwise.
+ @see registerMethod:
+ */
+- (BOOL)unregisterMethod:(GBMethodData *)method;
 
 /** The name of the section.
  

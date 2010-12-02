@@ -7,6 +7,7 @@
 //
 
 #import "GBTestObjectsRegistry.h"
+#import "GBDataObjects.h"
 #import "GBMethodsProvider.h"
 
 @interface GBMethodsProviderTesting : GHTestCase
@@ -414,6 +415,93 @@
 	assertThat([section sectionName], is(@"Section2"));
 	assertThatInteger([section.methods count], equalToInteger(1));
 	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
+}
+
+#pragma mark Unregistering handling
+
+- (void)testUnregisterMethod_shouldRemoveMethodFromMethods {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.methods count], equalToInteger(1));
+	assertThat([provider.methods objectAtIndex:0], is(method2));
+}
+
+- (void)testUnregisterMethod_shouldRemoveMethodFromClassMethods {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method1", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"method2", nil];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.classMethods count], equalToInteger(1));
+	assertThat([provider.classMethods objectAtIndex:0], is(method2));
+}
+
+- (void)testUnregisterMethod_shouldRemoveMethodFromInstanceMethods {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.instanceMethods count], equalToInteger(1));
+	assertThat([provider.instanceMethods objectAtIndex:0], is(method2));
+}
+
+- (void)testUnregisterMethod_shouldRemoveMethodFromProperties {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method1"];
+	GBMethodData *method2 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method2"];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.properties count], equalToInteger(1));
+	assertThat([provider.properties objectAtIndex:0], is(method2));
+}
+
+- (void)testUnregisterMethod_shouldRemoveMethodFromSection {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method1", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"method2", nil];
+	[provider registerSectionWithName:@"Section"];
+	[provider registerMethod:method1];
+	[provider registerMethod:method2];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.sections count], equalToInteger(1));
+	GBMethodSectionData *section = [provider.sections objectAtIndex:0];
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([section.methods objectAtIndex:0], is(method2));
+}
+
+- (void)testUnregisterMethod_shouldRemoveSectionIfItContainsNoMoreMethod {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method1", nil];
+	[provider registerSectionWithName:@"Section1"];
+	[provider registerMethod:method1];
+	// execute
+	[provider unregisterMethod:method1];
+	// verify
+	assertThatInteger([provider.sections count], equalToInteger(0));
 }
 
 #pragma mark Helper methods testing

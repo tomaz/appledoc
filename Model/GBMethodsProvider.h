@@ -97,9 +97,19 @@
  @exception NSException Thrown if a method with the same selector is already registered.
  @see registerSectionWithName:
  @see registerSectionIfNameIsValid:
+ @see unregisterMethod:
  @see methods
  */
 - (void)registerMethod:(GBMethodData *)method;
+
+/** Unregisters the given method from the providers data.
+ 
+ This effectively removes the method from all methods lists as well as from section the method belongs to. If the section becomes empty, the section is removed also. If the method isn't found in the lists, nothing happens.
+ 
+ @param method The method to remove.
+ @see registerMethod:
+ */
+- (void)unregisterMethod:(GBMethodData *)method;
 
 /** Returns the method that matches the given selector.
  
