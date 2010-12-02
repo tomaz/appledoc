@@ -44,6 +44,9 @@
 /** Human readable name of the project company. */
 @property (copy) NSString *projectCompany;
 
+/** Human readable version of the project. */
+@property (copy) NSString *projectVersion;
+
 ///---------------------------------------------------------------------------------------
 /// @name Documentation set handling
 ///---------------------------------------------------------------------------------------

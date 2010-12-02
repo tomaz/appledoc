@@ -39,6 +39,7 @@
 		self.installDocSet = NO;
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
+		self.projectVersion = @"1.0";
 		self.docsetBundleIdentifier = @"com.company.project";
 		self.docsetBundleName = @"$PROJECT Documentation";
 		self.docsetCertificateIssuer = @"";
@@ -224,6 +225,7 @@
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
 	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
 	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
+	string = [string stringByReplacingOccurrencesOfString:@"$VERSION" withString:self.projectVersion];
 	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self yearStringFromDate:[NSDate date]]];
 	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
 	return string;
@@ -237,11 +239,14 @@
 
 #pragma mark Properties
 
+@synthesize projectName;
+@synthesize projectCompany;
+@synthesize projectVersion;
+
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;
-@synthesize projectName;
-@synthesize projectCompany;
+
 @synthesize outputPath;
 @synthesize docsetInstallPath;
 @synthesize templatesPath;

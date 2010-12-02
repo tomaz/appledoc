@@ -2,8 +2,8 @@
 	"CFBundleDevelopmentRegion" = en;
 	CFBundleIdentifier = "{{bundleIdentifier}}";
 	CFBundleName = "{{bundleName}}";
-	"CFBundleShortVersionString" = "500.44";
-	CFBundleVersion = "500.44";
+	"CFBundleShortVersionString" = "{{bundleVersion}}";
+	CFBundleVersion = "{{bundleVersion}}";
 	"DocSetCertificateIssuer" = "{{certificateIssuer}}";
 	"DocSetCertificateSigner" = "{{certificateSigner}}";
 	DocSetDescription = "{{description}}";

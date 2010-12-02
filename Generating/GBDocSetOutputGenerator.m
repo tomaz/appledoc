@@ -98,6 +98,7 @@
 	NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithCapacity:20];
 	[vars setObject:self.settings.docsetBundleIdentifier forKey:@"bundleIdentifier"];
 	[vars setObject:self.settings.docsetBundleName forKey:@"bundleName"];
+	[vars setObject:self.settings.projectVersion forKey:@"bundleVersion"];
 	[vars setObject:self.settings.docsetCertificateIssuer forKey:@"certificateIssuer"];
 	[vars setObject:self.settings.docsetCertificateSigner forKey:@"certificateSigner"];
 	[vars setObject:self.settings.docsetDescription forKey:@"description"];
