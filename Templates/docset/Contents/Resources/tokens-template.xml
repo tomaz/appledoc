@@ -40,7 +40,7 @@ Section RelatedTokens
 EndSection
 
 Section Abstract
-	<Abstract>{{#abstract}}{{>GBCommentParagraph}}{{/abstract}}</Abstract>
+	<Abstract type="html">{{#abstract}}{{>GBCommentParagraph}}{{/abstract}}</Abstract>
 EndSection
 
 Section GBCommentParagraph
