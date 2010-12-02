@@ -36,7 +36,7 @@
 	if (self) {
 		self.createHTML = YES;
 		self.createDocSet = YES;
-		self.installDocSet = NO;
+		self.installDocSet = YES;
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
 		self.projectVersion = @"1.0";

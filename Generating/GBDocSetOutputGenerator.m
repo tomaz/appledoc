@@ -275,6 +275,7 @@
 		
 		// Prepare the variables for the template.
 		NSMutableDictionary *vars = [NSMutableDictionary dictionary];
+		[vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
 		[vars setObject:objectData forKey:@"object"];
 		[vars setObject:membersData forKey:@"members"];
 		
