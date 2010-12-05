@@ -93,6 +93,24 @@
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
+- (void)unregisterTopLevelObject:(id)object {
+	if ([_classes containsObject:object]) {
+		[_classes removeObject:object];
+		[_classesByName removeObjectForKey:[object nameOfClass]];
+		return;
+	}
+	if ([_categories containsObject:object]) {
+		[_categories removeObject:object];
+		[_categoriesByName removeObjectForKey:[object idOfCategory]];
+		return;
+	}
+	if ([_protocols containsObject:object]) {
+		[_protocols removeObject:object];
+		[_protocolsByName removeObjectForKey:[object nameOfProtocol]];
+		return;
+	}
+}
+
 - (GBClassData *)classWithName:(NSString *)name {
 	return [_classesByName objectForKey:name];
 }

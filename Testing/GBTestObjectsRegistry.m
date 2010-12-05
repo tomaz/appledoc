@@ -10,6 +10,8 @@
 #import "GBDataObjects.h"
 #import "GBTestObjectsRegistry.h"
 
+#define GBMOCKVALUE(variable) [NSValue value:&variable withObjCType:@encode(typeof(variable))]
+
 @implementation GBTestObjectsRegistry
 
 #pragma mark Common objects creation methods
@@ -19,6 +21,11 @@
 	[[[result stub] andReturn:[GBCommentComponentsProvider provider]] commentComponents];
 	[[[result stub] andReturn:[GBApplicationStringsProvider provider]] stringTemplates];
 	return result;
+}
+
++ (void)settingsProvider:(OCMockObject *)provider keepObjects:(BOOL)objects keepMembers:(BOOL)members {
+	[[[provider stub] andReturnValue:[NSNumber numberWithBool:objects]] keepUndocumentedObjects];
+	[[[provider stub] andReturnValue:[NSNumber numberWithBool:members]] keepUndocumentedMembers];
 }
 
 + (void)registerComment:(id)comment forObject:(GBModelBase *)object {

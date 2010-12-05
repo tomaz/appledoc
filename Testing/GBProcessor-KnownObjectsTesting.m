@@ -12,6 +12,9 @@
 #import "GBProcessor.h"
 
 @interface GBProcessorKnownObjectsTesting : GHTestCase
+
+- (OCMockObject *)mockSettingsProvider;
+
 @end
 
 #pragma mark -
@@ -22,7 +25,7 @@
 
 - (void)testProcessObjectsFromStore_shouldReplaceKnownClassAdoptedProtocolsWithProtocolsFromStore {
 	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProvider]];
 	GBProtocolData *realProtocol = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol1 = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol2 = [GBProtocolData protocolDataWithName:@"P2"];
@@ -43,7 +46,7 @@
 
 - (void)testProcessObjectsFromStore_shouldReplaceKnownCategoryAdoptedProtocolsWithProtocolsFromStore {
 	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProvider]];
 	GBProtocolData *realProtocol = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol1 = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol2 = [GBProtocolData protocolDataWithName:@"P2"];
@@ -64,7 +67,7 @@
 
 - (void)testProcessObjectsFromStore_shouldReplaceKnownProtocolAdoptedProtocolsWithProtocolsFromStore {
 	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProvider]];
 	GBProtocolData *realProtocol = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol1 = [GBProtocolData protocolDataWithName:@"P1"];
 	GBProtocolData *adoptedProtocol2 = [GBProtocolData protocolDataWithName:@"P2"];
@@ -87,7 +90,7 @@
 
 - (void)testProcessObjectsFromStore_shouldSetupSubclassesWithKnownClassesFromStore {
 	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProvider]];
 	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
 	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
 	GBClassData *class3 = [GBClassData classDataWithName:@"Class3"];
@@ -113,7 +116,7 @@
 
 - (void)testProcessObjectsFromStore_shouldAssignHtmlReferencesToClasses {
 	// setup
-	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	OCMockObject *settings = [self mockSettingsProvider];
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
 	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
 	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
@@ -135,7 +138,7 @@
 
 - (void)testProcessObjectsFromStore_shouldAssignHtmlReferencesToCategories {
 	// setup
-	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	OCMockObject *settings = [self mockSettingsProvider];
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
 	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"Category1" className:@"Class"];
 	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"Category2" className:@"Class"];
@@ -157,7 +160,7 @@
 
 - (void)testProcessObjectsFromStore_shouldAssignHtmlReferencesToExtensions {
 	// setup
-	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	OCMockObject *settings = [self mockSettingsProvider];
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
 	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:nil className:@"Class1"];
 	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:nil className:@"Class2"];
@@ -179,7 +182,7 @@
 
 - (void)testProcessObjectsFromStore_shouldAssignHtmlReferencesToProtocols {
 	// setup
-	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	OCMockObject *settings = [self mockSettingsProvider];
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
 	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
 	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
@@ -201,7 +204,7 @@
 
 - (void)testProcessObjectsFromStore_shouldAssignHtmlReferencesToMethods {
 	// setup
-	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	OCMockObject *settings = [self mockSettingsProvider];
 	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
 	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method1", nil];
 	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil];
@@ -228,5 +231,14 @@
 	assertThat(method2.htmlReferenceName, is(@"method2"));
 	assertThat(property.htmlReferenceName, is(@"property"));
 }
+
+#pragma mark Creation methods
+
+- (OCMockObject *)mockSettingsProvider {
+	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
+	[GBTestObjectsRegistry settingsProvider:result keepObjects:YES keepMembers:YES];
+	return result;
+}
+
 
 @end

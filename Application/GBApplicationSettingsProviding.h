@@ -101,19 +101,19 @@
  
  If `YES` undocumented objects are still used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members. Note that this works regardless of `processUndocumentedMembers` value: if an object is not documented and none of it's members are documented, then the object is not processed for output, even if `processUndocumentedMembes` is `YES`!
  
- @see processUndocumentedMembers
+ @see keepUndocumentedMembers
  @see warnOnUndocumentedObject
  */
-@property (assign) BOOL processUndocumentedObjects;
+@property (assign) BOOL keepUndocumentedObjects;
 
 /* Indicates whether undocumented methods or properties should be processed or not.
  
  If `YES`, undocumented members are still used for output generation. If `NO`, these members are ignored, as if they are not part of the object. Note that this only affects documented objects: if an object is not documented and none of it's members is documented, the object is not processed for output, even if this value is `YES`!
  
- @see processUndocumentedObjects
+ @see keepUndocumentedObjects
  @see warnOnUndocumentedMember
  */
-@property (assign) BOOL processUndocumentedMembers;
+@property (assign) BOOL keepUndocumentedMembers;
 
 /* Indicates whether HTML files should be generated or not.
  

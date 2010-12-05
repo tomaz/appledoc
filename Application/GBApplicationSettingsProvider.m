@@ -57,8 +57,8 @@
 		self.createHTML = YES;
 		self.createDocSet = YES;
 		self.installDocSet = YES;
-		self.processUndocumentedObjects = NO;
-		self.processUndocumentedMembers = NO;
+		self.keepUndocumentedObjects = NO;
+		self.keepUndocumentedMembers = NO;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
 		self.commentComponents = [GBCommentComponentsProvider provider];
@@ -268,8 +268,8 @@
 @synthesize docsetPublisherName;
 @synthesize docsetCopyrightMessage;
 
-@synthesize processUndocumentedObjects;
-@synthesize processUndocumentedMembers;
+@synthesize keepUndocumentedObjects;
+@synthesize keepUndocumentedMembers;
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;

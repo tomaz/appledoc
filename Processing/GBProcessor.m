@@ -24,6 +24,8 @@
 - (void)processComment:(GBComment *)comment;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
 - (void)processHtmlReferencesForObject:(GBModelBase *)object;
+- (void)removeUndocumentedObjectsFromStore;
+- (void)removeUndocumentedObjectsInSet:(NSSet *)objects;
 - (void)validateCommentForObject:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
 @property (retain) GBCommentsProcessor *commentsProcessor;
@@ -62,6 +64,7 @@
 	GBLogVerbose(@"Processing parsed objects...");
 	self.currentContext = nil;
 	self.store = store;
+	[self removeUndocumentedObjectsFromStore];
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
@@ -199,6 +202,44 @@
 }
 
 #pragma mark Helper methods
+
+- (void)removeUndocumentedObjectsFromStore {
+	[self removeUndocumentedObjectsInSet:self.store.classes];
+	[self removeUndocumentedObjectsInSet:self.store.categories];
+	[self removeUndocumentedObjectsInSet:self.store.protocols];
+}
+
+- (void)removeUndocumentedObjectsInSet:(NSSet *)objects {
+	// Removes all undocumented objects and theri methods and properties as required by current settings. If settings don't allow removal, no object is removed. Note that we need to take care when deleting objects during enumerating: in both loops - top-level objects and members - we do a copy of returned array. Although for top-level objects this wouldn't be needed as the methods themselves return a copy, it's better to do additional shallow copy in case we change the functionality in the future to return cached values for example; this would break this code and present hard to find bug. Also note that we're assuming each object in the set is either a class, category or protocol...
+	if (self.settings.keepUndocumentedObjects && self.settings.keepUndocumentedMembers) return;
+	BOOL deleteObjects = !self.settings.keepUndocumentedObjects;
+	BOOL deleteMethods = !self.settings.keepUndocumentedMembers;
+	NSArray *array = [objects allObjects];
+	for (GBModelBase *object in array) {
+		// Get the methods from the provider.
+		GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
+		NSArray *methods = [provider.methods copy];
+			
+		// Count or delete all undocumented methods.
+		NSUInteger uncommentedMethodsCount = 0;
+		for (GBMethodData *method in methods) {
+			if ([self isCommentValid:method.comment]) continue;
+			if (deleteMethods) {
+				GBLogVerbose(@"Removing undocumented method %@...", method);
+				[provider unregisterMethod:method];
+			} else {
+				uncommentedMethodsCount++;
+			}
+		}
+	
+		// Remove the object if it isn't commented or has only uncommented methods.
+		NSUInteger commentedMethodsCount = [methods count] - uncommentedMethodsCount;
+		if (deleteObjects && ![self isCommentValid:object.comment] && commentedMethodsCount == 0) {
+			GBLogVerbose(@"Removing undocumented object %@...", object);
+			[self.store unregisterTopLevelObject:object];
+		}
+	}
+}
 
 - (void)validateCommentForObject:(GBModelBase *)object {
 	// Checks if the object is commented and warns if not.

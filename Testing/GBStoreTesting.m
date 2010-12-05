@@ -236,4 +236,84 @@
 	assertThat([store protocolWithName:nil], is(nil));
 }
 
+#pragma mark Unregistration testing
+
+- (void)testUnregisterTopLevelObject_shouldRemoveClass {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	[store registerCategory:[GBCategoryData categoryDataWithName:@"Category" className:@"Class"]];
+	[store registerProtocol:[GBProtocolData protocolDataWithName:@"Protocol"]];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	[store registerClass:class];
+	// execute
+	[store unregisterTopLevelObject:class];
+	// verify
+	assertThatInteger([store.classes count], equalToInteger(0));
+	assertThatInteger([store.categories count], equalToInteger(1));
+	assertThatInteger([store.protocols count], equalToInteger(1));
+}
+
+- (void)testUnregisterTopLevelObject_shouldRemoveCategory {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	[store registerClass:[GBClassData classDataWithName:@"Class"]];
+	[store registerProtocol:[GBProtocolData protocolDataWithName:@"Protocol"]];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[store registerCategory:category];
+	// execute
+	[store unregisterTopLevelObject:category];
+	// verify
+	assertThatInteger([store.categories count], equalToInteger(0));
+	assertThatInteger([store.classes count], equalToInteger(1));
+	assertThatInteger([store.protocols count], equalToInteger(1));
+}
+
+- (void)testUnregisterTopLevelObject_shouldRemoveProtocol {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	[store registerClass:[GBClassData classDataWithName:@"Class"]];
+	[store registerCategory:[GBCategoryData categoryDataWithName:@"Category" className:@"Class"]];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	[store registerProtocol:protocol];
+	// execute
+	[store unregisterTopLevelObject:protocol];
+	// verify
+	assertThatInteger([store.protocols count], equalToInteger(0));
+	assertThatInteger([store.categories count], equalToInteger(1));
+	assertThatInteger([store.classes count], equalToInteger(1));
+}
+
+- (void)testUnregisterTopLevelObject_shouldRemoveClassFromDictionary {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	[store registerClass:class];
+	// execute
+	[store unregisterTopLevelObject:class];
+	// verify
+	assertThat([store classWithName:class.nameOfClass], is(nil));
+}
+
+- (void)testUnregisterTopLevelObject_shouldRemoveCategoryFromDictionary {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[store registerCategory:category];
+	// execute
+	[store unregisterTopLevelObject:category];
+	// verify
+	assertThat([store categoryWithName:category.idOfCategory], is(nil));
+}
+
+- (void)testUnregisterTopLevelObject_shouldRemoveProtocolFromDictionary {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	[store registerProtocol:protocol];
+	// execute
+	[store unregisterTopLevelObject:protocol];
+	// verify
+	assertThat([store protocolWithName:protocol.nameOfProtocol], is(nil));
+}
+
 @end

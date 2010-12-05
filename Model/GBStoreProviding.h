@@ -32,6 +32,7 @@
  @exception NSException Thrown if the given class is already registered.
  @see registerCategory:
  @see registerProtocol:
+ @see unregisterTopLevelObject:
  @see classWithName:
  @see classes
  */
@@ -47,6 +48,7 @@
  @exception NSException Thrown if the given category is already registered.
  @see registerClass:
  @see registerProtocol:
+ @see unregisterTopLevelObject:
  @see categoryWithName:
  @see categories
  */
@@ -62,10 +64,22 @@
  @exception NSException Thrown if the given protocol is already registered.
  @see registerClass:
  @see registerCategory:
+ @see unregisterTopLevelObject:
  @see protocolWithName:
  @see protocols
  */
 - (void)registerProtocol:(GBProtocolData *)protocol;
+
+/** Unregisters the given class, category or protocol.
+ 
+ If the object is not part of the store, nothing happens.
+ 
+ @param object The object to remove.
+ @see registerClass:
+ @see registerCategory:
+ @see registerProtocol:
+ */
+- (void)unregisterTopLevelObject:(id)object;
 
 ///---------------------------------------------------------------------------------------
 /// @name Data handling
