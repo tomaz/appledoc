@@ -17,15 +17,19 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+
 - (void)processSubclassForClass:(GBClassData *)class;
 - (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment;
 - (void)processAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
+
 - (void)processComment:(GBComment *)comment;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
 - (void)processHtmlReferencesForObject:(GBModelBase *)object;
+
 - (void)removeUndocumentedObjectsFromStore;
 - (void)removeUndocumentedObjectsInSet:(NSSet *)objects;
+
 - (void)validateCommentForObject:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
 @property (retain) GBCommentsProcessor *commentsProcessor;

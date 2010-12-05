@@ -13,10 +13,6 @@
 @interface GBProcessorCommentsTesting : GHTestCase
 
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph;
-- (OCMockObject *)settingsProviderKeepObjects:(BOOL)objects keepMembers:(BOOL)members;
-- (GBClassData *)classWithComment:(BOOL)comment;
-- (NSArray *)registerMethodsOfCount:(NSUInteger)count withComment:(BOOL)comment toObject:(id<GBObjectDataProviding>)provider;
-- (NSString *)randomName;
 
 @end
 
@@ -134,75 +130,6 @@
 	assertThat([[[comment.parameters objectAtIndex:2] argumentDescription] stringValue], is(@"Description3"));
 }
 
-#pragma mark Undocumented objects handling
-
-- (void)testProcessObjectsFromStore_shouldKeepUncommentedObjectIfKeepObjectsIsYes {
-	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:YES keepMembers:NO]];
-	GBClassData *class = [self classWithComment:NO];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	// execute
-	[processor processObjectsFromStore:store];
-	// verify
-	assertThatInteger([store.classes count], equalToInteger(1));
-	assertThatBool([store.classes containsObject:class], equalToBool(YES));
-}
-
-- (void)testProcessObjectsFromStore_shouldKeepUncommentedObjectIfItHasCommentedMembers {
-	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:NO keepMembers:NO]];
-	GBClassData *class = [self classWithComment:NO];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	[self registerMethodsOfCount:1 withComment:YES toObject:class];
-	[self registerMethodsOfCount:1 withComment:NO toObject:class];
-	// execute
-	[processor processObjectsFromStore:store];
-	// verify
-	assertThatInteger([store.classes count], equalToInteger(1));
-	assertThatBool([store.classes containsObject:class], equalToBool(YES));
-}
-
-- (void)testProcessObjectsFromStore_shouldDeleteUncommentedObjectIfKeepObjectsIsNo {
-	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:NO keepMembers:NO]];
-	GBClassData *class = [self classWithComment:NO];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	// execute
-	[processor processObjectsFromStore:store];
-	// verify
-	assertThatInteger([store.classes count], equalToInteger(0));
-}
-
-- (void)testProcessObjectsFromStore_shouldKeepUncommentedMethodsIfKeepMembersIsYes {
-	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:YES keepMembers:YES]];
-	GBClassData *class = [self classWithComment:YES];
-	NSArray *uncommented = [self registerMethodsOfCount:1 withComment:NO toObject:class];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	// execute
-	[processor processObjectsFromStore:store];
-	// verify
-	NSArray *methods = [class.methods methods];
- 	assertThatInteger([methods count], equalToInteger(1));
-	assertThatBool([methods containsObject:[uncommented objectAtIndex:0]], equalToBool(YES));
-}
-
-- (void)testProcessObjectsFromStore_shouldDeleteUncommentedMethodsIfKeepMembersIsNo {
-	// setup
-	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:YES keepMembers:NO]];
-	GBClassData *class = [self classWithComment:YES];
-	NSArray *commented = [self registerMethodsOfCount:1 withComment:YES toObject:class];
-	NSArray *uncommented = [self registerMethodsOfCount:1 withComment:NO toObject:class];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	// execute
-	[processor processObjectsFromStore:store];
-	// verify
-	NSArray *methods = [class.methods methods];
- 	assertThatInteger([methods count], equalToInteger(1));
-	assertThatBool([methods containsObject:[commented objectAtIndex:0]], equalToBool(YES));
-	assertThatBool([methods containsObject:[uncommented objectAtIndex:0]], equalToBool(NO));
-}
-
 #pragma mark Creation methods
 
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph {
@@ -210,34 +137,6 @@
 	[[[result stub] andReturn:@"Paragraph"] stringValue];
 	[[result expect] registerParagraph:OCMOCK_ANY];
 	return result;
-}
-
-- (OCMockObject *)settingsProviderKeepObjects:(BOOL)objects keepMembers:(BOOL)members {
-	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
-	[GBTestObjectsRegistry settingsProvider:result keepObjects:objects keepMembers:members];
-	return result;
-}
-
-- (GBClassData *)classWithComment:(BOOL)comment {
-	GBClassData *result = [GBClassData classDataWithName:[self randomName]];
-	if (comment) result.comment = [GBComment commentWithStringValue:@"comment"];
-	return result;
-}
-
-- (NSArray *)registerMethodsOfCount:(NSUInteger)count withComment:(BOOL)comment toObject:(id<GBObjectDataProviding>)provider {
-	NSMutableArray *result = [NSMutableArray arrayWithCapacity:count];
-	for (NSUInteger i=0; i<count; i++) {
-		GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:[self randomName], nil];
-		if (comment) method.comment = [GBComment commentWithStringValue:@"comment"];
-		if (provider) [provider.methods registerMethod:method];
-		[result addObject:method];
-	}
-	return result;
-}
-
-- (NSString *)randomName {
-	NSUInteger value = random();
-	return [NSString stringWithFormat:@"N%ld", value];
 }
 
 @end
