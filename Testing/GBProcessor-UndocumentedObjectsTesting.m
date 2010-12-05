@@ -14,6 +14,8 @@
 
 - (OCMockObject *)settingsProviderKeepObjects:(BOOL)objects keepMembers:(BOOL)members;
 - (GBClassData *)classWithComment:(BOOL)comment;
+- (GBCategoryData *)categoryWithComment:(BOOL)comment;
+- (GBProtocolData *)protocolWithComment:(BOOL)comment;
 - (NSArray *)registerMethodsOfCount:(NSUInteger)count withComment:(BOOL)comment toObject:(id<GBObjectDataProviding>)provider;
 - (NSString *)randomName;
 
@@ -62,6 +64,21 @@
 	assertThatInteger([store.classes count], equalToInteger(0));
 }
 
+- (void)testProcessObjectsFromStore_shouldDeleteUncommentedClassesCategoriesAndProtocols {
+	// setup - we just check that all types of top-level objects are handled; we only test other specifics on classes to avoid duplication.
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:NO keepMembers:NO]];
+	GBStore *store = [[GBStore alloc] init];
+	[store registerClass:[self classWithComment:NO]];
+	[store registerCategory:[self categoryWithComment:NO]];
+	[store registerProtocol:[self protocolWithComment:NO]];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatInteger([store.classes count], equalToInteger(0));
+	assertThatInteger([store.categories count], equalToInteger(0));
+	assertThatInteger([store.protocols count], equalToInteger(0));
+}
+
 #pragma mark Undocumented methods handling
 
 - (void)testProcessObjectsFromStore_shouldKeepUncommentedMethodsIfKeepMembersIsYes {
@@ -104,6 +121,18 @@
 
 - (GBClassData *)classWithComment:(BOOL)comment {
 	GBClassData *result = [GBClassData classDataWithName:[self randomName]];
+	if (comment) result.comment = [GBComment commentWithStringValue:@"comment"];
+	return result;
+}
+
+- (GBCategoryData *)categoryWithComment:(BOOL)comment {
+	GBCategoryData *result = [GBCategoryData categoryDataWithName:[self randomName] className:[self randomName]];
+	if (comment) result.comment = [GBComment commentWithStringValue:@"comment"];
+	return result;
+}
+
+- (GBProtocolData *)protocolWithComment:(BOOL)comment {
+	GBProtocolData *result = [GBProtocolData protocolDataWithName:[self randomName]];
 	if (comment) result.comment = [GBComment commentWithStringValue:@"comment"];
 	return result;
 }
