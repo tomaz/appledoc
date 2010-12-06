@@ -276,6 +276,12 @@
 			continue;
 		}
 		
+		// Merge all methods from category to the class. We can leave methods within the category as we'll delete it later on anyway.
+		for (GBMethodData *method in category.methods.methods) {
+			GBLogDebug(@"Merging %@ to %@...", method, class);
+			[class.methods registerMethod:method];
+		}
+		
 		// Finally remove merged category from the store.
 		[self.store unregisterTopLevelObject:category];
 	}
