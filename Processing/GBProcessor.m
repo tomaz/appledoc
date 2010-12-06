@@ -29,9 +29,11 @@
 
 - (void)removeUndocumentedObjectsFromStore;
 - (void)removeUndocumentedObjectsInSet:(NSSet *)objects;
-
 - (void)validateCommentForObject:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
+
+- (void)mergeKnownCategoriesFromStore;
+
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -69,6 +71,7 @@
 	self.currentContext = nil;
 	self.store = store;
 	[self removeUndocumentedObjectsFromStore];
+	[self mergeKnownCategoriesFromStore];
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
@@ -205,9 +208,10 @@
 	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
 }
 
-#pragma mark Helper methods
+#pragma mark Undocumented objects handling
 
 - (void)removeUndocumentedObjectsFromStore {
+	GBLogInfo(@"Investigating undocumented objects and members...");
 	[self removeUndocumentedObjectsInSet:self.store.classes];
 	[self removeUndocumentedObjectsInSet:self.store.categories];
 	[self removeUndocumentedObjectsInSet:self.store.protocols];
@@ -256,6 +260,56 @@
 
 - (BOOL)isCommentValid:(GBComment *)comment {
 	return (comment && [comment.stringValue length] > 0);
+}
+
+#pragma mark Categories merging handling
+
+- (void)mergeKnownCategoriesFromStore {
+	GBLogInfo(@"Investigating known categories merging...");
+	if (!self.settings.mergeCategoriesToClasses) return;
+	NSSet *categories = [self.store.categories copy];
+	for (GBCategoryData *category in categories) {
+		// Get the class and continue with next category if unknown class is extended.
+		GBClassData *class = [self.store classWithName:category.nameOfClass];
+		if (!class) {
+			GBLogDebug(@"Category %@ extends unknown class %@, skipping merging.", category, category.nameOfClass);
+			continue;
+		}
+		
+		// Merge all methods from category to the class. We can leave methods within the category as we'll delete it later on anyway.
+		if ([category.methods.methods count] > 0) {
+			// If we should merge all section into a single section per category, create it now. Note that name is different whether this is category or extension.
+			if (!self.settings.keepMergedCategoriesSections) {
+				GBLogDebug(@"Creating single section for methods merged from %@...", category);
+				NSString *key = category.isExtension ? @"mergedExtensionSectionTitle" :  @"mergedCategorySectionTitle";
+				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:key];
+				NSString *name = category.isExtension ? template : [NSString stringWithFormat:template, category.nameOfCategory];
+				[class.methods registerSectionWithName:name];
+			}
+			
+			// Merge all sections and all the methods, optionally create a separate section for each section from category.
+			for (GBMethodSectionData *section in category.methods.sections) {
+				GBLogDebug(@"Merging section %@ from %@...", section, category);
+				if (self.settings.keepMergedCategoriesSections) {
+					if (self.settings.prefixMergedCategoriesSectionsWithCategoryName && !category.isExtension) {
+						NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedPrefixedCategorySectionTitle"];
+						NSString *name = [NSString stringWithFormat:template, category.nameOfCategory, section.sectionName];
+						[class.methods registerSectionWithName:name];
+					} else {
+						[class.methods registerSectionWithName:section.sectionName];
+					}
+				}
+				
+				for (GBMethodData *method in section.methods) {
+					GBLogDebug(@"Merging method %@ from %@...", method, category);
+					[class.methods registerMethod:method];
+				}
+			}
+		}
+		
+		// Finally remove merged category from the store.
+		[self.store unregisterTopLevelObject:category];
+	}
 }
 
 #pragma mark Properties

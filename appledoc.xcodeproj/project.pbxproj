@@ -144,6 +144,7 @@
 		739AD6301255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */; };
 		739AD6521255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */; };
 		739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */; };
+		739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */; };
 		73A32FB01236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */; };
 		73A330001236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
 		73A330011236532500040070 /* GBParagraphLinkItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A32FFF1236532500040070 /* GBParagraphLinkItem.m */; };
@@ -325,6 +326,7 @@
 		739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBHTMLTemplateVariablesProvider.m; sourceTree = "<group>"; };
 		739AD6511255E32A00B642C3 /* GBTemplateVariablesProvider-CommonTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-CommonTesting.m"; sourceTree = "<group>"; };
 		739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-UndocumentedObjectsTesting.m"; sourceTree = "<group>"; };
+		739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-CategoriesMergingTesting.m"; sourceTree = "<group>"; };
 		73A32FAF1236491400040070 /* GBCommentsProcessor-LinkItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-LinkItemsTesting.m"; sourceTree = "<group>"; };
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
 		73A32FFE1236532500040070 /* GBParagraphLinkItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphLinkItem.h; sourceTree = "<group>"; };
@@ -524,7 +526,7 @@
 		08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73FC720411FD7FB200AAD0B9 /* CopyToSharedFrameworks! */,
+				73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */,
 				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
 				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
@@ -889,6 +891,7 @@
 				73EC00BF1227EB0E0076B7B3 /* GBProcessor-KnownObjectsTesting.m */,
 				73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */,
 				739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */,
+				739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */,
 				73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */,
 				73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */,
 				73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */,
@@ -1000,14 +1003,14 @@
 			path = ParseKit;
 			sourceTree = "<group>";
 		};
-		73FC720411FD7FB200AAD0B9 /* CopyToSharedFrameworks! */ = {
+		73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */ = {
 			isa = PBXGroup;
 			children = (
 				733EA0F1122BDC5B0060CBDE /* GHUnit.framework */,
 				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
-			name = "CopyToSharedFrameworks!";
+			name = "Copy to ~/Library/Frameworks!!!";
 			sourceTree = "<group>";
 		};
 		73FC730911FDAB5800AAD0B9 /* Helpers */ = {
@@ -1214,6 +1217,7 @@
 				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
 				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */,
+				739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
