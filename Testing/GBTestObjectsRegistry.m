@@ -172,6 +172,24 @@
 	return [self storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
 }
 
++ (GBStore *)storeWithObjects:(id)first, ... {
+	GBStore *result = [self store];
+	va_list args;
+	va_start(args, first);
+	for (id object=first; object!=nil; object=va_arg(args, id)) {
+		if ([object isKindOfClass:[GBClassData class]])
+			[result registerClass:object];
+		else if ([object isKindOfClass:[GBCategoryData class]])
+			[result registerCategory:object];
+		else if ([object isKindOfClass:[GBProtocolData class]])
+			[result registerProtocol:object];
+		else
+			[NSException raise:@"Object %@ (%@) is not supported, GBClassData, GBCategoryData or GBProtocolData is only allowed!", object, [object className]];
+	}
+	va_end(args);
+	return result;
+}
+
 + (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object {
 	GBStore *result = [self store];
 	[result performSelector:selector withObject:object];

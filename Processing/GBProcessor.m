@@ -29,9 +29,11 @@
 
 - (void)removeUndocumentedObjectsFromStore;
 - (void)removeUndocumentedObjectsInSet:(NSSet *)objects;
-
 - (void)validateCommentForObject:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
+
+- (void)mergeKnownCategoriesFromStore;
+
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
 @property (retain) id<GBApplicationSettingsProviding> settings;
@@ -69,6 +71,7 @@
 	self.currentContext = nil;
 	self.store = store;
 	[self removeUndocumentedObjectsFromStore];
+	[self mergeKnownCategoriesFromStore];
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
@@ -205,9 +208,10 @@
 	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
 }
 
-#pragma mark Helper methods
+#pragma mark Undocumented objects handling
 
 - (void)removeUndocumentedObjectsFromStore {
+	GBLogInfo(@"Investigating undocumented objects and members...");
 	[self removeUndocumentedObjectsInSet:self.store.classes];
 	[self removeUndocumentedObjectsInSet:self.store.categories];
 	[self removeUndocumentedObjectsInSet:self.store.protocols];
@@ -256,6 +260,25 @@
 
 - (BOOL)isCommentValid:(GBComment *)comment {
 	return (comment && [comment.stringValue length] > 0);
+}
+
+#pragma mark Categories merging handling
+
+- (void)mergeKnownCategoriesFromStore {
+	GBLogInfo(@"Investigating known categories merging...");
+	if (!self.settings.mergeCategoriesToClasses) return;
+	NSSet *categories = [self.store.categories copy];
+	for (GBCategoryData *category in categories) {
+		// Get the class and continue with next category if unknown class is extended.
+		GBClassData *class = [self.store classWithName:category.nameOfClass];
+		if (!class) {
+			GBLogDebug(@"Category %@ extends unknown class %@, skipping merging.", category, category.nameOfClass);
+			continue;
+		}
+		
+		// Finally remove merged category from the store.
+		[self.store unregisterTopLevelObject:category];
+	}
 }
 
 #pragma mark Properties

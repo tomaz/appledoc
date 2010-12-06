@@ -115,6 +115,45 @@
  */
 @property (assign) BOOL keepUndocumentedMembers;
 
+/** Indicates whether categories should be merges to classes they extend or not.
+ 
+ If `YES`, all methods from categories and extensions are merged to their classes. If `NO`, categories are left as independent objects in generated output. This is the main categories merging on/off switch, it merely enables or disables merging, other category merging settings define how exactly the methods from categories and extensions are merged into their classes.
+ 
+ Default value is `YES` and should be left so as this seems to be the way Apple has it's documentation generated.
+ 
+ @warning *Important:* Only categories for known project classes are merged. Categories to other framework classes, such as Foundation, AppKit or UIKit are not merged. In other words: only if the class source code is available on any of the given input paths, and is properly documented, it gets it's categories and extension methods merged!
+ 
+ @see keepMergedCategoriesSections
+ @see prefixMergedCategoriesSectionsWithCategoryName
+ */
+@property (assign) BOOL mergeCategoriesToClasses;
+
+/** Indicates whether category or extension sections should be preserved when merging into extended class.
+ 
+ If `YES`, all the sections from category or extension documentation are preserved. In such case, `prefixMergedCategoriesSectionsWithCategoryName` may optionally be used to prefix section name with category name or not. If `NO`, category or extension sections are ignored and a single section with category name is created in the class.
+ 
+ Default value is `NO`. If you use many sections within the categories, you should probably leave this option unchanged as preserving all category sections might yield fragmented class documentation. Experiment a bit to see what works best for you.
+ 
+ @warning *Note:* This option is ignored unless `mergeCategoriesToClasses` is used.
+ 
+ @see prefixMergedCategoriesSectionsWithCategoryName
+ @see mergeCategoriesToClasses
+ */
+@property (assign) BOOL keepMergedCategoriesSections;
+
+/** Indicates whether merged section names from categories should be prefixed with category name.
+ 
+ If `YES`, all merged section names from categories are prefixed with category name to make them more easily identifiable. If `NO`, section names are not changed. The first option is useful in case end users of your code are aware of different categories (if you're writting a framework for example). On the other hand, if you're using categories mostly as a way to split class definition to multiple files, you might want to keep this option off.
+ 
+ Default value is `NO`.
+ 
+ @warning *Note:* This option is ignored unless `mergeCategoriesToClasses` and `keepMergedCategoriesSections` is used.
+ 
+ @see keepMergedCategoriesSections
+ @see mergeCategoriesToClasses
+ */
+@property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
+
 /* Indicates whether HTML files should be generated or not.
  
  If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.

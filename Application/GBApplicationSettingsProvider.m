@@ -59,6 +59,9 @@
 		self.installDocSet = YES;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
+		self.mergeCategoriesToClasses = YES;
+		self.keepMergedCategoriesSections = NO;
+		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
 		self.commentComponents = [GBCommentComponentsProvider provider];
@@ -270,6 +273,11 @@
 
 @synthesize keepUndocumentedObjects;
 @synthesize keepUndocumentedMembers;
+
+@synthesize mergeCategoriesToClasses;
+@synthesize keepMergedCategoriesSections;
+@synthesize prefixMergedCategoriesSectionsWithCategoryName;
+
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;
