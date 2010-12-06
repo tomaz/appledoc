@@ -103,7 +103,7 @@
 		if ([section unregisterMethod:method]) {
 			if ([section.methods count] == 0) {
 				[_sections removeObject:section];
-				[_sectionsByNames removeObjectForKey:section.sectionName];
+				if (section.sectionName) [_sectionsByNames removeObjectForKey:section.sectionName];
 			}
 			*stop = YES;
 		}
