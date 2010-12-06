@@ -211,6 +211,7 @@
 #pragma mark Undocumented objects handling
 
 - (void)removeUndocumentedObjectsFromStore {
+	if (self.settings.keepUndocumentedObjects && self.settings.keepUndocumentedMembers) return;
 	GBLogInfo(@"Investigating undocumented objects and members...");
 	[self removeUndocumentedObjectsInSet:self.store.classes];
 	[self removeUndocumentedObjectsInSet:self.store.categories];
@@ -219,7 +220,6 @@
 
 - (void)removeUndocumentedObjectsInSet:(NSSet *)objects {
 	// Removes all undocumented objects and theri methods and properties as required by current settings. If settings don't allow removal, no object is removed. Note that we need to take care when deleting objects during enumerating: in both loops - top-level objects and members - we do a copy of returned array. Although for top-level objects this wouldn't be needed as the methods themselves return a copy, it's better to do additional shallow copy in case we change the functionality in the future to return cached values for example; this would break this code and present hard to find bug. Also note that we're assuming each object in the set is either a class, category or protocol...
-	if (self.settings.keepUndocumentedObjects && self.settings.keepUndocumentedMembers) return;
 	BOOL deleteObjects = !self.settings.keepUndocumentedObjects;
 	BOOL deleteMethods = !self.settings.keepUndocumentedMembers;
 	NSArray *array = [objects allObjects];
@@ -228,16 +228,15 @@
 		GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
 		NSArray *methods = [provider.methods copy];
 			
-		// Count or delete all undocumented methods.
+		// Count and delete all undocumented methods.
 		NSUInteger uncommentedMethodsCount = 0;
 		for (GBMethodData *method in methods) {
 			if ([self isCommentValid:method.comment]) continue;
 			if (deleteMethods) {
 				GBLogVerbose(@"Removing undocumented method %@...", method);
 				[provider unregisterMethod:method];
-			} else {
-				uncommentedMethodsCount++;
 			}
+			uncommentedMethodsCount++;
 		}
 	
 		// Remove the object if it isn't commented or has only uncommented methods.

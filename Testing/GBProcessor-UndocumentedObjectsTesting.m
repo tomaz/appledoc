@@ -111,6 +111,30 @@
 	assertThatBool([methods containsObject:[uncommented objectAtIndex:0]], equalToBool(NO));
 }
 
+- (void)testProcessObjectsFromStore_shouldKeepUncommentedObjectIfAllMethodsAreUnregisteredIfKeepObjectIsYes {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:YES keepMembers:NO]];
+	GBClassData *class = [self classWithComment:NO];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	[self registerMethodsOfCount:1 withComment:NO toObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatBool([store.classes containsObject:class], equalToBool(YES));
+}
+
+- (void)testProcessObjectsFromStore_shouldDeleteUncommentedObjectIfAllMethodsAreUnregisteredIfKeepObjectIsNo {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self settingsProviderKeepObjects:NO keepMembers:NO]];
+	GBClassData *class = [self classWithComment:NO];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	[self registerMethodsOfCount:1 withComment:NO toObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatBool([store.classes containsObject:class], equalToBool(NO));
+}
+
 #pragma mark Creation methods
 
 - (OCMockObject *)settingsProviderKeepObjects:(BOOL)objects keepMembers:(BOOL)members {
