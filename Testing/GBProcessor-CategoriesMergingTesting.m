@@ -103,6 +103,49 @@
 	[provider verify];
 }
 
+#pragma mark Sections merging testing
+
+- (void)testProcessObjectsFromStore_shouldAppendSectionsToEndOfExistingClassSections {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:NO prefix:NO];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	[class.methods registerSectionWithName:@"Section1"];
+	[class.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerSectionWithName:@"Section2"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *sections = [class.methods sections];
+	assertThatInteger([sections count], equalToInteger(2));
+	GBMethodSectionData *section = [sections objectAtIndex:1];
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
+}
+
+- (void)testProcessObjectsFromStore_shouldCreateSingleSectionIfKeepSectionsIsNo {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:NO prefix:NO];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerSectionWithName:@"Section1"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	[category.methods registerSectionWithName:@"Section2"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *sections = [class.methods sections];
+	assertThatInteger([sections count], equalToInteger(1));
+	GBMethodSectionData *section = [sections objectAtIndex:0];
+	assertThatInteger([section.methods count], equalToInteger(2));
+	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
+	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:1]], equalToBool(YES));
+}
+
 #pragma mark Creation methods
 
 - (GBProcessor *)processorWithMerge:(BOOL)merge keep:(BOOL)keep prefix:(BOOL)prefix {

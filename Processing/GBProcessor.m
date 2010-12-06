@@ -277,9 +277,22 @@
 		}
 		
 		// Merge all methods from category to the class. We can leave methods within the category as we'll delete it later on anyway.
-		for (GBMethodData *method in category.methods.methods) {
-			GBLogDebug(@"Merging %@ to %@...", method, class);
-			[class.methods registerMethod:method];
+		if ([category.methods.methods count] > 0) {
+			// Prepare the name for the section.
+			NSString *name = nil;
+			if (category.nameOfCategory) {
+				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedCategorySectionTitle"];
+				name = [NSString stringWithFormat:template, category.nameOfCategory];
+			} else {
+				name = [self.settings.stringTemplates.objectPage objectForKey:@"mergedExtensionSectionTitle"];
+			}
+			
+			// Register the section and all the methods.
+			[class.methods registerSectionWithName:name];
+			for (GBMethodData *method in category.methods.methods) {
+				GBLogDebug(@"Merging %@ to %@...", method, class);
+				[class.methods registerMethod:method];
+			}
 		}
 		
 		// Finally remove merged category from the store.

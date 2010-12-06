@@ -25,6 +25,8 @@
 		[result setObject:@"%@ Class Reference" forKey:@"classTitle"];
 		[result setObject:@"%@(%@) Category Reference" forKey:@"categoryTitle"];
 		[result setObject:@"%@ Protocol Reference" forKey:@"protocolTitle"];
+		[result setObject:@"%@ Methods" forKey:@"mergedCategorySectionTitle"];
+		[result setObject:@"Extension Methods" forKey:@"mergedExtensionSectionTitle"];
 	}
 	return result;
 }
