@@ -23,10 +23,11 @@
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"%@ Class Reference" forKey:@"classTitle"];
-		[result setObject:@"%@(%@) Category Reference" forKey:@"categoryTitle"];
+		[result setObject:@"%1$@(%2$@) Category Reference" forKey:@"categoryTitle"];
 		[result setObject:@"%@ Protocol Reference" forKey:@"protocolTitle"];
 		[result setObject:@"%@ Methods" forKey:@"mergedCategorySectionTitle"];
 		[result setObject:@"Extension Methods" forKey:@"mergedExtensionSectionTitle"];
+		[result setObject:@"%2$@ from %1$@" forKey:@"mergedPrefixedCategorySectionTitle"];
 	}
 	return result;
 }

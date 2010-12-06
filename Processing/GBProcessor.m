@@ -278,20 +278,32 @@
 		
 		// Merge all methods from category to the class. We can leave methods within the category as we'll delete it later on anyway.
 		if ([category.methods.methods count] > 0) {
-			// Prepare the name for the section.
-			NSString *name = nil;
-			if (category.nameOfCategory) {
-				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedCategorySectionTitle"];
-				name = [NSString stringWithFormat:template, category.nameOfCategory];
-			} else {
-				name = [self.settings.stringTemplates.objectPage objectForKey:@"mergedExtensionSectionTitle"];
+			// If we should merge all section into a single section per category, create it now. Note that name is different whether this is category or extension.
+			if (!self.settings.keepMergedCategoriesSections) {
+				GBLogDebug(@"Creating single section for methods merged from %@...", category);
+				NSString *key = category.isExtension ? @"mergedExtensionSectionTitle" :  @"mergedCategorySectionTitle";
+				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:key];
+				NSString *name = category.isExtension ? template : [NSString stringWithFormat:template, category.nameOfCategory];
+				[class.methods registerSectionWithName:name];
 			}
 			
-			// Register the section and all the methods.
-			[class.methods registerSectionWithName:name];
-			for (GBMethodData *method in category.methods.methods) {
-				GBLogDebug(@"Merging %@ to %@...", method, class);
-				[class.methods registerMethod:method];
+			// Merge all sections and all the methods, optionally create a separate section for each section from category.
+			for (GBMethodSectionData *section in category.methods.sections) {
+				GBLogDebug(@"Merging section %@ from %@...", section, category);
+				if (self.settings.keepMergedCategoriesSections) {
+					if (self.settings.prefixMergedCategoriesSectionsWithCategoryName && !category.isExtension) {
+						NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedPrefixedCategorySectionTitle"];
+						NSString *name = [NSString stringWithFormat:template, category.nameOfCategory, section.sectionName];
+						[class.methods registerSectionWithName:name];
+					} else {
+						[class.methods registerSectionWithName:section.sectionName];
+					}
+				}
+				
+				for (GBMethodData *method in section.methods) {
+					GBLogDebug(@"Merging method %@ from %@...", method, category);
+					[class.methods registerMethod:method];
+				}
 			}
 		}
 		

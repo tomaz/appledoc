@@ -146,6 +146,90 @@
 	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:1]], equalToBool(YES));
 }
 
+- (void)testProcessObjectsFromStore_shouldDuplicateSectionsIfKeepSectionsIsYes {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:YES prefix:NO];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerSectionWithName:@"Section1"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	[category.methods registerSectionWithName:@"Section2"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	GBMethodSectionData *section;
+	NSArray *sections = [class.methods sections];
+	assertThatInteger([sections count], equalToInteger(2));
+	section = [sections objectAtIndex:0];
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
+	section = [sections objectAtIndex:1];
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:1]], equalToBool(YES));
+}
+
+#pragma mark Section naming testing
+
+- (void)testProcessObjectsFromStore_shouldNameSingleSectionAfterCategory {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:NO prefix:NO];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSString *name = [[class.methods.sections objectAtIndex:0] sectionName];
+	assertThatBool([name rangeOfString:category.nameOfCategory].location != NSNotFound, equalToBool(YES));
+}
+
+- (void)testProcessObjectsFromStore_shouldUseOriginalSectionNamesIfPrefixIsNo {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:YES prefix:NO];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerSectionWithName:@"Section"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[class.methods.sections objectAtIndex:0] sectionName], is(@"Section"));
+}
+
+- (void)testProcessObjectsFromStore_shouldAddCategoryNameToSectionNamesIfPrefixIsYes {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:YES prefix:YES];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	[category.methods registerSectionWithName:@"Section"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSString *name = [[class.methods.sections objectAtIndex:0] sectionName];
+	assertThatBool([name rangeOfString:@"Section"].location != NSNotFound, equalToBool(YES));
+	assertThatBool([name rangeOfString:category.nameOfCategory].location != NSNotFound, equalToBool(YES));
+}
+
+- (void)testProcessObjectsFromStore_shouldNotAddExtensionKeywordToSectionNamesEvenIfPrefixIsYes {
+	// setup
+	GBProcessor *processor = [self processorWithMerge:YES keep:YES prefix:YES];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:nil className:@"Class"];
+	[category.methods registerSectionWithName:@"Section"];
+	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil]];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[class.methods.sections objectAtIndex:0] sectionName], is(@"Section"));
+}
+
 #pragma mark Creation methods
 
 - (GBProcessor *)processorWithMerge:(BOOL)merge keep:(BOOL)keep prefix:(BOOL)prefix {
