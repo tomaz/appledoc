@@ -79,7 +79,7 @@
 	GBMethodData *derived = [self instanceMethodWithName:@"method" comment:nil];
 	GBClassData *class = [self classWithName:@"Class" superclass:@"Superclass" method:derived];
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, superclass, nil];
-	GBProcessor *processor = [self processorWithFind:YES keepObjects:YES keepMembers:NO];
+	GBProcessor *processor = [self processorWithFind:YES keepObjects:NO keepMembers:NO];
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
@@ -102,6 +102,20 @@
 	assertThat(derived.comment, isNot(nil));
 	assertThat(derived.comment, isNot(original.comment));	// We actually create a new comment object!
 	assertThat([derived.comment stringValue], is([original.comment stringValue]));
+}
+
+- (void)testProcessObjectsFromStore_shouldCopyDocumentationFromAdoptedProtocolEvenIfUndocumentedObjectsShouldBeDeleted {
+	// setup
+	GBMethodData *original = [self instanceMethodWithName:@"method" comment:@"comment"];
+	GBProtocolData *protocol = [self protocolWithName:@"Protocol" method:original];
+	GBMethodData *derived = [self instanceMethodWithName:@"method" comment:nil];
+	GBClassData *class = [self classWithName:@"Class" adopting:protocol method:derived];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, protocol, nil];
+	GBProcessor *processor = [self processorWithFind:YES keepObjects:NO keepMembers:NO];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(derived.comment, isNot(nil));
 }
 
 #pragma mark Creation methods
