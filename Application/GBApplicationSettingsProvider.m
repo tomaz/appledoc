@@ -56,7 +56,7 @@
 		self.ignoredPaths = [NSMutableSet set];
 		self.createHTML = YES;
 		self.createDocSet = YES;
-		self.installDocSet = YES;
+		self.installDocSet = NO;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
