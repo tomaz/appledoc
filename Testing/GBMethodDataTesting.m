@@ -285,6 +285,35 @@
 	 nil];
 }
 
+- (void)testFormattedComponents_shouldNotAddSpaceForProtocols {
+	// setup
+	NSArray *results = [NSArray arrayWithObjects:@"NSArray", @"*", nil];
+	NSArray *types = [NSArray arrayWithObjects:@"id", @"<", @"Protocol", @">", nil];
+	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"], nil];
+	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
+	// execute
+	NSArray *result = [method formattedComponents];
+	// verify: {-}-{ }-{(}-{BOOL}-{)}-{method}-{:}-{(}-{id}-{<}-{Protocol}-{>}-{)}-{val}
+	[self assertFormattedComponents:result match:
+	 @"-", 0, GBNULL, 
+	 @" ", 0, GBNULL, 
+	 @"(", 0, GBNULL,
+	 @"NSArray", 0, GBNULL,
+	 @" ", 0, GBNULL, 
+	 @"*", 0, GBNULL,
+	 @")", 0, GBNULL,
+	 @"method", 0, GBNULL,
+	 @":", 0, GBNULL, 
+	 @"(", 0, GBNULL, 
+	 @"id", 0, GBNULL, 
+	 @"<", 0, GBNULL, 
+	 @"Protocol", 0, GBNULL, 
+	 @">", 0, GBNULL,
+	 @")", 0, GBNULL, 
+	 @"val", 1, GBNULL, 
+	 nil];
+}
+
 #pragma mark Helper methods testing
 
 - (void)testMethodSelectorDelimiter_shouldReturnEmptyStringForProperties {

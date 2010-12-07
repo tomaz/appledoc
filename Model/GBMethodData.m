@@ -105,11 +105,25 @@
 	if (hasValues && prefix) [array addObject:[self formattedComponentWithValue:prefix]];
 	
 	__block BOOL lastCompWasPointer = NO;
+	__block BOOL insideProtocol = NO;
+	__block BOOL appendSpace = NO;
 	[types enumerateObjectsUsingBlock:^(NSString *type, NSUInteger idx, BOOL *stop) {
+		if (appendSpace) [array addObject:[self formattedComponentWithValue:@" "]];
 		[array addObject:[self formattedComponentWithValue:type]];
+		
+		// We should not add space after last element or after pointer.
+		appendSpace = YES;
 		BOOL isLast = (idx == [types count] - 1);
 		BOOL isPointer = [type isEqualToString:@"*"];
-		if (!isLast && !isPointer) [array addObject:[self formattedComponentWithValue:@" "]];
+		if (isLast || isPointer) appendSpace = NO;
+		
+		// We should not add space between components of a protocol (i.e. id<ProtocolName> should be written without any space). Because we've alreay
+		if (!isLast && [[types objectAtIndex:idx+1] isEqualToString:@"<"])
+			insideProtocol = YES;
+		else if ([type isEqualToString:@">"])
+			insideProtocol = NO;
+		if (insideProtocol) appendSpace = NO;
+		
 		lastCompWasPointer = isPointer;
 	}];
 	
