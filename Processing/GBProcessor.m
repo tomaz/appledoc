@@ -17,7 +17,6 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
-- (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processComment:(GBComment *)comment;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
@@ -80,9 +79,11 @@
 	NSArray *classes = [self.store.classes allObjects];
 	for (GBClassData *class in classes) {
 		GBLogInfo(@"Processing class %@...", class);
+		self.currentContext = class;
 		if ([self removeUndocumentedMembersAndObject:class]) continue;
 		[self validateCommentForObject:class];
-		[self processDataProvider:class withComment:class.comment];
+		[self processComment:class.comment];
+		[self processMethodsFromProvider:class.methods];
 		[self processHtmlReferencesForObject:class];
 		GBLogDebug(@"Finished processing class %@.", class);
 	}
@@ -91,9 +92,11 @@
 - (void)processCategories {
 	for (GBCategoryData *category in self.store.categories) {
 		GBLogInfo(@"Processing category %@...", category);
+		self.currentContext = category;
 		if ([self removeUndocumentedMembersAndObject:category]) continue;
 		[self validateCommentForObject:category];
-		[self processDataProvider:category withComment:category.comment];
+		[self processComment:category.comment];
+		[self processMethodsFromProvider:category.methods];
 		[self processHtmlReferencesForObject:category];
 		GBLogDebug(@"Finished processing category %@.", category);
 	}
@@ -102,9 +105,11 @@
 - (void)processProtocols {
 	for (GBProtocolData *protocol in self.store.protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
+		self.currentContext = protocol;
 		if ([self removeUndocumentedMembersAndObject:protocol]) continue;
 		[self validateCommentForObject:protocol];
-		[self processDataProvider:protocol withComment:protocol.comment];
+		[self processComment:protocol.comment];
+		[self processMethodsFromProvider:protocol.methods];
 		[self processHtmlReferencesForObject:protocol];
 		GBLogDebug(@"Finished processing protocol %@.", protocol);
 	}
@@ -138,14 +143,6 @@
 	}
 	
 	return NO;
-}
-
-- (void)processDataProvider:(id<GBObjectDataProviding>)provider withComment:(GBComment *)comment {
-	// Set current context then process all data. Note that processing order is only important for nicer logging messages.
-	self.currentContext = provider;
-	[self processComment:comment];
-	[self processMethodsFromProvider:provider.methods];
-	self.currentContext = nil;
 }
 
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
