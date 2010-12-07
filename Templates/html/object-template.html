@@ -115,14 +115,14 @@ Section Method
 	</div>
 	{{/result}}
 	
-	{{#hasParagraphs}}
+	{{#hasMultipleParagraphs}}
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
 		{{#paragraphs}}
 		<p>{{>GBCommentParagraph}}</p>
 		{{/paragraphs}}
 	</div>
-	{{/hasParagraphs}}
+	{{/hasMultipleParagraphs}}
 	
 	{{#hasExceptions}}
 	<div class="method-subsection arguments-section exceptions">
