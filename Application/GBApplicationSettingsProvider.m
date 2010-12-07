@@ -59,6 +59,7 @@
 		self.installDocSet = YES;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
+		self.findUndocumentedMembersDocumentation = YES;
 		self.mergeCategoriesToClasses = YES;
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
@@ -273,6 +274,7 @@
 
 @synthesize keepUndocumentedObjects;
 @synthesize keepUndocumentedMembers;
+@synthesize findUndocumentedMembersDocumentation;
 
 @synthesize mergeCategoriesToClasses;
 @synthesize keepMergedCategoriesSections;

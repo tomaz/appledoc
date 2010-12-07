@@ -131,6 +131,7 @@
 		736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */; };
 		73734618129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */; };
 		73734619129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */; };
+		7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7374D91412AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m */; };
 		7377404312301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
@@ -313,6 +314,7 @@
 		736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSourceInfo.m; sourceTree = "<group>"; };
 		73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GBDictionaryTemplateLoader.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDictionaryTemplateLoader.m; sourceTree = "<group>"; };
+		7374D91412AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-MemberDocCopyingTesting.m"; sourceTree = "<group>"; };
 		7377404112301AC700E29F1E /* GBParagraphDecoratorItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBParagraphDecoratorItem.h; sourceTree = "<group>"; };
 		7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBParagraphDecoratorItem.m; sourceTree = "<group>"; };
 		7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-DecoratorItemsTesting.m"; sourceTree = "<group>"; };
@@ -892,6 +894,7 @@
 				73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */,
 				739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */,
 				739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */,
+				7374D91412AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m */,
 				73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */,
 				73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */,
 				73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */,
@@ -1218,6 +1221,7 @@
 				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */,
 				739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */,
+				7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

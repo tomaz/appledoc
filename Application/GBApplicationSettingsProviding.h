@@ -97,11 +97,18 @@
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
-/* Indicates whether undocumented classes, categories or protocols should be processed or not.
+/* Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
  
- If `YES` undocumented objects are still used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members. Note that this works regardless of `processUndocumentedMembers` value: if an object is not documented and none of it's members are documented, then the object is not processed for output, even if `processUndocumentedMembes` is `YES`!
+ If `YES` undocumented objects are kept and are used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members.
+ 
+ @warning *Note:* Several properties define how undocumented objects are handled: `keepUndocumentedObjects`, `keepUndocumentedMembers` and `findUndocumentedMembersDocumentation`. To better understand how these work together, this is the workflow used when processing parsed objects, prior than passing them to output generators:
+ 
+ 1. If `findUndocumentedMembersDocumentation` is `YES`, all undocumented methods and properties documentation is searched for in known super class hierarchy. If documentation is found in any of the super classes, it is copied to inherited member as well. If `findUndocumentedMembersDocumentation` is `NO`, members are left undocumented and are handled that way in next steps.
+ 2. If `keepUndocumentedMembers` is `NO`, all parsed objects' members are iterated over. Any undocumented method or property is removed from class (of course any documentation copied over from super classes in previous step is considered valid too). If `keepUndocumentedMembers` is `NO`, all members are left and if `warnOnUndocumentedMembers` is `YES`, warnings are logged for all undocumented members.
+ 3. If `keepUndocumentedObjects` is `NO`, all undocumented classes, categories and protocols that have no documented method or property are also removed. If `keepUndocumentedObjects` is `NO`, all objects are left in the store and are used for output generation and if `warnOnUndocumentedObject` is `YES`, warnings are logged for all undocumented objects.
  
  @see keepUndocumentedMembers
+ @see findUndocumentedMembersDocumentation;
  @see warnOnUndocumentedObject
  */
 @property (assign) BOOL keepUndocumentedObjects;
@@ -110,10 +117,24 @@
  
  If `YES`, undocumented members are still used for output generation. If `NO`, these members are ignored, as if they are not part of the object. Note that this only affects documented objects: if an object is not documented and none of it's members is documented, the object is not processed for output, even if this value is `YES`!
  
+ @warning *Note:* This property works together with `keepUndocumentedObjects` and `findUndocumentedMembersDocumentation`. To understand how they are used, read documentation for `keepUndocumentedObjects`.
+ 
  @see keepUndocumentedObjects
+ @see findUndocumentedMembersDocumentation
  @see warnOnUndocumentedMember
  */
 @property (assign) BOOL keepUndocumentedMembers;
+
+/** Specifies whether undocumented inherited methods or properties should be searched for in known places.
+ 
+ If `YES`, any undocumented overriden method or property is searched for in known super classes and adopted protocols and if documentation is found there, it is copied over. This works great for objects which would otherwise only show class documentation and no member. It's also how Apple documentation uses. Defaults to `YES`.
+
+ @warning *Note:* This property works together with `keepUndocumentedObjects` and `keepUndocumentedMembers`. To understand how they are used, read documentation for `keepUndocumentedObjects`.
+ 
+ @see keepUndocumentedObjects
+ @see keepUndocumentedMembers
+ */
+@property (assign) BOOL findUndocumentedMembersDocumentation;
 
 /** Indicates whether categories should be merges to classes they extend or not.
  
@@ -121,8 +142,8 @@
  
  Default value is `YES` and should be left so as this seems to be the way Apple has it's documentation generated.
  
- @warning *Important:* Only categories for known project classes are merged. Categories to other framework classes, such as Foundation, AppKit or UIKit are not merged. In other words: only if the class source code is available on any of the given input paths, and is properly documented, it gets it's categories and extension methods merged!
- 
+ @warning *Important:* Only categories for known project classes are merged. Categories to other framework classes, such as Foundation, AppKit or UIKit are not merged. In other words: only if the class source code is available on any of the given input paths, and is properly documented, it gets it's categories and extension methods merged! Also note that this option affects your documentation links - if any link is pointing to category that's going to be merged, it will be considered invalid link, so it's best to decide whther to merge categories of nor in advance and then consistently use properly formatted links.
+
  @see keepMergedCategoriesSections
  @see prefixMergedCategoriesSectionsWithCategoryName
  */
