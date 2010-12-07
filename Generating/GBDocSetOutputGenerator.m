@@ -217,10 +217,17 @@
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
 	NSString *destPath = [destUserPath stringByStandardizingPath];
 	
-	// Create destination directory and move files to it.
+	// Create destination directory and move files to it. If the destination directory alredy exists, remove it. Then create installation directory to make sure it's there the first time. Then move the docset files to the correct subdirectory.
 	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
+	if ([self.fileManager fileExistsAtPath:destPath]) {
+		GBLogDebug(@"Removing previous DocSet installation directory '%@'...", destUserPath);
+		if (![self.fileManager removeItemAtPath:destPath error:error]) {
+			GBLogWarn(@"Failed removing previous DocSet installation directory '%@'!", destUserPath);
+			return NO;
+		}
+	}
 	if (![self.fileManager createDirectoryAtPath:[destDir stringByStandardizingPath] withIntermediateDirectories:YES attributes:nil error:error]) {
-		GBLogWarn(@"Failed creating DocSet installation directory '%@'!", destDir);
+		GBLogWarn(@"Failed creating DocSet installation parent directory '%@'!", destDir);
 		return NO;
 	}
 	if (![self.fileManager moveItemAtPath:sourcePath toPath:destPath error:error]) {
