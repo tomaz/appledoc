@@ -78,6 +78,17 @@
 	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
+- (void)testMergeDataFromObject_shouldMergePropertyWithDifferentAttributes {
+	// setup
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", @"retain", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	GBMethodData *source = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readwrite", @"retain", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify - should keep original attributes
+	assertThat([original.methodAttributes objectAtIndex:0], is(@"readonly"));
+	assertThat([original.methodAttributes objectAtIndex:1], is(@"retain"));
+}
+
 #pragma mark Formatted components testing
 
 - (void)testFormattedComponents_shouldReturnSimplePropertyComponents {

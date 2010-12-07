@@ -162,7 +162,6 @@
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([source methodType] == self.methodType);
-	NSParameterAssert([source methodAttributes] == self.methodAttributes || [[source methodAttributes] isEqualToArray:self.methodAttributes]); // allow nil!
 	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);
 	NSParameterAssert([[source methodResultTypes] isEqualToArray:self.methodResultTypes]);
 	[super mergeDataFromObject:source];
