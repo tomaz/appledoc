@@ -141,8 +141,9 @@ a:hover {
 }
 
 .section-specification td {
+	vertical-align: top;
 	border-bottom: 1px solid #d6e0e5;
-	padding: .6em;
+	padding: .6em;	
 }
 
 .section-specification .specification-title {
