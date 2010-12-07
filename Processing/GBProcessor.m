@@ -195,11 +195,24 @@
 		while (class) {
 			GBMethodData *superMethod = [class.methods methodBySelector:method.methodSelector];
 			if (superMethod.comment) {
+				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
 				GBComment *comment = [GBComment commentWithStringValue:superMethod.comment.stringValue];
 				method.comment = comment;
-				break;
+				return;
 			}
 			class = class.superclass;
+		}
+	}
+	
+	// If not found on superclass, search within adopted protocols.
+	GBAdoptedProtocolsProvider *protocols = [method.parentObject adoptedProtocols];
+	for (GBProtocolData *protocol in protocols.protocols) {
+		GBMethodData *protocolMethod = [protocol.methods methodBySelector:method.methodSelector];
+		if (protocolMethod.comment) {
+			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
+			GBComment *comment = [GBComment commentWithStringValue:protocolMethod.comment.stringValue];
+			method.comment = comment;
+			return;
 		}
 	}
 }

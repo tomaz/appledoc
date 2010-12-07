@@ -15,6 +15,8 @@
 - (GBProcessor *)processorWithFind:(BOOL)find;
 - (GBProcessor *)processorWithFind:(BOOL)find keepObjects:(BOOL)objects keepMembers:(BOOL)members;
 - (GBClassData *)classWithName:(NSString *)name superclass:(NSString *)superclass method:(id)method;
+- (GBClassData *)classWithName:(NSString *)name adopting:(GBProtocolData *)protocol method:(id)method;
+- (GBProtocolData *)protocolWithName:(NSString *)name method:(id)method;
 - (GBMethodData *)instanceMethodWithName:(NSString *)name comment:(id)comment;
 
 @end
@@ -23,7 +25,7 @@
 
 @implementation GBProcessorMembersDocumentationCopyingTesting
 
-#pragma mark Processing testing
+#pragma mark Superclass copying testing
 
 - (void)testProcessObjectsFromStore_shouldCopyDocumentationFromSuperclassIfFindIsYes {
 	// setup
@@ -84,11 +86,42 @@
 	assertThat(derived.comment, isNot(nil));
 }
 
+#pragma mark Adopted protocols copying testing
+
+- (void)testProcessObjectsFromStore_shouldCopyDocumentationFromAdoptedProtocolIfFindIsYes {
+	// setup
+	GBMethodData *original = [self instanceMethodWithName:@"method" comment:@"comment"];
+	GBProtocolData *protocol = [self protocolWithName:@"Protocol" method:original];
+	GBMethodData *derived = [self instanceMethodWithName:@"method" comment:nil];
+	GBClassData *class = [self classWithName:@"Class" adopting:protocol method:derived];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, protocol, nil];
+	GBProcessor *processor = [self processorWithFind:YES];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(derived.comment, isNot(nil));
+	assertThat(derived.comment, isNot(original.comment));	// We actually create a new comment object!
+	assertThat([derived.comment stringValue], is([original.comment stringValue]));
+}
+
 #pragma mark Creation methods
 
 - (GBClassData *)classWithName:(NSString *)name superclass:(NSString *)superclass method:(id)method {
 	GBClassData *result = [GBClassData classDataWithName:name];
 	result.nameOfSuperclass = superclass;
+	if (method) [result.methods registerMethod:method];
+	return result;
+}
+
+- (GBClassData *)classWithName:(NSString *)name adopting:(GBProtocolData *)protocol method:(id)method {
+	GBClassData *result = [GBClassData classDataWithName:name];
+	if (protocol) [result.adoptedProtocols registerProtocol:protocol];
+	if (method) [result.methods registerMethod:method];
+	return result;
+}
+
+- (GBProtocolData *)protocolWithName:(NSString *)name method:(id)method {
+	GBProtocolData *result = [GBProtocolData protocolDataWithName:name];
 	if (method) [result.methods registerMethod:method];
 	return result;
 }
