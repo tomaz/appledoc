@@ -90,7 +90,8 @@
 }
 
 - (void)processCategories {
-	for (GBCategoryData *category in self.store.categories) {
+	NSArray *categories = [self.store.categories allObjects];
+	for (GBCategoryData *category in categories) {
 		GBLogInfo(@"Processing category %@...", category);
 		self.currentContext = category;
 		if ([self removeUndocumentedMembersAndObject:category]) continue;
@@ -103,7 +104,8 @@
 }
 
 - (void)processProtocols {
-	for (GBProtocolData *protocol in self.store.protocols) {
+	NSArray *protocols = [self.store.protocols allObjects];
+	for (GBProtocolData *protocol in protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		self.currentContext = protocol;
 		if ([self removeUndocumentedMembersAndObject:protocol]) continue;
