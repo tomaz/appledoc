@@ -70,6 +70,18 @@
 	[_sourceInfos addObject:data];
 }
 
+- (GBSourceInfo *)prefferedSourceInfo {
+	if (self.comment && self.comment.sourceInfo) return self.comment.sourceInfo;
+	if ([self.sourceInfos count] > 0) {
+		NSArray *infos = [self sourceInfosSortedByName];
+		for (GBSourceInfo *info in infos) {
+			if ([[info.filename pathExtension] isEqualToString:@"h"]) return info;
+		}
+		return [infos objectAtIndex:0];
+	}
+	return nil;
+}
+
 - (NSArray *)sourceInfosSortedByName {
 	return [[self.sourceInfos allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }

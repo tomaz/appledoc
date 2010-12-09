@@ -94,4 +94,50 @@
 	assertThat(source.comment.stringValue, is(@"Comment2"));
 }
 
+#pragma mark Source information testing
+
+- (void)testPrefferedSourceInfo_shouldReturnSourceInfoFromComment {
+	// setup
+	GBModelBase *object = [[GBModelBase alloc] init];
+	object.comment = [GBComment commentWithStringValue:@"comment"];
+	object.comment.sourceInfo = [GBSourceInfo infoWithFilename:@"file1" lineNumber:1];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"file.h" lineNumber:1]];
+	// execute & verify
+	assertThat(object.prefferedSourceInfo, is(object.comment.sourceInfo));
+}
+
+- (void)testPrefferedSourceInfo_shouldReturnHeaderFileSourceInfoIfCommentNotGiven {
+	// setup
+	GBModelBase *object = [[GBModelBase alloc] init];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"a.m" lineNumber:1]];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"b.h" lineNumber:1]];
+	// execute & verify
+	assertThat(object.prefferedSourceInfo.filename, is(@"b.h"));
+}
+			   
+- (void)testPrefferedSourceInfo_shouldReturnHeaderFileSourceInfoIfCommentDoesntHaveSourceInfo {
+	// setup
+	GBModelBase *object = [[GBModelBase alloc] init];
+	object.comment = [GBComment commentWithStringValue:@"comment"];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"a.m" lineNumber:1]];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"b.h" lineNumber:1]];
+	// execute & verify
+	assertThat(object.prefferedSourceInfo.filename, is(@"b.h"));
+}
+
+- (void)testPrefferedSourceInfo_shouldReturnSingleSourceInfo {
+	// setup
+	GBModelBase *object = [[GBModelBase alloc] init];
+	[object registerSourceInfo:[GBSourceInfo infoWithFilename:@"a.m" lineNumber:1]];
+	// execute & verify
+	assertThat(object.prefferedSourceInfo.filename, is(@"a.m"));
+}
+
+- (void)testPrefferedSourceInfo_shouldReturnNilIfNoSourceInfoAvailable {
+	// setup
+	GBModelBase *object = [[GBModelBase alloc] init];
+	// execute & verify
+	assertThat(object.prefferedSourceInfo, is(nil));
+}
+
 @end

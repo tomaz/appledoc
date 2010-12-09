@@ -35,13 +35,25 @@
  
  @see sourceInfos
  @see registerSourceInfo:
+ @see prefferedSourceInfo:
  */
 - (NSArray *)sourceInfosSortedByName;
+
+/** Returns the preffered source info that should be rendered to output.
+ 
+ This investigates `sourceInfos` list and `comment` and returns the most likely used one. If comment is given and has source information attached, that one is used. If comment is not given, source information list from the receiver is used. If header file is found in the list, that one is preffered. If header file is not found, the first file is returned.
+ 
+ @return Returns preffered source information object to be used for output.
+ @see sourceInfos
+ @see sourceInfosSortedByName
+ */
+@property (readonly) GBSourceInfo *prefferedSourceInfo;
 
 /** The list of all declared file data as `GBSourceInfo` objects. 
  
  @see registerSourceInfo:
  @see sourceInfosSortedByName
+ @see prefferedSourceInfo
  */
 @property (readonly) NSSet *sourceInfos;
 

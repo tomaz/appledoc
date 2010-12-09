@@ -147,12 +147,12 @@ Section Method
 	</div>
 	{{/hasCrossrefs}}
 	
+	{{#prefferedSourceInfo}}
 	<div class="method-subsection declared-in-section">
 		<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
-		{{#sourceInfosSortedByName}}
 		<code class="declared-in-ref">{{filename}}</code><br />
-		{{/sourceInfosSortedByName}}
 	</div>				
+	{{/prefferedSourceInfo}}
 	{{/comment}}
 </div>
 EndSection
