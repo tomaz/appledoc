@@ -14,6 +14,7 @@
 
 @interface GBHTMLOutputGenerator ()
 
+- (BOOL)validateTemplates:(NSError **)error;
 - (BOOL)processClasses:(NSError **)error;
 - (BOOL)processCategories:(NSError **)error;
 - (BOOL)processProtocols:(NSError **)error;
@@ -34,6 +35,7 @@
 
 - (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
 	if (![super generateOutputWithStore:store error:error]) return NO;
+	if (![self validateTemplates:error]) return NO;
 	if (![self processClasses:error]) return NO;
 	if (![self processCategories:error]) return NO;
 	if (![self processProtocols:error]) return NO;
@@ -98,6 +100,24 @@
 		}
 	}
 	GBLogDebug(@"Finished generating output for index.");
+	return YES;
+}
+
+- (BOOL)validateTemplates:(NSError **)error {
+	if (!self.htmlObjectTemplate) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Object template file 'object-template.html' is missing at '%@'!", self.templateUserPath];
+			*error = [NSError errorWithCode:GBErrorHTMLObjectTemplateMissing description:desc reason:nil];
+		}
+		return NO;
+	}
+	if (!self.htmlIndexTemplate) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Index template file 'index-template.html' is missing at '%@'!", self.templateUserPath];
+			*error = [NSError errorWithCode:GBErrorHTMLIndexTemplateMissing description:desc reason:nil];
+		}
+		return NO;
+	}
 	return YES;
 }
 

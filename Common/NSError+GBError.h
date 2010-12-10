@@ -27,7 +27,10 @@ enum {
 	GBErrorTemplatePathDoesntExist = 1000,
 	GBErrorTemplatePathNotDirectory,
 	
-	GBErrorDocSetDocumentTemplateMissing = 1900,
+	GBErrorHTMLObjectTemplateMissing = 1500,
+	GBErrorHTMLIndexTemplateMissing,
+	
+	GBErrorDocSetDocumentTemplateMissing = 1550,
 	GBErrorDocSetInfoPlistTemplateMissing,
 	GBErrorDocSetNodesTemplateMissing,
 	GBErrorDocSetUtilIndexingFailed,
