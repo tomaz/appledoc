@@ -14,6 +14,47 @@
 	
 @implementation GBApplicationSettingsProviderTesting
 
+#pragma mark Placeholders replacing
+
+- (void)testPlaceholderReplacements_shouldReplacePlaceholderStringsInAllSupportedValues {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectName = @"<PN>";
+	settings.projectCompany = @"<PC>";
+	settings.projectVersion = @"<PV>";
+	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$YEAR/$UPDATEDATE";
+	settings.docsetBundleIdentifier = template;
+	settings.docsetBundleName = template;
+	settings.docsetCertificateIssuer = template;
+	settings.docsetCertificateSigner = template;
+	settings.docsetDescription = template;
+	settings.docsetFallbackURL = template;
+	settings.docsetFeedName = template;
+	settings.docsetFeedURL = template;
+	settings.docsetMinimumXcodeVersion = template;
+	settings.docsetPlatformFamily = template;
+	settings.docsetPublisherIdentifier = template;
+	settings.docsetPublisherName = template;
+	settings.docsetCopyrightMessage = template;
+	// execute
+	NSString *expected = [settings stringByReplacingOccurencesOfPlaceholdersInString:template];
+	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
+	// verify
+	assertThat(settings.docsetBundleIdentifier, is(expected));
+	assertThat(settings.docsetBundleName, is(expected));
+	assertThat(settings.docsetCertificateIssuer, is(expected));
+	assertThat(settings.docsetCertificateSigner, is(expected));
+	assertThat(settings.docsetDescription, is(expected));
+	assertThat(settings.docsetFallbackURL, is(expected));
+	assertThat(settings.docsetFeedName, is(expected));
+	assertThat(settings.docsetFeedURL, is(expected));
+	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
+	assertThat(settings.docsetPlatformFamily, is(expected));
+	assertThat(settings.docsetPublisherIdentifier, is(expected));
+	assertThat(settings.docsetPublisherName, is(expected));
+	assertThat(settings.docsetCopyrightMessage, is(expected));
+}
+
 #pragma mark HTML href names handling
 
 - (void)testHtmlReferenceNameForObject_shouldReturnProperValueForTopLevelObjects {

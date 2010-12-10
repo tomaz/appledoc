@@ -289,6 +289,7 @@
  
  - `$PROJECT`: Replaced by `projectName` value.
  - `$COMPANY`: Replaced by `projectCompany` value.
+ - `$VERSION`: Replaced by `projectVersion` value.
  - `$YEAR`: Replaced by current year as four digit string.
  - `$UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
  
