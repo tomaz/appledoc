@@ -174,6 +174,12 @@ typedef struct
 - (NSArray *) parseOptionsWithArguments: (NSArray *) arguments
                                 command: (NSString *) command;
 
+/**
+ * Returns the name of the selector for the given option.
+ * This was copied from private methods to allow simpler unit testing!
+ */
++ (NSString *) keyFromOption: (NSString *) option;
+
 @end
 
 /**

@@ -228,11 +228,7 @@
     return [arguments subarrayWithRange: range];
 }
 
-@end
-
-@implementation DDGetoptLongParser (Private)
-
-- (NSString *) optionToKey: (NSString *) option;
++ (NSString *) keyFromOption: (NSString *) option;
 {
     NSScanner * scanner = [NSScanner scannerWithString: option];
     [scanner setCharactersToBeSkipped: [NSCharacterSet characterSetWithCharactersInString: @"-"]];
@@ -247,6 +243,15 @@
         caps = YES;
     }
     return key;
+}
+
+@end
+
+@implementation DDGetoptLongParser (Private)
+
+- (NSString *) optionToKey: (NSString *) option
+{
+	return [[self class] keyFromOption:option];
 }
 
 - (struct option *) firstOption;
