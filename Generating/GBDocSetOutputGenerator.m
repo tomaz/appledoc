@@ -69,7 +69,7 @@
 	NSString *sourceFilesPath = [self.previousGenerator.outputUserPath stringByStandardizingPath];
 	NSString *documentsPath = [self templateFileKeyEndingWith:@"documents-template"];
 	if (!documentsPath) {
-		if (error) *error = [NSError errorWithCode:1 description:@"Documents template is missing!" reason:@"documents-template file is required to determine location for Documents path in DocSet bundle!"];
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetDocumentTemplateMissing description:@"Documents template is missing!" reason:@"documents-template file is required to determine location for Documents path in DocSet bundle!"];
 		GBLogWarn(@"Failed finding documents-template in '%@'!", self.templateUserPath);
 		return NO;
 	}
@@ -89,7 +89,7 @@
 	GBLogInfo(@"Writting DocSet Info.plist...");
 	NSString *templatePath = [self templateFileKeyEndingWith:@"info-template.plist"];
 	if (!templatePath) {
-		if (error) *error = [NSError errorWithCode:2 description:@"Info.plist template is missing!" reason:@"info-template.plist file is required to specify information about DocSet!"];
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetInfoPlistTemplateMissing description:@"Info.plist template is missing!" reason:@"info-template.plist file is required to specify information about DocSet!"];
 		GBLogWarn(@"Failed finding info-template.plist in '%@'!", self.templateUserPath);
 		return NO;
 	}
@@ -127,7 +127,7 @@
 	GBLogInfo(@"Writting DocSet Nodex.xml file...");
 	NSString *templatePath = [self templateFileKeyEndingWith:@"nodes-template.xml"];
 	if (!templatePath) {
-		if (error) *error = [NSError errorWithCode:2 description:@"Nodes.xml template is missing!" reason:@"nodes-template.xml file is required to specify document structure for DocSet!"];
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetNodesTemplateMissing description:@"Nodes.xml template is missing!" reason:@"nodes-template.xml file is required to specify document structure for DocSet!"];
 		GBLogWarn(@"Failed finding nodes-template.xml in '%@'!", self.templateUserPath);
 		return NO;
 	}
@@ -185,7 +185,7 @@
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
 	if (!result) {
-		if (error) *error = [NSError errorWithCode:3 description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
 		return NO;
 	}
 	return YES;
@@ -248,7 +248,7 @@
 	if (![script executeAndReturnError:&errorDict])
 	{
 		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
-		if (error) *error = [NSError errorWithCode:4 description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetXcodeReloadFailed description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
 		return NO;
 	}
 	return YES;

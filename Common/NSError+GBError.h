@@ -22,3 +22,12 @@
 + (NSError *)errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
 
 @end
+
+enum {
+	GBErrorDocSetDocumentTemplateMissing,
+	GBErrorDocSetInfoPlistTemplateMissing,
+	GBErrorDocSetNodesTemplateMissing,
+	GBErrorDocSetUtilIndexingFailed,
+	GBErrorDocSetXcodeReloadFailed,
+};
+typedef NSUInteger GBErrorCode;
