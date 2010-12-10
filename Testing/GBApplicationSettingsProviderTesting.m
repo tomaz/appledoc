@@ -10,6 +10,10 @@
 #import "GBApplicationSettingsProvider.h"
 
 @interface GBApplicationSettingsProviderTesting : GHTestCase
+
+- (NSDateFormatter *)yearFormatterFromSettings:(GBApplicationSettingsProvider *)settings;
+- (NSDateFormatter *)yearToDayFormatterFromSettings:(GBApplicationSettingsProvider *)settings;
+
 @end
 	
 @implementation GBApplicationSettingsProviderTesting
@@ -25,7 +29,8 @@
 	original.ignoredPaths = [NSMutableSet setWithObjects:@"I1", @"I2", nil];
 	original.projectName = @"P1";
 	original.projectCompany = @"P2";
-	original.projectVersion = @"P3";	
+	original.projectVersion = @"P3";
+	original.companyIdentifier = @"P4";
 	original.createHTML = NO;
 	original.createDocSet = NO;
 	original.installDocSet = NO;
@@ -60,6 +65,7 @@
 	assertThat(copy.projectName, is(original.projectName));
 	assertThat(copy.projectCompany, is(original.projectCompany));
 	assertThat(copy.projectVersion, is(original.projectVersion));
+	assertThat(copy.companyIdentifier, is(original.companyIdentifier));
 	assertThatBool(copy.createHTML, equalToBool(original.createHTML));
 	assertThatBool(copy.createDocSet, equalToBool(original.createDocSet));
 	assertThatBool(copy.installDocSet, equalToBool(original.installDocSet));
@@ -94,7 +100,8 @@
 	settings.projectName = @"<PN>";
 	settings.projectCompany = @"<PC>";
 	settings.projectVersion = @"<PV>";
-	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$YEAR/$UPDATEDATE";
+	settings.companyIdentifier = @"<CI>";
+	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$COMPANYID/$YEAR/$UPDATEDATE";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
@@ -108,8 +115,12 @@
 	settings.docsetPublisherIdentifier = template;
 	settings.docsetPublisherName = template;
 	settings.docsetCopyrightMessage = template;
+	// setup expected values; this might break sometimes as it's based on time...
+	NSDate *date = [NSDate date];
+	NSString *year = [[self yearFormatterFromSettings:settings] stringFromDate:date];
+	NSString *day = [[self yearToDayFormatterFromSettings:settings] stringFromDate:date];
+	NSString *expected = [NSString stringWithFormat:@"<PN>/<PC>/<PV>/<CI>/%@/%@", year, day];
 	// execute
-	NSString *expected = [settings stringByReplacingOccurencesOfPlaceholdersInString:template];
 	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	// verify
 	assertThat(settings.docsetBundleIdentifier, is(expected));
@@ -280,6 +291,16 @@
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//api/name/value1"));
 	assertThat([settings htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//api/name/value2"));
+}
+						  
+#pragma mark Private accessor helpers
+
+- (NSDateFormatter *)yearFormatterFromSettings:(GBApplicationSettingsProvider *)settings {
+	return [settings valueForKey:@"yearDateFormatter"];
+}
+
+- (NSDateFormatter *)yearToDayFormatterFromSettings:(GBApplicationSettingsProvider *)settings {
+	return [settings valueForKey:@"yearToDayDateFormatter"];
 }
 
 @end

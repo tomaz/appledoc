@@ -43,7 +43,8 @@
 		self.projectName = @"PROJECT";
 		self.projectCompany = @"COMPANY";
 		self.projectVersion = @"1.0";
-		self.docsetBundleIdentifier = @"com.company.project";
+		self.companyIdentifier = @"com.company";
+		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECT";
 		self.docsetBundleName = @"$PROJECT Documentation";
 		self.docsetCertificateIssuer = @"";
 		self.docsetCertificateSigner = @"";
@@ -53,7 +54,7 @@
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"macosx";
-		self.docsetPublisherIdentifier = @"com.company.documentation";
+		self.docsetPublisherIdentifier = @"$COMPANYID.documentation";
 		self.docsetPublisherName = @"$COMPANY";
 		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
 		self.outputPath = @"~/Downloads/examples/AppledocHtml";
@@ -260,6 +261,7 @@
 }
 
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
+	string = [string stringByReplacingOccurrencesOfString:@"$COMPANYID" withString:self.companyIdentifier];
 	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
 	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
 	string = [string stringByReplacingOccurrencesOfString:@"$VERSION" withString:self.projectVersion];
@@ -279,6 +281,7 @@
 @synthesize projectName;
 @synthesize projectCompany;
 @synthesize projectVersion;
+@synthesize companyIdentifier;
 
 @synthesize outputPath;
 @synthesize docsetInstallPath;

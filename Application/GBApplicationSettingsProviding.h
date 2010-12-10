@@ -31,6 +31,9 @@
 /** Human readable version of the project. */
 @property (copy) NSString *projectVersion;
 
+/** Company unique identifier, ussualy in the form of reverse domain like _com.company_. */
+@property (copy) NSString *companyIdentifier;
+
 ///---------------------------------------------------------------------------------------
 /// @name Documentation set handling
 ///---------------------------------------------------------------------------------------
