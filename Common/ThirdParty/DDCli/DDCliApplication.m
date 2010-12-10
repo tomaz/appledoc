@@ -83,7 +83,7 @@ DDCliApplication * DDCliApp = nil;
     }
     @catch (NSException * e)
     {
-        ddfprintf(stderr, @"Caught: %@: %@\n", [e name], [e description]);
+        ddfprintf(stderr, @"ERROR: %@: %@\n", [e name], [e description]);
         result = EXIT_FAILURE;
     }
     @finally

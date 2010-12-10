@@ -24,7 +24,10 @@
 @end
 
 enum {
-	GBErrorDocSetDocumentTemplateMissing,
+	GBErrorTemplatePathDoesntExist = 1000,
+	GBErrorTemplatePathNotDirectory,
+	
+	GBErrorDocSetDocumentTemplateMissing = 1900,
 	GBErrorDocSetInfoPlistTemplateMissing,
 	GBErrorDocSetNodesTemplateMissing,
 	GBErrorDocSetUtilIndexingFailed,

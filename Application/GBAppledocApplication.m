@@ -64,7 +64,9 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
+- (void)initializeGlobalSettings;
 - (void)validateArguments:(NSArray *)arguments;
+- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
@@ -114,8 +116,8 @@ static NSString *kGBArgHelp = @"help";
 	
 	@try {		
 		[self validateArguments:arguments];
-		[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 		[self initializeLoggingSystem];
+		[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 		
 		GBLogNormal(@"Initializing...");
 		GBStore *store = [[GBStore alloc] init];		
@@ -212,6 +214,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgHelp,														0,		DDGetoptNoArgument },
 		{ nil,																0,		0 },
 	};
+	[self initializeGlobalSettings];
 	[optionParser addOptionsFromTable:options];
 }
 
@@ -223,6 +226,67 @@ static NSString *kGBArgHelp = @"help";
 	[DDLog addLogger:[DDTTYLogger sharedInstance]];
 	[GBLog setLogLevelFromVerbose:self.verbose];
 	[formatter release];
+}
+
+- (void)initializeGlobalSettings {
+	// This is where we override factory defaults (factory defaults with global templates. This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
+	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+	__block BOOL found = NO;
+	__block NSString *path = nil;
+	[arguments enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *option, NSUInteger idx, BOOL *stop) {
+		NSString *opt = [option copy];
+		while ([opt hasPrefix:@"-"]) opt = [opt substringFromIndex:1];
+		if ([opt isEqualToString:@"t"] || [opt isEqualToString:kGBArgTemplatesPath]) {
+			NSError *error = nil;
+			if (![self validateTemplatesPath:path error:&error]) [NSException raise:error format:@"Path '%@' from %@ is not valid!", path, option];			
+			[self.settings overrideWithGlobalSettingsFromPath:path];
+			found = YES;
+			*stop = YES;
+			return;
+		}
+		path = option;
+	}];
+	
+	// If no templates path is provided through command line, test predefined ones. Note that we don't raise exception here if validation fails on any path, but we do raise it if no template path is found at all as we can't run the application!
+	if (!found) {
+		NSArray *appSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+		for (NSString *appSupportPath in appSupportPaths)
+		{
+			path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
+			if ([self validateTemplatesPath:path error:nil]) {
+				[self.settings overrideWithGlobalSettingsFromPath:path];
+				return;
+			}		
+		}
+		
+		path = @"~/.appledoc";
+		if ([self validateTemplatesPath:path error:nil]) {
+			[self.settings overrideWithGlobalSettingsFromPath:path];
+			return;
+		}
+		
+		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
+	}
+}
+
+- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
+	// Validates the given templates path contains all required template files. If not, it returns the reason through the error argument and returns NO. Note that we only do simple "path exist and is directory" tests here, each object that requires templates at the given path will do it's own validation later on and will report errors if it finds something missing.
+	BOOL isDirectory = NO;
+	if (![self.fileManager fileExistsAtPath:[path stringByStandardizingPath] isDirectory:&isDirectory]) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", path];
+			*error = [NSError errorWithCode:GBErrorTemplatePathDoesntExist description:desc reason:nil];
+		}
+		return NO;
+	}	
+	if (!isDirectory) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Template path '%@' is not directory!", path];
+			*error = [NSError errorWithCode:GBErrorTemplatePathNotDirectory description:desc reason:nil];
+		}
+		return NO;
+	}
+	return YES;
 }
 
 - (void)validateArguments:(NSArray *)arguments {
