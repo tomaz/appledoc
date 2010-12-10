@@ -87,81 +87,103 @@
 
 - (void)testCreateHTML_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--create-html", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--create-html", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-create-html", nil];
 	// verify
-	assertThatBool(settings.createHTML, equalToBool(YES));
+	assertThatBool(settings1.createHTML, equalToBool(YES));
+	assertThatBool(settings2.createHTML, equalToBool(NO));
 }
 
 - (void)testCreateDocSet_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--create-docset", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--create-docset", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-create-docset", nil];
 	// verify
-	assertThatBool(settings.createDocSet, equalToBool(YES));
+	assertThatBool(settings1.createDocSet, equalToBool(YES));
+	assertThatBool(settings2.createDocSet, equalToBool(NO));
 }
 
 - (void)testInstallDocSet_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--install-docset", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--install-docset", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-install-docset", nil];
 	// verify
-	assertThatBool(settings.installDocSet, equalToBool(YES));
+	assertThatBool(settings1.installDocSet, equalToBool(YES));
+	assertThatBool(settings2.installDocSet, equalToBool(NO));
 }
 
 - (void)testKeepUndocumentedObjects_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--keep-undocumented-objects", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-undocumented-objects", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-keep-undocumented-objects", nil];
 	// verify
-	assertThatBool(settings.keepUndocumentedObjects, equalToBool(YES));
+	assertThatBool(settings1.keepUndocumentedObjects, equalToBool(YES));
+	assertThatBool(settings2.keepUndocumentedObjects, equalToBool(NO));
 }
 
 - (void)testKeepUndocumentedMembers_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--keep-undocumented-members", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-undocumented-members", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-keep-undocumented-members", nil];
 	// verify
-	assertThatBool(settings.keepUndocumentedMembers, equalToBool(YES));
+	assertThatBool(settings1.keepUndocumentedMembers, equalToBool(YES));
+	assertThatBool(settings2.keepUndocumentedMembers, equalToBool(NO));
 }
 
 - (void)testFindUndocumentedMembersDocumentation_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--search-undocumented-doc", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--search-undocumented-doc", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-search-undocumented-doc", nil];
 	// verify
-	assertThatBool(settings.findUndocumentedMembersDocumentation, equalToBool(YES));
+	assertThatBool(settings1.findUndocumentedMembersDocumentation, equalToBool(YES));
+	assertThatBool(settings2.findUndocumentedMembersDocumentation, equalToBool(NO));
 }
 
 - (void)testMergeCategoriesToClasses_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--merge-categories", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--merge-categories", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-merge-categories", nil];
 	// verify
-	assertThatBool(settings.mergeCategoriesToClasses, equalToBool(YES));
+	assertThatBool(settings1.mergeCategoriesToClasses, equalToBool(YES));
+	assertThatBool(settings2.mergeCategoriesToClasses, equalToBool(NO));
 }
 
 - (void)testKeepMergedCategoriesSections_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--keep-merged-sections", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-merged-sections", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-keep-merged-sections", nil];
 	// verify
-	assertThatBool(settings.keepMergedCategoriesSections, equalToBool(YES));
+	assertThatBool(settings1.keepMergedCategoriesSections, equalToBool(YES));
+	assertThatBool(settings2.keepMergedCategoriesSections, equalToBool(NO));
 }
 
 - (void)testPrefixMergedCategoriesSectionsWithCategoryName_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--prefix-merged-sections", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--prefix-merged-sections", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-prefix-merged-sections", nil];
 	// verify
-	assertThatBool(settings.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(YES));
+	assertThatBool(settings1.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(YES));
+	assertThatBool(settings2.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(NO));
 }
 
 #pragma mark Warnings settings testing
 
 - (void)testWarnOnUndocumentedObject_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--warn-undocumented-object", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-undocumented-object", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-undocumented-object", nil];
 	// verify
-	assertThatBool(settings.warnOnUndocumentedObject, equalToBool(YES));
+	assertThatBool(settings1.warnOnUndocumentedObject, equalToBool(YES));
+	assertThatBool(settings2.warnOnUndocumentedObject, equalToBool(NO));
 }
 
 - (void)testWarnOnUndocumentedMember_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--warn-undocumented-member", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-undocumented-member", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-undocumented-member", nil];
 	// verify
-	assertThatBool(settings.warnOnUndocumentedMember, equalToBool(YES));
+	assertThatBool(settings1.warnOnUndocumentedMember, equalToBool(YES));
+	assertThatBool(settings2.warnOnUndocumentedMember, equalToBool(NO));
 }
 
 #pragma Documentation set settings testing

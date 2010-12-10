@@ -57,6 +57,8 @@ static NSString *kGBArgVerbose = @"verbose";
 static NSString *kGBArgVersion = @"version";
 static NSString *kGBArgHelp = @"help";
 
+#define GBNoArg(arg) [NSString stringWithFormat:@"no-%@", arg]
+
 #pragma mark -
 
 @interface GBAppledocApplication ()
@@ -156,47 +158,59 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {
 	DDGetoptOption options[] = {
-		{ kGBArgOutputPath,											'o',	DDGetoptRequiredArgument },
-		{ kGBArgTemplatesPath,										't',	DDGetoptRequiredArgument },
-		{ kGBArgIgnorePath,											'i',	DDGetoptRequiredArgument },
-		{ kGBArgDocSetInstallPath,									0,		DDGetoptRequiredArgument },
+		{ kGBArgOutputPath,													'o',	DDGetoptRequiredArgument },
+		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
+		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
+		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
 		
-		{ kGBArgProjectName,										'p',	DDGetoptRequiredArgument },
-		{ kGBArgProjectVersion,										'v',	DDGetoptRequiredArgument },
-		{ kGBArgProjectCompany,										'c',	DDGetoptRequiredArgument },
+		{ kGBArgProjectName,												'p',	DDGetoptRequiredArgument },
+		{ kGBArgProjectVersion,												'v',	DDGetoptRequiredArgument },
+		{ kGBArgProjectCompany,												'c',	DDGetoptRequiredArgument },
 		
-		{ kGBArgDocSetBundleIdentifier,								0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetBundleName,									0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetCertificateIssuer,							0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetCertificateSigner,							0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetDescription,									0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetFallbackURL,									0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetFeedName,										0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetFeedURL,										0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetMinimumXcodeVersion,							0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetPlatformFamily,								0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetPublisherIdentifier,							0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetPublisherName,								0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetCopyrightMessage,								0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetBundleIdentifier,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetBundleName,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetCertificateIssuer,									0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetCertificateSigner,									0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetDescription,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetFallbackURL,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetFeedName,												0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetFeedURL,												0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetMinimumXcodeVersion,									0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPlatformFamily,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPublisherIdentifier,									0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPublisherName,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetCopyrightMessage,										0,		DDGetoptRequiredArgument },
 		
-		{ kGBArgCreateHTML,											'h',	DDGetoptRequiredArgument },
-		{ kGBArgCreateDocSet,										'd',	DDGetoptRequiredArgument },
-		{ kGBArgInstallDocSet,										'n',	DDGetoptRequiredArgument },
+		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
+		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
+		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
+		{ GBNoArg(kGBArgCreateHTML),										0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
 		
-		{ kGBArgKeepUndocumentedObjects,							0,		DDGetoptRequiredArgument },
-		{ kGBArgKeepUndocumentedMembers,							0,		DDGetoptRequiredArgument },
-		{ kGBArgFindUndocumentedMembersDocumentation,				0,		DDGetoptRequiredArgument },
-		{ kGBArgMergeCategoriesToClasses,							0,		DDGetoptRequiredArgument },
-		{ kGBArgKeepMergedCategoriesSections,						0,		DDGetoptRequiredArgument },
-		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,		0,		DDGetoptRequiredArgument },
-		{ kGBArgWarnOnUndocumentedObject,							0,		DDGetoptRequiredArgument },
-		{ kGBArgWarnOnUndocumentedMember,							0,		DDGetoptRequiredArgument },
+		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
+		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
+		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
+		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
+		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
+		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgKeepUndocumentedMembers),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgFindUndocumentedMembersDocumentation),				0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgMergeCategoriesToClasses),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
 		
-		{ kGBArgLogFormat,											0,		DDGetoptRequiredArgument },
-		{ kGBArgVerbose,											0,		DDGetoptRequiredArgument },
-		{ kGBArgVersion,											0,		DDGetoptNoArgument },
-		{ kGBArgHelp,												0,		DDGetoptNoArgument },
-		{ nil,														0,		0 },
+		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnUndocumentedMember),							0,		DDGetoptNoArgument },
+		
+		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
+		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
+		{ kGBArgVersion,													0,		DDGetoptNoArgument },
+		{ kGBArgHelp,														0,		DDGetoptNoArgument },
+		{ nil,																0,		0 },
 	};
 	[optionParser addOptionsFromTable:options];
 }
@@ -243,6 +257,9 @@ static NSString *kGBArgHelp = @"help";
 - (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
 - (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
 - (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
+- (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
+- (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
+- (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
 
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
@@ -250,9 +267,17 @@ static NSString *kGBArgHelp = @"help";
 - (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
 - (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
 - (void)setPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = value; }
+- (void)setNoKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = !value; }
+- (void)setNoKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = !value; }
+- (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
+- (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
+- (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
+- (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
 
 - (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
 - (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
+- (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
+- (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
 
 - (void)setDocsetBundleId:(NSString *)value { self.settings.docsetBundleIdentifier = value; }
 - (void)setDocsetBundleName:(NSString *)value { self.settings.docsetBundleName = value; }
