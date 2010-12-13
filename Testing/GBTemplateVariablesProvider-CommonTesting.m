@@ -17,7 +17,7 @@
 
 - (void)testVariablesForClass_shouldPrepareDefaultVariables {
 	// setup
-	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBApplicationSettingsProvider provider]];
+	GBHTMLTemplateVariablesProvider *provider = [GBHTMLTemplateVariablesProvider providerWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];	
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];

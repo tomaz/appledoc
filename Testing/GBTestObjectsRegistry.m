@@ -7,6 +7,7 @@
 //
 
 #import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBTestObjectsRegistry.h"
 
@@ -16,8 +17,17 @@
 
 #pragma mark Common objects creation methods
 
++ (id)realSettingsProvider {
+	GBApplicationSettingsProvider *result = [GBApplicationSettingsProvider provider];
+	result.projectName = @"project";
+	result.projectCompany = @"company";
+	return result;
+}
+
 + (OCMockObject *)mockSettingsProvider {
 	OCMockObject *result = [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+	[[[result stub] andReturn:@"project"] projectName];
+	[[[result stub] andReturn:@"company"] projectCompany];
 	[[[result stub] andReturn:[GBCommentComponentsProvider provider]] commentComponents];
 	[[[result stub] andReturn:[GBApplicationStringsProvider provider]] stringTemplates];
 	return result;

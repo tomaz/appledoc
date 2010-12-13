@@ -11,6 +11,7 @@
 
 @interface GBTestObjectsRegistry : NSObject
 
++ (id)realSettingsProvider;
 + (OCMockObject *)mockSettingsProvider;
 + (void)settingsProvider:(OCMockObject *)provider keepObjects:(BOOL)objects keepMembers:(BOOL)members;
 
