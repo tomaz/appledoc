@@ -24,7 +24,7 @@ static NSString *kGBArgIgnorePath = @"ignore";
 static NSString *kGBArgProjectName = @"project-name";
 static NSString *kGBArgProjectVersion = @"project-version";
 static NSString *kGBArgProjectCompany = @"project-company";
-static NSString *kGBArgCompanyIdentifier = @"company-identifier";
+static NSString *kGBArgCompanyIdentifier = @"company-id";
 
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
@@ -355,7 +355,6 @@ static NSString *kGBArgHelp = @"help";
 		self.settings.companyIdentifier = value;
 		ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 	}
-	[NSException raise:@"ok"];
 }
 
 #pragma mark Overriden methods
