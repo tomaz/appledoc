@@ -25,7 +25,6 @@
  */
 + (id)provider;
 
-
 ///---------------------------------------------------------------------------------------
 /// @name Project values handling
 ///---------------------------------------------------------------------------------------
@@ -215,6 +214,22 @@
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------
+
+/** Indicates whether appledoc will warn if `--output` argument is not given.
+ 
+ Although appledoc still generates output in current directory, it's better to warn the user as in most cases this is not what she wants (for example if appledoc is invoked from Xcode build script, current working directory might point to some unpredicted location). appledoc also writes the exact path that will be used for generating output.
+ 
+ Note that in case documentation set is installed to Xcode, setting output path is irrelevant as all files from output are moved to locations Xcode uses for finding documentation sets.
+ */
+@property (assign) BOOL warnOnMissingOutputPathArgument;
+
+/** Indicates whether appledoc will warn if `--company-id` argument is not given.
+ 
+ Although appledoc deducts this information from other values, it's better to warn the user as deducted information doesn't necessarily produce correct results.
+ 
+ Note that the warning is only issued if documentation set creation is requested.
+ */
+@property (assign) BOOL warnOnMissingCompanyIdentifier;
 
 /** Indicates whether appledoc will warn if it encounters an undocumented class, category or protocol.
  

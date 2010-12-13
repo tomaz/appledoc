@@ -61,6 +61,8 @@
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
 
+		self.warnOnMissingOutputPathArgument = YES;
+		self.warnOnMissingCompanyIdentifier = YES;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
 		
@@ -321,6 +323,8 @@
 @synthesize createDocSet;
 @synthesize installDocSet;
 
+@synthesize warnOnMissingOutputPathArgument;
+@synthesize warnOnMissingCompanyIdentifier;
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
 

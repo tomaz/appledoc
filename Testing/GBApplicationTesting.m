@@ -182,6 +182,24 @@
 
 #pragma mark Warnings settings testing
 
+- (void)testWarnOnMissingOutputPath_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-missing-output-path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-missing-output-path", nil];
+	// verify
+	assertThatBool(settings1.warnOnMissingOutputPathArgument, equalToBool(YES));
+	assertThatBool(settings2.warnOnMissingOutputPathArgument, equalToBool(NO));
+}
+
+- (void)testWarnOnMissingCompanyIdentifier_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-missing-company-id", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-missing-company-id", nil];
+	// verify
+	assertThatBool(settings1.warnOnMissingCompanyIdentifier, equalToBool(YES));
+	assertThatBool(settings2.warnOnMissingCompanyIdentifier, equalToBool(NO));
+}
+
 - (void)testWarnOnUndocumentedObject_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-undocumented-object", nil];
@@ -200,7 +218,7 @@
 	assertThatBool(settings2.warnOnUndocumentedMember, equalToBool(NO));
 }
 
-#pragma Documentation set settings testing
+#pragma mark Documentation set settings testing
 
 - (void)testDocSetBudnleIdentifier_shouldAssignValueToSettings {
 	// setup & execute

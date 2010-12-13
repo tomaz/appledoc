@@ -37,6 +37,8 @@ static NSString *kGBArgMergeCategoriesToClasses = @"merge-categories";
 static NSString *kGBArgKeepMergedCategoriesSections = @"keep-merged-sections";
 static NSString *kGBArgPrefixMergedCategoriesSectionsWithCategoryName = @"prefix-merged-sections";
 
+static NSString *kGBArgWarnOnMissingOutputPath = @"warn-missing-output-path";
+static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-id";
 static NSString *kGBArgWarnOnUndocumentedObject = @"warn-undocumented-object";
 static NSString *kGBArgWarnOnUndocumentedMember = @"warn-undocumented-member";
 
@@ -208,8 +210,12 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
 		
+		{ kGBArgWarnOnMissingOutputPath,									0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnMissingOutputPath),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnMissingCompanyIdentifier),					0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedMember),							0,		DDGetoptNoArgument },
 		
@@ -345,7 +351,9 @@ static NSString *kGBArgHelp = @"help";
 	// If output path is not given, revert to current path, but do warn the user.
 	if ([self.settings.outputPath length] == 0) {
 		self.settings.outputPath = [self.fileManager currentDirectoryPath];
-		ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
+		if (self.settings.warnOnMissingOutputPathArgument) {
+			ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
+		}
 	}
 	
 	// If company identifier is not given and we have docset enabled, prepare one from company name, but do warn the user.
@@ -354,7 +362,9 @@ static NSString *kGBArgHelp = @"help";
 		value = [value stringByReplacingOccurrencesOfString:@" " withString:@""];
 		value = [value lowercaseString];
 		self.settings.companyIdentifier = value;
-		ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+		if (self.settings.warnOnMissingCompanyIdentifier) {
+			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+		}
 	}
 }
 
@@ -400,8 +410,12 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
 
+- (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
+- (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
 - (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
 - (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
+- (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
+- (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
 - (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
 - (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
 
@@ -468,6 +482,8 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"<bool>", @"Prefix merged sections with category name");
 	ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"<bool>", @"Warn if output path is not given");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"<bool>", @"Warn if company ID is not given");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"<bool>", @"Warn on undocumented object");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"<bool>", @"Warn on undocumented member");
 	ddprintf(@"\n");
