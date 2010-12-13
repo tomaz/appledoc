@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GBStoreProviding.h"
 
-@protocol GBApplicationSettingsProviding;
+@class GBApplicationSettingsProvider;
 
 /** The base class for all output generators.
  
@@ -45,7 +45,7 @@
 
 /** Copies all files from the templates path to the output path as defined in assigned `settings`, replicating the directory structure and stores all detected template files to `templateFiles` dictionary.
  
- The method uses `[GBApplicationSettingsProviding templatesPath]` as the base path for templates and `[GBApplicationSettingsProviding outputPath]` as the base path for output. In both cases, `outputSubpath` is used to determine the source and destination subdirectories. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages (i.e. before `generateOutput:`).
+ The method uses `[GBApplicationSettingsProvider templatesPath]` as the base path for templates and `[GBApplicationSettingsProvider outputPath]` as the base path for output. In both cases, `outputSubpath` is used to determine the source and destination subdirectories. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages (i.e. before `generateOutput:`).
  
  To further aid subclasses, the method reads out all template files in templates path and stores them to `templateFiles` dictionary. Each template file is stored with a key correspoding to it's filename, including the subdirectory within the base template path and extension.
   
@@ -147,8 +147,8 @@
   */
 @property (readonly) NSString *outputSubpath;
 
-/** The `GBApplicationSettingsProviding` object that provides application-wide settings for this session. 
+/** The `GBApplicationSettingsProvider` object that provides application-wide settings for this session. 
  */
-@property (retain) id<GBApplicationSettingsProviding> settings;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end

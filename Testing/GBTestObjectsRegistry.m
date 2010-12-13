@@ -6,7 +6,6 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBTestObjectsRegistry.h"
@@ -25,7 +24,7 @@
 }
 
 + (OCMockObject *)mockSettingsProvider {
-	OCMockObject *result = [OCMockObject niceMockForProtocol:@protocol(GBApplicationSettingsProviding)];
+	OCMockObject *result = [OCMockObject niceMockForClass:[GBApplicationSettingsProvider class]];
 	[[[result stub] andReturn:@"project"] projectName];
 	[[[result stub] andReturn:@"company"] projectCompany];
 	[[[result stub] andReturn:[GBCommentComponentsProvider provider]] commentComponents];

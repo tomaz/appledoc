@@ -6,7 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"

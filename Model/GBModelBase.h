@@ -104,7 +104,7 @@
 
 /** Returns the HTML reference for the object that can be used within the same HTML file.
  
- This is simply a wrapper over `[GBApplicationSettingsProviding htmlReferenceForObject:fromSource:]`, passing the given object as both method arguments. The major reason for introducing this method is the ability to reference it from the output templates! In this way all knowledge about references is handled in a single point and doesn't have to be repeated in various places.
+ This is simply a wrapper over `[GBApplicationSettingsProvider htmlReferenceForObject:fromSource:]`, passing the given object as both method arguments. The major reason for introducing this method is the ability to reference it from the output templates! In this way all knowledge about references is handled in a single point and doesn't have to be repeated in various places.
  
  @see htmlReferenceName
  */
@@ -112,7 +112,7 @@
 
 /** Returns the HTML reference name of the object that can be used as an anchor to link against.
  
- This is simply a wrapper over `[GBApplicationSettingsProviding htmlReferenceNameForObject:]`, passing the given object as the method argument. The major reason for introducing this method is the ability to reference it from the output templates! In this way all knowledge about references is handled in a single point and doesn't have to be repeated in various places.
+ This is simply a wrapper over `[GBApplicationSettingsProvider htmlReferenceNameForObject:]`, passing the given object as the method argument. The major reason for introducing this method is the ability to reference it from the output templates! In this way all knowledge about references is handled in a single point and doesn't have to be repeated in various places.
  
  @see htmlLocalReference
  */

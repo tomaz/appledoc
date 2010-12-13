@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBStoreProviding.h"
 #import "GBObjectiveCParser.h"
 #import "GBParser.h"
@@ -21,8 +21,8 @@
 - (BOOL)isSourceCodeFile:(NSString *)path;
 @property (assign) NSUInteger numberOfParsedFiles;
 @property (retain) GBObjectiveCParser *objectiveCParser;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -38,7 +38,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

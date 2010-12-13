@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
@@ -34,8 +34,8 @@
 
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -51,7 +51,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
@@ -63,7 +62,7 @@
 
 #pragma mark Processing handling
 
-- (void)processObjectsFromStore:(id<GBStoreProviding>)store {
+- (void)processObjectsFromStore:(id)store {
 	NSParameterAssert(store != nil);
 	GBLogVerbose(@"Processing parsed objects...");
 	self.currentContext = nil;

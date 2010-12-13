@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBApplicationSettingsProviding;
-@protocol GBStoreProviding;
-
 /** Handles processing of parsed data from any given `GBStore`.
  
  Processing phase is where parsed raw data is prepared for output. The most prominent part is processing comment raw values by validating and preparing links, formatting etc.
@@ -52,6 +49,6 @@
  @param store The store that contains all parsed objects.
  @exception NSException Thrown if a serious problem is detected which prevents us from processing.
  */
-- (void)processObjectsFromStore:(id<GBStoreProviding>)store;
+- (void)processObjectsFromStore:(id)store;
 
 @end

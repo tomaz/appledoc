@@ -7,7 +7,7 @@
 //
 
 #import "RegexKitLite.h"
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
@@ -45,8 +45,8 @@
 @property (retain) NSString *newLinesRegexSymbols;
 @property (retain) GBComment *currentComment;
 @property (retain) id<GBObjectDataProviding> currentContext;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -62,7 +62,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

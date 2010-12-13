@@ -8,9 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBApplicationSettingsProviding;
-@protocol GBStoreProviding;
-
 /** Implements Objective-C source code parser.
  
  The main responsibility of this class is encapsulation of Objective-C source code parsing into in-memory representation. As we're only parsing a small subset of Objective-C and even then we don't need to handle much specifics beyond recognizing different classes, variables, methods etc., overall the parsing process is quite simple. Basically we use ParseKit's `PKTokenizer` to split given input string into tokens and then traverse the list of tokens to get the data we need.

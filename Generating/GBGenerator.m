@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBStoreProviding.h"
 #import "GBHTMLOutputGenerator.h"
 #import "GBDocSetOutputGenerator.h"
@@ -17,8 +17,8 @@
 - (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store;
 - (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store;
 @property (readonly) NSMutableArray *outputGenerators;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -34,7 +34,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing generator with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

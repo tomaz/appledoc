@@ -7,7 +7,7 @@
 //
 
 #import "GRMustache.h"
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBObjectDataProviding.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
@@ -20,8 +20,8 @@
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -76,7 +76,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing variables provider with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

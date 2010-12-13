@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "DDCliApplication.h"
-#import "GBApplicationSettingsProviding.h"
 
 /** The appledoc application handler. 
  

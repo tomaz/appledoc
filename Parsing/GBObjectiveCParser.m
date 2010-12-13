@@ -10,7 +10,7 @@
 #import "ParseKit.h"
 #import "PKToken+GBToken.h"
 #import "GBTokenizer.h"
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
@@ -19,8 +19,8 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
-@property (retain) id<GBApplicationSettingsProviding> settings;
 @property (retain) id<GBStoreProviding> store;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -73,7 +73,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing objective-c parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {

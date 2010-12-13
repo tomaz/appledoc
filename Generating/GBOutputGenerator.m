@@ -6,7 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBApplicationSettingsProviding.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBTemplateHandler.h"
 #import "GBOutputGenerator.h"
 
@@ -31,7 +31,6 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-	NSParameterAssert([settingsProvider conformsToProtocol:@protocol(GBApplicationSettingsProviding)]);
 	GBLogDebug(@"Initializing output generator with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
