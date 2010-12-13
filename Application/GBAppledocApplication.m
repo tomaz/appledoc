@@ -65,8 +65,8 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
-- (void)initializeGlobalSettings;
-- (void)validateArguments:(NSArray *)arguments;
+- (void)initializeGlobalSettingsAndValidateTemplates;
+- (void)validateSettingsAndArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
@@ -116,10 +116,11 @@ static NSString *kGBArgHelp = @"help";
 		return EXIT_SUCCESS;
 	}
 	
+	[self validateSettingsAndArguments:arguments];
+	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
+
 	@try {		
-		[self validateArguments:arguments];
 		[self initializeLoggingSystem];
-		[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 		
 		GBLogNormal(@"Initializing...");
 		GBStore *store = [[GBStore alloc] init];		
@@ -217,7 +218,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgHelp,														0,		DDGetoptNoArgument },
 		{ nil,																0,		0 },
 	};
-	[self initializeGlobalSettings];
+	[self initializeGlobalSettingsAndValidateTemplates];
 	[optionParser addOptionsFromTable:options];
 }
 
@@ -231,7 +232,7 @@ static NSString *kGBArgHelp = @"help";
 	[formatter release];
 }
 
-- (void)initializeGlobalSettings {
+- (void)initializeGlobalSettingsAndValidateTemplates {
 	// This is where we override factory defaults (factory defaults with global templates. This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
 	__block BOOL found = NO;
@@ -290,7 +291,7 @@ static NSString *kGBArgHelp = @"help";
 		
 		// Warn if templates option is passed - we're already handling templates and pointing to another template wouldn't make much sense.
 		if ([option isEqualToString:kGBArgTemplatesPath]) {
-			ddprintf(@"WARNING: Found --%@ option in global setting, this is ignored for globals!\n", option);
+			ddprintf(@"WARN: Found --%@ option in global setting, this is ignored for globals!\n", option);
 			return;
 		}
 		
@@ -327,13 +328,34 @@ static NSString *kGBArgHelp = @"help";
 	return YES;
 }
 
-- (void)validateArguments:(NSArray *)arguments {
+- (void)validateSettingsAndArguments:(NSArray *)arguments {
+	// First make sure we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
 	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
 	for (NSString *path in arguments) {
 		if (![self.fileManager fileExistsAtPath:path]) {
 			[NSException raise:@"Path or file '%@' doesn't exist!", path];
 		}
 	}
+	
+	// Now validate we have all required settings specified.
+	if ([self.settings.projectName length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectName];
+	if ([self.settings.projectCompany length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectCompany];
+	
+	// If output path is not given, revert to current path, but do warn the user.
+	if ([self.settings.outputPath length] == 0) {
+		self.settings.outputPath = [self.fileManager currentDirectoryPath];
+		ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
+	}
+	
+	// If company identifier is not given and we have docset enabled, prepare one from company name, but do warn the user.
+	if (self.settings.createDocSet && [self.settings.companyIdentifier length] == 0) {
+		NSString *value = [NSString stringWithFormat:@"com.%@.%@", self.settings.projectCompany, self.settings.projectName];
+		value = [value stringByReplacingOccurrencesOfString:@" " withString:@""];
+		value = [value lowercaseString];
+		self.settings.companyIdentifier = value;
+		ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+	}
+	[NSException raise:@"ok"];
 }
 
 #pragma mark Overriden methods

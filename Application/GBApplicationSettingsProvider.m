@@ -40,10 +40,29 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		self.projectName = @"PROJECT";
-		self.projectCompany = @"COMPANY";
+		self.projectName = nil;
+		self.projectCompany = nil;
 		self.projectVersion = @"1.0";
-		self.companyIdentifier = @"com.company";
+		self.companyIdentifier = @"";
+
+		self.outputPath = @"";
+		self.templatesPath = nil;
+		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
+		self.ignoredPaths = [NSMutableSet set];
+		
+		self.createHTML = YES;
+		self.createDocSet = YES;
+		self.installDocSet = NO;		
+		self.keepUndocumentedObjects = NO;
+		self.keepUndocumentedMembers = NO;
+		self.findUndocumentedMembersDocumentation = YES;
+		self.mergeCategoriesToClasses = YES;
+		self.keepMergedCategoriesSections = NO;
+		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
+
+		self.warnOnUndocumentedObject = YES;
+		self.warnOnUndocumentedMember = YES;
+		
 		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECT";
 		self.docsetBundleName = @"$PROJECT Documentation";
 		self.docsetCertificateIssuer = @"";
@@ -53,25 +72,11 @@
 		self.docsetFeedName = @"";
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
-		self.docsetPlatformFamily = @"macosx";
+		self.docsetPlatformFamily = @"";
 		self.docsetPublisherIdentifier = @"$COMPANYID.documentation";
 		self.docsetPublisherName = @"$COMPANY";
 		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
-		self.outputPath = @"~/Downloads/examples/AppledocHtml";
-		self.templatesPath = @"~/Dropbox/Xcode/Projects/Tools/appledoc/Project/Templates";
-		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
-		self.ignoredPaths = [NSMutableSet set];
-		self.createHTML = YES;
-		self.createDocSet = YES;
-		self.installDocSet = NO;
-		self.keepUndocumentedObjects = NO;
-		self.keepUndocumentedMembers = NO;
-		self.findUndocumentedMembersDocumentation = YES;
-		self.mergeCategoriesToClasses = YES;
-		self.keepMergedCategoriesSections = NO;
-		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
-		self.warnOnUndocumentedObject = YES;
-		self.warnOnUndocumentedMember = YES;
+		
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
 	}
