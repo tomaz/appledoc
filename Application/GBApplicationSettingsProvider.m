@@ -48,6 +48,7 @@
 		self.outputPath = @"";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
+		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
 		self.ignoredPaths = [NSMutableSet set];
 		
 		self.createHTML = YES;
@@ -290,10 +291,9 @@
 
 @synthesize outputPath;
 @synthesize docsetInstallPath;
+@synthesize docsetUtilPath;
 @synthesize templatesPath;
 @synthesize ignoredPaths;
-@synthesize commentComponents;
-@synthesize stringTemplates;
 
 @synthesize docsetBundleIdentifier;
 @synthesize docsetBundleName;
@@ -323,5 +323,8 @@
 
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
+
+@synthesize commentComponents;
+@synthesize stringTemplates;
 
 @end

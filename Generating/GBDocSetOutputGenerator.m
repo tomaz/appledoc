@@ -180,7 +180,7 @@
 	GBTask *task = [GBTask task];
 	task.reportIndividualLines = YES;
 	NSArray *args = [NSArray arrayWithObjects:@"index", [self.outputUserPath stringByStandardizingPath], nil];
-	BOOL result = [task runCommand:@"/Developer/usr/bin/docsetutil" arguments:args block:^(NSString *output, NSString *error) {
+	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];

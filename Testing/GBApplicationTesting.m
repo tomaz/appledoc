@@ -42,6 +42,13 @@
 	assertThat(settings.docsetInstallPath, is(@"path"));
 }
 
+- (void)testDocsetUtilPath_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docsetutil-path", @"path", nil];
+	// verify
+	assertThat(settings.docsetUtilPath, is(@"path"));
+}
+
 - (void)testIgnore_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--ignore", @"path", nil];

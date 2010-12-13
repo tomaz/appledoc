@@ -19,6 +19,7 @@
 static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
+static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
 static NSString *kGBArgIgnorePath = @"ignore";
 
 static NSString *kGBArgProjectName = @"project-name";
@@ -167,6 +168,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
 		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgProjectName,												'p',	DDGetoptRequiredArgument },
 		{ kGBArgProjectVersion,												'v',	DDGetoptRequiredArgument },
@@ -368,6 +370,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setOutput:(NSString *)path { self.settings.outputPath = path; }
 - (void)setTemplates:(NSString *)path { self.settings.templatesPath = path; }
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = path; }
+- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = path; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
 	[self.settings.ignoredPaths addObject:path];
