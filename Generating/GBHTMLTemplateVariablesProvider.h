@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @class GBClassData;
-@protocol GBStoreProviding;
 
 /** Provides variables for HTML template string for given objects.
  
@@ -45,7 +44,7 @@
 /// @name Variables handling
 ///---------------------------------------------------------------------------------------
 
-/** Returns the variables for the given `GBClassData` using the given `GBStoreProviding` for links. 
+/** Returns the variables for the given `GBClassData` using the given `GBStore` for links. 
  
  The result can be used with `GBTemplateHandler` to generate class specific output.
  
@@ -57,9 +56,9 @@
  @see variablesForProtocol:withStore:
  @see variablesForIndexWithStore:
  */
-- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store;
+- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)store;
 
-/** Returns the variables for the given `GBCategoryData` using the given `GBStoreProviding` for links. 
+/** Returns the variables for the given `GBCategoryData` using the given `GBStore` for links. 
  
  The result can be used with `GBTemplateHandler` to generate category specific output.
  
@@ -71,9 +70,9 @@
  @see variablesForProtocol:withStore:
  @see variablesForIndexWithStore:
  */
-- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id<GBStoreProviding>)store;
+- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)store;
 
-/** Returns the variables for the given `GBProtocolData` using the given `GBStoreProviding` for links. 
+/** Returns the variables for the given `GBProtocolData` using the given `GBStore` for links. 
  
  The result can be used with `GBTemplateHandler` to generate protocol specific output.
  
@@ -85,9 +84,9 @@
  @see variablesForCategory:withStore:
  @see variablesForIndexWithStore:
  */
-- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id<GBStoreProviding>)store;
+- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)store;
 
-/** Returns the variables for the index file using the given `GBStoreProviding` for links. 
+/** Returns the variables for the index file using the given `GBStore` for links. 
  
  The result can be used with `GBTemplateHandler` to generate protocol specific output.
  
@@ -98,6 +97,6 @@
  @see variablesForCategory:withStore:
  @see variablesForIndexWithStore:
  */
-- (NSDictionary *)variablesForIndexWithStore:(id<GBStoreProviding>)store;
+- (NSDictionary *)variablesForIndexWithStore:(id)store;
 
 @end

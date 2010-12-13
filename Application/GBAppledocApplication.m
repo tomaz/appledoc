@@ -75,7 +75,6 @@ static NSString *kGBArgHelp = @"help";
 @property (assign) NSString *verbose;
 @property (assign) BOOL version;
 @property (assign) BOOL help;
-@property (assign) BOOL testargs;
 
 @end
 

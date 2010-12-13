@@ -6,8 +6,8 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
-#import "GBStoreProviding.h"
 #import "GBObjectiveCParser.h"
 #import "GBParser.h"
 
@@ -21,7 +21,7 @@
 - (BOOL)isSourceCodeFile:(NSString *)path;
 @property (assign) NSUInteger numberOfParsedFiles;
 @property (retain) GBObjectiveCParser *objectiveCParser;
-@property (retain) id<GBStoreProviding> store;
+@property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
 @end
@@ -49,7 +49,7 @@
 
 #pragma mark File system parsing handling
 
-- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id<GBStoreProviding>)store {
+- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(store != nil);
 	GBLogVerbose(@"Parsing objects from %u paths...", [paths count]);

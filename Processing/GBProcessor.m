@@ -6,8 +6,8 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
-#import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 #import "GBProcessor.h"
@@ -34,7 +34,7 @@
 
 @property (retain) GBCommentsProcessor *commentsProcessor;
 @property (retain) id<GBObjectDataProviding> currentContext;
-@property (retain) id<GBStoreProviding> store;
+@property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
 @end

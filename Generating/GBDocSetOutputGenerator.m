@@ -7,6 +7,7 @@
 //
 
 #import "GRMustache.h"
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBTask.h"
 #import "GBDataObjects.h"
@@ -40,7 +41,7 @@
 
 #pragma Generation handling
 
-- (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
 	
 	// Prepare for run.

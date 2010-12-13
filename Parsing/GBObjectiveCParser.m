@@ -10,8 +10,8 @@
 #import "ParseKit.h"
 #import "PKToken+GBToken.h"
 #import "GBTokenizer.h"
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
-#import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 
@@ -19,7 +19,7 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 @property (retain) GBTokenizer *tokenizer;
-@property (retain) id<GBStoreProviding> store;
+@property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
 @end
@@ -88,7 +88,6 @@
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
 	NSParameterAssert(store != nil);
-	NSParameterAssert([store conformsToProtocol:@protocol(GBStoreProviding)]);
 	GBLogDebug(@"Parsing objective-c objects...");
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename];

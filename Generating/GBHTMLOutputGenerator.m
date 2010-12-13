@@ -6,6 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBHTMLTemplateVariablesProvider.h"
@@ -33,7 +34,7 @@
 
 #pragma Generation handling
 
-- (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	if (![super generateOutputWithStore:store error:error]) return NO;
 	if (![self validateTemplates:error]) return NO;
 	if (![self processClasses:error]) return NO;

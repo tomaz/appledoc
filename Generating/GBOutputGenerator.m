@@ -6,6 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBTemplateHandler.h"
 #import "GBOutputGenerator.h"
@@ -15,7 +16,7 @@
 - (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename error:(NSError **)error;
 - (BOOL)isPathRepresentingTemplateFile:(NSString *)path;
 - (BOOL)isPathRepresentingIgnoredFile:(NSString *)path;
-@property (readwrite, retain) id<GBStoreProviding> store;
+@property (readwrite, retain) GBStore *store;
 
 @end
 
@@ -41,7 +42,7 @@
 
 #pragma mark Generation handling
 
-- (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	GBLogVerbose(@"%@ is generating output...", [self className]);
 	self.store = store;
 	return YES;

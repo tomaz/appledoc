@@ -7,9 +7,9 @@
 //
 
 #import "GRMustache.h"
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBObjectDataProviding.h"
-#import "GBStoreProviding.h"
 #import "GBDataObjects.h"
 #import "GBHTMLTemplateVariablesProvider.h"
 
@@ -20,7 +20,7 @@
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
-@property (retain) id<GBStoreProviding> store;
+@property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
 @end
@@ -86,7 +86,7 @@
 
 #pragma mark Object variables handling
 
-- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id<GBStoreProviding>)store {
+- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)store {
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
@@ -99,7 +99,7 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id<GBStoreProviding>)store {
+- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)store {
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
@@ -112,7 +112,7 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id<GBStoreProviding>)store {
+- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)store {
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
@@ -127,7 +127,7 @@
 
 #pragma mark Index variables handling
 
-- (NSDictionary *)variablesForIndexWithStore:(id<GBStoreProviding>)store {
+- (NSDictionary *)variablesForIndexWithStore:(id)store {
 	self.store = store;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];

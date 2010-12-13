@@ -6,18 +6,18 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
-#import "GBStoreProviding.h"
 #import "GBHTMLOutputGenerator.h"
 #import "GBDocSetOutputGenerator.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
 
-- (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store;
-- (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store;
+- (void)setupGeneratorStepsWithStore:(id)store;
+- (void)runGeneratorStepsWithStore:(id)store;
 @property (readonly) NSMutableArray *outputGenerators;
-@property (retain) id<GBStoreProviding> store;
+@property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
 @end
@@ -44,14 +44,14 @@
 
 #pragma mark Generation handling
 
-- (void)generateOutputFromStore:(id<GBStoreProviding>)store {
+- (void)generateOutputFromStore:(id)store {
 	NSParameterAssert(store != nil);
 	GBLogInfo(@"Generating output from parsed objects...");
 	[self setupGeneratorStepsWithStore:store];
 	[self runGeneratorStepsWithStore:store];
 }
 
-- (void)setupGeneratorStepsWithStore:(id<GBStoreProviding>)store {
+- (void)setupGeneratorStepsWithStore:(id)store {
 	// Setups all output generators. The order of these is crucial as they are invoked in the order added to the list. This forms a dependency where each next generator can use
 	GBLogDebug(@"Initializing generation steps...");
 	if (!self.settings.createHTML) return;
@@ -60,7 +60,7 @@
 	[self.outputGenerators addObject:[GBDocSetOutputGenerator generatorWithSettingsProvider:self.settings]];
 }
 
-- (void)runGeneratorStepsWithStore:(id<GBStoreProviding>)store {
+- (void)runGeneratorStepsWithStore:(id)store {
 	GBLogDebug(@"Running generation steps...");
 	NSUInteger stepsCount = [self.outputGenerators count];
 	if (stepsCount == 0) {

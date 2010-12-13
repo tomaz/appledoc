@@ -51,7 +51,7 @@
 	return [[self.protocols allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
-#pragma mark GBStoreProviding implementation
+#pragma mark Registration handling
 
 - (void)registerClass:(GBClassData *)class {
 	NSParameterAssert(class != nil);
@@ -110,6 +110,8 @@
 		return;
 	}
 }
+
+#pragma mark Data providing
 
 - (GBClassData *)classWithName:(NSString *)name {
 	return [_classesByName objectForKey:name];

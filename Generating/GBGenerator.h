@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBStoreProviding;
-
 /** Handles generating of parsed and processed data from any given `GBStore`.
  
  Generating phase is where output is generated from parsed and processed data - in other words, this is where the work previous phases has done becomes visible and therefore usable for the users. As such, this class is the engine for generating output, but doesn't do actual generation itself. Instead, it serves as an single and simple entry point for the rest of the application. Internally it delegates actual generation tasks to various lower-level objects, based on user's choices.
@@ -51,6 +49,6 @@
  @param store The store that contains all parsed and processed objects.
  @exception NSException Thrown if a serious problem is detected which prevents us from processing.
  */
-- (void)generateOutputFromStore:(id<GBStoreProviding>)store;
+- (void)generateOutputFromStore:(id)store;
 
 @end

@@ -402,7 +402,6 @@
 		73FC6DC511FCCD7B00AAD0B9 /* AppledocTests_prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTests_prefix.pch; sourceTree = SOURCE_ROOT; };
 		73FC6DD911FCCE6B00AAD0B9 /* GBObjectiveCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectiveCParser.h; sourceTree = "<group>"; };
 		73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBObjectiveCParser.m; sourceTree = "<group>"; };
-		73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBStoreProviding.h; sourceTree = "<group>"; };
 		73FC6E0D11FCD54400AAD0B9 /* GBStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBStore.h; sourceTree = "<group>"; };
 		73FC6E0E11FCD54400AAD0B9 /* GBStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBStore.m; sourceTree = "<group>"; };
 		73FC6E1211FCD59200AAD0B9 /* GBStoreTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBStoreTesting.m; sourceTree = "<group>"; };
@@ -808,7 +807,6 @@
 		73F70DB31227B32100D19EBA /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6DE311FCD09400AAD0B9 /* GBStoreProviding.h */,
 				73A32FB112364BC100040070 /* GBObjectDataProviding.h */,
 				73FC6E0D11FCD54400AAD0B9 /* GBStore.h */,
 				73FC6E0E11FCD54400AAD0B9 /* GBStore.m */,

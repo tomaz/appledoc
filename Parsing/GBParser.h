@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBStoreProviding;
-
 /** Handles loading class data from source files.
  
  This is the first phase of appledoc generation process. It walks the given directory hierarchy and loads source files data into memory structure prepared for next phases.
@@ -54,6 +52,6 @@
  @param store The store to add objects to.
  @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
  */
-- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id<GBStoreProviding>)store;
+- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store;
 
 @end

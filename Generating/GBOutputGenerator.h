@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GBStoreProviding.h"
 
+@class GBStore;
 @class GBApplicationSettingsProvider;
 
 /** The base class for all output generators.
@@ -62,13 +62,13 @@
  
  This is the most important method of the `GBOutputGenerator` class. It generates all required output. It is intended to be overriden in subclasses. Default implementation assigns the given store and returns YES. Subclasses must call super class implementation before anything else!
  
- @param store The `GBStoreProviding` object that holds the store with all parsed and processed data.
+ @param store The `GBStore` object that holds the store with all parsed and processed data.
  @param error If generation fails, error description is returned here.
  @see copyTemplateFilesToOutputPath:
  @see writeString:toFile:error:
  @see store
  */
-- (BOOL)generateOutputWithStore:(id<GBStoreProviding>)store error:(NSError **)error;
+- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error;
 
 /** Writes the given string to the given path, creating all necessary directories if they don't exist.
  
@@ -133,7 +133,7 @@
  
  @see generateOutputWithStore:error:
  */
-@property (readonly, retain) id<GBStoreProviding> store;
+@property (readonly, retain) GBStore *store;
 
 ///---------------------------------------------------------------------------------------
 /// @name Generation parameters
