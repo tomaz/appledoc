@@ -101,10 +101,6 @@
 
 #pragma mark Helper methods
 
-- (BOOL)overrideWithGlobalSettingsFromPath:(NSString *)path {
-	return YES;
-}
-
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
 	self.docsetBundleIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleIdentifier];
 	self.docsetBundleName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleName];

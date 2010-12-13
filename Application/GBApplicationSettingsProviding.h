@@ -276,15 +276,6 @@
 /// @name Helper methods
 ///---------------------------------------------------------------------------------------
 
-/** Overrides current settings with global settings from the given path.
- 
- If global settings file is found at the given path, this method reads it and overrides existing settings with values from the file. Only settings that are found in the file are overriden, the rest remain unchanged. If global settings file doesn't exist at the given path, no settings is overriden. Note that only the path to templates base directory is given, it's up to the implementor to determine the exact filename and/or subdirectory! Also note that the given path is expected to be valid path to an existing directory! If the path is not to an existing directory or it's a path to a file, results of the method are undpredictable; in most cases an exception is raised.
- 
- @param path The path to the templates directory.
- @return Returns `YES` if global settings file was found at the given path, `NO` otherwise.
- */
-- (BOOL)overrideWithGlobalSettingsFromPath:(NSString *)path;
-
 /** Replaces all occurences of placeholder strings in all related values of the receiver.
  
  This message should be sent once all the values have been set. It is a convenience method that prepares all values that can use placeholder strings. From this point on, the rest of the application can simply use properties to get final values instead of sending `stringByReplacingOccurencesOfPlaceholdersInString:` all the time.

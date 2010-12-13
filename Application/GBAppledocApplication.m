@@ -66,6 +66,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)initializeLoggingSystem;
 - (void)initializeGlobalSettings;
 - (void)validateArguments:(NSArray *)arguments;
+- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
@@ -239,7 +240,7 @@ static NSString *kGBArgHelp = @"help";
 		if ([opt isEqualToString:@"t"] || [opt isEqualToString:kGBArgTemplatesPath]) {
 			NSError *error = nil;
 			if (![self validateTemplatesPath:path error:&error]) [NSException raise:error format:@"Path '%@' from %@ is not valid!", path, option];			
-			[self.settings overrideWithGlobalSettingsFromPath:path];
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
 			found = YES;
 			*stop = YES;
 			return;
@@ -254,19 +255,54 @@ static NSString *kGBArgHelp = @"help";
 		{
 			path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
 			if ([self validateTemplatesPath:path error:nil]) {
-				[self.settings overrideWithGlobalSettingsFromPath:path];
+				[self overrideSettingsWithGlobalSettingsFromPath:path];
 				return;
 			}		
 		}
 		
 		path = @"~/.appledoc";
 		if ([self validateTemplatesPath:path error:nil]) {
-			[self.settings overrideWithGlobalSettingsFromPath:path];
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
 			return;
 		}
 		
 		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
 	}
+}
+
+- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path {
+	// Checks if global settings file exists at the given path and if so, overrides current settings with values from the file. To keep code as simple as possible, we're reusing DDCli KVC here: global templates file simply uses keys which are equal to command line arguments. Then, by reusing DDCli method for converting switch to KVC key, we're simply sending appropriate KVC messages to receiver. From object's point of view, this is no different than getting KVC messages sent from DDCli. If we time this message correctly, it's sent after factory defaults are established and before DDCli parses command line! Note that this may cause some KVC messages beeing sent twice or more. The only code added is handling boolean settings (i.e. adding "--no" prefix) and settings that may be entered multiple times (--ignore for example). To even further simplify handling, we're only allowing long command line arguments names in global templates for now!
+	NSString *userPath = [path stringByAppendingPathComponent:@"GlobalSettings.plist"];
+	NSString *filename = [userPath stringByStandardizingPath];
+	if (![self.fileManager fileExistsAtPath:filename]) return;
+	
+	NSError* error = nil;
+	NSData* data = [NSData dataWithContentsOfFile:filename options:0 error:&error];
+	if (!data) [NSException raise:@"Failed reading global templates from '%@'!", userPath];	
+	NSDictionary *globals = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+	if (!globals) [NSException raise:error format:@"Failed reaing global templates plist from '%@'!", userPath];
+	
+	[globals enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
+		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
+		NSString *key = [DDGetoptLongParser keyFromOption:option];
+		
+		// Warn if templates option is passed - we're already handling templates and pointing to another template wouldn't make much sense.
+		if ([option isEqualToString:kGBArgTemplatesPath]) {
+			ddprintf(@"WARNING: Found --%@ option in global setting, this is ignored for globals!\n", option);
+			return;
+		}
+		
+		// If the value is an array, send as many messages as there are values.
+		if ([value isKindOfClass:[NSArray class]]) {
+			for (NSString *item in value) {
+				[self setValue:item forKey:key];
+			}
+			return;
+		}
+		
+		// For all other values, just send the KVC message. Note that this works for booleans as well - if the plist has NO value, the value reported is going to be [NSNumber numberWithBool:NO] and our KVC mutator would properly assign the value, so therefore we don't have to prefix with "no"...
+		[self setValue:value forKey:key];
+	}];
 }
 
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
