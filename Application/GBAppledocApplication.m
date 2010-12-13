@@ -24,6 +24,7 @@ static NSString *kGBArgIgnorePath = @"ignore";
 static NSString *kGBArgProjectName = @"project-name";
 static NSString *kGBArgProjectVersion = @"project-version";
 static NSString *kGBArgProjectCompany = @"project-company";
+static NSString *kGBArgCompanyIdentifier = @"company-identifier";
 
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
@@ -169,6 +170,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgProjectName,												'p',	DDGetoptRequiredArgument },
 		{ kGBArgProjectVersion,												'v',	DDGetoptRequiredArgument },
 		{ kGBArgProjectCompany,												'c',	DDGetoptRequiredArgument },
+		{ kGBArgCompanyIdentifier,											0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgDocSetBundleIdentifier,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetBundleName,											0,		DDGetoptRequiredArgument },
@@ -352,7 +354,8 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
 - (void)setProjectVersion:(NSString *)value { self.settings.projectVersion = value; }
-- (void)setProjectCompany:(NSString *)value { self.settings.projectCompany  =value; }
+- (void)setProjectCompany:(NSString *)value { self.settings.projectCompany = value; }
+- (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
 
 - (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
 - (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
@@ -426,6 +429,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"-p,", kGBArgProjectName, @"<string>", @"Project name");
 	PRINT_USAGE(@"-v,", kGBArgProjectVersion, @"<string>", @"Project version");
 	PRINT_USAGE(@"-c,", kGBArgProjectCompany, @"<string>", @"Project company");
+	PRINT_USAGE(@"   ", kGBArgCompanyIdentifier, @"<string>", @"Company UTI (i.e. reverse DNS name)");
 	ddprintf(@"\n");
 	ddprintf(@"OUTPUT GENERATION\n");
 	PRINT_USAGE(@"-h,", kGBArgCreateHTML, @"<bool>", @"Create HTML");

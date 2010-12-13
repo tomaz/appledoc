@@ -83,6 +83,13 @@
 	assertThat(settings.projectCompany, is(@"value"));
 }
 
+- (void)testCompanyIdentifier_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--company-id", @"value", nil];
+	// verify
+	assertThat(settings.companyIdentifier, is(@"value"));
+}
+
 #pragma mark Behavior settings testing
 
 - (void)testCreateHTML_shouldAssignValueToSettings {
