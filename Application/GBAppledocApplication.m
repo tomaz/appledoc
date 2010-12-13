@@ -58,6 +58,7 @@ static NSString *kGBArgDocSetCertificateSigner = @"docset-cert-signer";
 
 static NSString *kGBArgLogFormat = @"logformat";
 static NSString *kGBArgVerbose = @"verbose";
+static NSString *kGBArgPrintSettings = @"print-settings";
 static NSString *kGBArgVersion = @"version";
 static NSString *kGBArgHelp = @"help";
 
@@ -70,11 +71,13 @@ static NSString *kGBArgHelp = @"help";
 - (void)initializeLoggingSystem;
 - (void)initializeGlobalSettingsAndValidateTemplates;
 - (void)validateSettingsAndArguments:(NSArray *)arguments;
+- (void)printSettingsAndArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
+@property (assign) BOOL printSettings;
 @property (assign) BOOL version;
 @property (assign) BOOL help;
 
@@ -100,6 +103,7 @@ static NSString *kGBArgHelp = @"help";
 	self = [super init];
 	if (self) {
 		self.settings = [GBApplicationSettingsProvider provider];
+		self.printSettings = NO;
 		self.logformat = @"1";
 		self.verbose = @"2";
 	}
@@ -120,6 +124,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	[self validateSettingsAndArguments:arguments];
 	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
+	if (self.printSettings) [self printSettingsAndArguments:arguments];
 
 	@try {		
 		[self initializeLoggingSystem];
@@ -221,6 +226,7 @@ static NSString *kGBArgHelp = @"help";
 		
 		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
 		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
+		{ kGBArgPrintSettings,												0,		DDGetoptNoArgument },
 		{ kGBArgVersion,													0,		DDGetoptNoArgument },
 		{ kGBArgHelp,														0,		DDGetoptNoArgument },
 		{ nil,																0,		0 },
@@ -368,6 +374,64 @@ static NSString *kGBArgHelp = @"help";
 	}
 }
 
+- (void)printSettingsAndArguments:(NSArray *)arguments {
+#define PRINT_BOOL(v) (v ? @"YES" : @"NO")
+	// This is useful for debugging to see exact set of setting values that are going to be used for this session. Note that this is coupling command line switches to actual settings. Here it's just the opposite than DDCli callbacks.
+	ddprintf(@"Running for files in locations:\n");
+	for (NSString *path in arguments) ddprintf(@"- %@\n", path);
+	ddprintf(@"\n");
+	
+	ddprintf(@"Settings used for this run:\n");
+	ddprintf(@"--%@ = %@\n", kGBArgProjectName, self.settings.projectName);
+	ddprintf(@"--%@ = %@\n", kGBArgProjectVersion, self.settings.projectVersion);
+	ddprintf(@"--%@ = %@\n", kGBArgProjectCompany, self.settings.projectCompany);
+	ddprintf(@"--%@ = %@\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+	ddprintf(@"\n");
+	
+	ddprintf(@"--%@ = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
+	ddprintf(@"--%@ = %@\n", kGBArgOutputPath, self.settings.outputPath);
+	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetUtilPath, self.settings.docsetUtilPath);
+	ddprintf(@"\n");
+	
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleIdentifier, self.settings.docsetBundleIdentifier);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleName, self.settings.docsetBundleName);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetDescription, self.settings.docsetDescription);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetCopyrightMessage, self.settings.docsetCopyrightMessage);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedName, self.settings.docsetFeedName);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedURL, self.settings.docsetFeedURL);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetFallbackURL, self.settings.docsetFallbackURL);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherIdentifier, self.settings.docsetPublisherIdentifier);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherName, self.settings.docsetPublisherName);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetMinimumXcodeVersion, self.settings.docsetMinimumXcodeVersion);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPlatformFamily, self.settings.docsetPlatformFamily);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateIssuer, self.settings.docsetCertificateIssuer);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateSigner, self.settings.docsetCertificateSigner);
+	ddprintf(@"\n");
+	
+	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
+	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
+	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
+	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
+	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
+	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
+	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
+	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
+	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
+	ddprintf(@"\n");
+
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedMember, PRINT_BOOL(self.settings.warnOnUndocumentedMember));
+	ddprintf(@"\n");
+	
+	ddprintf(@"--%@ = %@\n", kGBArgLogFormat, self.logformat);
+	ddprintf(@"--%@ = %@\n", kGBArgVerbose, self.verbose);
+	ddprintf(@"\n");
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -435,6 +499,7 @@ static NSString *kGBArgHelp = @"help";
 
 @synthesize logformat;
 @synthesize verbose;
+@synthesize printSettings;
 @synthesize version;
 @synthesize help;
 
