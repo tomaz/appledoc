@@ -122,6 +122,7 @@ static NSString *kGBArgHelp = @"help";
 		return EXIT_SUCCESS;
 	}
 	
+	[self printVersion];
 	[self validateSettingsAndArguments:arguments];
 	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	if (self.printSettings) [self printSettingsAndArguments:arguments];
@@ -514,7 +515,8 @@ static NSString *kGBArgHelp = @"help";
 @implementation GBAppledocApplication (UsagePrintout)
 
 - (void)printVersion {
-	ddprintf(@"%@ version: %@\n", DDCliApp, @"2.0 pre-alpha");
+	ddprintf(@"%@ version: %@\n", DDCliApp, @"2.0b1");
+	ddprintf(@"\n");
 }
 
 - (void)printHelp {
