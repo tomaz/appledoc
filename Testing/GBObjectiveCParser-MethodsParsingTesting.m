@@ -98,6 +98,19 @@
 	[self assertMethod:[methods objectAtIndex:1] matchesClassComponents:@"void", @"method2", nil];
 }
 
+- (void)testParseObjectsFromString_shouldHandleAttributeDirectiveForMethods {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface Class - (void)method __attribute__((anything 00 ~!@#$%^&*)); @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesInstanceComponents:@"void", @"method", nil];
+}
+
 #pragma mark Method declarations parsing
 
 - (void)testParseObjectsFromString_shouldRegisterMethodDeclarationWithNoArguments {
@@ -258,6 +271,19 @@
 	assertThatInteger([methods count], equalToInteger(2));
 	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"readonly", @"int", @"name1", nil];
 	[self assertMethod:[methods objectAtIndex:1] matchesPropertyComponents:@"readwrite", @"long", @"name2", nil];
+}
+
+- (void)testParseObjectsFromString_shouldHandleAttributeDirectiveForProperties {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface Class @property (readonly) int name __attribute__((anything 00 ~!@#$%^&*)); @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"readonly", @"int", @"name", nil];
 }
 
 #pragma mark Methods & properties required/optional parsing

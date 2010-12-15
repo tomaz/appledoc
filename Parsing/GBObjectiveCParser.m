@@ -232,15 +232,29 @@
 		
 		// Get property types and name. Handle block types properly!
 		NSMutableArray *propertyComponents = [NSMutableArray array];
+		__block BOOL parseAttribute = NO;
+		__block NSUInteger parenthesisDepth = 0;
 		__block BOOL parseBlockName = NO;
 		__block NSString *blockName = nil;
 		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-			[propertyComponents addObject:[token stringValue]];
-			if (parseBlockName) {
-				blockName = [token stringValue];
-				parseBlockName = NO;
+			if ([token matches:@"__attribute__"]) {
+				parseAttribute = YES;
+				parenthesisDepth = 0;
+			} else if (parseAttribute) {
+				if ([token matches:@"("]) {
+					parenthesisDepth++;					
+				} else if ([token matches:@")"]) {
+					parenthesisDepth--;
+					if (parenthesisDepth == 0) parseAttribute = NO;
+				}					
+			} else {
+				[propertyComponents addObject:[token stringValue]];
+				if (parseBlockName) {
+					blockName = [token stringValue];
+					parseBlockName = NO;
+				}
+				if ([token matches:@"^"]) parseBlockName = YES;
 			}
-			if ([token matches:@"^"]) parseBlockName = YES;
 		}];
 		if (blockName) [propertyComponents addObject:blockName];
 		
@@ -417,8 +431,25 @@
 		}];
 		
 		// Get all arguments. Note that we ignore semicolons which may "happen" in declaration before method opening brace!
+		__block BOOL parseAttribute = NO;
+		__block NSUInteger parenthesisDepth = 0;
 		__block NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+			if ([token matches:@"__attribute__"]) {
+				parseAttribute = YES;
+				parenthesisDepth = 0;
+				return;
+			}
+			if (parseAttribute) {
+				if ([token matches:@"("]) {
+					parenthesisDepth++;
+				} else if ([token matches:@")"]) {
+					parenthesisDepth--;
+					if (parenthesisDepth == 0) parseAttribute = NO;
+				}
+				return;
+			}
+			
 			// If we receive semicolon, ignore it - this works for both - definition and declaration!
 			if ([token matches:@";"]) {
 				*stop = YES;
