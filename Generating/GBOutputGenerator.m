@@ -185,5 +185,6 @@
 
 @synthesize previousGenerator;
 @synthesize settings;
+@synthesize store;
 
 @end
