@@ -160,6 +160,38 @@
 	 nil];
 }
 
+- (void)testFormattedComponents_shouldCombineGetterAndSetterAttributes {
+	// setup
+	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", @"getter", @"=", @"isName", @"setter", @"=", @"setName:", nil];
+	NSArray *components = [NSArray arrayWithObjects:@"NSString", @"*", @"name", nil];
+	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
+	// execute
+	NSArray *result = [method formattedComponents];
+	// verify: {@property}-{ }-{(}-{readonly}-{,}-{ }-{getter}-{=}-{isName}-{,}-{ }-{setter}-{=}-{setName:}-{)}-{ }-{NSString}-{ }-{*}-{name}
+	[self assertFormattedComponents:result match:
+	 @"@property", 0, GBNULL, 
+	 @" ", 0, GBNULL, 
+	 @"(", 0, GBNULL,
+	 @"readonly", 0, GBNULL,
+	 @",", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"getter", 0, GBNULL,
+	 @"=", 0, GBNULL,
+	 @"isName", 0, GBNULL,
+	 @",", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"setter", 0, GBNULL,
+	 @"=", 0, GBNULL,
+	 @"setName:", 0, GBNULL,
+	 @")", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"NSString", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"*", 0, GBNULL,
+	 @"name", 0, GBNULL,
+	 nil];
+}
+
 - (void)testFormattedComponents_shouldReturnSimpleInstanceMethodComponents {
 	// setup
 	NSArray *results = [NSArray arrayWithObjects:@"void", nil];

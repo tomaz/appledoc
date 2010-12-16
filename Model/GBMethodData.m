@@ -64,9 +64,18 @@
 		[result addObject:[self formattedComponentWithValue:@" "]];
 		
 		// Add the list of attributes.
+		__block BOOL isSetterOrGetter = NO;
 		[result addObject:[self formattedComponentWithValue:@"("]];
 		[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
 			[result addObject:[self formattedComponentWithValue:attribute]];
+			if ([attribute isEqualToString:@"setter"] || [attribute isEqualToString:@"getter"]) {
+				isSetterOrGetter = YES;
+				return;
+			}
+			if (isSetterOrGetter) {
+				if ([attribute isEqualToString:@"="]) return;
+				isSetterOrGetter = NO;
+			}
 			if (idx < [self.methodAttributes count]-1) {
 				[result addObject:[self formattedComponentWithValue:@","]];
 				[result addObject:[self formattedComponentWithValue:@" "]];
