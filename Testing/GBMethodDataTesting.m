@@ -138,6 +138,24 @@
 	 nil];
 }
 
+- (void)testFormattedComponents_shouldProperlyHandlePropertyWithNoAttributes {
+	// setup
+	NSArray *attributes = [NSArray array];
+	NSArray *components = [NSArray arrayWithObjects:@"NSString", @"*", @"name", nil];
+	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
+	// execute
+	NSArray *result = [method formattedComponents];
+	// verify: {@property}-{ }-{NSString}-{ }-{*}-{name}
+	[self assertFormattedComponents:result match:
+	 @"@property", 0, GBNULL, 
+	 @" ", 0, GBNULL, 
+	 @"NSString", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"*", 0, GBNULL,
+	 @"name", 0, GBNULL,
+	 nil];
+}
+
 - (void)testFormattedComponents_shouldReturnPointerPropertyComponents {
 	// setup
 	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", nil];
