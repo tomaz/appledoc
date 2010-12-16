@@ -35,6 +35,7 @@
 - (NSArray *)paragraphTextItemsFromString:(NSString *)string;
 - (NSString *)wordifiedTextFromString:(NSString *)string;
 - (NSString *)trimmedTextFromString:(NSString *)string;
+- (NSString *)trimmedTextFromString:(NSString *)string trimNewLines:(BOOL)newlines;
 
 - (GBParagraphLinkItem *)remoteMemberLinkItemFromString:(NSString *)string matchRange:(NSRange *)range;
 - (GBParagraphLinkItem *)simpleLinkItemFromString:(NSString *)string matchRange:(NSRange *)range;
@@ -543,7 +544,7 @@
 		// Get formatted text and prepare properly decorated component. Note that we warn the user if we find unknown decorator type (this probably just means we changed some decorator value by forgot to change this part, so it's some sort of "exception" catching).
 		NSString *value = [format valueForKey:@"value"];
 		if ([value length] > 0) {
-			NSString *text = [self trimmedTextFromString:value];
+			NSString *text = [self trimmedTextFromString:value trimNewLines:YES];
 			if (text) {
 				GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItem];
 				if ([type isEqualToString:@"*"]) {
@@ -585,7 +586,7 @@
 	// If we have some remaining text, append it now.
 	if ([simplified length] > search.location) {
 		NSString *skipped = [simplified substringWithRange:search];
-		NSString *text = [self trimmedTextFromString:skipped];
+		NSString *text = [self trimmedTextFromString:skipped trimNewLines:YES];
 		if (text) [result addObject:[GBParagraphTextItem paragraphItemWithStringValue:text]];
 	}
 	return result;
@@ -599,8 +600,13 @@
 }
 
 - (NSString *)trimmedTextFromString:(NSString *)string {
-	// Returns trimmed text where all occurences of whitespace at the start and end are stripped out. If text only contains whitespace, nil is returned.
-	NSString *result = [string stringByTrimmingWhitespace];
+	// Returns trimmed text where all occurences of spaces and tabs at the start and end are stripped out. If text only contains whitespace, nil is returned.
+	return [self trimmedTextFromString:string trimNewLines:NO];
+}
+
+- (NSString *)trimmedTextFromString:(NSString *)string trimNewLines:(BOOL)newlines {
+	// Returns trimmed text where all occurences of whitespace and optionally new lines at the start and end are stripped out. If text only contains whitespace, nil is returned.
+	NSString *result = newlines ? [string stringByTrimmingWhitespaceAndNewLine] : [string stringByTrimmingWhitespace];
 	return ([result length] > 0) ? result : nil;
 }
 
