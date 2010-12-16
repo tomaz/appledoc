@@ -12,7 +12,7 @@
 
 /** Describes a paragraph for a `GBComment`.
  
- A paragraph is simply an array of items. It can contain the following objects: `GBParagraphTextItem`, `GBParagraphDecoratorItem`, `GBParagraphLinkItem`, `GBParagraphListItem`, `GBParagraphExampleItem`, `GBParagraphSpecialItem`.
+ A paragraph is simply an array of items. It can contain the following objects: `GBParagraphTextItem`, `GBParagraphDecoratorItem`, `GBParagraphLinkItem`, `GBParagraphListItem`, `GBParagraphSpecialItem`.
  */
 @interface GBCommentParagraph : NSObject {
 	@private
