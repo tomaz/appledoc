@@ -77,6 +77,7 @@ static NSString *kGBArgHelp = @"help";
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
+@property (assign) BOOL templatesFound;
 @property (assign) BOOL printSettings;
 @property (assign) BOOL version;
 @property (assign) BOOL help;
@@ -103,6 +104,7 @@ static NSString *kGBArgHelp = @"help";
 	self = [super init];
 	if (self) {
 		self.settings = [GBApplicationSettingsProvider provider];
+		self.templatesFound = NO;
 		self.printSettings = NO;
 		self.logformat = @"1";
 		self.verbose = @"2";
@@ -249,7 +251,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)initializeGlobalSettingsAndValidateTemplates {
 	// This is where we override factory defaults (factory defaults with global templates. This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
-	__block BOOL found = NO;
+	self.templatesFound = NO;
 	__block NSString *path = nil;
 	[arguments enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *option, NSUInteger idx, BOOL *stop) {
 		NSString *opt = [option copy];
@@ -258,7 +260,7 @@ static NSString *kGBArgHelp = @"help";
 			NSError *error = nil;
 			if (![self validateTemplatesPath:path error:&error]) [NSException raise:error format:@"Path '%@' from %@ is not valid!", path, option];			
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
-			found = YES;
+			self.templatesFound = YES;
 			*stop = YES;
 			return;
 		}
@@ -266,13 +268,14 @@ static NSString *kGBArgHelp = @"help";
 	}];
 	
 	// If no templates path is provided through command line, test predefined ones. Note that we don't raise exception here if validation fails on any path, but we do raise it if no template path is found at all as we can't run the application!
-	if (!found) {
+	if (!self.templatesFound) {
 		NSArray *appSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		for (NSString *appSupportPath in appSupportPaths)
 		{
 			path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
 			if ([self validateTemplatesPath:path error:nil]) {
 				[self overrideSettingsWithGlobalSettingsFromPath:path];
+				self.templatesFound = YES;
 				return;
 			}		
 		}
@@ -280,10 +283,9 @@ static NSString *kGBArgHelp = @"help";
 		path = @"~/.appledoc";
 		if ([self validateTemplatesPath:path error:nil]) {
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.templatesFound = YES;
 			return;
-		}
-		
-		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
+		}		
 	}
 }
 
@@ -343,7 +345,12 @@ static NSString *kGBArgHelp = @"help";
 }
 
 - (void)validateSettingsAndArguments:(NSArray *)arguments {
-	// First make sure we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
+	// Validate we have valid templates path - we use the value of the templatesFound set within initializeGlobalSettingsAndValidateTemplates. We can't simply raise exception there because that message is sent before handling help or version; so we would be required to provide valid templates path even if we just wanted "appledoc --help". As this message is sent afterwards, we can raise exception here. Not as elegant, but needed.
+	if (!self.templatesFound) {
+		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
+	}
+
+	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
 	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
 	for (NSString *path in arguments) {
 		if (![self.fileManager fileExistsAtPath:path]) {
