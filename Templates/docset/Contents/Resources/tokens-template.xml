@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Tokens version="1.0">
+	<File path="{{filePath}}">
+		{{#object}}
+		<Token>
+			{{>TokenIdentifier}}
+			{{>Abstract}}
+			{{>DeclaredIn}}
+			{{>RelatedTokens}}
+			{{#refid}}<NodeRef refid="{{refid}}"/>{{/refid}}
+		</Token>
+		{{/object}}
+		{{#members}}
+		<Token>
+			{{>TokenIdentifier}}
+			{{>Abstract}}
+			{{>DeclaredIn}}
+			{{>RelatedTokens}}
+			{{#anchor}}<Anchor>{{anchor}}</Anchor>{{/anchor}}
+		</Token>
+		{{/members}}
+	</File>
+</Tokens>
+
+Section TokenIdentifier
+	<TokenIdentifier>{{identifier}}</TokenIdentifier>
+EndSection
+
+Section DeclaredIn
+	<DeclaredIn>{{declaredin}}</DeclaredIn>
+EndSection
+
+Section RelatedTokens
+	{{#hasRelatedTokens}}
+	<RelatedTokens>
+		{{#relatedTokens}}<TokenIdentifier>{{.}}</TokenIdentifier>
+		{{/relatedTokens}}
+	</RelatedTokens>
+	{{/hasRelatedTokens}}
+EndSection
+
+Section Abstract
+	<Abstract type="html">{{#abstract}}{{>GBCommentParagraph}}{{/abstract}}</Abstract>
+EndSection
+
+Section GBCommentParagraph
+	{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
+EndSection
+
+Section GBParagraphItem
+{{#isTextItem}} {{stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
+EndSection
+
+Section GBParagraphListItem
+	{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
+EndSection
+
+Section GBParagraphSpecialItem
+	{{#specialItemDescription}}{{>GBCommentParagraph}}{{/specialItemDescription}}
+EndSection
+
+Section GBParagraphDecoratorItem
+	{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
+EndSection

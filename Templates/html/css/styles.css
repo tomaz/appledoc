@@ -1,0 +1,244 @@
+body {
+	font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+	font-size: 13px;
+	color: #000;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+code {
+	font-family: Menlo, Courier, Consolas, monospace;
+	font-size: 12px;
+	color: #666;
+}
+
+pre {
+	font-family: Menlo, Courier, Consolas, monospace;
+	font-size: 12px;
+	line-height: 18px;
+	tab-interval: 0.5em;
+	border: 1px solid #C7CFD5;
+	background-color: #F1F5F9;
+	color: #666;
+	padding: 0.3em 1em;
+}
+
+ul {
+	list-style-type: square;
+}
+
+li {
+	margin-bottom: 10px;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* @group Common page elements */
+
+#footer {
+	clear: left;
+	padding-top: 20px;
+	text-align: center;
+}
+
+.copyright {
+	font-size: 12px;
+}
+
+.generator {
+	font-size: 11px;
+}
+
+/* @end */
+
+/* @group Index formatting */
+
+.index-title {
+	font-size: 13px;
+	font-weight: normal;
+}
+
+.index-column {
+	float: left;
+	width: 30%;
+	min-width: 200px;
+	font-size: 11px;
+}
+
+.index-column ul {
+	margin: 8px 0 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.index-column ul li {
+	margin: 0 0 3px 0;
+	padding: 0;
+}
+
+/* @end */
+
+/* @group Common formatting elements */
+
+.title {
+	font-weight: normal;
+	font-size: 250%;
+}
+
+.subtitle {
+	font-weight: normal;
+	font-size: 180%;
+	color: #3C4C6C;
+	border-bottom: 1px solid #5088C5;
+}
+
+.subsubtitle {
+	font-weight: normal;
+	font-size: 145%;
+	height: 0.7em;
+}
+
+.warning {
+	border: 1px solid #5088C5;
+	background-color: #F0F3F7;
+	margin-bottom: 0.5em;
+	padding: 0.3em 0.8em;
+}
+
+.bug {
+	border: 1px solid #000;
+	background-color: #ffffcc;
+	margin-bottom: 0.5em;
+	padding: 0.3em 0.8em;
+}
+
+/* @end */
+
+/* @group Common layout */
+
+.section {
+	margin-top: 3em;
+}
+
+/* @end */
+
+/* @group Object specification section */
+
+.section-specification {
+	margin-left: 2.5em;
+	margin-right: 2.5em;
+	font-size: 12px;
+}
+
+.section-specification table {
+	border-top: 1px solid #d6e0e5;
+}
+
+.section-specification td {
+	vertical-align: top;
+	border-bottom: 1px solid #d6e0e5;
+	padding: .6em;	
+}
+
+.section-specification .specification-title {
+	font-weight: bold;
+}
+
+/* @end */
+
+/* @group Tasks section */
+
+.task-list {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+.task-list li {
+	margin-bottom: 3px;
+}
+
+.task-item-suffix {
+	color: #996;
+	font-size: 91.67%;
+	font-style: italic;
+	margin-left: 0.8em;
+}
+
+span.tooltip span.tooltip {
+	font-size: 1.0em;
+	display: none;
+	padding: 0.3em;
+	border: 1px solid #aaa;
+	background-color: #fdfec8;
+	color: #000;
+	text-align: left;
+}
+
+span.tooltip:hover span.tooltip {
+	display: block;
+	position: absolute;
+	margin-left: 2em;
+}
+
+/* @end */
+
+/* @group Method section */
+
+.section-method {
+	margin-top: 2.3em;
+}
+
+.method-title {
+	margin-bottom: 1.5em;
+}
+
+.method-subtitle {
+	margin-top: 0.7em;
+	margin-bottom: 0.2em;
+}
+
+.method-subsection p {
+	margin-top: 0.4em;
+	margin-bottom: 0.8em;
+}
+
+.method-declaration {
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
+
+.declaration {
+	color: #000;
+}
+
+.argument-def {
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+}
+
+.argument-def dd {
+	margin-left: 1.25em;
+}
+
+.see-also-section ul {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-top: 0;
+}
+
+.see-also-section li {
+	margin-bottom: 3px;
+}
+
+.declared-in-ref {
+	color: gray;
+}
+
+/* @end */
+

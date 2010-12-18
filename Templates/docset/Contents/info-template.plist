@@ -1,0 +1,18 @@
+{
+	"CFBundleDevelopmentRegion" = en;
+	CFBundleIdentifier = "{{bundleIdentifier}}";
+	CFBundleName = "{{bundleName}}";
+	"CFBundleShortVersionString" = "{{bundleVersion}}";
+	CFBundleVersion = "{{bundleVersion}}";
+	"DocSetCertificateIssuer" = "{{certificateIssuer}}";
+	"DocSetCertificateSigner" = "{{certificateSigner}}";
+	DocSetDescription = "{{description}}";
+	DocSetFallbackURL = "{{fallbackURL}}";
+	DocSetFeedName = "{{feedName}}";
+	DocSetFeedURL = "{{feedURL}}";
+	"DocSetMinimumXcodeVersion" = "{{minimumXcodeVersion}}";
+	DocSetPlatformFamily = "{{platformFamily}}";
+	"DocSetPublisherIdentifier" = "{{publisherIdentifier}}";
+	DocSetPublisherName = "{{publisherName}}";
+	"NSHumanReadableCopyright" = "{{copyrightMessage}}";
+}
