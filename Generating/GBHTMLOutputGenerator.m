@@ -6,6 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
@@ -20,6 +21,7 @@
 - (BOOL)processCategories:(NSError **)error;
 - (BOOL)processProtocols:(NSError **)error;
 - (BOOL)processIndex:(NSError **)error;
+- (NSString *)stringByCleaningHtml:(NSString *)string;
 - (NSString *)htmlOutputPathForIndex;
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
 @property (readonly) GBTemplateHandler *htmlObjectTemplate;
@@ -49,8 +51,9 @@
 		GBLogInfo(@"Generating output for class %@...", class);
 		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:class];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for class %@ to '%@'!", class, path);
 			return NO;
 		}
@@ -64,8 +67,9 @@
 		GBLogInfo(@"Generating output for category %@...", category);
 		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:category];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for category %@ to '%@'!", category, path);
 			return NO;
 		}
@@ -79,8 +83,9 @@
 		GBLogInfo(@"Generating output for protocol %@...", protocol);
 		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:protocol];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for protocol %@ to '%@'!", protocol, path);
 			return NO;
 		}
@@ -94,8 +99,9 @@
 	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
 		NSString *output = [self.htmlIndexTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForIndex] stringByStandardizingPath];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML index to '%@'!", path);
 			return NO;
 		}
@@ -123,6 +129,19 @@
 }
 
 #pragma mark Helper methods
+
+- (NSString *)stringByCleaningHtml:(NSString *)string {
+	NSString *result = [string stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+	result = [result stringByReplacingOccurrencesOfString:@"<code> " withString:@"<code>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </code>" withString:@"</code>"];
+	while (YES) {
+		NSString *source = [result stringByMatching:@"</code> [],.!?:;'\")}>]"];
+		if (!source) break;
+		NSString *replacement = [source stringByReplacingOccurrencesOfString:@" " withString:@""];
+		result = [result stringByReplacingOccurrencesOfString:source withString:replacement];
+	}
+	return result;
+}
 
 - (NSString *)htmlOutputPathForIndex {
 	// Returns file name including full path for HTML file representing the main index.
