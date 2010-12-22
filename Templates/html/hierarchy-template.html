@@ -15,15 +15,16 @@
 			</div>
 			<div id="container">
 				{{#hasClasses}}
-				<div class="index-column">
+				<div class="index-column hierarchy-column">
 					<h2 class="index-title">{{strings/hierarchyPage/classesTitle}}</h2>
+					{{>Classes}}
 				</div>
 				{{/hasClasses}}
 				
 				{{#hasProtocolsOrCategories}}	
 				<div class="index-column">
 					{{#hasProtocols}}
-					<h2 class="index-title">{{strings/indexPage/protocolsTitle}}</h2>
+					<h2 class="index-title">{{strings/hierarchyPage/protocolsTitle}}</h2>
 					<ul>
 						{{#protocols}}
 						<li><a href="{{href}}">{{title}}</a></li>
@@ -31,7 +32,7 @@
 					</ul>
 					{{/hasProtocols}}
 					{{#hasCategories}}
-					<h2 class="index-title">{{strings/indexPage/categoriesTitle}}</h2>
+					<h2 class="index-title">{{strings/hierarchyPage/categoriesTitle}}</h2>
 					<ul>
 						{{#categories}}
 						<li><a href="{{href}}">{{title}}</a></li>
@@ -51,3 +52,11 @@
 		</article>		
 	</body>
 </html>
+
+Section Classes
+	<ul>
+	{{#classes}}
+		<li>{{name}}{{>Classes}}</li>
+	{{/classes}}
+	</ul>
+EndSection

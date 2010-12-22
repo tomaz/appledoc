@@ -82,6 +82,18 @@ a:hover {
 	padding: 0;
 }
 
+.hierarchy-column {
+	min-width: 400px;
+}
+
+.hierarchy-column ul {
+	margin: 3px 0 0 15px;
+}
+
+.hierarchy-column ul li {
+	list-style-type: square;
+}
+
 /* @end */
 
 /* @group Common formatting elements */
