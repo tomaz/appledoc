@@ -172,14 +172,16 @@
 
 - (NSString *)htmlOutputPathForIndex {
 	// Returns file name including full path for HTML file representing the main index.
-	NSString *result = [self.outputUserPath stringByAppendingPathComponent:@"index"];
-	return [result stringByAppendingPathExtension:self.settings.htmlExtension];
+	NSString *path = [self outputPathToTemplateEndingWith:@"index-template.html"];
+	path = [path stringByAppendingPathComponent:@"index"];
+	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
 }
 
 - (NSString *)htmlOutputPathForHierarchy {
 	// Returns file name including full path for HTML file representing the main hierarchy.
-	NSString *result = [self.outputUserPath stringByAppendingPathComponent:@"hierarchy"];
-	return [result stringByAppendingPathExtension:self.settings.htmlExtension];
+	NSString *path = [self outputPathToTemplateEndingWith:@"hierarchy-template.html"];
+	path = [path stringByAppendingPathComponent:@"hierarchy"];
+	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
 }
 
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
