@@ -55,10 +55,16 @@ a:hover {
 	font-size: 11px;
 }
 
+.main-navigation ul li {
+	display: inline;
+	margin-left: 15px;
+	list-style: none;
+}
+
 .navigation-top {
 	clear: both;
 	float: right;
-	margin-top: -15px;
+	margin-top: -18px;
 }
 
 .navigation-bottom {
