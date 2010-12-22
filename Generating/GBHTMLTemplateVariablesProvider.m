@@ -415,6 +415,7 @@
 		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
 		[classData setObject:name forKey:@"name"];
 		[classData setObject:subclasses forKey:@"classes"];
+		[classData setObject:[subclasses count] > 0 ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
 		[result addObject:classData];
 	}];
 	return result;
