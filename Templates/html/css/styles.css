@@ -42,7 +42,7 @@ a:hover {
 /* @group Common page elements */
 
 #footer {
-	clear: left;
+	clear: both;
 	padding-top: 20px;
 	text-align: center;
 }
@@ -53,6 +53,19 @@ a:hover {
 
 .generator {
 	font-size: 11px;
+}
+
+.navigation-top {
+	clear: both;
+	float: right;
+	margin-top: -15px;
+}
+
+.navigation-bottom {
+	clear: both;
+	float: right;
+	margin-top: 20px;
+	margin-bottom: -10px;
 }
 
 /* @end */

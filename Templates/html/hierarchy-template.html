@@ -8,6 +8,9 @@
 	</head>
 	<body>
 		<article id="contents" role="main">
+			<div class="navigation-top">
+				{{>Navigation}}
+			</div>
 			<div id="header">
 				<div class="section-header">
 					<h1 class="title title-header">{{page/title}}</h1>
@@ -41,6 +44,12 @@
 					{{/hasCategories}}
 				</div>
 				{{/hasProtocolsOrCategories}}
+				<div class="navigation">
+					<a href="index.html">Previous</a>
+				</div>
+			</div>
+			<div class="navigation-bottom">
+				{{>Navigation}}
 			</div>
 			<div id="footer">
 				<hr />
@@ -61,4 +70,8 @@ Section Classes
 	{{/classes}}
 	</ul>
 {{/hasClasses}}
+EndSection
+
+Section Navigation
+<a href="index.html">Previous</a>
 EndSection
