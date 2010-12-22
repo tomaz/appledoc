@@ -333,11 +333,13 @@
 @implementation GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex {
-	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];
+	NSString *template = [self.settings.stringTemplates.indexPage objectForKey:@"titleTemplate"];
+	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
 - (NSString *)pageTitleForHierarchy {
-	return [NSString stringWithFormat:@"%@ Hierarchy", self.settings.projectName];
+	NSString *template = [self.settings.stringTemplates.hierarchyPage objectForKey:@"titleTemplate"];
+	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
 - (NSArray *)classesForIndex {
