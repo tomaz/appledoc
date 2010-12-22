@@ -411,17 +411,25 @@
 	// A helper method that recursively descends the given hierarchy level dictionary and converts it to array suitable for template engine processing.
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[level count]];
 	[level enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSDictionary *data, BOOL *stop) {
+		// Get all sublasses by recursively descending down the hierarchy.
 		NSArray *subclasses = [self arrayFromHierarchyLevel:[data objectForKey:@"subclasses"]];
+		
+		// Get current class from the store and href to it.
 		GBClassData *class = [self.store classWithName:name];
 		NSString *href = [self hrefForObject:class fromObject:nil];
+		
+		// Prepare class data.
 		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
 		[classData setObject:name forKey:@"name"];
-		if (href) [classData setObject:href forKey:@"href"];
 		[classData setObject:subclasses forKey:@"classes"];
 		[classData setObject:[subclasses count] > 0 ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+		if (href) [classData setObject:href forKey:@"href"];
 		[result addObject:classData];
 	}];
-	return result;
+	
+	// Sort the array by class names.
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+	return [result sortedArrayUsingDescriptors:descriptors];
 }
 
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {
