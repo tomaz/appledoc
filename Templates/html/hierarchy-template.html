@@ -57,7 +57,7 @@ Section Classes
 {{#hasClasses}}
 	<ul>
 	{{#classes}}
-		<li>{{name}}{{>Classes}}</li>
+		<li>{{#href}}<a href="{{href}}">{{/href}}{{name}}{{#href}}</a>{{/href}}{{>Classes}}</li>
 	{{/classes}}
 	</ul>
 {{/hasClasses}}

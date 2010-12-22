@@ -412,8 +412,11 @@
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[level count]];
 	[level enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSDictionary *data, BOOL *stop) {
 		NSArray *subclasses = [self arrayFromHierarchyLevel:[data objectForKey:@"subclasses"]];
+		GBClassData *class = [self.store classWithName:name];
+		NSString *href = [self hrefForObject:class fromObject:nil];
 		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
 		[classData setObject:name forKey:@"name"];
+		if (href) [classData setObject:href forKey:@"href"];
 		[classData setObject:subclasses forKey:@"classes"];
 		[classData setObject:[subclasses count] > 0 ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
 		[result addObject:classData];
