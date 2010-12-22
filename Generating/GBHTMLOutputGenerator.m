@@ -21,11 +21,14 @@
 - (BOOL)processCategories:(NSError **)error;
 - (BOOL)processProtocols:(NSError **)error;
 - (BOOL)processIndex:(NSError **)error;
+- (BOOL)processHierarchy:(NSError **)error;
 - (NSString *)stringByCleaningHtml:(NSString *)string;
 - (NSString *)htmlOutputPathForIndex;
+- (NSString *)htmlOutputPathForHierarchy;
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
 @property (readonly) GBTemplateHandler *htmlObjectTemplate;
 @property (readonly) GBTemplateHandler *htmlIndexTemplate;
+@property (readonly) GBTemplateHandler *htmlHierarchyTemplate;
 @property (readonly) GBHTMLTemplateVariablesProvider *variablesProvider;
 
 @end
@@ -43,6 +46,7 @@
 	if (![self processCategories:error]) return NO;
 	if (![self processProtocols:error]) return NO;
 	if (![self processIndex:error]) return NO;
+	if (![self processHierarchy:error]) return NO;
 	return YES;
 }
 
@@ -110,6 +114,22 @@
 	return YES;
 }
 
+- (BOOL)processHierarchy:(NSError **)error {
+	GBLogInfo(@"Generating output for hierarchy...");
+	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
+		NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
+		NSString *output = [self.htmlHierarchyTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
+		NSString *path = [[self htmlOutputPathForHierarchy] stringByStandardizingPath];
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
+			GBLogWarn(@"Failed writting HTML hierarchy to '%@'!", path);
+			return NO;
+		}
+	}
+	GBLogDebug(@"Finished generating output for hierarchy.");
+	return YES;
+}
+
 - (BOOL)validateTemplates:(NSError **)error {
 	if (!self.htmlObjectTemplate) {
 		if (error) {
@@ -122,6 +142,13 @@
 		if (error) {
 			NSString *desc = [NSString stringWithFormat:@"Index template file 'index-template.html' is missing at '%@'!", self.templateUserPath];
 			*error = [NSError errorWithCode:GBErrorHTMLIndexTemplateMissing description:desc reason:nil];
+		}
+		return NO;
+	}
+	if (!self.htmlHierarchyTemplate) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Hierarchy template file 'hierarchy-template.html' is missing at '%@'!", self.templateUserPath];
+			*error = [NSError errorWithCode:GBErrorHTMLHierarchyTemplateMissing description:desc reason:nil];
 		}
 		return NO;
 	}
@@ -149,6 +176,12 @@
 	return [result stringByAppendingPathExtension:self.settings.htmlExtension];
 }
 
+- (NSString *)htmlOutputPathForHierarchy {
+	// Returns file name including full path for HTML file representing the main hierarchy.
+	NSString *result = [self.outputUserPath stringByAppendingPathComponent:@"hierarchy"];
+	return [result stringByAppendingPathExtension:self.settings.htmlExtension];
+}
+
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
 	// Returns file name including full path for HTML file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class.
 	NSString *inner = [self.settings htmlReferenceForObjectFromIndex:object];
@@ -170,6 +203,10 @@
 
 - (GBTemplateHandler *)htmlIndexTemplate {
 	return [self.templateFiles objectForKey:@"index-template.html"];
+}
+
+- (GBTemplateHandler *)htmlHierarchyTemplate {
+	return [self.templateFiles objectForKey:@"hierarchy-template.html"];
 }
 
 #pragma mark Overriden methods

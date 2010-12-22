@@ -93,6 +93,17 @@
 	return result;
 }
 
+- (NSDictionary *)hierarchyPage {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"Class Hierarchy" forKey:@"classesTitle"];
+		[result setObject:@"Category References" forKey:@"categoriesTitle"];
+		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
+	}
+	return result;
+}
+
 #pragma mark Documentation set output strings
 
 - (NSDictionary *)docset {

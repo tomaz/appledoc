@@ -55,6 +55,7 @@
  @see variablesForCategory:withStore:
  @see variablesForProtocol:withStore:
  @see variablesForIndexWithStore:
+ @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)store;
 
@@ -69,6 +70,7 @@
  @see variablesForClass:withStore:
  @see variablesForProtocol:withStore:
  @see variablesForIndexWithStore:
+ @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)store;
 
@@ -83,6 +85,7 @@
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
  @see variablesForIndexWithStore:
+ @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)store;
 
@@ -95,8 +98,23 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
- @see variablesForIndexWithStore:
+ @see variablesForProtocol:withStore:
+ @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForIndexWithStore:(id)store;
+
+/** Returns the variables for the hierarchy file using the given `GBStore` for links. 
+ 
+ The result can be used with `GBTemplateHandler` to generate protocol specific output.
+ 
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables.
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForClass:withStore:
+ @see variablesForCategory:withStore:
+ @see variablesForProtocol:withStore:
+ @see variablesForIndexWithStore:
+ */
+- (NSDictionary *)variablesForHierarchyWithStore:(id)store;
 
 @end

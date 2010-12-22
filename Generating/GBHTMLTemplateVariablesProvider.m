@@ -57,9 +57,11 @@
 @interface GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex;
+- (NSString *)pageTitleForHierarchy;
 - (NSArray *)classesForIndex;
 - (NSArray *)categoriesForIndex;
 - (NSArray *)protocolsForIndex;
+- (NSArray *)classesForHierarchy;
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
 
 @end
@@ -135,6 +137,21 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:[self classesForIndex] forKey:@"classes"];
+	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
+	[result setObject:[self categoriesForIndex] forKey:@"categories"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self registerObjectsUsageForIndexInDictionary:result];
+	return result;
+}
+
+- (NSDictionary *)variablesForHierarchyWithStore:(id)store {
+	self.store = store;
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForHierarchy] forKey:@"title"];
+	[self addFooterVarsToDictionary:page];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:[self classesForHierarchy] forKey:@"classes"];
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
@@ -318,6 +335,10 @@
 	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];
 }
 
+- (NSString *)pageTitleForHierarchy {
+	return [NSString stringWithFormat:@"%@ Hierarchy", self.settings.projectName];
+}
+
 - (NSArray *)classesForIndex {
 	NSArray *classes = [self.store classesSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[classes count]];
@@ -352,6 +373,11 @@
 		[result addObject:data];
 	}
 	return result;
+}
+
+- (NSArray *)classesForHierarchy {
+	// This returns the array of all root classes, each class containing further arrays of subclasses and so on. Ussually root classes array only contains single NSObject class, but can also include all root classes (not derived from NSObject). The algorithm for creating hierarhy is not state of the art, but it's quite simple and effective: for each class we iterate over the whole hierarchy and add the class itself as well as each super class to temporary dictionary together with known
+	return [NSArray array];
 }
 
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {
