@@ -37,7 +37,7 @@ Minimum system requirements:
 Using appledoc
 ==============
 
-Use `appledoc --help` to see the list of all command line switches. You can also find comment rules and examples on [appledoc's GitHub page](http://tomaz.github.com/appledoc/).
+Use `appledoc --help` to see the list of all command line switches. Read more on about appledoc on [appledoc site](http://appledoc.gentlebytes.com) and short help and documentation on [appledoc's GitHub page](http://tomaz.github.com/appledoc/).
 
 
 LICENCE
