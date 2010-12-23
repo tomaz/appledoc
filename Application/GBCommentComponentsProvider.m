@@ -83,7 +83,7 @@
 }
 
 - (NSString *)argumentsCommonRegex {
-	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|see|sa)\\s+");
+	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|returns|see|sa)\\s+");
 }
 
 - (NSString *)argumentsMatchingRegex {
@@ -99,7 +99,7 @@
 }
 
 - (NSString *)returnDescriptionRegex {
-	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"return"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:return|returns)"]);
 }
 
 - (NSString *)exceptionDescriptionRegex {

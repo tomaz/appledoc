@@ -313,6 +313,17 @@
 	[self assertParagraph:comment.result containsTexts:@"Description2", nil];
 }
 
+- (void)testProcesCommentWithStore_return_shouldDetectAlternativeDirective {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@returns Description"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(0));
+	[self assertParagraph:comment.result containsTexts:@"Description", nil];
+}
+
 #pragma mark Cross reference values testing
 
 - (void)testProcesCommentWithStore_crossref_requiresEmptyLineBeforePreceedingParagraph {

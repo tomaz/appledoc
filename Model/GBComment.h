@@ -79,7 +79,10 @@
 
 /** The first paragraph from `paragraphs` list or `nil` if no paragraph is registered.
  
- The value is automatically returned from `paragraphs` list, it doesn't have to be manually registered. However if needed, it can still be set manually if needed.
+ The value is automatically set when registering paragraphs, although it can be changed if needed. By default the value is set to the first paragraph registered.
+ 
+ @see registerParagraph:
+ @see paragraphs
  */
 @property (retain) GBCommentParagraph *firstParagraph;
 
