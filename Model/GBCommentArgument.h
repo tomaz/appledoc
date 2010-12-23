@@ -48,7 +48,7 @@
  */
 @property (copy) NSString *argumentName;
 
-/** Description of the argument as `GBCommentParagraph.
+/** Description of the argument as `GBCommentParagraph`.
  
  @see argumentName
  */

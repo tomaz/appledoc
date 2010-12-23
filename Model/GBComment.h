@@ -18,10 +18,10 @@
  Each instance describes a single source code comment for any object - class, category, protocol, method... As the comment is universal for each object, it contains properties for all fields applying to any kind of object. However not all are used in all cases. If a property is not used, it's value remains `nil`. Derived values are:
  
  - `paragraphs`: An array of `GBCommentParagraph` objects. The first entry is considered a short description, also available through `firstParagraph`.
- - `parameters`: An array of `GBCommentParameter` objects. Only applicable for methods with parameters.
- - `result`: A single `GBCommentParameter` object. Only applicable for methods with return value.
- - `exceptions`: An array of `GBCommentParameter` objects. Only applicable for methods with exceptions.
- - `crossrefs`: An array of `GBParameterLinkItem` objects.
+ - `parameters`: An array of `GBCommentArgument` objects. Only applicable for methods with parameters.
+ - `result`: A single `GBCommentArgument` object. Only applicable for methods with return value.
+ - `exceptions`: An array of `GBCommentArgument` objects. Only applicable for methods with exceptions.
+ - `crossrefs`: An array of `GBParagraphLinkItem` objects.
  
  All arrays must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
  
