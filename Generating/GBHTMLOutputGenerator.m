@@ -161,6 +161,8 @@
 	NSString *result = [string stringByReplacingOccurrencesOfString:@"  " withString:@" "];
 	result = [result stringByReplacingOccurrencesOfString:@"<code> " withString:@"<code>"];
 	result = [result stringByReplacingOccurrencesOfString:@" </code>" withString:@"</code>"];
+	result = [result stringByReplacingOccurrencesOfString:@"<pre> " withString:@"<pre>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </pre>" withString:@"</pre>"];
 	while (YES) {
 		NSString *source = [result stringByMatching:@"</code> [],.!?:;'\")}>]"];
 		if (!source) break;
