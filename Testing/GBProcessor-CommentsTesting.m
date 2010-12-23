@@ -12,6 +12,7 @@
 
 @interface GBProcessorCommentsTesting : GHTestCase
 
+- (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members;
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph;
 
 @end
@@ -49,6 +50,17 @@
 	[comment2 verify];
 }
 
+- (void)testProcessObjectsFromStore_shouldSetEmptyClassCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithClassWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[store.classes anyObject] comment], is(nil));
+}
+
 #pragma mark Categories comments processing
 
 - (void)testProcessObjectsFromStore_shouldProcessCategoryComments {
@@ -76,6 +88,17 @@
 	// verify - we just want to make sure we invoke comments processing!
 	[comment1 verify];
 	[comment2 verify];
+}
+
+- (void)testProcessObjectsFromStore_shouldSetEmptyCategoryCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithCategoryWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[store.categories anyObject] comment], is(nil));
 }
 
 #pragma mark Protocols comments processing
@@ -107,6 +130,17 @@
 	[comment2 verify];
 }
 
+- (void)testProcessObjectsFromStore_shouldSetEmptyProtocolCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithProtocolWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[store.protocols anyObject] comment], is(nil));
+}
+
 #pragma mark Method comment processing
 
 - (void)testProcesObjectsFromStore_shouldMatchParameterDirectivesWithActualOrder {
@@ -130,7 +164,28 @@
 	assertThat([[[comment.parameters objectAtIndex:2] argumentDescription] stringValue], is(@"Description3"));
 }
 
+- (void)testProcessObjectsFromStore_shouldSetEmptyMethodCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"arg1", @"arg2", @"arg3", nil];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(method.comment, is(nil));
+}
+
 #pragma mark Creation methods
+
+- (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members {
+	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
+	[GBTestObjectsRegistry settingsProvider:result keepObjects:objects keepMembers:members];
+	return result;
+}
 
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph {
 	OCMockObject *result = [OCMockObject niceMockForClass:[GBComment class]];
