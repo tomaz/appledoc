@@ -58,4 +58,12 @@
 /** Strings used for generating common page strings for documentation set. */
 @property (readonly) NSDictionary *docset;
 
+///---------------------------------------------------------------------------------------
+/// @name Common strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for appledoc related data. */
+@property (readonly) NSDictionary *appledocData;
+
+
 @end

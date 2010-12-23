@@ -522,13 +522,16 @@ static NSString *kGBArgHelp = @"help";
 @implementation GBAppledocApplication (UsagePrintout)
 
 - (void)printVersion {
-	ddprintf(@"%@ version: %@\n", DDCliApp, @"2.0b1");
+	NSString *appledocName = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
+	NSString *appledocVersion = [self.settings.stringTemplates.appledocData objectForKey:@"version"];
+	ddprintf(@"%@ version: %@\n", appledocName, appledocVersion);
 	ddprintf(@"\n");
 }
 
 - (void)printHelp {
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:long argument:arg description:desc]
-	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", DDCliApp);
+	NSString *name = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
+	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", name);
 	ddprintf(@"\n");
 	ddprintf(@"PATHS\n");
 	PRINT_USAGE(@"-o,", kGBArgOutputPath, @"<path>", @"Output path");
@@ -590,7 +593,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- $YEAR replaced with current year (format yyyy)\n");
 	ddprintf(@"- $UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
 	ddprintf(@"\n");
-	ddprintf(@"appledoc uses the following open source components, fully or partially:\n");
+	ddprintf(@"%@ uses the following open source components, fully or partially:\n", name);
 	ddprintf(@"\n");
 	ddprintf(@"- DDCli by Dave Dribin\n");
 	ddprintf(@"- CocoaLumberjack by Robbie Hanson\n");
