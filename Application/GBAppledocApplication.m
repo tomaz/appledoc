@@ -508,6 +508,7 @@ static NSString *kGBArgHelp = @"help";
 @synthesize logformat;
 @synthesize verbose;
 @synthesize printSettings;
+@synthesize templatesFound;
 @synthesize version;
 @synthesize help;
 
