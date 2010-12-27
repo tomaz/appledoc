@@ -48,11 +48,22 @@
 /** Strings used for generating common page strings for index. */
 @property (readonly) NSDictionary *indexPage;
 
+/** Strings used for generating common page strings for hierarchy. */
+@property (readonly) NSDictionary *hierarchyPage;
+
 ///---------------------------------------------------------------------------------------
 /// @name DocSet output strings
 ///---------------------------------------------------------------------------------------
 
 /** Strings used for generating common page strings for documentation set. */
 @property (readonly) NSDictionary *docset;
+
+///---------------------------------------------------------------------------------------
+/// @name Common strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for appledoc related data. */
+@property (readonly) NSDictionary *appledocData;
+
 
 @end

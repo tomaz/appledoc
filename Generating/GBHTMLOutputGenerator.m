@@ -6,6 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
@@ -20,10 +21,14 @@
 - (BOOL)processCategories:(NSError **)error;
 - (BOOL)processProtocols:(NSError **)error;
 - (BOOL)processIndex:(NSError **)error;
+- (BOOL)processHierarchy:(NSError **)error;
+- (NSString *)stringByCleaningHtml:(NSString *)string;
 - (NSString *)htmlOutputPathForIndex;
+- (NSString *)htmlOutputPathForHierarchy;
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
 @property (readonly) GBTemplateHandler *htmlObjectTemplate;
 @property (readonly) GBTemplateHandler *htmlIndexTemplate;
+@property (readonly) GBTemplateHandler *htmlHierarchyTemplate;
 @property (readonly) GBHTMLTemplateVariablesProvider *variablesProvider;
 
 @end
@@ -41,6 +46,7 @@
 	if (![self processCategories:error]) return NO;
 	if (![self processProtocols:error]) return NO;
 	if (![self processIndex:error]) return NO;
+	if (![self processHierarchy:error]) return NO;
 	return YES;
 }
 
@@ -49,8 +55,9 @@
 		GBLogInfo(@"Generating output for class %@...", class);
 		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:class];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for class %@ to '%@'!", class, path);
 			return NO;
 		}
@@ -64,8 +71,9 @@
 		GBLogInfo(@"Generating output for category %@...", category);
 		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:category];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for category %@ to '%@'!", category, path);
 			return NO;
 		}
@@ -79,8 +87,9 @@
 		GBLogInfo(@"Generating output for protocol %@...", protocol);
 		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:protocol];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML for protocol %@ to '%@'!", protocol, path);
 			return NO;
 		}
@@ -94,13 +103,30 @@
 	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
 		NSString *output = [self.htmlIndexTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForIndex] stringByStandardizingPath];
-		if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting HTML index to '%@'!", path);
 			return NO;
 		}
 	}
 	GBLogDebug(@"Finished generating output for index.");
+	return YES;
+}
+
+- (BOOL)processHierarchy:(NSError **)error {
+	GBLogInfo(@"Generating output for hierarchy...");
+	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0) {
+		NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
+		NSString *output = [self.htmlHierarchyTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
+		NSString *path = [[self htmlOutputPathForHierarchy] stringByStandardizingPath];
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
+			GBLogWarn(@"Failed writting HTML hierarchy to '%@'!", path);
+			return NO;
+		}
+	}
+	GBLogDebug(@"Finished generating output for hierarchy.");
 	return YES;
 }
 
@@ -119,15 +145,45 @@
 		}
 		return NO;
 	}
+	if (!self.htmlHierarchyTemplate) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Hierarchy template file 'hierarchy-template.html' is missing at '%@'!", self.templateUserPath];
+			*error = [NSError errorWithCode:GBErrorHTMLHierarchyTemplateMissing description:desc reason:nil];
+		}
+		return NO;
+	}
 	return YES;
 }
 
 #pragma mark Helper methods
 
+- (NSString *)stringByCleaningHtml:(NSString *)string {
+	NSString *result = [string stringByReplacingOccurrencesOfString:@"  " withString:@" "];
+	result = [result stringByReplacingOccurrencesOfString:@"<code> " withString:@"<code>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </code>" withString:@"</code>"];
+	result = [result stringByReplacingOccurrencesOfString:@"<pre> " withString:@"<pre>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </pre>" withString:@"</pre>"];
+	while (YES) {
+		NSString *source = [result stringByMatching:@"</code> [],.!?:;'\")}>]"];
+		if (!source) break;
+		NSString *replacement = [source stringByReplacingOccurrencesOfString:@" " withString:@""];
+		result = [result stringByReplacingOccurrencesOfString:source withString:replacement];
+	}
+	return result;
+}
+
 - (NSString *)htmlOutputPathForIndex {
 	// Returns file name including full path for HTML file representing the main index.
-	NSString *result = [self.outputUserPath stringByAppendingPathComponent:@"index"];
-	return [result stringByAppendingPathExtension:self.settings.htmlExtension];
+	NSString *path = [self outputPathToTemplateEndingWith:@"index-template.html"];
+	path = [path stringByAppendingPathComponent:@"index"];
+	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
+}
+
+- (NSString *)htmlOutputPathForHierarchy {
+	// Returns file name including full path for HTML file representing the main hierarchy.
+	NSString *path = [self outputPathToTemplateEndingWith:@"hierarchy-template.html"];
+	path = [path stringByAppendingPathComponent:@"hierarchy"];
+	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
 }
 
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
@@ -151,6 +207,10 @@
 
 - (GBTemplateHandler *)htmlIndexTemplate {
 	return [self.templateFiles objectForKey:@"index-template.html"];
+}
+
+- (GBTemplateHandler *)htmlHierarchyTemplate {
+	return [self.templateFiles objectForKey:@"hierarchy-template.html"];
 }
 
 #pragma mark Overriden methods

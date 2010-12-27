@@ -1,3 +1,4 @@
+
 //
 //  GBProcessor.m
 //  appledoc
@@ -18,7 +19,7 @@
 - (void)processCategories;
 - (void)processProtocols;
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
-- (void)processComment:(GBComment *)comment;
+- (void)processCommentForObject:(GBModelBase *)object;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
 - (void)processHtmlReferencesForObject:(GBModelBase *)object;
 - (void)copyKnownDocumentationForMethod:(GBMethodData *)method;
@@ -81,7 +82,7 @@
 		GBLogInfo(@"Processing class %@...", class);
 		self.currentContext = class;
 		[self validateCommentForObject:class];
-		[self processComment:class.comment];
+		[self processCommentForObject:class];
 		[self processMethodsFromProvider:class.methods];
 		[self removeUndocumentedMembersAndObject:class];
 		[self processHtmlReferencesForObject:class];
@@ -95,7 +96,7 @@
 		GBLogInfo(@"Processing category %@...", category);
 		self.currentContext = category;
 		[self validateCommentForObject:category];
-		[self processComment:category.comment];
+		[self processCommentForObject:category];
 		[self processMethodsFromProvider:category.methods];
 		[self removeUndocumentedMembersAndObject:category];
 		[self processHtmlReferencesForObject:category];
@@ -109,7 +110,7 @@
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		self.currentContext = protocol;
 		[self validateCommentForObject:protocol];
-		[self processComment:protocol.comment];
+		[self processCommentForObject:protocol];
 		[self processMethodsFromProvider:protocol.methods];
 		[self removeUndocumentedMembersAndObject:protocol];
 		[self processHtmlReferencesForObject:protocol];
@@ -124,7 +125,7 @@
 		GBLogVerbose(@"Processing method %@...", method);
 		[self copyKnownDocumentationForMethod:method];
 		[self validateCommentForObject:method];
-		[self processComment:method.comment];
+		[self processCommentForObject:method];
 		[self processParametersFromComment:method.comment matchingMethod:method];
 		[self processHtmlReferencesForObject:method];
 		GBLogDebug(@"Finished processing method %@.", method);
@@ -137,9 +138,13 @@
 	object.htmlLocalReference = [self.settings htmlReferenceForObject:object fromSource:object];
 }
 
-- (void)processComment:(GBComment *)comment {
-	if (![self isCommentValid:comment]) return;
-	[self.commentsProcessor processComment:comment withContext:self.currentContext store:self.store];
+- (void)processCommentForObject:(GBModelBase *)object {
+	// Processes the comment for the given object. If the comment is not valid, it's forced to nil to make simpler work for template engine later on. Note that comment is considered invalid if the object isn't commented or has comment, but it's string value is nil or empty string.
+	if (![self isCommentValid:object.comment]) {
+		object.comment = nil;
+		return;
+	}
+	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {

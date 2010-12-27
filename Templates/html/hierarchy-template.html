@@ -18,20 +18,16 @@
 			</div>
 			<div id="container">
 				{{#hasClasses}}
-				<div class="index-column">
-					<h2 class="index-title">{{strings/indexPage/classesTitle}}</h2>
-					<ul>
-						{{#classes}}
-						<li><a href="{{href}}">{{title}}</a></li>
-						{{/classes}}
-					</ul>
+				<div class="index-column hierarchy-column">
+					<h2 class="index-title">{{strings/hierarchyPage/classesTitle}}</h2>
+					{{>Classes}}
 				</div>
 				{{/hasClasses}}
 				
 				{{#hasProtocolsOrCategories}}	
 				<div class="index-column">
 					{{#hasProtocols}}
-					<h2 class="index-title">{{strings/indexPage/protocolsTitle}}</h2>
+					<h2 class="index-title">{{strings/hierarchyPage/protocolsTitle}}</h2>
 					<ul>
 						{{#protocols}}
 						<li><a href="{{href}}">{{title}}</a></li>
@@ -39,7 +35,7 @@
 					</ul>
 					{{/hasProtocols}}
 					{{#hasCategories}}
-					<h2 class="index-title">{{strings/indexPage/categoriesTitle}}</h2>
+					<h2 class="index-title">{{strings/hierarchyPage/categoriesTitle}}</h2>
 					<ul>
 						{{#categories}}
 						<li><a href="{{href}}">{{title}}</a></li>
@@ -63,6 +59,16 @@
 	</body>
 </html>
 
+Section Classes
+{{#hasClasses}}
+	<ul>
+	{{#classes}}
+		<li>{{#href}}<a href="{{href}}">{{/href}}{{name}}{{#href}}</a>{{/href}}{{>Classes}}</li>
+	{{/classes}}
+	</ul>
+{{/hasClasses}}
+EndSection
+
 Section Navigation
-<a href="hierarchy.html">Next</a>
+<a href="index.html">Previous</a>
 EndSection

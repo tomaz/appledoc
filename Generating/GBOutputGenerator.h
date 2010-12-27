@@ -86,15 +86,27 @@
 /// @name Subclass parameters and helpers
 ///---------------------------------------------------------------------------------------
 
-/** Searches `templateFiles` dictionary for a key ending with the given suffix and returns the whole key if found.
+/** Returns the full path to the template ending with the given string.
  
- If the key is not found, `nil` is returned. This method is useful for finding keys for which we only know partial name (ussually the name of the file, but not the path to it).
+ The method searches `templateFiles` for a key ending with the given suffix and returns full path to the given template. This is useful for getting the template for which we only know filename, but not the whole path for example.
  
  @param suffix Template file suffix to search for.
- @return Returns full key if found, `nil` otherwise.
+ @return Returns template path to the given template or `nil` if not found.
+ @see outputPathToTemplateEndingWith:
  @see templateFiles
  */
-- (NSString *)templateFileKeyEndingWith:(NSString *)suffix;
+- (NSString *)templatePathForTemplateEndingWith:(NSString *)suffix;
+
+/** Returns the path to the template ending with the given string.
+ 
+ The method searches `templateFiles` for a key ending with the given suffix and returns the path to the output directory corresponding to the given template subpath. This is useful for generating actual template file names - just append the desired filename and you have output file name ready!
+ 
+ @param suffix Template file suffix to search for.
+ @return Returns output path corresponding to the given template or `nil` if not found.
+ @see templatePathForTemplateEndingWith:
+ @see templateFiles
+ */
+- (NSString *)outputPathToTemplateEndingWith:(NSString *)suffix;
 
 /** The dictionary of all template files detected within `copyTemplateFilesToOutputPath:`.
  
@@ -103,7 +115,6 @@
  This is intended to be used within subclasses only. Dictionary contents are automatically updated and should not be changed by subclasses.
  
  @see copyTemplateFilesToOutputPath:
- @see templateFileKeyEndingWith:
  */
 @property (readonly) NSMutableDictionary *templateFiles;
 

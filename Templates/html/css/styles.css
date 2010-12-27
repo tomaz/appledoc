@@ -42,7 +42,7 @@ a:hover {
 /* @group Common page elements */
 
 #footer {
-	clear: left;
+	clear: both;
 	padding-top: 20px;
 	text-align: center;
 }
@@ -53,6 +53,25 @@ a:hover {
 
 .generator {
 	font-size: 11px;
+}
+
+.main-navigation ul li {
+	display: inline;
+	margin-left: 15px;
+	list-style: none;
+}
+
+.navigation-top {
+	clear: both;
+	float: right;
+	margin-top: -18px;
+}
+
+.navigation-bottom {
+	clear: both;
+	float: right;
+	margin-top: 20px;
+	margin-bottom: -10px;
 }
 
 /* @end */
@@ -80,6 +99,18 @@ a:hover {
 .index-column ul li {
 	margin: 0 0 3px 0;
 	padding: 0;
+}
+
+.hierarchy-column {
+	min-width: 400px;
+}
+
+.hierarchy-column ul {
+	margin: 3px 0 0 15px;
+}
+
+.hierarchy-column ul li {
+	list-style-type: square;
 }
 
 /* @end */

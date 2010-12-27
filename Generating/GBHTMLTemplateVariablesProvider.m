@@ -57,9 +57,12 @@
 @interface GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex;
+- (NSString *)pageTitleForHierarchy;
 - (NSArray *)classesForIndex;
 - (NSArray *)categoriesForIndex;
 - (NSArray *)protocolsForIndex;
+- (NSArray *)classesForHierarchy;
+- (NSArray *)arrayFromHierarchyLevel:(NSDictionary *)level;
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
 
 @end
@@ -135,6 +138,21 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:[self classesForIndex] forKey:@"classes"];
+	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
+	[result setObject:[self categoriesForIndex] forKey:@"categories"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self registerObjectsUsageForIndexInDictionary:result];
+	return result;
+}
+
+- (NSDictionary *)variablesForHierarchyWithStore:(id)store {
+	self.store = store;
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForHierarchy] forKey:@"title"];
+	[self addFooterVarsToDictionary:page];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:[self classesForHierarchy] forKey:@"classes"];
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
@@ -315,7 +333,13 @@
 @implementation GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex {
-	return [NSString stringWithFormat:@"%@ Reference", self.settings.projectName];
+	NSString *template = [self.settings.stringTemplates.indexPage objectForKey:@"titleTemplate"];
+	return [NSString stringWithFormat:template, self.settings.projectName];
+}
+
+- (NSString *)pageTitleForHierarchy {
+	NSString *template = [self.settings.stringTemplates.hierarchyPage objectForKey:@"titleTemplate"];
+	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
 - (NSArray *)classesForIndex {
@@ -352,6 +376,62 @@
 		[result addObject:data];
 	}
 	return result;
+}
+
+- (NSArray *)classesForHierarchy {
+	// This returns the array of all root classes, each class containing further arrays of subclasses and so on. Ussually root classes array only contains single NSObject class, but can also include all root classes (not derived from NSObject). The algorithm for creating hierarhy is not state of the art, but it's quite simple and effective: for each class we iterate over it's whole hierarchy until we arrive at it's root class, creating an flat list of hierarchy for this class. Then we use the flat list to add all unknown class names to the hierarchy dictionary, together with all subclasses. When we process all classes like this, we have a dictionary with proper inheritance.
+	NSMutableDictionary *hierarchy = [NSMutableDictionary dictionaryWithCapacity:[self.store.classes count]];
+	for (GBClassData *class in [self.store.classes allObjects]) {
+		// Build the flat list of class hierarchy up to the root class. The flat lists array starts with root and ends with current class. Note how we treat unknown classes as root classes - if a class doesn't have a pointer to superclass, but does have it's name, we add the name to the flat list. Although this does end with usable hierarhcy, it does leave things open for improvements (i.e. deriving from NSView will not create the hierarchy all the way down to NSObject, but will instead use NSView as a root view, besides NSObject).
+		GBClassData *c = class;
+		NSMutableArray *flatlist = [NSMutableArray array];
+		while (c) {
+			[flatlist insertObject:c.nameOfClass atIndex:0];
+			if (!c.superclass && c.nameOfSuperclass) [flatlist insertObject:c.nameOfSuperclass atIndex:0];
+			c = c.superclass;
+		}
+		
+		// Now traverse the flat list and add all unknown classes to the dictionary. Then add all subclasses to next level and update the data we'll be matching in the next iteration (i.e. subclasses). This way we always start with the root dictionary and progress the depth on each iteration.
+		NSMutableDictionary *currentLevel = hierarchy;
+		for (NSString *className in flatlist) {
+			NSMutableDictionary *classData = [currentLevel objectForKey:className];
+			if (!classData) {
+				classData = [NSMutableDictionary dictionary];
+				[classData setObject:className forKey:@"name"];
+				[classData setObject:[NSMutableDictionary dictionary] forKey:@"subclasses"];
+				[currentLevel setObject:classData forKey:className];
+			}
+			currentLevel = [classData objectForKey:@"subclasses"];
+		}
+	}
+	
+	// Finally convert hierarchy dictionary to arrays of arrays. Although the dictionary contains all objects, it stores them under keys matching object names. This made it simple to add new objects, but gives template engine no known key to work with. So basically we're converting each layer of hierarchy data into an array of dictionaries.
+	return [self arrayFromHierarchyLevel:hierarchy];
+}
+
+- (NSArray *)arrayFromHierarchyLevel:(NSDictionary *)level {
+	// A helper method that recursively descends the given hierarchy level dictionary and converts it to array suitable for template engine processing.
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[level count]];
+	[level enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSDictionary *data, BOOL *stop) {
+		// Get all sublasses by recursively descending down the hierarchy.
+		NSArray *subclasses = [self arrayFromHierarchyLevel:[data objectForKey:@"subclasses"]];
+		
+		// Get current class from the store and href to it.
+		GBClassData *class = [self.store classWithName:name];
+		NSString *href = [self hrefForObject:class fromObject:nil];
+		
+		// Prepare class data.
+		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
+		[classData setObject:name forKey:@"name"];
+		[classData setObject:subclasses forKey:@"classes"];
+		[classData setObject:[subclasses count] > 0 ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+		if (href) [classData setObject:href forKey:@"href"];
+		[result addObject:classData];
+	}];
+	
+	// Sort the array by class names.
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+	return [result sortedArrayUsingDescriptors:descriptors];
 }
 
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {

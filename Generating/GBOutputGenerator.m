@@ -125,9 +125,18 @@
 
 #pragma mark Helper methods
 
-- (NSString *)templateFileKeyEndingWith:(NSString *)suffix {
+- (NSString *)templatePathForTemplateEndingWith:(NSString *)suffix {
 	for (NSString *template in [self.templateFiles allKeys]) {
 		if ([template hasSuffix:suffix]) return template;
+	}
+	return nil;
+}
+
+- (NSString *)outputPathToTemplateEndingWith:(NSString *)suffix {
+	NSString *template = [self templatePathForTemplateEndingWith:suffix];
+	if (template) {
+		NSString *path = [template substringToIndex:[template length] - [suffix length]];
+		return [self.outputUserPath stringByAppendingPathComponent:path];
 	}
 	return nil;
 }

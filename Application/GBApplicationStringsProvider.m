@@ -86,7 +86,20 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"%@ Reference" forKey:@"titleTemplate"];
 		[result setObject:@"Class References" forKey:@"classesTitle"];
+		[result setObject:@"Category References" forKey:@"categoriesTitle"];
+		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
+	}
+	return result;
+}
+
+- (NSDictionary *)hierarchyPage {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"%@ Hierarchy" forKey:@"titleTemplate"];
+		[result setObject:@"Class Hierarchy" forKey:@"classesTitle"];
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
 	}
@@ -102,6 +115,17 @@
 		[result setObject:@"Classes" forKey:@"classesTitle"];
 		[result setObject:@"Categories" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocols" forKey:@"protocolsTitle"];
+	}
+	return result;
+}
+
+- (NSDictionary *)appledocData {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"appledoc" forKey:@"tool"];
+		[result setObject:@"2.0b2" forKey:@"version"];
+		[result setObject:@"http://appledoc.gentlebytes.com" forKey:@"homepage"];
 	}
 	return result;
 }
