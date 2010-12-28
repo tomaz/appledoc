@@ -381,7 +381,7 @@
 		73EC015B122852ED0076B7B3 /* GBCommentsProcessor-TextItemsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-TextItemsTesting.m"; sourceTree = "<group>"; };
 		73EC016F1228561B0076B7B3 /* GBCommentParagraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentParagraph.h; sourceTree = "<group>"; };
 		73EC01701228561B0076B7B3 /* GBCommentParagraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentParagraph.m; sourceTree = "<group>"; };
-		73EEB7A712CA20A000E546DB /* Release Checklist.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Release Checklist.markdown"; sourceTree = "<group>"; };
+		73EEB7A812CA2BE700E546DB /* Release Notes.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Release Notes.markdown"; sourceTree = "<group>"; };
 		73F2CA70123E4161009B406B /* GBCommentsProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentsProcessor.h; sourceTree = "<group>"; };
 		73F2CA71123E4161009B406B /* GBCommentsProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessor.m; sourceTree = "<group>"; };
 		73F2CA72123E4161009B406B /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
@@ -528,7 +528,7 @@
 			isa = PBXGroup;
 			children = (
 				73EA656912B7944E00398BD1 /* Readme.markdown */,
-				73EEB7A712CA20A000E546DB /* Release Checklist.markdown */,
+				73EEB7A812CA2BE700E546DB /* Release Notes.markdown */,
 				73D54C9011F8D18300CCDDB0 /* Classes */,
 				739AD36F1254449D00B642C3 /* Templates */,
 				73D54BDF11F8CE2300CCDDB0 /* Startup */,

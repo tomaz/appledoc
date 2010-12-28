@@ -1,3 +1,33 @@
+What's new
+==========
+
+2.0b3
+-----
+
+- Bug fix release for documentation set.
+
+
+2.0b2
+-----
+
+- Appledoc version is included in HTML footer.
+- Method result can also be specified with @returns.
+- Cross reference to index and hierarchy pages.
+- Class hierarchy output.
+- Clean HTML output.
+- Minor fixed and refactorings.
+
+
+2.0b1
+-----
+
+- Custom source code and comments parsing instead of doxygen.
+- Embedded template builder instead of XSLT.
+- Complete rewrite.
+
+
+
+
 Release Checklist
 =================
 
