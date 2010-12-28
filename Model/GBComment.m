@@ -94,7 +94,7 @@
 	for (NSUInteger i=0; i<[_crossrefs count]; i++) {
 		GBParagraphLinkItem *existing = [_crossrefs objectAtIndex:i];
 		if ([existing.stringValue isEqualToString:ref.stringValue]) {
-			GBLogWarn(@"%@: %@ is already registered, ignoring!", self, ref.stringValue);
+			GBLogWarn(@"%@: %@ cross reference is already registered, ignoring!", self, ref.stringValue);
 			return;
 		}
 	}

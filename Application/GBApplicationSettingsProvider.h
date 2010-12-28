@@ -243,6 +243,9 @@
  */
 @property (assign) BOOL warnOnUndocumentedMember;
 
+/** Indicates whether invalid cross reference should result in warning or not. */
+@property (assign) BOOL warnOnInvalidCrossReference;
+
 ///---------------------------------------------------------------------------------------
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------

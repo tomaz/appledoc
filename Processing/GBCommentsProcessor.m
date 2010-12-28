@@ -240,7 +240,10 @@
 	// Prepare the resulting link item. Note that we must first test for remote member reference!
 	if (length) *length = linkRange.location + linkRange.length;
 	GBParagraphLinkItem *item = [self remoteMemberLinkItemFromString:reference matchRange:NULL];
-	if (!item) item = [self simpleLinkItemFromString:reference matchRange:NULL];
+	if (!item) {
+		item = [self simpleLinkItemFromString:reference matchRange:NULL];
+		if (!item && self.settings.warnOnInvalidCrossReference) GBLogWarn(@"%@: Invalid cross reference %@!", self.currentComment.sourceInfo, reference);
+	}
 	return item;
 }
 
@@ -633,7 +636,7 @@
 		}
 	}
 	if (!objectRefence) {
-		GBLogWarn(@"%@: Invalid %@ reference: %@ not found!", self.currentComment.sourceInfo, reference, objectName);
+		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"%@: Invalid %@ reference: %@ not found!", self.currentComment.sourceInfo, reference, objectName);
 		return nil;
 	}
 	
@@ -649,7 +652,7 @@
 		link.isLocal = NO;
 		return link;
 	} else {
-		GBLogWarn(@"%@: Invalid %@ reference: member %@ not found for %@!", self.currentComment.sourceInfo, reference, memberName, objectRefence);
+		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"%@: Invalid %@ reference: member %@ not found for %@!", self.currentComment.sourceInfo, reference, memberName, objectRefence);
 		return nil;
 	}
 	

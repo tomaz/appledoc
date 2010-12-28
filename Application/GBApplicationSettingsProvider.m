@@ -65,6 +65,7 @@
 		self.warnOnMissingCompanyIdentifier = YES;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
+		self.warnOnInvalidCrossReference = YES;
 		
 		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECT";
 		self.docsetBundleName = @"$PROJECT Documentation";
@@ -327,6 +328,7 @@
 @synthesize warnOnMissingCompanyIdentifier;
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
+@synthesize warnOnInvalidCrossReference;
 
 @synthesize commentComponents;
 @synthesize stringTemplates;
