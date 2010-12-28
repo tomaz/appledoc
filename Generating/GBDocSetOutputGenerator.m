@@ -86,13 +86,14 @@
 
 - (BOOL)processInfoPlist:(NSError **)error {
 	GBLogInfo(@"Writting DocSet Info.plist...");
-	NSString *templatePath = [self outputPathToTemplateEndingWith:@"info-template.plist"];
+	NSString *templateFilename = @"info-template.plist";
+	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
 		if (error) *error = [NSError errorWithCode:GBErrorDocSetInfoPlistTemplateMissing description:@"Info.plist template is missing!" reason:@"info-template.plist file is required to specify information about DocSet!"];
 		GBLogWarn(@"Failed finding info-template.plist in '%@'!", self.templateUserPath);
 		return NO;
 	}
-	
+		
 	// Prepare template variables and replace all placeholders with actual values.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithCapacity:20];
 	[vars setObject:self.settings.docsetBundleIdentifier forKey:@"bundleIdentifier"];
@@ -113,7 +114,8 @@
 	// Run the template and save the results as Info.plist.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
 	NSString *output = [handler renderObject:vars];
-	NSString *filename = [templatePath stringByAppendingPathComponent:@"Info.plist"];
+	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
+	NSString *filename = [outputPath stringByAppendingPathComponent:@"Info.plist"];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
 		GBLogWarn(@"Failed writting Info.plist to '%@'!", filename);
 		return NO;
@@ -123,7 +125,8 @@
 
 - (BOOL)processNodesXml:(NSError **)error {
 	GBLogInfo(@"Writting DocSet Nodex.xml file...");
-	NSString *templatePath = [self outputPathToTemplateEndingWith:@"nodes-template.xml"];
+	NSString *templateFilename = @"nodes-template.xml";
+	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
 		if (error) *error = [NSError errorWithCode:GBErrorDocSetNodesTemplateMissing description:@"Nodes.xml template is missing!" reason:@"nodes-template.xml file is required to specify document structure for DocSet!"];
 		GBLogWarn(@"Failed finding nodes-template.xml in '%@'!", self.templateUserPath);
@@ -145,7 +148,8 @@
 	// Run the template and save the results.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
 	NSString *output = [handler renderObject:vars];
-	NSString *filename = [templatePath stringByAppendingPathComponent:@"Nodes.xml"];
+	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
+	NSString *filename = [outputPath stringByAppendingPathComponent:@"Nodes.xml"];
 	[self.temporaryFiles addObject:filename];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
 		GBLogWarn(@"Failed writting Nodes.xml to '%@'!", filename);
@@ -256,7 +260,8 @@
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error {
 	// Prepare the output path and template handler then generate file for each object.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:template];
-	NSString *outputPath = [template stringByDeletingLastPathComponent];
+	NSString *templateFilename = [template lastPathComponent];
+	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSUInteger idx = *index;
 	for (NSMutableDictionary *simplifiedObjectData in objects) {
 		// Get the object's methods provider and prepare the array of all methods.
@@ -286,8 +291,7 @@
 		// Run the template and save the results.
 		NSString *output = [handler renderObject:vars];
 		NSString *indexName = [NSString stringWithFormat:@"Tokens%ld.xml", idx++];
-		NSString *subpath = [outputPath stringByAppendingPathComponent:indexName];
-		NSString *filename = [self.outputUserPath stringByAppendingPathComponent:subpath];
+		NSString *filename = [outputPath stringByAppendingPathComponent:indexName];
 		[self.temporaryFiles addObject:filename];
 		if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
 			GBLogWarn(@"Failed writting tokens file '%@'!", filename);

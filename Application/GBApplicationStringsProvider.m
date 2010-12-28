@@ -124,7 +124,7 @@
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"appledoc" forKey:@"tool"];
-		[result setObject:@"2.0b2" forKey:@"version"];
+		[result setObject:@"2.0b3" forKey:@"version"];
 		[result setObject:@"http://appledoc.gentlebytes.com" forKey:@"homepage"];
 	}
 	return result;
