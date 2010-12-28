@@ -246,6 +246,9 @@
 /** Indicates whether invalid cross reference should result in warning or not. */
 @property (assign) BOOL warnOnInvalidCrossReference;
 
+/** Indicates whether missing method argument descriptions in comments should result in warnings or not. */
+@property (assign) BOOL warnOnMissingMethodArgument;
+
 ///---------------------------------------------------------------------------------------
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------

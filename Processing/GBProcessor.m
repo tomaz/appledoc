@@ -182,7 +182,7 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
-		GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+		if (self.settings.warnOnMissingMethodArgument) GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).

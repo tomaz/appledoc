@@ -66,6 +66,7 @@
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
 		self.warnOnInvalidCrossReference = YES;
+		self.warnOnMissingMethodArgument = YES;
 		
 		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECT";
 		self.docsetBundleName = @"$PROJECT Documentation";
@@ -308,6 +309,7 @@
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
 @synthesize warnOnInvalidCrossReference;
+@synthesize warnOnMissingMethodArgument;
 
 @synthesize commentComponents;
 @synthesize stringTemplates;
