@@ -189,6 +189,19 @@
 	NSParameterAssert([source methodType] == self.methodType);
 	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);
 	NSParameterAssert([[source methodResultTypes] isEqualToArray:self.methodResultTypes]);
+
+	// Use argument var names from the method that has comment. If no method has comment, just keep deafult.
+	if ([source comment] && ![self comment]) {
+		GBLogDebug(@"%@: Checking for difference due to comment status...", self);
+		for (NSUInteger i=0; i<[self.methodArguments count]; i++) {
+			GBMethodArgument *ourArgument = [[self methodArguments] objectAtIndex:i];
+			GBMethodArgument *otherArgument = [[source methodArguments] objectAtIndex:i];
+			if (![ourArgument.argumentVar isEqualToString:otherArgument.argumentVar]) {
+				GBLogDebug(@"%@: Changing %ld. argument var name from %@ to %@...", self, i+1, ourArgument.argumentVar, otherArgument.argumentVar);
+				ourArgument.argumentVar = otherArgument.argumentVar;
+			}
+		}
+	}
 	[super mergeDataFromObject:source];
 }
 

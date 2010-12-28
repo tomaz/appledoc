@@ -94,7 +94,7 @@
  
  Argument variable defines -(result)arg:(type)*var* part of method. If argument doesn't use variable, this is `nil`.
  */
-@property (readonly) NSString *argumentVar;
+@property (copy) NSString *argumentVar;
 
 /** Array of variable arguments termination macros.
  
