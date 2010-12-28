@@ -87,27 +87,6 @@
 	return self;
 }
 
-- (id)copyWithZone:(NSZone *)zone {
-	// This uses reflection to get the list of all properties and then KVC to copy the values from this object to the copy, skipping helper classes to keep
-	NSSet *ignored = [[self class] nonCopyableProperties];
-	id result = [[[[self class] alloc] init] autorelease];
-	unsigned int count;
-	objc_property_t *properties = class_copyPropertyList([self class], &count);
-	for (unsigned int i=0; i<count; i++) {
-		objc_property_t property = properties[i];
-		const char *name = property_getName(property);
-		if (!name) continue;
-		
-		NSString *key = [NSString stringWithCString:name encoding:NSASCIIStringEncoding];
-		if ([ignored containsObject:key]) continue;
-		
-		id value = [self valueForKey:key];
-		[result setValue:value forKey:key];
-	}
-    free(properties);
-	return result;
-}
-
 #pragma mark Helper methods
 
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {

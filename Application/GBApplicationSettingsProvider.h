@@ -15,7 +15,7 @@
  
  This object implements `GBApplicationStringsProviding` interface and is used by `GBAppledocApplication` to prepare application-wide settings including factory defaults, global and session values. The main purpose of the class is to simplify `GBAppledocApplication` class by decoupling it from the actual settings providing implementation.
  */
-@interface GBApplicationSettingsProvider : NSObject <NSCopying>
+@interface GBApplicationSettingsProvider : NSObject
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
