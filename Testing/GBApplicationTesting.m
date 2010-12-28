@@ -16,7 +16,8 @@
 - (GBApplicationSettingsProvider *)settingsByRunningWithArgs:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
-	
+
+// These unit tests verify DDCli KVC methods and properties are implemented and properly mapped to GBApplicationSettingsProvider
 @implementation GBAppledocApplicationTesting
 
 #pragma mark Paths settings testing
@@ -216,6 +217,15 @@
 	// verify
 	assertThatBool(settings1.warnOnUndocumentedMember, equalToBool(YES));
 	assertThatBool(settings2.warnOnUndocumentedMember, equalToBool(NO));
+}
+
+- (void)testWarnOnInvalidCrossReference_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-invalid-crossref", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-invalid-crossref", nil];
+	// verify
+	assertThatBool(settings1.warnOnInvalidCrossReference, equalToBool(YES));
+	assertThatBool(settings2.warnOnInvalidCrossReference, equalToBool(NO));
 }
 
 #pragma mark Documentation set settings testing

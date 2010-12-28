@@ -21,7 +21,7 @@
 #pragma mark Copying testing
 
 - (void)testCopyWithZone_shouldCopyAllPropertyValues {
-	// setuup
+	// setup
 	GBApplicationSettingsProvider *original = [GBApplicationSettingsProvider provider];
 	original.outputPath = @"A1";
 	original.templatesPath = @"A2";
@@ -40,8 +40,11 @@
 	original.mergeCategoriesToClasses = NO;
 	original.keepMergedCategoriesSections = NO;
 	original.prefixMergedCategoriesSectionsWithCategoryName = NO;
+	original.warnOnMissingOutputPathArgument = NO;
+	original.warnOnMissingCompanyIdentifier = NO;
 	original.warnOnUndocumentedObject = NO;
 	original.warnOnUndocumentedMember = NO;
+	original.warnOnInvalidCrossReference = NO;
 	original.docsetBundleIdentifier = @"D1";
 	original.docsetBundleName = @"D2";
 	original.docsetCertificateIssuer = @"D3";
@@ -75,8 +78,11 @@
 	assertThatBool(copy.mergeCategoriesToClasses, equalToBool(original.mergeCategoriesToClasses));
 	assertThatBool(copy.keepMergedCategoriesSections, equalToBool(original.keepMergedCategoriesSections));
 	assertThatBool(copy.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(original.prefixMergedCategoriesSectionsWithCategoryName));
+	assertThatBool(copy.warnOnMissingOutputPathArgument, equalToBool(original.warnOnMissingOutputPathArgument));
+	assertThatBool(copy.warnOnMissingCompanyIdentifier, equalToBool(original.warnOnMissingCompanyIdentifier));
 	assertThatBool(copy.warnOnUndocumentedObject, equalToBool(original.warnOnUndocumentedObject));
 	assertThatBool(copy.warnOnUndocumentedMember, equalToBool(original.warnOnUndocumentedMember));
+	assertThatBool(copy.warnOnInvalidCrossReference, equalToBool(original.warnOnInvalidCrossReference));
 	assertThat(copy.docsetBundleIdentifier, is(original.docsetBundleIdentifier));
 	assertThat(copy.docsetBundleName, is(original.docsetBundleName));
 	assertThat(copy.docsetCertificateIssuer, is(original.docsetCertificateIssuer));
