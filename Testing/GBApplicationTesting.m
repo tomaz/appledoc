@@ -228,6 +228,15 @@
 	assertThatBool(settings2.warnOnInvalidCrossReference, equalToBool(NO));
 }
 
+- (void)testWarnOnMissingMethodArgument_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-missing-arg", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-missing-arg", nil];
+	// verify
+	assertThatBool(settings1.warnOnMissingMethodArgument, equalToBool(YES));
+	assertThatBool(settings2.warnOnMissingMethodArgument, equalToBool(NO));
+}
+
 #pragma mark Documentation set settings testing
 
 - (void)testDocSetBudnleIdentifier_shouldAssignValueToSettings {

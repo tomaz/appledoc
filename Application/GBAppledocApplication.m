@@ -42,6 +42,7 @@ static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-i
 static NSString *kGBArgWarnOnUndocumentedObject = @"warn-undocumented-object";
 static NSString *kGBArgWarnOnUndocumentedMember = @"warn-undocumented-member";
 static NSString *kGBArgWarnOnInvalidCrossReference = @"warn-invalid-crossref";
+static NSString *kGBArgWarnOnMissingMethodArgument = @"warn-missing-arg";
 
 static NSString *kGBArgDocSetBundleIdentifier = @"docset-bundle-id";
 static NSString *kGBArgDocSetBundleName = @"docset-bundle-name";
@@ -224,11 +225,13 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnInvalidCrossReference,								0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnMissingMethodArgument,								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingOutputPath),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingCompanyIdentifier),					0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedMember),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnInvalidCrossReference),						0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnMissingMethodArgument),						0,		DDGetoptNoArgument },
 		
 		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
 		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
@@ -490,11 +493,13 @@ static NSString *kGBArgHelp = @"help";
 - (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
 - (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
 - (void)setWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = value; }
+- (void)setWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = value; }
 - (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
 - (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
 - (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
 - (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
 - (void)setNoWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = !value; }
+- (void)setNoWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = !value; }
 
 - (void)setDocsetBundleId:(NSString *)value { self.settings.docsetBundleIdentifier = value; }
 - (void)setDocsetBundleName:(NSString *)value { self.settings.docsetBundleName = value; }
@@ -570,6 +575,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"<bool>", @"Warn on undocumented object");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"<bool>", @"Warn on undocumented member");
 	PRINT_USAGE(@"   ", kGBArgWarnOnInvalidCrossReference, @"<bool>", @"Warn on invalid cross reference");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingMethodArgument, @"<bool>", @"Warn on missing method argument documentation");
 	ddprintf(@"\n");
 	ddprintf(@"DOCUMENTATION SET INFO\n");
 	PRINT_USAGE(@"   ", kGBArgDocSetBundleIdentifier, @"<string>", @"[*] DocSet bundle identifier");
