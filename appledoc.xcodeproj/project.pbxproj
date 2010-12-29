@@ -1347,7 +1347,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = appledoc_prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
@@ -1373,7 +1373,7 @@
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = appledoc_prefix.pch;
+				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
 					Common/ThirdParty/GRMustache,
