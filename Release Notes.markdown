@@ -33,6 +33,7 @@ Release Checklist
 
 All low level key components are covered with unit tests, however some higher level components aren't so make sure you check all following tests before releasing a version.
 
+- Compile as release to fix missing @synthesize and similar.
 - Make sure all unit tests pass.
 - Validate all input paths are parsed.
 - Create HTML and validate few pages to see it's ok.

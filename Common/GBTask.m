@@ -151,6 +151,7 @@
 
 @synthesize reportBlock;
 @synthesize reportIndividualLines;
+@synthesize lastCommandLine;
 @synthesize lastStandardOutput;
 @synthesize lastStandardError;
 
