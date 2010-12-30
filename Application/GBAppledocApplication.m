@@ -357,7 +357,7 @@ static NSString *kGBArgHelp = @"help";
 	}
 
 	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
-	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
+	if ([arguments count] == 0) [NSException raise:@"At least one directory or file name path is required, use 'appledoc --help'"];
 	for (NSString *path in arguments) {
 		if (![self.fileManager fileExistsAtPath:path]) {
 			[NSException raise:@"Path or file '%@' doesn't exist!", path];
