@@ -68,6 +68,13 @@
 		}
 	}
 	
+	// Create directory hierarchy minus the last one. This is necessary if more than one component is missing at destination path; copyItemAtPath:toPath:error would fail in such case. Note that we can't create the last directory as mentioned method request is that the destination doesn't exist!
+	NSString *createDestPath = [destPath stringByDeletingLastPathComponent];
+	if (![self.fileManager createDirectoryAtPath:createDestPath withIntermediateDirectories:YES attributes:nil error:error]) {
+		GBLogWarn(@"Failed creating directory '%@'!", createDestPath);
+		return NO;
+	}
+	
 	// If there's no source file, there also no need to copy anything, so exit. In fact, copying would probably just result in errors.
 	if (![self.fileManager fileExistsAtPath:sourcePath]) {
 		GBLogDebug(@"No template file found at '%@', no need to copy.", sourceUserPath);
