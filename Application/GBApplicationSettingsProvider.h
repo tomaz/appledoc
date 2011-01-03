@@ -110,6 +110,12 @@
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
+/** Indicates whether the first paragraph needs to be repeated within method and property description or not.
+ 
+ If `YES`, first paragraph is repeated in members description, otherwise not.
+ */
+@property (assign) BOOL repeatFirstParagraphForMemberDescription;
+
 /* Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
  
  If `YES` undocumented objects are kept and are used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members.

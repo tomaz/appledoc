@@ -163,6 +163,15 @@
 	assertThatBool(settings2.findUndocumentedMembersDocumentation, equalToBool(NO));
 }
 
+- (void)testRepeatFirstParagraph_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--repeat-first-par", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-repeat-first-par", nil];
+	// verify
+	assertThatBool(settings1.repeatFirstParagraphForMemberDescription, equalToBool(YES));
+	assertThatBool(settings2.repeatFirstParagraphForMemberDescription, equalToBool(NO));
+}
+
 - (void)testMergeCategoriesToClasses_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--merge-categories", nil];

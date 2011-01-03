@@ -54,6 +54,7 @@
 		self.createHTML = YES;
 		self.createDocSet = YES;
 		self.installDocSet = NO;
+		self.repeatFirstParagraphForMemberDescription = YES;
 		self.keepIntermediateFiles = NO;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
@@ -293,6 +294,7 @@
 @synthesize docsetPublisherName;
 @synthesize docsetCopyrightMessage;
 
+@synthesize repeatFirstParagraphForMemberDescription;
 @synthesize keepUndocumentedObjects;
 @synthesize keepUndocumentedMembers;
 @synthesize findUndocumentedMembersDocumentation;

@@ -40,12 +40,21 @@
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
 	NSParameterAssert(paragraph != nil);
-	GBLogDebug(@"Registering %@...", paragraph);
+	GBLogDebug(@"Registering paragraph %@...", paragraph);
 	if (!_paragraphs) {
 		_paragraphs = [[NSMutableArray alloc] init];
 		self.firstParagraph = paragraph;
 	}
 	[_paragraphs addObject:paragraph];
+}
+
+- (void)registerDescriptionParagraph:(GBCommentParagraph *)paragraph {
+	NSParameterAssert(paragraph != nil);
+	GBLogDebug(@"Registering description paragraph %@...", paragraph);
+	if (!_descriptionParagraphs) {
+		_descriptionParagraphs = [[NSMutableArray alloc] init];
+	}
+	[_descriptionParagraphs addObject:paragraph];
 }
 
 - (void)registerParameter:(GBCommentArgument *)parameter {
@@ -129,8 +138,8 @@
 	return ([self.paragraphs count] > 0);
 }
 
-- (BOOL)hasMultipleParagraphs {
-	return ([self.paragraphs count] > 1);
+- (BOOL)hasDescriptionParagraphs {
+	return ([self.descriptionParagraphs count] > 0);
 }
 
 - (BOOL)hasParameters {
@@ -207,6 +216,7 @@
 
 #pragma mark Properties
 
+@synthesize descriptionParagraphs = _descriptionParagraphs;
 @synthesize paragraphs = _paragraphs;
 @synthesize parameters = _parameters;
 @synthesize exceptions = _exceptions;

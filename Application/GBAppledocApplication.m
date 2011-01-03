@@ -31,6 +31,7 @@ static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
 static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
+static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
 static NSString *kGBArgFindUndocumentedMembersDocumentation = @"search-undocumented-doc";
@@ -212,6 +213,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
 		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
+		{ kGBArgRepeatFirstParagraph,										0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
@@ -219,6 +221,7 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedMembers),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgFindUndocumentedMembersDocumentation),				0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgRepeatFirstParagraph),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgMergeCategoriesToClasses),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
@@ -424,6 +427,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
 - (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
+- (void)setRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = value; }
 - (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
 - (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
 - (void)setPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = value; }
@@ -431,6 +435,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = !value; }
 - (void)setNoKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = !value; }
 - (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
+- (void)setNoRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = !value; }
 - (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
@@ -522,6 +527,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
 	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
+	ddprintf(@"--%@ = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
@@ -572,6 +578,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedObjects, @"", @"[b] Keep undocumented objects");
 	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedMembers, @"", @"[b] Keep undocumented members");
 	PRINT_USAGE(@"   ", kGBArgFindUndocumentedMembersDocumentation, @"", @"[b] Search undocumented members documentation");
+	PRINT_USAGE(@"   ", kGBArgRepeatFirstParagraph, @"", @"[b] Repeat first paragraph in member documentation");
 	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"", @"[b] Merge categories to classes");
 	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"", @"[b] Keep merged categories sections");
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");

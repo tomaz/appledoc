@@ -144,7 +144,17 @@
 		object.comment = nil;
 		return;
 	}
+	
+	// Let comments processor parse comment string value into object representation.
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
+	
+	// Prepare description paragraphs from registered paragraphs according to application settings.
+	if (!object.comment.hasParagraphs) return;
+	NSArray *paragraphs = object.comment.paragraphs;
+	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1; 
+	for (NSUInteger i=startIndex; i<[paragraphs count]; i++) {
+		[object.comment registerDescriptionParagraph:[paragraphs objectAtIndex:i]];
+	}
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
