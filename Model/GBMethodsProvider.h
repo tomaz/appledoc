@@ -72,6 +72,12 @@
  */
 - (GBMethodSectionData *)registerSectionIfNameIsValid:(NSString *)name;
 
+/** Unregisters all sections that have no method.
+ 
+ This is useful for cleaning up.
+ */
+- (void)unregisterEmptySections;
+
 /** The array of all registered sections in the order of registration.
  
  Each section is represented as `GBMethodSectionData` object containing the name of the section and the list of all methods registered for that section.

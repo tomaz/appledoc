@@ -58,6 +58,17 @@
 	return [self registerSectionWithName:string];
 }
 
+- (void)unregisterEmptySections {
+	GBLogDebug(@"Unregistering empty sections...");
+	for (NSUInteger i=0; i<[_sections count]; i++) {
+		GBMethodSectionData *section = [_sections objectAtIndex:i];
+		if ([section.methods count] == 0) {
+			[_sections removeObject:section];
+			i--;
+		}
+	}
+}
+
 - (void)registerMethod:(GBMethodData *)method {
 	// Note that we allow adding several methods with the same selector as long as the type is different (i.e. class and instance methods). In such case, methodBySelector will preffer instance method or property to class method! Note that this could be implemented more inteligently by prefixing selectors with some char or similar and then handling that within methodBySelector: and prefer instance/property in there. However at the time being current code seems sufficient and simpler, so let's stick with it for a while...
 	NSParameterAssert(method != nil);

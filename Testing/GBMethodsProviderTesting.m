@@ -235,6 +235,20 @@
 	assertThat([provider registerSectionIfNameIsValid:@""], is(nil));
 }
 
+- (void)testUnregisterEmptySections_shouldRemoveAllEmptySections {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[provider registerSectionWithName:@"Empty 1"];
+	[provider registerSectionWithName:@"Used"];
+	[provider registerMethod:[GBTestObjectsRegistry propertyMethodWithArgument:@"var"]];
+	[provider registerSectionWithName:@"Empty 2"];
+	// execute
+	[provider unregisterEmptySections];
+	// verify
+	assertThatInteger([[provider sections] count], equalToInteger(1));
+	assertThat([[[provider sections] objectAtIndex:0] sectionName], is(@"Used"));
+}
+
 #pragma mark Output helpers testing
 
 - (void)testHasSections_shouldReturnProperValue {

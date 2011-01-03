@@ -246,6 +246,8 @@
 		return YES;
 	}
 	
+	// Remove all empty sections to cleanup the object for output generation.
+	[provider unregisterEmptySections];	
 	return NO;
 }
 
