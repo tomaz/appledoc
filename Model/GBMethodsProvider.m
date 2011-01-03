@@ -173,6 +173,17 @@
 	return [_parent description];
 }
 
+- (NSString *)debugDescription {
+	NSMutableString *result = [NSMutableString string];
+	[self.sections enumerateObjectsUsingBlock:^(GBMethodSectionData *section, NSUInteger idx, BOOL *stop) {
+		[result appendFormat:@"- %@\n", section.sectionName];
+		[section.methods enumerateObjectsUsingBlock:^(GBMethodData *method, NSUInteger idx, BOOL *stop) {
+			[result appendFormat:@"  - %@\n", method.methodSelector];
+		}];
+	}];
+	return result;
+}
+
 #pragma mark Properties
 
 @synthesize methods = _methods;

@@ -57,6 +57,10 @@
 	return self.nameOfClass;
 }
 
+- (NSString *)debugDescription {
+	return [NSString stringWithFormat:@"class %@ %@\n%@", self.nameOfClass, self.adoptedProtocols.debugDescription, self.methods.debugDescription];
+}
+
 - (BOOL)isTopLevelObject {
 	return YES;
 }
