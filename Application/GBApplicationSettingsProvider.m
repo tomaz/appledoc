@@ -53,7 +53,8 @@
 		
 		self.createHTML = YES;
 		self.createDocSet = YES;
-		self.installDocSet = NO;		
+		self.installDocSet = NO;
+		self.keepIntermediateFiles = NO;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
@@ -303,6 +304,7 @@
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;
+@synthesize keepIntermediateFiles;
 
 @synthesize warnOnMissingOutputPathArgument;
 @synthesize warnOnMissingCompanyIdentifier;

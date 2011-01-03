@@ -127,6 +127,15 @@
 	assertThatBool(settings2.installDocSet, equalToBool(NO));
 }
 
+- (void)testKeepIntermediateFiles_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-intermediate-files", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-keep-intermediate-files", nil];
+	// verify
+	assertThatBool(settings1.keepIntermediateFiles, equalToBool(YES));
+	assertThatBool(settings2.keepIntermediateFiles, equalToBool(NO));
+}
+
 - (void)testKeepUndocumentedObjects_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-undocumented-objects", nil];

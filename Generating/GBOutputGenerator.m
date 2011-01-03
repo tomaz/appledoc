@@ -119,6 +119,24 @@
 	return YES;
 }
 
+- (BOOL)copyOrMoveItemFromPath:(NSString *)source toPath:(NSString *)destination error:(NSError **)error {
+	BOOL copy = self.settings.keepIntermediateFiles;
+	GBLogDebug(@"%@ '%@' to '%@'...", copy ? @"Copying" : @"Moving", source, destination);
+	
+	NSString *standardSource = [source stringByStandardizingPath];
+	NSString *standardDest = [destination stringByStandardizingPath];
+	
+	// We must first delete destination path if it exists. Otherwise copy or move will fail!
+	if (![self.fileManager removeItemAtPath:standardDest error:error]) {
+		GBLogWarn(@"Failed removing '%@'!", destination);
+		return NO;
+	}
+	
+	// Now either copy or move.
+	if (copy) return [self.fileManager copyItemAtPath:standardSource toPath:standardDest error:error];
+	return [self.fileManager moveItemAtPath:source toPath:destination error:error];
+}
+
 - (BOOL)isPathRepresentingTemplateFile:(NSString *)path {
 	NSString *filename = [[path lastPathComponent] stringByDeletingPathExtension];
 	if ([filename hasSuffix:@"-template"]) return YES;

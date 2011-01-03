@@ -211,6 +211,12 @@
  */
 @property (assign) BOOL installDocSet;
 
+/** Specifies whether intermediate files should be kept in `outputPath` or not.
+ 
+ If `YES`, all intermediate files (i.e. HTML files and documentation set files) are kept in output path. If `NO`, only final results are kept. This setting not only affects how the files are being handled, it also affects performance. If intermediate files are not kept, appledoc moves files between various generation phases, otherwise it copies them. So it's prefferable to leave this option to `NO`. This option only affects output files, input source files are always left intact!
+ */
+@property (assign) BOOL keepIntermediateFiles;
+
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------

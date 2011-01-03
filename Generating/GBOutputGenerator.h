@@ -58,6 +58,12 @@
  */
 - (BOOL)copyTemplateFilesToOutputPath:(NSError **)error;
 
+/** Copies or moves directory or file from the given source path to the destination path.
+ 
+ This method takes into account `[GBApplicationSettings keepIntermediateFiles]` and either copies or moves files regarding it's value. The method is designed to be used from within subclasses. 
+ */
+- (BOOL)copyOrMoveItemFromPath:(NSString *)source toPath:(NSString *)destination error:(NSError **)error;
+
 /** Generates the output at the proper subdirectory of the output path as defined in assigned `settings`.
  
  This is the most important method of the `GBOutputGenerator` class. It generates all required output. It is intended to be overriden in subclasses. Default implementation assigns the given store and returns YES. Subclasses must call super class implementation before anything else!
