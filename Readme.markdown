@@ -42,9 +42,9 @@ To keep up to date, just go to Terminal and cd into appledoc directory, issue `g
 
 If you've used installation procedure described above in "quick install" section, you're using appledoc on it's master branch. This gives you most stable version available, however it doesn't include all the latest bug fixes and updates. In fact, all of the work on appledoc happens on development branch and is then merged to master branch from time to time. If you'd like to be updated as frequently as possible, you can switch to development branch. We keep this branch very stable too, so you should be fine using it. Switching to development branch only requires one additional step after cloning (this guide includes clone command, if you've already cloned appledoc, skip the first one):
 
-git clone git://github.com/tomaz/appledoc.git
-cd appledoc
-git checkout --track origin/development
+	git clone git://github.com/tomaz/appledoc.git
+	cd appledoc
+	git checkout --track origin/development
 
 You have now switched to development branch, which you can confirm by running `git branch`. You can update using the same method described above (i.e. `git pull`).
 
