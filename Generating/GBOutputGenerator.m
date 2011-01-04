@@ -127,9 +127,12 @@
 	NSString *standardDest = [destination stringByStandardizingPath];
 	
 	// We must first delete destination path if it exists. Otherwise copy or move will fail!
-	if (![self.fileManager removeItemAtPath:standardDest error:error]) {
-		GBLogWarn(@"Failed removing '%@'!", destination);
-		return NO;
+	if ([self.fileManager fileExistsAtPath:standardDest]) {
+		GBLogDebug(@"Removing '%@'...", destination);
+		if (![self.fileManager removeItemAtPath:standardDest error:error]) {
+			GBLogWarn(@"Failed removing '%@'!", destination);
+			return NO;
+		}
 	}
 	
 	// Now either copy or move.
