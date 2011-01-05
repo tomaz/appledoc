@@ -288,6 +288,7 @@ static NSString *kGBArgHelp = @"help";
 			path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
 			if ([self validateTemplatesPath:path error:nil]) {
 				[self overrideSettingsWithGlobalSettingsFromPath:path];
+				self.settings.templatesPath = path;
 				self.templatesFound = YES;
 				return;
 			}		
@@ -296,6 +297,7 @@ static NSString *kGBArgHelp = @"help";
 		path = @"~/.appledoc";
 		if ([self validateTemplatesPath:path error:nil]) {
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
 			self.templatesFound = YES;
 			return;
 		}		
