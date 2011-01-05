@@ -147,7 +147,7 @@ Section Method
 		<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
 		<ul>
 			{{#crossrefs}}
-			<li><code><a href="{{href}}">{{stringValue}}</a></code></li>
+			<li><code><a href="{{&href}}">{{&stringValue}}</a></code></li>
 			{{/crossrefs}}
 		</ul>
 	</div>
@@ -164,7 +164,7 @@ Section Method
 EndSection
 
 Section MethodDeclaration
-{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
+{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{&href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
 EndSection
 
 Section MethodSelector
@@ -199,7 +199,7 @@ Section GBCommentParagraph
 EndSection
 
 Section GBParagraphItem
-{{#isTextItem}} {{stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
+{{#isTextItem}} {{&stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{&href}}">{{&stringValue}}</a>{{/isLinkItem}}
 EndSection
 
 Section GBParagraphListItem
@@ -218,7 +218,7 @@ EndSection
 Section ObjectSpecification
 <tr>
 	<td class="specification-title">{{title}}</td>
-	<td class="specification-value">{{#values}}{{#href}}<a href="{{href}}">{{/href}}{{string}}{{#href}}</a>{{/href}}{{&delimiter}}{{/values}}</td>
+	<td class="specification-value">{{#values}}{{#href}}<a href="{{&href}}">{{/href}}{{string}}{{#href}}</a>{{/href}}{{&delimiter}}{{/values}}</td>
 </tr>
 EndSection
 
