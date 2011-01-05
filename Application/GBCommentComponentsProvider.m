@@ -126,7 +126,7 @@
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"(((?:(?:http|https|ftp|file)://)|(?:mailto:))[^>\\s]*)"];
+	return [self crossReferenceRegexByEmbeddingRegex:@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)"];
 }
 
 #pragma mark Helper methods

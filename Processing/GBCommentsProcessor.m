@@ -485,6 +485,7 @@
 }
 
 - (NSArray *)paragraphSimpleLinkItemsFromString:(NSString *)string {
+	// Scans the given string containing a word and optional punctuation for cross reference and returns paragraph items describing the word (either GBParagraphTextItem or GBParagraphLinkItem).
 #define GBCREATE_TEXT_ITEM \
 	if ([staticText count] > 0) { \
 		NSMutableString *value = [NSMutableString string]; \
@@ -505,10 +506,14 @@
 	[words enumerateObjectsUsingBlock:^(NSString *word, NSUInteger idx, BOOL *stop) {
 		if ([word length] == 0) return;
 		
-		// If word is a link, create static text item if we have some prefix data, then add link.
-		GBParagraphLinkItem *item = [self simpleLinkItemFromString:word matchRange:NULL];
+		// If word contains a link, create static text item if we have some prefix data, then add link.
+		NSRange range;
+		GBParagraphLinkItem *item = [self simpleLinkItemFromString:word matchRange:&range];
 		if (item) {
+			if (range.location > 0) [staticText addObject:[word substringToIndex:range.location]];
 			GBCREATE_TEXT_ITEM;
+			NSUInteger last = range.location + range.length;
+			if (last < [word length]) [staticText addObject:[word substringFromIndex:last]];
 			[result addObject:item];
 			foundLinks = YES;
 			return;
@@ -664,12 +669,15 @@
 	GBCommentComponentsProvider *provider = self.settings.commentComponents;
 	GBModelBase *hrefSourceObject = (GBModelBase *)self.currentContext;
 
-	// Test for URL reference.
+	// Test for URL reference. Note that we should return proper range accounting for optional <>!
 	NSString *url = [string stringByMatching:provider.urlCrossReferenceRegex capture:1];
 	if (url) {
 		GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
 		item.href = url;
-		if (range) *range = NSMakeRange(0, [string length]);
+		if (range) {
+			NSString *full = [string stringByMatching:provider.urlCrossReferenceRegex capture:0];
+			*range = [string rangeOfString:full];
+		}
 		return item;
 	}
 	

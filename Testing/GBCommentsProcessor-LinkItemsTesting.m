@@ -109,6 +109,19 @@
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"htp://gentlebytes.com", nil];
 }
 
+- (void)testProcessCommentWithStore_url_shouldDetectUrlWithinParenthesis {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(http://gentlebytes.com)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"(<http://gentlebytes.com>)"];
+	// execute
+	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
+	// verify	
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"(", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"(", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @")", nil];
+}
+
 #pragma mark Remote instance methods processing testing
 
 - (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownInstanceMethodForClass {
