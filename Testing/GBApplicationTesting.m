@@ -78,10 +78,10 @@
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--ignore", @"path", nil];
 	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--ignore", @".", nil];
-	// verify
+	// verify - note that ignore should not convert dot to current path; this would prevent .m being parsed properly!
 	assertThatInteger([settings1.ignoredPaths count], equalToInteger(1));
 	assertThatBool([settings1.ignoredPaths containsObject:@"path"], equalToBool(YES));
-	assertThatBool([settings2.ignoredPaths containsObject:self.currentPath], equalToBool(YES));
+	assertThatBool([settings2.ignoredPaths containsObject:@"."], equalToBool(YES));
 }
 
 - (void)testIgnore_shouldAssignMutlipleValuesToSettings {

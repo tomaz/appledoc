@@ -418,7 +418,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
-	[self.settings.ignoredPaths addObject:[self standardizeCurrentDirectoryForPath:path]];
+	[self.settings.ignoredPaths addObject:path];
 }
 
 - (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
