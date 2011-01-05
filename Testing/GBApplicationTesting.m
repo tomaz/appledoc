@@ -11,51 +11,77 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
 
+@interface GBAppledocApplication (UnitTestingAPI)
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
+@end
+
 @interface GBAppledocApplicationTesting : GHTestCase
-
 - (GBApplicationSettingsProvider *)settingsByRunningWithArgs:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
-
+@property (readonly) NSString *currentPath;
 @end
 
 // These unit tests verify DDCli KVC methods and properties are implemented and properly mapped to GBApplicationSettingsProvider
 @implementation GBAppledocApplicationTesting
 
+#pragma mark Helper methods testing
+
+- (void)testStandardizeCurrentDirectoryForPath_shouldConvertDotToCurrentDir {
+	// setup
+	GBAppledocApplication *app = [[GBAppledocApplication alloc] init];
+	//execute & verify
+	assertThat([app standardizeCurrentDirectoryForPath:@"."], is(self.currentPath));
+	assertThat([app standardizeCurrentDirectoryForPath:@"./path/subpath"], is([NSString stringWithFormat:@"%@/path/subpath", self.currentPath]));
+	assertThat([app standardizeCurrentDirectoryForPath:@"path.with/dots/."], is(@"path.with/dots/."));
+	assertThat([app standardizeCurrentDirectoryForPath:@".."], is(@".."));
+	assertThat([app standardizeCurrentDirectoryForPath:@"../path/subpath"], is(@"../path/subpath"));
+}
+
 #pragma mark Paths settings testing
 
 - (void)testOutput_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--output", @"path", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--output", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--output", @".", nil];
 	// verify
-	assertThat(settings.outputPath, is(@"path"));
+	assertThat(settings1.outputPath, is(@"path"));
+	assertThat(settings2.outputPath, is(self.currentPath));
 }
 
 - (void)testTemplates_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--templates", @"path", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--templates", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--templates", @".", nil];
 	// verify
-	assertThat(settings.templatesPath, is(@"path"));
+	assertThat(settings1.templatesPath, is(@"path"));
+	assertThat(settings2.templatesPath, is(self.currentPath));
 }
 
 - (void)testDocsetInstallPath_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-install-path", @"path", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--docset-install-path", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--docset-install-path", @".", nil];
 	// verify
-	assertThat(settings.docsetInstallPath, is(@"path"));
+	assertThat(settings1.docsetInstallPath, is(@"path"));
+	assertThat(settings2.docsetInstallPath, is(self.currentPath));
 }
 
 - (void)testDocsetUtilPath_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docsetutil-path", @"path", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--docsetutil-path", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--docsetutil-path", @".", nil];
 	// verify
-	assertThat(settings.docsetUtilPath, is(@"path"));
+	assertThat(settings1.docsetUtilPath, is(@"path"));
+	assertThat(settings2.docsetUtilPath, is(self.currentPath));
 }
 
 - (void)testIgnore_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--ignore", @"path", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--ignore", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--ignore", @".", nil];
 	// verify
-	assertThatInteger([settings.ignoredPaths count], equalToInteger(1));
-	assertThatBool([settings.ignoredPaths containsObject:@"path"], equalToBool(YES));
+	assertThatInteger([settings1.ignoredPaths count], equalToInteger(1));
+	assertThatBool([settings1.ignoredPaths containsObject:@"path"], equalToBool(YES));
+	assertThatBool([settings2.ignoredPaths containsObject:self.currentPath], equalToBool(YES));
 }
 
 - (void)testIgnore_shouldAssignMutlipleValuesToSettings {
@@ -391,6 +417,10 @@
 	
 	// return settings for validation these should now contain all values application passed from KVC messages
 	return result;
+}
+
+- (NSString *)currentPath {
+	return [[NSFileManager defaultManager] currentDirectoryPath];
 }
 
 @end

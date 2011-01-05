@@ -77,6 +77,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)validateSettingsAndArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
@@ -394,6 +395,13 @@ static NSString *kGBArgHelp = @"help";
 	}
 }
 
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
+	// Converts . to actual working directory.
+	if (![path hasPrefix:@"."] || [path hasPrefix:@".."]) return path;
+	NSString *suffix = [path substringFromIndex:1];
+	return [[self.fileManager currentDirectoryPath] stringByAppendingPathComponent:suffix];
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -402,13 +410,13 @@ static NSString *kGBArgHelp = @"help";
 
 #pragma mark Callbacks API for DDCliApplication
 
-- (void)setOutput:(NSString *)path { self.settings.outputPath = path; }
-- (void)setTemplates:(NSString *)path { self.settings.templatesPath = path; }
-- (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = path; }
-- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = path; }
+- (void)setOutput:(NSString *)path { self.settings.outputPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
-	[self.settings.ignoredPaths addObject:path];
+	[self.settings.ignoredPaths addObject:[self standardizeCurrentDirectoryForPath:path]];
 }
 
 - (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
