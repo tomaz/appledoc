@@ -21,6 +21,25 @@
 
 @implementation GBCommentsProcessorComplexTesting
 
+#pragma mark Bug fix test cases
+
+- (void)testProcessCommentWithStore_shouldProperlyHandleLinkPrefixAndSuffix {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	[class.methods registerMethod:[GBTestObjectsRegistry propertyMethodWithArgument:@"member"]];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix [Class member] suffix."];
+	// execute
+	[processor processComment:comment withStore:store];
+	// verify
+	[self assertParagraph:comment.firstParagraph containsItems:
+	 [GBParagraphTextItem class], @"Prefix", 
+	 [GBParagraphLinkItem class], @"[Class member]",
+	 [GBParagraphTextItem class], @"suffix.",
+	 nil];
+}
+
 #pragma mark Common comment processing testing
 
 - (void)testProcesCommentWithStore_shouldProcessTrickyComment {
@@ -38,8 +57,6 @@
 	[self assertSecondParagraph:[comment.paragraphs objectAtIndex:1]];
 	[self assertThirdParagraph:[comment.paragraphs objectAtIndex:2]];
 }
-
-#pragma mark Assertion methods
 
 - (void)assertFirstParagraph:(GBCommentParagraph *)paragraph {
 	[self assertParagraph:paragraph containsTexts:@"Short description.", nil];

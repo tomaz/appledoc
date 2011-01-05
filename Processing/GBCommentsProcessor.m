@@ -469,13 +469,13 @@
 		if ([string length] > 0) {
 			NSArray *children = [self paragraphSimpleLinkItemsFromString:string];
 			if (!children) {
-				item.stringValue = [self wordifiedTextFromString:item.stringValue];
+				item.stringValue = [self wordifiedTextFromString:string];
 				children = [NSArray arrayWithObject:item];
 			}
 			[items addObjectsFromArray:children];
 		}
 		
-		// If we didn't find a
+		// Return the array of all items.
 		return items;
 	}
 	
