@@ -244,6 +244,38 @@
 	assertThatInteger(category.comment.sourceInfo.lineNumber, equalToInteger(5));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterCategoryDefinitionCommentForComplexDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:
+	 @"/** Comment */\n"
+	 @"#ifdef SOMETHING\n"
+	 @"@interface MyClass (MyCategory)\n"
+	 @"#else\n"
+	 @"@interface MyClass (MyCategory1)\n"
+	 @"#endif\n"
+	 @"@end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBCategoryData *category = [store.categories anyObject];
+	assertThat(category.nameOfClass, is(@"MyClass"));
+	assertThat(category.nameOfCategory, is(@"MyCategory"));
+	assertThat(category.comment.stringValue, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldProperlyResetComments { 
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass(MyCategory) -(void)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBCategoryData *category = [store.categories anyObject];
+	GBMethodData *method = [category.methods.methods lastObject];
+	assertThat(method.comment, is(nil));
+}
+
 #pragma mark Category definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryAdoptedProtocols {

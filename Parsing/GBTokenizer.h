@@ -27,7 +27,9 @@
  
  This example simply iterates over all tokens and prints each one to the log. If you want to parse a block of input with known start and/or end token, you can use one of the block consuming methods instead. Note that you still need to provide the name of the file as this is used for creating `GBSourceInfo` objects for parsed objects!
  
- To make comments parsing simpler, `GBTokenizer` automatically enables comment reporting to the underlying `PKTokenizer`, however to prevent higher level parsers dealing with complexity of comments, any lookahead and consume method doesn't report them. Instead these methods skip all comment tokens, however they do make them accessible through properties, so if the client wants to check whether there's any comment associated with current token, it can simply ask by sending `lastCommentString`. Additionally, the client can also get the value of a comment just before the last one by sending `previousCommentString` - this can be used to get any method section comments which aren't associated with any element. If there is no "stand-alone" comment before the last one, `previousCommentString` returns `nil`. Both value are automatically cleared when another non-comment token is consumed, so make sure to read it before consuming any further token! `GBTokenizer` goes even further when dealing with comments - it automatically groups single line comments into a single comment group and removes all prefixes and suffixes.
+ To make comments parsing simpler, `GBTokenizer` automatically enables comment reporting to the underlying `PKTokenizer`, however to prevent higher level parsers dealing with complexity of comments, any lookahead and consume method doesn't report them. Instead these methods skip all comment tokens, however they do make them accessible through properties, so if the client wants to check whether there's any comment associated with current token, it can simply ask by sending `lastCommentString`. Additionally, the client can also get the value of a comment just before the last one by sending `previousCommentString` - this can be used to get any method section comments which aren't associated with any element. If there is no "stand-alone" comment before the last one, `previousCommentString` returns `nil`. `GBTokenizer` goes even further when dealing with comments - it automatically groups single line comments into a single comment group and removes all prefixes and suffixes.
+ 
+ @warning *Note:* Both comment values are persistent until a new comment is found! At that time, previous comment contains the value of last comment and the new comment is stored as last comment. This allows us parsing through complex code (like `#ifdef` / `#elif` / `#else` blocks etc.) without fear of loosing any comment information. It does require manual resetting of comments whenever the comment is actually attached to an object. Resetting is performed by sending `resetComments` message to the receiver.
  */
 @interface GBTokenizer : NSObject
 
@@ -143,12 +145,22 @@
 /// @name Comments handling
 ///---------------------------------------------------------------------------------------
 
+/** Resets `lastComment` and `previousComment` values.
+ 
+ This message should be sent whenever a comment is "attached" to an object. As comments are persistent, failing to reset would lead to using the same comment for next object as well!
+ 
+ @see lastComment
+ @see previousComment
+ */
+- (void)resetComments;
+
 /** Returns the last comment or `nil` if comment is not available.
  
  The returned `[GBComment stringValue]` contains the whole last comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
  
  If there's no comment available for current token, `nil` is returned.
- 
+
+ @see resetComments
  @see previousComment
  */
 @property (readonly) GBComment *lastComment;
@@ -159,6 +171,7 @@
  
  The returned `[GBComment stringValue]` contains the whole previous comment string, without prefixes or suffixes. To optimize things a bit, the actual comment string value is prepared on the fly, as you send the message, so it's only handled if needed. As creating comment string adds some computing overhead, you should cache returned value if possible.
  
+ @see resetComments
  @see lastComment
  */
 @property (readonly) GBComment *previousComment;

@@ -68,7 +68,7 @@
 	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"MyProtocol2"));
 }
 
-#pragma mark Class comments parsing testing
+#pragma mark Protocol comments parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterProtocolDefinitionComment {
 	// setup
@@ -91,6 +91,37 @@
 	GBClassData *protocol = [[store protocols] anyObject];
 	assertThat(protocol.comment.sourceInfo.filename, is(@"filename.h"));
 	assertThatInteger(protocol.comment.sourceInfo.lineNumber, equalToInteger(5));
+}
+
+- (void)testParseObjectsFromString_shouldRegisterProtocolDefinitionCommentForComplexDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:
+	 @"/** Comment */\n"
+	 @"#ifdef SOMETHING\n"
+	 @"@protocol MyProtocol\n"
+	 @"#else\n"
+	 @"@protocol MyProtocol1\n"
+	 @"#endif\n"
+	 @"@end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [store.protocols anyObject];
+	assertThat(protocol.nameOfProtocol, is(@"MyProtocol"));
+	assertThat(protocol.comment.stringValue, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldProperlyResetComments { 
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @protocol MyProtocol -(void)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBProtocolData *protocol = [store.protocols anyObject];
+	GBMethodData *method = [protocol.methods.methods lastObject];
+	assertThat(method.comment, is(nil));
 }
 
 #pragma mark Protocol components parsing testing

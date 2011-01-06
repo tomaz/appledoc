@@ -147,8 +147,6 @@
 
 - (BOOL)consumeComments {
 	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
-	[self.previousCommentBuilder setString:@""];
-	[self.lastCommentBuilder setString:@""];
 	self.previousCommentSourceInfo = nil;
 	self.lastCommentSourceInfo = nil;
 	if ([self eof]) return NO;
@@ -245,6 +243,11 @@
 	// If the result is empty string, return nil, otherwise return the comment string.
 	if ([result length] == 0) return nil;
 	return result;
+}
+
+- (void)resetComments {
+	[self.lastCommentBuilder setString:@"" ];
+	[self.previousCommentBuilder setString:@"" ];
 }
 
 - (GBComment *)lastComment {

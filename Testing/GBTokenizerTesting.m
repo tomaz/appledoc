@@ -165,11 +165,11 @@
 	assertThat([tokenizer.previousComment stringValue], is(@"first\nfirst1"));
 	assertThat([tokenizer.lastComment stringValue], is(@"second"));
 	[tokenizer consume:1];
-	assertThat([tokenizer.previousComment stringValue], is(nil));
+	assertThat([tokenizer.previousComment stringValue], is(@"second"));
 	assertThat([tokenizer.lastComment stringValue], is(@"third"));
 	[tokenizer consume:1];
-	assertThat([tokenizer.previousComment stringValue], is(nil));
-	assertThat([tokenizer.lastComment stringValue], is(nil));
+	assertThat([tokenizer.previousComment stringValue], is(@"second"));
+	assertThat([tokenizer.lastComment stringValue], is(@"third"));
 }
 
 - (void)testConsume_shouldSetProperCommentWhenConsumingMultipleTokens {
@@ -347,6 +347,18 @@
 	// verify
 	assertThatInteger([tokenizer.previousComment.sourceInfo lineNumber], equalToInteger(1));
 	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(3));
+}
+
+#pragma mark Miscellaneous methods
+
+- (void)testResetComments_shouldResetCommentValues {
+	// setup - remember that initializer already moves to first non-comment token!
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** comment1 */ /** comment2 */ ONE"] filename:@"file"];
+	// execute
+	[tokenizer resetComments];
+	// verify
+	assertThat(tokenizer.lastComment, is(nil));
+	assertThat(tokenizer.previousComment, is(nil));
 }
 
 #pragma mark Creation methods

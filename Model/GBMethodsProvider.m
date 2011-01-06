@@ -55,6 +55,7 @@
 	if (!string) return nil;
 	string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	if ([string length] == 0) return nil;
+	if ([_sections count] > 0 && [[[_sections lastObject] sectionName] isEqualToString:string]) return nil;
 	return [self registerSectionWithName:string];
 }
 

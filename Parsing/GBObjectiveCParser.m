@@ -422,7 +422,11 @@
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
+		// Prepare source information and reset comments; we alreay read the values so as long as we have found a method, we should reset the comments to prepare ground for next methods. This is needed due to the way this method works - it actually ends by jumping to the first token after the given end symbol, which effectively positions tokenizer to the first token of the following method. Therefore it already consumes any comment preceeding the method. So we can't reset AFTER finished parsing, but rather before! Note that we should only do it once...
+		if (!filedata) {
+			filedata = [self.tokenizer sourceInfoForToken:token];
+			[self.tokenizer resetComments];
+		}
 		
 		// Get result types.
 		NSMutableArray *methodResult = [NSMutableArray array];
@@ -517,6 +521,7 @@
 
 - (void)registerLastCommentToObject:(GBModelBase *)object {
 	[object setComment:[self.tokenizer lastComment]];
+	[self.tokenizer resetComments];
 }
 
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {

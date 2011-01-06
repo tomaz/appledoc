@@ -235,6 +235,14 @@
 	assertThat([provider registerSectionIfNameIsValid:@""], is(nil));
 }
 
+- (void)testRegisterSectionIfNameIsValid_shouldRejectStringIfEqualsToLastRegisteredSectionName {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[provider registerSectionWithName:@"name"];
+	// execute & verify
+	assertThat([provider registerSectionIfNameIsValid:@"name"], is(nil));
+}
+
 - (void)testUnregisterEmptySections_shouldRemoveAllEmptySections {
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
