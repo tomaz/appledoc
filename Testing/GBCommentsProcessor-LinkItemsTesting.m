@@ -176,6 +176,33 @@
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Protocol instance:]", protocol, method, NO, nil];
 }
 
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"([Class instance:])"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"[Class instance:]."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"[Class instance:],"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"[Class instance:]:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"[Class instance:];"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	[processor processComment:comment5 withContext:nil store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"[Class instance:]", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @";", nil];
+}
+
 #pragma mark Remote class methods processing testing
 
 - (void)testProcessCommentWithStore_remoteMember_shouldDetectKnownClassMethodForClass {
