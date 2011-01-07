@@ -117,15 +117,15 @@
 }
 
 - (NSString *)localMemberCrossReferenceRegex {
-	return @"<?([^>,.;()\\s]+)>?";
+	return @"<?([^>,.;!?()\\s]+)>?";
 }
 
 - (NSString *)categoryCrossReferenceRegex {
-	return @"<?([^(][^>,.:;)\\s]+\\))>?";
+	return @"<?([^(][^>,.:;!?)\\s]+\\))>?";
 }
 
 - (NSString *)objectCrossReferenceRegex {
-	return @"<?([^>,.:;()\\s]+)>?";
+	return @"<?([^>,.:;!?()\\s]+)>?";
 }
 
 - (NSString *)urlCrossReferenceRegex {
