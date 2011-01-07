@@ -89,7 +89,10 @@
 /** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name. */
 @property (readonly) NSString *localMemberCrossReferenceRegex;
 
-/** Returns the regex used for matching (possible) object cross reference with capture 1 containing object name. */
+/** Returns the regex used for matching (possible) category cross reference with capture 1 containing category name. */
+@property (readonly) NSString *categoryCrossReferenceRegex;
+
+/** Returns the regex used for matching (possible) class or protocol cross reference with capture 1 containing object name. */
 @property (readonly) NSString *objectCrossReferenceRegex;
 
 /** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself. */

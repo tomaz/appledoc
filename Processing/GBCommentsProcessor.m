@@ -510,10 +510,12 @@
 		NSRange range;
 		GBParagraphLinkItem *item = [self simpleLinkItemFromString:word matchRange:&range];
 		if (item) {
-			if (range.location > 0) [staticText addObject:[word substringToIndex:range.location]];
+			if (range.location > 0 && range.location != NSNotFound) [staticText addObject:[word substringToIndex:range.location]];
 			GBCREATE_TEXT_ITEM;
-			NSUInteger last = range.location + range.length;
-			if (last < [word length]) [staticText addObject:[word substringFromIndex:last]];
+			if (range.location != NSNotFound) {
+				NSUInteger last = range.location + range.length;
+				if (last < [word length]) [staticText addObject:[word substringFromIndex:last]];
+			}
 			[result addObject:item];
 			foundLinks = YES;
 			return;
@@ -665,26 +667,25 @@
 }
 
 - (GBParagraphLinkItem *)simpleLinkItemFromString:(NSString *)string matchRange:(NSRange *)range {
-	// Returns URL, local member or another known object link item or nil if the string doesn't represent the item.
+	// Returns URL, local member or another known object link item or nil if the string doesn't represent the item. Note that we get all capture components, where the first entry is full text, including optional <> and the second is only the inner part. If there is no <>, both have the same value. We need to consider both options to properly handle range of the link text within the string!
 	GBCommentComponentsProvider *provider = self.settings.commentComponents;
 	GBModelBase *hrefSourceObject = (GBModelBase *)self.currentContext;
 
 	// Test for URL reference. Note that we should return proper range accounting for optional <>!
-	NSString *url = [string stringByMatching:provider.urlCrossReferenceRegex capture:1];
-	if (url) {
+	NSArray *urls = [string captureComponentsMatchedByRegex:provider.urlCrossReferenceRegex];
+	if ([urls count] > 1) {
+		NSString *url = [urls objectAtIndex:1];
 		GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:url];
 		item.href = url;
-		if (range) {
-			NSString *full = [string stringByMatching:provider.urlCrossReferenceRegex capture:0];
-			*range = [string rangeOfString:full];
-		}
+		if (range) *range = [string rangeOfString:[urls objectAtIndex:0]];
 		return item;
 	}
 	
 	// Test for local member reference (only if current context is given).
 	if (self.currentContext) {
-		NSString *selector = [string stringByMatching:provider.localMemberCrossReferenceRegex capture:1];
-		if (selector) {
+		NSArray *selectors = [string captureComponentsMatchedByRegex:provider.localMemberCrossReferenceRegex];
+		if ([selectors count] > 1) {
+			NSString *selector = [selectors objectAtIndex:1];
 			GBMethodData *method = [self.currentContext.methods methodBySelector:selector];
 			if (method) {
 				GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
@@ -692,31 +693,40 @@
 				item.context = self.currentContext;
 				item.member = method;
 				item.isLocal = YES;
-				if (range) *range = NSMakeRange(0, [string length]);
+				if (range) *range = [string rangeOfString:[selectors objectAtIndex:0]];
 				return item;
 			}
 		}
 	}
 	
-	// Test for local or remote object reference.
-	NSString *objectName = [string stringByMatching:provider.objectCrossReferenceRegex capture:1];
-	if (objectName) {
-		GBClassData *class = [self.store classWithName:objectName];
-		if (class) {
-			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:class.nameOfClass];
-			item.href = [self.settings htmlReferenceForObject:class fromSource:hrefSourceObject];
-			item.context = class;
-			item.isLocal = (class == self.currentContext);
-			if (range) *range = NSMakeRange(0, [string length]);
-			return item;
-		}
+	// Test for local or remote category reference.
+	NSArray *names = [string captureComponentsMatchedByRegex:provider.categoryCrossReferenceRegex];
+	if ([names count] > 1) {
+		NSString *objectName = [names objectAtIndex:1];
+		NSString *embeddedName = [names objectAtIndex:0];
 		GBCategoryData *category = [self.store categoryWithName:objectName];
 		if (category) {
 			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:category.idOfCategory];
 			item.href = [self.settings htmlReferenceForObject:category fromSource:hrefSourceObject];
 			item.context = category;
 			item.isLocal = (category == self.currentContext);
-			if (range) *range = NSMakeRange(0, [string length]);
+			if (range) *range = [string rangeOfString:embeddedName];
+			return item;
+		}
+	}
+	
+	// Test for local or remote class or protocol reference.
+	names = [string captureComponentsMatchedByRegex:provider.objectCrossReferenceRegex];
+	if ([names count] > 1) {
+		NSString *objectName = [names objectAtIndex:1];
+		NSString *embeddedName = [names objectAtIndex:0];
+		GBClassData *class = [self.store classWithName:objectName];
+		if (class) {
+			GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:class.nameOfClass];
+			item.href = [self.settings htmlReferenceForObject:class fromSource:hrefSourceObject];
+			item.context = class;
+			item.isLocal = (class == self.currentContext);
+			if (range) *range = [string rangeOfString:embeddedName];
 			return item;
 		}
 		GBProtocolData *protocol = [self.store protocolWithName:objectName];
@@ -725,7 +735,7 @@
 			item.href = [self.settings htmlReferenceForObject:protocol fromSource:hrefSourceObject];
 			item.context = protocol;
 			item.isLocal = (protocol == self.currentContext);
-			if (range) *range = NSMakeRange(0, [string length]);
+			if (range) *range = [string rangeOfString:embeddedName];
 			return item;
 		}
 	}

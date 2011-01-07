@@ -22,7 +22,6 @@
 - (NSString *)exampleRegexWithoutFlags;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
-- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex;
 
 @end
 
@@ -114,19 +113,23 @@
 
 - (NSString *)remoteMemberCrossReferenceRegex {
 	// +[Class member] or -[Class member] or simply [Class member].
-	return [self crossReferenceRegexByEmbeddingRegex:@"[+-]?\\[(\\S+)\\s+(\\S+)\\]"];
+	return @"<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
 }
 
 - (NSString *)localMemberCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+	return @"<?([^>,.;()\\s]+)>?";
+}
+
+- (NSString *)categoryCrossReferenceRegex {
+	return @"<?([^(][^>,.:;)\\s]+\\))>?";
 }
 
 - (NSString *)objectCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+	return @"<?([^>,.:;()\\s]+)>?";
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)"];
+	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
 }
 
 #pragma mark Helper methods
@@ -137,10 +140,6 @@
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
-}
-
-- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex {
-	return [NSString stringWithFormat:@"<?%@>?", regex];
 }
 
 @end
