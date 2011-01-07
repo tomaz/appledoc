@@ -158,14 +158,26 @@
 #pragma mark Helper methods
 
 - (NSString *)stringByCleaningHtml:(NSString *)string {
+	// First replace common things like double spaces and escaped formatting tags.
 	NSString *result = [string stringByReplacingOccurrencesOfString:@"  " withString:@" "];
 	result = [result stringByReplacingOccurrencesOfString:@"<code> " withString:@"<code>"];
 	result = [result stringByReplacingOccurrencesOfString:@" </code>" withString:@"</code>"];
 	result = [result stringByReplacingOccurrencesOfString:@"<pre> " withString:@"<pre>"];
-	result = [result stringByReplacingOccurrencesOfString:@" </pre>" withString:@"</pre>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </pre>" withString:@"</pre>"];	
+	result = [result stringByReplacingOccurrencesOfString:@"<em> " withString:@"<em>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </em>" withString:@"</em>"];	
+	result = [result stringByReplacingOccurrencesOfString:@"<strong> " withString:@"<strong>"];
+	result = [result stringByReplacingOccurrencesOfString:@" </strong>" withString:@"</strong>"];
+	
+	// Now handle more obscure cases like whitespace before punctuation. Note that this works very simply - we search for first occurence of a space followed by punctuation symbol and delete the space. Then continue until no more occurence is found.
+	NSString *prefixPunctRegex = @"[{('\"<\\[] ";
+	NSString *suffixPunctRegex = @" e?s?[],.:;!?'\")}>]";
 	while (YES) {
-		NSString *source = [result stringByMatching:@"</code> [],.!?:;'\")}>]"];
-		if (!source) break;
+		NSString *source = [result stringByMatching:prefixPunctRegex];
+		if (!source) {
+			source = [result stringByMatching:suffixPunctRegex];
+			if (!source) break;
+		}
 		NSString *replacement = [source stringByReplacingOccurrencesOfString:@" " withString:@""];
 		result = [result stringByReplacingOccurrencesOfString:source withString:replacement];
 	}
