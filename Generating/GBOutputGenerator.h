@@ -43,6 +43,31 @@
 /// @name Generation handling
 ///---------------------------------------------------------------------------------------
 
+/** Initializes the directory at the given path.
+ 
+ If the directory alreay exists, it is removed. Then a new one is created with all intermediate directories as needed. The result of the method is an empty directory at the given path. Sending this message has the same effect as sending `initializeDirectoryAtPath:preserve:error:` and passing `nil` for preserve argument.
+ 
+ @param path The path to initialize.
+ @param error If initialization fails, error is returned here.
+ @return Returns `YES` if initialization succeeds, `NO` otherwise.
+ @see initializeDirectoryAtPath:preserve:error:
+ */
+- (BOOL)initializeDirectoryAtPath:(NSString *)path error:(NSError **)error;
+
+/** Initializes the directory at the given path optionally preserving any number of files or subdirectories.
+ 
+ If the directory doesn't exist, it is created. Otherwise all files and subdirectories are removed, except for the given array of files or subdirectories to preserve. If the array is `nil` or empty, all files are removed. Preserve array should contain paths relative to the given path. The paths are not handled recursively - only first level items are preserved!
+ 
+ The result of the method is an empty directory at the given path containing only files or subdirectories from the given array.
+ 
+ @param path The path to initialize.
+ @param preserve An array of paths to preserve.
+ @param error If initialization fails, error is returned here.
+ @return Returns `YES` if initialization succeeds, `NO` otherwise.
+ @see initializeDirectoryAtPath:error:
+ */
+- (BOOL)initializeDirectoryAtPath:(NSString *)path preserve:(NSArray *)preserve error:(NSError **)error;
+
 /** Copies all files from the templates path to the output path as defined in assigned `settings`, replicating the directory structure and stores all detected template files to `templateFiles` dictionary.
  
  The method uses `[GBApplicationSettingsProvider templatesPath]` as the base path for templates and `[GBApplicationSettingsProvider outputPath]` as the base path for output. In both cases, `outputSubpath` is used to determine the source and destination subdirectories. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages (i.e. before `generateOutput:`).

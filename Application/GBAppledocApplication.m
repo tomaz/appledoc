@@ -30,7 +30,9 @@ static NSString *kGBArgCompanyIdentifier = @"company-id";
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
+static NSString *kGBArgPublishDocSet = @"publish-docset";
 static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
+
 static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
@@ -206,9 +208,11 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
+		{ kGBArgPublishDocSet,												'u',	DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateHTML),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgPublishDocSet),										0,		DDGetoptNoArgument },
 		
 		{ kGBArgKeepIntermediateFiles,										0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
@@ -429,9 +433,11 @@ static NSString *kGBArgHelp = @"help";
 - (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
 - (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
 - (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
+- (void)setPublishDocset:(BOOL)value { self.settings.publishDocSet = value; }
 - (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
 - (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
 - (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
+- (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
 
 - (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
@@ -533,6 +539,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
+	ddprintf(@"--%@ = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepIntermediateFiles, PRINT_BOOL(self.settings.keepIntermediateFiles));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
@@ -580,8 +587,9 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"\n");
 	ddprintf(@"OUTPUT GENERATION\n");
 	PRINT_USAGE(@"-h,", kGBArgCreateHTML, @"", @"[b] Create HTML");
-	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create HTML and documentation set");
-	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Create HTML & DocSet and install DocSet to Xcode");
+	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
+	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
+	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
 	ddprintf(@"\n");
 	ddprintf(@"OPTIONS\n");
 	PRINT_USAGE(@"   ", kGBArgKeepIntermediateFiles, @"", @"[b] Keep intermediate files in output path");

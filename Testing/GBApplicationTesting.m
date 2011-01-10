@@ -153,6 +153,15 @@
 	assertThatBool(settings2.installDocSet, equalToBool(NO));
 }
 
+- (void)testPublishDocSet_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--publish-docset", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-publish-docset", nil];
+	// verify
+	assertThatBool(settings1.publishDocSet, equalToBool(YES));
+	assertThatBool(settings2.publishDocSet, equalToBool(NO));
+}
+
 - (void)testKeepIntermediateFiles_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-intermediate-files", nil];

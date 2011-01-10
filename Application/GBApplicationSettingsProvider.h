@@ -110,6 +110,48 @@
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
+/* Indicates whether HTML files should be generated or not.
+ 
+ If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
+ 
+ @see createDocSet
+ */
+@property (assign) BOOL createHTML;
+
+/** Specifies whether documentation set should be created from the HTML files.
+ 
+ If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
+ 
+ @see createHtml
+ @see installDocSet
+ @see publishDocSet
+ */
+@property (assign) BOOL createDocSet;
+
+/** Specifies whether the documentation set should be installed or not.
+ 
+ If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
+ 
+ @see createDocSet
+ @see publishDocSet
+ */
+@property (assign) BOOL installDocSet;
+
+/** Specifies whether the documentation set should be prepared for publishing or not.
+ 
+ If `YES`, installed documentation set is packaged for publishing - an atom feed is created and documentation set is archived. If the atom feed file is alreay found, it is updated with new information. Both, the feed and archived docset files are located within `outputPath`. If `NO`, documentation set is not prepared for publishing.
+ 
+ @see createDocSet
+ @see installDocSet
+ */
+@property (assign) BOOL publishDocSet;
+
+/** Specifies whether intermediate files should be kept in `outputPath` or not.
+ 
+ If `YES`, all intermediate files (i.e. HTML files and documentation set files) are kept in output path. If `NO`, only final results are kept. This setting not only affects how the files are being handled, it also affects performance. If intermediate files are not kept, appledoc moves files between various generation phases, otherwise it copies them. So it's prefferable to leave this option to `NO`. This option only affects output files, input source files are always left intact!
+ */
+@property (assign) BOOL keepIntermediateFiles;
+
 /** Indicates whether the first paragraph needs to be repeated within method and property description or not.
  
  If `YES`, first paragraph is repeated in members description, otherwise not.
@@ -191,37 +233,6 @@
  @see mergeCategoriesToClasses
  */
 @property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
-
-/* Indicates whether HTML files should be generated or not.
- 
- If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
- 
- @see createDocSet
- */
-@property (assign) BOOL createHTML;
-
-/** Specifies whether documentation set should be created from the HTML files.
- 
- If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
- 
- @see createHtml
- @see installDocSet
- */
-@property (assign) BOOL createDocSet;
-
-/** Specifies whether the documentation set should be installed or not.
- 
- If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
- 
- @see createDocSet
- */
-@property (assign) BOOL installDocSet;
-
-/** Specifies whether intermediate files should be kept in `outputPath` or not.
- 
- If `YES`, all intermediate files (i.e. HTML files and documentation set files) are kept in output path. If `NO`, only final results are kept. This setting not only affects how the files are being handled, it also affects performance. If intermediate files are not kept, appledoc moves files between various generation phases, otherwise it copies them. So it's prefferable to leave this option to `NO`. This option only affects output files, input source files are always left intact!
- */
-@property (assign) BOOL keepIntermediateFiles;
 
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling

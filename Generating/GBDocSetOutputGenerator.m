@@ -23,6 +23,7 @@
 - (BOOL)indexDocSet:(NSError **)error;
 - (BOOL)removeTemporaryFiles:(NSError **)error;
 - (BOOL)installDocSet:(NSError **)error;
+- (BOOL)publishDocSet:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
 - (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
@@ -31,6 +32,7 @@
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
+@property (readonly) NSString *docsetInstallationPath;
 @property (readonly) NSMutableSet *temporaryFiles;
 
 @end
@@ -60,6 +62,10 @@
 	// Install documentation set to Xcode.
 	if (!self.settings.installDocSet) return YES;
 	if (![self installDocSet:error]) return NO;
+	
+	// Prepare documentation set for publishing.
+	if (!self.settings.publishDocSet) return YES;
+	if (![self publishDocSet:error]) return NO;
 	return YES;
 }
 
@@ -208,27 +214,16 @@
 - (BOOL)installDocSet:(NSError **)error {
 	GBLogInfo(@"Installing DocSet...");
 	
-	// Prepare destination directory path and documentation set name.
-	NSString *destDir = self.settings.docsetInstallPath;
-	NSString *destSubDir = [self.settings.docsetBundleIdentifier stringByAppendingPathExtension:@"docset"];
-
 	// Prepare source and destination paths and file names.
 	NSString *sourceUserPath = self.outputUserPath;
-	NSString *destUserPath = [destDir stringByAppendingPathComponent:destSubDir];
+	NSString *destUserPath = self.docsetInstallationPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
-	NSString *destPath = [destUserPath stringByStandardizingPath];
+	NSString *destPath = [destUserPath stringByStandardizingPath];\
 	
-	// Create destination directory and move files to it. If the destination directory alredy exists, remove it. Then create installation directory to make sure it's there the first time. Then move the docset files to the correct subdirectory.
+	// Create destination directory and move files to it.
 	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
-	if ([self.fileManager fileExistsAtPath:destPath]) {
-		GBLogDebug(@"Removing previous DocSet installation directory '%@'...", destUserPath);
-		if (![self.fileManager removeItemAtPath:destPath error:error]) {
-			GBLogWarn(@"Failed removing previous DocSet installation directory '%@'!", destUserPath);
-			return NO;
-		}
-	}
-	if (![self.fileManager createDirectoryAtPath:[destDir stringByStandardizingPath] withIntermediateDirectories:YES attributes:nil error:error]) {
-		GBLogWarn(@"Failed creating DocSet installation parent directory '%@'!", destDir);
+	if (![self initializeDirectoryAtPath:destUserPath error:error]) {
+		GBLogWarn(@"Failed initializing DocSet installation directory '%@'!", destUserPath);
 		return NO;
 	}
 	if (![self copyOrMoveItemFromPath:sourcePath toPath:destPath error:error]) {
@@ -250,6 +245,59 @@
 	{
 		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
 		if (error) *error = [NSError errorWithCode:GBErrorDocSetXcodeReloadFailed description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
+		return NO;
+	}
+	return YES;
+}
+
+- (BOOL)publishDocSet:(NSError **)error {
+	GBLogInfo(@"Preparing DocSet for publishing...");
+	GBTask *task = [GBTask task];
+	task.reportIndividualLines = YES;
+	
+	// Get the path to the installed documentation set and extract the name. Then replace the name's extension with .xar.
+	NSString *installedDocSetPath = self.docsetInstallationPath;
+	NSString *docsetBaseName = [[installedDocSetPath lastPathComponent] stringByDeletingPathExtension];
+	NSString *docsetName = [docsetBaseName stringByAppendingPathExtension:@"xar"];
+	NSString *atomName = [docsetBaseName stringByAppendingPathExtension:@"atom"];
+		
+	// Prepare command line arguments for packaging.
+	NSString *outputDir = [self.settings.outputPath stringByAppendingPathComponent:@"publish"];
+	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:docsetName];
+	NSString *outputAtomPath = [outputDir stringByAppendingPathComponent:atomName];
+	NSString *signer = self.settings.docsetCertificateSigner;
+	NSString *url = self.settings.docsetFeedURL;
+	if ([url length] == 0) GBLogWarn(@"--docset-feed-url is required for publishing DocSet; placeholder will be used in '%@'!", outputAtomPath);
+	
+	// Create destination directory.
+	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {
+		GBLogWarn(@"Failed initializing DocSet publish directory '%@'!", outputDir);
+		return NO;
+	}
+
+	// Create command line arguments array.
+	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:@"package"];
+	[args addObject:@"-output"];
+	[args addObject:[outputDocSetPath stringByStandardizingPath]];
+	[args addObject:@"-atom"];
+	[args addObject:[outputAtomPath stringByStandardizingPath]];
+	if ([signer length] > 0) {
+		[args addObject:@"-signid"];
+		[args addObject:signer];
+	}
+	if ([url length] > 0) {
+		[args addObject:@"-download-url"];
+		[args addObject:url];
+	}
+	[args addObject:installedDocSetPath];
+	
+	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
+		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
+		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
+	}];
+	if (!result) {
+		if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to package the documentation set!" reason:task.lastStandardError];
 		return NO;
 	}
 	return YES;
@@ -391,12 +439,6 @@
 	return result;
 }
 
-- (NSMutableSet *)temporaryFiles {
-	static NSMutableSet *result = nil;
-	if (!result) result = [[NSMutableSet alloc] init];
-	return result;
-}
-
 #pragma mark Overriden methods
 
 - (NSString *)outputSubpath {
@@ -404,6 +446,17 @@
 }
 
 #pragma mark Properties
+
+- (NSString *)docsetInstallationPath {
+	NSString *bundleSubDir = [self.settings.docsetBundleIdentifier stringByAppendingPathExtension:@"docset"];
+	return [self.settings.docsetInstallPath stringByAppendingPathComponent:bundleSubDir];
+}
+
+- (NSMutableSet *)temporaryFiles {
+	static NSMutableSet *result = nil;
+	if (!result) result = [[NSMutableSet alloc] init];
+	return result;
+}
 
 @synthesize classes;
 @synthesize categories;

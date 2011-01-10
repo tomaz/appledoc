@@ -53,7 +53,8 @@
 		
 		self.createHTML = YES;
 		self.createDocSet = YES;
-		self.installDocSet = NO;
+		self.installDocSet = YES;
+		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.keepIntermediateFiles = NO;
 		self.keepUndocumentedObjects = NO;
@@ -306,6 +307,7 @@
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;
+@synthesize publishDocSet;
 @synthesize keepIntermediateFiles;
 
 @synthesize warnOnMissingOutputPathArgument;
