@@ -265,8 +265,8 @@
 	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:packageName];
 	NSString *outputAtomPath = [outputDir stringByAppendingPathComponent:atomName];
 	NSString *signer = self.settings.docsetCertificateSigner;
-	NSString *url = self.settings.docsetFeedURL;
-	if ([url length] == 0) GBLogWarn(@"--docset-feed-url is required for publishing DocSet; placeholder will be used in '%@'!", outputAtomPath);
+	NSString *url = self.settings.docsetPackageURL;
+	if ([url length] == 0) GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", outputAtomPath);
 	
 	// Create destination directory.
 	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {

@@ -81,6 +81,7 @@
 		self.docsetFallbackURL = @"";
 		self.docsetFeedName = self.docsetBundleName;
 		self.docsetFeedURL = @"";
+		self.docsetPackageURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"";
 		self.docsetPublisherIdentifier = @"%COMPANYID.documentation";
@@ -113,6 +114,7 @@
 	self.docsetFallbackURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFallbackURL];
 	self.docsetFeedName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedName];
 	self.docsetFeedURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetFeedURL];
+	self.docsetPackageURL = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPackageURL];
 	self.docsetMinimumXcodeVersion = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetMinimumXcodeVersion];
 	self.docsetPlatformFamily = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPlatformFamily];
 	self.docsetPublisherIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherIdentifier];
@@ -335,11 +337,13 @@
 @synthesize docsetFallbackURL;
 @synthesize docsetFeedName;
 @synthesize docsetFeedURL;
+@synthesize docsetPackageURL;
 @synthesize docsetMinimumXcodeVersion;
 @synthesize docsetPlatformFamily;
 @synthesize docsetPublisherIdentifier;
 @synthesize docsetPublisherName;
 @synthesize docsetCopyrightMessage;
+
 @synthesize docsetBundleFilename;
 @synthesize docsetAtomFilename;
 @synthesize docsetPackageFilename;

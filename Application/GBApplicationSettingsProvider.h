@@ -75,6 +75,9 @@
 /** Documentation set feed URL. */
 @property (copy) NSString *docsetFeedURL;
 
+/** Documentation set package URL. */
+@property (copy) NSString *docsetPackageURL;
+
 /** Documentation set minimum Xcode version. */
 @property (copy) NSString *docsetMinimumXcodeVersion;
 

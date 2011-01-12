@@ -334,6 +334,13 @@
 	assertThat(settings.docsetFeedURL, is(@"value"));
 }
 
+- (void)testDocSetPackageURL_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-package-url", @"value", nil];
+	// verify
+	assertThat(settings.docsetPackageURL, is(@"value"));
+}
+
 - (void)testDocSetFallbackURL_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-fallback-url", @"value", nil];
@@ -381,6 +388,27 @@
 	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-cert-signer", @"value", nil];
 	// verify
 	assertThat(settings.docsetCertificateSigner, is(@"value"));
+}
+
+- (void)testDocSetBundleFilename_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-bundle-filename", @"value", nil];
+	// verify
+	assertThat(settings.docsetBundleFilename, is(@"value"));
+}
+
+- (void)testDocSetAtomFilename_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-atom-filename", @"value", nil];
+	// verify
+	assertThat(settings.docsetAtomFilename, is(@"value"));
+}
+
+- (void)testDocSetPackageFilename_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-package-filename", @"value", nil];
+	// verify
+	assertThat(settings.docsetPackageFilename, is(@"value"));
 }
 
 #pragma mark Creation methods

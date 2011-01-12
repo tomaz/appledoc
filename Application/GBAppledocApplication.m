@@ -54,6 +54,7 @@ static NSString *kGBArgDocSetDescription = @"docset-desc";
 static NSString *kGBArgDocSetCopyrightMessage = @"docset-copyright";
 static NSString *kGBArgDocSetFeedName = @"docset-feed-name";
 static NSString *kGBArgDocSetFeedURL = @"docset-feed-url";
+static NSString *kGBArgDocSetPackageURL = @"docset-package-url";
 static NSString *kGBArgDocSetFallbackURL = @"docset-fallback-url";
 static NSString *kGBArgDocSetPublisherIdentifier = @"docset-publisher-id";
 static NSString *kGBArgDocSetPublisherName = @"docset-publisher-name";
@@ -61,6 +62,10 @@ static NSString *kGBArgDocSetMinimumXcodeVersion = @"docset-min-xcode-version";
 static NSString *kGBArgDocSetPlatformFamily = @"docset-platform-family";
 static NSString *kGBArgDocSetCertificateIssuer = @"docset-cert-issuer";
 static NSString *kGBArgDocSetCertificateSigner = @"docset-cert-signer";
+
+static NSString *kGBArgDocSetBundleFilename = @"docset-bundle-filename";
+static NSString *kGBArgDocSetAtomFilename = @"docset-atom-filename";
+static NSString *kGBArgDocSetPackageFilename = @"docset-package-filename";
 
 static NSString *kGBArgLogFormat = @"logformat";
 static NSString *kGBArgVerbose = @"verbose";
@@ -199,11 +204,16 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgDocSetFallbackURL,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetFeedName,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetFeedURL,												0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPackageURL,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetMinimumXcodeVersion,									0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPlatformFamily,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPublisherIdentifier,									0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPublisherName,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetCopyrightMessage,										0,		DDGetoptRequiredArgument },
+		
+		{ kGBArgDocSetBundleFilename,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetAtomFilename,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPackageFilename,										0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
@@ -475,6 +485,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetCopyright:(NSString *)value { self.settings.docsetCopyrightMessage = value; }
 - (void)setDocsetFeedName:(NSString *)value { self.settings.docsetFeedName = value; }
 - (void)setDocsetFeedUrl:(NSString *)value { self.settings.docsetFeedURL = value; }
+- (void)setDocsetPackageUrl:(NSString *)value { self.settings.docsetPackageURL = value; }
 - (void)setDocsetFallbackUrl:(NSString *)value { self.settings.docsetFallbackURL = value; }
 - (void)setDocsetPublisherId:(NSString *)value { self.settings.docsetPublisherIdentifier = value; }
 - (void)setDocsetPublisherName:(NSString *)value { self.settings.docsetPublisherName = value; }
@@ -482,6 +493,10 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetPlatformFamily:(NSString *)value { self.settings.docsetPlatformFamily = value; }
 - (void)setDocsetCertIssuer:(NSString *)value { self.settings.docsetCertificateIssuer = value; }
 - (void)setDocsetCertSigner:(NSString *)value { self.settings.docsetCertificateSigner = value; }
+
+- (void)setDocsetBundleFilename:(NSString *)value { self.settings.docsetBundleFilename = value; }
+- (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }
+- (void)setDocsetPackageFilename:(NSString *)value { self.settings.docsetPackageFilename = value; }
 
 @synthesize logformat;
 @synthesize verbose;
@@ -527,6 +542,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCopyrightMessage, self.settings.docsetCopyrightMessage);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedName, self.settings.docsetFeedName);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedURL, self.settings.docsetFeedURL);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageURL, self.settings.docsetPackageURL);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFallbackURL, self.settings.docsetFallbackURL);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherIdentifier, self.settings.docsetPublisherIdentifier);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherName, self.settings.docsetPublisherName);
@@ -534,6 +550,9 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPlatformFamily, self.settings.docsetPlatformFamily);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateIssuer, self.settings.docsetCertificateIssuer);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateSigner, self.settings.docsetCertificateSigner);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleFilename, self.settings.docsetBundleFilename);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetAtomFilename, self.settings.docsetAtomFilename);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
@@ -616,6 +635,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetCopyrightMessage, @"<string>", @"[*] DocSet copyright message");
 	PRINT_USAGE(@"   ", kGBArgDocSetFeedName, @"<string>", @"[*] DocSet feed name");
 	PRINT_USAGE(@"   ", kGBArgDocSetFeedURL, @"<string>", @"[*] DocSet feed URL");
+	PRINT_USAGE(@"   ", kGBArgDocSetPackageURL, @"<string>", @"[*] DocSet package (.xar) URL");
 	PRINT_USAGE(@"   ", kGBArgDocSetFallbackURL, @"<string>", @"[*] DocSet fallback URL");
 	PRINT_USAGE(@"   ", kGBArgDocSetPublisherIdentifier, @"<string>", @"[*] DocSet publisher identifier");
 	PRINT_USAGE(@"   ", kGBArgDocSetPublisherName, @"<string>", @"[*] DocSet publisher name");
@@ -623,6 +643,9 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetPlatformFamily, @"<string>", @"[*] DocSet platform familiy");
 	PRINT_USAGE(@"   ", kGBArgDocSetCertificateIssuer, @"<string>", @"[*] DocSet certificate issuer");
 	PRINT_USAGE(@"   ", kGBArgDocSetCertificateSigner, @"<string>", @"[*] DocSet certificate signer");
+	PRINT_USAGE(@"   ", kGBArgDocSetBundleFilename, @"<string>", @"[*] DocSet bundle filename");
+	PRINT_USAGE(@"   ", kGBArgDocSetAtomFilename, @"<string>", @"[*] DocSet atom feed filename");
+	PRINT_USAGE(@"   ", kGBArgDocSetPackageFilename, @"<string>", @"[*] DocSet package (.xar) filename");
 	ddprintf(@"\n");
 	ddprintf(@"MISCELLANEOUS\n");
 	PRINT_USAGE(@"   ", kGBArgLogFormat, @"<number>", @"Log format [0-3]");
@@ -633,12 +656,17 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"\n[b] boolean parameter, uses no value, use --no- prefix to negate.\n");
 	ddprintf(@"\n");
 	ddprintf(@"[*] indicates parameters accepting placeholder strings:\n");
-	ddprintf(@"- $PROJECT replaced with --project-name\n");
-	ddprintf(@"- $VERSION replaced with --project-version\n");
-	ddprintf(@"- $COMPANY replaced with --project-company\n");
-	ddprintf(@"- $COMPANYID replaced with --company-id\n");
-	ddprintf(@"- $YEAR replaced with current year (format yyyy)\n");
-	ddprintf(@"- $UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
+	ddprintf(@"- %PROJECT replaced with --project-name\n");
+	ddprintf(@"- %PROJECTID replaced with normalized --project-name\n");
+	ddprintf(@"- %VERSION replaced with --project-version\n");
+	ddprintf(@"- %VERSIONID replaced with normalized --project-version\n");
+	ddprintf(@"- %COMPANY replaced with --project-company\n");
+	ddprintf(@"- %COMPANYID replaced with --company-id\n");
+	ddprintf(@"- %YEAR replaced with current year (format yyyy)\n");
+	ddprintf(@"- %UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
+	ddprintf(@"- %DOCSETBUNDLEFILENAME replaced with --docset-bundle-filename\n");
+	ddprintf(@"- %DOCSETATOMFILENAME replaced with --docset-atom-filename\n");
+	ddprintf(@"- %DOCSETPACKAGEFILENAME replaced with --docset-package-filename\n");
 	ddprintf(@"\n");
 	ddprintf(@"%@ uses the following open source components, fully or partially:\n", name);
 	ddprintf(@"\n");
