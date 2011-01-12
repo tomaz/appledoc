@@ -409,6 +409,11 @@ static NSString *kGBArgHelp = @"help";
 			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 		}
 	}
+	
+	// Make sure to switch on any setting thats required by "higher" level one.
+	if (self.settings.publishDocSet) self.settings.installDocSet = YES;
+	if (self.settings.installDocSet) self.settings.createDocSet = YES;
+	if (self.settings.createDocSet) self.settings.createHTML = YES;
 }
 
 - (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
