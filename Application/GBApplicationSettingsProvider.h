@@ -14,6 +14,22 @@
 /** Main application settings provider.
  
  This object implements `GBApplicationStringsProviding` interface and is used by `GBAppledocApplication` to prepare application-wide settings including factory defaults, global and session values. The main purpose of the class is to simplify `GBAppledocApplication` class by decoupling it from the actual settings providing implementation.
+ 
+ To create a new setting use the following check list to update `GBApplicationSettingsProvider`:
+ 
+ 1. Create the property here (don't forget about `@synthetize`!).
+ 2. Set default value in initializer.
+ 
+ If the setting should be mapped to command line switch also do the following in `GBAppledocApplication`:
+ 
+ 1. Create a new global string as `static NSString` containing the command line switch name.
+ 2. Register the switch to `DDCli` (add negated switch if it's a boolean).
+ 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean swithces require testing normal and negated variants!).
+ 4. Add KVC setter and map to corresponding property to make the test pass (again booleans require two setters).
+ 5. If the switch value uses template placeholders, add unit test in `GBApplicationSettingsProviderTesting.m` that validates the switch is handled.
+ 6. If previous point was used, add the code to `replaceAllOccurencesOfPlaceholderStringsInSettingsValues` to make the test pass.
+ 7. Add the switch value printout to `printSettingsAndArguments:`.
+ 8. Add the switch help printout to `printHelp`.
  */
 @interface GBApplicationSettingsProvider : NSObject
 
