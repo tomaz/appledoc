@@ -73,8 +73,8 @@
 		self.warnOnInvalidCrossReference = YES;
 		self.warnOnMissingMethodArgument = YES;
 		
-		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECTID";
-		self.docsetBundleName = @"$PROJECT Documentation";
+		self.docsetBundleIdentifier = @"%COMPANYID.%PROJECTID";
+		self.docsetBundleName = @"%PROJECT Documentation";
 		self.docsetCertificateIssuer = @"";
 		self.docsetCertificateSigner = @"";
 		self.docsetDescription = @"";
@@ -83,13 +83,13 @@
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"";
-		self.docsetPublisherIdentifier = @"$COMPANYID.documentation";
-		self.docsetPublisherName = @"$COMPANY";
-		self.docsetCopyrightMessage = @"Copyright © $YEAR $COMPANY. All rights reserved.";
+		self.docsetPublisherIdentifier = @"%COMPANYID.documentation";
+		self.docsetPublisherName = @"%COMPANY";
+		self.docsetCopyrightMessage = @"Copyright © %YEAR %COMPANY. All rights reserved.";
 		
-		self.docsetBundleFilename = @"$COMPANYID.$PROJECTID.docset";
-		self.docsetAtomFilename = @"$COMPANYID.$PROJECTID.atom";
-		self.docsetPackageFilename = @"$COMPANYID.$PROJECTID-$VERSIONID.xar";
+		self.docsetBundleFilename = @"%COMPANYID.%PROJECTID.docset";
+		self.docsetAtomFilename = @"%COMPANYID.%PROJECTID.atom";
+		self.docsetPackageFilename = @"%COMPANYID.%PROJECTID-%VERSIONID.xar";
 		
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -100,6 +100,11 @@
 #pragma mark Helper methods
 
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
+	// These need to be replaced first as they can be used in other settings!
+	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];
+	self.docsetAtomFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetAtomFilename];
+	self.docsetPackageFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPackageFilename];
+	// Handle the rest now.
 	self.docsetBundleIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleIdentifier];
 	self.docsetBundleName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleName];
 	self.docsetCertificateIssuer = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCertificateIssuer];
@@ -113,9 +118,6 @@
 	self.docsetPublisherIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherIdentifier];
 	self.docsetPublisherName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherName];
 	self.docsetCopyrightMessage = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCopyrightMessage];
-	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];
-	self.docsetAtomFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetAtomFilename];
-	self.docsetPackageFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPackageFilename];
 }
 
 #pragma mark HTML references handling
@@ -262,17 +264,17 @@
 }
 
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
-	string = [string stringByReplacingOccurrencesOfString:@"$COMPANYID" withString:self.companyIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"$PROJECTID" withString:self.projectIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"$VERSIONID" withString:self.versionIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
-	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
-	string = [string stringByReplacingOccurrencesOfString:@"$VERSION" withString:self.projectVersion];
-	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETBUNDLEFILENAME" withString:self.docsetBundleFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETATOMFILENAME" withString:self.docsetAtomFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETPACKAGEFILENAME" withString:self.docsetPackageFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self yearStringFromDate:[NSDate date]]];
-	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:@"%COMPANYID" withString:self.companyIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:@"%PROJECTID" withString:self.projectIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:@"%VERSIONID" withString:self.versionIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:@"%PROJECT" withString:self.projectName];
+	string = [string stringByReplacingOccurrencesOfString:@"%COMPANY" withString:self.projectCompany];
+	string = [string stringByReplacingOccurrencesOfString:@"%VERSION" withString:self.projectVersion];
+	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETBUNDLEFILENAME" withString:self.docsetBundleFilename];
+	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETATOMFILENAME" withString:self.docsetAtomFilename];
+	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETPACKAGEFILENAME" withString:self.docsetPackageFilename];
+	string = [string stringByReplacingOccurrencesOfString:@"%YEAR" withString:[self yearStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:@"%UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
 	return string;
 }
 
@@ -284,6 +286,24 @@
 
 - (NSString *)description {
 	return [self className];
+}
+
+- (NSString *)debugDescription {
+	// Based on http://stackoverflow.com/questions/754824/get-an-object-attributes-list-in-objective-c/4008326#4008326
+	NSMutableString *result = [NSMutableString string];
+	unsigned int outCount, i;	
+	objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+	for (i=0; i<outCount; i++) {
+		objc_property_t property = properties[i];
+		const char *propName = property_getName(property);
+		if (propName) {
+            NSString *propertyName = [NSString stringWithUTF8String:propName];
+			NSString *propertyValue = [self valueForKey:propertyName];
+			[result appendFormat:@"%@ = %@\n", propertyName, propertyValue];
+		}
+	}
+	free(properties);
+	return result;
 }
 
 #pragma mark Properties

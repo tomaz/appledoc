@@ -27,7 +27,7 @@
 	settings.projectCompany = @"<P C>";
 	settings.projectVersion = @"<P V>";
 	settings.companyIdentifier = @"<C I>";
-	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$PROJECTID/$COMPANYID/$VERSIONID/$YEAR/$UPDATEDATE";
+	NSString *template = @"%PROJECT/%COMPANY/%VERSION/%PROJECTID/%COMPANYID/%VERSIONID/%YEAR/%UPDATEDATE";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
@@ -80,7 +80,7 @@
 	settings.docsetBundleFilename = @"<DSB>";
 	settings.docsetAtomFilename = @"<DSA>";
 	settings.docsetPackageFilename = @"<DSP>";
-	NSString *template = @"$DOCSETBUNDLEFILENAME/$DOCSETATOMFILENAME/$DOCSETPACKAGEFILENAME";
+	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETPACKAGEFILENAME";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
