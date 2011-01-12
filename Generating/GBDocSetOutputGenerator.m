@@ -257,13 +257,12 @@
 	
 	// Get the path to the installed documentation set and extract the name. Then replace the name's extension with .xar.
 	NSString *installedDocSetPath = self.docsetInstallationPath;
-	NSString *docsetBaseName = [[installedDocSetPath lastPathComponent] stringByDeletingPathExtension];
-	NSString *docsetName = [docsetBaseName stringByAppendingPathExtension:@"xar"];
-	NSString *atomName = [docsetBaseName stringByAppendingPathExtension:@"atom"];
+	NSString *packageName = self.settings.docsetPackageFilename;
+	NSString *atomName = self.settings.docsetAtomFilename;
 		
 	// Prepare command line arguments for packaging.
 	NSString *outputDir = [self.settings.outputPath stringByAppendingPathComponent:@"publish"];
-	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:docsetName];
+	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:packageName];
 	NSString *outputAtomPath = [outputDir stringByAppendingPathComponent:atomName];
 	NSString *signer = self.settings.docsetCertificateSigner;
 	NSString *url = self.settings.docsetFeedURL;
@@ -448,8 +447,7 @@
 #pragma mark Properties
 
 - (NSString *)docsetInstallationPath {
-	NSString *bundleSubDir = [self.settings.docsetBundleIdentifier stringByAppendingPathExtension:@"docset"];
-	return [self.settings.docsetInstallPath stringByAppendingPathComponent:bundleSubDir];
+	return [self.settings.docsetInstallPath stringByAppendingPathComponent:self.settings.docsetBundleFilename];
 }
 
 - (NSMutableSet *)temporaryFiles {

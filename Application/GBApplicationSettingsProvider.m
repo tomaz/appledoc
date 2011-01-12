@@ -7,6 +7,7 @@
 //
 
 #import <objc/runtime.h>
+#import "RegexKitLite.h"
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
 
@@ -18,6 +19,7 @@
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(GBModelBase *)member prefixedWith:(NSString *)prefix;
+- (NSString *)stringByNormalizingString:(NSString *)string;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
 
@@ -71,19 +73,23 @@
 		self.warnOnInvalidCrossReference = YES;
 		self.warnOnMissingMethodArgument = YES;
 		
-		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECT";
+		self.docsetBundleIdentifier = @"$COMPANYID.$PROJECTID";
 		self.docsetBundleName = @"$PROJECT Documentation";
 		self.docsetCertificateIssuer = @"";
 		self.docsetCertificateSigner = @"";
 		self.docsetDescription = @"";
 		self.docsetFallbackURL = @"";
-		self.docsetFeedName = @"";
+		self.docsetFeedName = self.docsetBundleName;
 		self.docsetFeedURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"";
 		self.docsetPublisherIdentifier = @"$COMPANYID.documentation";
 		self.docsetPublisherName = @"$COMPANY";
-		self.docsetCopyrightMessage = @"© $YEAR $COMPANY. All rights reserved.";
+		self.docsetCopyrightMessage = @"Copyright © $YEAR $COMPANY. All rights reserved.";
+		
+		self.docsetBundleFilename = @"$COMPANYID.$PROJECTID.docset";
+		self.docsetAtomFilename = @"$COMPANYID.$PROJECTID.atom";
+		self.docsetPackageFilename = @"$COMPANYID.$PROJECTID-$VERSIONID.xar";
 		
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -107,6 +113,9 @@
 	self.docsetPublisherIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherIdentifier];
 	self.docsetPublisherName = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPublisherName];
 	self.docsetCopyrightMessage = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCopyrightMessage];
+	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];
+	self.docsetAtomFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetAtomFilename];
+	self.docsetPackageFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPackageFilename];
 }
 
 #pragma mark HTML references handling
@@ -254,12 +263,21 @@
 
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
 	string = [string stringByReplacingOccurrencesOfString:@"$COMPANYID" withString:self.companyIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:@"$PROJECTID" withString:self.projectIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:@"$VERSIONID" withString:self.versionIdentifier];
 	string = [string stringByReplacingOccurrencesOfString:@"$PROJECT" withString:self.projectName];
 	string = [string stringByReplacingOccurrencesOfString:@"$COMPANY" withString:self.projectCompany];
 	string = [string stringByReplacingOccurrencesOfString:@"$VERSION" withString:self.projectVersion];
+	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETBUNDLEFILENAME" withString:self.docsetBundleFilename];
+	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETATOMFILENAME" withString:self.docsetAtomFilename];
+	string = [string stringByReplacingOccurrencesOfString:@"$DOCSETPACKAGEFILENAME" withString:self.docsetPackageFilename];
 	string = [string stringByReplacingOccurrencesOfString:@"$YEAR" withString:[self yearStringFromDate:[NSDate date]]];
 	string = [string stringByReplacingOccurrencesOfString:@"$UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
 	return string;
+}
+
+- (NSString *)stringByNormalizingString:(NSString *)string {
+	return [string stringByReplacingOccurrencesOfRegex:@"[ \t]+" withString:@"-"];
 }
 
 #pragma mark Overriden methods
@@ -269,6 +287,14 @@
 }
 
 #pragma mark Properties
+
+- (NSString *)projectIdentifier {
+	return [self stringByNormalizingString:self.projectName];
+}
+
+- (NSString *)versionIdentifier {
+	return [self stringByNormalizingString:self.projectVersion];
+}
 
 @synthesize projectName;
 @synthesize projectCompany;
@@ -294,6 +320,9 @@
 @synthesize docsetPublisherIdentifier;
 @synthesize docsetPublisherName;
 @synthesize docsetCopyrightMessage;
+@synthesize docsetBundleFilename;
+@synthesize docsetAtomFilename;
+@synthesize docsetPackageFilename;
 
 @synthesize repeatFirstParagraphForMemberDescription;
 @synthesize keepUndocumentedObjects;

@@ -41,6 +41,12 @@
 /** Company unique identifier, ussualy in the form of reverse domain like _com.company_. */
 @property (copy) NSString *companyIdentifier;
 
+/** Project identifier which is derived by normalizing `projectName`. */
+@property (readonly) NSString *projectIdentifier;
+
+/** Version identifier which is derived by normalizing `projectVersion`. */
+@property (readonly) NSString *versionIdentifier;
+
 ///---------------------------------------------------------------------------------------
 /// @name Documentation set handling
 ///---------------------------------------------------------------------------------------
@@ -83,6 +89,15 @@
 
 /** Documentation set human readble copyright message. */
 @property (copy) NSString *docsetCopyrightMessage;
+
+/** The name of the documentation set installed bundle. The folder is generated in `docsetInstallPath`. */
+@property (copy) NSString *docsetBundleFilename;
+
+/** The name of the documentation set atom file when generating publishing files. The file is generated in `outputPath`. */
+@property (copy) NSString *docsetAtomFilename;
+
+/** The name of the documentation set compressed package file when generating publishing files. The file is generated in `outputPath`. */
+@property (copy) NSString *docsetPackageFilename;
 
 ///---------------------------------------------------------------------------------------
 /// @name Paths handling

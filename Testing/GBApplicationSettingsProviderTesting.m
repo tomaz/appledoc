@@ -23,11 +23,11 @@
 - (void)testPlaceholderReplacements_shouldReplacePlaceholderStringsInAllSupportedValues {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.projectName = @"<PN>";
-	settings.projectCompany = @"<PC>";
-	settings.projectVersion = @"<PV>";
-	settings.companyIdentifier = @"<CI>";
-	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$COMPANYID/$YEAR/$UPDATEDATE";
+	settings.projectName = @"<P N>";
+	settings.projectCompany = @"<P C>";
+	settings.projectVersion = @"<P V>";
+	settings.companyIdentifier = @"<C I>";
+	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$PROJECTID/$COMPANYID/$VERSIONID/$YEAR/$UPDATEDATE";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
@@ -41,11 +41,14 @@
 	settings.docsetPublisherIdentifier = template;
 	settings.docsetPublisherName = template;
 	settings.docsetCopyrightMessage = template;
+	settings.docsetBundleFilename = template;
+	settings.docsetAtomFilename = template;
+	settings.docsetPackageFilename = template;
 	// setup expected values; this might break sometimes as it's based on time...
 	NSDate *date = [NSDate date];
 	NSString *year = [[self yearFormatterFromSettings:settings] stringFromDate:date];
 	NSString *day = [[self yearToDayFormatterFromSettings:settings] stringFromDate:date];
-	NSString *expected = [NSString stringWithFormat:@"<PN>/<PC>/<PV>/<CI>/%@/%@", year, day];
+	NSString *expected = [NSString stringWithFormat:@"<P N>/<P C>/<P V>/<P-N>/<C I>/<P-V>/%@/%@", year, day];
 	// execute
 	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	// verify
@@ -62,6 +65,68 @@
 	assertThat(settings.docsetPublisherIdentifier, is(expected));
 	assertThat(settings.docsetPublisherName, is(expected));
 	assertThat(settings.docsetCopyrightMessage, is(expected));
+	assertThat(settings.docsetBundleFilename, is(expected));
+	assertThat(settings.docsetAtomFilename, is(expected));
+	assertThat(settings.docsetPackageFilename, is(expected));
+}
+
+- (void)testPlaceholderReplacements_shouldReplaceDocSetFilenames {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectName = @"<PN>";
+	settings.projectCompany = @"<PC>";
+	settings.projectVersion = @"<PV>";
+	settings.companyIdentifier = @"<CI>";
+	settings.docsetBundleFilename = @"<DSB>";
+	settings.docsetAtomFilename = @"<DSA>";
+	settings.docsetPackageFilename = @"<DSP>";
+	NSString *template = @"$DOCSETBUNDLEFILENAME/$DOCSETATOMFILENAME/$DOCSETPACKAGEFILENAME";
+	settings.docsetBundleIdentifier = template;
+	settings.docsetBundleName = template;
+	settings.docsetCertificateIssuer = template;
+	settings.docsetCertificateSigner = template;
+	settings.docsetDescription = template;
+	settings.docsetFallbackURL = template;
+	settings.docsetFeedName = template;
+	settings.docsetFeedURL = template;
+	settings.docsetMinimumXcodeVersion = template;
+	settings.docsetPlatformFamily = template;
+	settings.docsetPublisherIdentifier = template;
+	settings.docsetPublisherName = template;
+	settings.docsetCopyrightMessage = template;
+	NSString *expected = @"<DSB>/<DSA>/<DSP>";
+	// execute
+	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
+	// verify
+	assertThat(settings.docsetBundleIdentifier, is(expected));
+	assertThat(settings.docsetBundleName, is(expected));
+	assertThat(settings.docsetCertificateIssuer, is(expected));
+	assertThat(settings.docsetCertificateSigner, is(expected));
+	assertThat(settings.docsetDescription, is(expected));
+	assertThat(settings.docsetFallbackURL, is(expected));
+	assertThat(settings.docsetFeedName, is(expected));
+	assertThat(settings.docsetFeedURL, is(expected));
+	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
+	assertThat(settings.docsetPlatformFamily, is(expected));
+	assertThat(settings.docsetPublisherIdentifier, is(expected));
+	assertThat(settings.docsetPublisherName, is(expected));
+	assertThat(settings.docsetCopyrightMessage, is(expected));
+}
+
+- (void)testProjectIdentifier_shouldNormalizeProjectName {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectName = @"My Great  \t Project";
+	// execute & verify
+	assertThat(settings.projectIdentifier, is(@"My-Great-Project"));
+}
+
+- (void)testVersionIdentifier_shouldNormalizeProjectVersion {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectVersion = @"1.0 beta3  \t something";
+	// execute & verify
+	assertThat(settings.versionIdentifier, is(@"1.0-beta3-something"));
 }
 
 #pragma mark HTML href names handling
