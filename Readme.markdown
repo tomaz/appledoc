@@ -30,10 +30,11 @@ Before running the tool, you need to copy all required template files from Templ
 - ~/Library/Application Support/appledoc
 - ~/.appledoc
 
+
 Using appledoc
 ==============
 
-Use `appledoc --help` to see the list of all command line switches. Read more on about appledoc on [appledoc site](http://appledoc.gentlebytes.com) and short help and documentation on [appledoc's GitHub page](http://tomaz.github.com/appledoc/). Use [appledoc issues page](https://github.com/tomaz/appledoc/issues) to submit bug and feature requests (do read through open issues first to see if the issue is already there and vote on it or add a comment).
+Use `appledoc --help` to see the list of all command line switches. Read more about appledoc on [appledoc site](http://appledoc.gentlebytes.com) and check short help, documentation and tips on [appledoc's GitHub page](http://tomaz.github.com/appledoc/). Use [appledoc issues page](https://github.com/tomaz/appledoc/issues) to submit bug and feature requests. Before submitting read through open issues to see if the issue is already there and vote on it or add a comment. If you're not using development branch (see installation tips below) also check closed issues as your request may have already been covered but is not yet on master branch!
 
 Installation tips
 -----------------
@@ -58,7 +59,7 @@ Have problems? This is what you can do to troubleshoot:
 1. Make sure you have the latest appledoc version, prefferably on development branch. Try `git pull` and run with latest version again. If you're working with master branch, use instructions above to switch to development branch and see if it fixes your issue.
 2. Increase verbosity level with `--verbose 3` command line switch. You can progressively increment verbosity up to 6 with each level giving you more detailed information. As this will give you a lot more information, you may want to concentrate only on specific set of source files you have problem with. Note that increasing verbosity will result in slower performance so using levels above 4 for every day use is not recommended.
 3. Appledoc is open source project! You have all the source code available, so run it from Xcode. You can setup Xcode to pass the desired command line arguments and add breakpoints to help you isolate your issue. If you feel you'd like to contribute more to community, you are welcome to fork the project on GitHub and add features to it. Keep us posted so we can add these features to main repository as well - include unit tests if possible.
-4. If you think you found a bug or want to request new feature, go to [appledoc issues page](https://github.com/tomaz/appledoc/issues). First read existing issues to see if there is already a request there. You can vote on existing requests to help us decide which features to concetrate on or you can add a comment to aid in solving it. If you don't find the request there, create a new issue; include parts of source files that give you problems if possible and/or description or steps that lead to it.
+4. If you think you found a bug or want to request new feature, go to [appledoc issues page](https://github.com/tomaz/appledoc/issues). First read existing issues to see if there is already a request there (if you're using master branch, also read closed issues as your request may have already been covered but isn't yet merged on master branch). You can vote on existing requests to help us decide which features to concetrate on or you can add a comment to aid in solving it. If you don't find the request there, create a new issue; include parts of source files that give you problems if possible and/or description or steps that lead to it.
 5. If you're having problems with some of your source files and don't want to publish them online, you can contact us through email below. We'll do our best to help you out, but bear in mind appledoc is not commercial product; it's created and maintaned in our spare time, so resources are limited.
 
 Minimum system requirements
@@ -81,4 +82,4 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Tomaz Kragelj tomaz@gentlebytes.com
+Gentle Bytes appledoc@gentlebytes.com
