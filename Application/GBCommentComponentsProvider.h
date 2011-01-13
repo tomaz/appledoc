@@ -80,7 +80,7 @@
 @property (readonly) NSString *crossReferenceRegex;
 
 ///---------------------------------------------------------------------------------------
-/// @name Common definitions
+/// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
 /** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. */
@@ -97,5 +97,12 @@
 
 /** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself. */
 @property (readonly) NSString *urlCrossReferenceRegex;
+
+///---------------------------------------------------------------------------------------
+/// @name Common definitions
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex containing all possible symbols for matching new lines. */
+@property (readonly) NSString *newLineRegex;
 
 @end

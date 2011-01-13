@@ -72,7 +72,8 @@
 }
 
 - (NSString *)exampleRegexWithoutFlags {
-	GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
+	GBRETURN_ON_DEMAND(@"^(?: ?\\t| {2,})(.*))");
+	//GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
 }
 
 #pragma mark Method specific detection
@@ -109,7 +110,7 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 
-#pragma mark Common detection
+#pragma mark Cross references detection
 
 - (NSString *)remoteMemberCrossReferenceRegex {
 	// +[Class member] or -[Class member] or simply [Class member].
@@ -130,6 +131,12 @@
 
 - (NSString *)urlCrossReferenceRegex {
 	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
+}
+
+#pragma mark Common detection
+
+- (NSString *)newLineRegex {
+	GBRETURN_ON_DEMAND([NSString stringWithUTF8String:"\\r\\n|[\\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"]);
 }
 
 #pragma mark Helper methods
