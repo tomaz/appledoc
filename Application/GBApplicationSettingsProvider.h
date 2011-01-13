@@ -379,11 +379,17 @@
  
  This method provides application-wide string placeholders replacement functionality. It replaces all known placeholders with actual values from the receiver. Placeholders are identified by a dollar mark, followed by placeholder name. The following placeholders are supported (note that case is important!):
  
- - `$PROJECT`: Replaced by `projectName` value.
- - `$COMPANY`: Replaced by `projectCompany` value.
- - `$VERSION`: Replaced by `projectVersion` value.
- - `$YEAR`: Replaced by current year as four digit string.
- - `$UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
+ - `%PROJECT`: Replaced by `projectName` value.
+ - `%PROJECTID`: Replaced by `projectIdentifier` value.
+ - `%COMPANY`: Replaced by `projectCompany` value.
+ - `%COMPANYID`: Replaced by `companyIdentifier` value.
+ - `%VERSION`: Replaced by `projectVersion` value.
+ - `%VERSIONID`: Replaced by `versionIdentifier` value.
+ - `%DOCSETBUNDLEFILENAME`: Replaced by `docsetBundleFilename` value.
+ - `%DOCSETATOMFILENAME`: Replaced by `docsetAtomFilename` value.
+ - `%DOCSETPACKAGEFILENAME`: Replaced by `docsetPackageFilename` value.
+ - `%YEAR`: Replaced by current year as four digit string.
+ - `%UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
  
  @param string The string to replace placeholder occurences in.
  @return Returns new string with all placeholder occurences replaced.
