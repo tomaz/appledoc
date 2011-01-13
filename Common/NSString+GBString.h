@@ -78,6 +78,14 @@
 /// @name Getting information
 ///---------------------------------------------------------------------------------------
 
+/** Creates a new `NSString` composed from all given lines delimited with the given delimiter.
+ 
+ @param lines Array of lines to combine.
+ @param delimiter Delimiter to use to separate lines.
+ @return Returns autoreleased string containing all lines.
+ */
++ (NSString *)stringByCombiningLines:(NSArray *)lines delimitWith:(NSString *)delimiter;
+ 
 /** Returns the array of all lines in the receiver.
  
  @return Returns the array of all lines.

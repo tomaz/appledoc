@@ -10,6 +10,7 @@
 	#import <Foundation/Foundation.h>
 	#import "NSObject+GBObject.h"
 	#import "NSString+GBString.h"
+	#import "NSArray+GBArray.h"
 	#import "NSException+GBException.h"
 	#import "NSError+GBError.h"
 	#import "NSFileManager+GBFileManager.h"

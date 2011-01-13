@@ -29,6 +29,8 @@
 		7321D0E712944CF500796DEC /* GBTemplateHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D0E612944CF500796DEC /* GBTemplateHandler.m */; };
 		7321D0E812944CF500796DEC /* GBTemplateHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D0E612944CF500796DEC /* GBTemplateHandler.m */; };
 		7321D12A1294592200796DEC /* GBTemplateHandlerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7321D1291294592200796DEC /* GBTemplateHandlerTesting.m */; };
+		732E6CBD12DF02B7009DD6E0 /* NSArray+GBArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 732E6CBC12DF02B7009DD6E0 /* NSArray+GBArray.m */; };
+		732E6CBE12DF03A2009DD6E0 /* NSArray+GBArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 732E6CBC12DF02B7009DD6E0 /* NSArray+GBArray.m */; };
 		73329896122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */; };
 		73329AA6122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */; };
 		73329B30122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */; };
@@ -230,6 +232,8 @@
 		7321D0E512944CF500796DEC /* GBTemplateHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = GBTemplateHandler.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		7321D0E612944CF500796DEC /* GBTemplateHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBTemplateHandler.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		7321D1291294592200796DEC /* GBTemplateHandlerTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBTemplateHandlerTesting.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		732E6CBB12DF02B7009DD6E0 /* NSArray+GBArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+GBArray.h"; sourceTree = "<group>"; };
+		732E6CBC12DF02B7009DD6E0 /* NSArray+GBArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+GBArray.m"; sourceTree = "<group>"; };
 		73329895122E4DFC00AEBA2B /* GBCommentsProcessor-UnorderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-UnorderedListsTesting.m"; sourceTree = "<group>"; };
 		73329AA5122E8AA800AEBA2B /* GBCommentsProcessor-OrderedListsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-OrderedListsTesting.m"; sourceTree = "<group>"; };
 		73329B2F122EE14900AEBA2B /* GBCommentsProcessor-WarningsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-WarningsTesting.m"; sourceTree = "<group>"; };
@@ -730,6 +734,8 @@
 				7340F02711FCC63100E712A4 /* NSObject+GBObject.m */,
 				731D2BF312045A61003180E7 /* NSString+GBString.h */,
 				731D2BF412045A61003180E7 /* NSString+GBString.m */,
+				732E6CBB12DF02B7009DD6E0 /* NSArray+GBArray.h */,
+				732E6CBC12DF02B7009DD6E0 /* NSArray+GBArray.m */,
 				7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */,
 				7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */,
 				731E7CE611F9962D00AAF15D /* NSException+GBException.h */,
@@ -1175,6 +1181,7 @@
 				733EA182122BE1730060CBDE /* NSFileManager+GBFileManager.m in Sources */,
 				733EA183122BE1740060CBDE /* NSObject+GBObject.m in Sources */,
 				733EA184122BE1750060CBDE /* NSString+GBString.m in Sources */,
+				732E6CBE12DF03A2009DD6E0 /* NSArray+GBArray.m in Sources */,
 				733EA185122BE17A0060CBDE /* GBIvarData.m in Sources */,
 				733EA186122BE17A0060CBDE /* GBIvarsProvider.m in Sources */,
 				733EA187122BE17B0060CBDE /* GBMethodArgument.m in Sources */,
@@ -1327,6 +1334,7 @@
 				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
 				731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */,
 				73397A2812A5070700EDC035 /* GBTask.m in Sources */,
+				732E6CBD12DF02B7009DD6E0 /* NSArray+GBArray.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

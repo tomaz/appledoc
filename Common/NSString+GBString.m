@@ -95,6 +95,16 @@
 
 #pragma mark Getting information
 
++ (NSString *)stringByCombiningLines:(NSArray *)lines delimitWith:(NSString *)delimiter {
+	NSMutableString *result = [NSMutableString string];
+	if (!delimiter) delimiter = @"";
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		if ([result length] > 0) [result appendString:delimiter];
+		[result appendString:line];
+	}];
+	return result;
+}
+
 - (NSArray *)arrayOfLines {
 	// Although we could use regex here, this gives us nicer results (strips all newlines for example), taken straight from Apple String Programming Guide.
 	NSMutableArray *result = [NSMutableArray array];
