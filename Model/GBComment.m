@@ -168,7 +168,7 @@
 	if ([self.paragraphs count] > 0) {
 		[result appendFormat:@"{p%@", multiline ? @"\n" : @" "];
 		[self.paragraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.paragraphs count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -178,7 +178,7 @@
 	if ([self.parameters count] > 0) {
 		[result appendFormat:@"{par%@", multiline ? @"\n" : @" "];
 		[self.parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.parameters count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -187,7 +187,7 @@
 	// Result.
 	if (self.result) {
 		[result appendFormat:@"{ret%@", multiline ? @"\n" : @" "];
-		[result appendString:[self.result description]];
+		[result appendString:[self.result debugDescription]];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
 	}
 	
@@ -195,7 +195,7 @@
 	if ([self.exceptions count] > 0) {
 		[result appendFormat:@"{exc%@", multiline ? @"\n" : @" "];
 		[self.exceptions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.exceptions count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -205,7 +205,7 @@
 	if ([self.crossrefs count] > 0) {
 		[result appendFormat:@"{ref%@", multiline ? @"\n" : @" "];
 		[self.crossrefs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.crossrefs count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];

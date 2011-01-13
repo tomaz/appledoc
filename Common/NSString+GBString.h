@@ -78,6 +78,13 @@
 /// @name Getting information
 ///---------------------------------------------------------------------------------------
 
+/** Returns the array of all lines in the receiver.
+ 
+ @return Returns the array of all lines.
+ @see numberOfLines
+ */
+- (NSArray *)arrayOfLines;
+
 /** Returns the number of all lines in the receiver.
  
  @return Returns the number of all lines in the receiver.
