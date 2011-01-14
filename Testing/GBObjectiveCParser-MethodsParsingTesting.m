@@ -541,4 +541,27 @@
 	assertThatInteger(method.comment.sourceInfo.lineNumber, equalToInteger(6));
 }
 
+#pragma mark Various cases
+
+- (void)testParseObjectsFromString_shouldSkipAnythingNotMethod {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:
+	 @"@interface MyClass\n"
+	 @"#pragma mark -\n"
+	 @"#pragma mark Something\n"
+	 @"/** comment */\n"
+	 @"-(void)method;\n"
+	 @"@end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	GBMethodData *method = [methods objectAtIndex:0];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:method matchesInstanceComponents:@"void", @"method", nil];	
+	assertThat(method.comment.stringValue, is(@"comment"));
+}
+
 @end

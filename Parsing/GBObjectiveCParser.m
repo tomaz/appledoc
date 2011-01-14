@@ -418,10 +418,20 @@
 	GBComment *comment = [self.tokenizer lastComment];
 	GBComment *sectionComment = [self.tokenizer previousComment];
 	NSString *sectionName = [self sectionNameFromComment:sectionComment];
+	__block BOOL assertMethod = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement...
+		if (assertMethod) {
+			if (![token matches:@"("]) {
+				*stop = YES;
+				return;
+			}
+			assertMethod = NO;
+		}
+		
 		// Prepare source information and reset comments; we alreay read the values so as long as we have found a method, we should reset the comments to prepare ground for next methods. This is needed due to the way this method works - it actually ends by jumping to the first token after the given end symbol, which effectively positions tokenizer to the first token of the following method. Therefore it already consumes any comment preceeding the method. So we can't reset AFTER finished parsing, but rather before! Note that we should only do it once...
 		if (!filedata) {
 			filedata = [self.tokenizer sourceInfoForToken:token];
