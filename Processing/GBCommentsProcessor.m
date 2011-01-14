@@ -19,7 +19,7 @@
 
 - (BOOL)registerWarningBlockFromlines:(NSArray *)lines;
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
-
+- (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
@@ -121,6 +121,7 @@
 	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
 	NSArray *block = [lines subarrayWithRange:range];
 	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
+	if ([self registerExampleBlockFromLines:block]) return;
 	if ([self registerBugBlockFromLines:block]) return;
 	if ([self registerWarningBlockFromlines:block]) return;
 }
@@ -172,6 +173,37 @@
 	
 	// Register block item to current paragraph; create new one if necessary.
 	[self registerParagraphItemToCurrentParagraph:item];
+	return YES;
+}
+
+- (BOOL)registerExampleBlockFromLines:(NSArray *)lines {
+	// Example block is a GBParagraphSpecialItem containing one or more GBParagraph items. The block is only considered as example if each line is prefixed with a single tab or 4 spaces. That leading whitespace is removed from each line in registered data. Note that we allow having mixed lines where one starts with tab and another with spaces!
+	
+	// Validate all lines match required prefix. Note that we first used dictionaryByMatchingRegex:withKeysAndCaptures: but it ended with EXC_BAD_ACCESS and I couldn't figure it out, so reverted to captureComponentsMatchedByRegex:
+	NSString *regex = self.components.exampleSectionRegex;
+	NSMutableArray *linesOfCaptures = [NSMutableArray arrayWithCapacity:[lines count]];
+	for (NSString *line in lines) {
+		NSArray *match = [line captureComponentsMatchedByRegex:regex];
+		if ([match count] == 0) return NO;
+		[linesOfCaptures addObject:match];
+	}
+	
+	// So all lines are indeed prefixed with required example whitespace, let's create the item. First prepare string value containing only text without prefix. Note that capture index 0 contains full text, index 1 just the prefix and index 2 just the text.
+	NSMutableString *stringValue = [NSMutableString string];
+	[linesOfCaptures enumerateObjectsUsingBlock:^(NSArray *captures, NSUInteger idx, BOOL *stop) {
+		if ([stringValue length] > 0) [stringValue appendString:@"\n"];
+		NSString *lineText = [captures objectAtIndex:2];
+		[stringValue appendString:lineText];
+	}];
+	
+    // Prepare paragraph item. Note that we don't use paragraphs stack as currently we don't process the text for cross refs!
+    GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:stringValue];
+	GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
+    [paragraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:stringValue]];
+	[item registerParagraph:paragraph];
+	
+    // Register special item to paragraph.
+    [self registerParagraphItemToCurrentParagraph:item];
 	return YES;
 }
 

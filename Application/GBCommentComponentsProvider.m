@@ -19,7 +19,6 @@
 @interface GBCommentComponentsProvider ()
 
 - (NSString *)argumentsCommonRegex;
-- (NSString *)exampleRegexWithoutFlags;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
 
@@ -64,16 +63,7 @@
 }
 
 - (NSString *)exampleSectionRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?s:%@)", [self exampleRegexWithoutFlags]]));
-}
-
-- (NSString *)exampleLinesRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@)", [self exampleRegexWithoutFlags]]));
-}
-
-- (NSString *)exampleRegexWithoutFlags {
-	GBRETURN_ON_DEMAND(@"^(?: ?\\t| {2,})(.*))");
-	//GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
+	GBRETURN_ON_DEMAND(@"^( ?\\t|    )(.*)$");
 }
 
 #pragma mark Method specific detection

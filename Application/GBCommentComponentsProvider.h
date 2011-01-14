@@ -48,11 +48,8 @@
 /** Returns the regex used for matching bug section with capture 1 containing description. */
 @property (readonly) NSString *bugSectionRegex;
 
-/** Returns the regex used for matching example section with capture 1 containing example text. */
+/** Returns the regex used for matching example section with capture 1 containing whitespace prefix and capture 2 example text. */
 @property (readonly) NSString *exampleSectionRegex;
-
-/** Returns the regex used for matching example lines with capture 1 containing example lines texts. */
-@property (readonly) NSString *exampleLinesRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Method specific definitions
