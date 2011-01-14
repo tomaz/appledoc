@@ -114,23 +114,23 @@
 
 - (NSString *)remoteMemberCrossReferenceRegex {
 	// +[Class member] or -[Class member] or simply [Class member].
-	return @"<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
+	return @"^<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
 }
 
 - (NSString *)localMemberCrossReferenceRegex {
-	return @"<?([^>,.;!?()\\s]+)>?";
+	return @"^<?([^>,.;!?()\\s]+)>?";
 }
 
 - (NSString *)categoryCrossReferenceRegex {
-	return @"<?([^(][^>,.:;!?)\\s]+\\))>?";
+	return @"^<?([^(][^>,.:;!?)\\s]+\\))>?";
 }
 
 - (NSString *)objectCrossReferenceRegex {
-	return @"<?([^>,.:;!?()\\s]+)>?";
+	return @"^<?([^>,.:;!?()\\s]+)>?";
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
+	return @"^<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
 }
 
 #pragma mark Common detection

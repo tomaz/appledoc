@@ -22,6 +22,7 @@
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
+- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
 
 - (void)registerParagraphItemToCurrentParagraph:(GBParagraphItem *)item;
 
@@ -83,13 +84,6 @@
 	}
 }
 
-- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range {
-	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
-	NSArray *block = [lines subarrayWithRange:range];
-	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
-	if ([self registerBugBlockFromLines:block]) return;
-}
-
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range {
 	// Searches the given array of lines for the index of ending line of the block starting at the given index. Effectively this groups all lines that belong to a single block where block is a paragraph text or one of it's items delimited by empty line. The index returned is the index of the last line of the block, so may be the same as the start index, the method takes care to skip empty starting lines if needed and updates start index to point to first block line (but properly detects empty lines belonging to example block). Note that the code is straightforward except for the fact that we need to handle example blocks properly (i.e. can't just trim all whitespace of a line to determine if it's empty or not, instead we need to validate the line is not part of example block).
 	NSParameterAssert(range != NULL);
@@ -116,6 +110,16 @@
 	range->location = start;
 	range->length = end - start;
 	return (start < [lines count]);
+}
+
+- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range {
+	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
+	NSArray *block = [lines subarrayWithRange:range];
+	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
+	if ([self registerBugBlockFromLines:block]) return;
+	NSString *s = [NSString stringByCombiningLines:block delimitWith:@"\n"];
+	[self.paragraphsStack push:[GBCommentParagraph paragraph]];
+	[self registerTextItemsFromStringToCurrentParagraph:s];
 }
 
 #pragma mark Comment blocks processing
@@ -147,7 +151,7 @@
 #pragma mark Comment text processing
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string {
-	// Registers the text from the given string to last paragraph. Text is converted to an array of GBParagraphTextItem, GBParagraphLinkItem and GBParagraphDecoratorItem objects. WARNING: The client is responsible for adding proper paragraph to the stack!
+	// Registers the text from the given string to last paragraph. Text is converted to an array of GBParagraphTextItem, GBParagraphLinkItem and GBParagraphDecoratorItem objects. This is the main entry point for text processing, this is the only message that should be used for processing text from higher level methods. WARNING: The client is responsible for adding proper paragraph to the stack!
 	NSString *simplified = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*)" withString:@"=!="];
 	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|=!=|`)(.*?)\\1)" withKeysAndCaptures:@"type", 1, @"value", 2, nil];
 	GBCommentParagraph *paragraph = [self.paragraphsStack peek];
@@ -205,75 +209,105 @@
 	// If we have some remaining text, append it now.
 	if ([simplified length] > search.location) {
 		NSString *remainingText = [simplified substringWithRange:search];
-		GBLogDebug(@"  - Found '%@' text at %@, processing for cross refs...", remainingText, self.sourceFileInfo);
+		GBLogDebug(@"  - Found '%@' text at %@, processing for cross refs...", [remainingText normalizedDescription], self.sourceFileInfo);
 		[self registerTextAndLinkItemsFromString:remainingText toObject:paragraph];
 	}
 }
 
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object {
-	// Scans the given string for possible links and converts the text to an array of GBParagraphTextItem and GBParagraphLinkItem objects which are ultimately registered to the given object. WARNING: The given object must respond to registerItem: message!
-	NSRange range = NSMakeRange(0, 0);
-	while (YES) {
-		// Find first remote member link in the current search range. If not found, we can exit and check for simple links in the remaining text.
-		GBParagraphLinkItem *remoteMemberLink = [self remoteMemberLinkItemFromString:string range:&range];
-		if (!remoteMemberLink) break;
+	// Scans the given string for possible links and converts the text to an array of GBParagraphTextItem and GBParagraphLinkItem objects which are ultimately registered to the given object. NOTE: This message is intended to be sent from registerTextItemsFromStringToCurrentParagraph: and should not be used otherwise! WARNING: The given object must respond to registerItem: message!
+#define registerTextItemFromString(theString) \
+	if ([theString length] > 0) { \
+		GBLogDebug(@"    - Found text '%@'...", [theString normalizedDescription]); \
+		GBParagraphTextItem *textItem = [GBParagraphTextItem paragraphItemWithStringValue:theString]; \
+		[object registerItem:textItem]; \
+		[theString setString:@""]; \
 	}
+#define registerLinkItem(theItem, theType) { \
+	GBLogDebug(@"    - Found %@ %@. cross ref..", theType, theItem.stringValue); \
+	[object registerItem:theItem]; \
 }
-
-#pragma mark Cross references processing
-
-- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range {
-	// Searches for first remote member cross ref (in the form of [Object member]) in the given range of the given string. If found and validated, GBParagraphLinkItem is prepared and returned. Note that range argument is used for returning match range on output.
-	NSParameterAssert(range != NULL);
-	NSString *regex = self.components.remoteMemberCrossReferenceRegex;
-	NSRange searchRange = NSMakeRange(0, [string length]);	
-	while (searchRange.location < [string length]) {
-		// Find first occurence of remote member link. If none found, we're done.
-		NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-		if ([components count] == 0) break;
-		
-		// Get link components.
-		NSString *linkText = [components objectAtIndex:0];
-		NSString *objectName = [components objectAtIndex:1];
-		NSString *memberName = [components objectAtIndex:2];
-		
-		// Validate the link to match it to known object. If no known object is matched, warn, update search range and continue with remaining text. This is required so that we treat unknown objects as normal text later on and still catch proper references that may be hiding in the remainder.
-		id referencedObject = [self.store classWithName:objectName];
-		if (!referencedObject) {
-			referencedObject = [self.store categoryWithName:objectName];
-			if (!referencedObject) {
-				referencedObject = [self.store protocolWithName:objectName];
-				if (!referencedObject) {
-					if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown object!", linkText, self.sourceFileInfo);
-					searchRange.location += [linkText length];
-					searchRange.length -= [linkText length];
-					continue;
-				}
-			}
+#define skipTextFromString(theString) { \
+	if (theString) { \
+		[text appendString:theString]; \
+		string = [string substringFromIndex:[theString length]]; \
+	} \
+}
+	// Progressively chip away the string and test if it starts with any known cross reference. If so, register link item, otherwise consider the text as normal text item, so skip to the next word.
+	NSMutableString *text = [NSMutableString stringWithCapacity:[string length]];
+	NSRange range = NSMakeRange(0, 0);
+	GBParagraphLinkItem *linkItem;
+	while ([string length] > 0) {
+		// If the string starts with any recognized cross reference, add the link item.
+		if ((linkItem = [self remoteMemberLinkItemFromString:string range:&range])) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"remote member");
+		} else if ((linkItem = [self urlLinkItemFromString:string range:&range])) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"url");
 		}
 		
-		// Ok, so we have found referenced object in store, now search the member. If member isn't recognized, warn, update search range and continue with remaining text. This is required so that we treat unknown members as normal text later on and still catch proper references in remainder.
-		id referencedMember = [[referencedObject methods] methodBySelector:memberName];
-		if (!referencedMember) {
-			if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.sourceFileInfo);
-			searchRange.location += [linkText length];
-			searchRange.length -= [linkText length];
-			continue;
-		}
+		// If we found a cross reference, skip it's text, otherwise mark the word until next whitespace as text item.
+		if (linkItem)
+			string = [string substringFromIndex:range.location + range.length];
+		else
+			skipTextFromString([string stringByMatching:@"^\\S+"]);
 		
-		// Right, we have valid reference to known remote member, create the link, prepare range and return.
-		NSString *string = [linkText stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
-		GBLogDebug(@"    - Found %@  near %@...", linkText);
-		GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:string];
-		item.href = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
-        item.context = referencedObject;
-        item.member = referencedMember;
-        item.isLocal = NO;
-		*range = [string rangeOfString:linkText options:0 range:searchRange];
-		return item;
+		// Skip any leading whitespace until the next word and mark it as text item.
+		skipTextFromString([string stringByMatching:@"^\\s+"]);
 	}
 	
-	// If we haven't found remote member cross ref, return nil.
+	// Append any remaining text 
+	registerTextItemFromString(text);
+}
+
+#pragma mark Cross references detection
+
+- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range {
+	// Searches for first remote member cross ref (in the form of [Object member]) in the given range of the given string. If found and validated, GBParagraphLinkItem is prepared and returned. NOTE: This message is intended to be sent from registerTextAndLinkItemsFromString:toObject: and should not be used otherwise! IMPORTANT: Only the start of the given string is checked for link, must not be prefixed with any whitespace and similar! NOTE: that range argument is used for returning match range on output.
+	NSParameterAssert(range != NULL);
+	
+	// If the string starts with remote link
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.remoteMemberCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	NSString *memberName = [components objectAtIndex:2];
+	
+	// Validate the link to match it to known object. If no known object is matched, warn, update search range and continue with remaining text. This is required so that we treat unknown objects as normal text later on and still catch proper references that may be hiding in the remainder.
+	id referencedObject = [self.store classWithName:objectName];
+	if (!referencedObject) {
+		referencedObject = [self.store categoryWithName:objectName];
+		if (!referencedObject) {
+			referencedObject = [self.store protocolWithName:objectName];
+			if (!referencedObject) {
+				if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown object!", linkText, self.sourceFileInfo);
+				return nil;
+			}
+		}
+	}
+	
+	// Ok, so we have found referenced object in store, now search the member. If member isn't recognized, warn, update search range and continue with remaining text. This is required so that we treat unknown members as normal text later on and still catch proper references in remainder.
+	id referencedMember = [[referencedObject methods] methodBySelector:memberName];
+	if (!referencedMember) {
+		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.sourceFileInfo);
+		return nil;
+	}
+	
+	// Right, we have valid reference to known remote member, create the link, prepare range and return.
+	NSString *stringValue = [linkText stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+	GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
+	item.href = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
+	item.context = referencedObject;
+	item.member = referencedMember;
+	item.isLocal = NO;
+	*range = [string rangeOfString:linkText];
+	return item;
+}
+
+- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range {
 	return nil;
 }
 
