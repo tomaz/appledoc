@@ -20,8 +20,10 @@
 - (BOOL)registerWarningBlockFromlines:(NSArray *)lines;
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
 - (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
+
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
+
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
 - (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range;
 - (id)classLinkFromString:(NSString *)string range:(NSRange *)range;
@@ -29,7 +31,11 @@
 - (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range;
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
 
-- (void)registerParagraphItemToCurrentParagraph:(GBParagraphItem *)item;
+- (GBCommentParagraph *)pushParagraphIfStackIsEmpty;
+- (GBCommentParagraph *)pushParagraph;
+- (GBCommentParagraph *)peekParagraph;
+- (GBCommentParagraph *)popParagraph;
+- (void)popAllParagraphs;
 
 @property (retain) NSMutableArray *paragraphsStack;
 @property (retain) GBComment *currentComment;
@@ -87,6 +93,7 @@
 		[self processCommentBlockInLines:lines blockRange:range];
 		range.location += range.length;
 	}
+	[self popAllParagraphs];
 }
 
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range {
@@ -140,15 +147,18 @@
 		return YES;
 	}
 	
+	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
+	[self pushParagraphIfStackIsEmpty];
+	
 	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
 	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:description];
-	[self.paragraphsStack push:[GBCommentParagraph paragraph]];	
-	[self registerTextItemsFromStringToCurrentParagraph:string];
-	[item registerParagraph:[self.paragraphsStack peek]];
-	[self.paragraphsStack pop];
+	[self pushParagraph];
+	[self registerTextItemsFromStringToCurrentParagraph:description];
+	[item registerParagraph:[self peekParagraph]];
+	[self popParagraph];
 	
-	// Register block item to current paragraph; create new one if necessary.
-	[self registerParagraphItemToCurrentParagraph:item];
+	// Register block item to current paragraph.
+	[[self peekParagraph] registerItem:item];
 	return YES;
 }
 
@@ -164,15 +174,18 @@
 		return YES;
 	}
 	
+	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
+	[self pushParagraphIfStackIsEmpty];
+	
 	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
 	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeBug stringValue:description];
-	[self.paragraphsStack push:[GBCommentParagraph paragraph]];	
-	[self registerTextItemsFromStringToCurrentParagraph:string];
-	[item registerParagraph:[self.paragraphsStack peek]];
-	[self.paragraphsStack pop];
+	[self pushParagraph];	
+	[self registerTextItemsFromStringToCurrentParagraph:description];
+	[item registerParagraph:[self peekParagraph]];
+	[self popParagraph];
 	
-	// Register block item to current paragraph; create new one if necessary.
-	[self registerParagraphItemToCurrentParagraph:item];
+	// Register block item to current paragraph.
+	[[self peekParagraph] registerItem:item];
 	return YES;
 }
 
@@ -188,6 +201,9 @@
 		[linesOfCaptures addObject:match];
 	}
 	
+	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
+	[self pushParagraphIfStackIsEmpty];
+	
 	// So all lines are indeed prefixed with required example whitespace, let's create the item. First prepare string value containing only text without prefix. Note that capture index 0 contains full text, index 1 just the prefix and index 2 just the text.
 	NSMutableString *stringValue = [NSMutableString string];
 	[linesOfCaptures enumerateObjectsUsingBlock:^(NSArray *captures, NSUInteger idx, BOOL *stop) {
@@ -202,8 +218,8 @@
     [paragraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:stringValue]];
 	[item registerParagraph:paragraph];
 	
-    // Register special item to paragraph.
-    [self registerParagraphItemToCurrentParagraph:item];
+    // Register example block to current paragraph.
+    [[self peekParagraph] registerItem:item];
 	return YES;
 }
 
@@ -213,13 +229,13 @@
 	// Registers the text from the given string to last paragraph. Text is converted to an array of GBParagraphTextItem, GBParagraphLinkItem and GBParagraphDecoratorItem objects. This is the main entry point for text processing, this is the only message that should be used for processing text from higher level methods. WARNING: The client is responsible for adding proper paragraph to the stack!
 	NSString *simplified = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*)" withString:@"=!="];
 	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|=!=|`)(.*?)\\1)" withKeysAndCaptures:@"type", 1, @"value", 2, nil];
-	GBCommentParagraph *paragraph = [self.paragraphsStack peek];
-	__block NSRange search = NSMakeRange(0, [simplified length]);
-	[components enumerateObjectsUsingBlock:^(NSDictionary *component, NSUInteger idx, BOOL *stop) {
+	GBCommentParagraph *paragraph = [self peekParagraph];
+	NSRange search = NSMakeRange(0, [simplified length]);
+	for (NSDictionary *component in components) {
 		// Get range of next formatted section. If not found, exit (we'll deal with remaining text after the loop).
 		NSString *type = [component objectForKey:@"type"];
 		NSRange range = [simplified rangeOfString:type options:0 range:search];
-		if (range.location == NSNotFound) return;
+		if (range.location == NSNotFound) break;
 		
 		// If we skipped some text, add it before handling formatted part!
 		if (range.location > search.location) {
@@ -263,7 +279,7 @@
 		// Prepare next search range.
 		NSUInteger location = range.location + range.length * 2 + [text length];
 		search = NSMakeRange(location, [simplified length] - location);
-	}];
+	};
 
 	// If we have some remaining text, append it now.
 	if ([simplified length] > search.location) {
@@ -491,10 +507,34 @@
 
 #pragma mark Helper methods
 
-- (void)registerParagraphItemToCurrentParagraph:(GBParagraphItem *)item {
-	// Registers the given paragraph item to current paragraph. If there is no current paragraph, new one is created.
-	if ([self.paragraphsStack isEmpty]) [self.paragraphsStack push:[GBCommentParagraph paragraph]];
-	[[self.paragraphsStack peek] registerItem:item];
+- (GBCommentParagraph *)pushParagraphIfStackIsEmpty {
+	// Convenience method for creating and pushing paragraph only if paragraphs stack is currently empty. In such case new paragraph is pushed to stack and returned. Otherwise last paragraph on the stack is returned. This is useful for block handling methods.
+	if ([self.paragraphsStack isEmpty]) return [self pushParagraph];
+	return [self peekParagraph];
+}
+
+- (GBCommentParagraph *)pushParagraph {
+	// Convenience method for creating and pushing paragraph. This is probably going to be used most of the time.
+	GBCommentParagraph *result = [GBCommentParagraph paragraph];
+	[self.paragraphsStack push:result];
+	return result;
+}
+
+- (GBCommentParagraph *)peekParagraph {
+	return [self.paragraphsStack peek];
+}
+
+- (GBCommentParagraph *)popParagraph {
+	// Pops last paragraph from the stack and returns it. If the stack becomes empty, the paragraph is registered to current comment. This simplifies and automates paragraphs registration.
+	GBCommentParagraph *result = [self.paragraphsStack pop];
+	if ([self.paragraphsStack isEmpty]) [self.currentComment registerParagraph:result];
+	return result;
+}
+
+- (void)popAllParagraphs {
+	while (![self.paragraphsStack isEmpty]) {
+		[self popParagraph];
+	}
 }
 
 #pragma mark Properties
