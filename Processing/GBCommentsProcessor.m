@@ -17,6 +17,7 @@
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range;
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range;
 
+- (BOOL)registerWarningBlockFromlines:(NSArray *)lines;
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
@@ -121,12 +122,34 @@
 	NSArray *block = [lines subarrayWithRange:range];
 	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
 	if ([self registerBugBlockFromLines:block]) return;
-	NSString *s = [NSString stringByCombiningLines:block delimitWith:@"\n"];
-	[self.paragraphsStack push:[GBCommentParagraph paragraph]];
-	[self registerTextItemsFromStringToCurrentParagraph:s];
+	if ([self registerWarningBlockFromlines:block]) return;
 }
 
 #pragma mark Comment blocks processing
+
+- (BOOL)registerWarningBlockFromlines:(NSArray *)lines {
+	// Warning block is a GBParagraphSpecialItem containing one or more GBParagraph items.
+	if (![[lines firstObject] isMatchedByRegex:self.components.bugSectionRegex]) return NO;
+	
+	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @warning.
+	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
+	NSString *description = [string stringByMatching:self.components.bugSectionRegex capture:1];
+	if ([description length] == 0) {
+ 		GBLogWarn(@"Empty @warning block found in %@!", self.sourceFileInfo);
+		return YES;
+	}
+	
+	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
+	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:description];
+	[self.paragraphsStack push:[GBCommentParagraph paragraph]];	
+	[self registerTextItemsFromStringToCurrentParagraph:string];
+	[item registerParagraph:[self.paragraphsStack peek]];
+	[self.paragraphsStack pop];
+	
+	// Register block item to current paragraph; create new one if necessary.
+	[self registerParagraphItemToCurrentParagraph:item];
+	return YES;
+}
 
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines {
 	// Bug block is a GBParagraphSpecialItem containing one or more GBParagraph items.
