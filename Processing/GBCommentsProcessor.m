@@ -22,6 +22,7 @@
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
+- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range;
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
 
 - (void)registerParagraphItemToCurrentParagraph:(GBParagraphItem *)item;
@@ -242,6 +243,9 @@
 		if ((linkItem = [self remoteMemberLinkItemFromString:string range:&range])) {
 			registerTextItemFromString(text);
 			registerLinkItem(linkItem, @"remote member");
+		} else if ((linkItem = [self localMemberLinkFromString:string range:&range]) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"local member");
 		} else if ((linkItem = [self urlLinkItemFromString:string range:&range])) {
 			registerTextItemFromString(text);
 			registerLinkItem(linkItem, @"url");
@@ -264,14 +268,14 @@
 #pragma mark Cross references detection
 
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range {
-	// Searches for first remote member cross ref (in the form of [Object member]) in the given range of the given string. If found and validated, GBParagraphLinkItem is prepared and returned. NOTE: This message is intended to be sent from registerTextAndLinkItemsFromString:toObject: and should not be used otherwise! IMPORTANT: Only the start of the given string is checked for link, must not be prefixed with any whitespace and similar! NOTE: that range argument is used for returning match range on output.
+	// Matches the beginning of the string for remote member cross reference (in the format [Object member]). If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
 	NSParameterAssert(range != NULL);
 	
 	// If the string starts with remote link
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.remoteMemberCrossReferenceRegex];
 	if ([components count] == 0) return nil;
 	
-	// Get link components.
+	// Get link components. Index 0 contains full text, including optional <>, index 1 object name, index 2 member name.
 	NSString *linkText = [components objectAtIndex:0];
 	NSString *objectName = [components objectAtIndex:1];
 	NSString *memberName = [components objectAtIndex:2];
@@ -296,19 +300,57 @@
 		return nil;
 	}
 	
-	// Right, we have valid reference to known remote member, create the link, prepare range and return.
+	// Right, we have valid reference to known remote member, create the link item, prepare range and return.
 	NSString *stringValue = [linkText stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
-	GBParagraphLinkItem *item = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
-	item.href = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
-	item.context = referencedObject;
-	item.member = referencedMember;
-	item.isLocal = NO;
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
+	result.href = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
+	result.context = referencedObject;
+	result.member = referencedMember;
+	result.isLocal = NO;
 	*range = [string rangeOfString:linkText];
-	return item;
+	return result;
+}
+
+- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range {
+	// Matches the beginning of the string for local member cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers. NOTE: Note that we can skip local member cross ref testing if no context (i.e. class, category or protocol) is given!
+	NSParameterAssert(range != NULL);
+	if (!self.currentContext) return nil;
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.localMemberCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the member selector.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *selector = [components objectAtIndex:1];
+	
+	// Validate the selector against the context. If context doesn't implement the method, exit.
+	GBMethodData *referencedMethod = [[[self currentContext] methods] methodBySelector:selector];
+	if (!referencedMethod) return nil;
+	
+	// Ok, we have valid method, return the link item.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
+	item.href = [self.settings htmlReferenceForObject:referencedMethod fromSource:hrefSourceObject];
+	result.context = self.currentContext;
+	result.member = referencedMethod;
+	result.isLocal = YES;
+	*range = [string rangeOfString:[selectors objectAtIndex:0]];
+	return result;
 }
 
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range {
-	return nil;
+	// Matches the beginning of the string for URL cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
+	NSParameterAssert(range != NULL);
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.urlCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the URL address.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *address = [components objectAtIndex:1];
+	
+	// Create link item, prepare range and return.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:address];
+	result.href = address;
+	*range = [string rangeOfString:linkText];
+	return result;
 }
 
 #pragma mark Helper methods
