@@ -23,6 +23,9 @@
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
 - (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range;
+- (id)classLinkFromString:(NSString *)string range:(NSRange *)range;
+- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range;
+- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range;
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
 
 - (void)registerParagraphItemToCurrentParagraph:(GBParagraphItem *)item;
@@ -239,11 +242,20 @@
 	NSRange range = NSMakeRange(0, 0);
 	GBParagraphLinkItem *linkItem;
 	while ([string length] > 0) {
-		// If the string starts with any recognized cross reference, add the link item.
-		if ((linkItem = [self remoteMemberLinkItemFromString:string range:&range])) {
+		// If the string starts with any recognized cross reference, add the link item. Note that the order of testing is somewhat important (for example we should test for category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
+		if ((linkItem = [self categoryLinkFromString:string range:&range])) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"category");
+		} else if ((linkItem = [self classLinkFromString:string range:&range])) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"class");
+		} else if ((linkItem = [self protocolLinkFromString:string range:&range])) {
+			registerTextItemFromString(text);
+			registerLinkItem(linkItem, @"protocol");
+		} else if ((linkItem = [self remoteMemberLinkItemFromString:string range:&range])) {
 			registerTextItemFromString(text);
 			registerLinkItem(linkItem, @"remote member");
-		} else if ((linkItem = [self localMemberLinkFromString:string range:&range]) {
+		} else if ((linkItem = [self localMemberLinkFromString:string range:&range])) {
 			registerTextItemFromString(text);
 			registerLinkItem(linkItem, @"local member");
 		} else if ((linkItem = [self urlLinkItemFromString:string range:&range])) {
@@ -328,11 +340,80 @@
 	
 	// Ok, we have valid method, return the link item.
 	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
-	item.href = [self.settings htmlReferenceForObject:referencedMethod fromSource:hrefSourceObject];
+	result.href = [self.settings htmlReferenceForObject:referencedMethod fromSource:self.currentContext];
 	result.context = self.currentContext;
 	result.member = referencedMethod;
 	result.isLocal = YES;
-	*range = [string rangeOfString:[selectors objectAtIndex:0]];
+	*range = [string rangeOfString:linkText];
+	return result;
+}
+
+- (id)classLinkFromString:(NSString *)string range:(NSRange *)range {
+	// Matches the beginning of the string for class cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
+	NSParameterAssert(range != NULL);
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.objectCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Validate the selector against the context. If context doesn't implement the method, exit.
+	GBClassData *referencedObject = [self.store classWithName:objectName];
+	if (!referencedObject) return nil;
+	
+	// Ok, we have valid method, return the link item.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
+	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.context = referencedObject;
+	result.isLocal = (referencedObject == self.currentContext);
+	*range = [string rangeOfString:linkText];
+	return result;
+}
+
+- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range {
+	// Matches the beginning of the string for category cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
+	NSParameterAssert(range != NULL);
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.objectCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Validate the selector against the context. If context doesn't implement the method, exit.
+	GBCategoryData *referencedObject = [self.store categoryWithName:objectName];
+	if (!referencedObject) return nil;
+	
+	// Ok, we have valid method, return the link item.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
+	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.context = referencedObject;
+	result.isLocal = (referencedObject == self.currentContext);
+	*range = [string rangeOfString:linkText];
+	return result;
+}
+
+- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range {
+	// Matches the beginning of the string for protocol cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
+	NSParameterAssert(range != NULL);
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.objectCrossReferenceRegex];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Validate the selector against the context. If context doesn't implement the method, exit.
+	GBProtocolData *referencedObject = [self.store protocolWithName:objectName];
+	if (!referencedObject) return nil;
+	
+	// Ok, we have valid method, return the link item.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
+	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.context = referencedObject;
+	result.isLocal = (referencedObject == self.currentContext);
+	*range = [string rangeOfString:linkText];
 	return result;
 }
 
