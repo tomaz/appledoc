@@ -21,11 +21,13 @@
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
 - (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
 - (BOOL)registerListBlockFromLines:(NSArray *)lines;
+- (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines;
 - (void)registerTextBlockFromLines:(NSArray *)lines;
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 
+- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description;
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
 - (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range;
 - (id)classLinkFromString:(NSString *)string range:(NSRange *)range;
@@ -136,6 +138,7 @@
 	if ([self registerBugBlockFromLines:block]) return;
 	if ([self registerWarningBlockFromlines:block]) return;
 	if ([self registerListBlockFromLines:block]) return;
+	if ([self registerDirectivesBlockFromLines:block]) return;
 	
 	// If nothing else is matched, the block is standard text. For that we need to start a new paragraph and process the text. Note that we first need to close all open paragraphs - even if the paragraph was started by a known paragraph item block, new text block always starts a new paragraph at this point. But we must keep the new paragraph open in case next block defines an item.
 	[self popAllParagraphs];
@@ -256,7 +259,7 @@
 			if ([components count] == 0) {
 				NSMutableDictionary *previousItem = [items lastObject];
 				NSString *text = [previousItem objectForKey:@"text"];				
-				[previousItem setObject:[text stringByAppendingString:line] forKey:@"text"];
+				[previousItem setObject:[text stringByAppendingFormat:@"\n%@", line] forKey:@"text"];
 				return;
 			}
 		}
@@ -317,6 +320,108 @@
 	
 	// At the end we need to unwind paragraphs stack until we clear all added paragraphs.
 	while ([self.paragraphsStack count] > paragraphsStackSize) [self popParagraph];
+	return YES;
+}
+
+- (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines {
+	// Registers a block containing directives (@param, @return etc.).
+#define isMatchingDirectiveStatement(theText) \
+	([theText isMatchedByRegex:parameterRegex] || [theText isMatchedByRegex:exceptionRegex] || [theText isMatchedByRegex:returnRegex] || [theText isMatchedByRegex:crossRefRegex])
+	
+	// If the first line doesn't contain directive, exit.
+	NSString *parameterRegex = self.components.parameterDescriptionRegex;
+	NSString *exceptionRegex = self.components.exceptionDescriptionRegex;
+	NSString *returnRegex = self.components.returnDescriptionRegex;
+	NSString *crossRefRegex = self.components.crossReferenceRegex;
+	if (!isMatchingDirectiveStatement([lines firstObject])) return NO;
+	
+	// In the first pass, convert the array of lines into an array of pre-processed directive items. Note that we use simplified grouping - if a line matches any directive, we start new directive, otherwise we append text to previous one. The result is an array containing dictionaries with text and line number.
+	__block BOOL matched = YES;
+	NSMutableArray *directives = [NSMutableArray arrayWithCapacity:[lines count]];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		if (isMatchingDirectiveStatement(line)) {
+			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+			[data setObject:line forKey:@"text"];
+			[data setObject:[NSNumber numberWithInt:self.currentStartLine + idx] forKey:@"line"];
+			[directives addObject:data];
+		} else if (idx > 0) {
+			NSMutableDictionary *data = [directives lastObject];
+			NSString *text = [[data objectForKey:@"text"] stringByAppendingFormat:@"\n%@", line];
+			[data setObject:text forKey:@"text"];
+		} else {
+			matched = NO;
+			*stop = YES;
+		}
+	}];
+
+	// Exit if we didn't match any directive, log directive block otherwise.
+	if (!matched) return NO;
+	GBLogDebug(@"  - Found directives block at %@.", self.sourceFileInfo);
+	
+	// Process all directives.
+	[directives enumerateObjectsUsingBlock:^(NSDictionary *data, NSUInteger idx, BOOL *stop) {
+		NSArray *components = nil;
+		NSString *directive = [data objectForKey:@"text"];
+		NSString *sourceInfo = [NSString stringWithFormat:@"%@%%@", self.currentComment.sourceInfo.filename, [data objectForKey:@"line"]];
+		
+		// Match @param.
+		components = [directive captureComponentsMatchedByRegex:parameterRegex];
+		if ([components count] > 0) {
+			NSString *name = [components objectAtIndex:1];
+			NSString *text = [components objectAtIndex:2];
+			GBLogDebug(@"    - Found parameter %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
+			GBCommentParagraph *paragraph = [self pushParagraph];
+			[self registerTextItemsFromStringToCurrentParagraph:text];
+			[self popParagraph];
+			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
+			[self.currentComment registerParameter:argument];
+			return;
+		}
+		
+		// Match @exception.
+		components = [directive captureComponentsMatchedByRegex:exceptionRegex];
+		if ([components count] > 0) {
+			NSString *name = [components objectAtIndex:1];
+			NSString *text = [components objectAtIndex:2];
+			GBLogDebug(@"    - Found exception %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
+			GBCommentParagraph *paragraph = [self pushParagraph];
+			[self registerTextItemsFromStringToCurrentParagraph:text];
+			[self popParagraph];
+			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
+			[self.currentComment registerException:argument];
+			return;
+		}
+		
+		// Match @return.
+		components = [directive captureComponentsMatchedByRegex:returnRegex];
+		if ([components count] > 0) {
+			NSString *text = [components objectAtIndex:1];
+			GBLogDebug(@"    - Matched result directive with description '%@' at %@...", [text normalizedDescription], sourceInfo);
+			GBCommentParagraph *paragraph = [self pushParagraph];
+			[self registerTextItemsFromStringToCurrentParagraph:text];
+			[self popParagraph];
+			[self.currentComment registerResult:paragraph];
+			return;
+		}
+		
+		// Match @see.
+		components = [directive captureComponentsMatchedByRegex:crossRefRegex];
+		if ([components count] > 0) {
+			NSString *text = [components objectAtIndex:1];
+			GBParagraphLinkItem *item = [self linkItemFromString:text range:nil description:nil];
+			if (item) {
+				GBLogDebug(@"    - Matched cross ref directive %@ at %@...", text, sourceInfo);
+				[self.currentComment registerCrossReference:item];
+			} else if (self.settings.warnOnInvalidCrossReference) {
+				GBLogWarn(@"Invalid cross ref %@ found at %@!", text, sourceInfo);
+			}
+			return;
+		}
+		
+		// If the line doesn't contain known directive, warn the user.
+		GBLogWarn(@"Found unknown directive '%@' at %@!", directive, sourceInfo);
+	}];
+
 	return YES;
 }
 
@@ -404,7 +509,7 @@
 		[theString setString:@""]; \
 	}
 #define registerLinkItem(theItem, theType) { \
-	GBLogDebug(@"    - Found %@ %@. cross ref..", theType, theItem.stringValue); \
+	GBLogDebug(@"    - Found %@ %@ cross ref..", theType, theItem.stringValue); \
 	[object registerItem:theItem]; \
 }
 #define skipTextFromString(theString) { \
@@ -416,34 +521,17 @@
 	// Progressively chip away the string and test if it starts with any known cross reference. If so, register link item, otherwise consider the text as normal text item, so skip to the next word.
 	NSMutableString *text = [NSMutableString stringWithCapacity:[string length]];
 	NSRange range = NSMakeRange(0, 0);
-	GBParagraphLinkItem *linkItem;
 	while ([string length] > 0) {
-		// If the string starts with any recognized cross reference, add the link item. Note that the order of testing is somewhat important (for example we should test for category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
-		if ((linkItem = [self categoryLinkFromString:string range:&range])) {
+		// If the string starts with any recognized cross reference, add the link item and skip it's text, otherwise mark the word until next whitespace as text item.
+		NSString *description = nil;
+		GBParagraphLinkItem *linkItem = [self linkItemFromString:string range:&range description:&description];
+		if (linkItem) {
 			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"category");
-		} else if ((linkItem = [self classLinkFromString:string range:&range])) {
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"class");
-		} else if ((linkItem = [self protocolLinkFromString:string range:&range])) {
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"protocol");
-		} else if ((linkItem = [self remoteMemberLinkItemFromString:string range:&range])) {
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"remote member");
-		} else if ((linkItem = [self localMemberLinkFromString:string range:&range])) {
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"local member");
-		} else if ((linkItem = [self urlLinkItemFromString:string range:&range])) {
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, @"url");
-		}
-		
-		// If we found a cross reference, skip it's text, otherwise mark the word until next whitespace as text item.
-		if (linkItem)
+			registerLinkItem(linkItem, description);
 			string = [string substringFromIndex:range.location + range.length];
-		else
+		} else {
 			skipTextFromString([string stringByMatching:@"^\\S+"]);
+		}
 		
 		// Skip any leading whitespace until the next word and mark it as text item.
 		skipTextFromString([string stringByMatching:@"^\\s+"]);
@@ -454,6 +542,27 @@
 }
 
 #pragma mark Cross references detection
+
+- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description {
+	// Matches any cross reference at the start of the given string and creates GBParagraphLinkItem, match range and description suitable for logging if found. If the string doesn't represent any known cross reference, nil is returned and the other parameters are left untouched. Note that the order of testing is somewhat important (for example we should test for category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
+	GBParagraphLinkItem *result = nil;
+	NSString *desc = nil;
+	if ((result = [self categoryLinkFromString:string range:range])) {
+		desc = @"category";
+	} else if ((result = [self classLinkFromString:string range:range])) {
+		desc = @"class";
+	} else if ((result = [self protocolLinkFromString:string range:range])) {
+		desc = @"protocol";
+	} else if ((result = [self remoteMemberLinkItemFromString:string range:range])) {
+		desc = @"remote member";
+	} else if ((result = [self localMemberLinkFromString:string range:range])) {
+		desc = @"local member";
+	} else if ((result = [self urlLinkItemFromString:string range:range])) {
+		desc = @"url";
+	}
+	if (result && description) *description = desc;
+	return result;
+}
 
 - (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range {
 	// Matches the beginning of the string for remote member cross reference (in the format [Object member]). If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
