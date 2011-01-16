@@ -20,6 +20,7 @@
 - (BOOL)registerWarningBlockFromlines:(NSArray *)lines;
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
 - (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
+- (BOOL)registerListBlockFromLines:(NSArray *)lines;
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
@@ -131,6 +132,7 @@
 	if ([self registerExampleBlockFromLines:block]) return;
 	if ([self registerBugBlockFromLines:block]) return;
 	if ([self registerWarningBlockFromlines:block]) return;
+	if ([self registerListBlockFromLines:block]) return;
 }
 
 #pragma mark Comment blocks processing
@@ -146,6 +148,7 @@
  		GBLogWarn(@"Empty @warning block found in %@!", self.sourceFileInfo);
 		return YES;
 	}
+	GBLogDebug(@"  - Found warning block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
 	
 	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
 	[self pushParagraphIfStackIsEmpty];
@@ -163,7 +166,7 @@
 }
 
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines {
-	// Bug block is a GBParagraphSpecialItem containing one or more GBParagraph items.
+	// Bug block is a GBParagraphSpecialItem containing one or more GBCommentParagraph items.
 	if (![[lines firstObject] isMatchedByRegex:self.components.bugSectionRegex]) return NO;
 	
 	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @bug.
@@ -173,6 +176,7 @@
  		GBLogWarn(@"Empty @bug block found in %@!", self.sourceFileInfo);
 		return YES;
 	}
+	GBLogDebug(@"  - Found bug block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
 	
 	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
 	[self pushParagraphIfStackIsEmpty];
@@ -190,7 +194,7 @@
 }
 
 - (BOOL)registerExampleBlockFromLines:(NSArray *)lines {
-	// Example block is a GBParagraphSpecialItem containing one or more GBParagraph items. The block is only considered as example if each line is prefixed with a single tab or 4 spaces. That leading whitespace is removed from each line in registered data. Note that we allow having mixed lines where one starts with tab and another with spaces!
+	// Example block is a GBParagraphSpecialItem containing one or more GBCommentParagraph items. The block is only considered as example if each line is prefixed with a single tab or 4 spaces. That leading whitespace is removed from each line in registered data. Note that we allow having mixed lines where one starts with tab and another with spaces!
 	
 	// Validate all lines match required prefix. Note that we first used dictionaryByMatchingRegex:withKeysAndCaptures: but it ended with EXC_BAD_ACCESS and I couldn't figure it out, so reverted to captureComponentsMatchedByRegex:
 	NSString *regex = self.components.exampleSectionRegex;
@@ -201,16 +205,17 @@
 		[linesOfCaptures addObject:match];
 	}
 	
-	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
-	[self pushParagraphIfStackIsEmpty];
-	
 	// So all lines are indeed prefixed with required example whitespace, let's create the item. First prepare string value containing only text without prefix. Note that capture index 0 contains full text, index 1 just the prefix and index 2 just the text.
 	NSMutableString *stringValue = [NSMutableString string];
 	[linesOfCaptures enumerateObjectsUsingBlock:^(NSArray *captures, NSUInteger idx, BOOL *stop) {
 		if ([stringValue length] > 0) [stringValue appendString:@"\n"];
 		NSString *lineText = [captures objectAtIndex:2];
 		[stringValue appendString:lineText];
-	}];
+	}];	
+	GBLogDebug(@"  - Found example block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
+	
+	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
+	[self pushParagraphIfStackIsEmpty];
 	
     // Prepare paragraph item. Note that we don't use paragraphs stack as currently we don't process the text for cross refs!
     GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:stringValue];
@@ -220,6 +225,91 @@
 	
     // Register example block to current paragraph.
     [[self peekParagraph] registerItem:item];
+	return YES;
+}
+
+- (BOOL)registerListBlockFromLines:(NSArray *)lines {
+	// List block contains a hierarhcy of lists, each represented as a GBParagraphListItem, with it's items as GBCommentParagraph. The method handles both, ordered and unordered lists in any depth and any combination. NOTE: list items can be prefixed by tabs or spaces or combination of both, however it's recommended to use single case as depth is calculated simply by testing prefix string length (so single tab is considered same depth as single space).
+	
+	// If first line doesn't start a list, we should exit.
+	NSString *unorderedRegex = self.components.unorderedListRegex;
+	NSString *orderedRegex = self.components.orderedListRegex;
+	if (![[lines firstObject] isMatchedByRegex:unorderedRegex] && ![[lines firstObject] isMatchedByRegex:orderedRegex]) return NO;
+	GBLogDebug(@"  - Found list block at %@.", self.sourceFileInfo);
+	
+	// In the first pass, convert the array of lines into an array of pre-processed items. Each item is a dictionary containing type of item, indent and full description. The main reason for this step is to combine multiple line item texts into a single string.
+	NSMutableArray *items = [NSMutableArray arrayWithCapacity:[lines count]];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		// If the line doesn't contain list item, treat it as successive line of text that should be appended to previous item. Note that we don't have to test if we have previous item as we already verified the first line contains one above!
+		BOOL ordered = NO;
+		NSArray *components = [line captureComponentsMatchedByRegex:unorderedRegex];
+		if ([components count] == 0) {
+			ordered = YES;
+			components = [line captureComponentsMatchedByRegex:orderedRegex];
+			if ([components count] == 0) {
+				NSMutableDictionary *previousItem = [items lastObject];
+				NSString *text = [previousItem objectForKey:@"text"];				
+				[previousItem setObject:[text stringByAppendingString:line] forKey:@"text"];
+				return;
+			}
+		}
+		
+		// Create new list item.
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
+		[data setObject:[NSNumber numberWithBool:ordered] forKey:@"ordered"];
+		[data setObject:[components objectAtIndex:1] forKey:@"indent"];
+		[data setObject:[components objectAtIndex:2] forKey:@"text"];
+		[items addObject:data];
+	}];
+	
+	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
+	[self pushParagraphIfStackIsEmpty];
+	NSUInteger paragraphsStackSize = [self.paragraphsStack count];
+	
+	// Now process all items and register all data. Note that each list is described by GBParagraphListItem while it's individual items are represented by GBCommentParagraph objects, where each item can additionally contain sublists, again in the form of GBParagraphListItem (this might be confusing due to usage of words "list item" in the class, but the "item" refers to "paragraph item", not to the list). Here's a graph to make it more obvious:
+	// - GBParagraphListItem (root list, one object created for each list found)
+	//		- GBCommentParagraph (item1's description)
+	//		- GBCommentParagraph (item2's description)
+	//			- GBParagraphListItem (item2's sublist)
+	//				- GBCommentParagraph (item2.1's description)
+	NSMutableArray *listsStack = [NSMutableArray arrayWithCapacity:[items count]];
+	NSMutableArray *indentsStack = [NSMutableArray arrayWithCapacity:[items count]];
+	[items enumerateObjectsUsingBlock:^(NSDictionary *itemData, NSUInteger idx, BOOL *stop) {
+		// Get item components.
+		BOOL ordered = [[itemData objectForKey:@"ordered"] boolValue];
+		NSString *indent = [itemData objectForKey:@"indent"];
+		NSString *text = [itemData objectForKey:@"text"];
+		
+		if ([listsStack count] == 0 || [indent length] > [[indentsStack peek] length]) {
+			// If lists stack is empty, create root list that will hold all items and push original indent. If we found greater indent, we need to start sublist.
+			GBLogDebug(@"    - Starting list at level %lu...", [indentsStack count] + 1);
+			GBParagraphListItem *item = ordered ? [GBParagraphListItem orderedParagraphListItem] : [GBParagraphListItem unorderedParagraphListItem];
+			[[self peekParagraph] registerItem:item];
+			[listsStack push:item];
+			[indentsStack push:indent];
+		} else if ([indent length] < [[indentsStack peek] length]) {
+			// If indent level is smaller, end sublist and pop current indents until we find a match. Note that we also need to close current paragraph belonging to previous item at the same level!
+			while ([indentsStack count] > 0 && [indent length] < [[indentsStack lastObject] length]) {
+				GBLogDebug(@"    - Ending list at level %lu...", [indentsStack count]);
+				[self popParagraph];
+				[listsStack pop];
+				[indentsStack pop];
+			}
+			[self popParagraph];
+		} else {
+			// If indent matches current one, we're adding new item to current list, but we need to close previous item's paragraph!
+			[self popParagraph];
+		}
+		
+		// Create GBCommentParagraph representing item's text and process the text. We'll end the paragraph representing item's text and sublists when we find another item at the same level or find items at lower levels...
+		GBLogDebug(@"      - Creating list item '%@' at level %lu...", [text normalizedDescription], [indentsStack count]);
+		GBParagraphListItem *list = [listsStack peek];
+		[list registerItem:[self pushParagraph]];
+		[self registerTextItemsFromStringToCurrentParagraph:text];
+	}];
+	
+	// At the end we need to unwind paragraphs stack until we clear all added paragraphs.
+	while ([self.paragraphsStack count] > paragraphsStackSize) [self popParagraph];
 	return YES;
 }
 
