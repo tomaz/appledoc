@@ -21,6 +21,7 @@
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines;
 - (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
 - (BOOL)registerListBlockFromLines:(NSArray *)lines;
+- (void)registerTextBlockFromLines:(NSArray *)lines;
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
@@ -129,10 +130,16 @@
 	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
 	NSArray *block = [lines subarrayWithRange:range];
 	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
+	
+	// If the block defines one of the known paragraph items, register it and return. Note that paragraph items are simply added to previous paragraph, however if no paragraph exists yet, this will automatically create one.
 	if ([self registerExampleBlockFromLines:block]) return;
 	if ([self registerBugBlockFromLines:block]) return;
 	if ([self registerWarningBlockFromlines:block]) return;
 	if ([self registerListBlockFromLines:block]) return;
+	
+	// If nothing else is matched, the block is standard text. For that we need to start a new paragraph and process the text. Note that we first need to close all open paragraphs - even if the paragraph was started by a known paragraph item block, new text block always starts a new paragraph at this point. But we must keep the new paragraph open in case next block defines an item.
+	[self popAllParagraphs];
+	[self registerTextBlockFromLines:block];
 }
 
 #pragma mark Comment blocks processing
@@ -311,6 +318,14 @@
 	// At the end we need to unwind paragraphs stack until we clear all added paragraphs.
 	while ([self.paragraphsStack count] > paragraphsStackSize) [self popParagraph];
 	return YES;
+}
+
+- (void)registerTextBlockFromLines:(NSArray *)lines {
+	// Registers standard text from the given block of lines. This always starts a new paragraph. Note that this method is just convenience method for registerTextItemsFromStringToCurrentParagraph:. Also note that we keep paragraph open as we may need to append one of the paragraph item blocks later on.
+	NSString *stringValue = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
+	GBLogDebug(@"  - Found text block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
+	[self pushParagraph];
+	[self registerTextItemsFromStringToCurrentParagraph:stringValue];
 }
 
 #pragma mark Comment text processing
