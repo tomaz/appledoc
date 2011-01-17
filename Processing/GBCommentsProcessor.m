@@ -149,11 +149,12 @@
 
 - (BOOL)registerWarningBlockFromlines:(NSArray *)lines {
 	// Warning block is a GBParagraphSpecialItem containing one or more GBParagraph items.
-	if (![[lines firstObject] isMatchedByRegex:self.components.bugSectionRegex]) return NO;
+	NSString *regex = self.components.warningSectionRegex;
+	if (![[lines firstObject] isMatchedByRegex:regex]) return NO;
 	
 	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @warning.
 	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
-	NSString *description = [string stringByMatching:self.components.bugSectionRegex capture:1];
+	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
  		GBLogWarn(@"Empty @warning block found in %@!", self.sourceFileInfo);
 		return YES;
@@ -177,11 +178,12 @@
 
 - (BOOL)registerBugBlockFromLines:(NSArray *)lines {
 	// Bug block is a GBParagraphSpecialItem containing one or more GBCommentParagraph items.
-	if (![[lines firstObject] isMatchedByRegex:self.components.bugSectionRegex]) return NO;
+	NSString *regex = self.components.bugSectionRegex;
+	if (![[lines firstObject] isMatchedByRegex:regex]) return NO;
 	
 	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @bug.
 	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
-	NSString *description = [string stringByMatching:self.components.bugSectionRegex capture:1];
+	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
  		GBLogWarn(@"Empty @bug block found in %@!", self.sourceFileInfo);
 		return YES;
