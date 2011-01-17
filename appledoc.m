@@ -6,9 +6,11 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import <objc/objc-auto.h>
 #import "DDCommandLineInterface.h"
 #import "GBAppledocApplication.h"
 
 int main(int argc, const char *argv[]) {
+	objc_startCollectorThread();
 	return DDCliAppRunWithClass([GBAppledocApplication class]);
 }

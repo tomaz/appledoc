@@ -189,6 +189,38 @@
 	assertThatInteger(class.comment.sourceInfo.lineNumber, equalToInteger(5));
 }
 
+- (void)testParseObjectsFromString_shouldRegisterClassDefinitionCommentForComplexDeclarations {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:
+	 @"/** Comment */\n"
+	 @"#ifdef SOMETHING\n"
+	 @"@interface MyClass : SuperClass\n"
+	 @"#else\n"
+	 @"@interface MyClass\n"
+	 @"#endif\n"
+	 @"@end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	assertThat(class.nameOfClass, is(@"MyClass"));
+	assertThat(class.nameOfSuperclass, is(@"SuperClass"));
+	assertThat(class.comment.stringValue, is(@"Comment"));
+}
+
+- (void)testParseObjectsFromString_shouldProperlyResetComments { 
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"/** Comment */ @interface MyClass -(void)method; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	GBMethodData *method = [class.methods.methods lastObject];
+	assertThat(method.comment, is(nil));
+}
+
 #pragma mark Class definition components parsing testing
 
 - (void)testParseObjectsFromString_shouldRegisterAdoptedProtocols {

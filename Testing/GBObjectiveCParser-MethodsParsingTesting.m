@@ -463,6 +463,19 @@
 	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
+- (void)testParseObjectsFromString_shouldProperlyResetComments {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ -(id)method1; +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([(GBModelBase *)[methods objectAtIndex:1] comment], is(nil));
+}
+
 - (void)testParseObjectsFromString_shouldRegisterMethodDeclarationComment {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
@@ -526,6 +539,29 @@
 	GBMethodData *method = [[[class methods] methods] objectAtIndex:0];
 	assertThat(method.comment.sourceInfo.filename, is(@"filename.h"));
 	assertThatInteger(method.comment.sourceInfo.lineNumber, equalToInteger(6));
+}
+
+#pragma mark Various cases
+
+- (void)testParseObjectsFromString_shouldSkipAnythingNotMethod {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:
+	 @"@interface MyClass\n"
+	 @"#pragma mark -\n"
+	 @"#pragma mark Something\n"
+	 @"/** comment */\n"
+	 @"-(void)method;\n"
+	 @"@end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	GBMethodData *method = [methods objectAtIndex:0];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:method matchesInstanceComponents:@"void", @"method", nil];	
+	assertThat(method.comment.stringValue, is(@"comment"));
 }
 
 @end

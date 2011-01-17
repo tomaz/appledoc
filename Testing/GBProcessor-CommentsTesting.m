@@ -6,6 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBStore.h"
 #import "GBProcessor.h"
@@ -13,6 +14,7 @@
 @interface GBProcessorCommentsTesting : GHTestCase
 
 - (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members;
+- (OCMockObject *)mockSettingsProviderRepeatFirst:(BOOL)repeat;
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph;
 
 @end
@@ -179,11 +181,82 @@
 	assertThat(method.comment, is(nil));
 }
 
+#pragma mark Description paragraphs processing
+
+- (void)testProcessObjectsFromStore_descriptionParagraphs_repeat_shouldUseAllParagraphsIfMultipleParagraphsFound {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderRepeatFirst:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Par1\n\nPar2"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatInteger([comment.descriptionParagraphs count], equalToInteger(2));
+	assertThat([[comment.descriptionParagraphs objectAtIndex:0] stringValue], is(@"Par1"));
+	assertThat([[comment.descriptionParagraphs objectAtIndex:1] stringValue], is(@"Par2"));
+}
+
+- (void)testProcessObjectsFromStore_descriptionParagraphs_repeat_shouldUseNoParagraphIfOnlyOneParagraphIsFound {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderRepeatFirst:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Par1"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(comment.descriptionParagraphs, is(nil));
+}
+
+- (void)testProcessObjectsFromStore_descriptionParagraphs_noRepeat_shouldIgnoreFirstParIfMultipleParagraphsFound {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderRepeatFirst:NO]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Par1\n\nPar2"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatInteger([comment.descriptionParagraphs count], equalToInteger(1));
+	assertThat([[comment.descriptionParagraphs objectAtIndex:0] stringValue], is(@"Par2"));
+}
+
+- (void)testProcessObjectsFromStore_descriptionParagraphs_noRepeat_shouldUseNoParagraphIfOnlyOneParagraphIsFound {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderRepeatFirst:NO]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Par1"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(comment.descriptionParagraphs, is(nil));
+}
+
 #pragma mark Creation methods
 
 - (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members {
 	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
 	[GBTestObjectsRegistry settingsProvider:result keepObjects:objects keepMembers:members];
+	return result;
+}
+
+- (OCMockObject *)mockSettingsProviderRepeatFirst:(BOOL)repeat {
+	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
+	[[[result stub] andReturnValue:[NSNumber numberWithBool:repeat]] repeatFirstParagraphForMemberDescription];
 	return result;
 }
 

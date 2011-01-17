@@ -158,18 +158,8 @@
 #pragma mark Helper methods
 
 - (NSString *)stringByCleaningHtml:(NSString *)string {
-	NSString *result = [string stringByReplacingOccurrencesOfString:@"  " withString:@" "];
-	result = [result stringByReplacingOccurrencesOfString:@"<code> " withString:@"<code>"];
-	result = [result stringByReplacingOccurrencesOfString:@" </code>" withString:@"</code>"];
-	result = [result stringByReplacingOccurrencesOfString:@"<pre> " withString:@"<pre>"];
-	result = [result stringByReplacingOccurrencesOfString:@" </pre>" withString:@"</pre>"];
-	while (YES) {
-		NSString *source = [result stringByMatching:@"</code> [],.!?:;'\")}>]"];
-		if (!source) break;
-		NSString *replacement = [source stringByReplacingOccurrencesOfString:@" " withString:@""];
-		result = [result stringByReplacingOccurrencesOfString:source withString:replacement];
-	}
-	return result;
+	// Nothing to do at this point - as we're preserving all whitespace, we should be just fine with generated string. The method is still left as a placeholder for possible future handling.
+	return string;
 }
 
 - (NSString *)htmlOutputPathForIndex {

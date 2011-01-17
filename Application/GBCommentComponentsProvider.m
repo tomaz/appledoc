@@ -19,10 +19,8 @@
 @interface GBCommentComponentsProvider ()
 
 - (NSString *)argumentsCommonRegex;
-- (NSString *)exampleRegexWithoutFlags;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
-- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex;
 
 @end
 
@@ -39,19 +37,11 @@
 #pragma mark Lists detection
 
 - (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@(.*))", self.orderedListMatchRegex]));
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+(?s:(.*))");
 }
 
 - (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@(.*))", self.unorderedListMatchRegex]));
-}
-
-- (NSString *)orderedListMatchRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+");
-}
-
-- (NSString *)unorderedListMatchRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+");
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+(?s:(.*))");
 }
 
 #pragma mark Sections detection
@@ -65,15 +55,7 @@
 }
 
 - (NSString *)exampleSectionRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?s:%@)", [self exampleRegexWithoutFlags]]));
-}
-
-- (NSString *)exampleLinesRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:%@)", [self exampleRegexWithoutFlags]]));
-}
-
-- (NSString *)exampleRegexWithoutFlags {
-	GBRETURN_ON_DEMAND(@"^[ ]*\\t(.*)");
+	GBRETURN_ON_DEMAND(@"^( ?\\t|    )(.*)$");
 }
 
 #pragma mark Method specific detection
@@ -110,23 +92,33 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 
-#pragma mark Common detection
+#pragma mark Cross references detection
 
 - (NSString *)remoteMemberCrossReferenceRegex {
 	// +[Class member] or -[Class member] or simply [Class member].
-	return [self crossReferenceRegexByEmbeddingRegex:@"[+-]?\\[(\\S+)\\s+(\\S+)\\]"];
+	return @"<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
 }
 
 - (NSString *)localMemberCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+	return @"<?([^>,.;!?()\\s]+)>?";
+}
+
+- (NSString *)categoryCrossReferenceRegex {
+	return @"<?([^(][^>,.:;!?)\\s]+\\))>?";
 }
 
 - (NSString *)objectCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"([^>\\s]+)"];
+	return @"<?([^>,.:;!?()\\s]+)>?";
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return [self crossReferenceRegexByEmbeddingRegex:@"(((?:(?:http|https|ftp|file)://)|(?:mailto:))[^>\\s]*)"];
+	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
+}
+
+#pragma mark Common detection
+
+- (NSString *)newLineRegex {
+	GBRETURN_ON_DEMAND([NSString stringWithUTF8String:"\\r\\n|[\\n\\v\\f\\r\302\205\\p{Zl}\\p{Zp}]+"]);
 }
 
 #pragma mark Helper methods
@@ -136,11 +128,7 @@
 }
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+([^\\s]+)\\s+(?s:(.*))", keyword];
-}
-
-- (NSString *)crossReferenceRegexByEmbeddingRegex:(NSString *)regex {
-	return [NSString stringWithFormat:@"<?%@>?", regex];
+	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(\\S+)\\s+(?s:(.*))", keyword];
 }
 
 @end

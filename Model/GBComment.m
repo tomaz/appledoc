@@ -40,12 +40,21 @@
 
 - (void)registerParagraph:(GBCommentParagraph *)paragraph {
 	NSParameterAssert(paragraph != nil);
-	GBLogDebug(@"Registering %@...", paragraph);
+	GBLogDebug(@"Registering paragraph %@...", paragraph);
 	if (!_paragraphs) {
 		_paragraphs = [[NSMutableArray alloc] init];
 		self.firstParagraph = paragraph;
 	}
 	[_paragraphs addObject:paragraph];
+}
+
+- (void)registerDescriptionParagraph:(GBCommentParagraph *)paragraph {
+	NSParameterAssert(paragraph != nil);
+	GBLogDebug(@"Registering description paragraph %@...", paragraph);
+	if (!_descriptionParagraphs) {
+		_descriptionParagraphs = [[NSMutableArray alloc] init];
+	}
+	[_descriptionParagraphs addObject:paragraph];
 }
 
 - (void)registerParameter:(GBCommentArgument *)parameter {
@@ -94,7 +103,7 @@
 	for (NSUInteger i=0; i<[_crossrefs count]; i++) {
 		GBParagraphLinkItem *existing = [_crossrefs objectAtIndex:i];
 		if ([existing.stringValue isEqualToString:ref.stringValue]) {
-			GBLogWarn(@"%@: %@ is already registered, ignoring!", self, ref.stringValue);
+			GBLogWarn(@"%@: %@ cross reference is already registered, ignoring!", self, ref.stringValue);
 			return;
 		}
 	}
@@ -129,8 +138,8 @@
 	return ([self.paragraphs count] > 0);
 }
 
-- (BOOL)hasMultipleParagraphs {
-	return ([self.paragraphs count] > 1);
+- (BOOL)hasDescriptionParagraphs {
+	return ([self.descriptionParagraphs count] > 0);
 }
 
 - (BOOL)hasParameters {
@@ -159,7 +168,7 @@
 	if ([self.paragraphs count] > 0) {
 		[result appendFormat:@"{p%@", multiline ? @"\n" : @" "];
 		[self.paragraphs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.paragraphs count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -169,7 +178,7 @@
 	if ([self.parameters count] > 0) {
 		[result appendFormat:@"{par%@", multiline ? @"\n" : @" "];
 		[self.parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.parameters count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -178,7 +187,7 @@
 	// Result.
 	if (self.result) {
 		[result appendFormat:@"{ret%@", multiline ? @"\n" : @" "];
-		[result appendString:[self.result description]];
+		[result appendString:[self.result debugDescription]];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
 	}
 	
@@ -186,7 +195,7 @@
 	if ([self.exceptions count] > 0) {
 		[result appendFormat:@"{exc%@", multiline ? @"\n" : @" "];
 		[self.exceptions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.exceptions count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -196,7 +205,7 @@
 	if ([self.crossrefs count] > 0) {
 		[result appendFormat:@"{ref%@", multiline ? @"\n" : @" "];
 		[self.crossrefs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendString:[obj description]];
+			[result appendString:[obj debugDescription]];
 			if (idx < [self.crossrefs count]-1) [result appendString:@",\n"];
 		}];
 		[result appendFormat:@"%@}", multiline ? @"\n" : @" "];
@@ -207,6 +216,7 @@
 
 #pragma mark Properties
 
+@synthesize descriptionParagraphs = _descriptionParagraphs;
 @synthesize paragraphs = _paragraphs;
 @synthesize parameters = _parameters;
 @synthesize exceptions = _exceptions;

@@ -63,7 +63,7 @@
 
 /** Registers a new section if the given name is valid section name.
  
- The method validates the name string to have at least one char in it. If so, it sends the receiver `registerSectionWithName:` message, passing it the given name and returns generated `GBMethodSectionData` object.. If the name is `nil` or empty string, no section is registered and `nil` is returned. This is provided only to simplify client code - i.e. no need for testing in each place where section should be registered, while on the other hand, validation tests are nicely encapsulated within the class itself, so no functionality is exposed.
+ The method validates the name string to have at least one char in it and section name is different from last registered section name. If so, it sends the receiver `registerSectionWithName:` message, passing it the given name and returns generated `GBMethodSectionData` object.. If the name is `nil` or empty string, no section is registered and `nil` is returned. This is provided only to simplify client code - i.e. no need for testing in each place where section should be registered, while on the other hand, validation tests are nicely encapsulated within the class itself, so no functionality is exposed.
  
  @param name The name of the section.
  @return Returns created `GBMethodSectionData` object or `nil` if name is not valid.
@@ -71,6 +71,12 @@
  @see sections
  */
 - (GBMethodSectionData *)registerSectionIfNameIsValid:(NSString *)name;
+
+/** Unregisters all sections that have no method.
+ 
+ This is useful for cleaning up.
+ */
+- (void)unregisterEmptySections;
 
 /** The array of all registered sections in the order of registration.
  

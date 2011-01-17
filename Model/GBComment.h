@@ -32,6 +32,7 @@
 @interface GBComment : NSObject {
 	@private
 	NSMutableArray *_paragraphs;
+	NSMutableArray *_descriptionParagraphs;
 	NSMutableArray *_parameters;
 	NSMutableArray *_exceptions;
 	NSMutableArray *_crossrefs;
@@ -83,6 +84,7 @@
  
  @see registerParagraph:
  @see paragraphs
+ @see descriptionParagraphs
  */
 @property (retain) GBCommentParagraph *firstParagraph;
 
@@ -91,12 +93,38 @@
  The paragraphs are in same order as in the source code. First paragraph is used for short description and is also available via `firstParagraph`. Each object is a `GBCommentParagraph` instance and should be registered through `registerParagraph:` method.
 
  @see firstParagraph
+ @see descriptionParagraphs
  @see registerParagraph:
  @see parameters
  @see exceptions
  @see result
  */
 @property (readonly) NSArray *paragraphs;
+
+///---------------------------------------------------------------------------------------
+/// @name Description paragraphs handling
+///---------------------------------------------------------------------------------------
+
+/** Registers the `GBCommentParagraph` and adds it to the end of `descriptionParagraphs` array.
+ 
+ If `descriptionParagraphs` is `nil`, a new array is created before adding the given object to it.
+ 
+ @param paragraph Paragraph to register.
+ @exception NSException Thrown if the given paragraph is `nil`.
+ @see descriptionParagraphs
+ @see registerParagraph:
+ */
+- (void)registerDescriptionParagraph:(GBCommentParagraph *)paragraph;
+
+/** `NSArray` containing all paragraphs that should be used for object description.
+ 
+ The paragraphs are in the same order as in the source code. Each object is a `GBCommentParagraph` instance and should be registered through `registerDescriptionParagraph:` method. This array may be the same as `paragraphs` or it may be different, depending the application settings. It's up to client code to provide the description paragraphs!
+ 
+ @see paragraphs
+ @see hasDescriptionParagraphs
+ @see registerDescriptionParagraph:
+ */
+@property (readonly) NSArray *descriptionParagraphs;
 
 ///---------------------------------------------------------------------------------------
 /// @name Method arguments handling
@@ -218,21 +246,21 @@
 
 /** Indicates whether the comment has at least one paragraph or not.
  
- This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraph` count is greater than 0, like this: `[object.paragraphs count] > 0`.
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraphs` count is greater than 0, like this: `[object.paragraphs count] > 0`.
  
- @see hasMultipleParagraphs
+ @see hasDescriptionParagraphs
  @see paragraphs
  */
 @property (readonly) BOOL hasParagraphs;
 
 /** Indicates whether the comment has at least two paragraphs or not.
  
- This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `paragraph` count is greater than 1, like this: `[object.paragraphs count] > 1`.
+ This is used mainly to simplify template output generators. Programmatically this method is equal to testing whether `descriptionParagraphs` count is greater than 0, like this: `[object.descriptionParagraphs count] > 0`.
  
  @see hasParagraphs
  @see paragraphs
  */
-@property (readonly) BOOL hasMultipleParagraphs;
+@property (readonly) BOOL hasDescriptionParagraphs;
 
 /** Indicates whether the comment has at least one parameter or not.
  

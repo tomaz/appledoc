@@ -39,7 +39,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @param name Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@param name Description", nil];
 	assertThatInteger([comment.parameters count], equalToInteger(0));
 }
 
@@ -64,7 +64,7 @@
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
 	assertThatInteger([comment.parameters count], equalToInteger(1));
-	[self assertArgument:[comment.parameters objectAtIndex:0] hasName:@"name" descriptions:@"Description Following", nil];
+	[self assertArgument:[comment.parameters objectAtIndex:0] hasName:@"name" descriptions:@"Description\nFollowing", nil];
 }
 
 - (void)testProcesCommentWithStore_parameters_shouldDetectNormalParagraphIfDelimitedWithEmptyLine {
@@ -141,7 +141,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @exception name Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@exception name Description", nil];
 	assertThatInteger([comment.exceptions count], equalToInteger(0));
 }
 
@@ -166,7 +166,7 @@
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
 	assertThatInteger([comment.exceptions count], equalToInteger(1));
-	[self assertArgument:[comment.exceptions objectAtIndex:0] hasName:@"name" descriptions:@"Description Following", nil];
+	[self assertArgument:[comment.exceptions objectAtIndex:0] hasName:@"name" descriptions:@"Description\nFollowing", nil];
 }
 
 - (void)testProcesCommentWithStore_exceptions_shouldDetectNormalParagraphIfDelimitedWithEmptyLine {
@@ -242,7 +242,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @return Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@return Description", nil];
 	assertThat(comment.result, is(nil));
 }
 
@@ -265,7 +265,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(0));
-	[self assertParagraph:comment.result containsTexts:@"Description Following", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description\nFollowing", nil];
 }
 
 - (void)testProcesCommentWithStore_return_shouldDetectNormalParagraphIfDelimitedWithEmptyLine {
@@ -351,7 +351,7 @@
 	[processor processComment:comment withStore:store];
 	// verify - note that link item is properly detected but as part of a paragraph!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"Prefix @see", [GBParagraphLinkItem class], @"Class", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"Prefix\n@see ", [GBParagraphLinkItem class], @"Class", nil];
 	assertThatInteger([comment.crossrefs count], equalToInteger(0));
 }
 

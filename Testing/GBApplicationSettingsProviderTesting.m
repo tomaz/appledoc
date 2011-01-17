@@ -18,90 +18,16 @@
 	
 @implementation GBApplicationSettingsProviderTesting
 
-#pragma mark Copying testing
-
-- (void)testCopyWithZone_shouldCopyAllPropertyValues {
-	// setuup
-	GBApplicationSettingsProvider *original = [GBApplicationSettingsProvider provider];
-	original.outputPath = @"A1";
-	original.templatesPath = @"A2";
-	original.docsetInstallPath = @"A3";
-	original.ignoredPaths = [NSMutableSet setWithObjects:@"I1", @"I2", nil];
-	original.projectName = @"P1";
-	original.projectCompany = @"P2";
-	original.projectVersion = @"P3";
-	original.companyIdentifier = @"P4";
-	original.createHTML = NO;
-	original.createDocSet = NO;
-	original.installDocSet = NO;
-	original.keepUndocumentedObjects = NO;
-	original.keepUndocumentedMembers = NO;
-	original.findUndocumentedMembersDocumentation = NO;
-	original.mergeCategoriesToClasses = NO;
-	original.keepMergedCategoriesSections = NO;
-	original.prefixMergedCategoriesSectionsWithCategoryName = NO;
-	original.warnOnUndocumentedObject = NO;
-	original.warnOnUndocumentedMember = NO;
-	original.docsetBundleIdentifier = @"D1";
-	original.docsetBundleName = @"D2";
-	original.docsetCertificateIssuer = @"D3";
-	original.docsetCertificateSigner = @"D4";
-	original.docsetDescription = @"D5";
-	original.docsetFallbackURL = @"D6";
-	original.docsetFeedName = @"D7";
-	original.docsetFeedURL = @"D8";
-	original.docsetMinimumXcodeVersion = @"D9";
-	original.docsetPlatformFamily = @"D10";
-	original.docsetPublisherIdentifier = @"D11";
-	original.docsetPublisherName = @"D12";
-	original.docsetCopyrightMessage = @"D13";
-	// execute
-	GBApplicationSettingsProvider *copy = [original copyWithZone:nil];
-	// verify
-	assertThat(copy.outputPath, is(original.outputPath));
-	assertThat(copy.templatesPath, is(original.templatesPath));
-	assertThat(copy.docsetInstallPath, is(original.docsetInstallPath));
-	assertThat(copy.ignoredPaths, is(original.ignoredPaths));
-	assertThat(copy.projectName, is(original.projectName));
-	assertThat(copy.projectCompany, is(original.projectCompany));
-	assertThat(copy.projectVersion, is(original.projectVersion));
-	assertThat(copy.companyIdentifier, is(original.companyIdentifier));
-	assertThatBool(copy.createHTML, equalToBool(original.createHTML));
-	assertThatBool(copy.createDocSet, equalToBool(original.createDocSet));
-	assertThatBool(copy.installDocSet, equalToBool(original.installDocSet));
-	assertThatBool(copy.keepUndocumentedObjects, equalToBool(original.keepUndocumentedObjects));
-	assertThatBool(copy.keepUndocumentedMembers, equalToBool(original.keepUndocumentedMembers));
-	assertThatBool(copy.findUndocumentedMembersDocumentation, equalToBool(original.findUndocumentedMembersDocumentation));
-	assertThatBool(copy.mergeCategoriesToClasses, equalToBool(original.mergeCategoriesToClasses));
-	assertThatBool(copy.keepMergedCategoriesSections, equalToBool(original.keepMergedCategoriesSections));
-	assertThatBool(copy.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(original.prefixMergedCategoriesSectionsWithCategoryName));
-	assertThatBool(copy.warnOnUndocumentedObject, equalToBool(original.warnOnUndocumentedObject));
-	assertThatBool(copy.warnOnUndocumentedMember, equalToBool(original.warnOnUndocumentedMember));
-	assertThat(copy.docsetBundleIdentifier, is(original.docsetBundleIdentifier));
-	assertThat(copy.docsetBundleName, is(original.docsetBundleName));
-	assertThat(copy.docsetCertificateIssuer, is(original.docsetCertificateIssuer));
-	assertThat(copy.docsetCertificateSigner, is(original.docsetCertificateSigner));
-	assertThat(copy.docsetDescription, is(original.docsetDescription));
-	assertThat(copy.docsetFallbackURL, is(original.docsetFallbackURL));
-	assertThat(copy.docsetFeedName, is(original.docsetFeedName));
-	assertThat(copy.docsetFeedURL, is(original.docsetFeedURL));
-	assertThat(copy.docsetMinimumXcodeVersion, is(original.docsetMinimumXcodeVersion));
-	assertThat(copy.docsetPlatformFamily, is(original.docsetPlatformFamily));
-	assertThat(copy.docsetPublisherIdentifier, is(original.docsetPublisherIdentifier));
-	assertThat(copy.docsetPublisherName, is(original.docsetPublisherName));
-	assertThat(copy.docsetCopyrightMessage, is(original.docsetCopyrightMessage));
-}
-
 #pragma mark Placeholders replacing
 
 - (void)testPlaceholderReplacements_shouldReplacePlaceholderStringsInAllSupportedValues {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.projectName = @"<PN>";
-	settings.projectCompany = @"<PC>";
-	settings.projectVersion = @"<PV>";
-	settings.companyIdentifier = @"<CI>";
-	NSString *template = @"$PROJECT/$COMPANY/$VERSION/$COMPANYID/$YEAR/$UPDATEDATE";
+	settings.projectName = @"<P N>";
+	settings.projectCompany = @"<P C>";
+	settings.projectVersion = @"<P V>";
+	settings.companyIdentifier = @"<C I>";
+	NSString *template = @"%PROJECT/%COMPANY/%VERSION/%PROJECTID/%COMPANYID/%VERSIONID/%YEAR/%UPDATEDATE";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
@@ -110,16 +36,20 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
+	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
 	settings.docsetPublisherIdentifier = template;
 	settings.docsetPublisherName = template;
 	settings.docsetCopyrightMessage = template;
+	settings.docsetBundleFilename = template;
+	settings.docsetAtomFilename = template;
+	settings.docsetPackageFilename = template;
 	// setup expected values; this might break sometimes as it's based on time...
 	NSDate *date = [NSDate date];
 	NSString *year = [[self yearFormatterFromSettings:settings] stringFromDate:date];
 	NSString *day = [[self yearToDayFormatterFromSettings:settings] stringFromDate:date];
-	NSString *expected = [NSString stringWithFormat:@"<PN>/<PC>/<PV>/<CI>/%@/%@", year, day];
+	NSString *expected = [NSString stringWithFormat:@"<P N>/<P C>/<P V>/<P-N>/<C I>/<P-V>/%@/%@", year, day];
 	// execute
 	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	// verify
@@ -131,11 +61,76 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
+	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
 	assertThat(settings.docsetPublisherIdentifier, is(expected));
 	assertThat(settings.docsetPublisherName, is(expected));
 	assertThat(settings.docsetCopyrightMessage, is(expected));
+	assertThat(settings.docsetBundleFilename, is(expected));
+	assertThat(settings.docsetAtomFilename, is(expected));
+	assertThat(settings.docsetPackageFilename, is(expected));
+}
+
+- (void)testPlaceholderReplacements_shouldReplaceDocSetFilenames {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectName = @"<PN>";
+	settings.projectCompany = @"<PC>";
+	settings.projectVersion = @"<PV>";
+	settings.companyIdentifier = @"<CI>";
+	settings.docsetBundleFilename = @"<DSB>";
+	settings.docsetAtomFilename = @"<DSA>";
+	settings.docsetPackageFilename = @"<DSP>";
+	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETPACKAGEFILENAME";
+	settings.docsetBundleIdentifier = template;
+	settings.docsetBundleName = template;
+	settings.docsetCertificateIssuer = template;
+	settings.docsetCertificateSigner = template;
+	settings.docsetDescription = template;
+	settings.docsetFallbackURL = template;
+	settings.docsetFeedName = template;
+	settings.docsetFeedURL = template;
+	settings.docsetPackageURL = template;
+	settings.docsetMinimumXcodeVersion = template;
+	settings.docsetPlatformFamily = template;
+	settings.docsetPublisherIdentifier = template;
+	settings.docsetPublisherName = template;
+	settings.docsetCopyrightMessage = template;
+	NSString *expected = @"<DSB>/<DSA>/<DSP>";
+	// execute
+	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
+	// verify
+	assertThat(settings.docsetBundleIdentifier, is(expected));
+	assertThat(settings.docsetBundleName, is(expected));
+	assertThat(settings.docsetCertificateIssuer, is(expected));
+	assertThat(settings.docsetCertificateSigner, is(expected));
+	assertThat(settings.docsetDescription, is(expected));
+	assertThat(settings.docsetFallbackURL, is(expected));
+	assertThat(settings.docsetFeedName, is(expected));
+	assertThat(settings.docsetFeedURL, is(expected));
+	assertThat(settings.docsetPackageURL, is(expected));
+	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
+	assertThat(settings.docsetPlatformFamily, is(expected));
+	assertThat(settings.docsetPublisherIdentifier, is(expected));
+	assertThat(settings.docsetPublisherName, is(expected));
+	assertThat(settings.docsetCopyrightMessage, is(expected));
+}
+
+- (void)testProjectIdentifier_shouldNormalizeProjectName {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectName = @"My Great  \t Project";
+	// execute & verify
+	assertThat(settings.projectIdentifier, is(@"My-Great-Project"));
+}
+
+- (void)testVersionIdentifier_shouldNormalizeProjectVersion {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.projectVersion = @"1.0 beta3  \t something";
+	// execute & verify
+	assertThat(settings.versionIdentifier, is(@"1.0-beta3-something"));
 }
 
 #pragma mark HTML href names handling

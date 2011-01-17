@@ -30,6 +30,10 @@ static NSString *kGBArgCompanyIdentifier = @"company-id";
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
+static NSString *kGBArgPublishDocSet = @"publish-docset";
+static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
+
+static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
 static NSString *kGBArgFindUndocumentedMembersDocumentation = @"search-undocumented-doc";
@@ -41,6 +45,8 @@ static NSString *kGBArgWarnOnMissingOutputPath = @"warn-missing-output-path";
 static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-id";
 static NSString *kGBArgWarnOnUndocumentedObject = @"warn-undocumented-object";
 static NSString *kGBArgWarnOnUndocumentedMember = @"warn-undocumented-member";
+static NSString *kGBArgWarnOnInvalidCrossReference = @"warn-invalid-crossref";
+static NSString *kGBArgWarnOnMissingMethodArgument = @"warn-missing-arg";
 
 static NSString *kGBArgDocSetBundleIdentifier = @"docset-bundle-id";
 static NSString *kGBArgDocSetBundleName = @"docset-bundle-name";
@@ -48,6 +54,7 @@ static NSString *kGBArgDocSetDescription = @"docset-desc";
 static NSString *kGBArgDocSetCopyrightMessage = @"docset-copyright";
 static NSString *kGBArgDocSetFeedName = @"docset-feed-name";
 static NSString *kGBArgDocSetFeedURL = @"docset-feed-url";
+static NSString *kGBArgDocSetPackageURL = @"docset-package-url";
 static NSString *kGBArgDocSetFallbackURL = @"docset-fallback-url";
 static NSString *kGBArgDocSetPublisherIdentifier = @"docset-publisher-id";
 static NSString *kGBArgDocSetPublisherName = @"docset-publisher-name";
@@ -55,6 +62,10 @@ static NSString *kGBArgDocSetMinimumXcodeVersion = @"docset-min-xcode-version";
 static NSString *kGBArgDocSetPlatformFamily = @"docset-platform-family";
 static NSString *kGBArgDocSetCertificateIssuer = @"docset-cert-issuer";
 static NSString *kGBArgDocSetCertificateSigner = @"docset-cert-signer";
+
+static NSString *kGBArgDocSetBundleFilename = @"docset-bundle-filename";
+static NSString *kGBArgDocSetAtomFilename = @"docset-atom-filename";
+static NSString *kGBArgDocSetPackageFilename = @"docset-package-filename";
 
 static NSString *kGBArgLogFormat = @"logformat";
 static NSString *kGBArgVerbose = @"verbose";
@@ -71,9 +82,9 @@ static NSString *kGBArgHelp = @"help";
 - (void)initializeLoggingSystem;
 - (void)initializeGlobalSettingsAndValidateTemplates;
 - (void)validateSettingsAndArguments:(NSArray *)arguments;
-- (void)printSettingsAndArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
@@ -88,6 +99,7 @@ static NSString *kGBArgHelp = @"help";
 
 @interface GBAppledocApplication (UsagePrintout)
 
+- (void)printSettingsAndArguments:(NSArray *)arguments;
 - (void)printVersion;
 - (void)printHelp;
 - (void)printHelpForShortOption:(NSString *)aShort longOption:(NSString *)aLong argument:(NSString *)argument description:(NSString *)description;
@@ -192,28 +204,39 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgDocSetFallbackURL,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetFeedName,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetFeedURL,												0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPackageURL,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetMinimumXcodeVersion,									0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPlatformFamily,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPublisherIdentifier,									0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPublisherName,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetCopyrightMessage,										0,		DDGetoptRequiredArgument },
 		
+		{ kGBArgDocSetBundleFilename,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetAtomFilename,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocSetPackageFilename,										0,		DDGetoptRequiredArgument },
+		
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
+		{ kGBArgPublishDocSet,												'u',	DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateHTML),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgPublishDocSet),										0,		DDGetoptNoArgument },
 		
+		{ kGBArgKeepIntermediateFiles,										0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
 		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
+		{ kGBArgRepeatFirstParagraph,										0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgKeepIntermediateFiles),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedMembers),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgFindUndocumentedMembersDocumentation),				0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgRepeatFirstParagraph),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgMergeCategoriesToClasses),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
@@ -222,10 +245,14 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnInvalidCrossReference,								0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnMissingMethodArgument,								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingOutputPath),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingCompanyIdentifier),					0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedMember),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnInvalidCrossReference),						0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnMissingMethodArgument),						0,		DDGetoptNoArgument },
 		
 		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
 		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
@@ -275,6 +302,7 @@ static NSString *kGBArgHelp = @"help";
 			path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
 			if ([self validateTemplatesPath:path error:nil]) {
 				[self overrideSettingsWithGlobalSettingsFromPath:path];
+				self.settings.templatesPath = path;
 				self.templatesFound = YES;
 				return;
 			}		
@@ -283,6 +311,7 @@ static NSString *kGBArgHelp = @"help";
 		path = @"~/.appledoc";
 		if ([self validateTemplatesPath:path error:nil]) {
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
 			self.templatesFound = YES;
 			return;
 		}		
@@ -351,7 +380,7 @@ static NSString *kGBArgHelp = @"help";
 	}
 
 	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
-	if ([arguments count] == 0) [NSException raise:@"At least one argument is required"];
+	if ([arguments count] == 0) [NSException raise:@"At least one directory or file name path is required, use 'appledoc --help'"];
 	for (NSString *path in arguments) {
 		if (![self.fileManager fileExistsAtPath:path]) {
 			[NSException raise:@"Path or file '%@' doesn't exist!", path];
@@ -380,7 +409,116 @@ static NSString *kGBArgHelp = @"help";
 			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 		}
 	}
+	
+	// Make sure to switch on any setting thats required by "higher" level one.
+	if (self.settings.publishDocSet) self.settings.installDocSet = YES;
+	if (self.settings.installDocSet) self.settings.createDocSet = YES;
+	if (self.settings.createDocSet) self.settings.createHTML = YES;
 }
+
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
+	// Converts . to actual working directory.
+	if (![path hasPrefix:@"."] || [path hasPrefix:@".."]) return path;
+	NSString *suffix = [path substringFromIndex:1];
+	return [[self.fileManager currentDirectoryPath] stringByAppendingPathComponent:suffix];
+}
+
+#pragma mark Overriden methods
+
+- (NSString *)description {
+	return [self className];
+}
+
+#pragma mark Callbacks API for DDCliApplication
+
+- (void)setOutput:(NSString *)path { self.settings.outputPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setIgnore:(NSString *)path {
+	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
+	[self.settings.ignoredPaths addObject:path];
+}
+
+- (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
+- (void)setProjectVersion:(NSString *)value { self.settings.projectVersion = value; }
+- (void)setProjectCompany:(NSString *)value { self.settings.projectCompany = value; }
+- (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
+
+- (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
+- (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
+- (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
+- (void)setPublishDocset:(BOOL)value { self.settings.publishDocSet = value; }
+- (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
+- (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
+- (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
+- (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
+
+- (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
+- (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
+- (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
+- (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
+- (void)setRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = value; }
+- (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
+- (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
+- (void)setPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = value; }
+- (void)setNoKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = !value;}
+- (void)setNoKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = !value; }
+- (void)setNoKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = !value; }
+- (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
+- (void)setNoRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = !value; }
+- (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
+- (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
+- (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
+
+- (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
+- (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
+- (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
+- (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
+- (void)setWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = value; }
+- (void)setWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = value; }
+- (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
+- (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
+- (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
+- (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
+- (void)setNoWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = !value; }
+- (void)setNoWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = !value; }
+
+- (void)setDocsetBundleId:(NSString *)value { self.settings.docsetBundleIdentifier = value; }
+- (void)setDocsetBundleName:(NSString *)value { self.settings.docsetBundleName = value; }
+- (void)setDocsetDesc:(NSString *)value { self.settings.docsetDescription = value; }
+- (void)setDocsetCopyright:(NSString *)value { self.settings.docsetCopyrightMessage = value; }
+- (void)setDocsetFeedName:(NSString *)value { self.settings.docsetFeedName = value; }
+- (void)setDocsetFeedUrl:(NSString *)value { self.settings.docsetFeedURL = value; }
+- (void)setDocsetPackageUrl:(NSString *)value { self.settings.docsetPackageURL = value; }
+- (void)setDocsetFallbackUrl:(NSString *)value { self.settings.docsetFallbackURL = value; }
+- (void)setDocsetPublisherId:(NSString *)value { self.settings.docsetPublisherIdentifier = value; }
+- (void)setDocsetPublisherName:(NSString *)value { self.settings.docsetPublisherName = value; }
+- (void)setDocsetMinXcodeVersion:(NSString *)value { self.settings.docsetMinimumXcodeVersion = value; }
+- (void)setDocsetPlatformFamily:(NSString *)value { self.settings.docsetPlatformFamily = value; }
+- (void)setDocsetCertIssuer:(NSString *)value { self.settings.docsetCertificateIssuer = value; }
+- (void)setDocsetCertSigner:(NSString *)value { self.settings.docsetCertificateSigner = value; }
+
+- (void)setDocsetBundleFilename:(NSString *)value { self.settings.docsetBundleFilename = value; }
+- (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }
+- (void)setDocsetPackageFilename:(NSString *)value { self.settings.docsetPackageFilename = value; }
+
+@synthesize logformat;
+@synthesize verbose;
+@synthesize printSettings;
+@synthesize templatesFound;
+@synthesize version;
+@synthesize help;
+
+#pragma mark Properties
+
+@synthesize settings;
+
+@end
+
+#pragma mark -
+
+@implementation GBAppledocApplication (UsagePrintout)
 
 - (void)printSettingsAndArguments:(NSArray *)arguments {
 #define PRINT_BOOL(v) (v ? @"YES" : @"NO")
@@ -409,6 +547,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCopyrightMessage, self.settings.docsetCopyrightMessage);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedName, self.settings.docsetFeedName);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedURL, self.settings.docsetFeedURL);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageURL, self.settings.docsetPackageURL);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetFallbackURL, self.settings.docsetFallbackURL);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherIdentifier, self.settings.docsetPublisherIdentifier);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherName, self.settings.docsetPublisherName);
@@ -416,19 +555,25 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPlatformFamily, self.settings.docsetPlatformFamily);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateIssuer, self.settings.docsetCertificateIssuer);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateSigner, self.settings.docsetCertificateSigner);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleFilename, self.settings.docsetBundleFilename);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetAtomFilename, self.settings.docsetAtomFilename);
+	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
+	ddprintf(@"--%@ = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
+	ddprintf(@"--%@ = %@\n", kGBArgKeepIntermediateFiles, PRINT_BOOL(self.settings.keepIntermediateFiles));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
 	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
+	ddprintf(@"--%@ = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
 	ddprintf(@"\n");
-
+	
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
@@ -440,92 +585,11 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"\n");
 }
 
-#pragma mark Overriden methods
-
-- (NSString *)description {
-	return [self className];
-}
-
-#pragma mark Callbacks API for DDCliApplication
-
-- (void)setOutput:(NSString *)path { self.settings.outputPath = path; }
-- (void)setTemplates:(NSString *)path { self.settings.templatesPath = path; }
-- (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = path; }
-- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = path; }
-- (void)setIgnore:(NSString *)path {
-	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
-	[self.settings.ignoredPaths addObject:path];
-}
-
-- (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
-- (void)setProjectVersion:(NSString *)value { self.settings.projectVersion = value; }
-- (void)setProjectCompany:(NSString *)value { self.settings.projectCompany = value; }
-- (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
-
-- (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
-- (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
-- (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
-- (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
-- (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
-- (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
-
-- (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
-- (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
-- (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
-- (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
-- (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
-- (void)setPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = value; }
-- (void)setNoKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = !value; }
-- (void)setNoKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = !value; }
-- (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
-- (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
-- (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
-- (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
-
-- (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
-- (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
-- (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
-- (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
-- (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
-- (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
-- (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
-- (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
-
-- (void)setDocsetBundleId:(NSString *)value { self.settings.docsetBundleIdentifier = value; }
-- (void)setDocsetBundleName:(NSString *)value { self.settings.docsetBundleName = value; }
-- (void)setDocsetDesc:(NSString *)value { self.settings.docsetDescription = value; }
-- (void)setDocsetCopyright:(NSString *)value { self.settings.docsetCopyrightMessage = value; }
-- (void)setDocsetFeedName:(NSString *)value { self.settings.docsetFeedName = value; }
-- (void)setDocsetFeedUrl:(NSString *)value { self.settings.docsetFeedURL = value; }
-- (void)setDocsetFallbackUrl:(NSString *)value { self.settings.docsetFallbackURL = value; }
-- (void)setDocsetPublisherId:(NSString *)value { self.settings.docsetPublisherIdentifier = value; }
-- (void)setDocsetPublisherName:(NSString *)value { self.settings.docsetPublisherName = value; }
-- (void)setDocsetMinXcodeVersion:(NSString *)value { self.settings.docsetMinimumXcodeVersion = value; }
-- (void)setDocsetPlatformFamily:(NSString *)value { self.settings.docsetPlatformFamily = value; }
-- (void)setDocsetCertIssuer:(NSString *)value { self.settings.docsetCertificateIssuer = value; }
-- (void)setDocsetCertSigner:(NSString *)value { self.settings.docsetCertificateSigner = value; }
-
-@synthesize logformat;
-@synthesize verbose;
-@synthesize printSettings;
-@synthesize templatesFound;
-@synthesize version;
-@synthesize help;
-
-#pragma mark Properties
-
-@synthesize settings;
-
-@end
-
-#pragma mark -
-
-@implementation GBAppledocApplication (UsagePrintout)
-
 - (void)printVersion {
 	NSString *appledocName = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
 	NSString *appledocVersion = [self.settings.stringTemplates.appledocData objectForKey:@"version"];
-	ddprintf(@"%@ version: %@\n", appledocName, appledocVersion);
+	NSString *appledocBuild = [self.settings.stringTemplates.appledocData objectForKey:@"build"];
+	ddprintf(@"%@ version: %@ (build %@)\n", appledocName, appledocVersion, appledocBuild);
 	ddprintf(@"\n");
 }
 
@@ -547,23 +611,28 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgCompanyIdentifier, @"<string>", @"Company UTI (i.e. reverse DNS name)");
 	ddprintf(@"\n");
 	ddprintf(@"OUTPUT GENERATION\n");
-	PRINT_USAGE(@"-h,", kGBArgCreateHTML, @"<bool>", @"Create HTML");
-	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"<bool>", @"Create HTML and documentation set");
-	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"<bool>", @"Create HTML & DocSet and install DocSet to Xcode");
+	PRINT_USAGE(@"-h,", kGBArgCreateHTML, @"", @"[b] Create HTML");
+	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
+	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
+	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
 	ddprintf(@"\n");
 	ddprintf(@"OPTIONS\n");
-	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedObjects, @"<bool>", @"Keep undocumented objects");
-	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedMembers, @"<bool>", @"Keep undocumented members");
-	PRINT_USAGE(@"   ", kGBArgFindUndocumentedMembersDocumentation, @"<bool>", @"Search undocumented members documentation");
-	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"<bool>", @"Merge categories to classes");
-	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"<bool>", @"Keep merged categories sections");
-	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"<bool>", @"Prefix merged sections with category name");
+	PRINT_USAGE(@"   ", kGBArgKeepIntermediateFiles, @"", @"[b] Keep intermediate files in output path");
+	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedObjects, @"", @"[b] Keep undocumented objects");
+	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedMembers, @"", @"[b] Keep undocumented members");
+	PRINT_USAGE(@"   ", kGBArgFindUndocumentedMembersDocumentation, @"", @"[b] Search undocumented members documentation");
+	PRINT_USAGE(@"   ", kGBArgRepeatFirstParagraph, @"", @"[b] Repeat first paragraph in member documentation");
+	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"", @"[b] Merge categories to classes");
+	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"", @"[b] Keep merged categories sections");
+	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");
 	ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
-	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"<bool>", @"Warn if output path is not given");
-	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"<bool>", @"Warn if company ID is not given");
-	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"<bool>", @"Warn on undocumented object");
-	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"<bool>", @"Warn on undocumented member");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"", @"[b] Warn if company ID is not given");
+	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"", @"[b] Warn on undocumented object");
+	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"", @"[b] Warn on undocumented member");
+	PRINT_USAGE(@"   ", kGBArgWarnOnInvalidCrossReference, @"", @"[b] Warn on invalid cross reference");
+	PRINT_USAGE(@"   ", kGBArgWarnOnMissingMethodArgument, @"", @"[b] Warn on missing method argument documentation");
 	ddprintf(@"\n");
 	ddprintf(@"DOCUMENTATION SET INFO\n");
 	PRINT_USAGE(@"   ", kGBArgDocSetBundleIdentifier, @"<string>", @"[*] DocSet bundle identifier");
@@ -572,6 +641,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetCopyrightMessage, @"<string>", @"[*] DocSet copyright message");
 	PRINT_USAGE(@"   ", kGBArgDocSetFeedName, @"<string>", @"[*] DocSet feed name");
 	PRINT_USAGE(@"   ", kGBArgDocSetFeedURL, @"<string>", @"[*] DocSet feed URL");
+	PRINT_USAGE(@"   ", kGBArgDocSetPackageURL, @"<string>", @"[*] DocSet package (.xar) URL");
 	PRINT_USAGE(@"   ", kGBArgDocSetFallbackURL, @"<string>", @"[*] DocSet fallback URL");
 	PRINT_USAGE(@"   ", kGBArgDocSetPublisherIdentifier, @"<string>", @"[*] DocSet publisher identifier");
 	PRINT_USAGE(@"   ", kGBArgDocSetPublisherName, @"<string>", @"[*] DocSet publisher name");
@@ -579,6 +649,9 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetPlatformFamily, @"<string>", @"[*] DocSet platform familiy");
 	PRINT_USAGE(@"   ", kGBArgDocSetCertificateIssuer, @"<string>", @"[*] DocSet certificate issuer");
 	PRINT_USAGE(@"   ", kGBArgDocSetCertificateSigner, @"<string>", @"[*] DocSet certificate signer");
+	PRINT_USAGE(@"   ", kGBArgDocSetBundleFilename, @"<string>", @"[*] DocSet bundle filename");
+	PRINT_USAGE(@"   ", kGBArgDocSetAtomFilename, @"<string>", @"[*] DocSet atom feed filename");
+	PRINT_USAGE(@"   ", kGBArgDocSetPackageFilename, @"<string>", @"[*] DocSet package (.xar) filename");
 	ddprintf(@"\n");
 	ddprintf(@"MISCELLANEOUS\n");
 	PRINT_USAGE(@"   ", kGBArgLogFormat, @"<number>", @"Log format [0-3]");
@@ -586,14 +659,28 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");
 	PRINT_USAGE(@"   ", kGBArgHelp, @"", @"Display this help and exit");
 	ddprintf(@"\n");
-	ddprintf(@"[*] indicates parameters accepting placeholder strings:\n");
-	ddprintf(@"- $PROJECT replaced with --project-name\n");
-	ddprintf(@"- $VERSION replaced with --project-version\n");
-	ddprintf(@"- $COMPANY replaced with --project-company\n");
-	ddprintf(@"- $COMPANYID replaced with --company-id\n");
-	ddprintf(@"- $YEAR replaced with current year (format yyyy)\n");
-	ddprintf(@"- $UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
+	ddprintf(@"==================================================================\n");
+	ddprintf(@"[b] boolean parameter, uses no value, use --no- prefix to negate.\n");
 	ddprintf(@"\n");
+	ddprintf(@"[*] indicates parameters accepting placeholder strings:\n");
+	ddprintf(@"- %%PROJECT replaced with --project-name\n");
+	ddprintf(@"- %%PROJECTID replaced with normalized --project-name\n");
+	ddprintf(@"- %%VERSION replaced with --project-version\n");
+	ddprintf(@"- %%VERSIONID replaced with normalized --project-version\n");
+	ddprintf(@"- %%COMPANY replaced with --project-company\n");
+	ddprintf(@"- %%COMPANYID replaced with --company-id\n");
+	ddprintf(@"- %%YEAR replaced with current year (format yyyy)\n");
+	ddprintf(@"- %%UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
+	ddprintf(@"- %%DOCSETBUNDLEFILENAME replaced with --docset-bundle-filename\n");
+	ddprintf(@"- %%DOCSETATOMFILENAME replaced with --docset-atom-filename\n");
+	ddprintf(@"- %%DOCSETPACKAGEFILENAME replaced with --docset-package-filename\n");	
+	ddprintf(@"\n");
+	ddprintf(@"==================================================================\n");
+	ddprintf(@"Find more help and tips online:\n");
+	ddprintf(@"- http://appledoc.gentlebytes.com/\n");
+	ddprintf(@"- http://tomaz.github.com/appledoc/\n");
+	ddprintf(@"\n");
+	ddprintf(@"==================================================================\n");
 	ddprintf(@"%@ uses the following open source components, fully or partially:\n", name);
 	ddprintf(@"\n");
 	ddprintf(@"- DDCli by Dave Dribin\n");

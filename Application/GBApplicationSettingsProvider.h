@@ -14,8 +14,24 @@
 /** Main application settings provider.
  
  This object implements `GBApplicationStringsProviding` interface and is used by `GBAppledocApplication` to prepare application-wide settings including factory defaults, global and session values. The main purpose of the class is to simplify `GBAppledocApplication` class by decoupling it from the actual settings providing implementation.
+ 
+ To create a new setting use the following check list to update `GBApplicationSettingsProvider`:
+ 
+ 1. Create the property here (don't forget about `@synthetize`!).
+ 2. Set default value in initializer.
+ 
+ If the setting should be mapped to command line switch also do the following in `GBAppledocApplication`:
+ 
+ 1. Create a new global string as `static NSString` containing the command line switch name.
+ 2. Register the switch to `DDCli` (add negated switch if it's a boolean).
+ 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean swithces require testing normal and negated variants!).
+ 4. Add KVC setter and map to corresponding property to make the test pass (again booleans require two setters).
+ 5. If the switch value uses template placeholders, add unit test in `GBApplicationSettingsProviderTesting.m` that validates the switch is handled.
+ 6. If previous point was used, add the code to `replaceAllOccurencesOfPlaceholderStringsInSettingsValues` to make the test pass.
+ 7. Add the switch value printout to `printSettingsAndArguments:`.
+ 8. Add the switch help printout to `printHelp`.
  */
-@interface GBApplicationSettingsProvider : NSObject <NSCopying>
+@interface GBApplicationSettingsProvider : NSObject
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
@@ -40,6 +56,12 @@
 
 /** Company unique identifier, ussualy in the form of reverse domain like _com.company_. */
 @property (copy) NSString *companyIdentifier;
+
+/** Project identifier which is derived by normalizing `projectName`. */
+@property (readonly) NSString *projectIdentifier;
+
+/** Version identifier which is derived by normalizing `projectVersion`. */
+@property (readonly) NSString *versionIdentifier;
 
 ///---------------------------------------------------------------------------------------
 /// @name Documentation set handling
@@ -69,6 +91,9 @@
 /** Documentation set feed URL. */
 @property (copy) NSString *docsetFeedURL;
 
+/** Documentation set package URL. */
+@property (copy) NSString *docsetPackageURL;
+
 /** Documentation set minimum Xcode version. */
 @property (copy) NSString *docsetMinimumXcodeVersion;
 
@@ -83,6 +108,15 @@
 
 /** Documentation set human readble copyright message. */
 @property (copy) NSString *docsetCopyrightMessage;
+
+/** The name of the documentation set installed bundle. The folder is generated in `docsetInstallPath`. */
+@property (copy) NSString *docsetBundleFilename;
+
+/** The name of the documentation set atom file when generating publishing files. The file is generated in `outputPath`. */
+@property (copy) NSString *docsetAtomFilename;
+
+/** The name of the documentation set compressed package file when generating publishing files. The file is generated in `outputPath`. */
+@property (copy) NSString *docsetPackageFilename;
 
 ///---------------------------------------------------------------------------------------
 /// @name Paths handling
@@ -109,6 +143,54 @@
 ///---------------------------------------------------------------------------------------
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
+
+/* Indicates whether HTML files should be generated or not.
+ 
+ If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
+ 
+ @see createDocSet
+ */
+@property (assign) BOOL createHTML;
+
+/** Specifies whether documentation set should be created from the HTML files.
+ 
+ If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
+ 
+ @see createHtml
+ @see installDocSet
+ @see publishDocSet
+ */
+@property (assign) BOOL createDocSet;
+
+/** Specifies whether the documentation set should be installed or not.
+ 
+ If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
+ 
+ @see createDocSet
+ @see publishDocSet
+ */
+@property (assign) BOOL installDocSet;
+
+/** Specifies whether the documentation set should be prepared for publishing or not.
+ 
+ If `YES`, installed documentation set is packaged for publishing - an atom feed is created and documentation set is archived. If the atom feed file is alreay found, it is updated with new information. Both, the feed and archived docset files are located within `outputPath`. If `NO`, documentation set is not prepared for publishing.
+ 
+ @see createDocSet
+ @see installDocSet
+ */
+@property (assign) BOOL publishDocSet;
+
+/** Specifies whether intermediate files should be kept in `outputPath` or not.
+ 
+ If `YES`, all intermediate files (i.e. HTML files and documentation set files) are kept in output path. If `NO`, only final results are kept. This setting not only affects how the files are being handled, it also affects performance. If intermediate files are not kept, appledoc moves files between various generation phases, otherwise it copies them. So it's prefferable to leave this option to `NO`. This option only affects output files, input source files are always left intact!
+ */
+@property (assign) BOOL keepIntermediateFiles;
+
+/** Indicates whether the first paragraph needs to be repeated within method and property description or not.
+ 
+ If `YES`, first paragraph is repeated in members description, otherwise not.
+ */
+@property (assign) BOOL repeatFirstParagraphForMemberDescription;
 
 /* Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
  
@@ -186,31 +268,6 @@
  */
 @property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
 
-/* Indicates whether HTML files should be generated or not.
- 
- If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
- 
- @see createDocSet
- */
-@property (assign) BOOL createHTML;
-
-/** Specifies whether documentation set should be created from the HTML files.
- 
- If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
- 
- @see createHtml
- @see installDocSet
- */
-@property (assign) BOOL createDocSet;
-
-/** Specifies whether the documentation set should be installed or not.
- 
- If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
- 
- @see createDocSet
- */
-@property (assign) BOOL installDocSet;
-
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------
@@ -242,6 +299,12 @@
  @see warnOnUndocumentedObject
  */
 @property (assign) BOOL warnOnUndocumentedMember;
+
+/** Indicates whether invalid cross reference should result in warning or not. */
+@property (assign) BOOL warnOnInvalidCrossReference;
+
+/** Indicates whether missing method argument descriptions in comments should result in warnings or not. */
+@property (assign) BOOL warnOnMissingMethodArgument;
 
 ///---------------------------------------------------------------------------------------
 /// @name Application-wide HTML helpers
@@ -316,11 +379,17 @@
  
  This method provides application-wide string placeholders replacement functionality. It replaces all known placeholders with actual values from the receiver. Placeholders are identified by a dollar mark, followed by placeholder name. The following placeholders are supported (note that case is important!):
  
- - `$PROJECT`: Replaced by `projectName` value.
- - `$COMPANY`: Replaced by `projectCompany` value.
- - `$VERSION`: Replaced by `projectVersion` value.
- - `$YEAR`: Replaced by current year as four digit string.
- - `$UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
+ - `%PROJECT`: Replaced by `projectName` value.
+ - `%PROJECTID`: Replaced by `projectIdentifier` value.
+ - `%COMPANY`: Replaced by `projectCompany` value.
+ - `%COMPANYID`: Replaced by `companyIdentifier` value.
+ - `%VERSION`: Replaced by `projectVersion` value.
+ - `%VERSIONID`: Replaced by `versionIdentifier` value.
+ - `%DOCSETBUNDLEFILENAME`: Replaced by `docsetBundleFilename` value.
+ - `%DOCSETATOMFILENAME`: Replaced by `docsetAtomFilename` value.
+ - `%DOCSETPACKAGEFILENAME`: Replaced by `docsetPackageFilename` value.
+ - `%YEAR`: Replaced by current year as four digit string.
+ - `%UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
  
  @param string The string to replace placeholder occurences in.
  @return Returns new string with all placeholder occurences replaced.

@@ -29,14 +29,8 @@
 /** Returns the regex used for matching ordered lists with capture 1 containing lists indent and capture 2 string value. */
 @property (readonly) NSString *orderedListRegex;
 
-/** Returns the regex used for testing whether a string matches an ordered lists. */
-@property (readonly) NSString *orderedListMatchRegex;
-
 /** Returns the regex used for matching unordered lists with capture 1 containing list indent and capture 2 string value. */
 @property (readonly) NSString *unorderedListRegex;
-
-/** Returns the regex used for testing whether a string matches an unordered list. */
-@property (readonly) NSString *unorderedListMatchRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Sections definitions
@@ -48,11 +42,8 @@
 /** Returns the regex used for matching bug section with capture 1 containing description. */
 @property (readonly) NSString *bugSectionRegex;
 
-/** Returns the regex used for matching example section with capture 1 containing example text. */
+/** Returns the regex used for matching example section with capture 1 containing whitespace prefix and capture 2 example text. */
 @property (readonly) NSString *exampleSectionRegex;
-
-/** Returns the regex used for matching example lines with capture 1 containing example lines texts. */
-@property (readonly) NSString *exampleLinesRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Method specific definitions
@@ -80,7 +71,7 @@
 @property (readonly) NSString *crossReferenceRegex;
 
 ///---------------------------------------------------------------------------------------
-/// @name Common definitions
+/// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
 /** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. */
@@ -89,10 +80,20 @@
 /** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name. */
 @property (readonly) NSString *localMemberCrossReferenceRegex;
 
-/** Returns the regex used for matching (possible) object cross reference with capture 1 containing object name. */
+/** Returns the regex used for matching (possible) category cross reference with capture 1 containing category name. */
+@property (readonly) NSString *categoryCrossReferenceRegex;
+
+/** Returns the regex used for matching (possible) class or protocol cross reference with capture 1 containing object name. */
 @property (readonly) NSString *objectCrossReferenceRegex;
 
 /** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself. */
 @property (readonly) NSString *urlCrossReferenceRegex;
+
+///---------------------------------------------------------------------------------------
+/// @name Common definitions
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex containing all possible symbols for matching new lines. */
+@property (readonly) NSString *newLineRegex;
 
 @end

@@ -45,6 +45,10 @@
 	return self.nameOfProtocol;
 }
 
+- (NSString *)debugDescription {
+	return [NSString stringWithFormat:@"protocol %@ %@\n%@", self.nameOfProtocol, self.adoptedProtocols.debugDescription, self.methods.debugDescription];
+}
+
 - (BOOL)isTopLevelObject {
 	return YES;
 }

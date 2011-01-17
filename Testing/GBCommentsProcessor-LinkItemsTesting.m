@@ -37,7 +37,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @"normal", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @" normal", nil];
 }
 
 - (void)testProcesCommentWithStore_shouldDetectAtTheEndOfParagraph {
@@ -48,7 +48,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal", [GBParagraphLinkItem class], @"http://gentlebytes.com", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"normal ", [GBParagraphLinkItem class], @"http://gentlebytes.com", nil];
 }
 
 - (void)testProcesCommentWithStore_shouldDetectInTheMiddleOfParagraph {
@@ -59,7 +59,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @"suffix", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"prefix ", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @" suffix", nil];
 }
 
 #pragma mark URL processing testing
@@ -70,20 +70,26 @@
 	GBComment *comment1 = [GBComment commentWithStringValue:@"http://gentlebytes.com"];
 	GBComment *comment2 = [GBComment commentWithStringValue:@"https://gentlebytes.com"];
 	GBComment *comment3 = [GBComment commentWithStringValue:@"ftp://user:pass@gentlebytes.com"];
-	GBComment *comment4 = [GBComment commentWithStringValue:@"file://gentlebytes.com"];
-	GBComment *comment5 = [GBComment commentWithStringValue:@"mailto:tomaz@gentlebytes.com"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"rss://gentlebytes.com"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"news://gentlebytes.com"];
+	GBComment *comment6 = [GBComment commentWithStringValue:@"file://gentlebytes.com"];
+	GBComment *comment7 = [GBComment commentWithStringValue:@"mailto:tomaz@gentlebytes.com"];
 	// execute
 	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment3 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment4 withStore:[GBTestObjectsRegistry store]];
 	[processor processComment:comment5 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment6 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment7 withStore:[GBTestObjectsRegistry store]];
 	// verify
 	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsLinks:@"http://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsLinks:@"https://gentlebytes.com", GBNULL, GBNULL, NO, nil];
 	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsLinks:@"ftp://user:pass@gentlebytes.com", GBNULL, GBNULL, NO, nil];
-	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", GBNULL, GBNULL, NO, nil];
-	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsLinks:@"mailto:tomaz@gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsLinks:@"rss://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsLinks:@"news://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment6.paragraphs objectAtIndex:0] containsLinks:@"file://gentlebytes.com", GBNULL, GBNULL, NO, nil];
+	[self assertParagraph:[comment7.paragraphs objectAtIndex:0] containsLinks:@"mailto:tomaz@gentlebytes.com", GBNULL, GBNULL, NO, nil];
 }
 
 - (void)testProcessCommentWithStore_url_shouldDetectMarkedUrl {
@@ -107,6 +113,19 @@
 	// verify
 	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsTexts:@"appledoc://gentlebytes.com", nil];
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsTexts:@"htp://gentlebytes.com", nil];
+}
+
+- (void)testProcessCommentWithStore_url_shouldDetectUrlWithinParenthesis {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(http://gentlebytes.com)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"(<http://gentlebytes.com>)"];
+	// execute
+	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
+	// verify	
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"(", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"(", [GBParagraphLinkItem class], @"http://gentlebytes.com", [GBParagraphTextItem class], @")", nil];
 }
 
 #pragma mark Remote instance methods processing testing
@@ -161,6 +180,60 @@
 	[processor processComment:comment withContext:nil store:store];
 	// verify
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"[Protocol instance:]", protocol, method, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"([Class instance:])"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"[Class instance:]."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"[Class instance:],"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"[Class instance:]:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"[Class instance:];"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	[processor processComment:comment5 withContext:nil store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"[Class instance:]", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @";", nil];
+}
+
+- (void)testProcessCommentWithStore_remoteMember_shouldDetectEmbeddedWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(<[Class instance:]>)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"<[Class instance:]>."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"<[Class instance:]>,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"<[Class instance:]>:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"<[Class instance:]>;"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	[processor processComment:comment5 withContext:nil store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"[Class instance:]", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"[Class instance:]", text, @";", nil];
 }
 
 #pragma mark Remote class methods processing testing
@@ -393,6 +466,54 @@
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"instance:", nil];
 }
 
+- (void)testProcessCommentWithStore_localMember_shouldDetectWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(instance:)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"instance:."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"instance:,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"instance:;"];
+	// execute
+	[processor processComment:comment1 withContext:class store:store];
+	[processor processComment:comment2 withContext:class store:store];
+	[processor processComment:comment3 withContext:class store:store];
+	[processor processComment:comment4 withContext:class store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"instance:", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @";", nil];
+}
+
+- (void)testProcessCommentWithStore_localMember_shouldDetectEmbeddedWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"instance", nil];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(<instance:>)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"<instance:>."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"<instance:>,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"<instance:>;"];
+	// execute
+	[processor processComment:comment1 withContext:class store:store];
+	[processor processComment:comment2 withContext:class store:store];
+	[processor processComment:comment3 withContext:class store:store];
+	[processor processComment:comment4 withContext:class store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"instance:", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"instance:", text, @";", nil];
+}
+
 #pragma mark Classes processing testing
 
 - (void)testProcessCommentWithStore_class_shouldDetectLocalLink {
@@ -588,6 +709,112 @@
 	[processor processComment:comment withContext:protocol store:store];
 	// verify
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Protocol", nil];
+}
+
+#pragma mark Classes, categories and protocols processing testing
+
+- (void)testProcessCommentWithStore_class_shouldDetectWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(Class)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"Class."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Class,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"Class:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"Class;"];
+	// execute
+	[processor processComment:comment1 withContext:class store:store];
+	[processor processComment:comment2 withContext:class store:store];
+	[processor processComment:comment3 withContext:class store:store];
+	[processor processComment:comment4 withContext:class store:store];
+	[processor processComment:comment5 withContext:class store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"Class", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @";", nil];
+}
+
+- (void)testProcessCommentWithStore_class_shouldDetectEmbeddedWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(<Class>)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"<Class>."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"<Class>,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"<Class>:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"<Class>;"];
+	// execute
+	[processor processComment:comment1 withContext:class store:store];
+	[processor processComment:comment2 withContext:class store:store];
+	[processor processComment:comment3 withContext:class store:store];
+	[processor processComment:comment4 withContext:class store:store];
+	[processor processComment:comment5 withContext:class store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"Class", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"Class", text, @";", nil];
+}
+
+- (void)testProcessCommentWithStore_category_shouldDetectWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(Class(Category))"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"Class(Category)."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Class(Category),"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"Class(Category):"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"Class(Category);"];
+	// execute
+	[processor processComment:comment1 withContext:category store:store];
+	[processor processComment:comment2 withContext:category store:store];
+	[processor processComment:comment3 withContext:category store:store];
+	[processor processComment:comment4 withContext:category store:store];
+	[processor processComment:comment5 withContext:category store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"Class(Category)", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @";", nil];
+}
+
+- (void)testProcessCommentWithStore_category_shouldDetectEmbeddedWithinPunctuation {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:nil];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"(<Class(Category)>)"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"<Class(Category)>."];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"<Class(Category)>,"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"<Class(Category)>:"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"<Class(Category)>;"];
+	// execute
+	[processor processComment:comment1 withContext:category store:store];
+	[processor processComment:comment2 withContext:category store:store];
+	[processor processComment:comment3 withContext:category store:store];
+	[processor processComment:comment4 withContext:category store:store];
+	[processor processComment:comment5 withContext:category store:store];
+	// verify
+	Class text = [GBParagraphTextItem class];
+	Class link = [GBParagraphLinkItem class];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:text, @"(", link, @"Class(Category)", text, @")", nil];
+	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @".", nil];
+	[self assertParagraph:[comment3.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @",", nil];
+	[self assertParagraph:[comment4.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @":", nil];
+	[self assertParagraph:[comment5.paragraphs objectAtIndex:0] containsItems:link, @"Class(Category)", text, @";", nil];
 }
 
 @end

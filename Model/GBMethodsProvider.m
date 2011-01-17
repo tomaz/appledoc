@@ -55,7 +55,19 @@
 	if (!string) return nil;
 	string = [string stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	if ([string length] == 0) return nil;
+	if ([_sections count] > 0 && [[[_sections lastObject] sectionName] isEqualToString:string]) return nil;
 	return [self registerSectionWithName:string];
+}
+
+- (void)unregisterEmptySections {
+	GBLogDebug(@"Unregistering empty sections...");
+	for (NSUInteger i=0; i<[_sections count]; i++) {
+		GBMethodSectionData *section = [_sections objectAtIndex:i];
+		if ([section.methods count] == 0) {
+			[_sections removeObject:section];
+			i--;
+		}
+	}
 }
 
 - (void)registerMethod:(GBMethodData *)method {
@@ -171,6 +183,17 @@
 
 - (NSString *)description {
 	return [_parent description];
+}
+
+- (NSString *)debugDescription {
+	NSMutableString *result = [NSMutableString string];
+	[self.sections enumerateObjectsUsingBlock:^(GBMethodSectionData *section, NSUInteger idx, BOOL *stop) {
+		[result appendFormat:@"- %@\n", section.sectionName];
+		[section.methods enumerateObjectsUsingBlock:^(GBMethodData *method, NSUInteger idx, BOOL *stop) {
+			[result appendFormat:@"  - %@\n", method.methodSelector];
+		}];
+	}];
+	return result;
 }
 
 #pragma mark Properties

@@ -144,7 +144,17 @@
 		object.comment = nil;
 		return;
 	}
+	
+	// Let comments processor parse comment string value into object representation.
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
+	
+	// Prepare description paragraphs from registered paragraphs according to application settings.
+	if (!object.comment.hasParagraphs) return;
+	NSArray *paragraphs = object.comment.paragraphs;
+	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1; 
+	for (NSUInteger i=startIndex; i<[paragraphs count]; i++) {
+		[object.comment registerDescriptionParagraph:[paragraphs objectAtIndex:i]];
+	}
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
@@ -182,7 +192,7 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
-		GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+		if (self.settings.warnOnMissingMethodArgument) GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
@@ -246,6 +256,8 @@
 		return YES;
 	}
 	
+	// Remove all empty sections to cleanup the object for output generation.
+	[provider unregisterEmptySections];	
 	return NO;
 }
 

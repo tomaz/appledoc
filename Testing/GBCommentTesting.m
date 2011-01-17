@@ -72,15 +72,40 @@
 	assertThatBool(comment.hasParagraphs, equalToBool(YES));
 }
 
-- (void)testHasMultipleParagraphs_shouldReturnProperValue {
+#pragma mark Description paragraphs handling
+
+- (void)testRegisterDescriptionParagraph_shouldAddParagraphToList {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
+	// execute
+	[comment registerDescriptionParagraph:paragraph];
+	// verify
+	assertThatInteger([comment.descriptionParagraphs count], equalToInteger(1));
+	assertThat([comment.descriptionParagraphs objectAtIndex:0], is(paragraph));
+}
+
+- (void)testRegisterDescriptionParagraph_shouldAddAllParagraphsToListInOrderRegistered {
+	// setup
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	GBCommentParagraph *paragraph1 = [GBCommentParagraph paragraph];
+	GBCommentParagraph *paragraph2 = [GBCommentParagraph paragraph];
+	// execute
+	[comment registerDescriptionParagraph:paragraph1];
+	[comment registerDescriptionParagraph:paragraph2];
+	// verify
+	assertThatInteger([comment.descriptionParagraphs count], equalToInteger(2));
+	assertThat([comment.descriptionParagraphs objectAtIndex:0], is(paragraph1));
+	assertThat([comment.descriptionParagraphs objectAtIndex:1], is(paragraph2));
+}
+
+- (void)testHasDescriptionParagraphs_shouldReturnProperValue {
 	// setup
 	GBComment *comment = [GBComment commentWithStringValue:@""];
 	// execute & verify
-	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
-	[comment registerParagraph:[GBCommentParagraph paragraph]];
-	assertThatBool(comment.hasMultipleParagraphs, equalToBool(NO));
-	[comment registerParagraph:[GBCommentParagraph paragraph]];
-	assertThatBool(comment.hasMultipleParagraphs, equalToBool(YES));
+	assertThatBool(comment.hasDescriptionParagraphs, equalToBool(NO));
+	[comment registerDescriptionParagraph:[GBCommentParagraph paragraph]];
+	assertThatBool(comment.hasDescriptionParagraphs, equalToBool(YES));
 }
 
 #pragma mark Parameters testing

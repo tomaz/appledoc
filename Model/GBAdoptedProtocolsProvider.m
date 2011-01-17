@@ -78,6 +78,19 @@
 	return [_parent description];
 }
 
+- (NSString *)debugDescription {
+	NSMutableString *result = [NSMutableString string];
+	if ([self.protocols count] > 0) {
+		[result appendString:@"<"];
+		[[self protocolsSortedByName] enumerateObjectsUsingBlock:^(GBProtocolData *protocol, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendString:@", "];
+			[result appendString:protocol.nameOfProtocol];
+		}];
+		[result appendString:@">"];
+	}
+	return result;
+}
+
 #pragma mark Properties
 
 @synthesize protocols = _protocols;

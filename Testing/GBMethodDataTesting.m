@@ -89,6 +89,20 @@
 	assertThat([original.methodAttributes objectAtIndex:1], is(@"retain"));
 }
 
+- (void)testMergeDataFromObject_shouldUseArgumentNamesFromComment {
+	// setup
+	GBMethodArgument *arg1 = [GBMethodArgument methodArgumentWithName:@"method" types:[NSArray arrayWithObject:@"id"] var:@"var"];
+	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithArguments:arg1, nil];
+	GBMethodArgument *arg2 = [GBMethodArgument methodArgumentWithName:@"method" types:[NSArray arrayWithObject:@"id"] var:@"theVar"];
+	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithArguments:arg2, nil];
+	[source setComment:[GBComment commentWithStringValue:@"Comment"]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify
+	GBMethodArgument *mergedArgument = [original.methodArguments objectAtIndex:0];
+	assertThat(mergedArgument.argumentVar, is(@"theVar"));
+}
+
 #pragma mark Formatted components testing
 
 - (void)testFormattedComponents_shouldReturnSimplePropertyComponents {

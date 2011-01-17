@@ -54,7 +54,7 @@
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph = comment.firstParagraph;
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphListItem class], GBNULL, nil];
-	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1 Continued", @"Item2", nil];
+	[self assertList:[paragraph.paragraphItems objectAtIndex:1] isOrdered:NO containsParagraphs:@"Item1\nContinued", @"Item2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
@@ -156,7 +156,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
-	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph - Line", nil];
+	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph\n- Line", nil];
 }
 
 - (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
@@ -169,7 +169,7 @@
 	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
 	// verify - comment1 should continue warning
 	assertThatInteger([[comment1 paragraphs] count], equalToInteger(1));
-	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description Next", nil];
+	[self assertParagraph:[comment1.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description\nNext", nil];
 	// verify - comment2 should start new paragraph
 	assertThatInteger([[comment2 paragraphs] count], equalToInteger(2));
 	[self assertParagraph:[comment2.paragraphs objectAtIndex:0] containsItems:[GBParagraphListItem class], @"- Description", nil];

@@ -68,6 +68,13 @@
 		}
 	}
 	
+	// Create directory hierarchy minus the last one. This is necessary if more than one component is missing at destination path; copyItemAtPath:toPath:error would fail in such case. Note that we can't create the last directory as mentioned method request is that the destination doesn't exist!
+	NSString *createDestPath = [destPath stringByDeletingLastPathComponent];
+	if (![self.fileManager createDirectoryAtPath:createDestPath withIntermediateDirectories:YES attributes:nil error:error]) {
+		GBLogWarn(@"Failed creating directory '%@'!", createDestPath);
+		return NO;
+	}
+	
 	// If there's no source file, there also no need to copy anything, so exit. In fact, copying would probably just result in errors.
 	if (![self.fileManager fileExistsAtPath:sourcePath]) {
 		GBLogDebug(@"No template file found at '%@', no need to copy.", sourceUserPath);
@@ -82,7 +89,7 @@
 	}
 	
 	// Remove all ignored files and special template items from output. First enumerate all files. If this fails, report success; this step is only used to verscleanup the destination, we should still have valid output if these files are kept there.
-	GBLogDebug(@"Removing leftovers from '%@'...", destUserPath);
+	GBLogDebug(@"Removing temporary files from '%@'...", destUserPath);
 	NSArray *items = [self.fileManager subpathsOfDirectoryAtPath:destPath error:error];
 	if (!items) {
 		GBLogWarn(@"Failed enumerating template files at '%@'!", destUserPath);
@@ -91,16 +98,17 @@
 	for (NSString *path in items) {
 		BOOL delete = NO;
 		if ([self isPathRepresentingIgnoredFile:path]) {
+			GBLogDebug(@"Removing ignored file '%@' from output...", path);
 			delete = YES;
 		} else if ([self isPathRepresentingTemplateFile:path]) {
 			GBTemplateHandler *handler = [self templateHandlerFromTemplateFile:path error:error];
 			if (!handler) return NO;
+			GBLogDebug(@"Removing template file '%@' from output...", path);
 			[self.templateFiles setObject:handler forKey:path];
 			delete = YES;
 		}
 		
 		if (delete) {
-			GBLogDebug(@"Cleaning leftover '%@' from output...", path);
 			NSString *fullpath = [destPath stringByAppendingPathComponent:path];
 			if (![self.fileManager removeItemAtPath:fullpath error:error]) {
 				GBLogWarn(@"Can't clean leftover '%@' from '%@'.", path, destUserPath);
@@ -109,6 +117,62 @@
 	}
 	
 	return YES;
+}
+
+- (BOOL)initializeDirectoryAtPath:(NSString *)path error:(NSError **)error {
+	return [self initializeDirectoryAtPath:path preserve:nil error:error];
+}
+
+- (BOOL)initializeDirectoryAtPath:(NSString *)path preserve:(NSArray *)preserve error:(NSError **)error {
+	GBLogVerbose(@"Initializing directory at '%@'...", path);
+	NSString *standardized = [path stringByStandardizingPath];
+	
+	// If no path is to be preserved, just use simple approach of removing path and recreating it later on... Otherwise delete all content except given one.
+	BOOL exists = [self.fileManager fileExistsAtPath:standardized];
+	if ([preserve count] == 0) {
+		if (exists) {
+			GBLogDebug(@"Removing existing directory...");
+			if (![self.fileManager removeItemAtPath:standardized error:error]) return NO;
+		}
+	} else if (exists) {
+		GBLogDebug(@"Enumerating directory contents...");
+		NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:error];
+		if (!contents && error && *error) return NO;
+		for (NSString *subpath in contents) {
+			if (![preserve containsObject:subpath]) {
+				GBLogDebug(@"Removing '%@'...", subpath);
+				if (![self.fileManager removeItemAtPath:[path stringByAppendingPathComponent:subpath] error:error]) return NO;
+			}
+		}
+	}
+	
+	// Create the directory if it doesn't yet exist. Note that we rely on system to actually check if the directory exists, instead of the cached value from above. The cached value may change if we remove the directory. Although we could change the value too, it makes tool safer this way.
+	if (![self.fileManager fileExistsAtPath:standardized]) {
+		GBLogDebug(@"Creating directory...");
+		return [self.fileManager createDirectoryAtPath:standardized withIntermediateDirectories:YES attributes:nil error:error];
+	}
+	return YES;
+}
+
+- (BOOL)copyOrMoveItemFromPath:(NSString *)source toPath:(NSString *)destination error:(NSError **)error {
+	BOOL copy = self.settings.keepIntermediateFiles;
+	GBLogDebug(@"%@ '%@' to '%@'...", copy ? @"Copying" : @"Moving", source, destination);
+	
+	NSString *standardSource = [source stringByStandardizingPath];
+	NSString *standardDest = [destination stringByStandardizingPath];
+	
+	// We must first delete destination path if it exists. Otherwise copy or move will fail!
+	if ([self.fileManager fileExistsAtPath:standardDest]) {
+		GBLogDebug(@"Removing '%@'...", destination);
+		if (![self.fileManager removeItemAtPath:standardDest error:error]) {
+			GBLogWarn(@"Failed removing '%@'!", destination);
+			return NO;
+		}
+	}
+	
+	// Now either copy or move.
+	if (copy) return [self.fileManager copyItemAtPath:standardSource toPath:standardDest error:error];
+	return [self.fileManager moveItemAtPath:source toPath:destination error:error];
 }
 
 - (BOOL)isPathRepresentingTemplateFile:(NSString *)path {

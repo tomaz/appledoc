@@ -49,6 +49,10 @@
 	return self.idOfCategory;
 }
 
+- (NSString *)debugDescription {
+	return [NSString stringWithFormat:@"category %@ %@\n%@", self.idOfCategory, self.adoptedProtocols.debugDescription, self.methods.debugDescription];
+}
+
 - (BOOL)isTopLevelObject {
 	return YES;
 }
