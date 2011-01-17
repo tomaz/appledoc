@@ -24,7 +24,7 @@
  
  1. Create a new global string as `static NSString` containing the command line switch name.
  2. Register the switch to `DDCli` (add negated switch if it's a boolean).
- 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean swithces require testing normal and negated variants!).
+ 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean switches require testing normal and negated variants!).
  4. Add KVC setter and map to corresponding property to make the test pass (again booleans require two setters).
  5. If the switch value uses template placeholders, add unit test in `GBApplicationSettingsProviderTesting.m` that validates the switch is handled.
  6. If previous point was used, add the code to `replaceAllOccurencesOfPlaceholderStringsInSettingsValues` to make the test pass.

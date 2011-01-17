@@ -272,6 +272,24 @@
 	assertThatBool(settings2.warnOnUndocumentedMember, equalToBool(NO));
 }
 
+- (void)testWarnOnEmptyDescription_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-empty-description", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-empty-description", nil];
+	// verify
+	assertThatBool(settings1.warnOnEmptyDescription, equalToBool(YES));
+	assertThatBool(settings2.warnOnEmptyDescription, equalToBool(NO));
+}
+
+- (void)testWarnOnUnknownDirective_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-unknown-directive", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-unknown-directive", nil];
+	// verify
+	assertThatBool(settings1.warnOnUnknownDirective, equalToBool(YES));
+	assertThatBool(settings2.warnOnUnknownDirective, equalToBool(NO));
+}
+
 - (void)testWarnOnInvalidCrossReference_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-invalid-crossref", nil];
