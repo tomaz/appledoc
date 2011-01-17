@@ -242,36 +242,29 @@
 
 - (BOOL)registerListBlockFromLines:(NSArray *)lines {
 	// List block contains a hierarhcy of lists, each represented as a GBParagraphListItem, with it's items as GBCommentParagraph. The method handles both, ordered and unordered lists in any depth and any combination. NOTE: list items can be prefixed by tabs or spaces or combination of both, however it's recommended to use single case as depth is calculated simply by testing prefix string length (so single tab is considered same depth as single space).
+#define isMatchingListItemStatement(theText) \
+	([theText isMatchedByRegex:unorderedRegex] || [theText isMatchedByRegex:orderedRegex])
 	
+	// If the first line doesn't contain directive, exit.
 	// If first line doesn't start a list, we should exit.
 	NSString *unorderedRegex = self.components.unorderedListRegex;
 	NSString *orderedRegex = self.components.orderedListRegex;
-	if (![[lines firstObject] isMatchedByRegex:unorderedRegex] && ![[lines firstObject] isMatchedByRegex:orderedRegex]) return NO;
+	if (!isMatchingListItemStatement([lines firstObject])) return NO;
 	GBLogDebug(@"  - Found list block at %@.", self.sourceFileInfo);
 	
-	// In the first pass, convert the array of lines into an array of pre-processed items. Each item is a dictionary containing type of item, indent and full description. The main reason for this step is to combine multiple line item texts into a single string.
+	// In the first pass, convert the array of lines into an array of pre-processed items. Each item is a dictionary containing the text and line number. The main reason for this step is to combine multiple line item texts into a single string.
 	NSMutableArray *items = [NSMutableArray arrayWithCapacity:[lines count]];
 	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
-		// If the line doesn't contain list item, treat it as successive line of text that should be appended to previous item. Note that we don't have to test if we have previous item as we already verified the first line contains one above!
-		BOOL ordered = NO;
-		NSArray *components = [line captureComponentsMatchedByRegex:unorderedRegex];
-		if ([components count] == 0) {
-			ordered = YES;
-			components = [line captureComponentsMatchedByRegex:orderedRegex];
-			if ([components count] == 0) {
-				NSMutableDictionary *previousItem = [items lastObject];
-				NSString *text = [previousItem objectForKey:@"text"];				
-				[previousItem setObject:[text stringByAppendingFormat:@"\n%@", line] forKey:@"text"];
-				return;
-			}
+		if (isMatchingListItemStatement(line)) {
+			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
+			[data setObject:line forKey:@"text"];
+			[data setObject:[NSNumber numberWithInt:self.currentStartLine + idx] forKey:@"line"];
+			[items addObject:data];
+		} else {
+			NSMutableDictionary *data = [items lastObject];
+			NSString *text = [[data objectForKey:@"text"] stringByAppendingFormat:@"\n%@", line];
+			[data setObject:text forKey:@"text"];
 		}
-		
-		// Create new list item.
-		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
-		[data setObject:[NSNumber numberWithBool:ordered] forKey:@"ordered"];
-		[data setObject:[components objectAtIndex:1] forKey:@"indent"];
-		[data setObject:[components objectAtIndex:2] forKey:@"text"];
-		[items addObject:data];
 	}];
 	
 	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
@@ -287,10 +280,23 @@
 	NSMutableArray *listsStack = [NSMutableArray arrayWithCapacity:[items count]];
 	NSMutableArray *indentsStack = [NSMutableArray arrayWithCapacity:[items count]];
 	[items enumerateObjectsUsingBlock:^(NSDictionary *itemData, NSUInteger idx, BOOL *stop) {
-		// Get item components.
-		BOOL ordered = [[itemData objectForKey:@"ordered"] boolValue];
-		NSString *indent = [itemData objectForKey:@"indent"];
+		BOOL ordered = NO;
+		NSArray *components = nil;
 		NSString *text = [itemData objectForKey:@"text"];
+		NSString *sourceInfo = [NSString stringWithFormat:@"%@%%@", self.currentComment.sourceInfo.filename, [itemData objectForKey:@"line"]];
+		
+		// Match list item.
+		components = [text captureComponentsMatchedByRegex:unorderedRegex];
+		if ([components count] > 0) {
+			ordered = NO;
+		} else {
+			components = [text captureComponentsMatchedByRegex:orderedRegex];
+			ordered = YES;
+		}
+		
+		// Get item components.		
+		NSString *indent = [components objectAtIndex:1];
+		NSString *stringValue = [components objectAtIndex:2];
 		
 		if ([listsStack count] == 0 || [indent length] > [[indentsStack peek] length]) {
 			// If lists stack is empty, create root list that will hold all items and push original indent. If we found greater indent, we need to start sublist.
@@ -314,10 +320,10 @@
 		}
 		
 		// Create GBCommentParagraph representing item's text and process the text. We'll end the paragraph representing item's text and sublists when we find another item at the same level or find items at lower levels...
-		GBLogDebug(@"      - Creating list item '%@' at level %lu...", [text normalizedDescription], [indentsStack count]);
+		GBLogDebug(@"      - Creating list item '%@' from %@ at level %lu...", [stringValue normalizedDescription], sourceInfo, [indentsStack count]);
 		GBParagraphListItem *list = [listsStack peek];
 		[list registerItem:[self pushParagraph:NO]];
-		[self registerTextItemsFromStringToCurrentParagraph:text];
+		[self registerTextItemsFromStringToCurrentParagraph:stringValue];
 	}];
 	
 	// At the end we need to unwind paragraphs stack until we clear all added paragraphs.
