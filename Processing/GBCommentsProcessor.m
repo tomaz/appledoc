@@ -528,9 +528,10 @@
 		NSString *description = nil;
 		GBParagraphLinkItem *linkItem = [self linkItemFromString:string range:&range description:&description];
 		if (linkItem) {
+			skipTextFromString([string substringToIndex:range.location]);
 			registerTextItemFromString(text);
 			registerLinkItem(linkItem, description);
-			string = [string substringFromIndex:range.location + range.length];
+			string = [string substringFromIndex:range.length];
 		} else {
 			skipTextFromString([string stringByMatching:@"^\\S+"]);
 		}
