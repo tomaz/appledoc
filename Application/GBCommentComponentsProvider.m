@@ -37,11 +37,11 @@
 #pragma mark Lists detection
 
 - (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+(.*)");
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+(?s:(.*))");
 }
 
 - (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+(.*)");
+	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+(?s:(.*))");
 }
 
 #pragma mark Sections detection
