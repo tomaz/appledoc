@@ -294,11 +294,19 @@
  */
 @property (assign) BOOL warnOnUndocumentedObject;
 
-/** Indicates whether appldoc will warn if it encounters an undocumented method or property.
+/** Indicates whether appledoc will warn if it encounters an undocumented method or property.
  
  @see warnOnUndocumentedObject
  */
 @property (assign) BOOL warnOnUndocumentedMember;
+
+/** Indicates whether appledoc will warn if it encounters an empty description (@bug, @warning, example section etc.).
+ */
+@property (assign) BOOL warnOnEmptyDescription;
+
+/** Indicates whether appledoc will warn if it encounters unknown directive or styling element.
+ */
+@property (assign) BOOL warnOnUnknownDirective;
 
 /** Indicates whether invalid cross reference should result in warning or not. */
 @property (assign) BOOL warnOnInvalidCrossReference;

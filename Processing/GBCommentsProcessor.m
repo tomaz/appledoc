@@ -156,7 +156,7 @@
 	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
 	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
- 		GBLogWarn(@"Empty @warning block found in %@!", self.sourceFileInfo);
+ 		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Empty @warning block found at %@!", self.sourceFileInfo);
 		return YES;
 	}
 	GBLogDebug(@"  - Found warning block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
@@ -185,7 +185,7 @@
 	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
 	NSString *description = [string stringByMatching:regex capture:1];
 	if ([description length] == 0) {
- 		GBLogWarn(@"Empty @bug block found in %@!", self.sourceFileInfo);
+ 		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Empty @bug block found at %@!", self.sourceFileInfo);
 		return YES;
 	}
 	GBLogDebug(@"  - Found bug block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
@@ -223,7 +223,11 @@
 		if ([stringValue length] > 0) [stringValue appendString:@"\n"];
 		NSString *lineText = [captures objectAtIndex:2];
 		[stringValue appendString:lineText];
-	}];	
+	}];
+	if ([stringValue length] == 0) {
+		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Found empty example block at %@!", self.sourceFileInfo);
+		return YES;
+	}
 	GBLogDebug(@"  - Found example block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
 	
 	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
@@ -423,7 +427,7 @@
 		}
 		
 		// If the line doesn't contain known directive, warn the user.
-		GBLogWarn(@"Found unknown directive '%@' at %@!", directive, sourceInfo);
+		if (self.settings.warnOnUnknownDirective) GBLogWarn(@"Found unknown directive '%@' at %@!", directive, sourceInfo);
 	}];
 
 	return YES;
@@ -483,7 +487,7 @@
 				[paragraph registerItem:decorator];
 				decorator = nil;
 			} else {
-				GBLogWarn(@"Unknown text decorator type %@ detected at %@!", type, self.sourceFileInfo);
+				if (self.settings.warnOnUnknownDirective) GBLogWarn(@"Unknown text decorator type %@ detected at %@!", type, self.sourceFileInfo);
 				decorator = nil;
 			}
 			

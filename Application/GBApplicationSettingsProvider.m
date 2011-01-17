@@ -84,6 +84,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.warnOnMissingCompanyIdentifier = YES;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
+		self.warnOnEmptyDescription = YES;
+		self.warnOnUnknownDirective = YES;
 		self.warnOnInvalidCrossReference = YES;
 		self.warnOnMissingMethodArgument = YES;
 		
@@ -381,6 +383,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize warnOnMissingCompanyIdentifier;
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
+@synthesize warnOnEmptyDescription;
+@synthesize warnOnUnknownDirective;
 @synthesize warnOnInvalidCrossReference;
 @synthesize warnOnMissingMethodArgument;
 
