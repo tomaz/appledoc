@@ -408,3 +408,17 @@
 @property (retain) GBApplicationStringsProvider *stringTemplates;
 
 @end
+
+#pragma -
+
+extern NSString *kGBTemplatePlaceholderCompanyID;
+extern NSString *kGBTemplatePlaceholderProjectID;
+extern NSString *kGBTemplatePlaceholderVersionID;
+extern NSString *kGBTemplatePlaceholderProject;
+extern NSString *kGBTemplatePlaceholderCompany;
+extern NSString *kGBTemplatePlaceholderVersion;
+extern NSString *kGBTemplatePlaceholderDocSetBundleFilename;
+extern NSString *kGBTemplatePlaceholderDocSetAtomFilename;
+extern NSString *kGBTemplatePlaceholderDocSetPackageFilename;
+extern NSString *kGBTemplatePlaceholderYear;
+extern NSString *kGBTemplatePlaceholderUpdateDate;
