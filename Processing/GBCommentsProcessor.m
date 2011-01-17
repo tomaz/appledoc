@@ -36,7 +36,7 @@
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
 
 - (GBCommentParagraph *)pushParagraphIfStackIsEmpty;
-- (GBCommentParagraph *)pushParagraph;
+- (GBCommentParagraph *)pushParagraph:(BOOL)canAutoRegister;
 - (GBCommentParagraph *)peekParagraph;
 - (GBCommentParagraph *)popParagraph;
 - (void)popAllParagraphs;
@@ -166,7 +166,7 @@
 	
 	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
 	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:string];
-	[self pushParagraph];
+	[self pushParagraph:NO];
 	[self registerTextItemsFromStringToCurrentParagraph:description];
 	[item registerParagraph:[self peekParagraph]];
 	[self popParagraph];
@@ -195,7 +195,7 @@
 	
 	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
 	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeBug stringValue:string];
-	[self pushParagraph];	
+	[self pushParagraph:NO];	
 	[self registerTextItemsFromStringToCurrentParagraph:description];
 	[item registerParagraph:[self peekParagraph]];
 	[self popParagraph];
@@ -316,7 +316,7 @@
 		// Create GBCommentParagraph representing item's text and process the text. We'll end the paragraph representing item's text and sublists when we find another item at the same level or find items at lower levels...
 		GBLogDebug(@"      - Creating list item '%@' at level %lu...", [text normalizedDescription], [indentsStack count]);
 		GBParagraphListItem *list = [listsStack peek];
-		[list registerItem:[self pushParagraph]];
+		[list registerItem:[self pushParagraph:NO]];
 		[self registerTextItemsFromStringToCurrentParagraph:text];
 	}];
 	
@@ -337,34 +337,33 @@
 	NSString *crossRefRegex = self.components.crossReferenceRegex;
 	if (!isMatchingDirectiveStatement([lines firstObject])) return NO;
 	
-	// In the first pass, convert the array of lines into an array of pre-processed directive items. Note that we use simplified grouping - if a line matches any directive, we start new directive, otherwise we append text to previous one. The result is an array containing dictionaries with text and line number.
-	__block BOOL matched = YES;
+	// In the first pass, convert the array of lines into an array of pre-processed directive items. Note that we use simplified grouping - if a line matches any directive, we start new directive, otherwise we append text to previous one. The result is an array containing dictionaries with text and line number. Exit if we didn't match any directive.
 	NSMutableArray *directives = [NSMutableArray arrayWithCapacity:[lines count]];
-	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+	for (NSUInteger i=0; i<[lines count]; i++) {
+		NSString *line = [lines objectAtIndex:i];
 		if (isMatchingDirectiveStatement(line)) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
 			[data setObject:line forKey:@"text"];
-			[data setObject:[NSNumber numberWithInt:self.currentStartLine + idx] forKey:@"line"];
+			[data setObject:[NSNumber numberWithInt:self.currentStartLine + i] forKey:@"line"];
 			[directives addObject:data];
-		} else if (idx > 0) {
+		} else if (i > 0) {
 			NSMutableDictionary *data = [directives lastObject];
 			NSString *text = [[data objectForKey:@"text"] stringByAppendingFormat:@"\n%@", line];
 			[data setObject:text forKey:@"text"];
 		} else {
-			matched = NO;
-			*stop = YES;
+			return NO;
 		}
-	}];
-
-	// Exit if we didn't match any directive, log directive block otherwise.
-	if (!matched) return NO;
+	};
 	GBLogDebug(@"  - Found directives block at %@.", self.sourceFileInfo);
 	
-	// Process all directives.
+	// Process all directives. Note that we must not immediately close paragraphs as we can find additional paragraph blocks belonging to the paragraph later on (i.e. list blocks, example blocks etc.).
 	[directives enumerateObjectsUsingBlock:^(NSDictionary *data, NSUInteger idx, BOOL *stop) {
 		NSArray *components = nil;
 		NSString *directive = [data objectForKey:@"text"];
 		NSString *sourceInfo = [NSString stringWithFormat:@"%@%%@", self.currentComment.sourceInfo.filename, [data objectForKey:@"line"]];
+		
+		// We must close previous directive description paragraph when we encounter another one. Note that this won't register the paragraph to comment as we opened each by specifying them as non-auto registered paragraphs. We leave last directive description paragraph open - we want to add any following paragraph blocks to. The paragraph will be closed either when we end processing or when we encounter another text block.
+		if (idx > 0) [self popParagraph];
 		
 		// Match @param.
 		components = [directive captureComponentsMatchedByRegex:parameterRegex];
@@ -372,9 +371,8 @@
 			NSString *name = [components objectAtIndex:1];
 			NSString *text = [components objectAtIndex:2];
 			GBLogDebug(@"    - Found parameter %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph];
+			GBCommentParagraph *paragraph = [self pushParagraph:NO];
 			[self registerTextItemsFromStringToCurrentParagraph:text];
-			[self popParagraph];
 			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
 			[self.currentComment registerParameter:argument];
 			return;
@@ -386,9 +384,8 @@
 			NSString *name = [components objectAtIndex:1];
 			NSString *text = [components objectAtIndex:2];
 			GBLogDebug(@"    - Found exception %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph];
+			GBCommentParagraph *paragraph = [self pushParagraph:NO];
 			[self registerTextItemsFromStringToCurrentParagraph:text];
-			[self popParagraph];
 			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
 			[self.currentComment registerException:argument];
 			return;
@@ -399,9 +396,8 @@
 		if ([components count] > 0) {
 			NSString *text = [components objectAtIndex:1];
 			GBLogDebug(@"    - Matched result directive with description '%@' at %@...", [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph];
+			GBCommentParagraph *paragraph = [self pushParagraph:NO];
 			[self registerTextItemsFromStringToCurrentParagraph:text];
-			[self popParagraph];
 			[self.currentComment registerResult:paragraph];
 			return;
 		}
@@ -431,7 +427,7 @@
 	// Registers standard text from the given block of lines. This always starts a new paragraph. Note that this method is just convenience method for registerTextItemsFromStringToCurrentParagraph:. Also note that we keep paragraph open as we may need to append one of the paragraph item blocks later on.
 	NSString *stringValue = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
 	GBLogDebug(@"  - Found text block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
-	[self pushParagraph];
+	[self pushParagraph:YES];
 	[self registerTextItemsFromStringToCurrentParagraph:stringValue];
 }
 
@@ -718,26 +714,29 @@
 #pragma mark Helper methods
 
 - (GBCommentParagraph *)pushParagraphIfStackIsEmpty {
-	// Convenience method for creating and pushing paragraph only if paragraphs stack is currently empty. In such case new paragraph is pushed to stack and returned. Otherwise last paragraph on the stack is returned. This is useful for block handling methods.
-	if ([self.paragraphsStack isEmpty]) return [self pushParagraph];
+	// Convenience method for creating and pushing paragraph only if paragraphs stack is currently empty. In such case new paragraph is pushed to stack and returned. Otherwise last paragraph on the stack is returned. This is useful for block handling methods for comment paragraphs (it's not suitable for parameters, exceptions and similar which must create non-autoregistering paragraph).
+	if ([self.paragraphsStack isEmpty]) return [self pushParagraph:YES];
 	return [self peekParagraph];
 }
 
-- (GBCommentParagraph *)pushParagraph {
-	// Convenience method for creating and pushing paragraph. This is probably going to be used most of the time.
+- (GBCommentParagraph *)pushParagraph:(BOOL)canAutoRegister {
+	// Convenience method for creating and pushing paragraph. Note that auto register flag specifies whether the paragraph should be automatically registered to comment when popping last paragraph from the stack. For normal comment description paragraphs, this should be YES, however for paragraphs describing list items, example blocks, method directives and similar, this should be NO to prevent registering description paragraphs to comment as well in case there is no opened comment paragraph yet...
 	GBCommentParagraph *result = [GBCommentParagraph paragraph];
-	[self.paragraphsStack push:result];
+	NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:result, @"paragraph", [NSNumber numberWithBool:canAutoRegister], @"register", nil];
+	[self.paragraphsStack push:data];
 	return result;
 }
 
 - (GBCommentParagraph *)peekParagraph {
-	return [self.paragraphsStack peek];
+	return [[self.paragraphsStack peek] objectForKey:@"paragraph"];
 }
 
 - (GBCommentParagraph *)popParagraph {
 	// Pops last paragraph from the stack and returns it. If the stack becomes empty, the paragraph is registered to current comment. This simplifies and automates paragraphs registration.
-	GBCommentParagraph *result = [self.paragraphsStack pop];
-	if ([self.paragraphsStack isEmpty]) [self.currentComment registerParagraph:result];
+	NSDictionary *data = [self.paragraphsStack pop];
+	GBCommentParagraph *result = [data objectForKey:@"paragraph"];
+	BOOL canRegister = [[data objectForKey:@"register"] boolValue];
+	if (canRegister && [self.paragraphsStack isEmpty]) [self.currentComment registerParagraph:result];
 	return result;
 }
 
