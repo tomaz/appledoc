@@ -362,8 +362,8 @@
 		NSString *directive = [data objectForKey:@"text"];
 		NSString *sourceInfo = [NSString stringWithFormat:@"%@%%@", self.currentComment.sourceInfo.filename, [data objectForKey:@"line"]];
 		
-		// We must close previous directive description paragraph when we encounter another one. Note that this won't register the paragraph to comment as we opened each by specifying them as non-auto registered paragraphs. We leave last directive description paragraph open - we want to add any following paragraph blocks to. The paragraph will be closed either when we end processing or when we encounter another text block.
-		if (idx > 0) [self popParagraph];
+		// We must close previous directive description paragraph when we encounter another one. Note that this won't register the paragraph to comment as we opened each by specifying them as non-auto registered paragraphs. We leave last directive description paragraph open - we want to add any following paragraph blocks to. The paragraph will be closed either when we end processing or when we encounter another text block. Also note that we don't pop if stack is empty. This can happen when registering @see items which don't push paragraphs!
+		if (idx > 0 && ![self.paragraphsStack isEmpty]) [self popParagraph];
 		
 		// Match @param.
 		components = [directive captureComponentsMatchedByRegex:parameterRegex];
