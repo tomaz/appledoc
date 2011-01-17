@@ -1,6 +1,21 @@
 What's new
 ==========
 
+2.0
+---
+
+- HTML respects whitespace from comments.
+- Added support for docset publishing.
+- Added support for preprocessor delimited class definitions.
+- Fixed URL and crossrefs detection when embedded in parenthesis.
+- Fixed . path handling for cmd line options.
+- Added option for keeping intermediate files.
+- Added troubleshooting info to readme.
+- Fixed output directories creation.
+- Fixed few missing @synthesize sentences.
+- Many under the hood fixes and optimizations.
+
+
 2.0b3
 -----
 
@@ -15,7 +30,7 @@ What's new
 - Cross reference to index and hierarchy pages.
 - Class hierarchy output.
 - Clean HTML output.
-- Minor fixed and refactorings.
+- Minor fixes and refactorings.
 
 
 2.0b1
