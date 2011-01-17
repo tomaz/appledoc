@@ -15,6 +15,8 @@ Main goals of appledoc:
 
 To make your experience with appledoc as smooth as possible, we warmly suggest reading this whole document as well as all online documentation mentioned in "using appledoc" section below!
 
+Want to keep updated? Follow us on Twitter - [@gentlebytes](http://twitter.com/gentlebytes).
+
 
 Quick install
 =============
