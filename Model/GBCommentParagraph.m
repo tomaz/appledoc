@@ -44,7 +44,7 @@
 	NSMutableString *result = [NSMutableString stringWithFormat:@"%@{ ", [self className]];
 	if ([self.paragraphItems count] > 1) [result appendString:@"\n"];
 	[self.paragraphItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		[result appendString:[obj description]];
+		[result appendString:[obj debugDescription]];
 		if (idx < [self.paragraphItems count]-1) [result appendString:@",\n"];
 	}];
 	[result appendString:([self.paragraphItems count] > 1) ? @"\n}" : @" }"];

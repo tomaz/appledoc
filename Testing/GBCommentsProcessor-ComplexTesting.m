@@ -10,11 +10,6 @@
 #import "GBCommentsProcessor.h"
 
 @interface GBCommentsProcessorComplexTesting : GBObjectsAssertor
-
-- (void)assertFirstParagraph:(GBCommentParagraph *)paragraph;
-- (void)assertSecondParagraph:(GBCommentParagraph *)paragraph;
-- (void)assertThirdParagraph:(GBCommentParagraph *)paragraph;
-
 @end
 
 #pragma mark -
@@ -34,9 +29,9 @@
 	[processor processComment:comment withStore:store];
 	// verify
 	[self assertParagraph:comment.firstParagraph containsItems:
-	 [GBParagraphTextItem class], @"Prefix", 
+	 [GBParagraphTextItem class], @"Prefix ", 
 	 [GBParagraphLinkItem class], @"[Class member]",
-	 [GBParagraphTextItem class], @"suffix.",
+	 [GBParagraphTextItem class], @" suffix.",
 	 nil];
 }
 
@@ -51,21 +46,17 @@
 	GBComment *comment = [GBComment commentWithStringValue:value];
 	// execute
 	[processor processComment:comment withStore:store];
-	// verify
+	// verify - common stuff.
 	assertThatInteger([comment.paragraphs count], equalToInteger(3));
-	[self assertFirstParagraph:[comment.paragraphs objectAtIndex:0]];
-	[self assertSecondParagraph:[comment.paragraphs objectAtIndex:1]];
-	[self assertThirdParagraph:[comment.paragraphs objectAtIndex:2]];
-}
-
-- (void)assertFirstParagraph:(GBCommentParagraph *)paragraph {
+	GBCommentParagraph *paragraph;
+	// verify - first paragraph.
+	paragraph = [comment.paragraphs objectAtIndex:0];
 	[self assertParagraph:paragraph containsTexts:@"Short description.", nil];
-}
-
-- (void)assertSecondParagraph:(GBCommentParagraph *)paragraph {
+	// verify - second paragraph
+	paragraph = [comment.paragraphs objectAtIndex:1];
 	[self assertParagraph:paragraph containsItems:
 	 [GBParagraphLinkItem class], @"Second", 
-	 [GBParagraphTextItem class], @"paragraph with lot's of text split into two lines.", 
+	 [GBParagraphTextItem class], @" paragraph with lot's of text\nsplit into two lines.", 
 	 [GBParagraphListItem class], [NSNull null],
 	 [GBParagraphSpecialItem class], @"Source line 1\n\n\tSource line with tab",
 	 nil];
@@ -77,27 +68,24 @@
 	 @"Nested 2.1.1", YES, 3,
 	 @"Nested 2.2", YES, 2,
 	 nil];
-}
-
-- (void)assertThirdParagraph:(GBCommentParagraph *)paragraph {
+	// verify - third paragraph
+	paragraph = [comment.paragraphs objectAtIndex:2];
 	[self assertParagraph:paragraph containsItems:
 	 [GBParagraphTextItem class], @"Third paragraph.",
 	 [GBParagraphSpecialItem class], [NSNull null],
 	 [GBParagraphSpecialItem class], [NSNull null],
-	 nil];
-	
+	 nil];	
 	GBParagraphSpecialItem *warning = [paragraph.paragraphItems objectAtIndex:1];
 	assertThatInteger(warning.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
 	[self assertParagraph:warning.specialItemDescription containsItems:
 	 [GBParagraphDecoratorItem class], @"Important:", 
-	 [GBParagraphTextItem class], @"There is something important about this! We even write it in two lines!",
-	 nil];
-	
+	 [GBParagraphTextItem class], @" There is something important about this!\nWe even write it in two lines!",
+	 nil];	
 	GBParagraphSpecialItem *bug = [paragraph.paragraphItems objectAtIndex:2];
 	assertThatInteger(bug.specialItemType, equalToInteger(GBSpecialItemTypeBug));
 	[self assertParagraph:bug.specialItemDescription containsItems:
 	 [GBParagraphDecoratorItem class], @"ID215:", 
-	 [GBParagraphTextItem class], @"Khm, still not working...",
+	 [GBParagraphTextItem class], @" Khm, still not working...",
 	 nil];
 }
 

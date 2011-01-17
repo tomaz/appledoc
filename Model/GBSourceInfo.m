@@ -44,11 +44,7 @@
 #pragma mark Overriden methods
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%@@%ld", self.filename, self.lineNumber];
-}
-
-- (NSString *)debugDescription {
-	return [NSString stringWithFormat:@"%@{ %@ }", [self className], [self description]];
+	return [NSString stringWithFormat:@"%@@%lu", self.filename, self.lineNumber];
 }
 
 #pragma mark Properties
