@@ -467,12 +467,15 @@
 				GBLogDebug(@"  - Found '%@' formatted as code at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
 				decorator.decorationType = GBDecorationTypeCode;
 			} else if ([type isEqualToString:@"=!="]) {
+				// Note that this case requires us to properly registere text to inner decorator but register outer one to the paragraph, so we do it manually!
 				GBLogDebug(@"  - Found '%@' formatted as bold-italics at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
 				GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
 				decorator.decorationType = GBDecorationTypeBold;
 				[decorator registerItem:inner];
 				inner.decorationType = GBDecorationTypeItalics;
-				decorator = inner;
+				[self registerTextAndLinkItemsFromString:text toObject:inner];
+				[paragraph registerItem:decorator];
+				decorator = nil;
 			} else {
 				GBLogWarn(@"Unknown text decorator type %@ detected at %@!", type, self.sourceFileInfo);
 				decorator = nil;
