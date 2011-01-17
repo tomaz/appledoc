@@ -34,9 +34,9 @@
 	[processor processComment:comment withStore:store];
 	// verify
 	[self assertParagraph:comment.firstParagraph containsItems:
-	 [GBParagraphTextItem class], @"Prefix", 
+	 [GBParagraphTextItem class], @"Prefix ", 
 	 [GBParagraphLinkItem class], @"[Class member]",
-	 [GBParagraphTextItem class], @"suffix.",
+	 [GBParagraphTextItem class], @" suffix.",
 	 nil];
 }
 

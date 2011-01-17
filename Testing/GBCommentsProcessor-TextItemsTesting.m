@@ -39,7 +39,7 @@
 	[self assertParagraph:[[comment paragraphs] objectAtIndex:1] containsItems:[GBParagraphTextItem class], @"Paragraph2", nil];
 }
 
-- (void)testProcessCommentWithStore_textItems_shouldCombineAllParagraphLinesIntoOne {
+- (void)testProcessCommentWithStore_textItems_shouldKeepLineBreaks {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"First line\nSecond line"];
@@ -47,10 +47,10 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"First line Second line", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"First line\necond line", nil];
 }
 
-- (void)testProcessCommentWithStore_textItems_shouldTrimAllParagraphSpaces {
+- (void)testProcessCommentWithStore_textItems_shouldKeepAllParagraphSpaces {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"   First line Second line    "];
@@ -58,7 +58,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"First line Second line", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"   First line Second line    ", nil];
 }
 
 @end

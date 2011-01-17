@@ -74,7 +74,7 @@
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
 	GBCommentParagraph *paragraph1 = [comment.paragraphs objectAtIndex:0];
-	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph @warning Line", nil];
+	[self assertParagraph:paragraph1 containsItems:[GBParagraphTextItem class], @"Paragraph\n@warning Line", nil];
 }
 
 - (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
