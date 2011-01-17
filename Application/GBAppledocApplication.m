@@ -588,7 +588,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)printVersion {
 	NSString *appledocName = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
 	NSString *appledocVersion = [self.settings.stringTemplates.appledocData objectForKey:@"version"];
-	ddprintf(@"%@ version: %@\n", appledocName, appledocVersion);
+	NSString *appledocBuild = [self.settings.stringTemplates.appledocData objectForKey:@"build"];
+	ddprintf(@"%@ version: %@ (build %@)\n", appledocName, appledocVersion, appledocBuild);
 	ddprintf(@"\n");
 }
 
