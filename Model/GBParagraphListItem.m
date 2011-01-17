@@ -65,8 +65,7 @@
 	[self.listItems enumerateObjectsUsingBlock:^(GBCommentParagraph *paragraph, NSUInteger idx, BOOL *stop) {
 		[description appendFormat:@"%@ %@ ", self.isOrdered ? @"#" : @"-", [paragraph stringValue]];
 	}];
-	NSString *trimmed = [description stringByReplacingOccurrencesOfString:@"  " withString:@" "];
-	return [trimmed normalizedDescription];
+	return [description stringByTrimmingWhitespaceAndNewLine];
 }
 
 - (NSString *)descriptionStringValue {

@@ -47,7 +47,7 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify
 	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"First line\necond line", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"First line\nSecond line", nil];
 }
 
 - (void)testProcessCommentWithStore_textItems_shouldKeepAllParagraphSpaces {

@@ -45,7 +45,7 @@
 	[self assertParagraph:paragraph containsItems:[GBParagraphTextItem class], @"Paragraph", [GBParagraphSpecialItem class], GBNULL, nil];
 	GBParagraphSpecialItem *item = [paragraph.paragraphItems objectAtIndex:1];
 	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeWarning));
-	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1 Line2", nil];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Line1\nLine2", nil];
 }
 
 - (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
