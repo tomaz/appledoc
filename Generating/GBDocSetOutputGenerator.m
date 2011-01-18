@@ -22,8 +22,6 @@
 - (BOOL)processTokensXml:(NSError **)error;
 - (BOOL)indexDocSet:(NSError **)error;
 - (BOOL)removeTemporaryFiles:(NSError **)error;
-- (BOOL)installDocSet:(NSError **)error;
-- (BOOL)publishDocSet:(NSError **)error;
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error;
 - (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data;
 - (void)initializeSimplifiedObjects;
@@ -32,7 +30,6 @@
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
-@property (readonly) NSString *docsetInstallationPath;
 @property (readonly) NSMutableSet *temporaryFiles;
 
 @end
@@ -57,15 +54,7 @@
 	if (![self processNodesXml:error]) return NO;
 	if (![self processTokensXml:error]) return NO;
 	if (![self indexDocSet:error]) return NO;
-	if (![self removeTemporaryFiles:error]) return NO;
-	
-	// Install documentation set to Xcode.
-	if (!self.settings.installDocSet) return YES;
-	if (![self installDocSet:error]) return NO;
-	
-	// Prepare documentation set for publishing.
-	if (!self.settings.publishDocSet) return YES;
-	if (![self publishDocSet:error]) return NO;
+	if (![self removeTemporaryFiles:error]) return NO;	
 	return YES;
 }
 
@@ -73,7 +62,7 @@
 	GBLogInfo(@"Moving HTML files to DocSet bundle...");
 	
 	// Prepare all paths. Note that we determine the exact subdirectory by searching for documents-template and using it's subdirectory as the guide. If documents template wasn't found, exit.
-	NSString *sourceFilesPath = [self.previousGenerator.outputUserPath stringByStandardizingPath];
+	NSString *sourceFilesPath = [self.inputUserPath stringByStandardizingPath];
 	NSString *documentsPath = [self outputPathToTemplateEndingWith:@"documents-template"];
 	if (!documentsPath) {
 		if (error) *error = [NSError errorWithCode:GBErrorDocSetDocumentTemplateMissing description:@"Documents template is missing!" reason:@"documents-template file is required to determine location for Documents path in DocSet bundle!"];
@@ -207,97 +196,6 @@
 		if (![self.fileManager removeItemAtPath:[filename stringByStandardizingPath] error:&err]) {
 			GBLogNSError(err, @"Failed removing temporary file '%@'!", filename);
 		}
-	}
-	return YES;
-}
-
-- (BOOL)installDocSet:(NSError **)error {
-	GBLogInfo(@"Installing DocSet...");
-	
-	// Prepare source and destination paths and file names.
-	NSString *sourceUserPath = self.outputUserPath;
-	NSString *destUserPath = self.docsetInstallationPath;
-	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
-	NSString *destPath = [destUserPath stringByStandardizingPath];\
-	
-	// Create destination directory and move files to it.
-	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
-	if (![self initializeDirectoryAtPath:destUserPath error:error]) {
-		GBLogWarn(@"Failed initializing DocSet installation directory '%@'!", destUserPath);
-		return NO;
-	}
-	if (![self copyOrMoveItemFromPath:sourcePath toPath:destPath error:error]) {
-		GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", sourceUserPath, destUserPath);
-		return  NO;
-	}
-	
-	// Prepare AppleScript for loading the documentation into the Xcode.
-	GBLogVerbose(@"Installing DocSet to Xcode...");
-	NSMutableString* installScript  = [NSMutableString string];
-	[installScript appendString:@"tell application \"Xcode\"\n"];
-	[installScript appendFormat:@"\tload documentation set with path \"%@\"\n", destPath];
-	[installScript appendString:@"end tell"];
-	
-	// Run the AppleScript for loading the documentation into the Xcode.
-	NSDictionary* errorDict = nil;
-	NSAppleScript* script = [[NSAppleScript alloc] initWithSource:installScript];
-	if (![script executeAndReturnError:&errorDict])
-	{
-		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
-		if (error) *error = [NSError errorWithCode:GBErrorDocSetXcodeReloadFailed description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
-		return NO;
-	}
-	return YES;
-}
-
-- (BOOL)publishDocSet:(NSError **)error {
-	GBLogInfo(@"Preparing DocSet for publishing...");
-	GBTask *task = [GBTask task];
-	task.reportIndividualLines = YES;
-	
-	// Get the path to the installed documentation set and extract the name. Then replace the name's extension with .xar.
-	NSString *installedDocSetPath = self.docsetInstallationPath;
-	NSString *packageName = self.settings.docsetPackageFilename;
-	NSString *atomName = self.settings.docsetAtomFilename;
-		
-	// Prepare command line arguments for packaging.
-	NSString *outputDir = [self.settings.outputPath stringByAppendingPathComponent:@"publish"];
-	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:packageName];
-	NSString *outputAtomPath = [outputDir stringByAppendingPathComponent:atomName];
-	NSString *signer = self.settings.docsetCertificateSigner;
-	NSString *url = self.settings.docsetPackageURL;
-	if ([url length] == 0) GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", outputAtomPath);
-	
-	// Create destination directory.
-	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {
-		GBLogWarn(@"Failed initializing DocSet publish directory '%@'!", outputDir);
-		return NO;
-	}
-
-	// Create command line arguments array.
-	NSMutableArray *args = [NSMutableArray array];
-	[args addObject:@"package"];
-	[args addObject:@"-output"];
-	[args addObject:[outputDocSetPath stringByStandardizingPath]];
-	[args addObject:@"-atom"];
-	[args addObject:[outputAtomPath stringByStandardizingPath]];
-	if ([signer length] > 0) {
-		[args addObject:@"-signid"];
-		[args addObject:signer];
-	}
-	if ([url length] > 0) {
-		[args addObject:@"-download-url"];
-		[args addObject:url];
-	}
-	[args addObject:installedDocSetPath];
-	
-	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
-		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
-		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
-	}];
-	if (!result) {
-		if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to package the documentation set!" reason:task.lastStandardError];
-		return NO;
 	}
 	return YES;
 }
