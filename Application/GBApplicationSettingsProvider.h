@@ -318,6 +318,13 @@
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------
 
+/** Returns a new string by escaping the given HTML.
+ 
+ @param string HTML string to escape.
+ @return Returns escaped HTML string.
+ */
+- (NSString *)stringByEscapingHTML:(NSString *)string;
+
 /** Returns HTML reference name for the given object.
  
  This should only be used for creating anchors that need to be referenced from other parts of the same HTML file. The method works for top-level objects as well as their members.

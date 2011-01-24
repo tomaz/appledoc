@@ -229,6 +229,7 @@
 		return YES;
 	}
 	GBLogDebug(@"  - Found example block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
+	NSString *escapedHTML = [self.settings stringByEscapingHTML:stringValue];
 	
 	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
 	[self pushParagraphIfStackIsEmpty];
@@ -236,7 +237,7 @@
     // Prepare paragraph item. Note that we don't use paragraphs stack as currently we don't process the text for cross refs!
     GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:stringValue];
 	GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
-    [paragraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:stringValue]];
+    [paragraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:escapedHTML]];
 	[item registerParagraph:paragraph];
 	
     // Register example block to current paragraph.
