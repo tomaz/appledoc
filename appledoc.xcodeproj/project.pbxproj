@@ -136,6 +136,8 @@
 		7359B16A129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B146129A5A0600F67AD1 /* GRMustacheVariableElement.m */; };
 		7359B16B129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
 		7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
+		736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72A12E58DCC0094F72E /* GBDocSetInstallGenerator.m */; };
+		736314AA12ED7DB900852593 /* GBDocSetPublishGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72D12E58E160094F72E /* GBDocSetPublishGenerator.m */; };
 		7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367298312A3D7A000879D1B /* NSError+GBError.m */; };
 		7367B84E11FEF496005ED6CD /* GBCategoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367B84D11FEF496005ED6CD /* GBCategoryData.m */; };
 		7367BB3612003CAB005ED6CD /* GBModelBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BB3512003CAB005ED6CD /* GBModelBase.m */; };
@@ -1145,6 +1147,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				736314AA12ED7DB900852593 /* GBDocSetPublishGenerator.m in Sources */,
+				736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */,
 				733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */,
 				733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */,
 				733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */,
