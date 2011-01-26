@@ -11,6 +11,20 @@
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
 
+NSString *kGBTemplatePlaceholderCompanyID = @"%COMPANYID";
+NSString *kGBTemplatePlaceholderProjectID = @"%PROJECTID";
+NSString *kGBTemplatePlaceholderVersionID = @"%VERSIONID";
+NSString *kGBTemplatePlaceholderProject = @"%PROJECT";
+NSString *kGBTemplatePlaceholderCompany = @"%COMPANY";
+NSString *kGBTemplatePlaceholderVersion = @"%VERSION";
+NSString *kGBTemplatePlaceholderDocSetBundleFilename = @"%DOCSETBUNDLEFILENAME";
+NSString *kGBTemplatePlaceholderDocSetAtomFilename = @"%DOCSETATOMFILENAME";
+NSString *kGBTemplatePlaceholderDocSetPackageFilename = @"%DOCSETPACKAGEFILENAME";
+NSString *kGBTemplatePlaceholderYear = @"%YEAR";
+NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
+
+#pragma mark -
+
 @interface GBApplicationSettingsProvider ()
 
 + (NSSet *)nonCopyableProperties;
@@ -70,11 +84,13 @@
 		self.warnOnMissingCompanyIdentifier = YES;
 		self.warnOnUndocumentedObject = YES;
 		self.warnOnUndocumentedMember = YES;
+		self.warnOnEmptyDescription = YES;
+		self.warnOnUnknownDirective = YES;
 		self.warnOnInvalidCrossReference = YES;
 		self.warnOnMissingMethodArgument = YES;
 		
-		self.docsetBundleIdentifier = @"%COMPANYID.%PROJECTID";
-		self.docsetBundleName = @"%PROJECT Documentation";
+		self.docsetBundleIdentifier = [NSString stringWithFormat:@"%@.%@", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
+		self.docsetBundleName = [NSString stringWithFormat:@"%@ Documentation", kGBTemplatePlaceholderProject];
 		self.docsetCertificateIssuer = @"";
 		self.docsetCertificateSigner = @"";
 		self.docsetDescription = @"";
@@ -84,13 +100,13 @@
 		self.docsetPackageURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.docsetPlatformFamily = @"";
-		self.docsetPublisherIdentifier = @"%COMPANYID.documentation";
-		self.docsetPublisherName = @"%COMPANY";
-		self.docsetCopyrightMessage = @"Copyright © %YEAR %COMPANY. All rights reserved.";
+		self.docsetPublisherIdentifier = [NSString stringWithFormat:@"%@.documentation", kGBTemplatePlaceholderCompanyID];
+		self.docsetPublisherName = [NSString stringWithFormat:@"%@", kGBTemplatePlaceholderCompany];
+		self.docsetCopyrightMessage = [NSString stringWithFormat:@"Copyright © %@ %@. All rights reserved.", kGBTemplatePlaceholderYear, kGBTemplatePlaceholderCompany];
 		
-		self.docsetBundleFilename = @"%COMPANYID.%PROJECTID.docset";
-		self.docsetAtomFilename = @"%COMPANYID.%PROJECTID.atom";
-		self.docsetPackageFilename = @"%COMPANYID.%PROJECTID-%VERSIONID.xar";
+		self.docsetBundleFilename = [NSString stringWithFormat:@"%@.%@.docset", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
+		self.docsetAtomFilename = [NSString stringWithFormat:@"%@.%@.atom", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
+		self.docsetPackageFilename = [NSString stringWithFormat:@"%@.%@-%@.xar", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID, kGBTemplatePlaceholderVersionID];
 		
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -122,7 +138,19 @@
 	self.docsetCopyrightMessage = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetCopyrightMessage];
 }
 
-#pragma mark HTML references handling
+#pragma mark Common HTML handling
+
+- (NSString *)stringByEscapingHTML:(NSString *)string {
+	// Copied directly from GRMustache's GRMustacheVariableElement.m...
+	NSMutableString *result = [NSMutableString stringWithCapacity:5 + ceilf(string.length * 1.1)];
+	[result appendString:string];
+	[result replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	[result replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
+	return result;
+}
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
 	NSParameterAssert(object != nil);
@@ -266,17 +294,17 @@
 }
 
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {
-	string = [string stringByReplacingOccurrencesOfString:@"%COMPANYID" withString:self.companyIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"%PROJECTID" withString:self.projectIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"%VERSIONID" withString:self.versionIdentifier];
-	string = [string stringByReplacingOccurrencesOfString:@"%PROJECT" withString:self.projectName];
-	string = [string stringByReplacingOccurrencesOfString:@"%COMPANY" withString:self.projectCompany];
-	string = [string stringByReplacingOccurrencesOfString:@"%VERSION" withString:self.projectVersion];
-	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETBUNDLEFILENAME" withString:self.docsetBundleFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETATOMFILENAME" withString:self.docsetAtomFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"%DOCSETPACKAGEFILENAME" withString:self.docsetPackageFilename];
-	string = [string stringByReplacingOccurrencesOfString:@"%YEAR" withString:[self yearStringFromDate:[NSDate date]]];
-	string = [string stringByReplacingOccurrencesOfString:@"%UPDATEDATE" withString:[self yearToDayStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderCompanyID withString:self.companyIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderProjectID withString:self.projectIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderVersionID withString:self.versionIdentifier];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderProject withString:self.projectName];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderCompany withString:self.projectCompany];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderVersion withString:self.projectVersion];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetBundleFilename withString:self.docsetBundleFilename];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetAtomFilename withString:self.docsetAtomFilename];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetPackageFilename withString:self.docsetPackageFilename];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderYear withString:[self yearStringFromDate:[NSDate date]]];
+	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderUpdateDate withString:[self yearToDayStringFromDate:[NSDate date]]];
 	return string;
 }
 
@@ -367,6 +395,8 @@
 @synthesize warnOnMissingCompanyIdentifier;
 @synthesize warnOnUndocumentedObject;
 @synthesize warnOnUndocumentedMember;
+@synthesize warnOnEmptyDescription;
+@synthesize warnOnUnknownDirective;
 @synthesize warnOnInvalidCrossReference;
 @synthesize warnOnMissingMethodArgument;
 

@@ -45,6 +45,8 @@ static NSString *kGBArgWarnOnMissingOutputPath = @"warn-missing-output-path";
 static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-id";
 static NSString *kGBArgWarnOnUndocumentedObject = @"warn-undocumented-object";
 static NSString *kGBArgWarnOnUndocumentedMember = @"warn-undocumented-member";
+static NSString *kGBArgWarnOnEmptyDescription = @"warn-empty-description";
+static NSString *kGBArgWarnOnUnknownDirective = @"warn-unknown-directive";
 static NSString *kGBArgWarnOnInvalidCrossReference = @"warn-invalid-crossref";
 static NSString *kGBArgWarnOnMissingMethodArgument = @"warn-missing-arg";
 
@@ -245,12 +247,16 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnEmptyDescription,										0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnUnknownDirective,										0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnInvalidCrossReference,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnMissingMethodArgument,								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingOutputPath),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingCompanyIdentifier),					0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedMember),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnEmptyDescription),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgWarnOnUnknownDirective),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnInvalidCrossReference),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingMethodArgument),						0,		DDGetoptNoArgument },
 		
@@ -475,12 +481,16 @@ static NSString *kGBArgHelp = @"help";
 - (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
 - (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
 - (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
+- (void)setWarnEmptyDescription:(BOOL)value { self.settings.warnOnEmptyDescription = value; }
+- (void)setWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = value; }
 - (void)setWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = value; }
 - (void)setWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = value; }
 - (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
 - (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
 - (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
 - (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
+- (void)setNoWarnEmptyDescription:(BOOL)value { self.settings.warnOnEmptyDescription = !value; }
+- (void)setNoWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = !value; }
 - (void)setNoWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = !value; }
 - (void)setNoWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = !value; }
 
@@ -578,6 +588,10 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedMember, PRINT_BOOL(self.settings.warnOnUndocumentedMember));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnEmptyDescription, PRINT_BOOL(self.settings.warnOnEmptyDescription));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUnknownDirective, PRINT_BOOL(self.settings.warnOnUnknownDirective));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnInvalidCrossReference, PRINT_BOOL(self.settings.warnOnInvalidCrossReference));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingMethodArgument, PRINT_BOOL(self.settings.warnOnMissingMethodArgument));
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgLogFormat, self.logformat);
@@ -631,6 +645,8 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"", @"[b] Warn if company ID is not given");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"", @"[b] Warn on undocumented object");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"", @"[b] Warn on undocumented member");
+	PRINT_USAGE(@"   ", kGBArgWarnOnEmptyDescription, @"", @"[b] Warn on empty description block");
+	PRINT_USAGE(@"   ", kGBArgWarnOnUnknownDirective, @"", @"[b] Warn on unknown directive or format");
 	PRINT_USAGE(@"   ", kGBArgWarnOnInvalidCrossReference, @"", @"[b] Warn on invalid cross reference");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingMethodArgument, @"", @"[b] Warn on missing method argument documentation");
 	ddprintf(@"\n");
@@ -663,17 +679,17 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"[b] boolean parameter, uses no value, use --no- prefix to negate.\n");
 	ddprintf(@"\n");
 	ddprintf(@"[*] indicates parameters accepting placeholder strings:\n");
-	ddprintf(@"- %%PROJECT replaced with --project-name\n");
-	ddprintf(@"- %%PROJECTID replaced with normalized --project-name\n");
-	ddprintf(@"- %%VERSION replaced with --project-version\n");
-	ddprintf(@"- %%VERSIONID replaced with normalized --project-version\n");
-	ddprintf(@"- %%COMPANY replaced with --project-company\n");
-	ddprintf(@"- %%COMPANYID replaced with --company-id\n");
-	ddprintf(@"- %%YEAR replaced with current year (format yyyy)\n");
-	ddprintf(@"- %%UPDATEDATE replaced with current date (format yyyy-MM-dd)\n");
-	ddprintf(@"- %%DOCSETBUNDLEFILENAME replaced with --docset-bundle-filename\n");
-	ddprintf(@"- %%DOCSETATOMFILENAME replaced with --docset-atom-filename\n");
-	ddprintf(@"- %%DOCSETPACKAGEFILENAME replaced with --docset-package-filename\n");	
+	ddprintf(@"- %@ replaced with --project-name\n", kGBTemplatePlaceholderProject);
+	ddprintf(@"- %@ replaced with normalized --project-name\n", kGBTemplatePlaceholderProjectID);
+	ddprintf(@"- %@ replaced with --project-version\n", kGBTemplatePlaceholderVersion);
+	ddprintf(@"- %@ replaced with normalized --project-version\n", kGBTemplatePlaceholderVersionID);
+	ddprintf(@"- %@ replaced with --project-company\n", kGBTemplatePlaceholderCompany);
+	ddprintf(@"- %@ replaced with --company-id\n", kGBTemplatePlaceholderCompanyID);
+	ddprintf(@"- %@ replaced with current year (format yyyy)\n", kGBTemplatePlaceholderYear);
+	ddprintf(@"- %@ replaced with current date (format yyyy-MM-dd)\n", kGBTemplatePlaceholderUpdateDate);
+	ddprintf(@"- %@ replaced with --docset-bundle-filename\n", kGBTemplatePlaceholderDocSetBundleFilename);
+	ddprintf(@"- %@ replaced with --docset-atom-filename\n", kGBTemplatePlaceholderDocSetAtomFilename);
+	ddprintf(@"- %@ replaced with --docset-package-filename\n", kGBTemplatePlaceholderDocSetPackageFilename);
 	ddprintf(@"\n");
 	ddprintf(@"==================================================================\n");
 	ddprintf(@"Find more help and tips online:\n");

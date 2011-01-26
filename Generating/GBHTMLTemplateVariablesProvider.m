@@ -186,8 +186,8 @@
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
 	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];
-	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:@"%YEAR"] forKey:@"copyrightDate"];
-	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:@"%UPDATEDATE"] forKey:@"lastUpdatedDate"];
+	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderYear] forKey:@"copyrightDate"];
+	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderUpdateDate] forKey:@"lastUpdatedDate"];
 }
 
 #pragma mark Properties

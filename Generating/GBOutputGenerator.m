@@ -238,6 +238,11 @@
 	return [self.settings.templatesPath stringByAppendingPathComponent:self.outputSubpath];
 }
 
+- (NSString *)inputUserPath {
+	if (!self.previousGenerator) return nil;
+	return self.previousGenerator.outputUserPath;
+}
+
 - (NSString *)outputUserPath {
 	return [self.settings.outputPath stringByAppendingPathComponent:self.outputSubpath];
 }

@@ -20,7 +20,7 @@
 
 - (void)testProcessCommentWithStore_shouldAttachExampleToPreviousParagraph {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n\tDescription"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -35,7 +35,7 @@
 
 - (void)testProcessCommentWithStore_shouldDetectMultipleLinesDescriptions {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n\tLine1\n\tLine2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -50,7 +50,7 @@
 
 - (void)testProcessCommentWithStore_shouldRemovePrefixTabs {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n\tLine"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -65,7 +65,7 @@
 
 - (void)testProcessCommentWithStore_shouldKeepPrefixTabsAfterFirst {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n\t\tLine1\n\t\t\t\tLine2"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -80,7 +80,7 @@
 
 - (void)testProcessCommentWithStore_shouldKeepEmptyLinesIfPrefixedWithTab {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\n\t\tLine1\n\t\n\tLine3"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -95,7 +95,7 @@
 
 - (void)testProcessCommentWithStore_shouldCreateParagraphIfNoneSpecifiedBefore {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"\tDescription"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -108,11 +108,72 @@
 	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
 }
 
+#pragma mark Comments prefixed with spaces
+
+- (void)testProcessCommentWithStore_shouldDetectIfPrefixedWithAtLeastFourSpaces {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"    Description"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"   Description"];
+	// execute
+	[processor processComment:comment1 withStore:[GBTestObjectsRegistry store]];
+	[processor processComment:comment2 withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph1 = comment1.firstParagraph;
+	[self assertParagraph:paragraph1 containsItems:[GBParagraphSpecialItem class], GBNULL, nil];
+	GBParagraphSpecialItem *item1 = [paragraph1.paragraphItems objectAtIndex:0];
+	assertThatInteger(item1.specialItemType, equalToInteger(GBSpecialItemTypeExample));
+	[self assertParagraph:item1.specialItemDescription containsItems:[GBParagraphTextItem class], @"Description", nil];
+	GBCommentParagraph *paragraph2 = comment2.firstParagraph;
+	[self assertParagraph:paragraph2 containsItems:[GBParagraphTextItem class], @"   Description", nil];
+}
+
+- (void)testProcessCommentWithStore_shouldKeepAllWhitespaceAfterInitialFourSpaces {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"     Description"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	assertThatInteger([[comment paragraphs] count], equalToInteger(1));
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	[self assertParagraph:paragraph containsItems:[GBParagraphSpecialItem class], GBNULL, nil];
+	GBParagraphSpecialItem *item = [paragraph.paragraphItems objectAtIndex:0];
+	assertThatInteger(item.specialItemType, equalToInteger(GBSpecialItemTypeExample));
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @" Description", nil];
+}
+
+#pragma mark Special contents parsing
+
+- (void)testProcessCommentWithStore_shouldEscapeHTMLText {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"\t<sometag>\"'&</sometag>"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	GBParagraphSpecialItem *item = [paragraph.paragraphItems objectAtIndex:0];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"&lt;sometag&gt;&quot;&apos;&amp;&lt;/sometag&gt;", nil];
+}
+
+- (void)testProcessCommentWithStore_shouldEscapeHTMLComments {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"\t<!-- .... ->"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify
+	GBCommentParagraph *paragraph = comment.firstParagraph;
+	GBParagraphSpecialItem *item = [paragraph.paragraphItems objectAtIndex:0];
+	[self assertParagraph:item.specialItemDescription containsItems:[GBParagraphTextItem class], @"&lt;!-- .... -&gt;", nil];
+}
+
 #pragma mark Requirements before/after testing
 
 - (void)testProcessCommentWithStore_requiresEmptyLineAfterPreviousParagraphItem {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Paragraph\n\tLine"];
 	// execute
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
@@ -124,7 +185,7 @@
 
 - (void)testProcessCommentWithStore_requiresEmptyLineBeforeNextParagraphItem {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"\tLine1\nLine2"];
 	GBComment *comment2 = [GBComment commentWithStringValue:@"\tLine1\n\nLine2"];
 	// execute

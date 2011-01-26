@@ -153,14 +153,26 @@
  
  This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
  
+ @see inputUserPath
  @see outputUserPath
  */
 @property (readonly) NSString *templateUserPath;
+
+/** Returns user-friendly input path string.
+ 
+ This is simply a shortcut for output path of previous generator. Internally it works by sending the `outputUserPath` message to `previousGenerator and returning the result. If previous generator is `nil` (i.e. this is the first generator), `nil` is returned. Send `stringByStandardizingPath` message to the returned value before using it!
+
+ 
+ @see templateUserPath
+ @see outputUserPath
+ */
+@property (readonly) NSString *inputUserPath;
 
 /** Returns the output path including `outputSubpath`. 
  
  This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
  
+ @see inputUserPath
  @see templateUserPath
  */
 @property (readonly) NSString *outputUserPath;

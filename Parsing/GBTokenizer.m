@@ -50,7 +50,7 @@
 	if (self) {
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
 		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
-		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}";
+		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}$";
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];
 		self.previousCommentBuilder = [NSMutableString string];
@@ -187,7 +187,6 @@
 		}
 		
 		// Append string value to current comment and proceed with next token.
-		value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		[self.lastCommentBuilder appendString:value];
 		self.tokenIndex++;
 	}
@@ -229,13 +228,14 @@
 		}];
 	}
 	
-	// Finally remove common line prefix including all spaces and compose all objects into final comment.
+	// Finally remove common line prefix and a single prefix space (but leave multiple spaces to properly handle space prefixed example blocks!) and compose all objects into final comment.
 	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
+	NSString *spacesPrefixRegex = @"^ {2,}";
+	NSString *tabPrefixRegex = @"^\t";
 	NSMutableString *result = [NSMutableString stringWithCapacity:[value length]];
 	[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
-		if (stripPrefix)
-			line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
-		line = [line stringByTrimmingCharactersInSet:spacesSet];
+		if (stripPrefix) line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
+		if (![line isMatchedByRegex:spacesPrefixRegex] && ![line isMatchedByRegex:tabPrefixRegex]) line = [line stringByTrimmingCharactersInSet:spacesSet];
 		[result appendString:line];
 		if (idx < [comments count] - 1) [result appendString:@"\n"];
 	}];	

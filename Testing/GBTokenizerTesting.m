@@ -265,11 +265,25 @@
 
 #pragma mark Comments parsing testing
 
-- (void)testLastCommentString_shouldTrimSpacesFromBothEnds {
+- (void)testLastCommentString_shouldTrimSpacesFromBothEndsIfPrefixedWithSignleSpace {
 	// setup & execute
-	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///     comment     \n   ONE"] filename:@"file"];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// comment     \n   ONE"] filename:@"file"];
 	// verify
 	assertThat([tokenizer.lastComment stringValue], is(@"comment"));
+}
+
+- (void)testLastCommentString_shouldNotTrimSpacesIfPrefixedWithMultipleSpaces {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///  comment     \n   ONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment stringValue], is(@"  comment     "));
+}
+
+- (void)testLastCommentString_shouldNotTrimSpacesIfPrefixedWithTab {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"///\tcomment     \n   ONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment stringValue], is(@"\tcomment     "));
 }
 
 - (void)testLastCommentString_shouldGroupSingleLineComments {

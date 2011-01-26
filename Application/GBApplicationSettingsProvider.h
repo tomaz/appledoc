@@ -24,7 +24,7 @@
  
  1. Create a new global string as `static NSString` containing the command line switch name.
  2. Register the switch to `DDCli` (add negated switch if it's a boolean).
- 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean swithces require testing normal and negated variants!).
+ 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean switches require testing normal and negated variants!).
  4. Add KVC setter and map to corresponding property to make the test pass (again booleans require two setters).
  5. If the switch value uses template placeholders, add unit test in `GBApplicationSettingsProviderTesting.m` that validates the switch is handled.
  6. If previous point was used, add the code to `replaceAllOccurencesOfPlaceholderStringsInSettingsValues` to make the test pass.
@@ -294,11 +294,19 @@
  */
 @property (assign) BOOL warnOnUndocumentedObject;
 
-/** Indicates whether appldoc will warn if it encounters an undocumented method or property.
+/** Indicates whether appledoc will warn if it encounters an undocumented method or property.
  
  @see warnOnUndocumentedObject
  */
 @property (assign) BOOL warnOnUndocumentedMember;
+
+/** Indicates whether appledoc will warn if it encounters an empty description (@bug, @warning, example section etc.).
+ */
+@property (assign) BOOL warnOnEmptyDescription;
+
+/** Indicates whether appledoc will warn if it encounters unknown directive or styling element.
+ */
+@property (assign) BOOL warnOnUnknownDirective;
 
 /** Indicates whether invalid cross reference should result in warning or not. */
 @property (assign) BOOL warnOnInvalidCrossReference;
@@ -309,6 +317,13 @@
 ///---------------------------------------------------------------------------------------
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------
+
+/** Returns a new string by escaping the given HTML.
+ 
+ @param string HTML string to escape.
+ @return Returns escaped HTML string.
+ */
+- (NSString *)stringByEscapingHTML:(NSString *)string;
 
 /** Returns HTML reference name for the given object.
  
@@ -408,3 +423,17 @@
 @property (retain) GBApplicationStringsProvider *stringTemplates;
 
 @end
+
+#pragma -
+
+extern NSString *kGBTemplatePlaceholderCompanyID;
+extern NSString *kGBTemplatePlaceholderProjectID;
+extern NSString *kGBTemplatePlaceholderVersionID;
+extern NSString *kGBTemplatePlaceholderProject;
+extern NSString *kGBTemplatePlaceholderCompany;
+extern NSString *kGBTemplatePlaceholderVersion;
+extern NSString *kGBTemplatePlaceholderDocSetBundleFilename;
+extern NSString *kGBTemplatePlaceholderDocSetAtomFilename;
+extern NSString *kGBTemplatePlaceholderDocSetPackageFilename;
+extern NSString *kGBTemplatePlaceholderYear;
+extern NSString *kGBTemplatePlaceholderUpdateDate;
