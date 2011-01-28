@@ -4,35 +4,35 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
-	<key>CFBundleIdentifier</key>
-	<string>{{bundleIdentifier}}</string>
-	<key>CFBundleName</key>
-	<string>{{bundleName}}</string>
-	<key>CFBundleShortVersionString</key>
+	{{#bundleIdentifier}}<key>CFBundleIdentifier</key>
+	<string>{{bundleIdentifier}}</string>{{/bundleIdentifier}}
+	{{#bundleName}}<key>CFBundleName</key>
+	<string>{{bundleName}}</string>{{/bundleName}}
+	{{#bundleVersion}}<key>CFBundleShortVersionString</key>
 	<string>{{bundleVersion}}</string>
 	<key>CFBundleVersion</key>
-	<string>{{bundleVersion}}</string>
-	<key>DocSetCertificateIssuer</key>
-	<string>{{certificateIssuer}}</string>
-	<key>DocSetCertificateSigner</key>
-	<string>{{certificateSigner}}</string>
-	<key>DocSetDescription</key>
-	<string>{{description}}</string>
-	<key>DocSetFallbackURL</key>
-	<string>{{fallbackURL}}</string>
-	<key>DocSetFeedName</key>
-	<string>{{feedName}}</string>
-	<key>DocSetFeedURL</key>
-	<string>{{feedURL}}</string>
-	<key>DocSetMinimumXcodeVersion</key>
-	<string>{{minimumXcodeVersion}}</string>
-	<key>DocSetPlatformFamily</key>
-	<string>{{platformFamily}}</string>
-	<key>DocSetPublisherIdentifier</key>
-	<string>{{publisherIdentifier}}</string>
-	<key>DocSetPublisherName</key>
-	<string>{{publisherName}}</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>{{copyrightMessage}}</string>
+	<string>{{bundleVersion}}</string>{{/bundleVersion}}
+	{{#certificateIssuer}}<key>DocSetCertificateIssuer</key>
+	<string>{{certificateIssuer}}</string>{{/certificateIssuer}}
+	{{#certificateSigner}}<key>DocSetCertificateSigner</key>
+	<string>{{certificateSigner}}</string>{{/certificateSigner}}
+	{{#description}}<key>DocSetDescription</key>
+	<string>{{description}}</string>{{/description}}
+	{{#fallbackURL}}<key>DocSetFallbackURL</key>
+	<string>{{fallbackURL}}</string>{{/fallbackURL}}
+	{{#feedName}}<key>DocSetFeedName</key>
+	<string>{{feedName}}</string>{{/feedName}}
+	{{#feedURL}}<key>DocSetFeedURL</key>
+	<string>{{feedURL}}</string>{{/feedURL}}
+	{{#minimumXcodeVersion}}<key>DocSetMinimumXcodeVersion</key>
+	<string>{{minimumXcodeVersion}}</string>{{/minimumXcodeVersion}}
+	{{#platformFamily}}<key>DocSetPlatformFamily</key>
+	<string>{{platformFamily}}</string>{{/platformFamily}}
+	{{#publisherIdentifier}}<key>DocSetPublisherIdentifier</key>
+	<string>{{publisherIdentifier}}</string>{{/publisherIdentifier}}
+	{{#publisherName}}<key>DocSetPublisherName</key>
+	<string>{{publisherName}}</string>{{/publisherName}}
+	{{#copyrightMessage}}<key>NSHumanReadableCopyright</key>
+	<string>{{copyrightMessage}}</string>{{/copyrightMessage}}
 </dict>
 </plist>

@@ -79,6 +79,7 @@
 }
 
 - (BOOL)processInfoPlist:(NSError **)error {
+#define addVarUnlessEmpty(var,key) if ([var length] > 0) [vars setObject:var forKey:key]
 	GBLogInfo(@"Writting DocSet Info.plist...");
 	NSString *templateFilename = @"info-template.plist";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
@@ -90,20 +91,20 @@
 		
 	// Prepare template variables and replace all placeholders with actual values.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithCapacity:20];
-	[vars setObject:self.settings.docsetBundleIdentifier forKey:@"bundleIdentifier"];
-	[vars setObject:self.settings.docsetBundleName forKey:@"bundleName"];
-	[vars setObject:self.settings.projectVersion forKey:@"bundleVersion"];
-	[vars setObject:self.settings.docsetCertificateIssuer forKey:@"certificateIssuer"];
-	[vars setObject:self.settings.docsetCertificateSigner forKey:@"certificateSigner"];
-	[vars setObject:self.settings.docsetDescription forKey:@"description"];
-	[vars setObject:self.settings.docsetFallbackURL forKey:@"fallbackURL"];
-	[vars setObject:self.settings.docsetFeedName forKey:@"feedName"];
-	[vars setObject:self.settings.docsetFeedURL forKey:@"feedURL"];
-	[vars setObject:self.settings.docsetMinimumXcodeVersion forKey:@"minimumXcodeVersion"];
-	[vars setObject:self.settings.docsetPlatformFamily forKey:@"platformFamily"];
-	[vars setObject:self.settings.docsetPublisherIdentifier forKey:@"publisherIdentifier"];
-	[vars setObject:self.settings.docsetPublisherName forKey:@"publisherName"];
-	[vars setObject:self.settings.docsetCopyrightMessage forKey:@"copyrightMessage"];
+	addVarUnlessEmpty(self.settings.docsetBundleIdentifier, @"bundleIdentifier");
+	addVarUnlessEmpty(self.settings.docsetBundleName, @"bundleName");
+	addVarUnlessEmpty(self.settings.projectVersion, @"bundleVersion");
+	addVarUnlessEmpty(self.settings.docsetCertificateIssuer, @"certificateIssuer");
+	addVarUnlessEmpty(self.settings.docsetCertificateSigner, @"certificateSigner");
+	addVarUnlessEmpty(self.settings.docsetDescription, @"description");
+	addVarUnlessEmpty(self.settings.docsetFallbackURL, @"fallbackURL");
+	addVarUnlessEmpty(self.settings.docsetFeedName, @"feedName");
+	addVarUnlessEmpty(self.settings.docsetFeedURL, @"feedURL");
+	addVarUnlessEmpty(self.settings.docsetMinimumXcodeVersion, @"minimumXcodeVersion");
+	addVarUnlessEmpty(self.settings.docsetPlatformFamily, @"platformFamily");
+	addVarUnlessEmpty(self.settings.docsetPublisherIdentifier, @"publisherIdentifier");
+	addVarUnlessEmpty(self.settings.docsetPublisherName, @"publisherName");
+	addVarUnlessEmpty(self.settings.docsetCopyrightMessage, @"copyrightMessage");
 	
 	// Run the template and save the results as Info.plist.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
