@@ -272,6 +272,23 @@
 		GBMethodData *method = (GBMethodData *)object;
 		[data setObject:method.methodSelector forKey:@"declaration"];
 		[data setObject:method.methodPrefix forKey:@"prefix"];
+		if (method.comment) {
+			if (method.comment.hasParameters) {
+				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.parameters count]];
+				for (GBCommentArgument *argument in method.comment.parameters) {
+					NSMutableDictionary *argData = [NSMutableDictionary dictionaryWithCapacity:2];
+					[argData setObject:argument.argumentName forKey:@"name"];
+					[argData setObject:argument.argumentDescription forKey:@"abstract"];
+					[arguments addObject:argData];
+				}
+				[data setObject:arguments forKey:@"parameters"];
+				[data setObject:[GRYes yes] forKey:@"hasParameters"];
+			}
+			if (method.comment.result) {
+				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.result forKey:@"abstract"];
+				[data setObject:resultData forKey:@"returnValue"];
+			}
+		}
 	}
 }
 

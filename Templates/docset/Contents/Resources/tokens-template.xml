@@ -17,6 +17,13 @@
 			{{>DeclaredIn}}			
 			{{>RelatedTokens}}
 			{{#declaration}}<Declaration>{{prefix}}{{declaration}}</Declaration>{{/declaration}}
+			{{#hasParameters}}<Parameters>
+				{{#parameters}}<Parameter>
+					<Name>{{name}}</Name>
+					{{>Abstract}}
+				</Parameter>{{/parameters}}
+			</Parameters>{{/hasParameters}}
+			{{#returnValue}}<ReturnValue>{{>Abstract}}</ReturnValue>{{/returnValue}}
 			{{#anchor}}<Anchor>{{anchor}}</Anchor>{{/anchor}}
 		</Token>
 		{{/members}}
