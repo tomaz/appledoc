@@ -14,8 +14,9 @@
 		<Token>
 			{{>TokenIdentifier}}
 			{{>Abstract}}
-			{{>DeclaredIn}}
+			{{>DeclaredIn}}			
 			{{>RelatedTokens}}
+			{{#declaration}}<Declaration>{{prefix}}{{declaration}}</Declaration>{{/declaration}}
 			{{#anchor}}<Anchor>{{anchor}}</Anchor>{{/anchor}}
 		</Token>
 		{{/members}}

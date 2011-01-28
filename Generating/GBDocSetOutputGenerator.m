@@ -268,6 +268,11 @@
 			}
 		}
 	}
+	if ([object isKindOfClass:[GBMethodData class]]) {
+		GBMethodData *method = (GBMethodData *)object;
+		[data setObject:method.methodSelector forKey:@"declaration"];
+		[data setObject:method.methodPrefix forKey:@"prefix"];
+	}
 }
 
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object {
