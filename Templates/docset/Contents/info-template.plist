@@ -1,18 +1,38 @@
-{
-	"CFBundleDevelopmentRegion" = en;
-	CFBundleIdentifier = "{{bundleIdentifier}}";
-	CFBundleName = "{{bundleName}}";
-	"CFBundleShortVersionString" = "{{bundleVersion}}";
-	CFBundleVersion = "{{bundleVersion}}";
-	"DocSetCertificateIssuer" = "{{certificateIssuer}}";
-	"DocSetCertificateSigner" = "{{certificateSigner}}";
-	DocSetDescription = "{{description}}";
-	DocSetFallbackURL = "{{fallbackURL}}";
-	DocSetFeedName = "{{feedName}}";
-	DocSetFeedURL = "{{feedURL}}";
-	"DocSetMinimumXcodeVersion" = "{{minimumXcodeVersion}}";
-	DocSetPlatformFamily = "{{platformFamily}}";
-	"DocSetPublisherIdentifier" = "{{publisherIdentifier}}";
-	DocSetPublisherName = "{{publisherName}}";
-	"NSHumanReadableCopyright" = "{{copyrightMessage}}";
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleIdentifier</key>
+	<string>{{bundleIdentifier}}</string>
+	<key>CFBundleName</key>
+	<string>{{bundleName}}</string>
+	<key>CFBundleShortVersionString</key>
+	<string>{{bundleVersion}}</string>
+	<key>CFBundleVersion</key>
+	<string>{{bundleVersion}}</string>
+	<key>DocSetCertificateIssuer</key>
+	<string>{{certificateIssuer}}</string>
+	<key>DocSetCertificateSigner</key>
+	<string>{{certificateSigner}}</string>
+	<key>DocSetDescription</key>
+	<string>{{description}}</string>
+	<key>DocSetFallbackURL</key>
+	<string>{{fallbackURL}}</string>
+	<key>DocSetFeedName</key>
+	<string>{{feedName}}</string>
+	<key>DocSetFeedURL</key>
+	<string>{{feedURL}}</string>
+	<key>DocSetMinimumXcodeVersion</key>
+	<string>{{minimumXcodeVersion}}</string>
+	<key>DocSetPlatformFamily</key>
+	<string>{{platformFamily}}</string>
+	<key>DocSetPublisherIdentifier</key>
+	<string>{{publisherIdentifier}}</string>
+	<key>DocSetPublisherName</key>
+	<string>{{publisherName}}</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>{{copyrightMessage}}</string>
+</dict>
+</plist>
