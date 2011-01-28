@@ -270,7 +270,7 @@
 	}
 	if ([object isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)object;
-		[data setObject:method.methodSelector forKey:@"declaration"];
+		[data setObject:method.formattedComponents forKey:@"formattedComponents"];
 		[data setObject:method.methodPrefix forKey:@"prefix"];
 		if (method.comment) {
 			if (method.comment.hasParameters) {
