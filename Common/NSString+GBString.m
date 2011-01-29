@@ -11,15 +11,7 @@
 
 @interface NSString (GBPrivateAPI)
 
-/** Returns the last character of the string.
- 
- @return Returs the last character of the string.
- @exception NSRangeException Thrown if the string is empty.
- */
 - (unichar)lastCharacter;
-
-/** Returns the array contaiing all words of the receiver.
- */
 - (NSArray *)arrayOfWords;
 
 @end
