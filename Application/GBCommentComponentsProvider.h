@@ -35,14 +35,14 @@
  - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?`!
  - Prefix must not contain any marker used for formatting such as *, _ or combinations. This is actually not checked, but in such case results may be not what you wanted.
  
- @warning *Important:* Failing to include `%@` string in the markers or including the string more than once, will result in run time exception!
+ @warning *Important:* Note that the given string must contain exactly one `%@` marker. If none is included cross references will not be matched during runtime. If more than one is included, unpredicted behavior may occur. So take care!
  
- @warning *Important:* This message must be sent before accessing any cross reference regex property! The accessors prepare and cache the value on first usage. From then on, cached value is returned, so any change is not propagated!
+ @warning *Important:* This value must be set before accessing any cross reference regex property! The accessors prepare and cache the value on first usage. From then on, cached value is returned, so any change is not propagated!
  
- @param string The string containing cross reference markers.
+ @param string The string containing cross reference markers template.
  @exception NSException Raised if the given string doesn't contain `%@` string.
  */
-- (void)setCrossReferenceMarkers:(NSString *)string;
+@property (copy) NSString *crossReferenceMarkersTemplate;
 
 ///---------------------------------------------------------------------------------------
 /// @name Lists definitions

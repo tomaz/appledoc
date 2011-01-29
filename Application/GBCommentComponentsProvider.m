@@ -18,7 +18,6 @@
 
 @interface GBCommentComponentsProvider ()
 
-@property (copy) NSString *crossReferenceTemplate;
 - (NSString *)argumentsCommonRegex;
 - (NSString *)crossReferenceRegexForRegex:(NSString *)regex;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
@@ -39,7 +38,7 @@
 - (id)init {
 	self = [super init];
 	if (self) {
-		self.crossReferenceTemplate = @"<?%@>?";
+		self.crossReferenceMarkersTemplate = @"<?%@>?";
 	}
 	return self;
 }
@@ -133,11 +132,8 @@
 
 #pragma mark Helper methods
 
-- (void)setCrossReferenceMarkers:(NSString *)string {
-}
-
 - (NSString *)crossReferenceRegexForRegex:(NSString *)regex {
-	return [NSString stringWithFormat:self.crossReferenceTemplate, regex];
+	return [NSString stringWithFormat:self.crossReferenceMarkersTemplate, regex];
 }
 
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
@@ -150,6 +146,6 @@
 
 #pragma Properties
 
-@synthesize crossReferenceTemplate;
+@synthesize crossReferenceMarkersTemplate;
 
 @end

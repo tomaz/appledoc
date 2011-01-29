@@ -37,6 +37,7 @@
 		73329B33122EE18C00AEBA2B /* GBParagraphSpecialItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 73329B32122EE18C00AEBA2B /* GBParagraphSpecialItem.m */; };
 		7335F72B12E58DCC0094F72E /* GBDocSetInstallGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72A12E58DCC0094F72E /* GBDocSetInstallGenerator.m */; };
 		7335F72E12E58E160094F72E /* GBDocSetPublishGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72D12E58E160094F72E /* GBDocSetPublishGenerator.m */; };
+		73368F1112F42AE000A54A74 /* GBCommentComponentsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73368F1012F42AE000A54A74 /* GBCommentComponentsProviderTesting.m */; };
 		73397A2812A5070700EDC035 /* GBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73397A2712A5070700EDC035 /* GBTask.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
 		733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
@@ -247,6 +248,7 @@
 		7335F72A12E58DCC0094F72E /* GBDocSetInstallGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocSetInstallGenerator.m; sourceTree = "<group>"; };
 		7335F72C12E58E160094F72E /* GBDocSetPublishGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDocSetPublishGenerator.h; sourceTree = "<group>"; };
 		7335F72D12E58E160094F72E /* GBDocSetPublishGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocSetPublishGenerator.m; sourceTree = "<group>"; };
+		73368F1012F42AE000A54A74 /* GBCommentComponentsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsProviderTesting.m; sourceTree = "<group>"; };
 		73397A2612A5070700EDC035 /* GBTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTask.h; sourceTree = "<group>"; };
 		73397A2712A5070700EDC035 /* GBTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTask.m; sourceTree = "<group>"; };
 		733E9FB8122B9D510060CBDE /* GBCommentTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentTesting.m; sourceTree = "<group>"; };
@@ -822,6 +824,7 @@
 			children = (
 				7317CC0B12B10E3F009DAA15 /* GBApplicationTesting.m */,
 				73D708871267226900355DB6 /* GBApplicationSettingsProviderTesting.m */,
+				73368F1012F42AE000A54A74 /* GBCommentComponentsProviderTesting.m */,
 			);
 			name = Application;
 			sourceTree = "<group>";
@@ -1267,6 +1270,7 @@
 				739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */,
 				7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */,
 				7317CC0C12B10E3F009DAA15 /* GBApplicationTesting.m in Sources */,
+				73368F1112F42AE000A54A74 /* GBCommentComponentsProviderTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
