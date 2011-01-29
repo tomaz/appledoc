@@ -38,9 +38,6 @@
  @warning *Important:* Note that the given string must contain exactly one `%@` marker. If none is included cross references will not be matched during runtime. If more than one is included, unpredicted behavior may occur. So take care!
  
  @warning *Important:* This value must be set before accessing any cross reference regex property! The accessors prepare and cache the value on first usage. From then on, cached value is returned, so any change is not propagated!
- 
- @param string The string containing cross reference markers template.
- @exception NSException Raised if the given string doesn't contain `%@` string.
  */
 @property (copy) NSString *crossReferenceMarkersTemplate;
 
@@ -100,7 +97,7 @@
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
- @param templates If `YES` templated regex is returned, otherwise pure one.
+ @param templated If `YES` templated regex is returned, otherwise pure one.
  @return Returns the regex used for matching cross reference.
  */
 - (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated;
@@ -109,7 +106,7 @@
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
- @param templates If `YES` templated regex is returned, otherwise pure one.
+ @param templated If `YES` templated regex is returned, otherwise pure one.
  @return Returns the regex used for matching cross reference.
  */
 - (NSString *)localMemberCrossReferenceRegex:(BOOL)templated;
@@ -118,7 +115,7 @@
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
- @param templates If `YES` templated regex is returned, otherwise pure one.
+ @param templated If `YES` templated regex is returned, otherwise pure one.
  @return Returns the regex used for matching cross reference.
  */
 - (NSString *)categoryCrossReferenceRegex:(BOOL)templated;
@@ -127,7 +124,7 @@
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
- @param templates If `YES` templated regex is returned, otherwise pure one.
+ @param templated If `YES` templated regex is returned, otherwise pure one.
  @return Returns the regex used for matching cross reference.
  */
 - (NSString *)objectCrossReferenceRegex:(BOOL)templated;
@@ -136,7 +133,7 @@
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
- @param templates If `YES` templated regex is returned, otherwise pure one.
+ @param templated If `YES` templated regex is returned, otherwise pure one.
  @return Returns the regex used for matching cross reference.
  */
 - (NSString *)urlCrossReferenceRegex:(BOOL)templated;

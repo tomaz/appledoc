@@ -86,6 +86,11 @@
 /** Copies or moves directory or file from the given source path to the destination path.
  
  This method takes into account `[GBApplicationSettings keepIntermediateFiles]` and either copies or moves files regarding it's value. The method is designed to be used from within subclasses. 
+
+ @param source Source path to copy or move from.
+ @param destination Destination path to copy or move to.
+ @param error If copying fails, error description is returned here.
+ @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
  */
 - (BOOL)copyOrMoveItemFromPath:(NSString *)source toPath:(NSString *)destination error:(NSError **)error;
 

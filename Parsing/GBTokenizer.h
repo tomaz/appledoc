@@ -63,8 +63,8 @@
 
 /** Returns the current token.
  
- @see consume
- @see lookahead
+ @see consume:
+ @see lookahead:
  */
 - (PKToken *)currentToken;
 
@@ -74,7 +74,7 @@
  
  @param offset The offset from the current position.
  @return Returns the token at the given offset or EOF token if offset point after EOF.
- @see consume
+ @see consume:
  */
 - (PKToken *)lookahead:(NSUInteger)offset;
 
@@ -83,7 +83,8 @@
  This effectively "moves" `currentToken` to the new position. If EOF is reached before consuming the given ammount of tokens, consuming stops at the end of stream and `currentToken` returns EOF token. If comment tokens are detected while consuming, they are not counted and consuming count continues with actual language tokens. However if there is a comment just before the next current token (i.e. after the last consumed token), the comment data is saved and is available through `lastCommentString`. Otherwise last comment data is cleared, even if a comment was detected in between.
  
  @param count The number of tokens to consume.
- @see lastCommentString
+ @see lastComment
+ @see previousComment
  */
 - (void)consume:(NSUInteger)count;
 
@@ -94,7 +95,8 @@
  @param end Ending token.
  @param block The block to be called for each token.
  @exception NSException Thrown if the given end token is `nil`.
- @see lastCommentString
+ @see lastComment
+ @see previousComment
  */
 - (void)consumeTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block;
 
@@ -106,7 +108,8 @@
  @param end Ending token.
  @param block The block to be called for each token.
  @exception NSException Thrown if the given end token is `nil`.
- @see lastCommentString
+ @see lastComment
+ @see previousComment
  */
 - (void)consumeFrom:(NSString *)start to:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *consume, BOOL *stop))block;
 
@@ -122,11 +125,11 @@
 
 /** Returns `GBSourceInfo` for current token and filename.
  
- This is equivalent to sending `fileDataForToken:` and passing `currentToken` as the _token_ parameter.
+ This is equivalent to sending `sourceInfoForToken:` and passing `currentToken` as the _token_ parameter.
  
  @return Returns declared file data.
  @exception NSException Thrown if current token is `nil`.
- @see fileDataForToken:
+ @see sourceInfoForToken:
  */
 - (GBSourceInfo *)sourceInfoForCurrentToken;
 
@@ -137,7 +140,7 @@
  @param token The token for which to get file data.
  @return Returns declared file data.
  @exception NSException Thrown if the given token is `nil`.
- @see fileDataForCurrentToken
+ @see sourceInfoForCurrentToken
  */
 - (GBSourceInfo *)sourceInfoForToken:(PKToken *)token;
 

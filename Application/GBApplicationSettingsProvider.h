@@ -156,7 +156,7 @@
  
  If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
  
- @see createHtml
+ @see createHTML
  @see installDocSet
  @see publishDocSet
  */
@@ -364,7 +364,7 @@
  
  This is simply a helper method for `htmlReferenceForObject:fromSource:`, passing the given object as object parameter and `nil` as source.
  
- @pram object The object for which to generate the reference to.
+ @param object The object for which to generate the reference to.
  @return Returns the reference string.
  @exception NSException Thrown if object is `nil`.
  @see htmlReferenceForObject:fromSource:

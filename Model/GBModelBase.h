@@ -35,7 +35,7 @@
  
  @see sourceInfos
  @see registerSourceInfo:
- @see prefferedSourceInfo:
+ @see prefferedSourceInfo
  */
 - (NSArray *)sourceInfosSortedByName;
 

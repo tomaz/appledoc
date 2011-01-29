@@ -55,18 +55,18 @@
  
  @return Returns stripped description.
  @see normalizedDescriptionWithMaxLength:
- @see maxNormalizedDescriptionLength
+ @see defaultNormalizedDescriptionLength
  */
 - (NSString *)normalizedDescription;
 
 /** Returns normalized description from the receiver.
  
  The main purpose of this method is to strip and wordifiy long descriptions by making them suitable for logging and debug messages.
-  
+ 
  @param length Maximum length of the description.
  @return Returns stripped description.
  @see normalizedDescriptionWithMaxLength:
- @see maxNormalizedDescriptionLength
+ @see defaultNormalizedDescriptionLength
  */
 - (NSString *)normalizedDescriptionWithMaxLength:(NSUInteger)length;
 
