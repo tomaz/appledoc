@@ -55,6 +55,7 @@
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
+- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object;
 - (NSString *)sectionNameFromComment:(GBComment *)comment;
@@ -218,10 +219,15 @@
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
 	GBComment *comment = [self.tokenizer lastComment];
 	NSString *sectionName = [self sectionNameFromComment:[self.tokenizer previousComment]];
+	__block BOOL firstToken = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
+		if (firstToken) {
+			[self.tokenizer resetComments];
+			firstToken = NO;
+		}
 		
 		// Get attributes.
 		NSMutableArray *propertyAttributes = [NSMutableArray array];
@@ -261,7 +267,7 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		GBLogDebug(@"Matched property definition %@.", propertyData);
-		[propertyData setComment:comment];
+		[self registerComment:comment toObject:propertyData];
 		[propertyData registerSourceInfo:filedata];
 		[propertyData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
@@ -426,6 +432,7 @@
 		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement...
 		if (assertMethod) {
 			if (![token matches:@"("]) {
+				[self.tokenizer resetComments];
 				*stop = YES;
 				return;
 			}
@@ -517,8 +524,8 @@
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		GBLogDebug(@"Matched method %@%@.", start, methodData);
-		[methodData registerSourceInfo:filedata];
-		[methodData setComment:comment];
+		[self registerComment:comment toObject:methodData];
+		[methodData registerSourceInfo:filedata];		
 		[methodData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
@@ -530,8 +537,14 @@
 }
 
 - (void)registerLastCommentToObject:(GBModelBase *)object {
-	[object setComment:[self.tokenizer lastComment]];
+	[self registerComment:[self.tokenizer lastComment] toObject:object];
 	[self.tokenizer resetComments];
+}
+
+- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object {
+	[object setComment:comment];
+	if (comment) GBLogDebug(@"Assigned comment '%@' to '%@'...", [comment.stringValue normalizedDescription], object);
+	//[self.tokenizer resetComments];
 }
 
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {
