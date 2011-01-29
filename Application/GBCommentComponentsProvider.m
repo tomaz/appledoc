@@ -103,25 +103,45 @@
 
 #pragma mark Cross references detection
 
-- (NSString *)remoteMemberCrossReferenceRegex {
+- (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated {
 	// +[Class member] or -[Class member] or simply [Class member].
-	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"[+-]?\\[(\\S+)\\s+(\\S+)\\]"]);
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self remoteMemberCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"[+-]?\\[(\\S+)\\s+(\\S+)\\]");
+	}
 }
 
-- (NSString *)localMemberCrossReferenceRegex {
-	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^>,.;!?()\\s]+)"]);
+- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.;!?()\\s]+)");
+	}
 }
 
-- (NSString *)categoryCrossReferenceRegex {
-	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^(][^>,.:;!?)\\s]+\\))"]);
+- (NSString *)categoryCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self categoryCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^(][^>,.:;!?)\\s]+\\))");
+	}
 }
 
-- (NSString *)objectCrossReferenceRegex {
-	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^>,.:;!?()\\s]+)"]);
+- (NSString *)objectCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self objectCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.:;!?()\\s]+)");
+	}
 }
 
-- (NSString *)urlCrossReferenceRegex {
-	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)"]);
+- (NSString *)urlCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self urlCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)");
+	}
 }
 
 #pragma mark Common detection

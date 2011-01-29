@@ -9,20 +9,6 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBCommentComponentsProvider.h"
 
-@interface GBCommentComponentsProvider (TestingAPI)
-- (NSString *)crossReferenceTemplateValue;
-@end
-
-@implementation GBCommentComponentsProvider (TestingAPI)
-
-- (NSString *)crossReferenceTemplateValue {
-	return [self valueForKey:@"crossReferenceTemplate"];
-}
-
-@end
-
-#pragma mark -
-
 @interface GBCommentComponentsProviderTesting : GHTestCase
 @end
 	
@@ -32,23 +18,7 @@
 	// setup & execute
 	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];
 	// verify
-	assertThat(provider.crossReferenceTemplateValue, is(@"<?%@>?"));
-}
-
-- (void)testSetCrossReferenceTemplate_shouldChangeCrossReferenceTemplate {
-	// setup
-	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];
-	// execute
-	[provider setCrossReferenceMarkers:@"PREFIX%@SUFFIX"];
-	// verify
-	assertThat(provider.crossReferenceTemplateValue, is(@"PREFIX%@SUFFIX"));
-}
-
-- (void)testSetCrossReferenceTemplate_throwsIfTemplateIsNotGiven {
-	// setup
-	GBCommentComponentsProvider *provider = [GBCommentComponentsProvider provider];
-	// execute & verify
-	GHAssertThrows([provider setCrossReferenceMarkers:@"aaaa"], @"");
+	assertThat(provider.crossReferenceMarkersTemplate, is(@"<?%@>?"));
 }
 
 @end

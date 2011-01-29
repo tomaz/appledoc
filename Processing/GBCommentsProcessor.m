@@ -27,13 +27,13 @@
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
 
-- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description;
-- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range;
-- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range;
-- (id)classLinkFromString:(NSString *)string range:(NSRange *)range;
-- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range;
-- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range;
-- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range;
+- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description templated:(BOOL)templated;
+- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)classLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
 
 - (GBCommentParagraph *)pushParagraphIfStackIsEmpty;
 - (GBCommentParagraph *)pushParagraph:(BOOL)canAutoRegister;
@@ -417,7 +417,7 @@
 		components = [directive captureComponentsMatchedByRegex:crossRefRegex];
 		if ([components count] > 0) {
 			NSString *text = [components objectAtIndex:1];
-			GBParagraphLinkItem *item = [self linkItemFromString:text range:nil description:nil];
+			GBParagraphLinkItem *item = [self linkItemFromString:text range:nil description:nil templated:NO];
 			if (item) {
 				GBLogDebug(@"    - Matched cross ref directive %@ at %@...", text, sourceInfo);
 				[self.currentComment registerCrossReference:item];
@@ -536,7 +536,7 @@
 	while ([string length] > 0) {
 		// If the string starts with any recognized cross reference, add the link item and skip it's text, otherwise mark the word until next whitespace as text item.
 		NSString *description = nil;
-		GBParagraphLinkItem *linkItem = [self linkItemFromString:string range:&range description:&description];
+		GBParagraphLinkItem *linkItem = [self linkItemFromString:string range:&range description:&description templated:YES];
 		if (linkItem) {
 			skipTextFromString([string substringToIndex:range.location]);
 			registerTextItemFromString(text);
@@ -556,31 +556,31 @@
 
 #pragma mark Cross references detection
 
-- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description {
+- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description templated:(BOOL)templated {
 	// Matches any cross reference at the start of the given string and creates GBParagraphLinkItem, match range and description suitable for logging if found. If the string doesn't represent any known cross reference, nil is returned and the other parameters are left untouched. Note that the order of testing is somewhat important (for example we should test for category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
 	GBParagraphLinkItem *result = nil;
 	NSString *desc = nil;
-	if ((result = [self categoryLinkFromString:string range:range])) {
+	if ((result = [self categoryLinkFromString:string range:range templated:templated])) {
 		desc = @"category";
-	} else if ((result = [self classLinkFromString:string range:range])) {
+	} else if ((result = [self classLinkFromString:string range:range templated:templated])) {
 		desc = @"class";
-	} else if ((result = [self protocolLinkFromString:string range:range])) {
+	} else if ((result = [self protocolLinkFromString:string range:range templated:templated])) {
 		desc = @"protocol";
-	} else if ((result = [self remoteMemberLinkItemFromString:string range:range])) {
+	} else if ((result = [self remoteMemberLinkItemFromString:string range:range templated:templated])) {
 		desc = @"remote member";
-	} else if ((result = [self localMemberLinkFromString:string range:range])) {
+	} else if ((result = [self localMemberLinkFromString:string range:range templated:templated])) {
 		desc = @"local member";
-	} else if ((result = [self urlLinkItemFromString:string range:range])) {
+	} else if ((result = [self urlLinkItemFromString:string range:range templated:templated])) {
 		desc = @"url";
 	}
 	if (result && description) *description = desc;
 	return result;
 }
 
-- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range {
+- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for remote member cross reference (in the format [Object member]). If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
 	// If the string starts with remote link
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.remoteMemberCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components remoteMemberCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 object name, index 2 member name.
@@ -619,10 +619,10 @@
 	return result;
 }
 
-- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range {
+- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for local member cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers. NOTE: Note that we can skip local member cross ref testing if no context (i.e. class, category or protocol) is given!
 	if (!self.currentContext) return nil;
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.localMemberCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components localMemberCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 just the member selector.
@@ -643,9 +643,9 @@
 	return result;
 }
 
-- (id)classLinkFromString:(NSString *)string range:(NSRange *)range {
+- (id)classLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for class cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.objectCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components objectCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
@@ -665,9 +665,9 @@
 	return result;
 }
 
-- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range {
+- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for category cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.categoryCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components categoryCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
@@ -687,9 +687,9 @@
 	return result;
 }
 
-- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range {
+- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for protocol cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.objectCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components objectCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
@@ -709,9 +709,9 @@
 	return result;
 }
 
-- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range {
+- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
 	// Matches the beginning of the string for URL cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.urlCrossReferenceRegex];
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components urlCrossReferenceRegex:templated]];
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional <>, index 1 just the URL address.

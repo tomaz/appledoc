@@ -96,20 +96,50 @@
 /// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. */
-@property (readonly) NSString *remoteMemberCrossReferenceRegex;
+/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. 
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templates If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name. */
-@property (readonly) NSString *localMemberCrossReferenceRegex;
+/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name.
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templates If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching (possible) category cross reference with capture 1 containing category name. */
-@property (readonly) NSString *categoryCrossReferenceRegex;
+/** Returns the regex used for matching (possible) category cross reference with capture 1 containing category name.
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templates If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)categoryCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching (possible) class or protocol cross reference with capture 1 containing object name. */
-@property (readonly) NSString *objectCrossReferenceRegex;
+/** Returns the regex used for matching (possible) class or protocol cross reference with capture 1 containing object name.
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templates If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)objectCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself. */
-@property (readonly) NSString *urlCrossReferenceRegex;
+/** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself.
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templates If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)urlCrossReferenceRegex:(BOOL)templated;
 
 ///---------------------------------------------------------------------------------------
 /// @name Common definitions

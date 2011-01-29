@@ -234,6 +234,22 @@
 	assertThatBool(settings2.prefixMergedCategoriesSectionsWithCategoryName, equalToBool(NO));
 }
 
+- (void)testExplicitCrossRef_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--explicit-crossref", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-explicit-crossref", nil];
+	// verify
+	assertThat(settings1.commentComponents.crossReferenceMarkersTemplate, is(@"<%@>"));
+	assertThat(settings2.commentComponents.crossReferenceMarkersTemplate, is(@"<?%@>?"));
+}
+
+- (void)testCrossRefFormat_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--crossref-format", @"FORMAT", nil];
+	// verify
+	assertThat(settings.commentComponents.crossReferenceMarkersTemplate, is(@"FORMAT"));
+}
+
 #pragma mark Warnings settings testing
 
 - (void)testWarnOnMissingOutputPath_shouldAssignValueToSettings {
