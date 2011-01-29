@@ -315,7 +315,7 @@
 		NSString *objectID = nil;
 		if ([parent isKindOfClass:[GBClassData class]]) {
 			objectName = [(GBClassData *)parent nameOfClass];
-			objectID = @"inst";
+			objectID = ([(GBMethodData *)object methodType] == GBMethodTypeClass) ? @"cl" : @"inst";
 		} else if ([parent isKindOfClass:[GBCategoryData class]]) {
 			objectName = [(GBCategoryData *)parent nameOfClass];
 			objectID = @"intf";
