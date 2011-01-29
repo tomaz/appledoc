@@ -116,6 +116,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Helper methods
 
+- (void)updateHelperClassesWithSettingsValues {
+	
+}
+
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
 	// These need to be replaced first as they can be used in other settings!
 	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];

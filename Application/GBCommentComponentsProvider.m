@@ -18,7 +18,9 @@
 
 @interface GBCommentComponentsProvider ()
 
+@property (copy) NSString *crossReferenceTemplate;
 - (NSString *)argumentsCommonRegex;
+- (NSString *)crossReferenceRegexForRegex:(NSString *)regex;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
 
@@ -32,6 +34,14 @@
 
 + (id)provider {
 	return [[[self alloc] init] autorelease];
+}
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		self.crossReferenceTemplate = @"<?%@>?";
+	}
+	return self;
 }
 
 #pragma mark Lists detection
@@ -96,23 +106,23 @@
 
 - (NSString *)remoteMemberCrossReferenceRegex {
 	// +[Class member] or -[Class member] or simply [Class member].
-	return @"<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
+	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"[+-]?\\[(\\S+)\\s+(\\S+)\\]"]);
 }
 
 - (NSString *)localMemberCrossReferenceRegex {
-	return @"<?([^>,.;!?()\\s]+)>?";
+	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^>,.;!?()\\s]+)"]);
 }
 
 - (NSString *)categoryCrossReferenceRegex {
-	return @"<?([^(][^>,.:;!?)\\s]+\\))>?";
+	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^(][^>,.:;!?)\\s]+\\))"]);
 }
 
 - (NSString *)objectCrossReferenceRegex {
-	return @"<?([^>,.:;!?()\\s]+)>?";
+	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"([^>,.:;!?()\\s]+)"]);
 }
 
 - (NSString *)urlCrossReferenceRegex {
-	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
+	GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)"]);
 }
 
 #pragma mark Common detection
@@ -123,6 +133,13 @@
 
 #pragma mark Helper methods
 
+- (void)setCrossReferenceMarkers:(NSString *)string {
+}
+
+- (NSString *)crossReferenceRegexForRegex:(NSString *)regex {
+	return [NSString stringWithFormat:self.crossReferenceTemplate, regex];
+}
+
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(?s:(.*))", keyword];
 }
@@ -130,5 +147,9 @@
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(\\S+)\\s+(?s:(.*))", keyword];
 }
+
+#pragma Properties
+
+@synthesize crossReferenceTemplate;
 
 @end

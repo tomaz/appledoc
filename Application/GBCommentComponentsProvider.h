@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class GBApplicationSettingsProvider;
+
 /** Provides comment keywords and helpers for the rest of the application.
  
  The main responsibility of the class is to determine if a string contains special section definition. In addition, they also return section parameters. This encapsulates keywords and sections handling and simplifies the rest of the application.
@@ -21,6 +23,26 @@
 /** Returns a new autoreleased `GBCommentComponentsProvider` instance.
  */
 + (id)provider;
+
+///---------------------------------------------------------------------------------------
+/// @name Parameters
+///---------------------------------------------------------------------------------------
+
+/** Sets cross reference markers.
+ 
+ The given string should include optional prefix, followed by `%@` and lastly optional suffix. If either prefix or suffix isn't allowed, just pass `%@`. At the runtime, `%@` is replaced by the actual regex for mathching particular cross reference type - actually the whole string becomes the regex for matching cross reference, therefore prefix and suffix can be arbitrary regex expressions themselves! On the other hand, this imposes some limitations to what can be used for them: 
+ 
+ - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?`!
+ - Prefix must not contain any marker used for formatting such as *, _ or combinations. This is actually not checked, but in such case results may be not what you wanted.
+ 
+ @warning *Important:* Failing to include `%@` string in the markers or including the string more than once, will result in run time exception!
+ 
+ @warning *Important:* This message must be sent before accessing any cross reference regex property! The accessors prepare and cache the value on first usage. From then on, cached value is returned, so any change is not propagated!
+ 
+ @param string The string containing cross reference markers.
+ @exception NSException Raised if the given string doesn't contain `%@` string.
+ */
+- (void)setCrossReferenceMarkers:(NSString *)string;
 
 ///---------------------------------------------------------------------------------------
 /// @name Lists definitions
