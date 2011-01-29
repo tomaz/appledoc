@@ -220,6 +220,7 @@
 				GBComment *comment = [GBComment commentWithStringValue:superMethod.comment.stringValue];
 				NSString *filename = [NSString stringWithFormat:@"%@ -> %@", superMethod.comment.sourceInfo, method.prefferedSourceInfo.filename];
 				comment.sourceInfo = [GBSourceInfo infoWithFilename:filename lineNumber:method.prefferedSourceInfo.lineNumber];
+				comment.isCopied = YES;
 				method.comment = comment;
 				return;
 			}

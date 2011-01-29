@@ -286,6 +286,12 @@
  */
 @property (readonly) BOOL hasCrossrefs;
 
+/** Specifies whether the comment is copied from another object or this is the original comment from source code.
+ 
+ This flag is used to ignore unknown cross references warnings for comments copied from another object.
+ */
+@property (assign) BOOL isCopied;
+
 ///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------

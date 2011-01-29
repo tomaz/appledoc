@@ -224,6 +224,7 @@
 @synthesize result;
 @synthesize firstParagraph;
 @synthesize sourceInfo;
+@synthesize isCopied;
 @synthesize stringValue;
 
 @end

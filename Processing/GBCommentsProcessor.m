@@ -421,7 +421,7 @@
 			if (item) {
 				GBLogDebug(@"    - Matched cross ref directive %@ at %@...", text, sourceInfo);
 				[self.currentComment registerCrossReference:item];
-			} else if (self.settings.warnOnInvalidCrossReference) {
+			} else if (self.settings.warnOnInvalidCrossReference && !self.currentComment.isCopied) {
 				GBLogWarn(@"Invalid cross ref %@ found at %@!", text, sourceInfo);
 			}
 			return;
