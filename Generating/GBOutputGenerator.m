@@ -88,7 +88,7 @@
 		return NO;
 	}
 	
-	// Remove all ignored files and special template items from output. First enumerate all files. If this fails, report success; this step is only used to verscleanup the destination, we should still have valid output if these files are kept there.
+	// Remove all ignored files and special template items from output. First enumerate all files. If this fails, report success; this step is only used to verscleanup the destination, we should still have valid output if these files are kept there. Note that we need to test for existing file before removing as it could happen file's parent dir was removed already in previous iterations so the file or subdir doesn't exist anymore - see https://github.com/tomaz/appledoc/issues#issue/59 for details.
 	GBLogDebug(@"Removing temporary files from '%@'...", destUserPath);
 	NSArray *items = [self.fileManager subpathsOfDirectoryAtPath:destPath error:error];
 	if (!items) {
@@ -110,7 +110,7 @@
 		
 		if (delete) {
 			NSString *fullpath = [destPath stringByAppendingPathComponent:path];
-			if (![self.fileManager removeItemAtPath:fullpath error:error]) {
+			if ([self.fileManager fileExistsAtPath:fullpath] && ![self.fileManager removeItemAtPath:fullpath error:error]) {
 				GBLogWarn(@"Can't clean leftover '%@' from '%@'.", path, destUserPath);
 			}
 		}
