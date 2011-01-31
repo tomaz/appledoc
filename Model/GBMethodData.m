@@ -220,6 +220,14 @@
 
 #pragma mark Properties
 
+- (BOOL)isMethod {
+	return !self.isProperty;
+}
+
+- (BOOL)isProperty {
+	return (self.methodType == GBMethodTypeProperty);
+}
+
 @synthesize methodType = _methodType;
 @synthesize methodAttributes = _methodAttributes;
 @synthesize methodResultTypes = _methodResultTypes;

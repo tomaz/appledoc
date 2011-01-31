@@ -103,6 +103,30 @@
 	assertThat(mergedArgument.argumentVar, is(@"theVar"));
 }
 
+#pragma mark Convenienve methods testing
+
+- (void)testIsMethod_shouldReturnProperValue {
+	// setup & execute
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	// verify
+	assertThatBool(method1.isMethod, equalToBool(YES));
+	assertThatBool(method2.isMethod, equalToBool(YES));
+	assertThatBool(method3.isMethod, equalToBool(NO));
+}
+
+- (void)testIsProperty_shouldReturnProperValue {
+	// setup & execute
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	// verify
+	assertThatBool(method1.isProperty, equalToBool(NO));
+	assertThatBool(method2.isProperty, equalToBool(NO));
+	assertThatBool(method3.isProperty, equalToBool(YES));
+}
+
 #pragma mark Formatted components testing
 
 - (void)testFormattedComponents_shouldReturnSimplePropertyComponents {
