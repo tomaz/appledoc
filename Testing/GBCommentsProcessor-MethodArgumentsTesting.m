@@ -18,7 +18,7 @@
 
 #pragma mark Parameters processing
 
-- (void)testProcesCommentWithStore_parameters_requiresEmptyLineBeforePreceedingParagraph {
+- (void)testProcesCommentWithStore_parameters_detectedIfDelimitedWithEmptyLineBeforePreceedingParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n\n@param name Description"];
@@ -31,7 +31,7 @@
 	[self assertArgument:[comment.parameters objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
 }
 
-- (void)testProcesCommentWithStore_parameters_shouldRegisterCommentParagraphIfEmptyLineNotInserted {
+- (void)testProcesCommentWithStore_parameters_detectedWithoutDelimiterIfFoundAtBeginningOfLine {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n@param name Description"];
@@ -39,7 +39,20 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@param name Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix", nil];
+	assertThatInteger([comment.parameters count], equalToInteger(1));
+	[self assertArgument:[comment.parameters objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
+}
+
+- (void)testProcesCommentWithStore_parameters_shouldRegisterNormalTextIfFoundInTheMiddleOfLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix @param name Description"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @param name Description", nil];
 	assertThatInteger([comment.parameters count], equalToInteger(0));
 }
 
@@ -120,7 +133,7 @@
 
 #pragma mark Exception processing
 
-- (void)testProcesCommentWithStore_exceptions_requiresEmptyLineBeforePreceedingParagraph {
+- (void)testProcesCommentWithStore_exceptions_detectedIfDelimitedWithEmptyLineBeforePreceedingParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n\n@exception name Description"];
@@ -133,7 +146,7 @@
 	[self assertArgument:[comment.exceptions objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
 }
 
-- (void)testProcesCommentWithStore_exceptions_shouldRegisterCommentParagraphIfEmptyLineNotInserted {
+- (void)testProcesCommentWithStore_exceptions_detectedWithoutDelimiterIfFoundAtBeginningOfLine {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n@exception name Description"];
@@ -141,7 +154,20 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@exception name Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix", nil];
+	assertThatInteger([comment.exceptions count], equalToInteger(1));
+	[self assertArgument:[comment.exceptions objectAtIndex:0] hasName:@"name" descriptions:@"Description", nil];
+}
+
+- (void)testProcesCommentWithStore_exceptions_shouldRegisterNormalTextIfFoundInTheMiddleOfLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix @exception name Description"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @exception name Description", nil];
 	assertThatInteger([comment.exceptions count], equalToInteger(0));
 }
 
@@ -222,7 +248,7 @@
 
 #pragma mark Return values testing
 
-- (void)testProcesCommentWithStore_return_requiresEmptyLineBeforePreceedingParagraph {
+- (void)testProcesCommentWithStore_return_detectedIfDelimitedWithEmptyLineBeforePreceedingParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n\n@return Description"];
@@ -234,7 +260,7 @@
 	[self assertParagraph:comment.result containsTexts:@"Description", nil];
 }
 
-- (void)testProcesCommentWithStore_return_shouldRegisterNormalParameterIfEmptyLineNotInserted {
+- (void)testProcesCommentWithStore_return_detectedWithoutDelimiterIfFoundAtBeginningOfLine {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n@return Description"];
@@ -242,7 +268,19 @@
 	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
 	// verify - note that we would get a warning normally as current context doesn't point to a method!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix\n@return Description", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix", nil];
+	[self assertParagraph:comment.result containsTexts:@"Description", nil];
+}
+
+- (void)testProcesCommentWithStore_return_shouldRegisterNormalTextIfFoundInTheMiddleOfLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix @return Description"];
+	// execute
+	[processor processComment:comment withStore:[GBTestObjectsRegistry store]];
+	// verify - note that we would get a warning normally as current context doesn't point to a method!
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix @return Description", nil];
 	assertThat(comment.result, is(nil));
 }
 
@@ -326,7 +364,7 @@
 
 #pragma mark Cross reference values testing
 
-- (void)testProcesCommentWithStore_crossref_requiresEmptyLineBeforePreceedingParagraph {
+- (void)testProcesCommentWithStore_crossref_detectedIfDelimitedWithEmptyLineBeforePreceedingParagraph {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n\n@see Class"];
@@ -341,7 +379,7 @@
 	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class" context:class member:nil local:NO];
 }
 
-- (void)testProcesCommentWithStore_crossref_shouldRegisterNormalParameterIfEmptyLineNotInserted {
+- (void)testProcesCommentWithStore_crossref_detectedWithoutDelimiterIfFoundAtBeginningOfLine {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBComment *comment = [GBComment commentWithStringValue:@"Prefix\n@see Class"];
@@ -349,9 +387,24 @@
 	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
 	// execute
 	[processor processComment:comment withStore:store];
+	// verify
+	assertThatInteger([comment.paragraphs count], equalToInteger(1));
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Prefix", nil];
+	assertThatInteger([comment.crossrefs count], equalToInteger(1));
+	[self assertLinkItem:[comment.crossrefs objectAtIndex:0] hasLink:@"Class" context:class member:nil local:NO];
+}
+
+- (void)testProcesCommentWithStore_crossref_shouldRegisterNormalTextIfFoundInTheMiddleOfLine {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Prefix @see Class"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+	// execute
+	[processor processComment:comment withStore:store];
 	// verify - note that link item is properly detected but as part of a paragraph!
 	assertThatInteger([comment.paragraphs count], equalToInteger(1));
-	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"Prefix\n@see ", [GBParagraphLinkItem class], @"Class", nil];
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsItems:[GBParagraphTextItem class], @"Prefix @see ", [GBParagraphLinkItem class], @"Class", nil];
 	assertThatInteger([comment.crossrefs count], equalToInteger(0));
 }
 

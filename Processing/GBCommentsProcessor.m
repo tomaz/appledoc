@@ -23,6 +23,7 @@
 - (BOOL)registerListBlockFromLines:(NSArray *)lines;
 - (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines;
 - (void)registerTextBlockFromLines:(NSArray *)lines;
+- (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
 - (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
 - (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
@@ -113,11 +114,15 @@
 	}
 	
 	// Find the end of block.
+	BOOL matchingDirectivesBlock = YES;
 	NSUInteger end = start;
 	if (start < [lines count]) {
 		while (end < [lines count]) {
 			NSString *line = [lines objectAtIndex:end];
 			if ([line length] == 0) break;
+			BOOL isDirective = [self isLineMatchingDirectiveStatement:line];
+			if (isDirective && !matchingDirectivesBlock) break;
+			if (!isDirective) matchingDirectivesBlock = NO;
 			end++;
 		}
 	}
@@ -338,21 +343,18 @@
 
 - (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines {
 	// Registers a block containing directives (@param, @return etc.).
-#define isMatchingDirectiveStatement(theText) \
-	([theText isMatchedByRegex:parameterRegex] || [theText isMatchedByRegex:exceptionRegex] || [theText isMatchedByRegex:returnRegex] || [theText isMatchedByRegex:crossRefRegex])
-	
 	// If the first line doesn't contain directive, exit.
 	NSString *parameterRegex = self.components.parameterDescriptionRegex;
 	NSString *exceptionRegex = self.components.exceptionDescriptionRegex;
 	NSString *returnRegex = self.components.returnDescriptionRegex;
 	NSString *crossRefRegex = self.components.crossReferenceRegex;
-	if (!isMatchingDirectiveStatement([lines firstObject])) return NO;
+	if (![self isLineMatchingDirectiveStatement:[lines firstObject]]) return NO;
 	
 	// In the first pass, convert the array of lines into an array of pre-processed directive items. Note that we use simplified grouping - if a line matches any directive, we start new directive, otherwise we append text to previous one. The result is an array containing dictionaries with text and line number. Exit if we didn't match any directive.
 	NSMutableArray *directives = [NSMutableArray arrayWithCapacity:[lines count]];
 	for (NSUInteger i=0; i<[lines count]; i++) {
 		NSString *line = [lines objectAtIndex:i];
-		if (isMatchingDirectiveStatement(line)) {
+		if ([self isLineMatchingDirectiveStatement:line]) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
 			[data setObject:line forKey:@"text"];
 			[data setObject:[NSNumber numberWithInt:self.currentStartLine + i] forKey:@"line"];
@@ -440,6 +442,14 @@
 	GBLogDebug(@"  - Found text block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
 	[self pushParagraph:YES];
 	[self registerTextItemsFromStringToCurrentParagraph:stringValue];
+}
+
+- (BOOL)isLineMatchingDirectiveStatement:(NSString *)string {
+	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.crossReferenceRegex]) return YES;
+	return NO;
 }
 
 #pragma mark Comment text processing
