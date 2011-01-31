@@ -169,10 +169,6 @@ Section MethodDeclaration
 {{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{&href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
 EndSection
 
-Section MethodSelector
-{{methodPrefix}} {{methodSelector}}
-EndSection
-
 
 Section TaskTitle
 {{#hasMultipleSections}}<h3 class="subsubtitle task-title">{{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}</h3>{{/hasMultipleSections}}
@@ -182,11 +178,16 @@ EndSection
 Section TaskMethod
 <li>
 	<span class="tooltip">
-		<code><a href="{{htmlLocalReference}}">{{>MethodSelector}}</a></code>
+		<code><a href="{{htmlLocalReference}}">{{>TaskSelector}}</a></code>
 		{{#comment/firstParagraph}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/firstParagraph}}
 	</span>
+	{{#isProperty}}<span class="task-item-suffix">{{strings/objectTasks/property}}</span>{{/isProperty}}
 	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}
 </li>
+EndSection
+
+Section TaskSelector
+{{#isInstanceMethod}}&ndash;&nbsp;{{/isInstanceMethod}}{{#isClassMethod}}+&nbsp;{{/isClassMethod}}{{#isProperty}}&nbsp;&nbsp;{{/isProperty}}{{methodSelector}}
 EndSection
 
 

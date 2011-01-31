@@ -59,6 +59,7 @@
 		[result setObject:@"Tasks" forKey:@"title"];
 		[result setObject:@"Other Methods" forKey:@"otherMethodsSectionName"];
 		[result setObject:@"required method" forKey:@"requiredMethod"];
+		[result setObject:@"property" forKey:@"property"];
 	}
 	return result;
 }

@@ -220,6 +220,14 @@
 
 #pragma mark Properties
 
+- (BOOL)isInstanceMethod {
+	return (self.methodType == GBMethodTypeInstance);
+}
+
+- (BOOL)isClassMethod {
+	return (self.methodType == GBMethodTypeClass);
+}
+
 - (BOOL)isMethod {
 	return !self.isProperty;
 }

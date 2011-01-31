@@ -105,6 +105,28 @@
 
 #pragma mark Convenienve methods testing
 
+- (void)testIsInstanceMethod_shouldReturnProperValue {
+	// setup & execute
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	// verify
+	assertThatBool(method1.isInstanceMethod, equalToBool(NO));
+	assertThatBool(method2.isInstanceMethod, equalToBool(YES));
+	assertThatBool(method3.isInstanceMethod, equalToBool(NO));
+}
+
+- (void)testIsClassMethod_shouldReturnProperValue {
+	// setup & execute
+	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method"];
+	// verify
+	assertThatBool(method1.isClassMethod, equalToBool(YES));
+	assertThatBool(method2.isClassMethod, equalToBool(NO));
+	assertThatBool(method3.isClassMethod, equalToBool(NO));
+}
+
 - (void)testIsMethod_shouldReturnProperValue {
 	// setup & execute
 	GBMethodData *method1 = [GBTestObjectsRegistry classMethodWithNames:@"method", nil];
