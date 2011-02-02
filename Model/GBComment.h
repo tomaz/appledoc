@@ -118,6 +118,8 @@
 
 /** `NSArray` containing all paragraphs that should be used for object description.
  
+ Description paragraph list's main purpose is to simplify templates. Depending the settings, the list either contains all paragraphs or excludes first one. This takes all guessing from templates and thus greatly simplifies it's work.
+ 
  The paragraphs are in the same order as in the source code. Each object is a `GBCommentParagraph` instance and should be registered through `registerDescriptionParagraph:` method. This array may be the same as `paragraphs` or it may be different, depending the application settings. It's up to client code to provide the description paragraphs!
  
  @see paragraphs
