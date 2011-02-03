@@ -6,8 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GBComment.h"
-#import "GBCommentParagraph.h"
+#import "GBDataObjects.h"
 
 @interface GBCommentTesting : GHTestCase
 @end

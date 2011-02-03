@@ -209,11 +209,11 @@ Section Method
 	<h3 class="subsubtitle method-title">{{methodSelector}}</h3>
 	
 	{{#comment}}
-	{{#firstParagraph}}
+	{{#shortDescription}}
 	<div class="method-subsection brief-description">
 		<p>{{>GBCommentParagraph}}</p>
 	</div>		
-	{{/firstParagraph}}
+	{{/shortDescription}}
 	
 	<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
 	
@@ -297,7 +297,7 @@ Section TaskMethod
 <li>
 	<span class="tooltip">
 		<code><a href="{{htmlLocalReference}}">{{>TaskSelector}}</a></code>
-		{{#comment/firstParagraph}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/firstParagraph}}
+		{{#comment/shortDescription}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/shortDescription}}
 	</span>
 	{{#isProperty}}<span class="task-item-suffix">{{strings/objectTasks/property}}</span>{{/isProperty}}
 	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}

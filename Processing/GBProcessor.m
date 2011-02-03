@@ -154,11 +154,35 @@
 	
 	// Let comments processor parse comment string value into object representation.
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
-	
-	// Prepare description paragraphs from registered paragraphs according to application settings.
 	if (!object.comment.hasParagraphs) return;
+	
+	// Prepare short description from registered paragraphs. Short description only contains the part up to the first special block.
+	GBCommentParagraph *shortDesc = [GBCommentParagraph paragraph];
+	for (GBParagraphItem *item in object.comment.firstParagraph.paragraphItems) {
+		if (item.isOrderedListItem) break;
+		if (item.isUnorderedListItem) break;
+		if (item.isWarningSpecialItem) break;
+		if (item.isBugSpecialItem) break;
+		if (item.isExampleSpecialItem) break;
+		[shortDesc registerItem:item];
+	}
+	object.comment.shortDescription = shortDesc;
+	
+	// Prepare description paragraphs from registered paragraphs according to application settings. If we're to repeat first paragraph this just becomes a copy of normal paragraphs, but otherwise we should copy all parts of the first paragraph not used on short description and all remaining paragraphs.
 	NSArray *paragraphs = object.comment.paragraphs;
-	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1; 
+	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1;
+	if (startIndex != 0) {
+		NSUInteger shortItems = [shortDesc.paragraphItems count];
+		NSUInteger totalItems =[object.comment.firstParagraph.paragraphItems count];
+		if (shortItems < totalItems) {
+			GBCommentParagraph *remaining = [GBCommentParagraph paragraph];
+			for (NSUInteger i=shortItems; i<totalItems; i++) {
+				GBParagraphItem *item = [object.comment.firstParagraph.paragraphItems objectAtIndex:i];
+				[remaining registerItem:item];
+			}
+			[object.comment registerDescriptionParagraph:remaining];
+		}
+	}
 	for (NSUInteger i=startIndex; i<[paragraphs count]; i++) {
 		[object.comment registerDescriptionParagraph:[paragraphs objectAtIndex:i]];
 	}

@@ -223,6 +223,7 @@
 @synthesize crossrefs = _crossrefs;
 @synthesize result;
 @synthesize firstParagraph;
+@synthesize shortDescription;
 @synthesize sourceInfo;
 @synthesize isCopied;
 @synthesize stringValue;
