@@ -57,10 +57,11 @@
 	self.numberOfParsedFiles = 0;
 	for (NSString *path in paths) {
 		GBLogVerbose(@"Parsing '%@'...", path);
-		if ([self.fileManager isPathDirectory:path]) {
-			[self parseDirectory:path];
+		NSString *standardized = [path stringByStandardizingPath];
+		if ([self.fileManager isPathDirectory:[standardized stringByStandardizingPath]]) {
+			[self parseDirectory:standardized];
 		} else {
-			[self parseFile:path];
+			[self parseFile:standardized];
 		}
 	}
 }
