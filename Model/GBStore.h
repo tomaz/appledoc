@@ -11,6 +11,7 @@
 @class GBClassData;
 @class GBCategoryData;
 @class GBProtocolData;
+@class GBDocumentData;
 
 /** Implements the application's in-memory objects data store.
  
@@ -24,15 +25,17 @@
 	NSMutableDictionary *_categoriesByName;
 	NSMutableSet *_protocols;
 	NSMutableDictionary *_protocolsByName;
+	NSMutableSet *_documents;
+	NSMutableDictionary *_documentsByName;
 }
 
 ///---------------------------------------------------------------------------------------
 /// @name Registrations handling
 ///---------------------------------------------------------------------------------------
 
-/** Registers the given class to the providers data.
+/** Registers the given class to the store data.
  
- If provider doesn't yet have the given class instance registered, the object is added to `classes` list. If the same object is already registered, nothing happens.
+ If store doesn't yet have the given class instance registered, the object is added to `classes` list. If the same instance is already registered, nothing happens.
  
  @warning *Note:* If another instance of the class with the same name is registered, an exception is thrown.
  
@@ -46,9 +49,9 @@
  */
 - (void)registerClass:(GBClassData *)class;
 
-/** Registers the given category to the providers data.
+/** Registers the given category to the store data.
  
- If provider doesn't yet have the given category instance registered, the object is added to `categories` list. If the same object is already registered, nothing happens.
+ If store doesn't yet have the given category instance registered, the object is added to `categories` list. If the same instance is already registered, nothing happens.
  
  @warning *Note:* If another instance of the category with the same name/class name is registered, an exception is thrown.
  
@@ -62,11 +65,11 @@
  */
 - (void)registerCategory:(GBCategoryData *)category;
 
-/** Registers the given protocol to the providers data.
+/** Registers the given protocol to the store data.
  
- If provider doesn't yet have the given protocol instance registered, the object is added to `protocols` list. If the same object is already registered, nothing happens.
+ If store doesn't yet have the given protocol instance registered, the object is added to `protocols` list. If the same instance is already registered, nothing happens.
  
- @warning *Note:* If another instance of the protocol with the same name name is registered, an exception is thrown.
+ @warning *Note:* If another instance of the protocol with the same name is registered, an exception is thrown.
  
  @param protocol The protocol to register.
  @exception NSException Thrown if the given protocol is already registered.
@@ -77,6 +80,19 @@
  @see protocols
  */
 - (void)registerProtocol:(GBProtocolData *)protocol;
+
+/** Registers the given static document to the store data.
+ 
+ If store doesn't yet have the given document instance registered, the object is added to `documents` list. If the same instance is already regsitered, nothing happens.
+ 
+ @warning *Note:* If another instance of the document with the same path is registered, an exception is thrown.
+ 
+ @param document The document to register.
+ @exception NSException Thrown if the given document is already registered.
+ @see documentWithPath:
+ @see documents
+ */
+- (void)registerDocument:(GBDocumentData *)document;
 
 /** Unregisters the given class, category or protocol.
  
@@ -129,6 +145,16 @@
  */
 - (GBProtocolData *)protocolWithName:(NSString *)name;
 
+/** Returns the document instance that matches the given path.
+ 
+ If no registered document matches the given path, `nil` is returned.
+ 
+ @param path Full path of the document to return.
+ @return Returns document instance or `nil` if no match is found.
+ @see documents
+ */
+- (GBDocumentData *)documentWithName:(NSString *)path;
+
 /** The list of all registered classes as instances of `GBClassData`.
  
  @see classWithName:
@@ -149,6 +175,12 @@
  @see registerProtocol:
  */
 @property (readonly) NSSet *protocols;
+
+/** The list of all registered documents as instances of `GBDocumentData`.
+ 
+ @see registerDocument:
+ */
+@property (readonly) NSSet *documents;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper methods

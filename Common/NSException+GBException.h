@@ -34,7 +34,6 @@
  @param format A human readable message string explaining the context of the error.
  @param ... A comma separated list of arguments to substitute into the format.
  @exception NSException Always thrown ;)
- @see exceptionWithError:format:
  */
 + (void)raise:(NSError *)error format:(NSString *)format, ...;
 

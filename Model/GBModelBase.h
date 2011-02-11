@@ -35,7 +35,7 @@
  
  @see sourceInfos
  @see registerSourceInfo:
- @see prefferedSourceInfo:
+ @see prefferedSourceInfo
  */
 - (NSArray *)sourceInfosSortedByName;
 
@@ -92,9 +92,17 @@
  */
 @property (retain) id parentObject;
 
+/** Specifies whether this is a static object or not.
+ 
+ @see isTopLevelObject
+ */
+@property (readonly) BOOL isStaticDocument;
+
 /** Specifies whether this is a top level object or not.
  
  Top level objects are classes, categories and protocols.
+ 
+ @see isStaticDocument;
  */
 @property (readonly) BOOL isTopLevelObject;
 

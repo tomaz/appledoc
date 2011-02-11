@@ -246,8 +246,9 @@
 }
 
 - (void)resetComments {
-	[self.lastCommentBuilder setString:@"" ];
-	[self.previousCommentBuilder setString:@"" ];
+	GBLogDebug(@"Resetting comments...");
+	[self.lastCommentBuilder setString:@""];
+	[self.previousCommentBuilder setString:@""];
 }
 
 - (GBComment *)lastComment {

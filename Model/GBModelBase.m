@@ -88,6 +88,10 @@
 
 #pragma Helper methods
 
+- (BOOL)isStaticDocument {
+	return NO;
+}
+
 - (BOOL)isTopLevelObject {
 	return NO;
 }

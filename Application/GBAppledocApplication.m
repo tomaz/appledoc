@@ -20,6 +20,7 @@ static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
 static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
+static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
 
 static NSString *kGBArgProjectName = @"project-name";
@@ -40,6 +41,9 @@ static NSString *kGBArgFindUndocumentedMembersDocumentation = @"search-undocumen
 static NSString *kGBArgMergeCategoriesToClasses = @"merge-categories";
 static NSString *kGBArgKeepMergedCategoriesSections = @"keep-merged-sections";
 static NSString *kGBArgPrefixMergedCategoriesSectionsWithCategoryName = @"prefix-merged-sections";
+
+static NSString *kGBArgExplicitCrossRef = @"explicit-crossref";
+static NSString *kGBArgCrossRefFormat = @"crossref-format";
 
 static NSString *kGBArgWarnOnMissingOutputPath = @"warn-missing-output-path";
 static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-id";
@@ -153,6 +157,7 @@ static NSString *kGBArgHelp = @"help";
 		GBLogNormal(@"Parsing source files...");
 		GBParser *parser = [GBParser parserWithSettingsProvider:self.settings];
 		[parser parseObjectsFromPaths:arguments toStore:store];
+		[parser parseDocumentsFromPaths:[self.settings.includePaths allObjects] toStore:store];
 		GBAbsoluteTime parseTime = GetCurrentTime();
 		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
 		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
@@ -190,6 +195,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgOutputPath,													'o',	DDGetoptRequiredArgument },
 		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
 		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
+		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
 		
@@ -225,6 +231,10 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPublishDocSet),										0,		DDGetoptNoArgument },
+		
+		{ kGBArgCrossRefFormat,												0,		DDGetoptRequiredArgument },
+		{ kGBArgExplicitCrossRef,											0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgExplicitCrossRef),									0,		DDGetoptNoArgument },
 		
 		{ kGBArgKeepIntermediateFiles,										0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
@@ -388,7 +398,7 @@ static NSString *kGBArgHelp = @"help";
 	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
 	if ([arguments count] == 0) [NSException raise:@"At least one directory or file name path is required, use 'appledoc --help'"];
 	for (NSString *path in arguments) {
-		if (![self.fileManager fileExistsAtPath:path]) {
+		if (![self.fileManager fileExistsAtPath:[path stringByStandardizingPath]]) {
 			[NSException raise:@"Path or file '%@' doesn't exist!", path];
 		}
 	}
@@ -441,6 +451,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setInclude:(NSString *)path { [self.settings.includePaths addObject:[self standardizeCurrentDirectoryForPath:path]]; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
 	[self.settings.ignoredPaths addObject:path];
@@ -459,6 +470,10 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
 - (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
 - (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
+
+- (void)setCrossrefFormat:(NSString *)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value; }
+- (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = @"<%@>"; }
+- (void)setNoExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = @"<?%@>?"; }
 
 - (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
@@ -546,6 +561,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	ddprintf(@"--%@ = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
 	ddprintf(@"--%@ = %@\n", kGBArgOutputPath, self.settings.outputPath);
+	for (NSString *path in self.settings.includePaths) ddprintf(@"--%@ = %@\n", kGBArgIncludePath, path);
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetUtilPath, self.settings.docsetUtilPath);
@@ -582,6 +598,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
+	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
@@ -616,6 +633,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"-o,", kGBArgOutputPath, @"<path>", @"Output path");
 	PRINT_USAGE(@"-t,", kGBArgTemplatesPath, @"<path>", @"Template files path");
 	PRINT_USAGE(@"   ", kGBArgDocSetInstallPath, @"<path>", @"DocSet installation path");
+	PRINT_USAGE(@"-s,", kGBArgIncludePath, @"<path>", @"Include static doc(s) at path");
 	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
 	ddprintf(@"\n");
 	ddprintf(@"PROJECT INFO\n");
@@ -639,6 +657,8 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"", @"[b] Merge categories to classes");
 	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"", @"[b] Keep merged categories sections");
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");
+	PRINT_USAGE(@"   ", kGBArgExplicitCrossRef, @"", @"[b] Shortcut for explicit default cross ref template");
+	PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
 	ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");
@@ -715,4 +735,3 @@ static NSString *kGBArgHelp = @"help";
 }
 
 @end
-

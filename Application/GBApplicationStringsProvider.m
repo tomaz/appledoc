@@ -59,6 +59,7 @@
 		[result setObject:@"Tasks" forKey:@"title"];
 		[result setObject:@"Other Methods" forKey:@"otherMethodsSectionName"];
 		[result setObject:@"required method" forKey:@"requiredMethod"];
+		[result setObject:@"property" forKey:@"property"];
 	}
 	return result;
 }
@@ -76,6 +77,17 @@
 		[result setObject:@"Exceptions" forKey:@"exceptionsTitle"];
 		[result setObject:@"See Also" forKey:@"seeAlsoTitle"];
 		[result setObject:@"Declared In" forKey:@"declaredInTitle"];
+	}
+	return result;
+}
+
+#pragma mark Document output strings
+
+- (NSDictionary *)documentPage {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"%@ Document" forKey:@"titleTemplate"];
 	}
 	return result;
 }
@@ -124,8 +136,8 @@
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"appledoc" forKey:@"tool"];
-		[result setObject:@"2.0.1" forKey:@"version"];
-		[result setObject:@"530" forKey:@"build"];
+		[result setObject:@"2.0.2" forKey:@"version"];
+		[result setObject:@"566" forKey:@"build"];
 		[result setObject:@"http://appledoc.gentlebytes.com" forKey:@"homepage"];
 	}
 	return result;

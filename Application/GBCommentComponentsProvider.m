@@ -19,6 +19,7 @@
 @interface GBCommentComponentsProvider ()
 
 - (NSString *)argumentsCommonRegex;
+- (NSString *)crossReferenceRegexForRegex:(NSString *)regex;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
 
@@ -32,6 +33,14 @@
 
 + (id)provider {
 	return [[[self alloc] init] autorelease];
+}
+
+- (id)init {
+	self = [super init];
+	if (self) {
+		self.crossReferenceMarkersTemplate = @"<?%@>?";
+	}
+	return self;
 }
 
 #pragma mark Lists detection
@@ -94,25 +103,53 @@
 
 #pragma mark Cross references detection
 
-- (NSString *)remoteMemberCrossReferenceRegex {
+- (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated {
 	// +[Class member] or -[Class member] or simply [Class member].
-	return @"<?[+-]?\\[(\\S+)\\s+(\\S+)\\]>?";
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self remoteMemberCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"[+-]?\\[(\\S+)\\s+(\\S+)\\]");
+	}
 }
 
-- (NSString *)localMemberCrossReferenceRegex {
-	return @"<?([^>,.;!?()\\s]+)>?";
+- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.;!?()\\s]+)");
+	}
 }
 
-- (NSString *)categoryCrossReferenceRegex {
-	return @"<?([^(][^>,.:;!?)\\s]+\\))>?";
+- (NSString *)categoryCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self categoryCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^(][^>,.:;!?)\\s]+\\))");
+	}
 }
 
-- (NSString *)objectCrossReferenceRegex {
-	return @"<?([^>,.:;!?()\\s]+)>?";
+- (NSString *)objectCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self objectCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.:;!?()\\s]+)");
+	}
 }
 
-- (NSString *)urlCrossReferenceRegex {
-	return @"<?(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)>?";
+- (NSString *)documentCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self objectCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.:;!?()\\s]+)");
+	}
+}
+
+- (NSString *)urlCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self urlCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"(\\b(?:mailto\\:|(?:https?|ftps?|news|rss|file)\\://)[a-zA-Z0-9@:\\-.]+(?::(\\d+))?(?:(?:/[a-zA-Z0-9\\-._?,'+\\&%$=~*!():@\\\\]*)+)?)");
+	}
 }
 
 #pragma mark Common detection
@@ -123,6 +160,10 @@
 
 #pragma mark Helper methods
 
+- (NSString *)crossReferenceRegexForRegex:(NSString *)regex {
+	return [NSString stringWithFormat:self.crossReferenceMarkersTemplate, regex];
+}
+
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(?s:(.*))", keyword];
 }
@@ -130,5 +171,9 @@
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(\\S+)\\s+(?s:(.*))", keyword];
 }
+
+#pragma Properties
+
+@synthesize crossReferenceMarkersTemplate;
 
 @end

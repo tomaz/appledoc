@@ -236,6 +236,46 @@
 	assertThat([store protocolWithName:nil], is(nil));
 }
 
+#pragma mark Document registration testing
+
+- (void)testRegisterDocument_shouldAddDocumentToList {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	// execute
+	[store registerDocument:document];
+	// verify
+	assertThatBool([store.documents containsObject:document], equalToBool(YES));
+	assertThatInteger([[store.documents allObjects] count], equalToInteger(1));
+	assertThat([[store.documents allObjects] objectAtIndex:0], is(document));
+}
+
+- (void)testRegisterDocument_shouldIgnoreSameInstance {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	// execute
+	[store registerDocument:document];
+	[store registerDocument:document];
+	// verify
+	assertThatInteger([[store.documents allObjects] count], equalToInteger(1));
+}
+
+- (void)testDocumentWithName_shouldReturnProperInstanceOrNil {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"contents" path:@"path1/document.txt"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"contents" path:@"path2/document-template.txt"];
+	[store registerDocument:document1];
+	[store registerDocument:document2];
+	// execute & verify
+	assertThat([store documentWithName:@"document"], is(document1));
+	assertThat([store documentWithName:@"document-template"], is(document2));
+	assertThat([store documentWithName:@"something"], is(nil));
+	assertThat([store documentWithName:@""], is(nil));
+	assertThat([store documentWithName:nil], is(nil));
+}
+
 #pragma mark Unregistration testing
 
 - (void)testUnregisterTopLevelObject_shouldRemoveClass {

@@ -463,12 +463,25 @@
 	assertThat([[(GBModelBase *)[methods objectAtIndex:1] comment] stringValue], is(@"Comment2"));
 }
 
-- (void)testParseObjectsFromString_shouldProperlyResetComments {
+- (void)testParseObjectsFromString_shouldProperlyResetMethodComments {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ -(id)method1; +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"Comment1"));
+	assertThat([(GBModelBase *)[methods objectAtIndex:1] comment], is(nil));
+}
+
+- (void)testParseObjectsFromString_shouldProperlyResetPropertyComments {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** Comment1 */ @property (readonly) id value; +(void)method2; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];

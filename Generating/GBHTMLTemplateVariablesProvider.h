@@ -54,6 +54,7 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForCategory:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForDocument:withStore:
  @see variablesForIndexWithStore:
  @see variablesForHierarchyWithStore:
  */
@@ -69,6 +70,7 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForClass:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForDocument:withStore:
  @see variablesForIndexWithStore:
  @see variablesForHierarchyWithStore:
  */
@@ -84,10 +86,27 @@
  @exception NSException Thrown if the given object or store is `nil`.
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
+ @see variablesForDocument:withStore:
  @see variablesForIndexWithStore:
  @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)store;
+
+/** Returns the variables for the given `GBDocumentData` using the given `GBStore` for links. 
+ 
+ The result can be used with `GBTemplateHandler` to generate document specific output.
+ 
+ @param object The document for which to return variables.
+ @param store Store provider to be used for links generation.
+ @return Returns dictionary of all variables
+ @exception NSException Thrown if the given object or store is `nil`.
+ @see variablesForClass:withStore:
+ @see variablesForCategory:withStore:
+ @see variablesForProtocol:withStore:
+ @see variablesForIndexWithStore:
+ @see variablesForHierarchyWithStore:
+ */
+- (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)store;
 
 /** Returns the variables for the index file using the given `GBStore` for links. 
  
@@ -99,6 +118,7 @@
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForDocument:withStore:
  @see variablesForHierarchyWithStore:
  */
 - (NSDictionary *)variablesForIndexWithStore:(id)store;
@@ -113,6 +133,7 @@
  @see variablesForClass:withStore:
  @see variablesForCategory:withStore:
  @see variablesForProtocol:withStore:
+ @see variablesForDocument:withStore:
  @see variablesForIndexWithStore:
  */
 - (NSDictionary *)variablesForHierarchyWithStore:(id)store;

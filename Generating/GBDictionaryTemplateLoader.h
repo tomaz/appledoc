@@ -21,7 +21,11 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Returns a new autoreleased `GBDictionaryTemplateLoader` instance. */ 
+/** Returns a new autoreleased `GBDictionaryTemplateLoader` instance. 
+ 
+ @param partials The dictionary of all partials.
+ @return Returns initialized instance.
+ */ 
 + (id)loaderWithDictionary:(NSDictionary *)partials;
 
 /** Initializes the template loader with the given dictionary of partials.

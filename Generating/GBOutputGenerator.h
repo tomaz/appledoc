@@ -6,7 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "GBTemplateFilesHandler.h"
 
 @class GBStore;
 @class GBApplicationSettingsProvider;
@@ -14,8 +14,10 @@
 /** The base class for all output generators.
  
  Output generator is an object that handles a specific spet while generating output. These are helper classes for `GBGenerator` class; each concrete subclass handles specifics for certain step. Generator just ties all of these together into properly ordered chain as required by command line parameters.
+ 
+ @warning *Implementation detail:* As this is a subclass of `GBTemplateFilesHandler`, it automatically inherits all template files processing functionality from it. However it overrides `templateUserPath` and `outputUserPath` to use values from `GBApplicationSettingsProvider`. This greatly simplifies output generators handling - instead of requiring clients to setup proper paths, subclasses only need to override `outputSubpath` and return subdirectory which is used for both: actual template files and output files location; in both cases, the subpath is appended to the locations from the settings.
  */
-@interface GBOutputGenerator : NSObject
+@interface GBOutputGenerator : GBTemplateFilesHandler
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
@@ -68,24 +70,14 @@
  */
 - (BOOL)initializeDirectoryAtPath:(NSString *)path preserve:(NSArray *)preserve error:(NSError **)error;
 
-/** Copies all files from the templates path to the output path as defined in assigned `settings`, replicating the directory structure and stores all detected template files to `templateFiles` dictionary.
- 
- The method uses `[GBApplicationSettingsProvider templatesPath]` as the base path for templates and `[GBApplicationSettingsProvider outputPath]` as the base path for output. In both cases, `outputSubpath` is used to determine the source and destination subdirectories. It then copies all files from template path to the output path, including the whole directory structure. If any special template file is found at source path, it is not copied! Template files are identified by having a `-template` suffix followed by optional extension. For example `object-template.html`. As this message prepares the ground for actual generation, it should be sent before any other messages (i.e. before `generateOutput:`).
- 
- To further aid subclasses, the method reads out all template files in templates path and stores them to `templateFiles` dictionary. Each template file is stored with a key correspoding to it's filename, including the subdirectory within the base template path and extension.
-  
- @warning *Note:* This message is intended to be sent from higher-level generator objects. Although it would present no error to run it several times, in most circumstances subclasses don't need to send it manually. If copying fails, a warning is logged and copying is stopped. Depending of type of failure, the method either returns `YES` or `NO`. If copying of all files is succesful, but reading or clearing template or ignored files fails, the operation is still considered succesful, so `YES` is returned. However if replicating the directory structure or copying files fails, this is considered an error and `NO` is returned. In such case, clients should abort further processing.
-
-
- @param error If copying fails, error description is returned here.
- @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
- @see generateOutputWithStore:error:
- */
-- (BOOL)copyTemplateFilesToOutputPath:(NSError **)error;
-
 /** Copies or moves directory or file from the given source path to the destination path.
  
  This method takes into account `[GBApplicationSettings keepIntermediateFiles]` and either copies or moves files regarding it's value. The method is designed to be used from within subclasses. 
+
+ @param source Source path to copy or move from.
+ @param destination Destination path to copy or move to.
+ @param error If copying fails, error description is returned here.
+ @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
  */
 - (BOOL)copyOrMoveItemFromPath:(NSString *)source toPath:(NSString *)destination error:(NSError **)error;
 
@@ -117,47 +109,6 @@
 /// @name Subclass parameters and helpers
 ///---------------------------------------------------------------------------------------
 
-/** Returns the full path to the template ending with the given string.
- 
- The method searches `templateFiles` for a key ending with the given suffix and returns full path to the given template. This is useful for getting the template for which we only know filename, but not the whole path for example.
- 
- @param suffix Template file suffix to search for.
- @return Returns template path to the given template or `nil` if not found.
- @see outputPathToTemplateEndingWith:
- @see templateFiles
- */
-- (NSString *)templatePathForTemplateEndingWith:(NSString *)suffix;
-
-/** Returns the path to the template ending with the given string.
- 
- The method searches `templateFiles` for a key ending with the given suffix and returns the path to the output directory corresponding to the given template subpath. This is useful for generating actual template file names - just append the desired filename and you have output file name ready!
- 
- @param suffix Template file suffix to search for.
- @return Returns output path corresponding to the given template or `nil` if not found.
- @see templatePathForTemplateEndingWith:
- @see templateFiles
- */
-- (NSString *)outputPathToTemplateEndingWith:(NSString *)suffix;
-
-/** The dictionary of all template files detected within `copyTemplateFilesToOutputPath:`.
- 
- Each object has a key of template file name and relative path from `templateUserPath`. The keys are mapped to `GBTemplateHandler` instances associated with the template.
- 
- This is intended to be used within subclasses only. Dictionary contents are automatically updated and should not be changed by subclasses.
- 
- @see copyTemplateFilesToOutputPath:
- */
-@property (readonly) NSMutableDictionary *templateFiles;
-
-/** Returns user-friendly template path string including `outputSubpath`. 
- 
- This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
- 
- @see inputUserPath
- @see outputUserPath
- */
-@property (readonly) NSString *templateUserPath;
-
 /** Returns user-friendly input path string.
  
  This is simply a shortcut for output path of previous generator. Internally it works by sending the `outputUserPath` message to `previousGenerator and returning the result. If previous generator is `nil` (i.e. this is the first generator), `nil` is returned. Send `stringByStandardizingPath` message to the returned value before using it!
@@ -167,15 +118,6 @@
  @see outputUserPath
  */
 @property (readonly) NSString *inputUserPath;
-
-/** Returns the output path including `outputSubpath`. 
- 
- This uses the same string as entered by the user when starting the application. Send `stringByStandardizingPath` message to the returned value before using it!
- 
- @see inputUserPath
- @see templateUserPath
- */
-@property (readonly) NSString *outputUserPath;
 
 /** Returns the `GBOutputGenerator` that was used just before this one or `nil` if this is the first generator in this session.
  

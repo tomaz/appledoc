@@ -120,6 +120,30 @@ typedef NSUInteger GBMethodType;
  */
 @property (readonly) NSString *methodPrefix;
 
+/** Specified whether this method is an instance method or not.
+ 
+ This is convenience accessor for simpler template handling. Internally it's equivalent to `methodType == GBMethodTypeInstance`.
+ */
+@property (readonly) BOOL isInstanceMethod;
+
+/** Specifies whether this method is a class method or not.
+ 
+ This is convenience accessor for simpler template handling. Internally it's equivalent to `methodType == GBMethodTypeClass`.
+ */
+@property (readonly) BOOL isClassMethod;
+
+/** Specifies whether this method is a class or instance method or not.
+ 
+ This is convenience accessor for simpler template handling. Internally it's equivalent to `methodType != GBMethodTypeProperty`.
+ */
+@property (readonly) BOOL isMethod;
+
+/** Specifies whether this method is a property or not.
+ 
+ This is convenience accessor for simpler template handling. Internally it's equivalent to `methodType == GBMethodTypeProperty`.
+ */
+@property (readonly) BOOL isProperty;
+
 /** Specifies whether the method is required or not.
  
  This is only used for protocols where certain methods can be marked as optional and certain as required. Default value is `NO`.

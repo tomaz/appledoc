@@ -20,15 +20,18 @@
 - (BOOL)processClasses:(NSError **)error;
 - (BOOL)processCategories:(NSError **)error;
 - (BOOL)processProtocols:(NSError **)error;
+- (BOOL)processDocuments:(NSError **)error;
 - (BOOL)processIndex:(NSError **)error;
 - (BOOL)processHierarchy:(NSError **)error;
 - (NSString *)stringByCleaningHtml:(NSString *)string;
 - (NSString *)htmlOutputPathForIndex;
 - (NSString *)htmlOutputPathForHierarchy;
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
+- (NSString *)htmlOutputPathForTemplateName:(NSString *)template;
 @property (readonly) GBTemplateHandler *htmlObjectTemplate;
 @property (readonly) GBTemplateHandler *htmlIndexTemplate;
 @property (readonly) GBTemplateHandler *htmlHierarchyTemplate;
+@property (readonly) GBTemplateHandler *htmlDocumentTemplate;
 @property (readonly) GBHTMLTemplateVariablesProvider *variablesProvider;
 
 @end
@@ -45,6 +48,7 @@
 	if (![self processClasses:error]) return NO;
 	if (![self processCategories:error]) return NO;
 	if (![self processProtocols:error]) return NO;
+	if (![self processDocuments:error]) return NO;
 	if (![self processIndex:error]) return NO;
 	if (![self processHierarchy:error]) return NO;
 	return YES;
@@ -94,6 +98,35 @@
 			return NO;
 		}
 		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
+	}
+	return YES;
+}
+
+- (BOOL)processDocuments:(NSError **)error {	
+	// First process all include paths by copying them over to the destination. Note that we do it even if no template is found - if the user specified some include path, we should use it...
+	NSString *docsUserPath = [self.outputUserPath stringByAppendingPathComponent:self.settings.htmlStaticDocumentsSubpath];
+	GBTemplateFilesHandler *handler = [[GBTemplateFilesHandler alloc] init];
+	for (NSString *path in self.settings.includePaths) {
+		GBLogInfo(@"Copying static documents from '%@'...", path);
+		NSString *lastComponent = [path lastPathComponent];
+		NSString *installPath = [docsUserPath stringByAppendingPathComponent:lastComponent];
+		handler.templateUserPath = path;
+		handler.outputUserPath = installPath;
+		if (![handler copyTemplateFilesToOutputPath:error]) return NO;
+	}
+	
+	// Now process all documents.
+	for (GBDocumentData *document in self.store.documents) {
+		GBLogInfo(@"Generating output for document %@...", document);
+		NSDictionary *vars = [self.variablesProvider variablesForDocument:document withStore:self.store];
+		NSString *output = [self.htmlDocumentTemplate renderObject:vars];
+		NSString *cleaned = [self stringByCleaningHtml:output];
+		NSString *path = [self htmlOutputPathForObject:document];
+		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
+			GBLogWarn(@"Failed writting HTML for document %@ to '%@'!", document, path);
+			return NO;
+		}
+		GBLogDebug(@"Finished generating output for document %@.", document);
 	}
 	return YES;
 }
@@ -164,22 +197,25 @@
 
 - (NSString *)htmlOutputPathForIndex {
 	// Returns file name including full path for HTML file representing the main index.
-	NSString *path = [self outputPathToTemplateEndingWith:@"index-template.html"];
-	path = [path stringByAppendingPathComponent:@"index"];
-	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
+	return [self htmlOutputPathForTemplateName:@"index-template.html"];
 }
 
 - (NSString *)htmlOutputPathForHierarchy {
 	// Returns file name including full path for HTML file representing the main hierarchy.
-	NSString *path = [self outputPathToTemplateEndingWith:@"hierarchy-template.html"];
-	path = [path stringByAppendingPathComponent:@"hierarchy"];
-	return [path stringByAppendingPathExtension:self.settings.htmlExtension];
+	return [self htmlOutputPathForTemplateName:@"hierarchy-template.html"];
 }
 
 - (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
-	// Returns file name including full path for HTML file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class.
+	// Returns file name including full path for HTML file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class. Note that we use the HTML reference to get us the actual path - we can't rely on template filename as it's the same for all objects...
 	NSString *inner = [self.settings htmlReferenceForObjectFromIndex:object];
 	return [self.outputUserPath stringByAppendingPathComponent:inner];
+}
+
+- (NSString *)htmlOutputPathForTemplateName:(NSString *)template {
+	// Returns full path and actual file name corresponding to the given template.
+	NSString *path = [self outputPathToTemplateEndingWith:template];
+	NSString *filename = [self.settings outputFilenameForTemplatePath:template];
+	return [path stringByAppendingPathComponent:filename];
 }
 
 - (GBHTMLTemplateVariablesProvider *)variablesProvider {
@@ -201,6 +237,10 @@
 
 - (GBTemplateHandler *)htmlHierarchyTemplate {
 	return [self.templateFiles objectForKey:@"hierarchy-template.html"];
+}
+
+- (GBTemplateHandler *)htmlDocumentTemplate {
+	return [self.templateFiles objectForKey:@"document-template.html"];
 }
 
 #pragma mark Overriden methods

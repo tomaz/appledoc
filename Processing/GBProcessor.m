@@ -18,23 +18,27 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processDocuments;
+
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processCommentForObject:(GBModelBase *)object;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
 - (void)processHtmlReferencesForObject:(GBModelBase *)object;
 - (void)copyKnownDocumentationForMethod:(GBMethodData *)method;
-- (BOOL)removeUndocumentedMembersAndObject:(id)object;
+
+- (BOOL)removeUndocumentedObject:(id)object;
+- (BOOL)removeUndocumentedMember:(GBMethodData *)object;
 
 - (void)setupKnownObjectsFromStore;
 - (void)mergeKnownCategoriesFromStore;
 - (void)setupSuperclassForClass:(GBClassData *)class;
 - (void)setupAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
 
-- (void)validateCommentForObject:(GBModelBase *)object;
+- (void)validateCommentsForObjectAndMembers:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
 
 @property (retain) GBCommentsProcessor *commentsProcessor;
-@property (retain) id<GBObjectDataProviding> currentContext;
+@property (retain) id currentContext;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
@@ -73,6 +77,7 @@
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
+	[self processDocuments];
 }
 
 - (void)processClasses {
@@ -81,11 +86,12 @@
 	for (GBClassData *class in classes) {
 		GBLogInfo(@"Processing class %@...", class);
 		self.currentContext = class;
-		[self validateCommentForObject:class];
 		[self processCommentForObject:class];
 		[self processMethodsFromProvider:class.methods];
-		[self removeUndocumentedMembersAndObject:class];
-		[self processHtmlReferencesForObject:class];
+		if (![self removeUndocumentedObject:class]) {
+			[self validateCommentsForObjectAndMembers:class];
+			[self processHtmlReferencesForObject:class];
+		}
 		GBLogDebug(@"Finished processing class %@.", class);
 	}
 }
@@ -95,11 +101,12 @@
 	for (GBCategoryData *category in categories) {
 		GBLogInfo(@"Processing category %@...", category);
 		self.currentContext = category;
-		[self validateCommentForObject:category];
 		[self processCommentForObject:category];
 		[self processMethodsFromProvider:category.methods];
-		[self removeUndocumentedMembersAndObject:category];
-		[self processHtmlReferencesForObject:category];
+		if (![self removeUndocumentedObject:category]) {
+			[self validateCommentsForObjectAndMembers:category];
+			[self processHtmlReferencesForObject:category];
+		}
 		GBLogDebug(@"Finished processing category %@.", category);
 	}
 }
@@ -109,25 +116,37 @@
 	for (GBProtocolData *protocol in protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		self.currentContext = protocol;
-		[self validateCommentForObject:protocol];
 		[self processCommentForObject:protocol];
 		[self processMethodsFromProvider:protocol.methods];
-		[self removeUndocumentedMembersAndObject:protocol];
-		[self processHtmlReferencesForObject:protocol];
+		if (![self removeUndocumentedObject:protocol]) {
+			[self validateCommentsForObjectAndMembers:protocol];
+			[self processHtmlReferencesForObject:protocol];
+		}
 		GBLogDebug(@"Finished processing protocol %@.", protocol);
+	}
+}
+
+- (void)processDocuments {
+	for (GBDocumentData *document in self.store.documents) {
+		GBLogInfo(@"Processing static document %@...", document);
+		self.currentContext = document;
+		[self processCommentForObject:document];
+		GBLogDebug(@"Finished processing document %@.", document);
 	}
 }
 
 #pragma mark Common data processing
 
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
-	for (GBMethodData *method in provider.methods) {
+	NSArray *methods = [provider.methods copy];
+	for (GBMethodData *method in methods) {
 		GBLogVerbose(@"Processing method %@...", method);
 		[self copyKnownDocumentationForMethod:method];
-		[self validateCommentForObject:method];
-		[self processCommentForObject:method];
-		[self processParametersFromComment:method.comment matchingMethod:method];
-		[self processHtmlReferencesForObject:method];
+		if (![self removeUndocumentedMember:method]) {
+			[self processCommentForObject:method];
+			[self processParametersFromComment:method.comment matchingMethod:method];
+			[self processHtmlReferencesForObject:method];
+		}
 		GBLogDebug(@"Finished processing method %@.", method);
 	}
 }
@@ -147,11 +166,35 @@
 	
 	// Let comments processor parse comment string value into object representation.
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
-	
-	// Prepare description paragraphs from registered paragraphs according to application settings.
 	if (!object.comment.hasParagraphs) return;
+	
+	// Prepare short description from registered paragraphs. Short description only contains the part up to the first special block.
+	GBCommentParagraph *shortDesc = [GBCommentParagraph paragraph];
+	for (GBParagraphItem *item in object.comment.firstParagraph.paragraphItems) {
+		if (item.isOrderedListItem) break;
+		if (item.isUnorderedListItem) break;
+		if (item.isWarningSpecialItem) break;
+		if (item.isBugSpecialItem) break;
+		if (item.isExampleSpecialItem) break;
+		[shortDesc registerItem:item];
+	}
+	object.comment.shortDescription = shortDesc;
+	
+	// Prepare description paragraphs from registered paragraphs according to application settings. If we're to repeat first paragraph this just becomes a copy of normal paragraphs, but otherwise we should copy all parts of the first paragraph not used on short description and all remaining paragraphs.
 	NSArray *paragraphs = object.comment.paragraphs;
-	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1; 
+	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1;
+	if (startIndex != 0) {
+		NSUInteger shortItems = [shortDesc.paragraphItems count];
+		NSUInteger totalItems =[object.comment.firstParagraph.paragraphItems count];
+		if (shortItems < totalItems) {
+			GBCommentParagraph *remaining = [GBCommentParagraph paragraph];
+			for (NSUInteger i=shortItems; i<totalItems; i++) {
+				GBParagraphItem *item = [object.comment.firstParagraph.paragraphItems objectAtIndex:i];
+				[remaining registerItem:item];
+			}
+			[object.comment registerDescriptionParagraph:remaining];
+		}
+	}
 	for (NSUInteger i=startIndex; i<[paragraphs count]; i++) {
 		[object.comment registerDescriptionParagraph:[paragraphs objectAtIndex:i]];
 	}
@@ -211,6 +254,9 @@
 			if (superMethod.comment) {
 				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
 				GBComment *comment = [GBComment commentWithStringValue:superMethod.comment.stringValue];
+				NSString *filename = [NSString stringWithFormat:@"%@ -> %@", superMethod.comment.sourceInfo, method.prefferedSourceInfo.filename];
+				comment.sourceInfo = [GBSourceInfo infoWithFilename:filename lineNumber:method.prefferedSourceInfo.lineNumber];
+				comment.isCopied = YES;
 				method.comment = comment;
 				return;
 			}
@@ -231,41 +277,48 @@
 	}
 }
 
-- (BOOL)removeUndocumentedMembersAndObject:(id)object {
-	// Removes all undocumented members from the given top-level object as well as the object itself! The result is YES if we deleted the object, NO otherwise. Note that we need to use copies of lists to prevent the actual lists being changed while we're iterating over them!
-	GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
-	NSArray *methods = [provider.methods copy];
+- (BOOL)removeUndocumentedObject:(id)object {
+	// Removes the given top level object if it's not commented and all of it's methods are uncommented. Returns YES if the object was removed, NO otherwise.
+	if (self.settings.keepUndocumentedObjects) return NO;
+	if ([self isCommentValid:[(GBModelBase *)object comment]]) return NO;
 	
-	// Count and delete all undocumented methods.
-	NSUInteger uncommentedMethodsCount = 0;
-	for (GBMethodData *method in methods) {
-		if ([self isCommentValid:method.comment]) continue;
-		if (!self.settings.keepUndocumentedMembers) {
-			GBLogVerbose(@"Removing undocumented method %@...", method);
-			[provider unregisterMethod:method];
+	// Only remove if all methods are uncommented. Note that this also removes methods regardless of keepUndocumentedMembers setting, however if the object itself is commented, we'll keep methods.
+	GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
+	BOOL hasCommentedMethods = NO;
+	for (GBMethodData *method in provider.methods) {
+		if ([self isCommentValid:method.comment]) {
+			hasCommentedMethods = YES;
+			break;
 		}
-		uncommentedMethodsCount++;
 	}
 	
-	// Remove the object if it isn't commented or has only uncommented methods.
-	NSUInteger commentedMethodsCount = [methods count] - uncommentedMethodsCount;
-	GBComment *comment = [(GBModelBase *)object comment];
-	if (!self.settings.keepUndocumentedObjects && ![self isCommentValid:comment] && commentedMethodsCount == 0) {
+	// Remove the object if it only has uncommented methods.
+	if (!hasCommentedMethods) {
 		GBLogVerbose(@"Removing undocumented object %@...", object);
 		[self.store unregisterTopLevelObject:object];
 		return YES;
 	}
-	
-	// Remove all empty sections to cleanup the object for output generation.
-	[provider unregisterEmptySections];	
 	return NO;
+}
+
+- (BOOL)removeUndocumentedMember:(GBMethodData *)object {
+	// Removes the given method if it's not commented and returns YES if removed, NO otherwise.
+	if (self.settings.keepUndocumentedMembers) return NO;
+	if ([self isCommentValid:object.comment]) return NO;
+
+	// Remove the method and all empty sections to cleanup the object for output generation.
+	GBLogVerbose(@"Removing undocumented method %@...", object);
+	GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object.parentObject methods];
+	[provider unregisterMethod:object];
+	[provider unregisterEmptySections];	
+	return YES;
 }
 
 #pragma mark Known objects handling
 
 - (void)setupKnownObjectsFromStore {
 	// Setups links to superclasses and adopted protocols. This should be sent first so that the data is prepared for later processing.
-	GBLogInfo(@"Checking for known superclasses and adopted protocols...");
+	GBLogInfo(@"Checking for known superclasgses and adopted protocols...");
 	for (GBClassData *class in self.store.classes) {
 		[self setupSuperclassForClass:class];
 		[self setupAdoptedProtocolsFromProvider:class.adoptedProtocols];
@@ -354,11 +407,14 @@
 													
 #pragma mark Helper methods
 
-- (void)validateCommentForObject:(GBModelBase *)object {
-	// Checks if the object is commented and warns if not.
-	if (![self isCommentValid:object.comment]) {
-		if ((object.isTopLevelObject && self.settings.warnOnUndocumentedObject) || self.settings.warnOnUndocumentedMember) {
-			GBLogWarn(@"%@ is not documented!", object);
+- (void)validateCommentsForObjectAndMembers:(GBModelBase *)object {
+	// Checks if the object is commented and warns if not. This validates given object and all it's members comments! The reason for doing it together is due to the fact that we first process all members and then handle the object. At that point we can even remove the object if not documented. So we can't validate members before as we don't know whether they will be deleted together with their parent object too...
+	if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) GBLogWarn(@"%@ is not documented!", object);
+	
+	// Handle methods.
+	for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
+		if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
+			GBLogWarn(@"%@ is not documented!", method);
 		}
 	}
 }

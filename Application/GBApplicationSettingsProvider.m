@@ -28,11 +28,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @interface GBApplicationSettingsProvider ()
 
 + (NSSet *)nonCopyableProperties;
-- (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
-- (NSString *)relativePathPrefixFromObject:(GBModelBase *)source toObject:(GBModelBase *)destination;
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
-- (NSString *)htmlReferenceForMember:(GBModelBase *)member prefixedWith:(NSString *)prefix;
+- (NSString *)htmlReferenceForMember:(id)member prefixedWith:(id)prefix;
+- (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
 - (NSString *)stringByNormalizingString:(NSString *)string;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
@@ -65,6 +64,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
+		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
 		
 		self.createHTML = YES;
@@ -116,6 +116,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Helper methods
 
+- (void)updateHelperClassesWithSettingsValues {
+	
+}
+
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
 	// These need to be replaced first as they can be used in other settings!
 	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];
@@ -155,6 +159,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
 	NSParameterAssert(object != nil);
 	if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:object];
+	if (object.isStaticDocument) return [self htmlReferenceForObject:object fromSource:object];
 	return [self htmlReferenceForMember:object prefixedWith:@""];
 }
 
@@ -165,6 +170,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	if (!source) {
 		// To top-level object.
 		if (object.isTopLevelObject) return [self htmlReferenceForObjectFromIndex:object];
+		if (object.isStaticDocument) return [self htmlReferenceForObjectFromIndex:object];
 		
 		// To a member of top-level object.
 		NSString *path = [self htmlReferenceForObjectFromIndex:object.parentObject];
@@ -172,8 +178,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		return [NSString stringWithFormat:@"%@%@", path, memberReference];
 	}
 	
-	// Generate hrefs from member to other objects:
-	if (!source.isTopLevelObject) {
+	// Generate hrefs from members to other objects.
+	if (!source.isTopLevelObject && !source.isStaticDocument) {
 		GBModelBase *sourceParent = source.parentObject;
 		
 		// To the parent or another top-level object.
@@ -188,12 +194,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		return [NSString stringWithFormat:@"%@%@", path, memberReference];
 	}
 	
-	// From top-level object to samo or another top level object.
-	if (object == source || object.isTopLevelObject) {
-		return [self htmlReferenceForTopLevelObject:object fromTopLevelObject:source];
-	}
+	// From now on we're generating hrefs from top-level object or documents to other documents, top-level objects or their members. First handle links from any kind of object to itself and top-level object or document to top-level object. Handle links from document to document slighlty differently, they are more complicated due to arbitrary directory structure.
+	if (object == source || object.isTopLevelObject || object.isStaticDocument) return [self htmlReferenceForTopLevelObject:object fromTopLevelObject:source];
 	
-	// From top-level object to another top-level object member.
+	// From top-level object or document to top-level object member.
 	NSString *memberPath = [self htmlReferenceForMember:object prefixedWith:@"#"];
 	if (object.parentObject != source) {
 		NSString *objectPath = [self htmlReferenceForTopLevelObject:object.parentObject fromTopLevelObject:source];
@@ -208,10 +212,11 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	return [self outputPathForObject:object withExtension:[self htmlExtension]];
 }
 
-- (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source {
+- (NSString *)htmlReferenceForTopLevelObject:(id)object fromTopLevelObject:(id)source {
+	// Handles top-level object or document to top-level object or document.
 	NSString *path = [self outputPathForObject:object withExtension:[self htmlExtension]];
-	if ([object isKindOfClass:[source class]]) return [path lastPathComponent];
-	NSString *prefix = [self relativePathPrefixFromObject:source toObject:object];
+	if (object == source) return [path lastPathComponent];
+	NSString *prefix = [self htmlRelativePathToIndexFromObject:source];
 	return [prefix stringByAppendingPathComponent:path];
 }
 
@@ -225,8 +230,40 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	return @"";
 }
 
+- (NSString *)htmlStaticDocumentsSubpath {
+	return @"docs";
+}
+
 - (NSString *)htmlExtension {
 	return @"html";
+}
+
+#pragma mark Common template files helpers
+
+- (BOOL)isPathRepresentingTemplateFile:(NSString *)path {
+	NSString *filename = [[path lastPathComponent] stringByDeletingPathExtension];
+	if ([filename hasSuffix:@"-template"]) return YES;
+	return NO;
+}
+
+- (NSString *)outputFilenameForTemplatePath:(NSString *)path {
+	NSString *result = [path lastPathComponent];
+	return [result stringByReplacingOccurrencesOfString:@"-template" withString:@""];
+}
+
+- (NSString *)templateFilenameForOutputPath:(NSString *)path {
+	// If the path is already valid template, just return it.
+	if ([self isPathRepresentingTemplateFile:path]) return path;
+	
+	// Get all components.
+	NSString *prefix = [path stringByDeletingLastPathComponent];
+	NSString *filename = [[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingString:@"-template"];
+	NSString *extension = [path pathExtension];
+	
+	// Prepare the result.
+	NSString *result = [prefix stringByAppendingPathComponent:filename];
+	if ([extension length] > 0) result = [result stringByAppendingPathExtension:extension];
+	return result;
 }
 
 #pragma mark Date and time helpers
@@ -260,6 +297,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 #pragma mark Paths helper methods
 
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension {
+	// Returns relative path to the given object from the output root (i.e. from the index file).
 	NSString *basePath = nil;
 	NSString *name = nil;
 	if ([object isKindOfClass:[GBClassData class]]) {
@@ -274,14 +312,35 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		basePath = @"Protocols";
 		name = [object nameOfProtocol];
 	}
+	else if ([object isKindOfClass:[GBDocumentData class]]) {
+		GBDocumentData *document = object;
+
+		// Get output filename (removing template suffix) and document subpath without filename. Note that we need to remove extension as we'll add html by default!
+		NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
+		NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
+		filename = [filename stringByDeletingPathExtension];
+
+		// Prepare relative path from output path to the document now.
+		basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
+		name = filename;
+	}
 	
 	if (basePath == nil || name == nil) return nil;
 	basePath = [basePath stringByAppendingPathComponent:name];
 	return [basePath stringByAppendingPathExtension:extension];
 }
 
-- (NSString *)relativePathPrefixFromObject:(GBModelBase *)source toObject:(GBModelBase *)destination {
-	if ([source isKindOfClass:[destination class]]) return @"";
+- (NSString *)htmlRelativePathToIndexFromObject:(id)object {
+	// Returns relative path prefix from the given source to the given destination or empty string if both objects live in the same path. This is pretty simple except when either object is a document. In such case we need to handle arbitrary depth.	
+	if ([object isStaticDocument]) {
+		NSString *subpath = [[object subpathOfDocument] stringByDeletingLastPathComponent];
+		if ([subpath length] > 0) {
+			NSArray *components = [subpath pathComponents];
+			NSMutableString *result = [NSMutableString stringWithString:@"../"];
+			for (NSUInteger i=0; i<[components count]; i++) [result appendString:@"../"];
+			return result;
+		}
+	}
 	return @"../";
 }
 
@@ -355,6 +414,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize docsetInstallPath;
 @synthesize docsetUtilPath;
 @synthesize templatesPath;
+@synthesize includePaths;
 @synthesize ignoredPaths;
 
 @synthesize docsetBundleIdentifier;

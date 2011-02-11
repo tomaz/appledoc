@@ -32,6 +32,7 @@
 - (NSString *)pageTitleForClass:(GBClassData *)object;
 - (NSString *)pageTitleForCategory:(GBCategoryData *)object;
 - (NSString *)pageTitleForProtocol:(GBProtocolData *)object;
+- (NSString *)pageTitleForDocument:(GBDocumentData *)object;
 - (NSDictionary *)specificationsForClass:(GBClassData *)object;
 - (NSDictionary *)specificationsForCategory:(GBCategoryData *)object;
 - (NSDictionary *)specificationsForProtocol:(GBProtocolData *)object;
@@ -128,6 +129,20 @@
 	return result;
 }
 
+- (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)store {
+	self.store = store;
+	NSString *path = [self.settings htmlRelativePathToIndexFromObject:object];
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForDocument:object] forKey:@"title"];
+	[page setObject:[path stringByAppendingPathComponent:@"css/styles.css"] forKey:@"cssPath"];
+	[self addFooterVarsToDictionary:page];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	return result;
+}
+
 #pragma mark Index variables handling
 
 - (NSDictionary *)variablesForIndexWithStore:(id)store {
@@ -215,6 +230,11 @@
 - (NSString *)pageTitleForProtocol:(GBProtocolData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"objectPage.protocolTitle"];
 	return [NSString stringWithFormat:template, object.nameOfProtocol];
+}
+
+- (NSString *)pageTitleForDocument:(GBDocumentData *)object {
+	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
+	return [NSString stringWithFormat:template, [[object.nameOfDocument lastPathComponent] stringByDeletingPathExtension]];
 }
 
 - (NSDictionary *)specificationsForClass:(GBClassData *)object {

@@ -84,15 +84,26 @@
  
  @see registerParagraph:
  @see paragraphs
+ @see shortDescription
  @see descriptionParagraphs
  */
 @property (retain) GBCommentParagraph *firstParagraph;
+
+/** Paragraph used for short description.
+ 
+ This value is setup during post processing and represents object's short description. The difference between this and `firstParagraph` is that `firstParagraph` contains the whole of the first paragraph text, including potential special blocks such as warning, bug, lists, example etc. while `shortDescription` only contains text up to the first special block. This makes it much more suitable for using it as short description while generating output and it's in fact the reason for it's introduction.
+ 
+ @see paragraphs
+ @see descriptionParagraphs
+ */
+@property (retain) GBCommentParagraph *shortDescription;
 
 /** `NSArray` containing all paragraphs of the comment.
  
  The paragraphs are in same order as in the source code. First paragraph is used for short description and is also available via `firstParagraph`. Each object is a `GBCommentParagraph` instance and should be registered through `registerParagraph:` method.
 
  @see firstParagraph
+ @see shortDescription
  @see descriptionParagraphs
  @see registerParagraph:
  @see parameters
@@ -117,6 +128,8 @@
 - (void)registerDescriptionParagraph:(GBCommentParagraph *)paragraph;
 
 /** `NSArray` containing all paragraphs that should be used for object description.
+ 
+ Description paragraph list's main purpose is to simplify templates. Depending the settings, the list either contains all paragraphs or excludes first one. This takes all guessing from templates and thus greatly simplifies it's work.
  
  The paragraphs are in the same order as in the source code. Each object is a `GBCommentParagraph` instance and should be registered through `registerDescriptionParagraph:` method. This array may be the same as `paragraphs` or it may be different, depending the application settings. It's up to client code to provide the description paragraphs!
  
@@ -285,6 +298,12 @@
  @see exceptions
  */
 @property (readonly) BOOL hasCrossrefs;
+
+/** Specifies whether the comment is copied from another object or this is the original comment from source code.
+ 
+ This flag is used to ignore unknown cross references warnings for comments copied from another object.
+ */
+@property (assign) BOOL isCopied;
 
 ///---------------------------------------------------------------------------------------
 /// @name Input values

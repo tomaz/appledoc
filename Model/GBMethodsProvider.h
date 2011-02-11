@@ -85,7 +85,7 @@
  @see registerSectionWithName:
  @see registerMethod:
  @see methods
- @see hadSections
+ @see hasSections
  */
 @property (readonly) NSArray *sections;
 

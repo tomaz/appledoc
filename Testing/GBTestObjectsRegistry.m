@@ -181,7 +181,15 @@
 	return [self storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
 }
 
++ (GBStore *)storeWithDocumentWithComment:(id)comment {
+	// Note that we still assign the comment so that we can use mocks for testing - because of that we can safely pass arbitrary string to contents!
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	[self registerComment:comment forObject:document];
+	return [self storeByPerformingSelector:@selector(registerDocument:) withObject:document];
+}
+
 + (GBStore *)storeWithObjects:(id)first, ... {
+	// If mocks are passed, they are registered as classes!
 	GBStore *result = [self store];
 	va_list args;
 	va_start(args, first);
@@ -190,6 +198,8 @@
 			[result registerCategory:object];
 		else if ([object isKindOfClass:[GBProtocolData class]])
 			[result registerProtocol:object];
+		else if ([object isKindOfClass:[GBDocumentData class]])
+			[result registerDocument:object];
 		else
 			[result registerClass:object];
 	}

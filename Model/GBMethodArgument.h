@@ -31,7 +31,7 @@
  @param macros Array of variable arg termination macros or `nil` if not variable arg.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.
- @see initWithName:types:var:
+ @see initWithName:types:var:terminationMacros:
  */
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros;
 
@@ -44,7 +44,7 @@
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.
- @see initWithName:types:var:
+ @see initWithName:types:var:terminationMacros:
  */
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var;
 
@@ -55,7 +55,7 @@
  @param name The name of the method argument, part of method selector.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if the argument is `nil` or empty string.
- @see initWithName:
+ @see initWithName:types:var:terminationMacros:
  */
 + (id)methodArgumentWithName:(NSString *)name;
 

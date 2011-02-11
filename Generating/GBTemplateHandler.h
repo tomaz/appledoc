@@ -50,13 +50,13 @@
  
  The results are parsed into `templateString` and `templateSections`. After reading the template from the file, you can re-use the class for generating all objects that need to be templated from read template. That is, there's no need of re-parsing the same template for each generation.
  
- @param path The template string to parse.
+ @param string The template string to parse.
  @param error If parsing fails, error message is returned here.
  @return Returns `YES` if parsing was sucesful, `NO` otherwise.
  @see parseTemplateFromPath:error:
  @see renderObject:
  */
-- (BOOL)parseTemplate:(NSString *)template error:(NSError **)error;
+- (BOOL)parseTemplate:(NSString *)string error:(NSError **)error;
 
 ///---------------------------------------------------------------------------------------
 /// @name Rendering

@@ -16,6 +16,7 @@
 - (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members;
 - (OCMockObject *)mockSettingsProviderRepeatFirst:(BOOL)repeat;
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph;
+- (GBStore *)storeWithMethodWithComment:(GBComment *)comment;
 
 @end
 
@@ -143,6 +144,30 @@
 	assertThat([[store.protocols anyObject] comment], is(nil));
 }
 
+#pragma mark Document comments processing
+
+- (void)testProcessObjectsFromStore_shouldProcessDocumentComments {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	OCMockObject *comment = [self niceCommentMockExpectingRegisterParagraph];
+	GBStore *store = [GBTestObjectsRegistry storeWithDocumentWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify - we just want to make sure we invoke comments processing!
+	[comment verify];
+}
+
+- (void)testProcessObjectsFromStore_shouldSetEmptyDocumentCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithDocumentWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[store.documents anyObject] comment], is(nil));
+}
+
 #pragma mark Method comment processing
 
 - (void)testProcesObjectsFromStore_shouldMatchParameterDirectivesWithActualOrder {
@@ -179,6 +204,86 @@
 	[processor processObjectsFromStore:store];
 	// verify
 	assertThat(method.comment, is(nil));
+}
+
+#pragma mark Short description handling
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseWholeFirstParagraphIfItContainsTextItemsOnly {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
+}
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseTextItemsUpToFirstWarningBlock {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n@warning Warning"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
+}
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseTextItemsUpToFirstBugBlock {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n@bug Bug"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
+}
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseTextItemsUpToFirstExampleBlock {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n\tItem"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
+}
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseTextItemsUpToFirstUnorderedListBlock {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n- Item"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
+}
+
+- (void)testProcessObjectsFromStore_shortDescription_shouldUseTextItemsUpToFirstOrderedListBlock {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n1. Item"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	NSArray *items = comment.shortDescription.paragraphItems;
+	assertThatInteger([items count], equalToInteger(1));
+	assertThat([[items firstObject] stringValue], is(@"Some text"));
 }
 
 #pragma mark Description paragraphs processing
@@ -246,6 +351,18 @@
 	assertThat(comment.descriptionParagraphs, is(nil));
 }
 
+- (void)testProcessObjectsFromStore_descriptionParagraphs_noRepeat_shouldRepeatFirstParagraphItemsNotUsedInShortDescription {
+	// setup - we just test for a single option; as they are all handled the same, it would just be repeating; we do test all possible short description "delimiters" above, so hopefully these combined should catch most of the cases.
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderRepeatFirst:NO]];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some text\n\n@warning Warning"];
+	GBStore *store = [self storeWithMethodWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThatInteger([comment.descriptionParagraphs count], equalToInteger(1));
+	assertThat([[comment.descriptionParagraphs objectAtIndex:0] stringValue], is(@"@warning Warning"));
+}
+
 #pragma mark Creation methods
 
 - (OCMockObject *)mockSettingsProviderKeepObject:(BOOL)objects members:(BOOL)members {
@@ -264,6 +381,15 @@
 	OCMockObject *result = [OCMockObject niceMockForClass:[GBComment class]];
 	[[[result stub] andReturn:@"Paragraph"] stringValue];
 	[[result expect] registerParagraph:OCMOCK_ANY];
+	return result;
+}
+
+- (GBStore *)storeWithMethodWithComment:(GBComment *)comment {
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
+	[method setComment:comment];
+	[class.methods registerMethod:method];
+	GBStore *result = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
 	return result;
 }
 

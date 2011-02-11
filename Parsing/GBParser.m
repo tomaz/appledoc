@@ -7,19 +7,23 @@
 //
 
 #import "GBStore.h"
+#import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBObjectiveCParser.h"
 #import "GBParser.h"
 
 @interface GBParser ()
 
-- (void)parseDirectory:(NSString *)path;
-- (void)parseFile:(NSString *)path;
+- (void)parsePath:(NSString *)input usingBlock:(void (^)(NSString *path))block;
+- (void)parseDirectory:(NSString *)input usingBlock:(void (^)(NSString *path))block;
+- (void)parseFile:(NSString *)input usingBlock:(void (^)(NSString *path))block;
 - (BOOL)isPathIgnored:(NSString *)path;
 - (BOOL)isFileIgnored:(NSString *)filename;
 - (BOOL)isDirectoryIgnored:(NSString *)filename;
 - (BOOL)isSourceCodeFile:(NSString *)path;
+- (BOOL)isDocumentFile:(NSString *)path;
 @property (assign) NSUInteger numberOfParsedFiles;
+@property (assign) NSUInteger numberOfParsedDocuments;
 @property (retain) GBObjectiveCParser *objectiveCParser;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
@@ -52,69 +56,116 @@
 - (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(store != nil);
-	GBLogVerbose(@"Parsing objects from %u paths...", [paths count]);
+	GBLogVerbose(@"Parsing objects from %lu paths...", [paths count]);
 	self.store = store;
 	self.numberOfParsedFiles = 0;
-	for (NSString *path in paths) {
-		GBLogVerbose(@"Parsing '%@'...", path);
-		if ([self.fileManager isPathDirectory:path]) {
-			[self parseDirectory:path];
-		} else {
-			[self parseFile:path];
-		}
+	for (NSString *input in paths) {
+		[self parsePath:input usingBlock:^(NSString *path) {
+			if (![self isSourceCodeFile:path]) return;	
+			
+			GBLogInfo(@"Parsing source code from '%@'...", path);
+			NSError *error = nil;
+			NSString *contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+			if (error) {
+				GBLogNSError(error, @"Failed reading contents of source file '%@'!", path);
+				return;
+			}
+			
+			[self.objectiveCParser parseObjectsFromString:contents sourceFile:[path lastPathComponent] toStore:self.store];
+			self.numberOfParsedFiles++;
+		}];
 	}
+	GBLogVerbose(@"Parsed %lu source files.", self.numberOfParsedFiles);
 }
 
-- (void)parseDirectory:(NSString *)path {	
-	GBLogDebug(@"Parsing path '%@'...", path);
-	if ([self isPathIgnored:path]) {
-		GBLogNormal(@"Ignoring path '%@'...", path);
+- (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)store {
+	NSParameterAssert(paths != nil);
+	NSParameterAssert(store != nil);
+	GBLogVerbose(@"Parsing static documents from %u paths...", [paths count]);
+	self.store = store;
+	self.numberOfParsedDocuments = 0;
+	for (NSString *input in paths) {
+		[self parsePath:input usingBlock:^(NSString *path) {
+			if (![self isDocumentFile:path]) return;
+			
+			GBLogInfo(@"Parsing static document from '%@'...", path);
+			NSError *error = nil;
+			NSString *contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+			if (error) {
+				GBLogNSError(error, @"Failed reading contents of static document '%@'...", path);
+				return;
+			}		
+			if ([contents length] == 0) GBLogWarn(@"Empty static document found at '%@'!", path);
+			
+			GBDocumentData *document = [GBDocumentData documentDataWithContents:contents path:path];
+			document.basePathOfDocument = [input stringByStandardizingPath];
+			[self.store registerDocument:document];
+			
+			self.numberOfParsedDocuments++;
+		}];
+	}
+	GBLogVerbose(@"Parsed %lu static document files.", self.numberOfParsedDocuments);
+}
+
+#pragma mark Parsing helpers
+
+- (void)parsePath:(NSString *)input usingBlock:(void (^)(NSString *path))block {
+	GBLogDebug(@"Parsing '%@'...", input);
+	NSString *standardized = [input stringByStandardizingPath];
+	if ([self.fileManager isPathDirectory:[standardized stringByStandardizingPath]])
+		[self parseDirectory:standardized usingBlock:block];
+	else
+		[self parseFile:standardized usingBlock:block];
+}
+
+- (void)parseDirectory:(NSString *)input usingBlock:(void (^)(NSString *path))block {
+	GBLogDebug(@"Parsing path '%@'...", input);
+	
+	// Skip directory if found in --ignore paths.
+	if ([self isPathIgnored:input]) {
+		GBLogNormal(@"Ignoring path '%@'...", input);
 		return;
 	}
 
+	// Enumerate directory contents (non-recursive).
 	NSError *error = nil;
-	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
+	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:input error:&error];
 	if (error) {
-		GBLogNSError(error, @"Failed fetching contents of '%@'!", path);
+		GBLogNSError(error, @"Failed fetching contents of '%@'!", input);
 		return;
 	}
 	
-	// First process files. Skip ignored files.
+	// First process files. Skip system files such as .DS_Store and similar.
 	for (NSString *subpath in contents) {
-		NSString *fullPath = [path stringByAppendingPathComponent:subpath];
+		NSString *fullPath = [input stringByAppendingPathComponent:subpath];
 		if ([self.fileManager isPathDirectory:fullPath]) continue;
 		if ([self isFileIgnored:subpath]) continue;
-		[self parseFile:fullPath];
+		[self parseFile:fullPath usingBlock:block];
 	}
 	
-	// Now process all subdirectories. Skip ignored directories.
+	// Now process all subdirectories. Skip directories such as .git, .svn, .hg and similar.
 	for (NSString *subpath in contents) {
-		NSString *fullPath = [path stringByAppendingPathComponent:subpath];
+		NSString *fullPath = [input stringByAppendingPathComponent:subpath];
 		if (![self.fileManager isPathDirectory:fullPath]) continue;
 		if ([self isDirectoryIgnored:subpath]) continue;
-		[self parseDirectory:fullPath];
+		[self parseDirectory:fullPath usingBlock:block];
 	}
 }
 
-- (void)parseFile:(NSString *)path {
-	GBLogDebug(@"Parsing file '%@'...", path);
-	if ([self isPathIgnored:path]) {
-		GBLogNormal(@"Ignoring file '%@'...", path);
-		return;
-	}
-	if (![self isSourceCodeFile:path]) return;	
-	
-	GBLogInfo(@"Parsing source code from '%@'...", path);
-	NSError *error = nil;
-	NSString *input = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
-	if (error) {
-		GBLogNSError(error, @"Failed reading contents of file '%@'!", path);
+- (void)parseFile:(NSString *)input usingBlock:(void (^)(NSString *path))block {
+	GBLogDebug(@"Parsing file '%@'...", input);
+
+	// Skip file if found in --ignore paths.
+	if ([self isPathIgnored:input]) {
+		GBLogNormal(@"Ignoring file '%@'...", input);
 		return;
 	}
 	
-	[self.objectiveCParser parseObjectsFromString:input sourceFile:[path lastPathComponent] toStore:self.store];
-	self.numberOfParsedFiles++;
+	// Pass the path to the client via the block.
+	block(input);
 }
+
+#pragma mark Helper methods
 
 - (BOOL)isPathIgnored:(NSString *)path {
 	for (NSString *ignored in self.settings.ignoredPaths) {
@@ -131,6 +182,7 @@
 - (BOOL)isDirectoryIgnored:(NSString *)filename {
 	if ([filename isEqualToString:@".git"]) return YES;
 	if ([filename isEqualToString:@".svn"]) return YES;
+	if ([filename isEqualToString:@".hg"]) return YES;
 	return NO;
 }
 
@@ -143,9 +195,14 @@
 	return NO;
 }
 
+- (BOOL)isDocumentFile:(NSString *)path {
+	return [self.settings isPathRepresentingTemplateFile:path];
+}
+
 #pragma mark Properties
 
 @synthesize numberOfParsedFiles;
+@synthesize numberOfParsedDocuments;
 @synthesize objectiveCParser;
 @synthesize settings;
 @synthesize store;

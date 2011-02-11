@@ -14,8 +14,16 @@
 		<Token>
 			{{>TokenIdentifier}}
 			{{>Abstract}}
-			{{>DeclaredIn}}
+			{{>DeclaredIn}}			
 			{{>RelatedTokens}}
+			<Declaration type="html"><pre>{{>MethodDeclaration}}</pre></Declaration>
+			{{#hasParameters}}<Parameters>
+				{{#parameters}}<Parameter>
+					<Name>{{name}}</Name>
+					{{>Abstract}}
+				</Parameter>{{/parameters}}
+			</Parameters>{{/hasParameters}}
+			{{#returnValue}}<ReturnValue>{{>Abstract}}</ReturnValue>{{/returnValue}}
 			{{#anchor}}<Anchor>{{anchor}}</Anchor>{{/anchor}}
 		</Token>
 		{{/members}}
@@ -41,6 +49,10 @@ EndSection
 
 Section Abstract
 	<Abstract type="html">{{#abstract}}{{>GBCommentParagraph}}{{/abstract}}</Abstract>
+EndSection
+
+Section MethodDeclaration
+{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{&href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
 EndSection
 
 Section GBCommentParagraph

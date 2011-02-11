@@ -50,8 +50,6 @@
  By default this returns string value trimmed to a predefined maximum length, but subclasses can override to provide their specific implementation. This is only used for debugging purposes and should not be used for any output generation! See `description` method implementation for details.
  
  Sending this message is equivalent to sending `descriptionForStringValue:` to receiver and passing it `stringValue` as the parameter.
- 
- @see descriptionStringValueFromValue:
  */
 @property (readonly) NSString *descriptionStringValue;
 

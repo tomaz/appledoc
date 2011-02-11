@@ -711,6 +711,59 @@
 	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"Protocol", nil];
 }
 
+#pragma mark Documents processing testing
+
+- (void)testProcessCommentWithStore_document_shouldDetectLocalLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.ext" basePath:@""];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerDocument:) withObject:document];
+	GBComment *comment = [GBComment commentWithStringValue:@"document"];
+	// execute
+	[processor processComment:comment withContext:document store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"document", document, GBNULL, YES, nil];
+}
+
+- (void)testProcessCommentWithStore_document_shouldDetectRemoteLink {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document1-template.ext" basePath:@""];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document2-template.ext" basePath:@""];
+	GBStore *store = [GBTestObjectsRegistry store];
+	[store registerDocument:document1];
+	[store registerDocument:document2];
+	GBComment *comment = [GBComment commentWithStringValue:@"document2"];
+	// execute
+	[processor processComment:comment withContext:document1 store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsLinks:@"document2", document2, GBNULL, NO, nil];
+}
+
+- (void)testProcessCommentWithStore_document_shouldIgnoreIfDocumentIsNotTemplate {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"path/document.ext" basePath:@""];
+	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerDocument:) withObject:document];
+	GBComment *comment = [GBComment commentWithStringValue:@"document"];
+	// execute
+	[processor processComment:comment withContext:document store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"document", nil];
+}
+
+- (void)testProcessCommentWithStore_document_shouldIgnoreIfNotRegisteredToStoreEvenIfPassedAsCurrentContext {
+	// setup
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"path/document.ext" basePath:@""];
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBComment *comment = [GBComment commentWithStringValue:@"document"];
+	// execute
+	[processor processComment:comment withContext:document store:store];
+	// verify
+	[self assertParagraph:[comment.paragraphs objectAtIndex:0] containsTexts:@"document", nil];
+}
+
 #pragma mark Classes, categories and protocols processing testing
 
 - (void)testProcessCommentWithStore_class_shouldDetectWithinPunctuation {
