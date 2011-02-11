@@ -42,7 +42,7 @@
 
 /** Scans the given array of paths and parses all code files into in-memory objects.
  
- This is the main parsing method. It is intended to be invoked from the top level application code. It accepts an array of paths - either directories or file names - and parses them for code. If it detects an object within any file, it's data is parsed into in-memory representation suited for further processing. Parsed data is registered to the given `GBStore`.
+ This is the main method for source code parsing. It is intended to be invoked from the top level application code. It accepts an array of paths - either directories or file names - and parses them for code. If it detects an object within any file, it's data is parsed into in-memory representation suited for further processing. Parsed data is registered to the given `GBStore`.
  
  If any kind of inconsistency is detected in source code, a warning is logged and parsing continues. This allows us to extract as much information as possible, while ignoring problems.
  
@@ -51,7 +51,21 @@
  @param paths An array of strings representing paths to parse.
  @param store The store to add objects to.
  @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
+ @see parseDocumentsFromPaths:toStore:
  */
 - (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store;
+
+/** Scans the given array of paths and parses all static document files into in-memory objects.
+ 
+ This is the main method for static documents parsing. It is intended to be invoked from the top level application code. Is accepts an array of paths - either directories or file names - and parses them for static documents requiring post processing. If it detects such a document, it's contents are loaded into in-memory representation suited for furhter processing. Parsed data is registered to the given `GBStore`. If the document is empty, a warning is issued, but it's still registered; the result is an empty html file generated at output path.
+ 
+ @warning *Note:* The method expects the given array contains `NSString`s representing existing directorry or file names. The method itself doesn't validate this and may result in unpredictable behavior in case an invalid path is passed in. The paths don't have to be standardized, expanded or similar though.
+ 
+ @param paths An array of strings representing paths to parse.
+ @param store The store to add objects to.
+ @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
+ @see parseObjectsFromPaths:toStore:
+ */
+- (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)store;
 
 @end

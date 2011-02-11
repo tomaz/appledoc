@@ -74,6 +74,26 @@
 	assertThat(settings2.docsetUtilPath, is(self.currentPath));
 }
 
+- (void)testInclude_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--include", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--include", @".", nil];
+	// verify - note that ignore should not convert dot to current path; this would prevent .m being parsed properly!
+	assertThatInteger([settings1.includePaths count], equalToInteger(1));
+	assertThatBool([settings1.includePaths containsObject:@"path"], equalToBool(YES));
+	assertThatBool([settings2.includePaths containsObject:self.currentPath], equalToBool(YES));
+}
+
+- (void)testInclude_shouldAssignMutlipleValuesToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--include", @"path1", @"--include", @"path2", @"--include", @"path3", nil];
+	// verify
+	assertThatInteger([settings.includePaths count], equalToInteger(3));
+	assertThatBool([settings.includePaths containsObject:@"path1"], equalToBool(YES));
+	assertThatBool([settings.includePaths containsObject:@"path2"], equalToBool(YES));
+	assertThatBool([settings.includePaths containsObject:@"path3"], equalToBool(YES));
+}
+
 - (void)testIgnore_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--ignore", @"path", nil];

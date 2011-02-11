@@ -134,11 +134,21 @@
 /** The path to `docsetutil` tool, including tool filename. */
 @property (copy) NSString *docsetUtilPath;
 
+/** The list of all include paths containing static documentation.
+ 
+ The array contains full paths to either directories or files. In the first case, directories are recursively parsed for all template files (i.e. files with names ending with `-template` and arbitrary extension). Each file is processed the same as any other comment! All non-template files are simply copied over to destination without processing, preserving original directory structure. If the path represents a file, the same logic is applied: if it's a template file it's processed, otherwise it's simply copied over to destination unmodified.
+ 
+ @warning *Note:* All include paths are copied over to destination defined with `outputPath`, inside `docs` directory. If a path represents a directory, it's copied into a subdirectory of `docs` using the last path component name as the subdirectory name. For example: contents of `some/path/to/dir` would be copied to `docs/dir` within `outputPath` and `another/path` would be copied to `docs/path`. In case the path represents a file, it's simply copied inside `docs` directory at `outputPath`.
+ 
+ @warning *Important:* Make sure no duplicate directories or files are added to the list - appledoc will fail in such case! Also make sure to not add subpaths of an already added path - this will also fail while copying files!
+ */
+@property (retain) NSMutableSet *includePaths;
+
 /** The list of all full or partial paths to be ignored. 
  
  It's recommended to check if a path string ends with any of the given paths before processing it. This should catch directory and file names properly as directories are processed first.
  */
-@property (retain) NSMutableArray *ignoredPaths;
+@property (retain) NSMutableSet *ignoredPaths;
 
 ///---------------------------------------------------------------------------------------
 /// @name Behavior handling
@@ -327,7 +337,7 @@
 
 /** Returns HTML reference name for the given object.
  
- This should only be used for creating anchors that need to be referenced from other parts of the same HTML file. The method works for top-level objects as well as their members.
+ This should only be used for creating anchors that need to be referenced from other parts of the same HTML file. The method works for static documents, top-level objects as well as their members.
  
  @param object The object for which to return reference name.
  @return Returns the reference name of the object.
@@ -367,14 +377,68 @@
  @param object The object for which to generate the reference to.
  @return Returns the reference string.
  @exception NSException Thrown if object is `nil`.
+ @see htmlRelativePathToIndexFromObject:
  @see htmlReferenceForObject:fromSource:
  @see htmlReferenceNameForObject:
  */
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
 
+/** Returns relative HTML path from the given object to the index file location.
+ 
+ This is kind of reverse to `htmlReferenceForObjectFromIndex:`, except that it only returns the relative path, without index.html.
+ 
+ @param object The object from which to generate the path.
+ @return Returns relative path.
+ @exception NSException Thrown if object is `nil`.
+ @see htmlReferenceForObjectFromIndex:
+ @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceNameForObject:
+ */
+- (NSString *)htmlRelativePathToIndexFromObject:(id)object;
+
+/** The subpath within `outputPath` where static documents are stored.
+ */
+@property (readonly) NSString *htmlStaticDocumentsSubpath;
+
 /** The file extension for html files.
  */
 @property (readonly) NSString *htmlExtension;
+
+///---------------------------------------------------------------------------------------
+/// @name Application-wide template files helpers
+///---------------------------------------------------------------------------------------
+
+/** Determines if the given path represents a template file or not.
+ 
+ The method simply checks the if the name of the last path component ends with `-template` string.
+ 
+ @param path The path to check.
+ @return Returns `YES` if the given path represents a template file, `NO` otherwise.
+ @see outputFilenameForTemplatePath:
+ */
+- (BOOL)isPathRepresentingTemplateFile:(NSString *)path;
+
+/** Returns the actual filename of the output file from the given template path.
+ 
+ The method simply removes `-template` string from the file name and returns the resulting string. The result is the filename without path but with the same extension as the original path. If the given path doesn't represent a template file, the result is equivalent to sending `lastPathComponent` to the input path.
+ 
+ @param path The path to convert.
+ @return Returns filename that can be used for output.
+ @see isPathRepresentingTemplateFile
+ @see templateFilenameForOutputPath:
+ */
+- (NSString *)outputFilenameForTemplatePath:(NSString *)path;
+
+/** Returns the template name for the given filename.
+ 
+ This is reverse method for `outputFilenameForTemplatePath`. It adds `-template` string to the end of the given path filename, before the optional extension.
+ 
+ @param path The path to convert.
+ @return Returns template filename.
+ @see isPathRepresentingTemplateFile
+ @see outputFilenameForTemplatePath:
+ */
+- (NSString *)templateFilenameForOutputPath:(NSString *)path;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper methods

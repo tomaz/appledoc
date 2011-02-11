@@ -150,6 +150,21 @@
 	assertThat([settings htmlReferenceNameForObject:protocol], is(@"Protocol.html"));
 }
 
+- (void)testHtmlReferenceNameForObject_shouldReturnProperValueForDocuments {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document-template.html" basePath:@""];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
+	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@""];
+	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@"path"];
+	// verify
+	assertThat([settings htmlReferenceNameForObject:document1], is(@"document.html"));
+	assertThat([settings htmlReferenceNameForObject:document2], is(@"document.html"));
+	assertThat([settings htmlReferenceNameForObject:document3], is(@"document.html"));
+	assertThat([settings htmlReferenceNameForObject:document4], is(@"document.html"));
+}
+
 - (void)testHtmlReferenceNameForObject_shouldReturnProperValueForMethods {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
@@ -206,6 +221,21 @@
 	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//api/name/method:"));
 }
 
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForDocumentFromIndex {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document-template.html" basePath:@""];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
+	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@""];
+	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@"path"];
+	// verify
+	assertThat([settings htmlReferenceForObject:document1 fromSource:nil], is(@"docs/document.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:nil], is(@"docs/path/document.html"));
+	assertThat([settings htmlReferenceForObject:document3 fromSource:nil], is(@"docs/path/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document4 fromSource:nil], is(@"docs/sub/document.html"));
+}
+
 #pragma mark HTML href references handling - top level to top level
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToSameObjectReference {
@@ -213,8 +243,14 @@
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	settings.outputPath = @"anything :)";
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"document.ext"];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class fromSource:class], is(@"Class.html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:category], is(@"Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:protocol fromSource:protocol], is(@"Protocol.html"));
+	assertThat([settings htmlReferenceForObject:document fromSource:document], is(@"document.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToSameTypeTopLevelObjectReference {
@@ -223,25 +259,68 @@
 	settings.outputPath = @"anything :)";
 	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
 	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBCategoryData *category1 = [GBCategoryData categoryDataWithName:@"Category1" className:@"Class"];
+	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"Category2" className:@"Class"];
+	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
+	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document1.ext"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"document2.ext"];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:class1 fromSource:class2], is(@"Class1.html"));
-	assertThat([settings htmlReferenceForObject:class2 fromSource:class1], is(@"Class2.html"));
+	assertThat([settings htmlReferenceForObject:class1 fromSource:class2], is(@"../Classes/Class1.html"));
+	assertThat([settings htmlReferenceForObject:class2 fromSource:class1], is(@"../Classes/Class2.html"));
+	assertThat([settings htmlReferenceForObject:category1 fromSource:category2], is(@"../Categories/Class(Category1).html"));
+	assertThat([settings htmlReferenceForObject:category2 fromSource:category1], is(@"../Categories/Class(Category2).html"));
+	assertThat([settings htmlReferenceForObject:protocol1 fromSource:protocol2], is(@"../Protocols/Protocol1.html"));
+	assertThat([settings htmlReferenceForObject:protocol2 fromSource:protocol1], is(@"../Protocols/Protocol2.html"));
+	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../docs/document1.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../docs/document2.html"));
 }
 
-- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForClassToProtocolOrCategoryReference {
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToDifferentTypeOfTopLevelObjectReference {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	settings.outputPath = @"anything :)";
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document1.ext"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document2.ext"];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class fromSource:category], is(@"../Classes/Class.html"));
-	assertThat([settings htmlReferenceForObject:class fromSource:protocol], is(@"../Classes/Class.html"));	
+	assertThat([settings htmlReferenceForObject:class fromSource:protocol], is(@"../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"../../../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:category fromSource:class], is(@"../Categories/Class(Category).html"));
 	assertThat([settings htmlReferenceForObject:category fromSource:protocol], is(@"../Categories/Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:document1], is(@"../Categories/Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:document2], is(@"../../../Categories/Class(Category).html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:class], is(@"../Protocols/Protocol.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:category], is(@"../Protocols/Protocol.html"));	
+	assertThat([settings htmlReferenceForObject:protocol fromSource:document1], is(@"../Protocols/Protocol.html"));
+	assertThat([settings htmlReferenceForObject:protocol fromSource:document2], is(@"../../../Protocols/Protocol.html"));	
+	assertThat([settings htmlReferenceForObject:document1 fromSource:class], is(@"../docs/document1.html"));
+	assertThat([settings htmlReferenceForObject:document1 fromSource:category], is(@"../docs/document1.html"));	
+	assertThat([settings htmlReferenceForObject:document1 fromSource:protocol], is(@"../docs/document1.html"));
+	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../../../docs/document1.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:class], is(@"../docs/path/sub/document2.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:category], is(@"../docs/path/sub/document2.html"));	
+	assertThat([settings htmlReferenceForObject:document2 fromSource:protocol], is(@"../docs/path/sub/document2.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../docs/path/sub/document2.html"));
+}
+
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForDocumentToTopLevelObjectReference {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document-template.html" basePath:@""];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
+	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@""];
+	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@"path"];
+	// verify
+	assertThat([settings htmlReferenceForObject:document1 fromSource:nil], is(@"docs/document.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:nil], is(@"docs/path/document.html"));
+	assertThat([settings htmlReferenceForObject:document3 fromSource:nil], is(@"docs/path/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document4 fromSource:nil], is(@"docs/sub/document.html"));
 }
 
 #pragma mark HTML href references handling - top level to members
@@ -267,10 +346,10 @@
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class1.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method fromSource:class2], is(@"Class1.html#//api/name/value"));
+	assertThat([settings htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//api/name/value"));
 	assertThat([settings htmlReferenceForObject:method fromSource:class1], is(@"#//api/name/value"));
 	assertThat([settings htmlReferenceForObject:class1 fromSource:method], is(@"Class1.html"));
-	assertThat([settings htmlReferenceForObject:class2 fromSource:method], is(@"Class2.html"));
+	assertThat([settings htmlReferenceForObject:class2 fromSource:method], is(@"../Classes/Class2.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToDifferentTypeRemoteMemberReference {
@@ -286,6 +365,45 @@
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//api/name/value1"));
 	assertThat([settings htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//api/name/value2"));
+}
+
+#pragma mark Template files handling
+
+- (void)testIsPathRepresentingTemplateFile_shouldReturnCorrectResults {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute & verify
+	assertThatBool([settings isPathRepresentingTemplateFile:@"file"], equalToBool(NO));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"file.html"], equalToBool(NO));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"path/file.html"], equalToBool(NO));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"file-template"], equalToBool(YES));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"file-template.html"], equalToBool(YES));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"path/file-template"], equalToBool(YES));
+	assertThatBool([settings isPathRepresentingTemplateFile:@"path/file-template.html"], equalToBool(YES));
+}
+
+- (void)testOutputFilenameForTemplatePath_shouldReturnCorrectResults {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute & verify
+	assertThat([settings outputFilenameForTemplatePath:@"file"], is(@"file"));
+	assertThat([settings outputFilenameForTemplatePath:@"file.html"], is(@"file.html"));
+	assertThat([settings outputFilenameForTemplatePath:@"path/file.html"], is(@"file.html"));
+	assertThat([settings outputFilenameForTemplatePath:@"file-template"], is(@"file"));
+	assertThat([settings outputFilenameForTemplatePath:@"file-template.html"], is(@"file.html"));
+	assertThat([settings outputFilenameForTemplatePath:@"path/file-template"], is(@"file"));
+	assertThat([settings outputFilenameForTemplatePath:@"path/file-template.html"], is(@"file.html"));
+}
+
+- (void)testTemplateFilenameForOutputPath_shuoldReturnCorrectResults {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute & verify
+	assertThat([settings templateFilenameForOutputPath:@"file"], is(@"file-template"));
+	assertThat([settings templateFilenameForOutputPath:@"file.html"], is(@"file-template.html"));
+	assertThat([settings templateFilenameForOutputPath:@"path/file.html"], is(@"path/file-template.html"));
+	assertThat([settings templateFilenameForOutputPath:@"path/file-template"], is(@"path/file-template"));
+	assertThat([settings templateFilenameForOutputPath:@"path/file-template.html"], is(@"path/file-template.html"));
 }
 						  
 #pragma mark Private accessor helpers

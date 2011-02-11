@@ -18,6 +18,8 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processDocuments;
+
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
 - (void)processCommentForObject:(GBModelBase *)object;
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method;
@@ -36,7 +38,7 @@
 - (BOOL)isCommentValid:(GBComment *)comment;
 
 @property (retain) GBCommentsProcessor *commentsProcessor;
-@property (retain) id<GBObjectDataProviding> currentContext;
+@property (retain) id currentContext;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 
@@ -75,6 +77,7 @@
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
+	[self processDocuments];
 }
 
 - (void)processClasses {
@@ -120,6 +123,15 @@
 			[self processHtmlReferencesForObject:protocol];
 		}
 		GBLogDebug(@"Finished processing protocol %@.", protocol);
+	}
+}
+
+- (void)processDocuments {
+	for (GBDocumentData *document in self.store.documents) {
+		GBLogInfo(@"Processing static document %@...", document);
+		self.currentContext = document;
+		[self processCommentForObject:document];
+		GBLogDebug(@"Finished processing document %@.", document);
 	}
 }
 

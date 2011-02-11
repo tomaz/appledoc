@@ -34,6 +34,7 @@
 - (id)classLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
 - (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
 - (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (id)documentLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
 - (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
 
 - (GBCommentParagraph *)pushParagraphIfStackIsEmpty;
@@ -576,6 +577,8 @@
 		desc = @"class";
 	} else if ((result = [self protocolLinkFromString:string range:range templated:templated])) {
 		desc = @"protocol";
+	} else if ((result = [self documentLinkFromString:string range:range templated:templated])) {
+		desc = @"document";
 	} else if ((result = [self remoteMemberLinkItemFromString:string range:range templated:templated])) {
 		desc = @"remote member";
 	} else if ((result = [self localMemberLinkFromString:string range:range templated:templated])) {
@@ -708,6 +711,29 @@
 	
 	// Validate the selector against the context. If context doesn't implement the method, exit.
 	GBProtocolData *referencedObject = [self.store protocolWithName:objectName];
+	if (!referencedObject) return nil;
+	
+	// Ok, we have valid method, return the link item.
+	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
+	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.context = referencedObject;
+	result.isLocal = (referencedObject == self.currentContext);
+	if (range) *range = [string rangeOfString:linkText];
+	return result;
+}
+
+- (id)documentLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
+	// Matches the beginning of the string for document cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
+	NSArray *components = [string captureComponentsMatchedByRegex:[self.components documentCrossReferenceRegex:templated]];
+	if ([components count] == 0) return nil;
+	
+	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Get the document from the store - note that we need to add -template extension! If not found, exit.
+	NSString *objectID = [self.settings templateFilenameForOutputPath:objectName];
+	GBDocumentData *referencedObject = [self.store documentWithName:objectID];
 	if (!referencedObject) return nil;
 	
 	// Ok, we have valid method, return the link item.

@@ -22,6 +22,8 @@
 		_categoriesByName = [[NSMutableDictionary alloc] init];
 		_protocols = [[NSMutableSet alloc] init];
 		_protocolsByName = [[NSMutableDictionary alloc] init];
+		_documents = [[NSMutableSet alloc] init];
+		_documentsByName = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -93,6 +95,20 @@
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
 }
 
+- (void)registerDocument:(GBDocumentData *)document {
+	NSParameterAssert(document != nil);
+	GBLogDebug(@"Registering document %@...", document);
+	if ([_documents containsObject:document]) return;
+	NSString *name = [document.nameOfDocument stringByDeletingPathExtension];
+	GBDocumentData *existingDocument = [_documentsByName objectForKey:name];
+	if (existingDocument) {
+		[NSException raise:@"Document with name %@ is already registered!", name];
+		return;
+	}
+	[_documents addObject:document];
+	[_documentsByName setObject:document forKey:name];
+}
+
 - (void)unregisterTopLevelObject:(id)object {
 	if ([_classes containsObject:object]) {
 		[_classes removeObject:object];
@@ -125,8 +141,13 @@
 	return [_protocolsByName objectForKey:name];
 }
 
+- (GBDocumentData *)documentWithName:(NSString *)path {
+	return [_documentsByName objectForKey:path];
+}
+
 @synthesize classes = _classes;
 @synthesize categories = _categories;
 @synthesize protocols = _protocols;
+@synthesize documents = _documents;
 
 @end

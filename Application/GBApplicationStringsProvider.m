@@ -81,6 +81,17 @@
 	return result;
 }
 
+#pragma mark Document output strings
+
+- (NSDictionary *)documentPage {
+	static NSMutableDictionary *result = nil;
+	if (!result) {
+		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"%@ Document" forKey:@"titleTemplate"];
+	}
+	return result;
+}
+
 #pragma mark Index output strings
 
 - (NSDictionary *)indexPage {

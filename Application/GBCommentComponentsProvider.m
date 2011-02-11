@@ -136,6 +136,14 @@
 	}
 }
 
+- (NSString *)documentCrossReferenceRegex:(BOOL)templated {
+	if (templated) {
+		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self objectCrossReferenceRegex:NO]]);
+	} else {
+		GBRETURN_ON_DEMAND(@"([^>,.:;!?()\\s]+)");
+	}
+}
+
 - (NSString *)urlCrossReferenceRegex:(BOOL)templated {
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self urlCrossReferenceRegex:NO]]);

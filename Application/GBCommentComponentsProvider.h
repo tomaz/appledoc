@@ -129,6 +129,15 @@
  */
 - (NSString *)objectCrossReferenceRegex:(BOOL)templated;
 
+/** Returns the regex used for matching (possible) static document cross reference with capture 1 containing document name.
+ 
+ The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
+ 
+ @param templated If `YES` templated regex is returned, otherwise pure one.
+ @return Returns the regex used for matching cross reference.
+ */
+- (NSString *)documentCrossReferenceRegex:(BOOL)templated;
+
 /** Returns the regex used for matching URL cross reference with caption 1 contining the URL itself.
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.

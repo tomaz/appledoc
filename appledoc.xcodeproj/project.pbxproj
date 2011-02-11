@@ -137,6 +137,10 @@
 		7359B16A129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B146129A5A0600F67AD1 /* GRMustacheVariableElement.m */; };
 		7359B16B129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
 		7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */; };
+		735B23811304024600704844 /* GBDocumentData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735B23801304024600704844 /* GBDocumentData.m */; };
+		735B23821304083C00704844 /* GBDocumentData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735B23801304024600704844 /* GBDocumentData.m */; };
+		735B238413040CEB00704844 /* GBDocumentDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 735B238313040CEB00704844 /* GBDocumentDataTesting.m */; };
+		735B2387130418A100704844 /* GBTemplateFilesHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 735B2386130418A000704844 /* GBTemplateFilesHandler.m */; };
 		736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72A12E58DCC0094F72E /* GBDocSetInstallGenerator.m */; };
 		736314AA12ED7DB900852593 /* GBDocSetPublishGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335F72D12E58E160094F72E /* GBDocSetPublishGenerator.m */; };
 		7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367298312A3D7A000879D1B /* NSError+GBError.m */; };
@@ -154,6 +158,7 @@
 		7377404412301AC700E29F1E /* GBParagraphDecoratorItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404212301AC700E29F1E /* GBParagraphDecoratorItem.m */; };
 		7377404612301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7377404512301CDC00E29F1E /* GBCommentsProcessor-DecoratorItemsTesting.m */; };
 		738198081296AA6300466CEA /* GBParagraphItemsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 738198071296AA6300466CEA /* GBParagraphItemsTesting.m */; };
+		7382CA82130479F7006C5966 /* GBTemplateFilesHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 735B2386130418A000704844 /* GBTemplateFilesHandler.m */; };
 		738945D61246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
 		738945D71246857500A4A3A0 /* GBCommentArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 738945D51246857500A4A3A0 /* GBCommentArgument.m */; };
 		7389461512468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7389461412468B2E00A4A3A0 /* GBCommentsProcessor-MethodArgumentsTesting.m */; };
@@ -308,6 +313,11 @@
 		7359B146129A5A0600F67AD1 /* GRMustacheVariableElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRMustacheVariableElement.m; path = GRMustache/GRMustacheVariableElement.m; sourceTree = "<group>"; };
 		7359B147129A5A0700F67AD1 /* GRMustacheVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustacheVersion.h; path = GRMustache/GRMustacheVersion.h; sourceTree = "<group>"; };
 		7359B148129A5A0700F67AD1 /* GRMustacheVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRMustacheVersion.m; path = GRMustache/GRMustacheVersion.m; sourceTree = "<group>"; };
+		735B237F1304024600704844 /* GBDocumentData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDocumentData.h; sourceTree = "<group>"; };
+		735B23801304024600704844 /* GBDocumentData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocumentData.m; sourceTree = "<group>"; };
+		735B238313040CEB00704844 /* GBDocumentDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocumentDataTesting.m; sourceTree = "<group>"; };
+		735B2385130418A000704844 /* GBTemplateFilesHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTemplateFilesHandler.h; sourceTree = "<group>"; };
+		735B2386130418A000704844 /* GBTemplateFilesHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTemplateFilesHandler.m; sourceTree = "<group>"; };
 		735BCB49124EE92F00FB6C4A /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timing.h; sourceTree = "<group>"; };
 		7367298112A3BD9D00879D1B /* docset */ = {isa = PBXFileReference; lastKnownFileType = folder; path = docset; sourceTree = "<group>"; };
 		7367298212A3D7A000879D1B /* NSError+GBError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+GBError.h"; sourceTree = "<group>"; };
@@ -711,6 +721,8 @@
 				7321D0E612944CF500796DEC /* GBTemplateHandler.m */,
 				73734616129668340046D6B8 /* GBDictionaryTemplateLoader.h */,
 				73734617129668340046D6B8 /* GBDictionaryTemplateLoader.m */,
+				735B2385130418A000704844 /* GBTemplateFilesHandler.h */,
+				735B2386130418A000704844 /* GBTemplateFilesHandler.m */,
 			);
 			path = Generating;
 			sourceTree = "<group>";
@@ -847,6 +859,8 @@
 				73FC741C11FE215E00AAD0B9 /* GBMethodData.m */,
 				73FC742B11FE274300AAD0B9 /* GBMethodArgument.h */,
 				73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */,
+				735B237F1304024600704844 /* GBDocumentData.h */,
+				735B23801304024600704844 /* GBDocumentData.m */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -909,6 +923,7 @@
 				7367BA761200135B005ED6CD /* GBClassDataTesting.m */,
 				7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */,
 				7367BAB812001BF7005ED6CD /* GBProtocolDataTesting.m */,
+				735B238313040CEB00704844 /* GBDocumentDataTesting.m */,
 				7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */,
 				73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */,
 				7367BB5112004058005ED6CD /* GBModelBaseTesting.m */,
@@ -1150,6 +1165,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				735B23821304083C00704844 /* GBDocumentData.m in Sources */,
 				736314AA12ED7DB900852593 /* GBDocSetPublishGenerator.m in Sources */,
 				736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */,
 				733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */,
@@ -1159,6 +1175,7 @@
 				733EA143122BDEC80060CBDE /* GBCommentsProcessor-TextItemsTesting.m in Sources */,
 				733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */,
 				733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */,
+				7382CA82130479F7006C5966 /* GBTemplateFilesHandler.m in Sources */,
 				733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */,
 				733EA147122BDEC90060CBDE /* GBMethodDataTesting.m in Sources */,
 				733EA148122BDECA0060CBDE /* GBMethodsProviderTesting.m in Sources */,
@@ -1271,6 +1288,7 @@
 				7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */,
 				7317CC0C12B10E3F009DAA15 /* GBApplicationTesting.m in Sources */,
 				73368F1112F42AE000A54A74 /* GBCommentComponentsProviderTesting.m in Sources */,
+				735B238413040CEB00704844 /* GBDocumentDataTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1355,6 +1373,8 @@
 				732E6CBD12DF02B7009DD6E0 /* NSArray+GBArray.m in Sources */,
 				7335F72B12E58DCC0094F72E /* GBDocSetInstallGenerator.m in Sources */,
 				7335F72E12E58E160094F72E /* GBDocSetPublishGenerator.m in Sources */,
+				735B23811304024600704844 /* GBDocumentData.m in Sources */,
+				735B2387130418A100704844 /* GBTemplateFilesHandler.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

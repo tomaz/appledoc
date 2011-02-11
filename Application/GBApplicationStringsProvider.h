@@ -42,6 +42,13 @@
 @property (readonly) NSDictionary *objectMethods;
 
 ///---------------------------------------------------------------------------------------
+/// @name Document output strings
+///---------------------------------------------------------------------------------------
+
+/** Strings used for generating common page strings for static documents. */
+@property (readonly) NSDictionary *documentPage;
+
+///---------------------------------------------------------------------------------------
 /// @name Index output strings
 ///---------------------------------------------------------------------------------------
 

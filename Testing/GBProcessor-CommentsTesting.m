@@ -144,6 +144,30 @@
 	assertThat([[store.protocols anyObject] comment], is(nil));
 }
 
+#pragma mark Document comments processing
+
+- (void)testProcessObjectsFromStore_shouldProcessDocumentComments {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	OCMockObject *comment = [self niceCommentMockExpectingRegisterParagraph];
+	GBStore *store = [GBTestObjectsRegistry storeWithDocumentWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify - we just want to make sure we invoke comments processing!
+	[comment verify];
+}
+
+- (void)testProcessObjectsFromStore_shouldSetEmptyDocumentCommentToNil {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[self mockSettingsProviderKeepObject:YES members:YES]];
+	GBComment *comment = [GBComment commentWithStringValue:nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithDocumentWithComment:comment];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat([[store.documents anyObject] comment], is(nil));
+}
+
 #pragma mark Method comment processing
 
 - (void)testProcesObjectsFromStore_shouldMatchParameterDirectivesWithActualOrder {
