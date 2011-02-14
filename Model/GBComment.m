@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBDataObjects.h"
 #import "GBComment.h"
 
 @implementation GBComment
@@ -23,6 +24,14 @@
 	return result;
 }
 
+- (id)init {
+	self = [super init];
+	if (self) {
+		self.longDescription = [GBCommentComponentsList componentsList];
+	}
+	return self;
+}
+
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -35,8 +44,11 @@
 
 #pragma mark Properties
 
-@synthesize sourceInfo;
 @synthesize isCopied;
+@synthesize sourceInfo;
 @synthesize stringValue;
+
+@synthesize shortDescription;
+@synthesize longDescription;
 
 @end

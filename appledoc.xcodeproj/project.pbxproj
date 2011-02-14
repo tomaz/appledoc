@@ -154,6 +154,11 @@
 		739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */; };
 		739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */; };
 		73AA9F731253BF4000074152 /* GBGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F721253BF4000074152 /* GBGenerator.m */; };
+		73AF4EC813093570001152DB /* GBCommentComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4EC713093570001152DB /* GBCommentComponent.m */; };
+		73AF4EC913093570001152DB /* GBCommentComponent.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4EC713093570001152DB /* GBCommentComponent.m */; };
+		73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
+		73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
+		73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */; };
 		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
@@ -326,6 +331,11 @@
 		73A32FB112364BC100040070 /* GBObjectDataProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBObjectDataProviding.h; sourceTree = "<group>"; };
 		73AA9F711253BF4000074152 /* GBGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBGenerator.h; sourceTree = "<group>"; };
 		73AA9F721253BF4000074152 /* GBGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBGenerator.m; sourceTree = "<group>"; };
+		73AF4EC61309356F001152DB /* GBCommentComponent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponent.h; sourceTree = "<group>"; };
+		73AF4EC713093570001152DB /* GBCommentComponent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponent.m; sourceTree = "<group>"; };
+		73AF4ECA130938F3001152DB /* GBCommentComponentsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsList.h; sourceTree = "<group>"; };
+		73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsList.m; sourceTree = "<group>"; };
+		73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsListTesting.m; sourceTree = "<group>"; };
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73D2524312A2EA340024F9F9 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		73D2524412A2ED610024F9F9 /* GBOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOutputGenerator.h; sourceTree = "<group>"; };
@@ -816,6 +826,10 @@
 			children = (
 				73F70DB51227B34300D19EBA /* GBComment.h */,
 				73F70DB61227B34300D19EBA /* GBComment.m */,
+				73AF4EC61309356F001152DB /* GBCommentComponent.h */,
+				73AF4EC713093570001152DB /* GBCommentComponent.m */,
+				73AF4ECA130938F3001152DB /* GBCommentComponentsList.h */,
+				73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -861,6 +875,7 @@
 				73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */,
 				73FC741911FE210100AAD0B9 /* GBMethodsProviderTesting.m */,
 				733E9FB8122B9D510060CBDE /* GBCommentTesting.m */,
+				73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1189,6 +1204,9 @@
 				7317CC0C12B10E3F009DAA15 /* GBApplicationTesting.m in Sources */,
 				73368F1112F42AE000A54A74 /* GBCommentComponentsProviderTesting.m in Sources */,
 				735B238413040CEB00704844 /* GBDocumentDataTesting.m in Sources */,
+				73AF4EC913093570001152DB /* GBCommentComponent.m in Sources */,
+				73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */,
+				73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1267,6 +1285,8 @@
 				7335F72E12E58E160094F72E /* GBDocSetPublishGenerator.m in Sources */,
 				735B23811304024600704844 /* GBDocumentData.m in Sources */,
 				735B2387130418A100704844 /* GBTemplateFilesHandler.m in Sources */,
+				73AF4EC813093570001152DB /* GBCommentComponent.m in Sources */,
+				73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

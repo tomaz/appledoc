@@ -9,29 +9,27 @@
 #import <Foundation/Foundation.h>
 
 @class GBSourceInfo;
-@class GBCommentParagraph;
-@class GBCommentArgument;
-@class GBParagraphLinkItem;
+@class GBCommentComponent;
+@class GBCommentComponentsList;
 
 /** Handles all comment related stuff.
  
- Each instance describes a single source code comment for any object - class, category, protocol, method... As the comment is universal for each object, it contains properties for all fields applying to any kind of object. However not all are used in all cases. If a property is not used, it's value remains `nil`. Derived values are:
+ Each instance describes a single source code comment for any object - class, category, protocol, method... As the comment is universal for each object, it contains properties for all fields applying to any kind of object. However not all are used in all cases. If a property is not used, it's value remains `nil`. Derived values are handled with:
  
- - `paragraphs`: An array of `GBCommentParagraph` objects. The first entry is considered a short description, also available through `firstParagraph`.
- - `parameters`: An array of `GBCommentArgument` objects. Only applicable for methods with parameters.
- - `result`: A single `GBCommentArgument` object. Only applicable for methods with return value.
- - `exceptions`: An array of `GBCommentArgument` objects. Only applicable for methods with exceptions.
- - `crossrefs`: An array of `GBParagraphLinkItem` objects.
+ - `shortDescription`: Provides short description of the commented entity used for tooltips and abstract.
+ - `longDescription`: Provides the whole description of the commented entity. This can include `shortDescription` or not, based on settings.
+ - `methodParameters`: The list of all method parameters. Only used for methods.
+ - `methodResult`: Description of method result. Only used for methods.
+ - `methodExceptions`: The list of all possible exceptions. Only used for methods.
+ - `relatedItems`: The list of all related items. Used for cross referencing other entities.
  
- All arrays must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
+ All lists must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
  
  `GBComment` is not context aware by itself, it's simply a container object that holds comment information. It's the rest of the application that's responsible for setting it's values as needed. In most cases it's `GBParser`s who sets comments string value and `GBProcessor`s to parse string value and setup the derived properties based on the comment's context.
  
  @warning *Note:* Although derived values are prepared based on `stringValue`, nothing prevents clients to setup derived values directly, "on the fly" if needed. However splitting the interface allows us to simplify parsing code and allow us to handle derives values when we have complete information available.
  */
-@interface GBComment : NSObject {
-	@private
-}
+@interface GBComment : NSObject
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal
@@ -57,6 +55,24 @@
  @see commentWithStringValue:
  */
 + (id)commentWithStringValue:(NSString *)value sourceInfo:(GBSourceInfo *)info;
+
+///---------------------------------------------------------------------------------------
+/// @name Comment components handling
+///---------------------------------------------------------------------------------------
+
+/** Comments short description used for tooltips and abstract in the form of `GBCommentComponent`.
+ 
+ @see longDescription
+ */
+@property (retain) GBCommentComponent *shortDescription;
+
+/** Comments long description, includes the whole description components.
+ 
+ Depending settings, this may also repeat `shortDescription` or not. `GBComment` assigns default object here, but clients are free to replace it with their own implementations.
+ 
+ @see shortDescription
+ */
+@property (retain) GBCommentComponentsList *longDescription;
 
 ///---------------------------------------------------------------------------------------
 /// @name Output generator helpers

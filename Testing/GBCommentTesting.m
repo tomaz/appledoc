@@ -13,5 +13,13 @@
 	
 @implementation GBCommentTesting
 
+#pragma mark Initialization & disposal
+
+- (void)testInit_shouldSetupDefaultComponents {
+	// setup & execute
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// verify
+	assertThat(comment.longDescription, isNot(nil));
+}
 
 @end
