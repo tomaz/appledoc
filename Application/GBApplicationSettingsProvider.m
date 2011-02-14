@@ -319,6 +319,12 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
 		NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
 		filename = [filename stringByDeletingPathExtension];
+		
+		// If the document is included as part of a directory structure, we should use subdir, otherwise just leave the filename.
+		if (![document.basePathOfDocument isEqualToString:document.pathOfDocument]) {
+			NSString *includePath = [document.basePathOfDocument lastPathComponent];
+			subpath = [includePath stringByAppendingPathComponent:subpath];
+		}
 
 		// Prepare relative path from output path to the document now.
 		basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
@@ -331,12 +337,13 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 }
 
 - (NSString *)htmlRelativePathToIndexFromObject:(id)object {
-	// Returns relative path prefix from the given source to the given destination or empty string if both objects live in the same path. This is pretty simple except when either object is a document. In such case we need to handle arbitrary depth.	
+	// Returns relative path prefix from the given source to the given destination or empty string if both objects live in the same path. This is pretty simple except when object is a document. In such case we need to handle arbitrary depth.	
 	if ([object isStaticDocument]) {
-		NSString *subpath = [[object subpathOfDocument] stringByDeletingLastPathComponent];
+		NSString *subpath = [self outputPathForObject:object withExtension:@"extension"];
+		subpath = [subpath stringByDeletingLastPathComponent];
 		if ([subpath length] > 0) {
 			NSArray *components = [subpath pathComponents];
-			NSMutableString *result = [NSMutableString stringWithString:@"../"];
+			NSMutableString *result = [NSMutableString stringWithCapacity:[subpath length]];
 			for (NSUInteger i=0; i<[components count]; i++) [result appendString:@"../"];
 			return result;
 		}
