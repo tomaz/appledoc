@@ -105,6 +105,7 @@
 
 - (void)unregisterMethod:(GBMethodData *)method {
 	// Remove from all our lists.
+	[_methodsBySelectors removeObjectForKey:method.methodSelector];
 	[_methods removeObject:method];
 	[_classMethods removeObject:method];
 	[_instanceMethods removeObject:method];

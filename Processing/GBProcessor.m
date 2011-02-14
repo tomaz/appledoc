@@ -86,9 +86,9 @@
 	for (GBClassData *class in classes) {
 		GBLogInfo(@"Processing class %@...", class);
 		self.currentContext = class;
-		[self processCommentForObject:class];
 		[self processMethodsFromProvider:class.methods];
 		if (![self removeUndocumentedObject:class]) {
+			[self processCommentForObject:class];
 			[self validateCommentsForObjectAndMembers:class];
 			[self processHtmlReferencesForObject:class];
 		}
@@ -101,9 +101,9 @@
 	for (GBCategoryData *category in categories) {
 		GBLogInfo(@"Processing category %@...", category);
 		self.currentContext = category;
-		[self processCommentForObject:category];
 		[self processMethodsFromProvider:category.methods];
 		if (![self removeUndocumentedObject:category]) {
+			[self processCommentForObject:category];
 			[self validateCommentsForObjectAndMembers:category];
 			[self processHtmlReferencesForObject:category];
 		}
@@ -116,9 +116,9 @@
 	for (GBProtocolData *protocol in protocols) {
 		GBLogInfo(@"Processing protocol %@...", protocol);
 		self.currentContext = protocol;
-		[self processCommentForObject:protocol];
 		[self processMethodsFromProvider:protocol.methods];
 		if (![self removeUndocumentedObject:protocol]) {
+			[self processCommentForObject:protocol];
 			[self validateCommentsForObjectAndMembers:protocol];
 			[self processHtmlReferencesForObject:protocol];
 		}
