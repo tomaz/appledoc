@@ -166,80 +166,48 @@
 	
 	// Let comments processor parse comment string value into object representation.
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
-	if (!object.comment.hasParagraphs) return;
-	
-	// Prepare short description from registered paragraphs. Short description only contains the part up to the first special block.
-	GBCommentParagraph *shortDesc = [GBCommentParagraph paragraph];
-	for (GBParagraphItem *item in object.comment.firstParagraph.paragraphItems) {
-		if (item.isOrderedListItem) break;
-		if (item.isUnorderedListItem) break;
-		if (item.isWarningSpecialItem) break;
-		if (item.isBugSpecialItem) break;
-		if (item.isExampleSpecialItem) break;
-		[shortDesc registerItem:item];
-	}
-	object.comment.shortDescription = shortDesc;
-	
-	// Prepare description paragraphs from registered paragraphs according to application settings. If we're to repeat first paragraph this just becomes a copy of normal paragraphs, but otherwise we should copy all parts of the first paragraph not used on short description and all remaining paragraphs.
-	NSArray *paragraphs = object.comment.paragraphs;
-	NSUInteger startIndex = object.isTopLevelObject || (self.settings.repeatFirstParagraphForMemberDescription && [paragraphs count] > 1) ? 0 : 1;
-	if (startIndex != 0) {
-		NSUInteger shortItems = [shortDesc.paragraphItems count];
-		NSUInteger totalItems =[object.comment.firstParagraph.paragraphItems count];
-		if (shortItems < totalItems) {
-			GBCommentParagraph *remaining = [GBCommentParagraph paragraph];
-			for (NSUInteger i=shortItems; i<totalItems; i++) {
-				GBParagraphItem *item = [object.comment.firstParagraph.paragraphItems objectAtIndex:i];
-				[remaining registerItem:item];
-			}
-			[object.comment registerDescriptionParagraph:remaining];
-		}
-	}
-	for (NSUInteger i=startIndex; i<[paragraphs count]; i++) {
-		[object.comment registerDescriptionParagraph:[paragraphs objectAtIndex:i]];
-	}
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
-	// This is where we validate comment parameters and sort them in proper order.
-	if (!comment || [comment.stringValue length] == 0) return;
-	GBLogDebug(@"Validating processed parameters...");
-	
-	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.
-	NSMutableArray *names = [NSMutableArray arrayWithCapacity:[method.methodArguments count]];
-	[method.methodArguments enumerateObjectsUsingBlock:^(GBMethodArgument *argument, NSUInteger idx, BOOL *stop) {
-		if (!argument.argumentVar) return;
-		[names addObject:argument.argumentVar];
-		if (idx == [method.methodArguments count] - 1 && [argument isVariableArg]) [names addObject:@"..."];
-	}];
-	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.parameters count]];
-	[comment.parameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
-		[parameters setObject:parameter forKey:parameter.argumentName];
-	}];
-	
-	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
-	NSMutableArray *sorted = [NSMutableArray arrayWithCapacity:[parameters count]];
-	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
-		GBCommentArgument *parameter = [parameters objectForKey:name];
-		if (!parameter) {
-			GBLogWarn(@"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
-			return;
-		}
-		[sorted addObject:parameter];
-		[parameters removeObjectForKey:name];
-	}];
-	if ([parameters count] > 0) {
-		NSMutableString *description = [NSMutableString string];
-		[[parameters allValues] enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
-			if ([description length] > 0) [description appendString:@", "];
-			[description appendString:parameter.argumentName];
-			[sorted addObject:parameter];
-		}];
-		if (self.settings.warnOnMissingMethodArgument) GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
-	}
-	
-	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
-	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
+//	// This is where we validate comment parameters and sort them in proper order.
+//	if (!comment || [comment.stringValue length] == 0) return;
+//	GBLogDebug(@"Validating processed parameters...");
+//	
+//	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.
+//	NSMutableArray *names = [NSMutableArray arrayWithCapacity:[method.methodArguments count]];
+//	[method.methodArguments enumerateObjectsUsingBlock:^(GBMethodArgument *argument, NSUInteger idx, BOOL *stop) {
+//		if (!argument.argumentVar) return;
+//		[names addObject:argument.argumentVar];
+//		if (idx == [method.methodArguments count] - 1 && [argument isVariableArg]) [names addObject:@"..."];
+//	}];
+//	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.parameters count]];
+//	[comment.parameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
+//		[parameters setObject:parameter forKey:parameter.argumentName];
+//	}];
+//	
+//	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
+//	NSMutableArray *sorted = [NSMutableArray arrayWithCapacity:[parameters count]];
+//	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
+//		GBCommentArgument *parameter = [parameters objectForKey:name];
+//		if (!parameter) {
+//			GBLogWarn(@"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
+//			return;
+//		}
+//		[sorted addObject:parameter];
+//		[parameters removeObjectForKey:name];
+//	}];
+//	if ([parameters count] > 0) {
+//		NSMutableString *description = [NSMutableString string];
+//		[[parameters allValues] enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
+//			if ([description length] > 0) [description appendString:@", "];
+//			[description appendString:parameter.argumentName];
+//			[sorted addObject:parameter];
+//		}];
+//		if (self.settings.warnOnMissingMethodArgument) GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+//	}
+//	
+//	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
+//	if ([names count] > 1) [comment replaceParametersWithParametersFromArray:sorted];
 }
 
 - (void)copyKnownDocumentationForMethod:(GBMethodData *)method {

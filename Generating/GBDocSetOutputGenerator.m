@@ -253,41 +253,41 @@
 	[data setObject:[self tokenIdentifierForObject:object] forKey:@"identifier"];
 	[data setObject:[[object.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
 	if (object.comment) {
-		if (object.comment.hasParagraphs) [data setObject:object.comment.firstParagraph forKey:@"abstract"];
-		if ([object.comment.crossrefs count] > 0) {
-			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.crossrefs count]];
-			for (GBParagraphLinkItem *crossref in object.comment.crossrefs) {
-				if (crossref.member)
-					[related addObject:[self tokenIdentifierForObject:crossref.member]];
-				else if (crossref.context)
-					[related addObject:[self tokenIdentifierForObject:crossref.context]];
-			}
-			if ([related count] > 0) {
-				[data setObject:[GRYes yes] forKey:@"hasRelatedTokens"];
-				[data setObject:related forKey:@"relatedTokens"];
-			}
-		}
+//		if (object.comment.hasParagraphs) [data setObject:object.comment.firstParagraph forKey:@"abstract"];
+//		if ([object.comment.crossrefs count] > 0) {
+//			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.crossrefs count]];
+//			for (GBParagraphLinkItem *crossref in object.comment.crossrefs) {
+//				if (crossref.member)
+//					[related addObject:[self tokenIdentifierForObject:crossref.member]];
+//				else if (crossref.context)
+//					[related addObject:[self tokenIdentifierForObject:crossref.context]];
+//			}
+//			if ([related count] > 0) {
+//				[data setObject:[GRYes yes] forKey:@"hasRelatedTokens"];
+//				[data setObject:related forKey:@"relatedTokens"];
+//			}
+//		}
 	}
 	if ([object isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)object;
 		[data setObject:method.formattedComponents forKey:@"formattedComponents"];
 		[data setObject:method.methodPrefix forKey:@"prefix"];
 		if (method.comment) {
-			if (method.comment.hasParameters) {
-				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.parameters count]];
-				for (GBCommentArgument *argument in method.comment.parameters) {
-					NSMutableDictionary *argData = [NSMutableDictionary dictionaryWithCapacity:2];
-					[argData setObject:argument.argumentName forKey:@"name"];
-					[argData setObject:argument.argumentDescription forKey:@"abstract"];
-					[arguments addObject:argData];
-				}
-				[data setObject:arguments forKey:@"parameters"];
-				[data setObject:[GRYes yes] forKey:@"hasParameters"];
-			}
-			if (method.comment.result) {
-				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.result forKey:@"abstract"];
-				[data setObject:resultData forKey:@"returnValue"];
-			}
+//			if (method.comment.hasParameters) {
+//				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.parameters count]];
+//				for (GBCommentArgument *argument in method.comment.parameters) {
+//					NSMutableDictionary *argData = [NSMutableDictionary dictionaryWithCapacity:2];
+//					[argData setObject:argument.argumentName forKey:@"name"];
+//					[argData setObject:argument.argumentDescription forKey:@"abstract"];
+//					[arguments addObject:argData];
+//				}
+//				[data setObject:arguments forKey:@"parameters"];
+//				[data setObject:[GRYes yes] forKey:@"hasParameters"];
+//			}
+//			if (method.comment.result) {
+//				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.result forKey:@"abstract"];
+//				[data setObject:resultData forKey:@"returnValue"];
+//			}
 		}
 	}
 }
