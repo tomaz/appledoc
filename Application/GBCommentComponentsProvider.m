@@ -165,11 +165,11 @@
 }
 
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(?s:(.*))", keyword];
+	return [NSString stringWithFormat:@"^\\s*(\\S%@\\s+)(?s:(.*))", keyword];
 }
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
-	return [NSString stringWithFormat:@"^\\s*\\S%@\\s+(\\S+)\\s+(?s:(.*))", keyword];
+	return [NSString stringWithFormat:@"^\\s*(\\S%@\\s+)(\\S+)\\s+(?s:(.*))", keyword];
 }
 
 #pragma Properties

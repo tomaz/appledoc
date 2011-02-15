@@ -28,22 +28,76 @@
 
 @implementation GBCommentsProcessorTesting
 
-#pragma mark Descriptions testing
+#pragma mark Common stuff testing
 
-//- (void)testProcessCommentWithContextStore_description_shouldRegisterSingleComponent {
-//	// setup
-//	GBStore *store = [GBTestObjectsRegistry store];
-//	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
-//	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
-//	GBComment *comment1 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph"];
-//	GBComment *comment2 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph"];
-//	// execute
-//	[processor1 processComment:comment1 withContext:nil store:store];
-//	[processor2 processComment:comment2 withContext:nil store:store];
-//	// verify
-//	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
-//	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", nil];
-//}
+- (void)testProcessCommentWithContextStore_shouldHandleTextOnlyBasedOnSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
+	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:comment1.stringValue];
+	// execute
+	[processor1 processComment:comment1 withContext:nil store:store];
+	[processor2 processComment:comment2 withContext:nil store:store];
+	// verify
+	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
+	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", nil];
+}
+
+- (void)testProcessCommentWithContextStore_shouldHandleTextBeforeDirectivesBasedOnSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
+	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph\n\n@warning Description"];
+	GBComment *comment2 = [GBComment commentWithStringValue:comment1.stringValue];
+	// execute
+	[processor1 processComment:comment1 withContext:nil store:store];
+	[processor2 processComment:comment2 withContext:nil store:store];
+	// verify
+	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", @"@warning Description", nil];
+	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", @"@warning Description", nil];
+}
+
+- (void)testProcessCommentWithContextStore_shouldHandleTextAfterDirectiveBasedOnSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
+	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@warning Some text\n\nAnother paragraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:comment1.stringValue];
+	// execute
+	[processor1 processComment:comment1 withContext:nil store:store];
+	[processor2 processComment:comment2 withContext:nil store:store];
+	// verify - all text after directive is considered part of that directive, but short text is still properly detected.
+	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"@warning Some text\n\nAnother paragraph", nil];
+	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"@warning Some text\n\nAnother paragraph", nil];
+}
+
+- (void)testProcessCommentWithContextStore_shouldHandleMultipleDirectivesProperly {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@warning Paragraph 1.1\n\nParagraph 1.2\n\n@warning Paragraph 2.1\n\nParagraph 2.2"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesShortDesc:@"Paragraph 1.1" longDesc:@"@warning Paragraph 1.1\n\nParagraph 1.2", @"@warning Paragraph 2.1\n\nParagraph 2.2", nil];
+}
+
+#pragma mark Directives detection
+
+- (void)testProcessCommentWithContextStore_shouldHandleWarningDirective {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@"@warning Description\n\nParagraph"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesShortDesc:@"Description" longDesc:@"@warning Description\n\nParagraph", nil];
+}
 
 #pragma mark Private methods testing
 

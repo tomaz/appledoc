@@ -163,7 +163,7 @@
 }
 
 - (void)assertComment:(GBComment *)comment matchesShortDesc:(NSString *)shortValue longDesc:(NSString *)first, ... {
-	assertThat(comment.shortDescription, is(shortValue));
+	assertThat(comment.shortDescription.stringValue, is(shortValue));
 	va_list args;
 	va_start(args, first);
 	[self assertCommentComponents:comment.longDescription matchesValues:first values:args];

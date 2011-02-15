@@ -55,10 +55,10 @@
 /// @name Sections definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching warning section with capture 1 containing description. */
+/** Returns the regex used for matching warning section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *warningSectionRegex;
 
-/** Returns the regex used for matching bug section with capture 1 containing description. */
+/** Returns the regex used for matching bug section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *bugSectionRegex;
 
 /** Returns the regex used for matching example section with capture 1 containing whitespace prefix and capture 2 example text. */
