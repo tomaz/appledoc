@@ -15,8 +15,8 @@
 @interface GBCommentsProcessor ()
 
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
-- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range;
-- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range;
+- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range shortRange:(NSRange *)shortRange;
+- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range shortRange:(NSRange *)shortRange;
 
 @property (retain) id currentContext;
 @property (retain) GBComment *currentComment;
@@ -55,7 +55,7 @@
 	[self processComment:comment withContext:nil store:store];
 }
 
-- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store {
+- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
@@ -65,47 +65,48 @@
 	NSArray *lines = [comment.stringValue arrayOfLines];
 	NSUInteger line = comment.sourceInfo.lineNumber;
 	NSRange range = NSMakeRange(0, 0);
+	NSRange shortRange = NSMakeRange(0, 0);
 	GBLogDebug(@"- Comment has %lu lines.", [lines count]);
-	while ([self findCommentBlockInLines:lines blockRange:&range]) {
+	while ([self findCommentBlockInLines:lines blockRange:&range shortRange:&shortRange]) {
 		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + range.location, line + range.location + range.length);
 		[self processCommentBlockInLines:lines blockRange:range];
 		range.location += range.length;
 	}
 }
 
-- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range {
-	// Searches the given array of lines for the index of ending line of the block starting at the given index. Effectively this groups all lines that belong to a single block where block is a paragraph text or one of it's items delimited by empty line. The index returned is the index of the last line of the block, so may be the same as the start index, the method takes care to skip empty starting lines if needed and updates start index to point to first block line (but properly detects empty lines belonging to example block). Note that the code is straightforward except for the fact that we need to handle example blocks properly (i.e. can't just trim all whitespace of a line to determine if it's empty or not, instead we need to validate the line is not part of example block).
-	NSParameterAssert(range != NULL);
+- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange {
+	// Searches the given array of lines starting at line index from the given range until first @ directive is found. Returns YES if block was found, NO otherwise. If block was found, the given range contains the block range of the block within the given array and short range contains the range of first part up to the first empty line.
+	NSParameterAssert(blockRange != NULL);
+	NSParameterAssert(shortRange != NULL);
 	
 	// First skip all starting empty lines.
-	NSUInteger start = range->location;
+	NSUInteger start = blockRange->location;
 	while (start < [lines count]) {
 		NSString *line = [lines objectAtIndex:start];
 		if ([line length] > 0) break;
 		start++;
 	}
 	
-	// Find the end of block.
-	BOOL matchingDirectivesBlock = YES;
-	NSUInteger end = start;
-	if (start < [lines count]) {
-		while (end < [lines count]) {
-			NSString *line = [lines objectAtIndex:end];
-			if ([line length] == 0) break;
-			BOOL isDirective = [self isLineMatchingDirectiveStatement:line];
-			if (isDirective && !matchingDirectivesBlock) break;
-			if (!isDirective) matchingDirectivesBlock = NO;
-			end++;
-		}
+	// Find the end of block, which is at the first @ directive; note that we handle each @ directive separately.
+	NSUInteger blockEnd = start;
+	NSUInteger shortEnd = NSNotFound;
+	while (blockEnd < [lines count]) {
+		NSString *line = [lines objectAtIndex:blockEnd];
+		if (blockEnd > start && [self isLineMatchingDirectiveStatement:line]) break;
+		if ([line length] == 0 && shortEnd == NSNotFound) shortEnd = blockEnd;
+		blockEnd++;
 	}
+	if (shortEnd == NSNotFound) shortEnd = blockEnd;
 	
 	// Pass results back to client through parameters.
-	range->location = start;
-	range->length = end - start;
+	blockRange->location = start;
+	blockRange->length = blockEnd - start;
+	shortRange->location = start;
+	shortRange->length = shortEnd - start;
 	return (start < [lines count]);
 }
 
-- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range {
+- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange *)shortRange {
 //	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
 //	NSArray *block = [lines subarrayWithRange:range];
 //	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
@@ -123,6 +124,8 @@
 }
 
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string {
+	if ([string isMatchedByRegex:self.components.warningSectionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.bugSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;

@@ -2,7 +2,7 @@
 //  GBCommentComponentsListTesting.m
 //  appledoc
 //
-//  Created by Tomaz Kragelj on 14.2.10.
+//  Created by Tomaz Kragelj on 14.2.11.
 //  Copyright (C) 2011 Gentle Bytes. All rights reserved.
 //
 

@@ -139,4 +139,35 @@
 	}
 }
 
+#pragma mark Comment creation and assertion methods
+
+- (void)assertCommentComponents:(GBCommentComponentsList *)components matchesValues:(NSString *)first values:(va_list)args {
+	NSMutableArray *expected = [NSMutableArray arrayWithObject:first];
+	NSString *value;
+	while ((value = va_arg(args, NSString *))) {
+		[expected addObject:value];
+	}
+	assertThatInteger([components.components count], equalToInteger([expected count]));
+	for (NSUInteger i=0; i<[components.components count]; i++) {
+		NSString *expectedValue = [expected objectAtIndex:i];
+		NSString *actualValue = [[components.components objectAtIndex:i] stringValue];
+		assertThat(actualValue, is(expectedValue));
+	}
+}
+
+- (void)assertCommentComponents:(GBCommentComponentsList *)components matchesStringValues:(NSString *)first, ... {
+	va_list args;
+	va_start(args, first);
+	[self assertCommentComponents:components matchesValues:first values:args];
+	va_end(args);
+}
+
+- (void)assertComment:(GBComment *)comment matchesShortDesc:(NSString *)shortValue longDesc:(NSString *)first, ... {
+	assertThat(comment.shortDescription, is(shortValue));
+	va_list args;
+	va_start(args, first);
+	[self assertCommentComponents:comment.longDescription matchesValues:first values:args];
+	va_end(args);
+}
+
 @end
