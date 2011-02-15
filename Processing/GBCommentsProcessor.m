@@ -16,8 +16,9 @@
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove;
-- (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange;
+- (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 - (NSString *)stringByPreprocessingString:(NSString *)string;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
@@ -119,6 +120,7 @@
 		NSArray *block = [lines subarrayWithRange:blockRange];
 		NSString *string = [self stringByCombiningTrimmedLines:block];
 		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.sourceFileInfo);
 	}
 		
@@ -168,11 +170,30 @@
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
 	if ([components count] == 0) return NO;
 	
-	// Get data from captures. Index 1 is warning directive, index 2 description text.
+	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
 	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
 	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
+	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
+	
+	// Convert to markdown and register everything. We always use the whole text for warning directive.
+	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
+	component.markdownValue = [self stringByPreprocessingString:description];
+	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	// Match bug block.
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.bugSectionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
+	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for warning directive.
@@ -188,7 +209,7 @@
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;
-	if ([string isMatchedByRegex:self.components.crossReferenceRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.relatedSymbolRegex]) return YES;
 	return NO;
 }
 

@@ -18,7 +18,6 @@
 
 @interface GBCommentComponentsProvider ()
 
-- (NSString *)argumentsCommonRegex;
 - (NSString *)crossReferenceRegexForRegex:(NSString *)regex;
 - (NSString *)descriptionCaptureRegexForKeyword:(NSString *)keyword;
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword;
@@ -43,16 +42,6 @@
 	return self;
 }
 
-#pragma mark Lists detection
-
-- (NSString *)orderedListRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[0-9]+\\.\\s+(?s:(.*))");
-}
-
-- (NSString *)unorderedListRegex {
-	GBRETURN_ON_DEMAND(@"^([ \\t]*)[-+*]\\s+(?s:(.*))");
-}
-
 #pragma mark Sections detection
 
 - (NSString *)warningSectionRegex {
@@ -63,26 +52,10 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
 }
 
-- (NSString *)exampleSectionRegex {
-	GBRETURN_ON_DEMAND(@"^( ?\\t|    )(.*)$");
-}
-
 #pragma mark Method specific detection
 
 - (NSString *)methodGroupRegex {
 	GBRETURN_ON_DEMAND(@"(?s:\\Sname\\s+(.*))");
-}
-
-- (NSString *)argumentsCommonRegex {
-	GBRETURN_ON_DEMAND(@"\\s*\\S(param|exception|return|returns|see|sa)\\s+");
-}
-
-- (NSString *)argumentsMatchingRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?:^%@)", [self argumentsCommonRegex]]));
-}
-
-- (NSString *)nextArgumentRegex {
-	GBRETURN_ON_DEMAND(([NSString stringWithFormat:@"(?m:^%@)", [self argumentsCommonRegex]]));
 }
 
 - (NSString *)parameterDescriptionRegex {
@@ -97,7 +70,7 @@
 	GBRETURN_ON_DEMAND([self nameDescriptionCaptureRegexForKeyword:@"exception"]);
 }
 
-- (NSString *)crossReferenceRegex {
+- (NSString *)relatedSymbolRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 

@@ -42,16 +42,6 @@
 @property (copy) NSString *crossReferenceMarkersTemplate;
 
 ///---------------------------------------------------------------------------------------
-/// @name Lists definitions
-///---------------------------------------------------------------------------------------
-
-/** Returns the regex used for matching ordered lists with capture 1 containing lists indent and capture 2 string value. */
-@property (readonly) NSString *orderedListRegex;
-
-/** Returns the regex used for matching unordered lists with capture 1 containing list indent and capture 2 string value. */
-@property (readonly) NSString *unorderedListRegex;
-
-///---------------------------------------------------------------------------------------
 /// @name Sections definitions
 ///---------------------------------------------------------------------------------------
 
@@ -61,9 +51,6 @@
 /** Returns the regex used for matching bug section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *bugSectionRegex;
 
-/** Returns the regex used for matching example section with capture 1 containing whitespace prefix and capture 2 example text. */
-@property (readonly) NSString *exampleSectionRegex;
-
 ///---------------------------------------------------------------------------------------
 /// @name Method specific definitions
 ///---------------------------------------------------------------------------------------
@@ -71,23 +58,17 @@
 /** Returns the regex used for matching method groups with capture 1 containing section name. */
 @property (readonly) NSString *methodGroupRegex;
 
-/** Returns the regex used for matching different method parameter descriptions within the paragraph. */
-@property (readonly) NSString *argumentsMatchingRegex;
-
-/** Returns the regex used for finding next method parameter description within the paragraph. */
-@property (readonly) NSString *nextArgumentRegex;
-
-/** Returns the regex used for matching method parameter description with capture 1 containing parameter name and capture 2 description. */
+/** Returns the regex used for matching method parameter description with capture 1 containing directive, capture 2 parameter name and capture 3 description text. */
 @property (readonly) NSString *parameterDescriptionRegex;
 
-/** Returns the regex used for matching method return description with capture 1 containing description. */
+/** Returns the regex used for matching method return description with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *returnDescriptionRegex;
 
-/** Returns the regex used for matching method exception description with capture 1 containing exception name and capture 2 description. */
+/** Returns the regex used for matching method exception description with capture 1 containing directive, capture 2 exception name and capture 3 description text. */
 @property (readonly) NSString *exceptionDescriptionRegex;
 
-/** Returns the regex used for matching cross reference directive with capture 1 containing link. */
-@property (readonly) NSString *crossReferenceRegex;
+/** Returns the regex used for matching cross reference directive with capture 1 containing directive, capture 3 link. */
+@property (readonly) NSString *relatedSymbolRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Cross references definitions

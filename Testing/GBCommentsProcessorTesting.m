@@ -28,9 +28,9 @@
 
 @implementation GBCommentsProcessorTesting
 
-#pragma mark Common stuff testing
+#pragma mark Short & long descriptions testing
 
-- (void)testProcessCommentWithContextStore_shouldHandleTextOnlyBasedOnSettings {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleTextOnlyBasedOnSettings {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
 	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
@@ -45,7 +45,7 @@
 	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", nil];
 }
 
-- (void)testProcessCommentWithContextStore_shouldHandleTextBeforeDirectivesBasedOnSettings {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleTextBeforeDirectivesBasedOnSettings {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
 	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
@@ -60,7 +60,7 @@
 	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", @"@warning Description", nil];
 }
 
-- (void)testProcessCommentWithContextStore_shouldHandleTextAfterDirectiveBasedOnSettings {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleTextAfterDescriptionDirectiveRegardlessOfSettings {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
 	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
@@ -75,18 +75,22 @@
 	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"@warning Some text\n\nAnother paragraph", nil];
 }
 
-- (void)testProcessCommentWithContextStore_shouldHandleMultipleDirectivesProperly {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleMultipleDescriptionDirectivesProperly {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"@warning Paragraph 1.1\n\nParagraph 1.2\n\n@warning Paragraph 2.1\n\nParagraph 2.2"];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@warning Paragraph 1.1\n\nParagraph 1.2\n\n@warning Paragraph 2.1\n\nParagraph 2.2"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@warning Warning\n\n@bug Bug"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@bug Bug\n\n@warning Warning"];
 	// execute
-	[processor processComment:comment withContext:nil store:store];
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
 	// verify
-	[self assertComment:comment matchesShortDesc:@"Paragraph 1.1" longDesc:@"@warning Paragraph 1.1\n\nParagraph 1.2", @"@warning Paragraph 2.1\n\nParagraph 2.2", nil];
+	[self assertComment:comment1 matchesShortDesc:@"Paragraph 1.1" longDesc:@"@warning Paragraph 1.1\n\nParagraph 1.2", @"@warning Paragraph 2.1\n\nParagraph 2.2", nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", @"@bug Bug", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Bug" longDesc:@"@bug Bug", @"@warning Warning", nil];
 }
-
-#pragma mark Directives detection
 
 - (void)testProcessCommentWithContextStore_shouldHandleWarningDirective {
 	// setup
