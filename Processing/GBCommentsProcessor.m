@@ -16,10 +16,18 @@
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove;
+- (void)reserveShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove;
+- (void)registerReservedShortDescriptionIfNecessary;
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange;
+
 - (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
+
 - (NSString *)stringByPreprocessingString:(NSString *)string;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
@@ -29,6 +37,7 @@
 @property (retain) GBApplicationSettingsProvider *settings;
 @property (readonly) GBCommentComponentsProvider *components;
 
+@property (retain) NSMutableDictionary *reservedShortDescriptionData;
 @property (readonly) NSString *sourceFileInfo;
 @property (assign) NSUInteger currentStartLine;
 
@@ -64,6 +73,7 @@
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
+	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
 	self.currentContext = context;
 	self.store = store;	
@@ -77,6 +87,7 @@
 		[self processCommentBlockInLines:lines blockRange:blockRange shortRange:shortRange];
 		blockRange.location += blockRange.length;
 	}
+	[self registerReservedShortDescriptionIfNecessary];
 }
 
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange {
@@ -116,11 +127,15 @@
 	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + blockRange.location;
 	
 	// If the block is a directive, we should handle only it's description text for the main block. If this is the first block in the comment, we should take the first part of the directive for short description.
-	if ([self isLineMatchingDirectiveStatement:[lines firstObject]]) {
-		NSArray *block = [lines subarrayWithRange:blockRange];
+	NSArray *block = [lines subarrayWithRange:blockRange];
+	if ([self isLineMatchingDirectiveStatement:[block firstObject]]) {
 		NSString *string = [self stringByCombiningTrimmedLines:block];
 		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processParamBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processExceptionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processReturnBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.sourceFileInfo);
 	}
 		
@@ -135,8 +150,8 @@
 	
 	// Register main block. Note that we skip this if block is empty (this can happen when removing short description above).
 	if (blockRange.length == 0) return;
-	NSArray *block = [lines subarrayWithRange:blockRange];
-	NSString *blockString = [self stringByCombiningTrimmedLines:block];
+	NSArray *blockLines = blockRange.length == [block count] ? block : [lines subarrayWithRange:blockRange];
+	NSString *blockString = [self stringByCombiningTrimmedLines:blockLines];
 	if ([blockString length] == 0) return;
 	
 	GBLogDebug(@"- Registering text block %@ at %@...", [blockString normalizedDescription], self.sourceFileInfo);
@@ -163,10 +178,29 @@
 	self.currentComment.shortDescription = component;
 }
 
+- (void)reserveShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
+	// Reserves the given short description data for later registration. This is used so that we can properly handle method directives - we only create short description from these if there is no other directive in the comment. So we want to postpone registration until the whole comment text is processed; if another description block is found later on, we'll be registering short description directly from it, so any registered data will not be used. But if after processing the whole block there is still no short description, we'll use registered data. This only registers the data the first time, so the first directive text found in comment is used for short description.
+	if (self.reservedShortDescriptionData) return;
+	self.reservedShortDescriptionData = [NSMutableDictionary dictionaryWithCapacity:3];
+	[self.reservedShortDescriptionData setObject:lines forKey:@"lines"];
+	[self.reservedShortDescriptionData setObject:[NSValue valueWithRange:range] forKey:@"range"];
+	[self.reservedShortDescriptionData setObject:remove forKey:@"remove"];
+}
+
+- (void)registerReservedShortDescriptionIfNecessary {
+	// If current comment doens't have short description assigned, this method registers it from registered data.
+	if (self.currentComment.shortDescription) return;
+	if (!self.reservedShortDescriptionData) return;
+	GBLogDebug(@"- Registering reserved short description...");
+	NSArray *lines = [self.reservedShortDescriptionData objectForKey:@"lines"];
+	NSRange range = [[self.reservedShortDescriptionData objectForKey:@"range"] rangeValue];
+	NSString *remove = [self.reservedShortDescriptionData objectForKey:@"remove"];
+	[self registerShortDescriptionFromLines:lines range:range removePrefix:remove];
+}
+
 #pragma mark Directives matching
 
 - (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	// Match warning block.
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
 	if ([components count] == 0) return NO;
 	
@@ -177,7 +211,7 @@
 	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
-	// Convert to markdown and register everything. We always use the whole text for warning directive.
+	// Convert to markdown and register everything. We always use the whole text for directive.
 	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
 	component.markdownValue = [self stringByPreprocessingString:description];
 	[self.currentComment.longDescription registerComponent:component];
@@ -185,7 +219,6 @@
 }
 
 - (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	// Match bug block.
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.bugSectionRegex];
 	if ([components count] == 0) return NO;
 	
@@ -196,10 +229,72 @@
 	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
-	// Convert to markdown and register everything. We always use the whole text for warning directive.
+	// Convert to markdown and register everything. We always use the whole text for directive.
 	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
 	component.markdownValue = [self stringByPreprocessingString:description];
 	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.parameterDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *name = [components objectAtIndex:2];
+	NSString *description = [components objectAtIndex:3];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.sourceFileInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	return YES;
+}
+
+- (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.exceptionDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *name = [components objectAtIndex:2];
+	NSString *description = [components objectAtIndex:3];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.sourceFileInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	return YES;
+}
+
+- (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.returnDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	return YES;
+}
+
+- (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.relatedSymbolRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 reference.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *reference = [components objectAtIndex:2];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:reference].location];
+	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.sourceFileInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
 	return YES;
 }
 
@@ -240,6 +335,7 @@
 	return self.settings.commentComponents;
 }
 
+@synthesize reservedShortDescriptionData;
 @synthesize currentStartLine;
 @synthesize currentComment;
 @synthesize currentContext;

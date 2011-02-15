@@ -142,10 +142,13 @@
 #pragma mark Comment creation and assertion methods
 
 - (void)assertCommentComponents:(GBCommentComponentsList *)components matchesValues:(NSString *)first values:(va_list)args {
-	NSMutableArray *expected = [NSMutableArray arrayWithObject:first];
-	NSString *value;
-	while ((value = va_arg(args, NSString *))) {
-		[expected addObject:value];
+	NSMutableArray *expected = [NSMutableArray array];
+	if (first) {
+		[expected addObject:first];
+		NSString *value;
+		while ((value = va_arg(args, NSString *))) {
+			[expected addObject:value];
+		}
 	}
 	assertThatInteger([components.components count], equalToInteger([expected count]));
 	for (NSUInteger i=0; i<[components.components count]; i++) {

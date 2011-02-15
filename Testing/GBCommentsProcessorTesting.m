@@ -92,15 +92,72 @@
 	[self assertComment:comment3 matchesShortDesc:@"Bug" longDesc:@"@bug Bug", @"@warning Warning", nil];
 }
 
-- (void)testProcessCommentWithContextStore_shouldHandleWarningDirective {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleDescriptionForParamDirectiveRegardlessOfSettings {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
-	GBComment *comment = [GBComment commentWithStringValue:@"@warning Description\n\nParagraph"];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@param name Description\n\nParagraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@param name Description\n\nParagraph\n\n@warning Warning"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Prefix\n\n@param name Description\n\nParagraph"];
 	// execute
-	[processor processComment:comment withContext:nil store:store];
-	// verify
-	[self assertComment:comment matchesShortDesc:@"Description" longDesc:@"@warning Description\n\nParagraph", nil];
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertComment:comment1 matchesShortDesc:@"Description" longDesc:nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Prefix" longDesc:@"Prefix", nil];
+}
+
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleDescriptionForExceptionDirectiveRegardlessOfSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@exception name Description\n\nParagraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@exception name Description\n\nParagraph\n\n@warning Warning"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Prefix\n\n@exception name Description\n\nParagraph"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertComment:comment1 matchesShortDesc:@"Description" longDesc:nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Prefix" longDesc:@"Prefix", nil];
+}
+
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleDescriptionForReturnDirectiveRegardlessOfSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@return Description\n\nParagraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@return Description\n\nParagraph\n\n@warning Warning"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Prefix\n\n@return Description\n\nParagraph"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertComment:comment1 matchesShortDesc:@"Description" longDesc:nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Prefix" longDesc:@"Prefix", nil];
+}
+
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleRelatedSymbolsForReturnDirectiveRegardlessOfSettings {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see Description\n\nParagraph"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see Description\n\nParagraph\n\n@warning Warning"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"Prefix\n\n@see Description\n\nParagraph"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertComment:comment1 matchesShortDesc:@"Description" longDesc:nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Prefix" longDesc:@"Prefix", nil];
 }
 
 #pragma mark Private methods testing
