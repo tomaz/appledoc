@@ -221,6 +221,49 @@
 	[self assertCommentComponents:comment2.methodResult matchesStringValues:@"Description1\nLine2\n\nParagraph2", nil];
 }
 
+#pragma mark Combinations testing
+
+- (void)testProcessCommentWithContextStore_combinations_shouldRegisterMethodDescriptionBlock {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:
+						  @"@param name1 Description1\nLine2\n\nParagraph2\n"
+						  @"@exception exc Exception\n"
+						  @"@param name2 Description2\n"
+						  @"@return Return\n"
+						  @"@param name3 Description3\n"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertMethodArguments:comment.methodParameters matches:
+	 @"name1", @"Description1\nLine2\n\nParagraph2", GBEND, 
+	 @"name2", @"Description2", GBEND, 
+	 @"name3", @"Description3", GBEND, nil];
+	[self assertMethodArguments:comment.methodExceptions matches:@"exc", @"Exception", GBEND, nil];
+	[self assertCommentComponents:comment.methodResult matchesStringValues:@"Return", nil];
+}
+
+- (void)testProcessCommentWithContextStore_combinations_shouldRegisterWarningAfterMethodBlockAsMainDescription {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@param name Description\n@warning Warning"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@exception name Description\n@warning Warning"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@return Description\n@warning Warning"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertMethodArguments:comment1.methodParameters matches:@"name", @"Description", GBEND, nil];
+	[self assertMethodArguments:comment2.methodExceptions matches:@"name", @"Description", GBEND, nil];
+	[self assertCommentComponents:comment3.methodResult matchesStringValues:@"Description", nil];
+	[self assertComment:comment1 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment3 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+}
+
 #pragma mark Private methods testing
 
 - (void)testFindCommentBlockInLinesBlockRangeShortRange_shouldDetectSingleComponent {
