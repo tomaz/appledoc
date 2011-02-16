@@ -329,7 +329,7 @@
 	if ([string length] == 0) return string;
 	
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSString *nested = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*|\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___)" withString:@"==!!=="];
+	NSString *nested = [string stringByReplacingOccurrencesOfRegex:@"(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*)" withString:@"==!!=="];
 	NSString *simplified = [nested stringByReplacingOccurrencesOfRegex:@"(__|\\*\\*)" withString:@"*"];
 	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|==!!==|`)(.*?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
 	NSRange searchRange = NSMakeRange(0, [simplified length]);
