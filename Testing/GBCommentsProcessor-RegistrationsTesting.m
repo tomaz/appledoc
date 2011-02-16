@@ -1,5 +1,5 @@
 //
-//  GBCommentsProcessorTesting.m
+//  GBCommentsProcessor-RegistrationsTesting.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 14.2.11.
@@ -17,7 +17,7 @@
 
 #pragma mark -
 
-@interface GBCommentsProcessorTesting : GBObjectsAssertor
+@interface GBCommentsProcessorRegistrationsTesting : GBObjectsAssertor
 
 - (OCMockObject *)settingsProviderRepeatFirst:(BOOL)repeat;
 - (void)assertFindCommentWithString:(NSString *)string matchesBlockRange:(NSRange)b shortRange:(NSRange)s;
@@ -26,7 +26,7 @@
 
 #pragma mark -
 
-@implementation GBCommentsProcessorTesting
+@implementation GBCommentsProcessorRegistrationsTesting
 
 #pragma mark Short & long descriptions testing
 

@@ -159,7 +159,6 @@
 		73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
 		73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
 		73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */; };
-		73B99A891309452E00890FA0 /* GBCommentsProcessorTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B99A881309452E00890FA0 /* GBCommentsProcessorTesting.m */; };
 		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
@@ -171,6 +170,7 @@
 		73D54D2111F8D53E00CCDDB0 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
 		73D54D2911F8D59200CCDDB0 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
 		73D708881267226900355DB6 /* GBApplicationSettingsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D708871267226900355DB6 /* GBApplicationSettingsProviderTesting.m */; };
+		73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E1B7D3130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m */; };
 		73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
 		73F2CA75123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
 		73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
@@ -339,7 +339,6 @@
 		73AF4ECA130938F3001152DB /* GBCommentComponentsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsList.h; sourceTree = "<group>"; };
 		73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsList.m; sourceTree = "<group>"; };
 		73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsListTesting.m; sourceTree = "<group>"; };
-		73B99A881309452E00890FA0 /* GBCommentsProcessorTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentsProcessorTesting.m; sourceTree = "<group>"; };
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73D2524312A2EA340024F9F9 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		73D2524412A2ED610024F9F9 /* GBOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOutputGenerator.h; sourceTree = "<group>"; };
@@ -362,6 +361,7 @@
 		73D708871267226900355DB6 /* GBApplicationSettingsProviderTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBApplicationSettingsProviderTesting.m; sourceTree = "<group>"; };
 		73D8E98911FCC97100966C4A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		73D8E98B11FCC97100966C4A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		73E1B7D3130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor-RegistrationsTesting.m"; sourceTree = "<group>"; };
 		73EA656912B7944E00398BD1 /* Readme.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = Readme.markdown; sourceTree = "<group>"; };
 		73EC00BF1227EB0E0076B7B3 /* GBProcessor-KnownObjectsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-KnownObjectsTesting.m"; sourceTree = "<group>"; };
 		73EC00F71227F58F0076B7B3 /* GBProcessor-CommentsTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBProcessor-CommentsTesting.m"; sourceTree = "<group>"; };
@@ -896,7 +896,7 @@
 				739C0C4612AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m */,
 				739C0C4812AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m */,
 				7374D91412AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m */,
-				73B99A881309452E00890FA0 /* GBCommentsProcessorTesting.m */,
+				73E1B7D3130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m */,
 			);
 			name = Processing;
 			sourceTree = "<group>";
@@ -1216,8 +1216,8 @@
 				73AF4EC913093570001152DB /* GBCommentComponent.m in Sources */,
 				73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */,
 				73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */,
-				73B99A891309452E00890FA0 /* GBCommentsProcessorTesting.m in Sources */,
 				73FAC0FA130BCB6F00F22475 /* GBCommentArgument.m in Sources */,
+				73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
