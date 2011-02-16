@@ -20,6 +20,9 @@
 	GBComment *comment = [GBComment commentWithStringValue:@""];
 	// verify
 	assertThat(comment.longDescription, isNot(nil));
+	assertThat(comment.methodParameters, isNot(nil));
+	assertThat(comment.methodExceptions, isNot(nil));
+	assertThat(comment.methodResult, isNot(nil));
 }
 
 @end

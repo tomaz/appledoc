@@ -28,6 +28,9 @@
 	self = [super init];
 	if (self) {
 		self.longDescription = [GBCommentComponentsList componentsList];
+		self.methodParameters = [NSMutableArray array];
+		self.methodExceptions = [NSMutableArray array];
+		self.methodResult = [GBCommentComponentsList componentsList];
 	}
 	return self;
 }
@@ -50,5 +53,8 @@
 
 @synthesize shortDescription;
 @synthesize longDescription;
+@synthesize methodParameters;
+@synthesize methodExceptions;
+@synthesize methodResult;
 
 @end

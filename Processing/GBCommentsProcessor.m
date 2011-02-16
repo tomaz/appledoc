@@ -28,6 +28,7 @@
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
+- (GBCommentComponent *)commentComponentFromString:(NSString *)string;
 - (NSString *)stringByPreprocessingString:(NSString *)string;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
@@ -38,8 +39,7 @@
 @property (readonly) GBCommentComponentsProvider *components;
 
 @property (retain) NSMutableDictionary *reservedShortDescriptionData;
-@property (readonly) NSString *sourceFileInfo;
-@property (assign) NSUInteger currentStartLine;
+@property (retain) GBSourceInfo *currentSourceInfo;
 
 @end
 
@@ -124,7 +124,9 @@
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
 	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it. We only need to handle short description based on settings if this is first block within the comment.
-	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + blockRange.location;
+	NSString *filename = self.currentComment.sourceInfo.filename;
+	NSUInteger lineNumber = self.currentComment.sourceInfo.lineNumber + blockRange.location;
+	self.currentSourceInfo = [GBSourceInfo infoWithFilename:filename ? filename : @"unknownfile" lineNumber:lineNumber];
 	
 	// If the block is a directive, we should handle only it's description text for the main block. If this is the first block in the comment, we should take the first part of the directive for short description.
 	NSArray *block = [lines subarrayWithRange:blockRange];
@@ -136,7 +138,7 @@
 		if ([self processExceptionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processReturnBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
-		GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.sourceFileInfo);
+		GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
 	}
 		
 	// Handle short description and update block range if we're not repeating first paragraph.
@@ -154,9 +156,8 @@
 	NSString *blockString = [self stringByCombiningTrimmedLines:blockLines];
 	if ([blockString length] == 0) return;
 	
-	GBLogDebug(@"- Registering text block %@ at %@...", [blockString normalizedDescription], self.sourceFileInfo);
-	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:blockString];
-	component.markdownValue = [self stringByPreprocessingString:blockString];
+	// Process the string and register long description component.
+	GBCommentComponent *component = [self commentComponentFromString:blockString];
 	[self.currentComment.longDescription registerComponent:component];
 }
 
@@ -208,12 +209,11 @@
 	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
 	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
-	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
+	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
-	component.markdownValue = [self stringByPreprocessingString:description];
+	GBCommentComponent *component = [self commentComponentFromString:stringValue];
 	[self.currentComment.longDescription registerComponent:component];
 	return YES;
 }
@@ -226,12 +226,11 @@
 	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
 	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
-	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
+	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
-	component.markdownValue = [self stringByPreprocessingString:description];
+	GBCommentComponent *component = [self commentComponentFromString:stringValue];
 	[self.currentComment.longDescription registerComponent:component];
 	return YES;
 }
@@ -241,14 +240,17 @@
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *directive = [components objectAtIndex:1];
 	NSString *name = [components objectAtIndex:2];
 	NSString *description = [components objectAtIndex:3];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
-	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.sourceFileInfo);
+	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
-	
-	// Convert to markdown and register everything. We always use the whole text for directive.
+
+	// Prepare object representation from the description and register the parameter to the comment.
+	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *component = [self commentComponentFromString:description];
+	[argument.argumentDescription registerComponent:component];
+	[self.currentComment.methodParameters addObject:argument];
 	return YES;
 }
 
@@ -257,14 +259,17 @@
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *directive = [components objectAtIndex:1];
 	NSString *name = [components objectAtIndex:2];
 	NSString *description = [components objectAtIndex:3];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
-	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.sourceFileInfo);
+	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
-	// Convert to markdown and register everything. We always use the whole text for directive.
+	// Prepare object representation from the description and register the exception to the comment.
+	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *component = [self commentComponentFromString:description];
+	[argument.argumentDescription registerComponent:component];
+	[self.currentComment.methodExceptions addObject:argument];
 	return YES;
 }
 
@@ -273,13 +278,14 @@
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
-	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.sourceFileInfo);
+	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
-	// Convert to markdown and register everything. We always use the whole text for directive.
+	// Prepare object representation from the description and register the result to the comment.
+	GBCommentComponent *component = [self commentComponentFromString:description];
+	[self.currentComment.methodResult registerComponent:component];
 	return YES;
 }
 
@@ -288,10 +294,9 @@
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 reference.
-	NSString *directive = [components objectAtIndex:1];
 	NSString *reference = [components objectAtIndex:2];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:reference].location];
-	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.sourceFileInfo);
+	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
@@ -308,7 +313,15 @@
 	return NO;
 }
 
-#pragma mark Preprocessing methods
+#pragma mark Text processing methods
+
+- (GBCommentComponent *)commentComponentFromString:(NSString *)string {
+	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values.
+	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
+	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
+	result.markdownValue = [self stringByPreprocessingString:string];
+	return result;
+}
 
 - (NSString *)stringByPreprocessingString:(NSString *)string {
 	return string;
@@ -326,17 +339,12 @@
 
 #pragma mark Properties
 
-- (NSString *)sourceFileInfo {
-	// Helper method for simplifiying logging of current line and source file information.
-	return [NSString stringWithFormat:@"%@@%lu", self.currentComment.sourceInfo.filename, self.currentStartLine];
-}
-
 - (GBCommentComponentsProvider *)components {
 	return self.settings.commentComponents;
 }
 
 @synthesize reservedShortDescriptionData;
-@synthesize currentStartLine;
+@synthesize currentSourceInfo;
 @synthesize currentComment;
 @synthesize currentContext;
 @synthesize settings;

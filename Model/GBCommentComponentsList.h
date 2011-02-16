@@ -10,7 +10,7 @@
 
 /** Handles a list of `GBCommentComponent`s.
  
- Although we could handle the lists as `NSArray`s directly, having additional layer in-between unifies the access to the list.
+ Although we could handle the lists as `NSArray`s directly, having additional layer in-between unifies the access to the list and simplifies the interface.
  */
 @interface GBCommentComponentsList : NSObject {
 	@private

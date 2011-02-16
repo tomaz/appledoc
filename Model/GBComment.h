@@ -74,6 +74,27 @@
  */
 @property (retain) GBCommentComponentsList *longDescription;
 
+/** All registeres method parameters, only applicable for methods, empty list is used otherwise.
+ 
+ @see methodExceptions
+ @see methodResult
+ */
+@property (retain) NSMutableArray *methodParameters;
+
+/** All registeres method exceptions, only applicable for methods, empty list if used otherwise.
+ 
+ @see methodParameters
+ @see methodResult
+ */
+@property (retain) NSMutableArray *methodExceptions;
+
+/** Method result description, only applicable for methods, empty list is used otherwise.
+ 
+ @see methodParameters
+ @see methodExceptions
+ */
+@property (retain) GBCommentComponentsList *methodResult;
+
 ///---------------------------------------------------------------------------------------
 /// @name Output generator helpers
 ///---------------------------------------------------------------------------------------

@@ -14,6 +14,7 @@
 
 #define GBDecorationTypeNone	9999
 #define GBNULL [NSNull null]
+#define GBEND GBNULL
 
 // Need to derive from GHTestCase otherwise GH macros used wouldn't work...
 @interface GBObjectsAssertor : GHTestCase
@@ -28,5 +29,6 @@
 - (void)assertCommentComponents:(GBCommentComponentsList *)components matchesValues:(NSString *)first values:(va_list)args;
 - (void)assertCommentComponents:(GBCommentComponentsList *)components matchesStringValues:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 - (void)assertComment:(GBComment *)comment matchesShortDesc:(NSString *)shortValue longDesc:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)assertMethodArguments:(NSArray *)arguments matches:(NSString *)name, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end

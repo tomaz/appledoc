@@ -139,7 +139,7 @@
 	}
 }
 
-#pragma mark Comment creation and assertion methods
+#pragma mark Comment assertion methods
 
 - (void)assertCommentComponents:(GBCommentComponentsList *)components matchesValues:(NSString *)first values:(va_list)args {
 	NSMutableArray *expected = [NSMutableArray array];
@@ -171,6 +171,50 @@
 	va_start(args, first);
 	[self assertCommentComponents:comment.longDescription matchesValues:first values:args];
 	va_end(args);
+}
+
+- (void)assertMethodArguments:(NSArray *)arguments matches:(NSString *)name, ... {
+	NSMutableArray *expected = [NSMutableArray array];
+	if (name) {
+		va_list args;
+		va_start(args, name);
+		NSString *value;
+		NSMutableArray *strings = [NSMutableArray array];
+		while ((value = va_arg(args, NSString *))) {
+			if (!name) {
+				name = value;
+			} else if (value != (id)GBEND) {
+				[strings addObject:value];
+			} else {
+				NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:name, @"name", strings, @"comps", nil];
+				[expected addObject:data];
+				[strings removeAllObjects];
+				name = nil;
+			}
+		}
+		va_end(args);
+		if (name) [NSException raise:@"Expecting GBEND to end method argument descriptions list!"];
+	}
+	assertThatInteger([arguments count], equalToInteger([expected count]));
+	for (NSUInteger i=0; i<[arguments count]; i++) {
+		GBCommentArgument *argument = [arguments objectAtIndex:i];
+		NSDictionary *data = [expected objectAtIndex:i];
+		
+		NSString *expectedName = [data objectForKey:@"name"];		
+		assertThat(argument.argumentName, is(expectedName));
+
+		NSMutableArray *expectedComps = [data objectForKey:@"comps"];
+		if ([expectedComps count] > 0) {
+			NSString *firstExpectedComp = [expectedComps firstObject];
+			[expectedComps removeObjectAtIndex:0];
+			char *argList = NULL;
+			if ([expectedComps count] > 0) {
+				argList = (char *)malloc(sizeof(NSString *) * [expectedComps count]);
+				[expectedComps getObjects:(id *)argList];				
+			}
+			[self assertCommentComponents:argument.argumentDescription matchesValues:firstExpectedComp values:(__va_list_tag *)argList];
+		}
+	}
 }
 
 @end

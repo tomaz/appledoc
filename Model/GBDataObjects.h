@@ -9,6 +9,7 @@
 #import "GBComment.h"
 #import "GBCommentComponent.h"
 #import "GBCommentComponentsList.h"
+#import "GBCommentArgument.h"
 
 #import "GBClassData.h"
 #import "GBCategoryData.h"
