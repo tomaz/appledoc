@@ -20,7 +20,7 @@
 
 @interface GBCommentsProcessorPreprocessingTesting : GBObjectsAssertor
 
-- (GBCommentsProcessor *)processorWithClass;
+- (GBCommentsProcessor *)processorWithStore:(id)store;
 
 @end
 
@@ -102,6 +102,54 @@
 
 #pragma mark Cross references detection
 
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClass {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBClassData classDataWithName:@"Class"], nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>"];
+	// verify
+	assertThat(result1, is(@"[Class](Classes/Class.html)"));
+	assertThat(result2, is(@"[Class](Classes/Class.html)"));
+	assertThat(result3, is(@"Unknown"));
+	assertThat(result4, is(@"<Unknown>"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategory {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBCategoryData categoryDataWithName:@"Category" className:@"Class"], nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category)"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class(Category)>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Class(Unknown)"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Class(Unknown)>"];
+	// verify
+	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html)"));
+	assertThat(result2, is(@"[Class(Category)](Categories/Class(Category).html)"));
+	assertThat(result3, is(@"Class(Unknown)"));
+	assertThat(result4, is(@"<Class(Unknown)>"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertProtocol {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBProtocolData protocolDataWithName:@"Protocol"], nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Protocol>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>"];
+	// verify
+	assertThat(result1, is(@"[Protocol](Protocols/Protocol.html)"));
+	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html)"));
+	assertThat(result3, is(@"Unknown"));
+	assertThat(result4, is(@"<Unknown>"));
+}
+
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertHTML {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
@@ -171,12 +219,8 @@
 
 #pragma mark Creation methods
 
-- (GBCommentsProcessor *)processorWithClass {
-	// Creates a new GBCommentsProcessor using real settings and store with a single GBClassData representing `Class` with a single method `method:`.
-	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
-	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method, nil];
-	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
-	
+- (GBCommentsProcessor *)processorWithStore:(id)store {
+	// Creates a new GBCommentsProcessor using real settings and the given store.
 	id settings = [GBTestObjectsRegistry realSettingsProvider];
 	GBCommentsProcessor *result = [GBCommentsProcessor processorWithSettingsProvider:settings];
 	[result setValue:store forKey:@"store"];

@@ -48,6 +48,8 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
+- (GBCrossRefData)dataForFirstClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated;
+- (GBCrossRefData)dataForFirstCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated;
 - (GBCrossRefData)dataForFirstURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 
 - (GBCommentComponent *)commentComponentFromString:(NSString *)string;
@@ -416,27 +418,54 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	// Preprocesses the given string and converts all cross references and URLs to Markdown style - [](). If Markdown style reference is detected, it's left untouched. Note that the order of conversion is somewhat important (for example we should take category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
 	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSRange searchRange = NSMakeRange(0, [string length]);
 	while (YES) {
+		// Match next objects of various types.
 		GBCrossRefData urlData = [self dataForFirstURLLinkInString:string searchRange:searchRange templated:YES];
-		if (GBIsCrossRefValid(urlData)) {
-			if (urlData.range.location > 0) {
-				NSRange skippedRange = NSMakeRange(searchRange.location, urlData.range.location - searchRange.location);
+		GBCrossRefData objectData = [self dataForFirstClassOrProtocolLinkInString:string searchRange:searchRange templates:YES];
+		GBCrossRefData categoryData = [self dataForFirstCategoryLinkInString:string searchRange:searchRange templates:YES];
+		
+		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! Exit if no link was found.
+		[links setCount:0];
+		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
+		if (GBIsCrossRefValid(objectData)) [links addPointer:&objectData];
+		if (GBIsCrossRefValid(categoryData)) [links addPointer:&categoryData];
+		if ([links count] == 0) break;
+		
+		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
+		while ([links count] > 0) {
+			// Find the lowest index.
+			GBCrossRefData *linkData = NULL;
+			NSUInteger index = NSNotFound;
+			for (NSUInteger i=0; i<[links count]; i++) {
+				GBCrossRefData *data = [links pointerAtIndex:i];
+				if (!linkData || linkData->range.location > data->range.location) {
+					linkData = data;
+					index = i;
+				}
+			}
+
+			// If there is some text skipped after previous link (or search range), append it to output first.
+			if (linkData->range.location > searchRange.location) {
+				NSRange skippedRange = NSMakeRange(searchRange.location, linkData->range.location - searchRange.location);
 				NSString *skippedText = [string substringWithRange:skippedRange];
 				[result appendString:skippedText];
 			}
 			
-			NSString *markdownLink = [NSString stringWithFormat:@"[%@](%@)", urlData.desc, urlData.url];
+			// Convert the raw link to Markdown syntax and append to output.
+			NSString *markdownLink = [NSString stringWithFormat:@"[%@](%@)", linkData->desc, linkData->url];
 			[result appendString:markdownLink];
 			
-			NSUInteger location = urlData.range.location + urlData.range.length + 1;
+			// Update range and remove the link from the temporary array.
+			NSUInteger location = linkData->range.location + linkData->range.length;
 			searchRange.location = location;
-			searchRange.length = [string length] - searchRange.location;
-			if (location >= [string length]) break;
-		} else {
-			break;
+			searchRange.length = [string length] - location;
+			[links removePointerAtIndex:index];
 		}
 	}
+	
+	// If there's some text remaining after all links, append it.
 	if (searchRange.location < [string length]) {
 		NSString *remainingText = [string substringFromIndex:searchRange.location];
 		[result appendString:remainingText];
@@ -456,22 +485,65 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 
 #pragma mark Cross references detection
 
+- (GBCrossRefData)dataForFirstClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated {
+	// Matches the first class or protocol cross reference in the given search range of the given string. If found, link data is returned, otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	NSString *regex = [self.components objectCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] > 0) {
+		// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
+		NSString *linkText = [components objectAtIndex:0];
+		NSString *objectName = [components objectAtIndex:1];
+		
+		// Validate object name with a class or protocol.
+		id referencedObject = [self.store classWithName:objectName];
+		if (!referencedObject) referencedObject = [self.store protocolWithName:objectName];
+		if (referencedObject) {
+			result.range = [string rangeOfString:linkText options:0 range:searchRange];
+			result.url = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+			result.desc = objectName;
+		}
+	}
+	return result;
+}
+
+- (GBCrossRefData)dataForFirstCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated {
+	// Matches the first category cross reference in the given search range of the given string. If found, link data is returned, otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	NSString *regex = [self.components categoryCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] > 0) {
+		// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
+		NSString *linkText = [components objectAtIndex:0];
+		NSString *objectName = [components objectAtIndex:1];
+		
+		// Validate object name with a class or protocol.
+		id referencedObject = [self.store categoryWithName:objectName];
+		if (referencedObject) {
+			result.range = [string rangeOfString:linkText options:0 range:searchRange];
+			result.url = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+			result.desc = objectName;
+		}
+	}
+	return result;
+}
+
 - (GBCrossRefData)dataForFirstURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated {
-	// Matches the first URL cross reference in the given search range of the given string. If found, link data containing matched range is returned, otherwise the range is invalid.
+	// Matches the first URL cross reference in the given search range of the given string. If found, link data is returned, otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
 	NSString *regex = [self.components urlCrossReferenceRegex:templated];
 	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
-	
-	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *address = [components objectAtIndex:1];
-	NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
-	
-	// Create link item, prepare range and return.
-	result.range = [string rangeOfString:linkText options:0 range:searchRange];
-	result.url = address;
-	result.desc = description;
+	if ([components count] > 0) {	
+		// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
+		NSString *linkText = [components objectAtIndex:0];
+		NSString *address = [components objectAtIndex:1];
+		NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
+		
+		// Create link item, prepare range and return.
+		result.range = [string rangeOfString:linkText options:0 range:searchRange];
+		result.url = address;
+		result.desc = description;
+	}
 	return result;
 }
 
