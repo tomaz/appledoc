@@ -50,6 +50,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 
 - (GBCrossRefData)dataForFirstClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated;
 - (GBCrossRefData)dataForFirstCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated;
+- (GBCrossRefData)dataForFirstLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated;
 - (GBCrossRefData)dataForFirstURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 
 - (GBCommentComponent *)commentComponentFromString:(NSString *)string;
@@ -425,12 +426,14 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		GBCrossRefData urlData = [self dataForFirstURLLinkInString:string searchRange:searchRange templated:YES];
 		GBCrossRefData objectData = [self dataForFirstClassOrProtocolLinkInString:string searchRange:searchRange templates:YES];
 		GBCrossRefData categoryData = [self dataForFirstCategoryLinkInString:string searchRange:searchRange templates:YES];
+		GBCrossRefData localMemberData = [self dataForFirstLocalMemberLinkInString:string searchRange:searchRange templates:YES];
 		
 		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! Exit if no link was found.
 		[links setCount:0];
 		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
 		if (GBIsCrossRefValid(objectData)) [links addPointer:&objectData];
 		if (GBIsCrossRefValid(categoryData)) [links addPointer:&categoryData];
+		if (GBIsCrossRefValid(localMemberData)) [links addPointer:&localMemberData];
 		if ([links count] == 0) break;
 		
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
@@ -523,6 +526,29 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 			result.range = [string rangeOfString:linkText options:0 range:searchRange];
 			result.url = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
 			result.desc = objectName;
+		}
+	}
+	return result;
+}
+
+- (GBCrossRefData)dataForFirstLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange templates:(BOOL)templated {
+	// Matches the first local member cross reference in the given search range of the given string. If found, link data is returned, otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	if (self.currentContext) {
+		NSString *regex = [self.components localMemberCrossReferenceRegex:templated];
+		NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+		if ([components count] > 0) {
+			// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 selector.
+			NSString *linkText = [components objectAtIndex:0];
+			NSString *selector = [components objectAtIndex:2];
+			
+			// Validate object name with a class or protocol.
+			id referencedObject = [[[self currentContext] methods] methodBySelector:selector];
+			if (referencedObject) {
+				result.range = [string rangeOfString:linkText options:0 range:searchRange];
+				result.url = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+				result.desc = selector;
+			}
 		}
 	}
 	return result;

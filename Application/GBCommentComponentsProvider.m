@@ -89,7 +89,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"([^>,.;!?()\\s]+)");
+		GBRETURN_ON_DEMAND(@"([+-]?)([^>,.;!?()\\s]+)");
 	}
 }
 

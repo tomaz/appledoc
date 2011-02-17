@@ -21,6 +21,7 @@
 @interface GBCommentsProcessorPreprocessingTesting : GBObjectsAssertor
 
 - (GBCommentsProcessor *)processorWithStore:(id)store;
+- (GBCommentsProcessor *)processorWithStore:(id)store context:(id)context;
 
 @end
 
@@ -150,6 +151,144 @@
 	assertThat(result4, is(@"<Unknown>"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClassLocalInstanceMethod {
+	// setup
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-method:"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-method:>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>"];
+	// verify
+	assertThat(result1, is(@"[method:](#//api/name/method:)"));
+	assertThat(result2, is(@"[method:](#//api/name/method:)"));
+	assertThat(result3, is(@"[method:](#//api/name/method:)"));
+	assertThat(result4, is(@"[method:](#//api/name/method:)"));
+	assertThat(result5, is(@"another:"));
+	assertThat(result6, is(@"<another:>"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClassLocalClassMethod {
+	// setup
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry classMethodWithNames:@"method", nil], nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"+method:"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<+method:>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>"];
+	// verify
+	assertThat(result1, is(@"[method:](#//api/name/method:)"));
+	assertThat(result2, is(@"[method:](#//api/name/method:)"));
+	assertThat(result3, is(@"[method:](#//api/name/method:)"));
+	assertThat(result4, is(@"[method:](#//api/name/method:)"));
+	assertThat(result5, is(@"another:"));
+	assertThat(result6, is(@"<another:>"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClassLocalProperty {
+	// setup
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry propertyMethodWithArgument:@"method"], nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another>"];
+	// verify
+	assertThat(result1, is(@"[method](#//api/name/method)"));
+	assertThat(result2, is(@"[method](#//api/name/method)"));
+	assertThat(result3, is(@"method:"));
+	assertThat(result4, is(@"<method:>"));
+	assertThat(result5, is(@"another"));
+	assertThat(result6, is(@"<another>"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndProtocolLocalInstanceMethod {
+	// setup
+	id method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"method1", nil];
+	id method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"method2", nil];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method1, nil];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method2, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, protocol, nil];
+	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
+	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
+	// execute
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:"];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>"];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:"];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:"];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>"];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:"];
+	// verify
+	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result3, is(@"method2:"));
+	assertThat(result4, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result5, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result6, is(@"method1:"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndProtocolLocalClassMethod {
+	// setup
+	id method1 = [GBTestObjectsRegistry classMethodWithNames:@"method1", nil];
+	id method2 = [GBTestObjectsRegistry classMethodWithNames:@"method2", nil];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method1, nil];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method2, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, protocol, nil];
+	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
+	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
+	// execute
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:"];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>"];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:"];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:"];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>"];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:"];
+	// verify
+	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result3, is(@"method2:"));
+	assertThat(result4, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result5, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result6, is(@"method1:"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndProtocolLocalProperty {
+	// setup
+	id method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method1"];
+	id method2 = [GBTestObjectsRegistry propertyMethodWithArgument:@"method2"];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method1, nil];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method2, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, protocol, nil];
+	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
+	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
+	// execute
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1"];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1>"];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2"];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2"];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2>"];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1"];
+	// verify
+	assertThat(result1, is(@"[method1](#//api/name/method1)"));
+	assertThat(result2, is(@"[method1](#//api/name/method1)"));
+	assertThat(result3, is(@"method2"));
+	assertThat(result4, is(@"[method2](#//api/name/method2)"));
+	assertThat(result5, is(@"[method2](#//api/name/method2)"));
+	assertThat(result6, is(@"method1"));
+}
+
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertHTML {
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
@@ -221,9 +360,15 @@
 
 - (GBCommentsProcessor *)processorWithStore:(id)store {
 	// Creates a new GBCommentsProcessor using real settings and the given store.
+	return [self processorWithStore:store context:nil];
+}
+
+- (GBCommentsProcessor *)processorWithStore:(id)store context:(id)context {
+	// Creates a new GBCommentsProcessor using real settings and the given store and context.
 	id settings = [GBTestObjectsRegistry realSettingsProvider];
 	GBCommentsProcessor *result = [GBCommentsProcessor processorWithSettingsProvider:settings];
 	[result setValue:store forKey:@"store"];
+	[result setValue:context forKey:@"currentContext"];
 	return result;
 }
 

@@ -83,7 +83,7 @@
  */
 - (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name.
+/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing optional - or + prefix and capture 2 member selector.
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
