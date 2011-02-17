@@ -12,6 +12,26 @@
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 
+typedef struct _GBCrossRefData {
+	NSRange range;
+	NSString *url;
+	NSString *desc;
+} GBCrossRefData;
+
+static GBCrossRefData GBEmptyCrossRefData() {
+	GBCrossRefData result;
+	result.range = NSMakeRange(NSNotFound, 0);
+	result.url = nil;
+	result.desc = nil;
+	return result;
+}
+
+static BOOL GBIsCrossRefValid(GBCrossRefData data) {
+	return (data.range.location != NSNotFound);
+}
+
+#pragma mark -
+
 @interface GBCommentsProcessor ()
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
@@ -27,6 +47,8 @@
 - (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
+
+- (GBCrossRefData)dataForFirstURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 
 - (GBCommentComponent *)commentComponentFromString:(NSString *)string;
 - (NSString *)stringByPreprocessingString:(NSString *)string;
@@ -391,8 +413,35 @@
 }
 
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string {
+	// Preprocesses the given string and converts all cross references and URLs to Markdown style - [](). If Markdown style reference is detected, it's left untouched. Note that the order of conversion is somewhat important (for example we should take category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
 	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
-	return string;
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	NSRange searchRange = NSMakeRange(0, [string length]);
+	while (YES) {
+		GBCrossRefData urlData = [self dataForFirstURLLinkInString:string searchRange:searchRange templated:YES];
+		if (GBIsCrossRefValid(urlData)) {
+			if (urlData.range.location > 0) {
+				NSRange skippedRange = NSMakeRange(searchRange.location, urlData.range.location - searchRange.location);
+				NSString *skippedText = [string substringWithRange:skippedRange];
+				[result appendString:skippedText];
+			}
+			
+			NSString *markdownLink = [NSString stringWithFormat:@"[%@](%@)", urlData.desc, urlData.url];
+			[result appendString:markdownLink];
+			
+			NSUInteger location = urlData.range.location + urlData.range.length + 1;
+			searchRange.location = location;
+			searchRange.length = [string length] - searchRange.location;
+			if (location >= [string length]) break;
+		} else {
+			break;
+		}
+	}
+	if (searchRange.location < [string length]) {
+		NSString *remainingText = [string substringFromIndex:searchRange.location];
+		[result appendString:remainingText];
+	}
+	return result;
 }
 
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines {
@@ -403,6 +452,27 @@
 	if ([array count] == 0) return @"";
 	if ([array count] == 1) return [array firstObject];
 	return [NSString stringByCombiningLines:array delimitWith:@"\n"];
+}
+
+#pragma mark Cross references detection
+
+- (GBCrossRefData)dataForFirstURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated {
+	// Matches the first URL cross reference in the given search range of the given string. If found, link data containing matched range is returned, otherwise the range is invalid.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	NSString *regex = [self.components urlCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
+	
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *address = [components objectAtIndex:1];
+	NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
+	
+	// Create link item, prepare range and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.url = address;
+	result.desc = description;
+	return result;
 }
 
 #pragma mark Properties
