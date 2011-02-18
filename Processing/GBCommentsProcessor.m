@@ -437,14 +437,21 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 		GBCrossRefData localMemberData = [self dataForFirstLocalMemberLinkInString:string searchRange:searchRange templates:YES];
 		GBCrossRefData remoteMemberData = [self dataForFirstRemoteMemberLinkInString:string searchRange:searchRange templates:YES];
 		
-		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! Exit if no link was found.
+		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! If no link was found, proceed with next char. If there's no other word, exit (we'll deal with remaining text later on).
 		[links setCount:0];
 		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
 		if (GBIsCrossRefValid(objectData) && !GBIsCrossRefOnSameRange(objectData, categoryData)) [links addPointer:&objectData];
 		if (GBIsCrossRefValid(categoryData)) [links addPointer:&categoryData];
 		if (GBIsCrossRefValid(localMemberData)) [links addPointer:&localMemberData];
 		if (GBIsCrossRefValid(remoteMemberData)) [links addPointer:&remoteMemberData];
-		if ([links count] == 0) break;
+		if ([links count] == 0) {
+			if (searchRange.location >= [string length] - 1) break;
+			NSString *skippedText = [string substringWithRange:NSMakeRange(searchRange.location, 1)];
+			[result appendString:skippedText];
+			searchRange.location++;
+			searchRange.length--;
+			continue;
+		}
 		
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
 		while ([links count] > 0) {
