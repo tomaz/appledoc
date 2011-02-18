@@ -24,6 +24,96 @@
 
 @implementation GBProcessorCommentsTesting
 
+#pragma mark Cross reference matchers processing
+
+- (void)testProcessObjectsFromStore_shouldAssignClassCrossRefsMatchers {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBTestObjectsRegistry realSettingsProvider];
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:settings];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"instMethod", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"clsMethod", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"propMethod"];
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:method1, method2, method3, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(class.localSimpleCrossRefRegex, is(@"(Class)"));
+	assertThat(class.localTemplatedCrossRefRegex, is(@"<?(Class)>?"));
+	assertThat(class.remoteSimpleCrossRefRegex, is(class.localSimpleCrossRefRegex));
+	assertThat(class.remoteTemplatedCrossRefRegex, is(class.localTemplatedCrossRefRegex));
+	assertThat(method1.localSimpleCrossRefRegex, is(@"([+-]?)(instMethod:)"));
+	assertThat(method1.localTemplatedCrossRefRegex, is(@"<?([+-]?)(instMethod:)>?"));
+	assertThat(method1.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class)\\s+(instMethod:)\\]"));
+	assertThat(method1.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class)\\s+(instMethod:)\\]>?"));
+	assertThat(method2.localSimpleCrossRefRegex, is(@"([+-]?)(clsMethod:)"));
+	assertThat(method2.localTemplatedCrossRefRegex, is(@"<?([+-]?)(clsMethod:)>?"));
+	assertThat(method2.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class)\\s+(clsMethod:)\\]"));
+	assertThat(method2.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class)\\s+(clsMethod:)\\]>?"));
+	assertThat(method3.localSimpleCrossRefRegex, is(@"([+-]?)(propMethod)"));
+	assertThat(method3.localTemplatedCrossRefRegex, is(@"<?([+-]?)(propMethod)>?"));
+	assertThat(method3.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class)\\s+(propMethod)\\]"));
+	assertThat(method3.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class)\\s+(propMethod)\\]>?"));
+}
+
+- (void)testProcessObjectsFromStore_shouldAssignCategoryCrossRefsMatchers {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"instMethod", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"clsMethod", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"propMethod"];
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:method1, method2, method3, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(category.localSimpleCrossRefRegex, is(@"(Class\\(Category\\))"));
+	assertThat(category.localTemplatedCrossRefRegex, is(@"<?(Class\\(Category\\))>?"));
+	assertThat(category.remoteSimpleCrossRefRegex, is(category.localSimpleCrossRefRegex));
+	assertThat(category.remoteTemplatedCrossRefRegex, is(category.localTemplatedCrossRefRegex));
+	assertThat(method1.localSimpleCrossRefRegex, is(@"([+-]?)(instMethod:)"));
+	assertThat(method1.localTemplatedCrossRefRegex, is(@"<?([+-]?)(instMethod:)>?"));
+	assertThat(method1.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class\\(Category\\))\\s+(instMethod:)\\]"));
+	assertThat(method1.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class\\(Category\\))\\s+(instMethod:)\\]>?"));
+	assertThat(method2.localSimpleCrossRefRegex, is(@"([+-]?)(clsMethod:)"));
+	assertThat(method2.localTemplatedCrossRefRegex, is(@"<?([+-]?)(clsMethod:)>?"));
+	assertThat(method2.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class\\(Category\\))\\s+(clsMethod:)\\]"));
+	assertThat(method2.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class\\(Category\\))\\s+(clsMethod:)\\]>?"));
+	assertThat(method3.localSimpleCrossRefRegex, is(@"([+-]?)(propMethod)"));
+	assertThat(method3.localTemplatedCrossRefRegex, is(@"<?([+-]?)(propMethod)>?"));
+	assertThat(method3.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Class\\(Category\\))\\s+(propMethod)\\]"));
+	assertThat(method3.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Class\\(Category\\))\\s+(propMethod)\\]>?"));
+}
+
+- (void)testProcessObjectsFromStore_shouldAssignProtocolCrossRefsMatchers {
+	// setup
+	GBProcessor *processor = [GBProcessor processorWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithNames:@"instMethod", nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry classMethodWithNames:@"clsMethod", nil];
+	GBMethodData *method3 = [GBTestObjectsRegistry propertyMethodWithArgument:@"propMethod"];
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:method1, method2, method3, nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:protocol, nil];
+	// execute
+	[processor processObjectsFromStore:store];
+	// verify
+	assertThat(protocol.localSimpleCrossRefRegex, is(@"(Protocol)"));
+	assertThat(protocol.localTemplatedCrossRefRegex, is(@"<?(Protocol)>?"));
+	assertThat(protocol.remoteSimpleCrossRefRegex, is(protocol.localSimpleCrossRefRegex));
+	assertThat(protocol.remoteTemplatedCrossRefRegex, is(protocol.localTemplatedCrossRefRegex));
+	assertThat(method1.localSimpleCrossRefRegex, is(@"([+-]?)(instMethod:)"));
+	assertThat(method1.localTemplatedCrossRefRegex, is(@"<?([+-]?)(instMethod:)>?"));
+	assertThat(method1.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Protocol)\\s+(instMethod:)\\]"));
+	assertThat(method1.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Protocol)\\s+(instMethod:)\\]>?"));
+	assertThat(method2.localSimpleCrossRefRegex, is(@"([+-]?)(clsMethod:)"));
+	assertThat(method2.localTemplatedCrossRefRegex, is(@"<?([+-]?)(clsMethod:)>?"));
+	assertThat(method2.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Protocol)\\s+(clsMethod:)\\]"));
+	assertThat(method2.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Protocol)\\s+(clsMethod:)\\]>?"));
+	assertThat(method3.localSimpleCrossRefRegex, is(@"([+-]?)(propMethod)"));
+	assertThat(method3.localTemplatedCrossRefRegex, is(@"<?([+-]?)(propMethod)>?"));
+	assertThat(method3.remoteSimpleCrossRefRegex, is(@"([+-]?)\\[(Protocol)\\s+(propMethod)\\]"));
+	assertThat(method3.remoteTemplatedCrossRefRegex, is(@"<?([+-]?)\\[(Protocol)\\s+(propMethod)\\]>?"));
+}
+
 #pragma mark Classes comments processing
 
 - (void)testProcessObjectsFromStore_shouldProcessClassComments {

@@ -107,6 +107,66 @@
 @property (readonly) BOOL isTopLevelObject;
 
 ///---------------------------------------------------------------------------------------
+/// @name Cross reference detection helpers
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex used for matching local cross references to the object.
+ 
+ This is convenience method that either returns `localSimpleCrossRefRegex` or `localTemplatedCrossRefRegex`, based on the value of the templated parameter.
+ 
+ @param templated If `YES`, `localTemplatedCrossRefRegex`, otherwise `localSimpleCrossRefRegex` is returned.
+ @return Returns the regex used for matching the object.
+ @see localSimpleCrossRefRegex
+ @see localTemplatedCrossRefRegex
+ @see remoteCrossRefRegex:
+ */
+- (NSString *)localCrossRefRegex:(BOOL)templated;
+
+/** Returns the regex used for matching remote cross references to the object.
+ 
+ This is convenience method that either returns `remoteSimpleCrossRefRegex` or `remoteTemplatedCrossRefRegex`, based on the value of the templated parameter.
+ 
+ @param templated If `YES`, `remoteTemplatedCrossRefRegex`, otherwise `remoteSimpleCrossRefRegex` is returned.
+ @return Returns the regex used for matching the object.
+ @see remoteSimpleCrossRefRegex
+ @see remoteTemplatedCrossRefRegex
+ @see localCrossRefRegex:
+ */
+- (NSString *)remoteCrossRefRegex:(BOOL)templated;
+
+/** Returns the regex used for matching local cross references to the object.
+ 
+ It's up to client to setup this value!
+ 
+ @see localCrossRefRegex:
+ */
+@property (copy) NSString *localSimpleCrossRefRegex;
+
+/** Returns the regex used for matching local cross references to the object.
+ 
+ It's up to client to setup this value!
+ 
+ @see localCrossRefRegex:
+ */
+@property (copy) NSString *localTemplatedCrossRefRegex;
+
+/** Returns the regex used for matching remote cross references to the object.
+ 
+ It's up to client to setup this value!
+ 
+ @see remoteCrossRefRegex:
+ */
+@property (copy) NSString *remoteSimpleCrossRefRegex;
+
+/** Returns the regex used for matching remote cross references to the object.
+ 
+ It's up to client to setup this value!
+ 
+ @see remoteCrossRefRegex:
+ */
+@property (copy) NSString *remoteTemplatedCrossRefRegex;
+
+///---------------------------------------------------------------------------------------
 /// @name Output generation helpers
 ///---------------------------------------------------------------------------------------
 

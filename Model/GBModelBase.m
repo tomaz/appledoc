@@ -53,7 +53,7 @@
 	if (!self.comment && comment) self.comment = comment;
 }
 
-#pragma mark Declared files handling
+#pragma mark Source information handling
 
 - (void)registerSourceInfo:(GBSourceInfo *)data {
 	NSParameterAssert(data != nil);
@@ -88,6 +88,16 @@
 
 #pragma Helper methods
 
+- (NSString *)localCrossRefRegex:(BOOL)templated {
+	if (templated) return self.localTemplatedCrossRefRegex;
+	return self.localSimpleCrossRefRegex;
+}
+
+- (NSString *)remoteCrossRefRegex:(BOOL)templated {
+	if (templated) return self.remoteTemplatedCrossRefRegex;
+	return self.remoteSimpleCrossRefRegex;
+}
+
 - (BOOL)isStaticDocument {
 	return NO;
 }
@@ -101,6 +111,10 @@
 @synthesize comment;
 @synthesize sourceInfos = _sourceInfos;
 @synthesize parentObject;
+@synthesize localSimpleCrossRefRegex;
+@synthesize localTemplatedCrossRefRegex;
+@synthesize remoteSimpleCrossRefRegex;
+@synthesize remoteTemplatedCrossRefRegex;
 @synthesize htmlLocalReference;
 @synthesize htmlReferenceName;
 
