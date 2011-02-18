@@ -74,7 +74,7 @@
 /// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. 
+/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing optional - or + prefix, capture 2 object name and capture 3 member selector. 
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  

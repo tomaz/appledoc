@@ -101,7 +101,7 @@
 	assertThat(result6, is(@"***text1*** *** marked ***"));
 }
 
-#pragma mark Cross references detection
+#pragma mark Class, category and protocol cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertClass {
 	// setup
@@ -150,6 +150,8 @@
 	assertThat(result3, is(@"Unknown"));
 	assertThat(result4, is(@"<Unknown>"));
 }
+
+#pragma mark Local members cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertClassLocalInstanceMethod {
 	// setup
@@ -288,6 +290,76 @@
 	assertThat(result5, is(@"[method2](#//api/name/method2)"));
 	assertThat(result6, is(@"method1"));
 }
+
+#pragma mark Remote members cross references detection
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClassRemoteInstanceMethod {
+	// setup
+	GBClassData *class1 = [GBTestObjectsRegistry classWithName:@"Class1" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class1, class2, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class2];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class1 method:]"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class1 method:]>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class1 method:]"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class1 method:]>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	// verify
+	assertThat(result1, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
+	assertThat(result2, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
+	assertThat(result3, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
+	assertThat(result4, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
+	assertThat(result5, is(@"[Unknown method:]"));
+	assertThat(result6, is(@"method:"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryRemoteInstanceMethod {
+	// setup
+	GBCategoryData *category = [GBTestObjectsRegistry categoryWithName:@"Category" className:@"Class" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class(Category) method:]"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class(Category) method:]>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class(Category) method:]"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class(Category) method:]>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class(Unknown) method:]"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[Unknown(Category) method:]"];
+	// verify
+	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
+	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
+	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
+	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
+	assertThat(result5, is(@"[Class(Unknown) method:]"));
+	assertThat(result6, is(@"[Unknown(Category) method:]"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertProtocolRemoteInstanceMethod {
+	// setup
+	GBProtocolData *protocol = [GBTestObjectsRegistry protocolWithName:@"Protocol" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:protocol, class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol method:]"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Protocol method:]>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Protocol method:]"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Protocol method:]>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	// verify
+	assertThat(result1, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
+	assertThat(result2, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
+	assertThat(result3, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
+	assertThat(result4, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
+	assertThat(result5, is(@"[Unknown method:]"));
+	assertThat(result6, is(@"method:"));
+}
+
+#pragma mark URL cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertHTML {
 	// setup
