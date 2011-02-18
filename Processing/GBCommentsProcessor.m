@@ -30,6 +30,13 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	return (data.range.location != NSNotFound);
 }
 
+static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
+	if (!GBIsCrossRefValid(a) || !GBIsCrossRefValid(b)) return NO;
+	if (a.range.location < b.range.location) return NO;
+	if (a.range.location > b.range.location) return NO;
+	return YES;
+}
+
 #pragma mark -
 
 @interface GBCommentsProcessor ()
@@ -433,7 +440,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! Exit if no link was found.
 		[links setCount:0];
 		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
-		if (GBIsCrossRefValid(objectData)) [links addPointer:&objectData];
+		if (GBIsCrossRefValid(objectData) && !GBIsCrossRefOnSameRange(objectData, categoryData)) [links addPointer:&objectData];
 		if (GBIsCrossRefValid(categoryData)) [links addPointer:&categoryData];
 		if (GBIsCrossRefValid(localMemberData)) [links addPointer:&localMemberData];
 		if (GBIsCrossRefValid(remoteMemberData)) [links addPointer:&remoteMemberData];
@@ -469,6 +476,9 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 			searchRange.length = [string length] - location;
 			[links removePointerAtIndex:index];
 		}
+		
+		// Exit if there's nothing more to process.
+		if (searchRange.location >= [string length]) break;
 	}
 	
 	// If there's some text remaining after all links, append it.
@@ -522,8 +532,8 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	if ([components count] == 0) return result;
 
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
+	NSString *linkText = [[components objectAtIndex:0] stringByTrimmingWhitespaceAndNewLine];
+	NSString *objectName = [[components objectAtIndex:1] stringByTrimmingWhitespaceAndNewLine];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store categoryWithName:objectName];

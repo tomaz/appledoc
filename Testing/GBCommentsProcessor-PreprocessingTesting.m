@@ -428,6 +428,36 @@
 	assertThat(result2, is(@"[appledoc@gentlebytes.com](mailto:appledoc@gentlebytes.com)"));
 }
 
+#pragma mark Combinations detection testing
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndClass {
+	// setup
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category) Class"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Class Class(Category)"];
+	// verify
+	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html) [Class](Classes/Class.html)"));
+	assertThat(result2, is(@"[Class](Classes/Class.html) [Class(Category)](Categories/Class(Category).html)"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndProtocol {
+	// setup - although it's not possible to do categories on protocols, we still test to properly cover these...
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Protocol"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, protocol, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol(Category) Protocol"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Protocol(Category)"];
+	// verify
+	assertThat(result1, is(@"[Protocol(Category)](Categories/Protocol(Category).html) [Protocol](Protocols/Protocol.html)"));
+	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Protocol(Category)](Categories/Protocol(Category).html)"));
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)processorWithStore:(id)store {
