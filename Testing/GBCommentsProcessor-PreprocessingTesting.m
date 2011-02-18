@@ -369,11 +369,15 @@
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com"];
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<http://gentlebytes.com>"];
 	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<https://gentlebytes.com>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com https://gentlebytes.com"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com http://gentlebytes.com"];
 	// verify
 	assertThat(result1, is(@"[http://gentlebytes.com](http://gentlebytes.com)"));
 	assertThat(result2, is(@"[https://gentlebytes.com](https://gentlebytes.com)"));
 	assertThat(result3, is(@"[http://gentlebytes.com](http://gentlebytes.com)"));
 	assertThat(result4, is(@"[https://gentlebytes.com](https://gentlebytes.com)"));
+	assertThat(result5, is(@"[http://gentlebytes.com](http://gentlebytes.com) [https://gentlebytes.com](https://gentlebytes.com)"));
+	assertThat(result6, is(@"[https://gentlebytes.com](https://gentlebytes.com) [http://gentlebytes.com](http://gentlebytes.com)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertFTP {
@@ -384,11 +388,15 @@
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com"];
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<ftp://gentlebytes.com>"];
 	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<ftps://gentlebytes.com>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com ftps://gentlebytes.com"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com ftp://gentlebytes.com"];
 	// verify
 	assertThat(result1, is(@"[ftp://gentlebytes.com](ftp://gentlebytes.com)"));
 	assertThat(result2, is(@"[ftps://gentlebytes.com](ftps://gentlebytes.com)"));
 	assertThat(result3, is(@"[ftp://gentlebytes.com](ftp://gentlebytes.com)"));
 	assertThat(result4, is(@"[ftps://gentlebytes.com](ftps://gentlebytes.com)"));
+	assertThat(result5, is(@"[ftp://gentlebytes.com](ftp://gentlebytes.com) [ftps://gentlebytes.com](ftps://gentlebytes.com)"));
+	assertThat(result6, is(@"[ftps://gentlebytes.com](ftps://gentlebytes.com) [ftp://gentlebytes.com](ftp://gentlebytes.com)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertNewsAndRSS {
@@ -399,11 +407,15 @@
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com"];
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<news://gentlebytes.com>"];
 	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<rss://gentlebytes.com>"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com news://gentlebytes.com"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com rss://gentlebytes.com"];
 	// verify
 	assertThat(result1, is(@"[news://gentlebytes.com](news://gentlebytes.com)"));
 	assertThat(result2, is(@"[rss://gentlebytes.com](rss://gentlebytes.com)"));
 	assertThat(result3, is(@"[news://gentlebytes.com](news://gentlebytes.com)"));
 	assertThat(result4, is(@"[rss://gentlebytes.com](rss://gentlebytes.com)"));
+	assertThat(result5, is(@"[rss://gentlebytes.com](rss://gentlebytes.com) [news://gentlebytes.com](news://gentlebytes.com)"));
+	assertThat(result6, is(@"[news://gentlebytes.com](news://gentlebytes.com) [rss://gentlebytes.com](rss://gentlebytes.com)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertFile {
@@ -412,9 +424,11 @@
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"file://gentlebytes.com"];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<file://gentlebytes.com>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"file://first file://second"];
 	// verify
 	assertThat(result1, is(@"[file://gentlebytes.com](file://gentlebytes.com)"));
 	assertThat(result2, is(@"[file://gentlebytes.com](file://gentlebytes.com)"));
+	assertThat(result3, is(@"[file://first](file://first) [file://second](file://second)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertMailto {
@@ -423,12 +437,28 @@
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"mailto:appledoc@gentlebytes.com"];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<mailto:appledoc@gentlebytes.com>"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"mailto:a@b.com mailto:c@d.com"];
 	// verify
 	assertThat(result1, is(@"[appledoc@gentlebytes.com](mailto:appledoc@gentlebytes.com)"));
 	assertThat(result2, is(@"[appledoc@gentlebytes.com](mailto:appledoc@gentlebytes.com)"));
+	assertThat(result3, is(@"[a@b.com](mailto:a@b.com) [c@d.com](mailto:c@d.com)"));
 }
 
 #pragma mark Combinations detection testing
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertClassAndProtocol {
+	// setup
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:protocol, class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class Protocol"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Class"];
+	// verify
+	assertThat(result1, is(@"[Class](Classes/Class.html) [Protocol](Protocols/Protocol.html)"));
+	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Class](Classes/Class.html)"));
+}
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndClass {
 	// setup
