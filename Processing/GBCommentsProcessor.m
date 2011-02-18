@@ -429,6 +429,7 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSRange searchRange = NSMakeRange(0, [string length]);
+	NSUInteger lastUsedLocation = 0;
 	while (YES) {
 		// Match next objects of various types.
 		GBCrossRefData urlData = [self dataForFirstURLLinkInString:string searchRange:searchRange templated:YES];
@@ -446,8 +447,6 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 		if (GBIsCrossRefValid(remoteMemberData)) [links addPointer:&remoteMemberData];
 		if ([links count] == 0) {
 			if (searchRange.location >= [string length] - 1) break;
-			NSString *skippedText = [string substringWithRange:NSMakeRange(searchRange.location, 1)];
-			[result appendString:skippedText];
 			searchRange.location++;
 			searchRange.length--;
 			continue;
@@ -467,8 +466,8 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 			}
 
 			// If there is some text skipped after previous link (or search range), append it to output first.
-			if (linkData->range.location > searchRange.location) {
-				NSRange skippedRange = NSMakeRange(searchRange.location, linkData->range.location - searchRange.location);
+			if (linkData->range.location > lastUsedLocation) {
+				NSRange skippedRange = NSMakeRange(lastUsedLocation, linkData->range.location - lastUsedLocation);
 				NSString *skippedText = [string substringWithRange:skippedRange];
 				[result appendString:skippedText];
 			}
@@ -481,6 +480,7 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 			NSUInteger location = linkData->range.location + linkData->range.length;
 			searchRange.location = location;
 			searchRange.length = [string length] - location;
+			lastUsedLocation = location;
 			[links removePointerAtIndex:index];
 		}
 		
@@ -489,8 +489,8 @@ static BOOL GBIsCrossRefOnSameRange(GBCrossRefData a, GBCrossRefData b) {
 	}
 	
 	// If there's some text remaining after all links, append it.
-	if (searchRange.location < [string length]) {
-		NSString *remainingText = [string substringFromIndex:searchRange.location];
+	if (lastUsedLocation < [string length]) {
+		NSString *remainingText = [string substringFromIndex:lastUsedLocation];
 		[result appendString:remainingText];
 	}
 	return result;
