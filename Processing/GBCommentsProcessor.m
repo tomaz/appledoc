@@ -51,6 +51,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
 - (GBCommentComponent *)commentComponentFromString:(NSString *)string;
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className;
 - (NSString *)stringByPreprocessingString:(NSString *)string;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
@@ -240,12 +241,13 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
-	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
 	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:stringValue];
+	GBCommentComponent *component = [self commentComponentFromString:description];
+	component.stringValue = string;
+	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"warning"];
 	[self.currentComment.longDescription registerComponent:component];
 	return YES;
 }
@@ -257,12 +259,13 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = [components objectAtIndex:1];
 	NSString *description = [components objectAtIndex:2];
-	NSString *stringValue = [NSString stringWithFormat:@"%@%@", directive, description];
 	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:stringValue];
+	GBCommentComponent *component = [self commentComponentFromString:description];
+	component.stringValue = string;
+	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"bug"];
 	[self.currentComment.longDescription registerComponent:component];
 	return YES;
 }
@@ -352,6 +355,18 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
 	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
 	result.markdownValue = [self stringByPreprocessingString:string];
+	return result;
+}
+
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
+	// Converts the given string into blockquote and optionally adds class name to convert to <div>.
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	if ([className length] > 0) [result appendFormat:@"> %%%@%%\n", className];
+	NSArray *lines = [string arrayOfLines];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		[result appendFormat:@"> %@", line];
+		if (idx < [lines count] - 1) [result appendString:@"\n"];
+	}];
 	return result;
 }
 
