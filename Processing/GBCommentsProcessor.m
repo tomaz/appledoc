@@ -177,7 +177,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	// Handle short description and update block range if we're not repeating first paragraph.
 	if (!self.currentComment.shortDescription) {
 		[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:nil];
-		if (!self.settings.repeatFirstParagraphForMemberDescription) {
+		if (!self.settings.repeatFirstParagraphForMemberDescription && ![self.currentContext isStaticDocument]) {
 			blockRange.location += shortRange.length;
 			blockRange.length -= shortRange.length;
 		}
