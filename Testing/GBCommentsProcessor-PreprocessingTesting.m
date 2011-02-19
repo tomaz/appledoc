@@ -535,8 +535,8 @@
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](Protocol)"];
 	// verify
 	assertThat(result1, is(@"[text](Classes/Class.html)"));
-	assertThat(result2, is(@"[text](Categories/Class(Category).html"));
-	assertThat(result3, is(@"[text](Protocols/Protocol.html"));
+	assertThat(result2, is(@"[text](Categories/Class(Category).html)"));
+	assertThat(result3, is(@"[text](Protocols/Protocol.html)"));
 }
 
 #pragma mark Creation methods
