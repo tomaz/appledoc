@@ -81,7 +81,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self remoteMemberCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"([+-]?)\\[(%@)\\s+(%@)\\]");
+		GBRETURN_ON_DEMAND(@"([+-]?)\\[(\\S+)\\s+(\\S+)\\]");
 	}
 }
 
@@ -89,7 +89,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"([+-]?)(%@)");
+		GBRETURN_ON_DEMAND(@"([+-]?)([^>,.;!?()\\s]+)");
 	}
 }
 
@@ -97,7 +97,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self categoryCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"(%@\\(%@\\))");
+		GBRETURN_ON_DEMAND(@"([^(][^>,.:;!?)\\s]+\\))");
 	}
 }
 
@@ -105,7 +105,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self objectCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"(%@)");
+		GBRETURN_ON_DEMAND(@"([^>,.:;!?()\\s]+)");
 	}
 }
 

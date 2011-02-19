@@ -33,7 +33,6 @@
 - (void)mergeKnownCategoriesFromStore;
 - (void)setupSuperclassForClass:(GBClassData *)class;
 - (void)setupAdoptedProtocolsFromProvider:(GBAdoptedProtocolsProvider *)provider;
-- (void)setupCrossReferenceRegexForObject:(GBModelBase *)object;
 
 - (void)validateCommentsForObjectAndMembers:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
@@ -291,15 +290,12 @@
 	for (GBClassData *class in self.store.classes) {
 		[self setupSuperclassForClass:class];
 		[self setupAdoptedProtocolsFromProvider:class.adoptedProtocols];
-		[self setupCrossReferenceRegexForObject:class];
 	}
 	for (GBCategoryData *category in self.store.categories) {
 		[self setupAdoptedProtocolsFromProvider:category.adoptedProtocols];
-		[self setupCrossReferenceRegexForObject:category];
 	}
 	for (GBProtocolData *protocol in self.store.protocols) {
 		[self setupAdoptedProtocolsFromProvider:protocol.adoptedProtocols];
-		[self setupCrossReferenceRegexForObject:protocol];
 	}
 }
 
@@ -323,60 +319,6 @@
 				[provider replaceProtocol:adopted withProtocol:registered];
 				break;
 			}
-		}
-	}
-}
-
-- (void)setupCrossReferenceRegexForObject:(GBModelBase *)object {
-	// Setups local and remote matching cross reference regexes for the given object and it's members (if the object is top level). These are later going to be used for matching object links within comment text!
-	GBLogDebug(@"Assigning cross reference matchers for %@...", object);
-	NSString *objectID = nil;
-	if ([object isKindOfClass:[GBClassData class]]) {
-		GBClassData *class = (GBClassData *)object;
-		objectID = class.nameOfClass;
-		NSString *simpleRegex = [self.settings.commentComponents objectCrossReferenceRegex:NO];
-		NSString *templatedRegex = [self.settings.commentComponents objectCrossReferenceRegex:YES];
-		object.localSimpleCrossRefRegex = [NSString stringWithFormat:simpleRegex, class.nameOfClass];
-		object.localTemplatedCrossRefRegex = [NSString stringWithFormat:templatedRegex, class.nameOfClass];
-		object.remoteSimpleCrossRefRegex = object.localSimpleCrossRefRegex;
-		object.remoteTemplatedCrossRefRegex = object.localTemplatedCrossRefRegex;
-	} else if ([object isKindOfClass:[GBCategoryData class]]) {
-		GBCategoryData *category = (GBCategoryData *)object;
-		objectID = category.idOfCategory;
-		NSString *simpleRegex = [self.settings.commentComponents categoryCrossReferenceRegex:NO];
-		NSString *templatedRegex = [self.settings.commentComponents categoryCrossReferenceRegex:YES];
-		object.localSimpleCrossRefRegex = [NSString stringWithFormat:simpleRegex, category.nameOfClass, category.nameOfCategory];
-		object.localTemplatedCrossRefRegex = [NSString stringWithFormat:templatedRegex, category.nameOfClass, category.nameOfCategory];
-		object.remoteSimpleCrossRefRegex = object.localSimpleCrossRefRegex;
-		object.remoteTemplatedCrossRefRegex = object.localTemplatedCrossRefRegex;
-	} else if ([object isKindOfClass:[GBProtocolData class]]) {
-		GBProtocolData *protocol = (GBProtocolData *)object;
-		objectID = protocol.nameOfProtocol;
-		NSString *simpleRegex = [self.settings.commentComponents objectCrossReferenceRegex:NO];
-		NSString *templatedRegex = [self.settings.commentComponents objectCrossReferenceRegex:YES];
-		object.localSimpleCrossRefRegex = [NSString stringWithFormat:simpleRegex, protocol.nameOfProtocol];
-		object.localTemplatedCrossRefRegex = [NSString stringWithFormat:templatedRegex, protocol.nameOfProtocol];
-		object.remoteSimpleCrossRefRegex = object.localSimpleCrossRefRegex;
-		object.remoteTemplatedCrossRefRegex = object.localTemplatedCrossRefRegex;
-	}
-	
-	// A bit of hacking to make sure categories are properly matched by regex... This should really be handled on the level of GBCommentComponentsProvider...
-	objectID = [objectID stringByReplacingOccurrencesOfString:@"(" withString:@"\\("];
-	objectID = [objectID stringByReplacingOccurrencesOfString:@")" withString:@"\\)"];
-	
-	// Process all methods.
-	GBMethodsProvider *methods = [(id<GBObjectDataProviding>)object methods];
-	if (methods) {
-		for (GBMethodData *method in methods.methods) {
-			GBLogDebug(@"Assigning cross reference matchers for %@...", method);
-			NSString *localSimpleRegex = [self.settings.commentComponents localMemberCrossReferenceRegex:NO];
-			NSString *localTemplatedRegex = [self.settings.commentComponents localMemberCrossReferenceRegex:YES];
-			NSString *remoteSimpleRegex = [self.settings.commentComponents remoteMemberCrossReferenceRegex:NO];
-			NSString *remoteTemplatedRegex = [self.settings.commentComponents remoteMemberCrossReferenceRegex:YES];
-			method.localSimpleCrossRefRegex = [NSString stringWithFormat:localSimpleRegex, method.methodSelector];
-			method.localTemplatedCrossRefRegex = [NSString stringWithFormat:localTemplatedRegex, method.methodSelector];
-			method.remoteSimpleCrossRefRegex = [NSString stringWithFormat:remoteSimpleRegex, objectID, method.methodSelector];
-			method.remoteTemplatedCrossRefRegex = [NSString stringWithFormat:remoteTemplatedRegex, objectID, method.methodSelector];
 		}
 	}
 }

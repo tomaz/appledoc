@@ -88,16 +88,6 @@
 
 #pragma Helper methods
 
-- (NSString *)localCrossRefRegex:(BOOL)templated {
-	if (templated) return self.localTemplatedCrossRefRegex;
-	return self.localSimpleCrossRefRegex;
-}
-
-- (NSString *)remoteCrossRefRegex:(BOOL)templated {
-	if (templated) return self.remoteTemplatedCrossRefRegex;
-	return self.remoteSimpleCrossRefRegex;
-}
-
 - (BOOL)isStaticDocument {
 	return NO;
 }
@@ -111,10 +101,6 @@
 @synthesize comment;
 @synthesize sourceInfos = _sourceInfos;
 @synthesize parentObject;
-@synthesize localSimpleCrossRefRegex;
-@synthesize localTemplatedCrossRefRegex;
-@synthesize remoteSimpleCrossRefRegex;
-@synthesize remoteTemplatedCrossRefRegex;
 @synthesize htmlLocalReference;
 @synthesize htmlReferenceName;
 
