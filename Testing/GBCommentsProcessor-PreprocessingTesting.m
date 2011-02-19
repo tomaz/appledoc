@@ -488,6 +488,57 @@
 	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Protocol(Category)](Categories/Protocol(Category).html)"));
 }
 
+#pragma mark Manual links detection testing
+
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepManualLinks {
+	// setup
+	GBCommentsProcessor *processor = [self processorWithStore:nil];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](something)"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[multi word](more words)"];
+	// verify
+	assertThat(result1, is(@"[text](something)"));
+	assertThat(result2, is(@"[multi word](more words)"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepManualURLLinks {
+	// setup
+	GBCommentsProcessor *processor = [self processorWithStore:nil];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](http://ab.com)"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](https://ab.com)"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](ftp://ab.com)"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text](ftps://ab.com)"];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[text](news://ab.com)"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[text](rss://ab.com)"];
+	NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[text](mailto:a@b.com)"];
+	// verify
+	assertThat(result1, is(@"[text](http://ab.com)"));
+	assertThat(result2, is(@"[text](https://ab.com)"));
+	assertThat(result3, is(@"[text](ftp://ab.com)"));
+	assertThat(result4, is(@"[text](ftps://ab.com)"));
+	assertThat(result5, is(@"[text](news://ab.com)"));
+	assertThat(result6, is(@"[text](rss://ab.com)"));
+	assertThat(result7, is(@"[text](mailto:a@b.com)"));
+}
+
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepManualObjectLinksAndUpdateAddress {
+	// setup
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// setup
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](Class)"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class(Category))"];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](Protocol)"];
+	// verify
+	assertThat(result1, is(@"[text](Classes/Class.html)"));
+	assertThat(result2, is(@"[text](Categories/Class(Category).html"));
+	assertThat(result3, is(@"[text](Protocols/Protocol.html"));
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)processorWithStore:(id)store {
