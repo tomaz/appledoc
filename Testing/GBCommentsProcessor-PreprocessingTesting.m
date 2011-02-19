@@ -552,6 +552,27 @@
 	assertThat(result2, is(@"[text](Classes/Class.html \"Protocol\")"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldHandleMarkdownLinkReferences {
+	// setup
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// setup
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com \"title\""];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class"];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class \"title\""];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class]: something"];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[1]: something \"Class\""];
+	// verify
+	assertThat(result1, is(@"[1]: http://ab.com"));
+	assertThat(result2, is(@"[1]: http://ab.com \"title\""));
+	assertThat(result3, is(@"[1]: Classes/Class.html"));
+	assertThat(result4, is(@"[1]: Classes/Class.html \"title\""));
+	assertThat(result5, is(@"[Class]: something"));
+	assertThat(result6, is(@"[1]: something \"Class\""));
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)processorWithStore:(id)store {
