@@ -539,6 +539,19 @@
 	assertThat(result3, is(@"[text](Protocols/Protocol.html)"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {
+	// setup
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+	// setup
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol](Class)"];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class \"Protocol\")"];
+	// verify
+	assertThat(result1, is(@"[Protocol](Classes/Class.html)"));
+	assertThat(result2, is(@"[text](Classes/Class.html \"Protocol\")"));
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)processorWithStore:(id)store {
