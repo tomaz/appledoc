@@ -359,6 +359,23 @@
 	assertThat(result6, is(@"method:"));
 }
 
+#pragma mark Document references detection
+
+- (void)testStringByConvertingCrossReferencesInString_shouldConvertDocument {
+	// setup
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"Document1.html"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:document, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:nil];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Document1" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Document1>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Document12" withFlags:0];
+	// verify
+	assertThat(result1, is(@"[Document1](docs/Document1.html)"));
+	assertThat(result2, is(@"[Document1](docs/Document1.html)"));
+	assertThat(result3, is(@"Document12"));
+}
+
 #pragma mark URL cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertHTML {
