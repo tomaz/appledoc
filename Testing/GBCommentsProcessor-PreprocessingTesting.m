@@ -359,6 +359,18 @@
 	assertThat(result6, is(@"method:"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepUnknownRemoteMemberEvenIfObjectIsKnown {
+	// setup
+	GBClassData *class1 = [GBTestObjectsRegistry classWithName:@"Class1" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class1, class2, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store context:class2];
+	// execute
+	NSString *result = [processor stringByConvertingCrossReferencesInString:@"[Class1 unknown:]" withFlags:0];
+	// verify
+	assertThat(result, is(@"[Class1 unknown:]"));
+}
+
 #pragma mark Document references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertDocument {

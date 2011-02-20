@@ -20,6 +20,7 @@ typedef struct _GBCrossRefData {
 } GBCrossRefData;
 
 static GBCrossRefData GBEmptyCrossRefData() {
+	// Creates an empty cross reference data.
 	GBCrossRefData result;
 	result.range = NSMakeRange(NSNotFound, 0);
 	result.address = nil;
@@ -29,7 +30,14 @@ static GBCrossRefData GBEmptyCrossRefData() {
 }
 
 static BOOL GBIsCrossRefValid(GBCrossRefData data) {
+	// Determines if the cross reference data points to a recognized object.
 	return (data.range.location != NSNotFound);
+}
+
+static BOOL GBIsCrossRefInside(GBCrossRefData test, GBCrossRefData outer) {
+	if (!GBIsCrossRefValid(test) || !GBIsCrossRefValid(outer)) return NO;
+	NSRange unionRange = NSUnionRange(test.range, outer.range);
+	return NSEqualRanges(unionRange, outer.range);
 }
 
 #pragma mark -
@@ -499,11 +507,10 @@ typedef NSUInteger GBProcessingFlag;
 		GBCrossRefData remoteMemberData = [self dataForRemoteMemberLinkInString:string searchRange:searchRange templated:YES];
 		GBCrossRefData documentData = [self dataForDocumentLinkInString:string searchRange:searchRange templated:YES];
 		
-		// If we find class or protocol link at the same location as category, ignore class/protocol. This prevents marking text up to open parenthesis being converted to a class/protocol where in faxt it's category.
-		if (GBIsCrossRefValid(objectData) && GBIsCrossRefValid(categoryData)) {
-			NSRange unionRange = NSUnionRange(objectData.range, categoryData.range);
-			if (NSEqualRanges(unionRange, categoryData.range)) objectData = GBEmptyCrossRefData();
-		}
+		// If we find class or protocol link at the same location as category, ignore class/protocol. This prevents marking text up to open parenthesis being converted to a class/protocol where in fact it's category. The same goes for remote member data!
+		if (GBIsCrossRefInside(objectData, categoryData)) objectData = GBEmptyCrossRefData();
+		if (GBIsCrossRefInside(objectData, remoteMemberData)) objectData = GBEmptyCrossRefData();
+		if (GBIsCrossRefInside(categoryData, remoteMemberData)) categoryData = GBEmptyCrossRefData();
 		
 		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! If no link was found, proceed with next char. If there's no other word, exit (we'll deal with remaining text later on).
 		[links setCount:0];
@@ -686,10 +693,12 @@ typedef NSUInteger GBProcessingFlag;
 		}
 	}
 	
-	// Ok, so we've found a reference to an object, now search for the member. If not found, warn and return.
+	// Ok, so we've found a reference to an object, now search for the member. If not found, warn and return. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedMember = [[referencedObject methods] methodBySelector:selector];
 	if (!referencedMember) {
 		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
+		result.range = [string rangeOfString:linkText options:0 range:searchRange];
+		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 		return result;
 	}
 	
