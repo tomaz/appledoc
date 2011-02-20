@@ -171,6 +171,13 @@
 		}
 		return NO;
 	}
+	if (!self.htmlDocumentTemplate) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Document template file 'document-template.html' is missing at '%@'!", self.templateUserPath];
+			*error = [NSError errorWithCode:GBErrorHTMLDocumentTemplateMissing description:desc reason:nil];
+		}
+		return NO;
+	}
 	if (!self.htmlIndexTemplate) {
 		if (error) {
 			NSString *desc = [NSString stringWithFormat:@"Index template file 'index-template.html' is missing at '%@'!", self.templateUserPath];
