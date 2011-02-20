@@ -34,6 +34,15 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 
 #pragma mark -
 
+/** Defines different processing flags. */
+enum {
+	GBProcessingFlagStrictLinks = 0x1,
+	GBProcessingFlagInsideMarkdownLink = 0x2,
+};
+typedef NSUInteger GBProcessingFlag;
+
+#pragma mark -
+
 @interface GBCommentsProcessor ()
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
@@ -50,13 +59,11 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
-- (GBCommentComponent *)commentComponentFromString:(NSString *)string;
-- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className;
-- (NSString *)stringByPreprocessingString:(NSString *)string;
-- (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
+- (GBCommentComponent *)commentComponentFromString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 
-- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string;
-- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange insideMarkdown:(BOOL)markdown;
 - (GBCrossRefData)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 - (GBCrossRefData)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 - (GBCrossRefData)dataForLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
@@ -64,6 +71,9 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 - (GBCrossRefData)dataForURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange templated:(BOOL)templated;
 - (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange;
 - (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange;
+
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className;
+- (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
 @property (retain) id currentContext;
 @property (retain) GBComment *currentComment;
@@ -190,7 +200,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	if ([blockString length] == 0) return;
 	
 	// Process the string and register long description component.
-	GBCommentComponent *component = [self commentComponentFromString:blockString];
+	GBCommentComponent *component = [self commentComponentFromString:blockString withFlags:0];
 	[self.currentComment.longDescription registerComponent:component];
 }
 
@@ -208,7 +218,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	
 	// Convert to markdown and register everything.
 	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
-	component.markdownValue = [self stringByPreprocessingString:stringValue];
+	component.markdownValue = [self stringByPreprocessingString:stringValue withFlags:0];
 	self.currentComment.shortDescription = component;
 }
 
@@ -245,7 +255,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:description];
+	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
 	component.stringValue = string;
 	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"warning"];
 	[self.currentComment.longDescription registerComponent:component];
@@ -263,7 +273,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:description];
+	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
 	component.stringValue = string;
 	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"bug"];
 	[self.currentComment.longDescription registerComponent:component];
@@ -283,7 +293,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 
 	// Prepare object representation from the description and register the parameter to the comment.
 	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
-	GBCommentComponent *component = [self commentComponentFromString:description];
+	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
 	[argument.argumentDescription registerComponent:component];
 	[self.currentComment.methodParameters addObject:argument];
 	return YES;
@@ -302,7 +312,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	
 	// Prepare object representation from the description and register the exception to the comment.
 	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
-	GBCommentComponent *component = [self commentComponentFromString:description];
+	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
 	[argument.argumentDescription registerComponent:component];
 	[self.currentComment.methodExceptions addObject:argument];
 	return YES;
@@ -319,7 +329,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
-	GBCommentComponent *component = [self commentComponentFromString:description];
+	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
 	[self.currentComment.methodResult registerComponent:component];
 	return YES;
 }
@@ -350,27 +360,15 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 
 #pragma mark Text processing methods
 
-- (GBCommentComponent *)commentComponentFromString:(NSString *)string {
-	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values.
+- (GBCommentComponent *)commentComponentFromString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values. Flags specify various processing directives that affect how processing is handled.
 	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
 	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
-	result.markdownValue = [self stringByPreprocessingString:string];
+	result.markdownValue = [self stringByPreprocessingString:string withFlags:flags];
 	return result;
 }
 
-- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
-	// Converts the given string into blockquote and optionally adds class name to convert to <div>.
-	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
-	if ([className length] > 0) [result appendFormat:@"> %%%@%%\n", className];
-	NSArray *lines = [string arrayOfLines];
-	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
-		[result appendFormat:@"> %@", line];
-		if (idx < [lines count] - 1) [result appendString:@"\n"];
-	}];
-	return result;
-}
-
-- (NSString *)stringByPreprocessingString:(NSString *)string {
+- (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Converts all appledoc formatting and cross refs to proper Markdown text suitable for passing to Markdown generator.
 	if ([string length] == 0) return string;
 	
@@ -390,7 +388,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		if (markerRange.location > searchRange.location) {
 			NSRange skippedRange = NSMakeRange(searchRange.location, markerRange.location - searchRange.location);
 			NSString *skippedText = [simplified substringWithRange:skippedRange];
-			NSString *convertedText = [self stringByConvertingCrossReferencesInString:skippedText];
+			NSString *convertedText = [self stringByConvertingCrossReferencesInString:skippedText withFlags:flags];
 			[result appendString:convertedText];
 		}
 		
@@ -417,7 +415,7 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		}
 		
 		// Get formatted text, convert it's cross references and append proper format markers and string to result.
-		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText];
+		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:flags];
 		[result appendString:markdownMarker];
 		[result appendString:convertedText];
 		[result appendString:markdownMarker];
@@ -430,13 +428,13 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	// If there is some remaining text, process it for cross references and append to result.
 	if ([simplified length] > searchRange.location) {
 		NSString *remainingText = [simplified substringWithRange:searchRange];
-		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText];
+		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText withFlags:flags];
 		[result appendString:convertedText];
 	}
 	return result;
 }
 
-- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string {
+- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Preprocesses the given string and converts all cross references and URLs to Markdown style - [](). This is the high level method for cross references processing; it works by first detecting existing Markdown sytax links, then processing the string before and after them separately for "simple", Appledoc, cross references. Existing Markdown addresses are also processed for cross refs to registered entities. This is continues until end of string is reached.
 	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
@@ -461,13 +459,14 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		// Now that we have Markdown syntax link, preprocess the string from the last position to the start of Markdown link.
 		if (markdownData->range.location > searchRange.location) {
 			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location);
-			NSString *skipped = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:convertRange insideMarkdown:NO];
+			NSString *skipped = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:convertRange flags:flags];
 			[result appendString:skipped];
 		}
 		
 		// Process Markdown link's address if it's a known object.
 		NSRange addressRange = NSMakeRange(0, [markdownData->address length]);
-		NSString *markdownAddress = [self stringByConvertingSimpleCrossReferencesInString:markdownData->address searchRange:addressRange insideMarkdown:YES];
+		GBProcessingFlag markdownFlags = flags | GBProcessingFlagInsideMarkdownLink;
+		NSString *markdownAddress = [self stringByConvertingSimpleCrossReferencesInString:markdownData->address searchRange:addressRange flags:markdownFlags];
 		[result appendFormat:markdownData->description, markdownAddress];
 		
 		// Process the remaining string or exit if we're done.
@@ -478,17 +477,18 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 	
 	// Process remaining text for simple links if necessary.
 	if (searchRange.location < [string length]) {
-		NSString *remaining = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:searchRange insideMarkdown:NO];
+		NSString *remaining = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:searchRange flags:flags];
 		[result appendString:remaining];
 	}
 	return result;
 }
 
-- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange insideMarkdown:(BOOL)markdown {
-	// Processes the given range of the given string for any "simple", Appledoc, cross reference and returns new string with all cross references converted to Markdown syntax. Markdown flag specifies whether we're handling string inside existing Markdown link; in such case we only test for link at the start of the string and return address only instead of the Markdown syntax.
+- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Processes the given range of the given string for any "simple", Appledoc, cross reference and returns new string with all cross references converted to Markdown syntax. GBInsideMarkdownLink flag specifies whether we're handling string inside existing Markdown link; in such case we only test for link at the start of the string and return address only instead of the Markdown syntax.
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSUInteger lastUsedLocation = searchRange.location;
+	BOOL markdown = (flags & GBProcessingFlagInsideMarkdownLink) > 0;
 	while (YES) {
 		// Find all cross references
 		GBCrossRefData urlData = [self dataForURLLinkInString:string searchRange:searchRange templated:YES];
@@ -559,6 +559,18 @@ static BOOL GBIsCrossRefValid(GBCrossRefData data) {
 		NSString *remainingText = [string substringFromIndex:lastUsedLocation];
 		[result appendString:remainingText];
 	}
+	return result;
+}
+
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
+	// Converts the given string into blockquote and optionally adds class name to convert to <div>.
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	if ([className length] > 0) [result appendFormat:@"> %%%@%%\n", className];
+	NSArray *lines = [string arrayOfLines];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		[result appendFormat:@"> %@", line];
+		if (idx < [lines count] - 1) [result appendString:@"\n"];
+	}];
 	return result;
 }
 

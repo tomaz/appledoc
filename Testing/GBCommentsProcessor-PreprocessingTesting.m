@@ -12,8 +12,8 @@
 #import "GBCommentsProcessor.h"
 
 @interface GBCommentsProcessor (PrivateAPI)
-- (NSString *)stringByPreprocessingString:(NSString *)string;
-- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string;
+- (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(NSUInteger)flags;
+- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(NSUInteger)flags;
 @end
 
 #pragma mark -
@@ -35,8 +35,8 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *"];
-	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*"];
+	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
+	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
 	// verify
 	assertThat(result1, is(@"**bold1** **bold text** ** bolder text **"));
 	assertThat(result2, is(@"**bold1** Middle **bold text**"));
@@ -46,8 +46,8 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByPreprocessingString:@"_bold1_ _bold text_ _ bolder text _"];
-	NSString *result2 = [processor stringByPreprocessingString:@"_bold1_ Middle _bold text_"];
+	NSString *result1 = [processor stringByPreprocessingString:@"_bold1_ _bold text_ _ bolder text _" withFlags:0];
+	NSString *result2 = [processor stringByPreprocessingString:@"_bold1_ Middle _bold text_" withFlags:0];
 	// verify
 	assertThat(result1, is(@"_bold1_ _bold text_ _ bolder text _"));
 	assertThat(result2, is(@"_bold1_ Middle _bold text_"));
@@ -57,7 +57,7 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result = [processor stringByPreprocessingString:@"_*text1*_ *_marked text_* _* text2 *_"];
+	NSString *result = [processor stringByPreprocessingString:@"_*text1*_ *_marked text_* _* text2 *_" withFlags:0];
 	// verify
 	assertThat(result, is(@"***text1*** ***marked text*** *** text2 ***"));
 }
@@ -66,7 +66,7 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result = [processor stringByPreprocessingString:@"`mono` ` monoer `"];
+	NSString *result = [processor stringByPreprocessingString:@"`mono` ` monoer `" withFlags:0];
 	// verify
 	assertThat(result, is(@"`mono` ` monoer `"));
 }
@@ -75,8 +75,8 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByPreprocessingString:@"__text1__ __ marked __"];
-	NSString *result2 = [processor stringByPreprocessingString:@"**text1** ** marked **"];
+	NSString *result1 = [processor stringByPreprocessingString:@"__text1__ __ marked __" withFlags:0];
+	NSString *result2 = [processor stringByPreprocessingString:@"**text1** ** marked **" withFlags:0];
 	// verify
 	assertThat(result1, is(@"**text1** ** marked **"));
 	assertThat(result2, is(@"**text1** ** marked **"));
@@ -86,12 +86,12 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByPreprocessingString:@"__*text1*__ __* marked *__"];
-	NSString *result2 = [processor stringByPreprocessingString:@"_**text1**_ _** marked **_"];
-	NSString *result3 = [processor stringByPreprocessingString:@"*__text1__* *__ marked __*"];
-	NSString *result4 = [processor stringByPreprocessingString:@"**_text1_** **_ marked _**"];
-	NSString *result5 = [processor stringByPreprocessingString:@"___text1___ ___ marked ___"];
-	NSString *result6 = [processor stringByPreprocessingString:@"***text1*** *** marked ***"];
+	NSString *result1 = [processor stringByPreprocessingString:@"__*text1*__ __* marked *__" withFlags:0];
+	NSString *result2 = [processor stringByPreprocessingString:@"_**text1**_ _** marked **_" withFlags:0];
+	NSString *result3 = [processor stringByPreprocessingString:@"*__text1__* *__ marked __*" withFlags:0];
+	NSString *result4 = [processor stringByPreprocessingString:@"**_text1_** **_ marked _**" withFlags:0];
+	NSString *result5 = [processor stringByPreprocessingString:@"___text1___ ___ marked ___" withFlags:0];
+	NSString *result6 = [processor stringByPreprocessingString:@"***text1*** *** marked ***" withFlags:0];
 	// verify
 	assertThat(result1, is(@"***text1*** *** marked ***"));
 	assertThat(result2, is(@"***text1*** *** marked ***"));
@@ -108,10 +108,10 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBClassData classDataWithName:@"Class"], nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Class](Classes/Class.html)"));
 	assertThat(result2, is(@"[Class](Classes/Class.html)"));
@@ -124,10 +124,10 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBCategoryData categoryDataWithName:@"Category" className:@"Class"], nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category)"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class(Category)>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Class(Unknown)"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Class(Unknown)>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category)" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Class(Category)>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Class(Unknown)" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Class(Unknown)>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html)"));
 	assertThat(result2, is(@"[Class(Category)](Categories/Class(Category).html)"));
@@ -140,10 +140,10 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBProtocolData protocolDataWithName:@"Protocol"], nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Protocol>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<Protocol>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Unknown" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Unknown>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Protocol](Protocols/Protocol.html)"));
 	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html)"));
@@ -159,12 +159,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-method:"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-method:>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-method:" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-method:>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method:](#//api/name/method:)"));
 	assertThat(result2, is(@"[method:](#//api/name/method:)"));
@@ -180,12 +180,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"+method:"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<+method:>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method:>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"+method:" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<+method:>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method:](#//api/name/method:)"));
 	assertThat(result2, is(@"[method:](#//api/name/method:)"));
@@ -201,12 +201,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"method:"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<method:>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another>"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"method" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<method>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<method:>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another>" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method](#//api/name/method)"));
 	assertThat(result2, is(@"[method](#//api/name/method)"));
@@ -226,12 +226,12 @@
 	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
 	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
 	// execute
-	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:"];
-	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>"];
-	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:"];
-	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:"];
-	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>"];
-	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:"];
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>" withFlags:0];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:" withFlags:0];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:" withFlags:0];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>" withFlags:0];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
 	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
@@ -251,12 +251,12 @@
 	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
 	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
 	// execute
-	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:"];
-	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>"];
-	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:"];
-	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:"];
-	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>"];
-	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:"];
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1:>" withFlags:0];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2:" withFlags:0];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2:" withFlags:0];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>" withFlags:0];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
 	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
@@ -276,12 +276,12 @@
 	GBCommentsProcessor *processor1 = [self processorWithStore:store context:category];
 	GBCommentsProcessor *processor2 = [self processorWithStore:store context:protocol];
 	// execute
-	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1"];
-	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1>"];
-	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2"];
-	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2"];
-	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2>"];
-	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1"];
+	NSString *result1 = [processor1 stringByConvertingCrossReferencesInString:@"method1" withFlags:0];
+	NSString *result2 = [processor1 stringByConvertingCrossReferencesInString:@"<method1>" withFlags:0];
+	NSString *result3 = [processor1 stringByConvertingCrossReferencesInString:@"method2" withFlags:0];
+	NSString *result4 = [processor2 stringByConvertingCrossReferencesInString:@"method2" withFlags:0];
+	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2>" withFlags:0];
+	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[method1](#//api/name/method1)"));
 	assertThat(result2, is(@"[method1](#//api/name/method1)"));
@@ -300,12 +300,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class1, class2, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class2];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class1 method:]"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class1 method:]>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class1 method:]"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class1 method:]>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class1 method:]" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class1 method:]>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class1 method:]" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class1 method:]>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
 	assertThat(result2, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
@@ -322,12 +322,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class(Category) method:]"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class(Category) method:]>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class(Category) method:]"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class(Category) method:]>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class(Unknown) method:]"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[Unknown(Category) method:]"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class(Category) method:]" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Class(Category) method:]>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Class(Category) method:]" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Class(Category) method:]>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class(Unknown) method:]" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[Unknown(Category) method:]" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
 	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
@@ -344,12 +344,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:protocol, class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store context:class];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol method:]"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Protocol method:]>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Protocol method:]"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Protocol method:]>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol method:]" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<[Protocol method:]>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"-[Protocol method:]" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<-[Protocol method:]>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
 	assertThat(result2, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
@@ -365,12 +365,12 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<http://gentlebytes.com>"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<https://gentlebytes.com>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com https://gentlebytes.com"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com http://gentlebytes.com"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<http://gentlebytes.com>" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<https://gentlebytes.com>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com https://gentlebytes.com" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com http://gentlebytes.com" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[http://gentlebytes.com](http://gentlebytes.com)"));
 	assertThat(result2, is(@"[https://gentlebytes.com](https://gentlebytes.com)"));
@@ -384,12 +384,12 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<ftp://gentlebytes.com>"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<ftps://gentlebytes.com>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com ftps://gentlebytes.com"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com ftp://gentlebytes.com"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<ftp://gentlebytes.com>" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<ftps://gentlebytes.com>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com ftps://gentlebytes.com" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com ftp://gentlebytes.com" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[ftp://gentlebytes.com](ftp://gentlebytes.com)"));
 	assertThat(result2, is(@"[ftps://gentlebytes.com](ftps://gentlebytes.com)"));
@@ -403,12 +403,12 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<news://gentlebytes.com>"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<rss://gentlebytes.com>"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com news://gentlebytes.com"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com rss://gentlebytes.com"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"<news://gentlebytes.com>" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<rss://gentlebytes.com>" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com news://gentlebytes.com" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com rss://gentlebytes.com" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[news://gentlebytes.com](news://gentlebytes.com)"));
 	assertThat(result2, is(@"[rss://gentlebytes.com](rss://gentlebytes.com)"));
@@ -422,9 +422,9 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"file://gentlebytes.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<file://gentlebytes.com>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"file://first file://second"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"file://gentlebytes.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<file://gentlebytes.com>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"file://first file://second" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[file://gentlebytes.com](file://gentlebytes.com)"));
 	assertThat(result2, is(@"[file://gentlebytes.com](file://gentlebytes.com)"));
@@ -435,9 +435,9 @@
 	// setup
 	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"mailto:appledoc@gentlebytes.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<mailto:appledoc@gentlebytes.com>"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"mailto:a@b.com mailto:c@d.com"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"mailto:appledoc@gentlebytes.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<mailto:appledoc@gentlebytes.com>" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"mailto:a@b.com mailto:c@d.com" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[appledoc@gentlebytes.com](mailto:appledoc@gentlebytes.com)"));
 	assertThat(result2, is(@"[appledoc@gentlebytes.com](mailto:appledoc@gentlebytes.com)"));
@@ -453,8 +453,8 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:protocol, class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class Protocol"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Class"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class Protocol" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Class" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Class](Classes/Class.html) [Protocol](Protocols/Protocol.html)"));
 	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Class](Classes/Class.html)"));
@@ -467,8 +467,8 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category) Class"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Class Class(Category)"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category) Class" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Class Class(Category)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html) [Class](Classes/Class.html)"));
 	assertThat(result2, is(@"[Class](Classes/Class.html) [Class(Category)](Categories/Class(Category).html)"));
@@ -481,8 +481,8 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:category, protocol, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol(Category) Protocol"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Protocol(Category)"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol(Category) Protocol" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Protocol(Category)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Protocol(Category)](Categories/Protocol(Category).html) [Protocol](Protocols/Protocol.html)"));
 	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Protocol(Category)](Categories/Protocol(Category).html)"));
@@ -494,8 +494,8 @@
 	// setup
 	GBCommentsProcessor *processor = [self processorWithStore:nil];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](something)"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[multi word](more words)"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](something)" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[multi word](more words)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](something)"));
 	assertThat(result2, is(@"[multi word](more words)"));
@@ -505,13 +505,13 @@
 	// setup
 	GBCommentsProcessor *processor = [self processorWithStore:nil];
 	// execute
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](http://ab.com)"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](https://ab.com)"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](ftp://ab.com)"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text](ftps://ab.com)"];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[text](news://ab.com)"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[text](rss://ab.com)"];
-	NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[text](mailto:a@b.com)"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](http://ab.com)" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](https://ab.com)" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](ftp://ab.com)" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text](ftps://ab.com)" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[text](news://ab.com)" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[text](rss://ab.com)" withFlags:0];
+	NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[text](mailto:a@b.com)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](http://ab.com)"));
 	assertThat(result2, is(@"[text](https://ab.com)"));
@@ -530,9 +530,9 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// setup
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](Class)"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class(Category))"];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](Protocol)"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](Class)" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class(Category))" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](Protocol)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](Classes/Class.html)"));
 	assertThat(result2, is(@"[text](Categories/Class(Category).html)"));
@@ -545,8 +545,8 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// setup
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol](Class)"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class \"Protocol\")"];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol](Class)" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class \"Protocol\")" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[Protocol](Classes/Class.html)"));
 	assertThat(result2, is(@"[text](Classes/Class.html \"Protocol\")"));
@@ -558,12 +558,12 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// setup
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com"];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com \"title\""];
-	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class"];
-	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class \"title\""];
-	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class]: something"];
-	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[1]: something \"Class\""];
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com" withFlags:0];
+	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[1]: http://ab.com \"title\"" withFlags:0];
+	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[1]: Class \"title\"" withFlags:0];
+	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class]: something" withFlags:0];
+	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[1]: something \"Class\"" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[1]: http://ab.com"));
 	assertThat(result2, is(@"[1]: http://ab.com \"title\""));
