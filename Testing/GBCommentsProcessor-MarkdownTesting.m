@@ -17,6 +17,7 @@
 - (GBStore *)defaultStore;
 - (GBStore *)storeWithDefaultObjects;
 - (void)assertComment:(GBComment *)comment matchesLongDescMarkdown:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
+- (void)assertComponents:(GBCommentComponentsList *)components matchMarkdown:(NSString *)first, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end
 
@@ -59,7 +60,7 @@
 	[self assertComment:comment matchesLongDescMarkdown:@"Some text", @"> %bug%\n> Another paragraph\n> \n> And another", nil];
 }
 
-#pragma mark Cross references handling
+#pragma mark Inline cross references handling
 
 - (void)testProcessCommentWithContextStore_markdown_shouldKeepInlineTopLevelObjectsCrossRefsTexts {
 	// setup
@@ -116,6 +117,63 @@
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
+#pragma mark Related items cross references handling
+
+- (void)testProcessCommentWithContextStore_markdown_shouldKeepRelatedItemsTopLevelObjectsCrossRefsTexts {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see Class"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see Class(Category)"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see Protocol"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"@see Document"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	// verify
+	[self assertComponents:comment1.relatedItems matchMarkdown:@"[Class](Classes/Class.html)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[Class(Category)](Categories/Class(Category).html)", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"[Protocol](Protocols/Protocol.html)", nil];
+	[self assertComponents:comment4.relatedItems matchMarkdown:@"[Document](docs/Document.html)", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldUsePrefixForRelatedItemsLocalMemberCrossRefsTexts {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see instanceMethod:"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see classMethod:"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see value"];
+	// execute
+	id context = [store.classes anyObject];
+	[processor processComment:comment1 withContext:context store:store];
+	[processor processComment:comment2 withContext:context store:store];
+	[processor processComment:comment3 withContext:context store:store];
+	// verify
+	[self assertComponents:comment1.relatedItems matchMarkdown:@"[- instanceMethod:](#//api/name/instanceMethod:)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[+ classMethod:](#//api/name/classMethod:)", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"[@property value](#//api/name/value)", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldKeepRelatedItemsRemoteMemberCrossRefsTexts {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see [Class instanceMethod:]"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see [Class classMethod:]"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see [Class value]"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify
+	[self assertComponents:comment1.relatedItems matchMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//api/name/instanceMethod:)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[[Class classMethod:]](Classes/Class.html#//api/name/classMethod:)", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)defaultProcessor {
@@ -151,6 +209,23 @@
 	assertThatInteger([comment.longDescription.components count], equalToInteger([expectations count]));
 	for (NSUInteger i=0; i<[expectations count]; i++) {
 		GBCommentComponent *component = [comment.longDescription.components objectAtIndex:i];
+		NSString *expected = [expectations objectAtIndex:i];
+		assertThat(component.markdownValue, is(expected));
+	}
+}
+
+- (void)assertComponents:(GBCommentComponentsList *)components matchMarkdown:(NSString *)first, ... {
+	NSMutableArray *expectations = [NSMutableArray array];
+	va_list args;
+	va_start(args, first);
+	for (NSString *arg=first; arg != nil; arg=va_arg(args, NSString*)) {
+		[expectations addObject:arg];
+	}
+	va_end(args);
+	
+	assertThatInteger([components.components count], equalToInteger([expectations count]));
+	for (NSUInteger i=0; i<[expectations count]; i++) {
+		GBCommentComponent *component = [components.components objectAtIndex:i];
 		NSString *expected = [expectations objectAtIndex:i];
 		assertThat(component.markdownValue, is(expected));
 	}
