@@ -544,16 +544,19 @@
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
-	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, nil];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"document.ext"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, document, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// setup
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](Class)" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class(Category))" withFlags:0];
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](Protocol)" withFlags:0];
+	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text](document)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](Classes/Class.html)"));
 	assertThat(result2, is(@"[text](Categories/Class(Category).html)"));
 	assertThat(result3, is(@"[text](Protocols/Protocol.html)"));
+	assertThat(result4, is(@"[text](docs/document.html)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {
@@ -562,11 +565,9 @@
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
 	GBCommentsProcessor *processor = [self processorWithStore:store];
 	// setup
-	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Protocol](Class)" withFlags:0];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text](Class \"Protocol\")" withFlags:0];
+	NSString *result = [processor stringByConvertingCrossReferencesInString:@"[Class](Class \"Class\")" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[Protocol](Classes/Class.html)"));
-	assertThat(result2, is(@"[text](Classes/Class.html \"Protocol\")"));
+	assertThat(result, is(@"[Class](Classes/Class.html \"Class\")"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldHandleMarkdownLinkReferences {
