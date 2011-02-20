@@ -74,6 +74,12 @@
  */
 @property (retain) GBCommentComponentsList *longDescription;
 
+/** The list to related items.
+ 
+ This is simply a list of `GBCommentComponent`s, each only containing a cross reference to another item.
+ */
+@property (retain) GBCommentComponentsList *relatedItems;
+
 /** All registeres method parameters, only applicable for methods, empty list is used otherwise.
  
  @see methodExceptions

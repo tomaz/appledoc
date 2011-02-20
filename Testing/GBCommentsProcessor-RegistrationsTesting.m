@@ -237,6 +237,83 @@
 	[self assertCommentComponents:comment2.methodResult matchesStringValues:@"Description1\nLine2\n\nParagraph2", nil];
 }
 
+#pragma mark Common directives testing
+
+- (void)testProcessCommentWithContextStore_directives_shouldRegisterRelatedItemsForKnownTopLevelObjects {
+	// setup
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, nil];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see Class"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see Class(Category)"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see Protocol"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"@see Unknown"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertCommentComponents:comment1.relatedItems matchesStringValues:@"Class", nil];
+	[self assertCommentComponents:comment2.relatedItems matchesStringValues:@"Class(Category)", nil];
+	[self assertCommentComponents:comment3.relatedItems matchesStringValues:@"Protocol", nil];
+	[self assertCommentComponents:comment4.relatedItems matchesStringValues:nil];
+}
+
+- (void)testProcessCommentWithContextStore_directives_shouldRegisterRelatedItemsForKnownDocuments {
+	// setup
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"Document1.html"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"Document2.html"];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:document1, document2, nil];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see Document1"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see Document2"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see Unknown"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertCommentComponents:comment1.relatedItems matchesStringValues:@"Document1", nil];
+	[self assertCommentComponents:comment2.relatedItems matchesStringValues:@"Document2", nil];
+	[self assertCommentComponents:comment3.relatedItems matchesStringValues:nil];
+}
+
+- (void)testProcessCommentWithContextStore_directives_shouldRegisterRelatedItemsForKnownLocalMembers {
+	// setup
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see method:"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see unknown:"];
+	// execute
+	[processor processComment:comment1 withContext:class store:store];
+	[processor processComment:comment2 withContext:class store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertCommentComponents:comment1.relatedItems matchesStringValues:@"method:", nil];
+	[self assertCommentComponents:comment2.relatedItems matchesStringValues:nil];
+}
+
+- (void)testProcessCommentWithContextStore_directives_shouldRegisterRelatedItemsForKnownRemoteMembers {
+	// setup
+	GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil], nil];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@see [Class method:]"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@see [Class unknown:]"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see [Unknown method:]"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertCommentComponents:comment1.relatedItems matchesStringValues:@"[Class method:]", nil];
+	[self assertCommentComponents:comment2.relatedItems matchesStringValues:nil];
+	[self assertCommentComponents:comment3.relatedItems matchesStringValues:nil];
+}
+
 #pragma mark Combinations testing
 
 - (void)testProcessCommentWithContextStore_combinations_shouldRegisterMethodDescriptionBlock {

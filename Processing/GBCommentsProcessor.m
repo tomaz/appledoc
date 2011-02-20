@@ -353,7 +353,21 @@ typedef NSUInteger GBProcessingFlag;
 	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
-	// Convert to markdown and register everything. We always use the whole text for directive.
+	// Convert to markdown and register everything. We use strict links mode. If the link is note recognized, warn and exit.
+	NSString *markdown = [self stringByConvertingCrossReferencesInString:reference withFlags:GBProcessingFlagStrictLinks];
+	if ([markdown isEqualToString:reference]) {
+		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
+		return YES;
+	}
+	
+	// If known link is found, register component, otherwise warn and exit.
+	if ([markdown isEqualToString:reference]) {
+		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
+		return YES;
+	}
+	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:reference sourceInfo:self.currentSourceInfo];
+	component.markdownValue = markdown;
+	[self.currentComment.relatedItems registerComponent:component];
 	return YES;
 }
 
@@ -498,14 +512,15 @@ typedef NSUInteger GBProcessingFlag;
 	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSUInteger lastUsedLocation = searchRange.location;
 	BOOL markdown = (flags & GBProcessingFlagInsideMarkdownLink) > 0;
+	BOOL strict = (flags & GBProcessingFlagStrictLinks) > 0;
 	while (YES) {
 		// Find all cross references
-		GBCrossRefData urlData = [self dataForURLLinkInString:string searchRange:searchRange templated:YES];
-		GBCrossRefData objectData = [self dataForClassOrProtocolLinkInString:string searchRange:searchRange templated:YES];
-		GBCrossRefData categoryData = [self dataForCategoryLinkInString:string searchRange:searchRange templated:YES];
-		GBCrossRefData localMemberData = [self dataForLocalMemberLinkInString:string searchRange:searchRange templated:YES];
-		GBCrossRefData remoteMemberData = [self dataForRemoteMemberLinkInString:string searchRange:searchRange templated:YES];
-		GBCrossRefData documentData = [self dataForDocumentLinkInString:string searchRange:searchRange templated:YES];
+		GBCrossRefData urlData = [self dataForURLLinkInString:string searchRange:searchRange templated:!strict];
+		GBCrossRefData objectData = [self dataForClassOrProtocolLinkInString:string searchRange:searchRange templated:!strict];
+		GBCrossRefData categoryData = [self dataForCategoryLinkInString:string searchRange:searchRange templated:!strict];
+		GBCrossRefData localMemberData = [self dataForLocalMemberLinkInString:string searchRange:searchRange templated:!strict];
+		GBCrossRefData remoteMemberData = [self dataForRemoteMemberLinkInString:string searchRange:searchRange templated:!strict];
+		GBCrossRefData documentData = [self dataForDocumentLinkInString:string searchRange:searchRange templated:!strict];
 		
 		// If we find class or protocol link at the same location as category, ignore class/protocol. This prevents marking text up to open parenthesis being converted to a class/protocol where in fact it's category. The same goes for remote member data!
 		if (GBIsCrossRefInside(objectData, categoryData)) objectData = GBEmptyCrossRefData();
