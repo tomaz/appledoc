@@ -26,6 +26,7 @@
 #pragma mark HTML processing
 
 - (NSString *)htmlValue {
+	if (!self.settings) return self.markdownValue;
 	if (_htmlValue) return _htmlValue;
 	_htmlValue = self.markdownValue;
 	return _htmlValue;
@@ -36,5 +37,6 @@
 @synthesize stringValue;
 @synthesize markdownValue;
 @synthesize sourceInfo;
+@synthesize settings;
 
 @end

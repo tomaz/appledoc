@@ -69,7 +69,8 @@ typedef NSUInteger GBProcessingFlag;
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
-- (GBCommentComponent *)commentComponentFromString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (GBCommentComponent *)commentComponentWithStringValue:(NSString *)string;
 - (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
@@ -211,7 +212,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([blockString length] == 0) return;
 	
 	// Process the string and register long description component.
-	GBCommentComponent *component = [self commentComponentFromString:blockString withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
 	[self.currentComment.longDescription registerComponent:component];
 }
 
@@ -228,8 +229,7 @@ typedef NSUInteger GBProcessingFlag;
 	GBLogDebug(@"- Registering short description from %@...", [stringValue normalizedDescription]);
 	
 	// Convert to markdown and register everything.
-	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:stringValue];
-	component.markdownValue = [self stringByPreprocessingString:stringValue withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:stringValue withFlags:0];
 	self.currentComment.shortDescription = component;
 }
 
@@ -266,7 +266,7 @@ typedef NSUInteger GBProcessingFlag;
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	component.stringValue = string;
 	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"warning"];
 	[self.currentComment.longDescription registerComponent:component];
@@ -284,7 +284,7 @@ typedef NSUInteger GBProcessingFlag;
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
-	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	component.stringValue = string;
 	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"bug"];
 	[self.currentComment.longDescription registerComponent:component];
@@ -304,7 +304,7 @@ typedef NSUInteger GBProcessingFlag;
 
 	// Prepare object representation from the description and register the parameter to the comment.
 	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
-	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	[argument.argumentDescription registerComponent:component];
 	[self.currentComment.methodParameters addObject:argument];
 	return YES;
@@ -323,7 +323,7 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Prepare object representation from the description and register the exception to the comment.
 	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
-	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	[argument.argumentDescription registerComponent:component];
 	[self.currentComment.methodExceptions addObject:argument];
 	return YES;
@@ -340,7 +340,7 @@ typedef NSUInteger GBProcessingFlag;
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
-	GBCommentComponent *component = [self commentComponentFromString:description withFlags:0];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	[self.currentComment.methodResult registerComponent:component];
 	return YES;
 }
@@ -367,7 +367,7 @@ typedef NSUInteger GBProcessingFlag;
 		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
 		return YES;
 	}
-	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:reference sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *component = [self commentComponentWithStringValue:reference];
 	component.markdownValue = markdown;
 	[self.currentComment.relatedItems registerComponent:component];
 	return YES;
@@ -385,11 +385,18 @@ typedef NSUInteger GBProcessingFlag;
 
 #pragma mark Text processing methods
 
-- (GBCommentComponent *)commentComponentFromString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+- (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values. Flags specify various processing directives that affect how processing is handled.
 	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
-	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *result = [self commentComponentWithStringValue:string];
 	result.markdownValue = [self stringByPreprocessingString:string withFlags:flags];
+	return result;
+}
+
+- (GBCommentComponent *)commentComponentWithStringValue:(NSString *)string {
+	// Creates a new GBCommentComponents, assigns the given string as it's string value and assigns settings and currentSourceInfo. This is an entry point for all comment components creations; it makes sure all data is registered. But it doesn't do any processing!
+	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
+	result.settings = self.settings;
 	return result;
 }
 

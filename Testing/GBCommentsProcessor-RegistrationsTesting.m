@@ -182,6 +182,51 @@
 	[self assertComment:comment3 matchesShortDesc:@"Prefix" longDesc:@"Prefix", nil];
 }
 
+- (void)testProcessCommentWithContextStore_descriptions_shouldAssignSettingsToAllCommentComponents {
+	// setup
+	id settings = [GBTestObjectsRegistry realSettingsProvider];
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:[GBClassData classDataWithName:@"Class"], nil];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
+	GBComment *comment = [GBComment commentWithStringValue:
+						  @"Short\n\n"
+						  @"Long\n\n"
+						  @"@warning Warning\n\n"
+						  @"@bug Bug\n\n"
+						  @"@param name Desc\n"
+						  @"@exception name Desc\n"
+						  @"@return Desc"
+						  @"@see Class"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	assertThat(comment.shortDescription.settings, is(settings));
+	assertThat(comment.shortDescription.sourceInfo, isNot(nil));
+	for (GBCommentComponent *c in comment.longDescription.components) {
+		assertThat(c.settings, is(settings));
+		assertThat(c.sourceInfo, isNot(nil));
+	}
+	for (GBCommentArgument *a in comment.methodParameters) {
+		for (GBCommentComponent *c in a.argumentDescription.components) {			
+			assertThat(c.settings, is(settings));
+			assertThat(c.sourceInfo, isNot(nil));
+		}
+	}
+	for (GBCommentArgument *a in comment.methodExceptions) {
+		for (GBCommentComponent *c in a.argumentDescription.components) {
+			assertThat(c.settings, is(settings));
+			assertThat(c.sourceInfo, isNot(nil));
+		}
+	}
+	for (GBCommentComponent *c in comment.methodResult.components) {
+		assertThat(c.settings, is(settings));
+		assertThat(c.sourceInfo, isNot(nil));
+	}
+	for (GBCommentComponent *c in comment.relatedItems.components) {
+		assertThat(c.settings, is(settings));
+		assertThat(c.sourceInfo, isNot(nil));
+	}
+}
+
 #pragma mark Method data testing
 
 - (void)testProcessCommentWithContextStore_methods_shouldRegisterAllParametersDescriptionsProperly {

@@ -76,11 +76,13 @@
 
 /** The list to related items.
  
- This is simply a list of `GBCommentComponent`s, each only containing a cross reference to another item.
+ This is simply a list of `GBCommentComponent`s, each one containing a cross reference to a single item.
  */
 @property (retain) GBCommentComponentsList *relatedItems;
 
-/** All registeres method parameters, only applicable for methods, empty list is used otherwise.
+/** All registered method parameters, only applicable for methods, empty list is used otherwise.
+ 
+ This is a list of `GBCommentArgument` objects.
  
  @see methodExceptions
  @see methodResult
@@ -88,6 +90,8 @@
 @property (retain) NSMutableArray *methodParameters;
 
 /** All registeres method exceptions, only applicable for methods, empty list if used otherwise.
+ 
+ This is a list of `GBCommentArgument` objects.
  
  @see methodParameters
  @see methodResult

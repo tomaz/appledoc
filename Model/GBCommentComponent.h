@@ -13,6 +13,8 @@
 /** Handles individual `GBComment` component.
  
  A comment component is basic building block for `GBComment`s. It's primary responsibility is storing representation suitable for Markdown processor. The reason for splitting comment text into components is to allow support for various output styles, such as `@warning` and `@bug`. These require slightly different preprocessing. This object is lightweight, it doesn't do any processing, just provides properties that hold the data, it's the job of higher level components to setup the data properly.
+ 
+ @warning *Important:* In order to get proper value of `htmlValue`, `GBApplicationSettingsProvider` instance must be assigned to `settings` before using `htmlValue`! This is handled during processing phase automatically at the time of creation of the component, so it works seamlesly. It's good to be aware of this fact though as it may lead to surprises later on.
  */
 @interface GBCommentComponent : NSObject {
 	@private
@@ -59,11 +61,21 @@
 /** Component's HTML value, derived by passing assigned `markdownValue` through Markdown processor.
  
  This value is derived when first used, the value is cached afterwards and cached value is returned from subsequent calls.
+ 
+ @warning *Important:* This value requires `settings` to be assigned! If settings are not assigned, the value or `markdownValue` is returned but is not cached, so that any subsequent assigning of settings would pick up proper html.
  */
 @property (readonly) NSString *htmlValue;
 
 /** Source file information.
  */
 @property (retain) GBSourceInfo *sourceInfo;
+
+///---------------------------------------------------------------------------------------
+/// @name Helper attributes
+///---------------------------------------------------------------------------------------
+
+/** Settings used for creating various values.
+ */
+@property (retain) id settings;
 
 @end
