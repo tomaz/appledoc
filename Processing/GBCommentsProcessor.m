@@ -679,26 +679,8 @@ typedef NSUInteger GBProcessingFlag;
 	GBMethodData *referencedObject = [[[self currentContext] methods] methodBySelector:selector];
 	if (!referencedObject) return result;
 	
-	// If we're creating link for related item, we should use method prefix.
-	if ((flags & GBProcessingFlagRelatedItem) > 0) {
-		NSString *prefix = nil;
-		switch (referencedObject.methodType) {
-			case GBMethodTypeInstance:
-				prefix = @"- ";
-				break;
-			case GBMethodTypeClass:
-				prefix = @"+ ";
-				break;
-			case GBMethodTypeProperty:
-				prefix = @"@property ";
-				break;
-			default:
-				GBLogWarn(@"Unknown method type for method %@ at %@!", referencedObject, self.currentSourceInfo);
-				prefix = @"";
-				break;				
-		}
-		selector = [NSString stringWithFormat:@"%@%@", prefix, selector];
-	}
+	// If we're creating link for related item, we should use method prefix.	
+	if ((flags & GBProcessingFlagRelatedItem) > 0 && self.settings.prefixLocalMembersInRelatedItemsList) selector = referencedObject.prefixedMethodSelector;
 
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];

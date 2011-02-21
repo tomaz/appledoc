@@ -76,9 +76,12 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
+		
 		self.mergeCategoriesToClasses = YES;
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
+		
+		self.prefixLocalMembersInRelatedItemsList = YES;
 
 		self.warnOnMissingOutputPathArgument = YES;
 		self.warnOnMissingCompanyIdentifier = YES;
@@ -451,6 +454,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize mergeCategoriesToClasses;
 @synthesize keepMergedCategoriesSections;
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
+
+@synthesize prefixLocalMembersInRelatedItemsList;
 
 @synthesize createHTML;
 @synthesize createDocSet;

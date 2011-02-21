@@ -278,6 +278,12 @@
  */
 @property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
 
+/** Indicates whteher local methods and properties cross references texts should be prefixed when used in related items list.
+ 
+ If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.
+ */
+@property (assign) BOOL prefixLocalMembersInRelatedItemsList;
+
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------

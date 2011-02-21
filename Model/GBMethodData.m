@@ -13,11 +13,15 @@
 @interface GBMethodData ()
 
 - (NSString *)selectorFromAssignedData;
+- (NSString *)prefixedSelectorFromAssignedData;
 - (NSString *)selectorDelimiterFromAssignedData;
 - (NSString *)prefixFromAssignedData;
 - (BOOL)formatTypesFromArray:(NSArray *)types toArray:(NSMutableArray *)array prefix:(NSString *)prefix suffix:(NSString *)suffix;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href;
+@property (readonly) NSString *methodSelectorDelimiter;
+@property (readonly) NSString *methodPrefix;
+
 
 @end
 
@@ -47,9 +51,10 @@
 		_methodAttributes = [attributes retain];
 		_methodResultTypes = [result retain];
 		_methodArguments = [arguments retain];
+		_methodPrefix = [[self prefixFromAssignedData] retain];
 		_methodSelectorDelimiter = [[self selectorDelimiterFromAssignedData] retain];
 		_methodSelector = [[self selectorFromAssignedData] retain];
-		_methodPrefix = [[self prefixFromAssignedData] retain];
+		_prefixedMethodSelector = [[self prefixedSelectorFromAssignedData] retain];
 	}
 	return self;
 }
@@ -168,6 +173,13 @@
 	return result;
 }
 
+- (NSString *)prefixedSelectorFromAssignedData {
+	NSMutableString *result = [NSMutableString string];
+	if ([self.methodPrefix length] > 0) [result appendFormat:@"%@ ", self.methodPrefix];
+	[result appendString:self.methodSelector];
+	return result;
+}
+
 - (NSString *)selectorDelimiterFromAssignedData {
 	if ([self.methodArguments count] > 1 || [[self.methodArguments lastObject] isTyped]) return @":";
 	return @"";
@@ -177,6 +189,7 @@
 	switch (self.methodType) {
 		case GBMethodTypeClass: return @"+";
 		case GBMethodTypeInstance: return @"-";
+		case GBMethodTypeProperty: return  @"@property";
 	}
 	return @"";
 }
@@ -243,6 +256,7 @@
 @synthesize methodSelector = _methodSelector;
 @synthesize methodSelectorDelimiter = _methodSelectorDelimiter;
 @synthesize methodPrefix = _methodPrefix;
+@synthesize prefixedMethodSelector = _prefixedMethodSelector;
 @synthesize isRequired;
 
 @end

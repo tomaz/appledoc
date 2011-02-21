@@ -271,7 +271,7 @@
 	if ([object isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)object;
 		[data setObject:method.formattedComponents forKey:@"formattedComponents"];
-		[data setObject:method.methodPrefix forKey:@"prefix"];
+//		[data setObject:method.methodPrefix forKey:@"prefix"];
 		if (method.comment) {
 //			if (method.comment.hasParameters) {
 //				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.parameters count]];
