@@ -334,10 +334,21 @@
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------
 
+/** Returns a new string containing HTML representation of the given Markdown string.
+ 
+ The resulting string is not escaped!
+ 
+ @param markdown Markdown source string to convert.
+ @return Returns converted string.
+ @see stringByEscapingHTML:
+ */
+- (NSString *)stringByConvertingMarkdown:(NSString *)markdown;
+
 /** Returns a new string by escaping the given HTML.
  
  @param string HTML string to escape.
  @return Returns escaped HTML string.
+ @see stringByConvertingMarkdown:
  */
 - (NSString *)stringByEscapingHTML:(NSString *)string;
 

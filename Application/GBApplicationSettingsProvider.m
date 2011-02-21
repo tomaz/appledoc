@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#include "mkdio.h"
 #import <objc/runtime.h>
 #import "RegexKitLite.h"
 #import "GBDataObjects.h"
@@ -146,6 +147,21 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 }
 
 #pragma mark Common HTML handling
+
+- (NSString *)stringByConvertingMarkdown:(NSString *)markdown {
+	NSString *result = nil;
+	MMIOT *document = mkd_string((char *)[markdown cStringUsingEncoding:NSUTF8StringEncoding], (int)[markdown length], 0);
+	mkd_compile(document, 0);
+	char *html = NULL;
+	int size = mkd_document(document, &html);
+	if (size <= 0) {
+		GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown normalizedDescription]);
+	} else {
+		result = [NSString stringWithCString:html encoding:NSASCIIStringEncoding];
+	}
+	mkd_cleanup(document);
+	return result;
+}
 
 - (NSString *)stringByEscapingHTML:(NSString *)string {
 	// Copied directly from GRMustache's GRMustacheVariableElement.m...

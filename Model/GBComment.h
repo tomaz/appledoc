@@ -115,6 +115,43 @@
  */
 @property (assign) BOOL isCopied;
 
+/** Specifies whether the comment has short description or not.
+ 
+ @see hasLongDescription
+ */
+@property (readonly) BOOL hasShortDescription;
+
+/** Specifies whether the comment has long description or not.
+ 
+ @see hasShortDescription
+ */
+@property (readonly) BOOL hasLongDescription;
+
+/** Specifies whether the `methodParameters` contains at least one object or not.
+ 
+ @see hasMethodExceptions
+ @see hasMethodResult
+ */
+@property (readonly) BOOL hasMethodParameters;
+
+/** Specifies whether the `methodExceptions` contains at least one object or not.
+ 
+ @see hasMethodParameters
+ @see hasMethodResult
+ */
+@property (readonly) BOOL hasMethodExceptions;
+
+/** Specifies whether the `methodResult` contains at least one object or not.
+ 
+ @see hasMethodParameters
+ @see hasMethodExceptions
+ */
+@property (readonly) BOOL hasMethodResult;
+
+/** Specifies whether the `relatedItems` contains at least one object or not.
+ */
+@property (readonly) BOOL hasRelatedItems;
+
 ///---------------------------------------------------------------------------------------
 /// @name Input values
 ///---------------------------------------------------------------------------------------

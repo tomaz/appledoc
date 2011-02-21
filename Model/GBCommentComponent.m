@@ -6,6 +6,7 @@
 //  Copyright 2011 Gentle Bytes. All rights reserved.
 //
 
+#import "GBApplicationSettingsProvider.h"
 #import "GBCommentComponent.h"
 
 @implementation GBCommentComponent
@@ -28,7 +29,7 @@
 - (NSString *)htmlValue {
 	if (!self.settings) return self.markdownValue;
 	if (_htmlValue) return _htmlValue;
-	_htmlValue = self.markdownValue;
+	_htmlValue = [self.settings stringByConvertingMarkdown:self.markdownValue];
 	return _htmlValue;
 }
 

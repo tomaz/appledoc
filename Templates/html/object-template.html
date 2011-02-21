@@ -46,11 +46,13 @@
 					{{/page/specifications}}
 					
 					{{#object/comment}}
+					{{#hasLongDescription}}
 					<div class="section section-overview">
 						<a title="{{strings/objectOverview/title}}" name="overview"></a>
 						<h2 class="subtitle subtitle-overview">{{strings/objectOverview/title}}</h2>
-						{{>GBComment}}
+						{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
 					</div>
+					{{/hasLongDescription}}
 					{{/object/comment}}
 					
 					{{#object/methods}}
@@ -209,69 +211,62 @@ Section Method
 	<h3 class="subsubtitle method-title">{{methodSelector}}</h3>
 	
 	{{#comment}}
-	{{#shortDescription}}
+	{{#hasShortDescription}}
 	<div class="method-subsection brief-description">
-		<p>{{>GBCommentParagraph}}</p>
+		{{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}
 	</div>		
-	{{/shortDescription}}
+	{{/hasShortDescription}}
 	
 	<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
 	
-	{{#hasParameters}}
+	{{#hasMethodParameters}}
 	<div class="method-subsection arguments-section parameters">
 		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
-		{{#parameters}}
+		{{#methodParameters}}
 		<dl class="argument-def parameter-def">
 			<dt><em>{{argumentName}}</em></dt>
-			<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+			<dd>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</dd>
 		</dl>
-		{{/parameters}}
+		{{/methodParameters}}
 	</div>
-	{{/hasParameters}}
+	{{/hasMethodParameters}}
 	
-	{{#result}}
+	{{#hasMethodResult}}
 	<div class="method-subsection return">
 		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
-		<p>{{>GBCommentParagraph}}</p>
+		{{#methodResult}}{{>GBCommentComponentsList}}{{/methodResult}}
 	</div>
-	{{/result}}
+	{{/hasMethodResult}}
 	
-	{{#hasDescriptionParagraphs}}
+	{{#hasLongDescription}}
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
-		{{#descriptionParagraphs}}
-		<p>{{>GBCommentParagraph}}</p>
-		{{/descriptionParagraphs}}
+		{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
 	</div>
-	{{/hasDescriptionParagraphs}}
+	{{/hasLongDescription}}
 	
-	{{#hasExceptions}}
+	{{#hasMethodExceptions}}
 	<div class="method-subsection arguments-section exceptions">
 		<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
-		{{#exceptions}}
+		{{#methodExceptions}}
 		<dl class="argument-def exception-def">
 			<dt><em>{{argumentName}}</em></dt>
-			<dd>{{#argumentDescription}}{{>GBCommentParagraph}}{{/argumentDescription}}</dd>
+			<dd>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</dd>
 		</dl>
-		{{/exceptions}}
+		{{/methodExceptions}}
 	</div>
-	{{/hasExceptions}}
+	{{/hasMethodExceptions}}
 	
-	{{#hasCrossrefs}}
+	{{#hasRelatedItems}}
 	<div class="method-subsection see-also-section">
 		<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
 		<ul>
-			{{#crossrefs}}
-			{{^member}}
-			<li><code><a href="{{&href}}">{{&stringValue}}</a></code></li>
-			{{/member}}
-			{{#member}}
-			<li><code><a href="{{&href}}">{{#member/isProperty}}&nbsp;&nbsp;@property{{/member/isProperty}}{{#member}}{{methodPrefix}}&nbsp;{{methodSelector}}{{/member}}</a></code></li>
-			{{/member}}
-			{{/crossrefs}}
+			{{#relatedItems/components}}
+			<li><code>{{>GBCommentComponent}}</code></li>
+			{{/relatedItems/components}}
 		</ul>
 	</div>
-	{{/hasCrossrefs}}
+	{{/hasRelatedItems}}
 	
 	{{#prefferedSourceInfo}}
 	<div class="method-subsection declared-in-section">
@@ -297,7 +292,7 @@ Section TaskMethod
 <li>
 	<span class="tooltip">
 		<code><a href="{{htmlLocalReference}}">{{>TaskSelector}}</a></code>
-		{{#comment/shortDescription}}<span class="tooltip">{{>GBCommentParagraph}}</span>{{/comment/shortDescription}}
+		{{#comment}}{{#hasShortDescription}}<span class="tooltip">{{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}</span>{{/hasShortDescription}}{{/comment}}
 	</span>
 	{{#isProperty}}<span class="task-item-suffix">{{strings/objectTasks/property}}</span>{{/isProperty}}
 	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}
@@ -309,32 +304,13 @@ Section TaskSelector
 EndSection
 
 
-Section GBComment
-{{#paragraphs}}
-<p>{{>GBCommentParagraph}}</p>
-{{/paragraphs}}
+Section GBCommentComponentsList
+{{#components}}{{>GBCommentComponent}}{{/components}}
 EndSection
 
-Section GBCommentParagraph
-{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
+Section GBCommentComponent
+{{&htmlValue}}
 EndSection
-
-Section GBParagraphItem
-{{#isTextItem}}{{&stringValue}}{{/isTextItem}}{{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{&href}}">{{&stringValue}}</a>{{/isLinkItem}}
-EndSection
-
-Section GBParagraphListItem
-{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
-EndSection
-
-Section GBParagraphSpecialItem
-{{#specialItemDescription}}{{>GBCommentParagraph}}{{/specialItemDescription}}
-EndSection
-
-Section GBParagraphDecoratorItem
-{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
-EndSection
-
 
 Section ObjectSpecification
 <tr>
@@ -375,14 +351,14 @@ Section JumpTo
 	{{#hasClassMethods}}
 	<option value="class_methods">{{strings/objectMethods/classMethodsTitle}}</option>
 	{{#classMethods}}
-	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{methodPrefix}}&nbsp;{{methodSelector}}</option>
+	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
 	{{/classMethods}}
 	{{/hasClassMethods}}
 	
 	{{#hasInstanceMethods}}
 	<option value="instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</option>
 	{{#instanceMethods}}
-	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{methodPrefix}}&nbsp;{{methodSelector}}</option>
+	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
 	{{/instanceMethods}}
 	{{/hasInstanceMethods}}
 	{{/object/methods}}

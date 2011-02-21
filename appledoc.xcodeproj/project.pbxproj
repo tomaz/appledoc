@@ -92,6 +92,8 @@
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
+		7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
+		7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
 		7359B149129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14A129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14B129A5A0700F67AD1 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B123129A5A0600F67AD1 /* GRMustache.m */; };
@@ -246,6 +248,8 @@
 		7340F02711FCC63100E712A4 /* NSObject+GBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GBObject.m"; sourceTree = "<group>"; };
 		73473D2F12A38B730011336C /* GBHTMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBHTMLOutputGenerator.h; sourceTree = "<group>"; };
 		73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBHTMLOutputGenerator.m; sourceTree = "<group>"; };
+		7355E12D1312736D00B9C000 /* libmarkdown.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmarkdown.a; sourceTree = "<group>"; };
+		7355E131131273A000B9C000 /* mkdio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkdio.h; sourceTree = "<group>"; };
 		7359B11F129A5A0600F67AD1 /* GRBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRBoolean.h; path = GRMustache/GRBoolean.h; sourceTree = "<group>"; };
 		7359B120129A5A0600F67AD1 /* GRBoolean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRBoolean.m; path = GRMustache/GRBoolean.m; sourceTree = "<group>"; };
 		7359B121129A5A0600F67AD1 /* GRMustache_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRMustache_private.h; path = GRMustache/GRMustache_private.h; sourceTree = "<group>"; };
@@ -497,6 +501,7 @@
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
 				73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
+				7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -508,6 +513,7 @@
 				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 				73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
+				7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -534,7 +540,9 @@
 			children = (
 				73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */,
 				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
+				7355E1301312737600B9C000 /* Discount */,
 				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
+				7355E12D1312736D00B9C000 /* libmarkdown.a */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				73D8E98911FCC97100966C4A /* AppKit.framework */,
 				73D8E98B11FCC97100966C4A /* Cocoa.framework */,
@@ -575,6 +583,14 @@
 				73FC6DFE11FCD2D300AAD0B9 /* Bundle */,
 			);
 			path = Testing;
+			sourceTree = "<group>";
+		};
+		7355E1301312737600B9C000 /* Discount */ = {
+			isa = PBXGroup;
+			children = (
+				7355E131131273A000B9C000 /* mkdio.h */,
+			);
+			path = Discount;
 			sourceTree = "<group>";
 		};
 		7359B11E129A59EC00F67AD1 /* GRMustache */ = {

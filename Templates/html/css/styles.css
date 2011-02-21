@@ -29,6 +29,10 @@ li {
 	margin-bottom: 10px;
 }
 
+p:first-child {
+	margin-top: 0.5em;
+} 
+
 a {
 	text-decoration: none;
 	color: #36C;
@@ -363,14 +367,14 @@ li#jumpto_button select {
 	border: 1px solid #5088C5;
 	background-color: #F0F3F7;
 	margin-bottom: 0.5em;
-	padding: 0.3em 0.8em;
+	padding: 0em 0.8em;
 }
 
 .bug {
 	border: 1px solid #000;
 	background-color: #ffffcc;
 	margin-bottom: 0.5em;
-	padding: 0.3em 0.8em;
+	padding: 0em 0.8em;
 }
 
 /* @end */
@@ -435,6 +439,10 @@ span.tooltip span.tooltip {
 	text-align: left;
 }
 
+span.tooltip span.tooltip p {
+	margin: 0.1em 0.3em;
+}
+
 span.tooltip:hover span.tooltip {
 	display: block;
 	position: absolute;
@@ -494,6 +502,11 @@ span.tooltip:hover span.tooltip {
 
 .see-also-section li {
 	margin-bottom: 3px;
+}
+
+.see-also-section p {
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 .declared-in-ref {

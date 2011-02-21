@@ -48,6 +48,30 @@
 
 #pragma mark Properties
 
+- (BOOL)hasShortDescription {
+	return self.shortDescription != nil;
+}
+
+- (BOOL)hasLongDescription {
+	return [self.longDescription.components count] > 0;
+}
+
+- (BOOL)hasMethodParameters {
+	return [self.methodParameters count] > 0;
+}
+
+- (BOOL)hasMethodExceptions {
+	return [self.methodExceptions count] > 0;
+}
+
+- (BOOL)hasMethodResult {
+	return [self.methodResult.components count] > 0;
+}
+
+- (BOOL)hasRelatedItems {
+	return [self.relatedItems.components count] > 0;
+}
+
 @synthesize isCopied;
 @synthesize sourceInfo;
 @synthesize stringValue;
