@@ -16,7 +16,7 @@
 			{{>Abstract}}
 			{{>DeclaredIn}}			
 			{{>RelatedTokens}}
-			<Declaration type="html"><pre>{{>MethodDeclaration}}</pre></Declaration>
+			<Declaration>{{>MethodDeclaration}}</Declaration>
 			{{#hasParameters}}<Parameters>
 				{{#parameters}}<Parameter>
 					<Name>{{name}}</Name>
@@ -52,7 +52,7 @@ Section Abstract
 EndSection
 
 Section MethodDeclaration
-{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{&href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
+{{#formattedComponents}}{{value}}{{/formattedComponents}}
 EndSection
 
 Section GBCommentComponentsList
