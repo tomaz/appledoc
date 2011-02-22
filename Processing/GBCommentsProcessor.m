@@ -548,6 +548,7 @@ typedef NSUInteger GBProcessingFlag;
 			if (searchRange.location >= [string length] - 1) break;
 			searchRange.location++;
 			searchRange.length--;
+			if (searchRange.length == 0) break;
 			continue;
 		}
 		
