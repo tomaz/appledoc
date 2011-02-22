@@ -410,6 +410,25 @@
 	assertThat([settings templateFilenameForOutputPath:@"path/file-template"], is(@"path/file-template"));
 	assertThat([settings templateFilenameForOutputPath:@"path/file-template.html"], is(@"path/file-template.html"));
 }
+
+#pragma mark Text conversion methods
+
+- (void)testStringByConvertingToText_shouldConvertMarkdownReferences {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"simple text"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"[description](address \"title\")"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"prefix [description](address) suffix"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"[description1](address) [description2](address) [description3](address)"];
+	// verify
+	assertThat(result1, is(@"simple text"));
+	assertThat(result2, is(@"description"));
+	assertThat(result3, is(@"description"));
+	assertThat(result4, is(@"prefix description suffix"));
+	assertThat(result5, is(@"description1 description2 description3"));
+}
 						  
 #pragma mark Private accessor helpers
 

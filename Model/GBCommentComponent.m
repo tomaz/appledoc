@@ -34,9 +34,9 @@
 }
 
 - (NSString *)textValue {
-	if (!self.settings) return self.stringValue;
+	if (!self.settings) return self.markdownValue;
 	if (_textValue) return _textValue;
-	_textValue = [self.settings stringByConvertingMarkdownToText:self.stringValue];
+	_textValue = [self.settings stringByConvertingMarkdownToText:self.markdownValue];
 	return _textValue;
 }
 

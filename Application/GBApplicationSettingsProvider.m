@@ -164,7 +164,32 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 }
 
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
-	return markdown;
+	NSRange searchRange = NSMakeRange(0, [markdown length]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[markdown length]];
+	
+	while (YES) {
+		NSArray *linkCaptures = [markdown captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex range:searchRange];
+		if ([linkCaptures count] == 0) break;
+		
+		NSString *description = [linkCaptures objectAtIndex:1];
+		NSRange range = [markdown rangeOfString:[linkCaptures objectAtIndex:0] options:0 range:searchRange];		
+		if (range.location > searchRange.location) {
+			NSRange skippedRange = NSMakeRange(searchRange.location, range.location - searchRange.location);
+			NSString *skipped = [markdown substringWithRange:skippedRange];
+			[result appendString:skipped];
+		}
+		
+		[result appendString:description];
+		searchRange.location = range.location + range.length;
+		searchRange.length = [markdown length] - searchRange.location;
+		if (searchRange.location >= [markdown length]) break;
+	}
+	
+	if (searchRange.location < [markdown length] - 1) {
+		NSString *remaining = [markdown substringFromIndex:searchRange.location];
+		[result appendString:remaining];
+	}
+	return result;
 }
 
 - (NSString *)stringByEscapingHTML:(NSString *)string {

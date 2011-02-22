@@ -69,11 +69,11 @@
  */
 @property (readonly) NSString *htmlValue;
 
-/** Component's text value, derived by passing assigned `stringValue` through text processor.
+/** Component's text value, derived by passing assigned `markdownValue` through text processor.
  
  The result is suitable for using in documentation set tokens file. Using converted HTML may result in errors when indexing due to usage of escaped HTML symbols (for example any `&ndash;` would result in docsetutil error `Entity 'ndash' not defined`. This value is derived when first used, the value is cached afterwards and cached value is returned from subsequent calls. Internally [GBApplicationSettingsProvider stringByConvertingMarkdownToText:] is used for conversion.
  
- @warning *Important:* This value requires `settings` to be assigned! If settings are not assigned, the value of `stringValue` is returned but is not cached, so that any subsequent assigning of settings would pick up proper text.
+ @warning *Important:* This value requires `settings` to be assigned! If settings are not assigned, the value of `markdownValue` is returned but is not cached, so that any subsequent assigning of settings would pick up proper text.
  
  @see htmlValue
  */

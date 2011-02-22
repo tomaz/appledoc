@@ -35,9 +35,23 @@
 	component.markdownValue = @"markdown";
 	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
 	component.settings = settings;
-	[[settings expect] stringByConvertingMarkdown:component.markdownValue];
+	[[settings expect] stringByConvertingMarkdownToHTML:component.markdownValue];
 	// execute
 	NSString *html = component.htmlValue;
+	// verify
+	[settings verify];
+	html = nil;	// just to suppress compiler warning of unused var...
+}
+
+- (void)testTextString_shouldUseAssignedSettings {
+	// setup
+	GBCommentComponent *component = [GBCommentComponent componentWithStringValue:@"source"];
+	component.markdownValue = @"markdown";
+	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
+	component.settings = settings;
+	[[settings expect] stringByConvertingMarkdownToText:component.markdownValue];
+	// execute
+	NSString *html = component.textValue;
 	// verify
 	[settings verify];
 	html = nil;	// just to suppress compiler warning of unused var...

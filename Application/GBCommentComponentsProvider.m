@@ -77,11 +77,11 @@
 #pragma mark Markdown detection
 
 - (NSString *)markdownInlineLinkRegex {
-	GBRETURN_ON_DEMAND(@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"(.+)\")?\\)");
+	GBRETURN_ON_DEMAND(@"\\[([^]]+)\\]\\(([^\\s]+)(?:\\s*\"([^\"]+)\")?\\)");
 }
 
 - (NSString *)markdownReferenceLinkRegex {
-	GBRETURN_ON_DEMAND(@"(?s:\\[(.+)\\]:\\s*([^\\s]+)(?:\\s*\"(.+)\")?\\s*$)");
+	GBRETURN_ON_DEMAND(@"(?s:\\[([^]]+)\\]:\\s*([^\\s]+)(?:\\s*\"([^\"]+)\")?\\s*$)");
 }
 
 #pragma mark Cross references detection
