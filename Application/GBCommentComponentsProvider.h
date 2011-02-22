@@ -78,12 +78,12 @@
  
  Here's a diagram of captures for better orientation:
  
-	[description](address "title")
-	 -----------  -------  -----
-	  |            |        |
-	  |            |        +-- capture3
-	  |            +-- capture2
-	  +-- capture1
+	[ description ]( address " title " )
+	  ^^^^^^^^^^^    ^^^^^^^   ^^^^^
+	   |              |         |
+	   |              |         +-- capture3
+	   |              +-- capture2
+	   +-- capture1
  
  @see markdownReferenceLinkRegex
  */
@@ -93,12 +93,12 @@
  
  Here's a diagram of captures for better orientation:
  
-	[ID]: address "title"
-	 --   -------  -----
-	 |     |        |
-	 |     |        +-- capture3
-	 |     +-- capture2
-	 +-- capture1
+	[ ID ]: address " title "
+	  ^^    ^^^^^^^   ^^^^^
+	  |      |         |
+	  |      |         +-- capture3
+	  |      +-- capture2
+	  +-- capture1
  
  @see markdownInlineLinkRegex
  */

@@ -81,7 +81,7 @@
 }
 
 - (NSString *)markdownReferenceLinkRegex {
-	GBRETURN_ON_DEMAND(@"\\[(.+)\\]:\\s*([^\\s]+)(?:\\s*\"(.+)\")?");
+	GBRETURN_ON_DEMAND(@"(?s:\\[(.+)\\]:\\s*([^\\s]+)(?:\\s*\"(.+)\")?\\s*$)");
 }
 
 #pragma mark Cross references detection
