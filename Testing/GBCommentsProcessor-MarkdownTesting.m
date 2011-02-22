@@ -117,6 +117,26 @@
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinCodeMarkers {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"`Class`"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"`Class(Category)`"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"*Protocol*"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"_Document_"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
+	// verify
+	[self assertComment:comment1 matchesLongDescMarkdown:@"[`Class`](Classes/Class.html)", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class(Category).html)", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"**[Protocol](Protocols/Protocol.html)**", nil];
+	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
+}
+
 #pragma mark Related items cross references handling
 
 - (void)testProcessCommentWithContextStore_markdown_shouldKeepRelatedItemsTopLevelObjectsCrossRefsTexts {

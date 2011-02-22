@@ -33,11 +33,13 @@ p:first-child {
 	margin-top: 0.5em;
 } 
 
+a code,
 a {
 	text-decoration: none;
 	color: #36C;
 }
 
+a:hover code,
 a:hover {
 	text-decoration: underline;
 	color: #36C;

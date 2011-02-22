@@ -48,6 +48,8 @@ enum {
 	GBProcessingFlagRelatedItem = 0x1,
 	/** Specifies that we're processing cross references inside Markdown formatted link. */
 	GBProcessingFlagMarkdownLink = 0x2,
+	/** Specifies that we should NOT embed generated Markdown links for later post-processing of code spans. */
+	GBProcessingFlagEmbedMarkdownLink = 0x4,
 };
 typedef NSUInteger GBProcessingFlag;
 
@@ -74,6 +76,7 @@ typedef NSUInteger GBProcessingFlag;
 - (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags;
 
 - (GBCrossRefData)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (GBCrossRefData)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
@@ -81,8 +84,8 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCrossRefData)dataForRemoteMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (GBCrossRefData)dataForDocumentLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (GBCrossRefData)dataForURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
-- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange;
-- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange;
+- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 
 - (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
@@ -427,6 +430,7 @@ typedef NSUInteger GBProcessingFlag;
 		}
 		
 		// Convert the marker to proper Markdown style. Warn if unknown marker is found. This is just a precaution in case we change something above, but forget to update this part, shouldn't happen in released versions as it should get caught by unit tests...
+		GBProcessingFlag linkFlags = flags;
 		NSString *markdownMarker = @"";
 		if ([componentMarker isEqualToString:@"*"]) {
 			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
@@ -439,6 +443,7 @@ typedef NSUInteger GBProcessingFlag;
 		else if ([componentMarker isEqualToString:@"`"]) {
 			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownMarker = @"`";
+			linkFlags |= GBProcessingFlagEmbedMarkdownLink;
 		}
 		else if ([componentMarker isEqualToString:@"==!!=="]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
@@ -449,7 +454,7 @@ typedef NSUInteger GBProcessingFlag;
 		}
 		
 		// Get formatted text, convert it's cross references and append proper format markers and string to result.
-		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:flags];
+		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
 		[result appendString:markdownMarker];
 		[result appendString:convertedText];
 		[result appendString:markdownMarker];
@@ -465,7 +470,13 @@ typedef NSUInteger GBProcessingFlag;
 		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText withFlags:flags];
 		[result appendString:convertedText];
 	}
-	return result;
+	
+	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
+	NSString *regex = @"`(\\[`[^`]*`\\]\\(.+?\\))`";
+	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
+		return capturedStrings[1];
+	}];
+	return clean;
 }
 
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags {
@@ -477,8 +488,8 @@ typedef NSUInteger GBProcessingFlag;
 	while (YES) {
 		// Find next Markdown style link, and use the first one found or exit if none found - we'll process remaining text later on.
 		GBCrossRefData *markdownData = nil;
-		GBCrossRefData markdownLinkData = [self dataForFirstMarkdownInlineLinkInString:string searchRange:searchRange];
-		GBCrossRefData markdownRefData = [self dataForFirstMarkdownReferenceLinkInString:string searchRange:searchRange];
+		GBCrossRefData markdownLinkData = [self dataForFirstMarkdownInlineLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData markdownRefData = [self dataForFirstMarkdownReferenceLinkInString:string searchRange:searchRange flags:flags];
 		if (GBIsCrossRefValid(markdownLinkData)) {
 			if (GBIsCrossRefValid(markdownRefData)) {
 				markdownData = (markdownLinkData.range.location < markdownRefData.range.location) ? &markdownLinkData : &markdownRefData;
@@ -599,6 +610,13 @@ typedef NSUInteger GBProcessingFlag;
 	return result;
 }
 
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags {
+	// Creates Markdown inline style link using the given components. This should be used when converting text to Markdown links as it will prepare special format so that we can later properly format links embedded in code spans!
+	if ((flags & GBProcessingFlagEmbedMarkdownLink) > 0)
+		return [NSString stringWithFormat:@"[`%@`](%@)", description, address];
+	return [NSString stringWithFormat:@"[%@](%@)", description, address];
+}
+
 - (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
 	// Converts the given string into blockquote and optionally adds class name to convert to <div>.
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
@@ -645,7 +663,7 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
 	result.description = objectName;
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
@@ -670,7 +688,7 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
 	result.description = objectName;
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
@@ -700,7 +718,7 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
 	result.description = selector;
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
@@ -744,7 +762,7 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
 	result.description = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
@@ -769,7 +787,7 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedDocument fromSource:self.currentContext];
 	result.description = documentName;
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
@@ -790,11 +808,11 @@ typedef NSUInteger GBProcessingFlag;
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = address;
 	result.description = description;
-	result.markdown = [NSString stringWithFormat:@"[%@](%@)", result.description, result.address];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
-- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange {
+- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first markdown inline link in the given range of the given string. if found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
@@ -810,12 +828,12 @@ typedef NSUInteger GBProcessingFlag;
 	// Create link item, prepare range and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = address;
-	result.description = [NSString stringWithFormat:@"[%@](%%@%@)", description, title];
+	result.description = [self markdownLinkWithDescription:description address:[NSString stringWithFormat:@"%%@%@", title] flags:flags];
 	result.markdown = linkText;
 	return result;
 }
 
-- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange {
+- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first markdown reference link in the given range of the given string. If found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownReferenceLinkRegex range:searchRange];
