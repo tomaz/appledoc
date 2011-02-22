@@ -788,19 +788,20 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange {
 	// Matches the first markdown inline link in the given range of the given string. if found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
-	NSArray *components = [string captureComponentsMatchedByRegex:@"(\\[.+\\])\\(([^\\s]+)(\\s*\".+\")?\\)" range:searchRange];
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
 	if ([components count] == 0) return result;
 	
-	// Get link components. Index 0 contains full text, index 1 description including brackets, index 2 the address, index 3 optional title.
+	// Get link components. Index 0 contains full text, index 1 description without brackets, index 2 the address, index 3 optional title.
 	NSString *linkText = [components objectAtIndex:0];
 	NSString *description = [components objectAtIndex:1];
 	NSString *address = [components objectAtIndex:2];
 	NSString *title = [components objectAtIndex:3];
+	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
 	
 	// Create link item, prepare range and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = address;
-	result.description = [NSString stringWithFormat:@"%@(%%@%@)", description, title];
+	result.description = [NSString stringWithFormat:@"[%@](%%@%@)", description, title];
 	result.markdown = linkText;
 	return result;
 }
@@ -808,7 +809,7 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange {
 	// Matches the first markdown reference link in the given range of the given string. If found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
-	NSArray *components = [string captureComponentsMatchedByRegex:@"(\\[.+\\]:)\\s*([^\\s]+)(\\s*\".+\")?" range:searchRange];
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownReferenceLinkRegex range:searchRange];
 	if ([components count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, index 1 reference ID, index 2 address, index 3 optional title.
@@ -816,11 +817,12 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *reference = [components objectAtIndex:1];
 	NSString *address = [components objectAtIndex:2];
 	NSString *title = [components objectAtIndex:3];
-	
+	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
+
 	// Create link item, prepare range and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = address;
-	result.description = [NSString stringWithFormat:@"%@ %%@%@", reference, title];
+	result.description = [NSString stringWithFormat:@"[%@]: %%@%@", reference, title];
 	result.markdown = linkText;
 	return result;
 }

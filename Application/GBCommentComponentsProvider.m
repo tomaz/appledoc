@@ -74,6 +74,16 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 
+#pragma mark Markdown detection
+
+- (NSString *)markdownInlineLinkRegex {
+	GBRETURN_ON_DEMAND(@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"(.+)\")?\\)");
+}
+
+- (NSString *)markdownReferenceLinkRegex {
+	GBRETURN_ON_DEMAND(@"\\[(.+)\\]:\\s*([^\\s]+)(?:\\s*\"(.+)\")?");
+}
+
 #pragma mark Cross references detection
 
 - (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated {

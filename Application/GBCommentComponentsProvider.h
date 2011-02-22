@@ -71,6 +71,40 @@
 @property (readonly) NSString *relatedSymbolRegex;
 
 ///---------------------------------------------------------------------------------------
+/// @name Markdown specific definitions
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex used for matching Markdown inline style links with capture 1 containing link description part without brackets, 2 the address and 3 optional title.
+ 
+ Here's a diagram of captures for better orientation:
+ 
+	[description](address "title")
+	 -----------  -------  -----
+	  |            |        |
+	  |            |        +-- capture3
+	  |            +-- capture2
+	  +-- capture1
+ 
+ @see markdownReferenceLinkRegex
+ */
+@property (readonly) NSString *markdownInlineLinkRegex;
+
+/** Returns the regex used for matching Markdown reference style links with capture 1 reference ID, 2 address and 3 optional title.
+ 
+ Here's a diagram of captures for better orientation:
+ 
+	[ID]: address "title"
+	 --   -------  -----
+	 |     |        |
+	 |     |        +-- capture3
+	 |     +-- capture2
+	 +-- capture1
+ 
+ @see markdownInlineLinkRegex
+ */
+@property (readonly) NSString *markdownReferenceLinkRegex;
+
+///---------------------------------------------------------------------------------------
 /// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
