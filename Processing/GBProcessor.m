@@ -225,7 +225,7 @@
 			if (superMethod.comment) {
 				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
 				GBComment *comment = [GBComment commentWithStringValue:superMethod.comment.stringValue];
-				NSString *filename = [NSString stringWithFormat:@"%@ -> %@", superMethod.comment.sourceInfo, method.prefferedSourceInfo.filename];
+				NSString *filename = [NSString stringWithFormat:@"%@, %@", superMethod.comment.sourceInfo.filename, method.prefferedSourceInfo.filename];
 				comment.sourceInfo = [GBSourceInfo infoWithFilename:filename lineNumber:method.prefferedSourceInfo.lineNumber];
 				comment.isCopied = YES;
 				method.comment = comment;
