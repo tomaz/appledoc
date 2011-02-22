@@ -164,31 +164,27 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 }
 
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
-	NSRange searchRange = NSMakeRange(0, [markdown length]);
-	NSMutableString *result = [NSMutableString stringWithCapacity:[markdown length]];
+	NSString *result = markdown;
 	
-	while (YES) {
-		NSArray *linkCaptures = [markdown captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex range:searchRange];
-		if ([linkCaptures count] == 0) break;
-		
-		NSString *description = [linkCaptures objectAtIndex:1];
-		NSRange range = [markdown rangeOfString:[linkCaptures objectAtIndex:0] options:0 range:searchRange];		
-		if (range.location > searchRange.location) {
-			NSRange skippedRange = NSMakeRange(searchRange.location, range.location - searchRange.location);
-			NSString *skipped = [markdown substringWithRange:skippedRange];
-			[result appendString:skipped];
-		}
-		
-		[result appendString:description];
-		searchRange.location = range.location + range.length;
-		searchRange.length = [markdown length] - searchRange.location;
-		if (searchRange.location >= [markdown length]) break;
-	}
+	// Clean Markdown inline links.
+	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[1];
+	}];
 	
-	if (searchRange.location < [markdown length] - 1) {
-		NSString *remaining = [markdown substringFromIndex:searchRange.location];
-		[result appendString:remaining];
-	}
+	// Clean formatting directives. Couldn't find single regex matcher for cleaning up all cases, so ended up in doing several phases and finally repeating the last one for any remaining cases... This makes unit tests pass...
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*\\*|___|\\*\\*_|_\\*\\*|\\*__|__\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*|__|\\*_|_\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	
 	return result;
 }
 

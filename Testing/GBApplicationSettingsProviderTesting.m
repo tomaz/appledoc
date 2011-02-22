@@ -430,6 +430,23 @@
 	assertThat(result5, is(@"description1 description2 description3"));
 }
 						  
+- (void)testStringByConvertingToText_shouldConvertFormattingMarkers {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"*desc*"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"`desc`"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"prefix *desc* suffix"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"*1* **2** ***3*** _4_ __5__ ___6___"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"_*1*_ *_2_* **_3_** _**4**_ *__5__* __*6*__"];
+	// verify
+	assertThat(result1, is(@"desc"));
+	assertThat(result2, is(@"desc"));
+	assertThat(result3, is(@"prefix desc suffix"));
+	assertThat(result4, is(@"1 2 3 4 5 6"));
+	assertThat(result5, is(@"1 2 3 4 5 6"));
+}
+
 #pragma mark Private accessor helpers
 
 - (NSDateFormatter *)yearFormatterFromSettings:(GBApplicationSettingsProvider *)settings {
