@@ -148,7 +148,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Common HTML handling
 
-- (NSString *)stringByConvertingMarkdown:(NSString *)markdown {
+- (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
 	NSString *result = nil;
 	MMIOT *document = mkd_string((char *)[markdown cStringUsingEncoding:NSUTF8StringEncoding], (int)[markdown length], 0);
 	mkd_compile(document, 0);
@@ -161,6 +161,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	}
 	mkd_cleanup(document);
 	return result;
+}
+
+- (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
+	return markdown;
 }
 
 - (NSString *)stringByEscapingHTML:(NSString *)string {

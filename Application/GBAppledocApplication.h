@@ -9,7 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "DDCliApplication.h"
 
-/** The appledoc application handler. 
+/** The appledoc application handler.
+ 
+ Let's make some hrefs to Document1 and Document2.
  
  This is the principal tool class. It represents the entry point for the application. The main promises of the class are parsing and validating of command line arguments and initiating documentation generation. Generation is divided into several distinct phases:
  

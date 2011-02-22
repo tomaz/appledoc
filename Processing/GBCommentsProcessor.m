@@ -95,6 +95,7 @@ typedef NSUInteger GBProcessingFlag;
 
 @property (retain) NSMutableDictionary *reservedShortDescriptionData;
 @property (retain) GBSourceInfo *currentSourceInfo;
+@property (retain) id lastReferencedObject;
 
 @end
 
@@ -369,6 +370,7 @@ typedef NSUInteger GBProcessingFlag;
 	}
 	GBCommentComponent *component = [self commentComponentWithStringValue:reference];
 	component.markdownValue = markdown;
+	component.relatedItem = self.lastReferencedObject;
 	[self.currentComment.relatedItems registerComponent:component];
 	return YES;
 }
@@ -471,6 +473,7 @@ typedef NSUInteger GBProcessingFlag;
 	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSRange searchRange = NSMakeRange(0, [string length]);
+	self.lastReferencedObject = nil;
 	while (YES) {
 		// Find next Markdown style link, and use the first one found or exit if none found - we'll process remaining text later on.
 		GBCrossRefData *markdownData = nil;
@@ -636,6 +639,7 @@ typedef NSUInteger GBProcessingFlag;
 	id referencedObject = [self.store classWithName:objectName];
 	if (!referencedObject) referencedObject = [self.store protocolWithName:objectName];
 	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
 	
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
@@ -660,6 +664,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store categoryWithName:objectName];
 	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
 
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
@@ -686,6 +691,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Validate selected within current context.
 	GBMethodData *referencedObject = [[[self currentContext] methods] methodBySelector:selector];
 	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
 	
 	// If we're creating link for related item, we should use method prefix.	
 	if ((flags & GBProcessingFlagRelatedItem) > 0 && self.settings.prefixLocalMembersInRelatedItemsList) selector = referencedObject.prefixedMethodSelector;
@@ -732,6 +738,7 @@ typedef NSUInteger GBProcessingFlag;
 		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 		return result;
 	}
+	self.lastReferencedObject = referencedMember;
 	
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
@@ -756,6 +763,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Validate selected within current context.
 	GBDocumentData *referencedDocument = [self.store documentWithName:documentName];
 	if (!referencedDocument) return result;
+	self.lastReferencedObject = referencedDocument;
 	
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
@@ -834,6 +842,7 @@ typedef NSUInteger GBProcessingFlag;
 	return self.settings.commentComponents;
 }
 
+@synthesize lastReferencedObject;
 @synthesize reservedShortDescriptionData;
 @synthesize currentSourceInfo;
 @synthesize currentComment;

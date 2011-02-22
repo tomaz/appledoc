@@ -19,6 +19,7 @@
 @interface GBCommentComponent : NSObject {
 	@private
 	NSString *_htmlValue;
+	NSString *_textValue;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -60,11 +61,23 @@
 
 /** Component's HTML value, derived by passing assigned `markdownValue` through Markdown processor.
  
- This value is derived when first used, the value is cached afterwards and cached value is returned from subsequent calls.
+ This value is derived when first used, the value is cached afterwards and cached value is returned from subsequent calls. Internally [GBApplicationSettingsProvider stringByConvertingMarkdownToHTML:] is used for conversion.
  
  @warning *Important:* This value requires `settings` to be assigned! If settings are not assigned, the value or `markdownValue` is returned but is not cached, so that any subsequent assigning of settings would pick up proper html.
+ 
+ @see textValue
  */
 @property (readonly) NSString *htmlValue;
+
+/** Component's text value, derived by passing assigned `stringValue` through text processor.
+ 
+ The result is suitable for using in documentation set tokens file. Using converted HTML may result in errors when indexing due to usage of escaped HTML symbols (for example any `&ndash;` would result in docsetutil error `Entity 'ndash' not defined`. This value is derived when first used, the value is cached afterwards and cached value is returned from subsequent calls. Internally [GBApplicationSettingsProvider stringByConvertingMarkdownToText:] is used for conversion.
+ 
+ @warning *Important:* This value requires `settings` to be assigned! If settings are not assigned, the value of `stringValue` is returned but is not cached, so that any subsequent assigning of settings would pick up proper text.
+ 
+ @see htmlValue
+ */
+@property (readonly) NSString *textValue;
 
 /** Source file information.
  */
@@ -73,6 +86,10 @@
 ///---------------------------------------------------------------------------------------
 /// @name Helper attributes
 ///---------------------------------------------------------------------------------------
+
+/** This is used only for related items to allow creating documentation set identifiers.
+ */
+@property (retain) id relatedItem;
 
 /** Settings used for creating various values.
  */

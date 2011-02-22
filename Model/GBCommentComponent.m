@@ -24,17 +24,25 @@
 	return result;
 }
 
-#pragma mark HTML processing
+#pragma mark Derived values
 
 - (NSString *)htmlValue {
 	if (!self.settings) return self.markdownValue;
 	if (_htmlValue) return _htmlValue;
-	_htmlValue = [self.settings stringByConvertingMarkdown:self.markdownValue];
+	_htmlValue = [self.settings stringByConvertingMarkdownToHTML:self.markdownValue];
 	return _htmlValue;
+}
+
+- (NSString *)textValue {
+	if (!self.settings) return self.stringValue;
+	if (_textValue) return _textValue;
+	_textValue = [self.settings stringByConvertingMarkdownToText:self.stringValue];
+	return _textValue;
 }
 
 #pragma mark Properties
 
+@synthesize relatedItem;
 @synthesize stringValue;
 @synthesize markdownValue;
 @synthesize sourceInfo;

@@ -340,15 +340,28 @@
  
  @param markdown Markdown source string to convert.
  @return Returns converted string.
+ @see stringByConvertingMarkdownToText:
  @see stringByEscapingHTML:
  */
-- (NSString *)stringByConvertingMarkdown:(NSString *)markdown;
+- (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown;
+
+/** Returns a new string containing text representation of the given Markdown string.
+ 
+ The main responsibility of this method is to strip Markdown links to names only to give text more readability when used in Xcode quick help. Although the name suggests this can handle Markdown strings, it's intended to be given appledoc comment string, prior to passing it to `GBCommentsProcessor`.
+ 
+ @param markdown Markdown source string to convert.
+ @return Returns converted string.
+ @see stringByConvertingMarkdownToHTML:
+ @see stringByEscapingHTML:
+ */
+- (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown;
 
 /** Returns a new string by escaping the given HTML.
  
  @param string HTML string to escape.
  @return Returns escaped HTML string.
- @see stringByConvertingMarkdown:
+ @see stringByConvertingMarkdownToHTML:
+ @see stringByConvertingMarkdownToText:
  */
 - (NSString *)stringByEscapingHTML:(NSString *)string;
 
