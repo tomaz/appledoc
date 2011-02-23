@@ -217,6 +217,10 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		return capturedStrings[2];
 	}];
 	
+	// Remove embedded preix/suffix if needed.
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
+	result = [result stringByReplacingOccurrencesOfString:@"~!@" withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:@"@!~" withString:@""];
 	return result;
 }
 

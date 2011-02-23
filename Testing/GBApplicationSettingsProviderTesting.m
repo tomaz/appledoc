@@ -430,7 +430,7 @@
 	assertThat(result22, is(@"[`description`](address \"title\")"));
 }
 
-- (void)testStringByConvertingToHTML_shouldConvertEmbeddedCrossReferencesInText {
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInText {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
@@ -441,7 +441,7 @@
 	assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
 }
 
-- (void)testStringByConvertingToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
@@ -452,7 +452,29 @@
 	assertThat(result2, is(@"<pre><code>[description](address)\n</code></pre>"));
 }
 
-- (void)testStringByConvertingToText_shouldConvertMarkdownReferences {
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
+	assertThat(result1, is(@"description"));
+	assertThat(result2, is(@"description"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t[description](address)"];
+	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
+	assertThat(result1, is(@"\tdescription"));
+	assertThat(result2, is(@"\tdescription"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertMarkdownReferences {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
@@ -469,7 +491,7 @@
 	assertThat(result5, is(@"description1 description2 description3"));
 }
 						  
-- (void)testStringByConvertingToText_shouldConvertFormattingMarkers {
+- (void)testStringByConvertingMarkdownToText_shouldConvertFormattingMarkers {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
