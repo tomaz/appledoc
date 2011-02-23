@@ -32,7 +32,7 @@
  
  The given string should include optional prefix, followed by `%@` and lastly optional suffix. If either prefix or suffix isn't allowed, just pass `%@`. At the runtime, `%@` is replaced by the actual regex for mathching particular cross reference type - actually the whole string becomes the regex for matching cross reference, therefore prefix and suffix can be arbitrary regex expressions themselves! On the other hand, this imposes some limitations to what can be used for them: 
  
- - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?`!
+ - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?:...)`!
  - Prefix must not contain any marker used for formatting such as *, _ or combinations. This is actually not checked, but in such case results may be not what you wanted.
  
  @warning *Important:* Note that the given string must contain exactly one `%@` marker. If none is included cross references will not be matched during runtime. If more than one is included, unpredicted behavior may occur. So take care!
