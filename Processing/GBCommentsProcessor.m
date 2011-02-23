@@ -367,10 +367,6 @@ typedef NSUInteger GBProcessingFlag;
 	}
 	
 	// If known link is found, register component, otherwise warn and exit.
-	if ([markdown isEqualToString:reference]) {
-		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
-		return YES;
-	}
 	GBCommentComponent *component = [self commentComponentWithStringValue:reference];
 	component.markdownValue = markdown;
 	component.relatedItem = self.lastReferencedObject;
