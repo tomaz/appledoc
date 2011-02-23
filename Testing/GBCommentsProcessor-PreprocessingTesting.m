@@ -334,7 +334,7 @@
 	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
 	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
 	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
-	assertThat(result5, is(@"[[Class](Class.html)(Unknown) method:]"));
+	assertThat(result5, is(@"[Class(Unknown) method:]"));
 	assertThat(result6, is(@"[Unknown(Category) method:]"));
 }
 

@@ -738,7 +738,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *objectName = [components objectAtIndex:2];
 	NSString *selector = [components objectAtIndex:3];
 	
-	// Match object name with one of the known objects. Warn if not found.
+	// Match object name with one of the known objects. Warn if not found. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedObject = [self.store classWithName:objectName];
 	if (!referencedObject) {
 		referencedObject = [self.store categoryWithName:objectName];
@@ -746,6 +746,8 @@ typedef NSUInteger GBProcessingFlag;
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
 				if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown object!", linkText, self.currentSourceInfo);
+				result.range = [string rangeOfString:linkText options:0 range:searchRange];
+				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 				return result;
 			}
 		}
