@@ -83,6 +83,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
+		self.embedCrossReferencesWhenProcessingMarkdown = YES;
 
 		self.warnOnMissingOutputPathArgument = YES;
 		self.warnOnMissingCompanyIdentifier = YES;
@@ -148,7 +149,13 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Common HTML handling
 
+- (NSString *)stringByEmbeddingCrossReference:(NSString *)value {
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return value;
+	return [NSString stringWithFormat:@"~!@%@@!~", value];
+}
+
 - (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
+	// First pass the markdown to discount to get it converted to HTML.
 	NSString *result = nil;
 	MMIOT *document = mkd_string((char *)[markdown cStringUsingEncoding:NSUTF8StringEncoding], (int)[markdown length], 0);
 	mkd_compile(document, 0);
@@ -160,7 +167,32 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		result = [NSString stringWithCString:html encoding:NSASCIIStringEncoding];
 	}
 	mkd_cleanup(document);
-	return result;
+	
+	// Post process embedded cross references if needed.
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
+	__block BOOL insideExampleBlock = NO;
+	NSString *regex = @"<pre>|</pre>|~!@(.+?)@!~";
+	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		// Change flag when inside example block - we need to handle strings differently there!
+		NSString *matchedText = capturedStrings[0];
+		if ([matchedText isEqualToString:@"<pre>"]) {
+			insideExampleBlock = YES;
+			return matchedText;
+		} else if ([matchedText isEqualToString:@"</pre>"]) {
+			insideExampleBlock = NO;
+			return matchedText;
+		}
+		
+		// If outside example block, just return cross reference without embedded prefix and suffix!
+		NSString *linkText = capturedStrings[1];
+		if (!insideExampleBlock) return linkText;
+		
+		// If inside example block, we need to extract description from Markdown text and only use that part! If we don't match Markdown style reference, just use whole text...
+		NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
+		if ([components count] < 1) return linkText;
+		return [components objectAtIndex:1];
+	}];
+	return clean;
 }
 
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
@@ -497,6 +529,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
 
 @synthesize prefixLocalMembersInRelatedItemsList;
+@synthesize embedCrossReferencesWhenProcessingMarkdown;
 
 @synthesize createHTML;
 @synthesize createDocSet;

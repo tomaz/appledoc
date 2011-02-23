@@ -137,6 +137,23 @@
 	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
 }
 
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWhenEmbeddingIsTurnedOn {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"Class"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"`Class`"];
+	GBComment *comment3 = [GBComment commentWithStringValue:@"@see Class"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	[processor processComment:comment3 withContext:nil store:store];
+	// verify
+	[self assertComment:comment1 matchesLongDescMarkdown:@"~!@[Class](Classes/Class.html)@!~", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"~!@[`Class`](Classes/Class.html)@!~", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"~!@[Class](Classes/Class.html)@!~", nil];
+}
+
 #pragma mark Related items cross references handling
 
 - (void)testProcessCommentWithContextStore_markdown_shouldKeepRelatedItemsTopLevelObjectsCrossRefsTexts {
@@ -197,7 +214,10 @@
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)defaultProcessor {
-	return [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	// Creates a new GBCommentsProcessor using real settings. Note that we disable embedding cross references to make test strings more readable.
+	id settings = [GBTestObjectsRegistry realSettingsProvider];
+	[settings setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	return [GBCommentsProcessor processorWithSettingsProvider:settings];
 }
 
 - (GBStore *)defaultStore {

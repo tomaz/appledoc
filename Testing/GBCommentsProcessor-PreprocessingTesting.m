@@ -20,6 +20,7 @@
 
 @interface GBCommentsProcessorPreprocessingTesting : GBObjectsAssertor
 
+- (GBCommentsProcessor *)defaultProcessor;
 - (GBCommentsProcessor *)processorWithStore:(id)store;
 - (GBCommentsProcessor *)processorWithStore:(id)store context:(id)context;
 
@@ -33,7 +34,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleBoldMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
@@ -44,7 +45,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleItalicsMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"_bold1_ _bold text_ _ bolder text _" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"_bold1_ Middle _bold text_" withFlags:0];
@@ -55,7 +56,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleBoldItalicsMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result = [processor stringByPreprocessingString:@"_*text1*_ *_marked text_* _* text2 *_" withFlags:0];
 	// verify
@@ -64,7 +65,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleMonospaceMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result = [processor stringByPreprocessingString:@"`mono` ` monoer `" withFlags:0];
 	// verify
@@ -73,7 +74,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleMarkdownBoldMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"__text1__ __ marked __" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"**text1** ** marked **" withFlags:0];
@@ -84,7 +85,7 @@
 
 - (void)testStringByPreprocessingString_shouldHandleMarkdownBoldItalicsMarkers {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"__*text1*__ __* marked *__" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"_**text1**_ _** marked **_" withFlags:0];
@@ -392,7 +393,7 @@
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertHTML {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"http://gentlebytes.com" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"https://gentlebytes.com" withFlags:0];
@@ -411,7 +412,7 @@
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertFTP {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"ftp://gentlebytes.com" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"ftps://gentlebytes.com" withFlags:0];
@@ -430,7 +431,7 @@
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertNewsAndRSS {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"news://gentlebytes.com" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"rss://gentlebytes.com" withFlags:0];
@@ -449,7 +450,7 @@
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertFile {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"file://gentlebytes.com" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<file://gentlebytes.com>" withFlags:0];
@@ -462,7 +463,7 @@
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertMailto {
 	// setup
-	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"mailto:appledoc@gentlebytes.com" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"<mailto:appledoc@gentlebytes.com>" withFlags:0];
@@ -605,15 +606,23 @@
 
 #pragma mark Creation methods
 
+- (GBCommentsProcessor *)defaultProcessor {
+	// Creates a new GBCommentsProcessor using real settings. Note that we disable embedding cross references to make test strings more readable.
+	id settings = [GBTestObjectsRegistry realSettingsProvider];
+	[settings setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	return [GBCommentsProcessor processorWithSettingsProvider:settings];
+}
+
 - (GBCommentsProcessor *)processorWithStore:(id)store {
 	// Creates a new GBCommentsProcessor using real settings and the given store.
 	return [self processorWithStore:store context:nil];
 }
 
 - (GBCommentsProcessor *)processorWithStore:(id)store context:(id)context {
-	// Creates a new GBCommentsProcessor using real settings and the given store and context.
+	// Creates a new GBCommentsProcessor using real settings and the given store and context. Note that we disable embedding cross references to make test strings more readable.
 	id settings = [GBTestObjectsRegistry realSettingsProvider];
-	GBCommentsProcessor *result = [GBCommentsProcessor processorWithSettingsProvider:settings];
+	[settings setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	GBCommentsProcessor *result = [self defaultProcessor];
 	[result setValue:store forKey:@"store"];
 	[result setValue:context forKey:@"currentContext"];
 	return result;

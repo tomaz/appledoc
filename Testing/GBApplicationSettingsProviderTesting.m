@@ -413,6 +413,45 @@
 
 #pragma mark Text conversion methods
 
+- (void)testStringByEmbeddingCrossReference_shouldEmbeddCrossReferenceIfRequired {
+	// setup
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings2.embedCrossReferencesWhenProcessingMarkdown = NO;
+	// execute
+	NSString *result11 = [settings1 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
+	NSString *result12 = [settings1 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+	NSString *result21 = [settings2 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
+	NSString *result22 = [settings2 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+	// verify
+	assertThat(result11, is(@"~!@[description](address \"title\")@!~"));
+	assertThat(result12, is(@"~!@[`description`](address \"title\")@!~"));
+	assertThat(result21, is(@"[description](address \"title\")"));
+	assertThat(result22, is(@"[`description`](address \"title\")"));
+}
+
+- (void)testStringByConvertingToHTML_shouldConvertEmbeddedCrossReferencesInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"[description](address)"];
+	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
+	assertThat(result1, is(@"<p><a href=\"address\">description</a></p>"));
+	assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
+}
+
+- (void)testStringByConvertingToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"\t~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"\t[description](address)"];
+	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
+	assertThat(result1, is(@"<pre><code>description\n</code></pre>"));
+	assertThat(result2, is(@"<pre><code>[description](address)\n</code></pre>"));
+}
+
 - (void)testStringByConvertingToText_shouldConvertMarkdownReferences {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];

@@ -472,7 +472,7 @@ typedef NSUInteger GBProcessingFlag;
 	}
 	
 	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
-	NSString *regex = @"`(\\[`[^`]*`\\]\\(.+?\\))`";
+	NSString *regex = @"`((?:~!@)?\\[`[^`]*`\\]\\(.+?\\)(?:@!~)?)`";
 	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
 		return capturedStrings[1];
 	}];
@@ -612,9 +612,12 @@ typedef NSUInteger GBProcessingFlag;
 
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags {
 	// Creates Markdown inline style link using the given components. This should be used when converting text to Markdown links as it will prepare special format so that we can later properly format links embedded in code spans!
+	NSString *result = nil;
 	if ((flags & GBProcessingFlagEmbedMarkdownLink) > 0)
-		return [NSString stringWithFormat:@"[`%@`](%@)", description, address];
-	return [NSString stringWithFormat:@"[%@](%@)", description, address];
+		result = [NSString stringWithFormat:@"[`%@`](%@)", description, address];
+	else
+		result = [NSString stringWithFormat:@"[%@](%@)", description, address];
+	return [self.settings stringByEmbeddingCrossReference:result];
 }
 
 - (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {

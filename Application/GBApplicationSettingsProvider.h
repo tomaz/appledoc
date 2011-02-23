@@ -334,12 +334,36 @@
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------
 
+/** Specifies whether cross references should be embedded to special strings when processing Markdown.
+ 
+ This should be left to default value, however it's useful to prevent embedding for unit testing.
+ 
+ @see stringByEmbeddingCrossReference:
+ */
+@property (assign) BOOL embedCrossReferencesWhenProcessingMarkdown;
+
+/** Returns a new string with the given Markdown reference embedded in special markers.
+ 
+ This should be used for all generated cross references, so that we can later detect them when converting HTML with `stringByConvertingMarkdownToHTML:`.
+ 
+ @warning *Important:* Behavior of this method depends on `embedCrossReferencesWhenProcessingMarkdown` value. If it's `YES`, strings are embedded, otherwise the given value is returned without enmbedding.
+ 
+ @param value The string to embedd.
+ @return Returns embedded string.
+ @see stringByConvertingMarkdownToHTML:
+ @see embedCrossReferencesWhenProcessingMarkdown
+ */
+- (NSString *)stringByEmbeddingCrossReference:(NSString *)value;
+
 /** Returns a new string containing HTML representation of the given Markdown string.
  
- The resulting string is not escaped!
+ This is the main method for converting Markdown to HTML. It works in two phases: first the Markdown engine is asked to convert the given string to HTML, then the string is cleaned up so that it contains proper HTML code. Cleaning up phase consists of:
+ 
+ - Cleaning any appledoc generated cross reference inside `<pre>` blocks. Markdown doesn't process links here, so in case appledoc detects known object and converts it to Markdown style link, the Markdown syntaxt is left untouched. This phase makes sure all such occurences are cleaned up to original text. This is only invoked if `embedCrossReferencesWhenProcessingMarkdown` value is `YES`!
  
  @param markdown Markdown source string to convert.
  @return Returns converted string.
+ @see stringByEmbeddingCrossReference:
  @see stringByConvertingMarkdownToText:
  @see stringByEscapingHTML:
  */
