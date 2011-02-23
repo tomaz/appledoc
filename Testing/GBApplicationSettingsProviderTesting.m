@@ -430,6 +430,8 @@
 	assertThat(result22, is(@"[`description`](address \"title\")"));
 }
 
+#pragma mark Markdown to HTML conversion
+
 - (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInText {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
@@ -451,6 +453,8 @@
 	assertThat(result1, is(@"<pre><code>description\n</code></pre>"));
 	assertThat(result2, is(@"<pre><code>[description](address)\n</code></pre>"));
 }
+
+#pragma mark Markdown to text conversion
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInText {
 	// setup
@@ -506,6 +510,29 @@
 	assertThat(result3, is(@"prefix desc suffix"));
 	assertThat(result4, is(@"1 2 3 4 5 6"));
 	assertThat(result5, is(@"1 2 3 4 5 6"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertManualAnchors {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\">desc</a>"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"<a href='address'>desc</a>"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\"></a>"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"<a href='address'></a>"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\" />"];
+	NSString *result6 = [settings stringByConvertingMarkdownToText:@"<a href='address' />"];
+	NSString *result7 = [settings stringByConvertingMarkdownToText:@"<a\n\n\thref\n=\n\t   'address'\n>desc</a>"];
+	NSString *result8 = [settings stringByConvertingMarkdownToText:@"<a\n\n\thref\n=\n\t   'address'\n/>"];
+	// verify
+	assertThat(result1, is(@"desc"));
+	assertThat(result2, is(@"desc"));
+	assertThat(result3, is(@"address"));
+	assertThat(result4, is(@"address"));
+	assertThat(result5, is(@"address"));
+	assertThat(result6, is(@"address"));
+	assertThat(result7, is(@"desc"));
+	assertThat(result8, is(@"address"));
 }
 
 #pragma mark Private accessor helpers

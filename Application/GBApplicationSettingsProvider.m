@@ -217,6 +217,16 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		return capturedStrings[2];
 	}];
 	
+	// Convert hard coded HTML anchor links as these may cause problems with docsetutil. Basically we get address and description and output only description if found. Otherwise we use address.
+	NSString *anchorRegex = @"<a\\s+href\\s*=\\s*([\"'])([^\\1]*)[\"']\\s*(?:(?:>([^>]*)</a>)|(?:/>))";
+	result = [result stringByReplacingOccurrencesOfRegex:anchorRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		if (captureCount < 2) return capturedStrings[0];
+		if (captureCount < 3) return capturedStrings[2];
+		NSString *description = capturedStrings[3];
+		if ([description length] > 0) return description;
+		return capturedStrings[2];
+	}];
+	
 	// Remove embedded preix/suffix if needed.
 	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
 	result = [result stringByReplacingOccurrencesOfString:@"~!@" withString:@""];
