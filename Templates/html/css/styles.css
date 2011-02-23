@@ -434,7 +434,7 @@ li#jumpto_button select {
 span.tooltip span.tooltip {
 	font-size: 1.0em;
 	display: none;
-	padding: 0.3em;
+	padding: 0.2em 0.3em;
 	border: 1px solid #aaa;
 	background-color: #fdfec8;
 	color: #000;
