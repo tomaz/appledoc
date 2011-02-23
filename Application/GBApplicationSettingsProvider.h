@@ -154,7 +154,7 @@
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
-/* Indicates whether HTML files should be generated or not.
+/** Indicates whether HTML files should be generated or not.
  
  If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
  
@@ -278,6 +278,12 @@
  */
 @property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
 
+/** Indicates whteher local methods and properties cross references texts should be prefixed when used in related items list.
+ 
+ If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.
+ */
+@property (assign) BOOL prefixLocalMembersInRelatedItemsList;
+
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------
@@ -328,10 +334,58 @@
 /// @name Application-wide HTML helpers
 ///---------------------------------------------------------------------------------------
 
+/** Specifies whether cross references should be embedded to special strings when processing Markdown.
+ 
+ This should be left to default value, however it's useful to prevent embedding for unit testing.
+ 
+ @see stringByEmbeddingCrossReference:
+ */
+@property (assign) BOOL embedCrossReferencesWhenProcessingMarkdown;
+
+/** Returns a new string with the given Markdown reference embedded in special markers.
+ 
+ This should be used for all generated cross references, so that we can later detect them when converting HTML with `stringByConvertingMarkdownToHTML:`.
+ 
+ @warning *Important:* Behavior of this method depends on `embedCrossReferencesWhenProcessingMarkdown` value. If it's `YES`, strings are embedded, otherwise the given value is returned without enmbedding.
+ 
+ @param value The string to embedd.
+ @return Returns embedded string.
+ @see stringByConvertingMarkdownToHTML:
+ @see embedCrossReferencesWhenProcessingMarkdown
+ */
+- (NSString *)stringByEmbeddingCrossReference:(NSString *)value;
+
+/** Returns a new string containing HTML representation of the given Markdown string.
+ 
+ This is the main method for converting Markdown to HTML. It works in two phases: first the Markdown engine is asked to convert the given string to HTML, then the string is cleaned up so that it contains proper HTML code. Cleaning up phase consists of:
+ 
+ - Cleaning any appledoc generated cross reference inside `<pre>` blocks. Markdown doesn't process links here, so in case appledoc detects known object and converts it to Markdown style link, the Markdown syntaxt is left untouched. This phase makes sure all such occurences are cleaned up to original text. This is only invoked if `embedCrossReferencesWhenProcessingMarkdown` value is `YES`!
+ 
+ @param markdown Markdown source string to convert.
+ @return Returns converted string.
+ @see stringByEmbeddingCrossReference:
+ @see stringByConvertingMarkdownToText:
+ @see stringByEscapingHTML:
+ */
+- (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown;
+
+/** Returns a new string containing text representation of the given Markdown string.
+ 
+ The main responsibility of this method is to strip Markdown links to names only to give text more readability when used in Xcode quick help. Although the name suggests this can handle Markdown strings, it's intended to be given appledoc comment string, prior to passing it to `GBCommentsProcessor`.
+ 
+ @param markdown Markdown source string to convert.
+ @return Returns converted string.
+ @see stringByConvertingMarkdownToHTML:
+ @see stringByEscapingHTML:
+ */
+- (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown;
+
 /** Returns a new string by escaping the given HTML.
  
  @param string HTML string to escape.
  @return Returns escaped HTML string.
+ @see stringByConvertingMarkdownToHTML:
+ @see stringByConvertingMarkdownToText:
  */
 - (NSString *)stringByEscapingHTML:(NSString *)string;
 

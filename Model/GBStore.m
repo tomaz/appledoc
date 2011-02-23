@@ -107,6 +107,7 @@
 	}
 	[_documents addObject:document];
 	[_documentsByName setObject:document forKey:name];
+	[_documentsByName setObject:document forKey:[name stringByReplacingOccurrencesOfString:@"-template" withString:@""]];
 }
 
 - (void)unregisterTopLevelObject:(id)object {

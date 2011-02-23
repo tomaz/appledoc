@@ -39,6 +39,7 @@ typedef NSUInteger GBMethodType;
 	NSArray *_methodResultTypes;
 	NSArray *_methodArguments;
 	NSString *_methodSelector;
+	NSString *_prefixedMethodSelector;
 	NSString *_methodSelectorDelimiter;
 	NSString *_methodPrefix;
 }
@@ -100,25 +101,21 @@ typedef NSUInteger GBMethodType;
 
 /** Method selector that can be used for unique identification. 
  
- The selector doesn't include prefix, if you need to include that, use the value of `methodPrefix`.
+ The selector doesn't include prefix, if you need to include that, use the value of `prefixedMethodPrefix`.
  
- @see methodSelectorDelimiter
- @see methodPrefix
+ @see prefixedMethodSelector
  */
 @property (readonly) NSString *methodSelector;
 
-/** The delimiter used for separating method arguments in `methodSelector` and otherwise.
+/** Method selector including prefix.
  
  @see methodSelector
- @see methodPrefix
  */
-@property (readonly) NSString *methodSelectorDelimiter;
+@property (readonly) NSString *prefixedMethodSelector;
 
-/** The prefix to be written in front of the method selector.
- 
- @see methodSelectorDelimiter
- */
-@property (readonly) NSString *methodPrefix;
+///---------------------------------------------------------------------------------------
+/// @name Helper properties
+///---------------------------------------------------------------------------------------
 
 /** Specified whether this method is an instance method or not.
  

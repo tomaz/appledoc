@@ -83,7 +83,7 @@
 
 /** Registers the given static document to the store data.
  
- If store doesn't yet have the given document instance registered, the object is added to `documents` list. If the same instance is already regsitered, nothing happens.
+ If store doesn't yet have the given document instance registered, the object is added to `documents` list. If the same instance is already regsitered, nothing happens. The document is also made available through `documentWithName` after being registered; to simplify the rest of the code, `-template` prefix can be ommited when seaching!
  
  @warning *Note:* If another instance of the document with the same path is registered, an exception is thrown.
  

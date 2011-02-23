@@ -12,47 +12,93 @@
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 
+typedef struct _GBCrossRefData {
+	NSRange range;
+	NSString *address;
+	NSString *description;
+	NSString *markdown;
+} GBCrossRefData;
+
+static GBCrossRefData GBEmptyCrossRefData() {
+	// Creates an empty cross reference data.
+	GBCrossRefData result;
+	result.range = NSMakeRange(NSNotFound, 0);
+	result.address = nil;
+	result.description = nil;
+	result.markdown = nil;
+	return result;
+}
+
+static BOOL GBIsCrossRefValid(GBCrossRefData data) {
+	// Determines if the cross reference data points to a recognized object.
+	return (data.range.location != NSNotFound);
+}
+
+static BOOL GBIsCrossRefInside(GBCrossRefData test, GBCrossRefData outer) {
+	if (!GBIsCrossRefValid(test) || !GBIsCrossRefValid(outer)) return NO;
+	NSRange unionRange = NSUnionRange(test.range, outer.range);
+	return NSEqualRanges(unionRange, outer.range);
+}
+
+#pragma mark -
+
+/** Defines different processing flags. */
+enum {
+	/** Specifies we're processing cross references for related items block. */
+	GBProcessingFlagRelatedItem = 0x1,
+	/** Specifies that we're processing cross references inside Markdown formatted link. */
+	GBProcessingFlagMarkdownLink = 0x2,
+	/** Specifies that we should NOT embed generated Markdown links for later post-processing of code spans. */
+	GBProcessingFlagEmbedMarkdownLink = 0x4,
+};
+typedef NSUInteger GBProcessingFlag;
+
+#pragma mark -
+
 @interface GBCommentsProcessor ()
 
-- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range;
-- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range;
+- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove;
+- (void)reserveShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove;
+- (void)registerReservedShortDescriptionIfNecessary;
+- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange;
 
-- (BOOL)registerWarningBlockFromlines:(NSArray *)lines;
-- (BOOL)registerBugBlockFromLines:(NSArray *)lines;
-- (BOOL)registerExampleBlockFromLines:(NSArray *)lines;
-- (BOOL)registerListBlockFromLines:(NSArray *)lines;
-- (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines;
-- (void)registerTextBlockFromLines:(NSArray *)lines;
+- (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
-- (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string;
-- (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object;
+- (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (GBCommentComponent *)commentComponentWithStringValue:(NSString *)string;
+- (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags;
 
-- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description templated:(BOOL)templated;
-- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)classLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)documentLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
-- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated;
+- (GBCrossRefData)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForRemoteMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForDocumentLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
+- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 
-- (GBCommentParagraph *)pushParagraphIfStackIsEmpty;
-- (GBCommentParagraph *)pushParagraph:(BOOL)canAutoRegister;
-- (GBCommentParagraph *)peekParagraph;
-- (GBCommentParagraph *)popParagraph;
-- (void)popAllParagraphs;
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className;
+- (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
-@property (retain) NSMutableArray *paragraphsStack;
-@property (retain) GBComment *currentComment;
 @property (retain) id currentContext;
-
+@property (retain) GBComment *currentComment;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 @property (readonly) GBCommentComponentsProvider *components;
 
-@property (readonly) NSString *sourceFileInfo;
-@property (assign) NSUInteger currentStartLine;
+@property (retain) NSMutableDictionary *reservedShortDescriptionData;
+@property (retain) GBSourceInfo *currentSourceInfo;
+@property (retain) id lastReferencedObject;
 
 @end
 
@@ -82,733 +128,742 @@
 	[self processComment:comment withContext:nil store:store];
 }
 
-- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store {
+- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
-	self.paragraphsStack = [NSMutableArray array];
+	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
 	self.currentContext = context;
 	self.store = store;	
 	NSArray *lines = [comment.stringValue arrayOfLines];
 	NSUInteger line = comment.sourceInfo.lineNumber;
-	NSRange range = NSMakeRange(0, 0);
+	NSRange blockRange = NSMakeRange(0, 0);
+	NSRange shortRange = NSMakeRange(0, 0);
 	GBLogDebug(@"- Comment has %lu lines.", [lines count]);
-	while ([self findCommentBlockInLines:lines blockRange:&range]) {
-		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + range.location, line + range.location + range.length);
-		[self processCommentBlockInLines:lines blockRange:range];
-		range.location += range.length;
+	while ([self findCommentBlockInLines:lines blockRange:&blockRange shortRange:&shortRange]) {
+		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + blockRange.location, line + blockRange.location + blockRange.length);
+		[self processCommentBlockInLines:lines blockRange:blockRange shortRange:shortRange];
+		blockRange.location += blockRange.length;
 	}
-	[self popAllParagraphs];
+	[self registerReservedShortDescriptionIfNecessary];
 }
 
-- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)range {
-	// Searches the given array of lines for the index of ending line of the block starting at the given index. Effectively this groups all lines that belong to a single block where block is a paragraph text or one of it's items delimited by empty line. The index returned is the index of the last line of the block, so may be the same as the start index, the method takes care to skip empty starting lines if needed and updates start index to point to first block line (but properly detects empty lines belonging to example block). Note that the code is straightforward except for the fact that we need to handle example blocks properly (i.e. can't just trim all whitespace of a line to determine if it's empty or not, instead we need to validate the line is not part of example block).
-	NSParameterAssert(range != NULL);
+- (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange {
+	// Searches the given array of lines starting at line index from the given range until first directive is found. Returns YES if block was found, NO otherwise. If block was found, the given range contains the block range of the block within the given array and short range contains the range of first part up to the first empty line.
+	NSParameterAssert(blockRange != NULL);
+	NSParameterAssert(shortRange != NULL);
 	
 	// First skip all starting empty lines.
-	NSUInteger start = range->location;
+	NSUInteger start = blockRange->location;
 	while (start < [lines count]) {
 		NSString *line = [lines objectAtIndex:start];
 		if ([line length] > 0) break;
 		start++;
 	}
 	
-	// Find the end of block.
-	BOOL matchingDirectivesBlock = YES;
-	NSUInteger end = start;
-	if (start < [lines count]) {
-		while (end < [lines count]) {
-			NSString *line = [lines objectAtIndex:end];
-			if ([line length] == 0) break;
-			BOOL isDirective = [self isLineMatchingDirectiveStatement:line];
-			if (isDirective && !matchingDirectivesBlock) break;
-			if (!isDirective) matchingDirectivesBlock = NO;
-			end++;
-		}
+	// Find the end of block, which is at the first directive; note that we handle each directive separately.
+	NSUInteger blockEnd = start;
+	NSUInteger shortEnd = NSNotFound;
+	while (blockEnd < [lines count]) {
+		NSString *line = [lines objectAtIndex:blockEnd];
+		if (blockEnd > start && [self isLineMatchingDirectiveStatement:line]) break;
+		if ([line length] == 0 && shortEnd == NSNotFound) shortEnd = blockEnd;
+		blockEnd++;
 	}
+	if (shortEnd == NSNotFound) shortEnd = blockEnd;
 	
 	// Pass results back to client through parameters.
-	range->location = start;
-	range->length = end - start;
+	blockRange->location = start;
+	blockRange->length = blockEnd - start;
+	shortRange->location = start;
+	shortRange->length = shortEnd - start;
 	return (start < [lines count]);
 }
 
-- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)range {
-	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it.
+- (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it. We only need to handle short description based on settings if this is first block within the comment.
+	NSString *filename = self.currentComment.sourceInfo.filename;
+	NSUInteger lineNumber = self.currentComment.sourceInfo.lineNumber + blockRange.location;
+	self.currentSourceInfo = [GBSourceInfo infoWithFilename:filename ? filename : @"unknownfile" lineNumber:lineNumber];
+	
+	// If the block is a directive, we should handle only it's description text for the main block. If this is the first block in the comment, we should take the first part of the directive for short description.
+	NSArray *block = [lines subarrayWithRange:blockRange];
+	if ([self isLineMatchingDirectiveStatement:[block firstObject]]) {
+		NSString *string = [self stringByCombiningTrimmedLines:block];
+		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processParamBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processExceptionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processReturnBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
+	}
+		
+	// Handle short description and update block range if we're not repeating first paragraph.
+	if (!self.currentComment.shortDescription) {
+		[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:nil];
+		if (!self.settings.repeatFirstParagraphForMemberDescription && ![self.currentContext isStaticDocument] && ![self.currentContext isTopLevelObject]) {
+			blockRange.location += shortRange.length;
+			blockRange.length -= shortRange.length;
+		}
+	}
+	
+	// Register main block. Note that we skip this if block is empty (this can happen when removing short description above).
+	if (blockRange.length == 0) return;
+	NSArray *blockLines = blockRange.length == [block count] ? block : [lines subarrayWithRange:blockRange];
+	NSString *blockString = [self stringByCombiningTrimmedLines:blockLines];
+	if ([blockString length] == 0) return;
+	
+	// Process the string and register long description component.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
+	[self.currentComment.longDescription registerComponent:component];
+}
+
+- (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
+	// Extracts short description text from the given range within the given array of lines, converts it to string, optionally removes given prefix (this is used to remove directive text) and registers resulting text as current comment's short description. If short description is already registered, nothing happens!
+	if (self.currentComment.shortDescription) return;
+	
+	// Get short description from the lines.
 	NSArray *block = [lines subarrayWithRange:range];
-	self.currentStartLine = self.currentComment.sourceInfo.lineNumber + range.location;
+	NSString *stringValue = [self stringByCombiningTrimmedLines:block];
 	
-	// If the block defines one of the known paragraph items, register it and return. Note that paragraph items are simply added to previous paragraph, however if no paragraph exists yet, this will automatically create one.
-	if ([self registerExampleBlockFromLines:block]) return;
-	if ([self registerBugBlockFromLines:block]) return;
-	if ([self registerWarningBlockFromlines:block]) return;
-	if ([self registerListBlockFromLines:block]) return;
-	if ([self registerDirectivesBlockFromLines:block]) return;
+	// Trim prefix if given.
+	if ([remove length] > 0) stringValue = [stringValue substringFromIndex:[remove length]];
+	GBLogDebug(@"- Registering short description from %@...", [stringValue normalizedDescription]);
 	
-	// If nothing else is matched, the block is standard text. For that we need to start a new paragraph and process the text. Note that we first need to close all open paragraphs - even if the paragraph was started by a known paragraph item block, new text block always starts a new paragraph at this point. But we must keep the new paragraph open in case next block defines an item.
-	[self popAllParagraphs];
-	[self registerTextBlockFromLines:block];
+	// Convert to markdown and register everything.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:stringValue withFlags:0];
+	self.currentComment.shortDescription = component;
 }
 
-#pragma mark Comment blocks processing
+- (void)reserveShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
+	// Reserves the given short description data for later registration. This is used so that we can properly handle method directives - we only create short description from these if there is no other directive in the comment. So we want to postpone registration until the whole comment text is processed; if another description block is found later on, we'll be registering short description directly from it, so any registered data will not be used. But if after processing the whole block there is still no short description, we'll use registered data. This only registers the data the first time, so the first directive text found in comment is used for short description.
+	if (self.reservedShortDescriptionData) return;
+	self.reservedShortDescriptionData = [NSMutableDictionary dictionaryWithCapacity:3];
+	[self.reservedShortDescriptionData setObject:lines forKey:@"lines"];
+	[self.reservedShortDescriptionData setObject:[NSValue valueWithRange:range] forKey:@"range"];
+	[self.reservedShortDescriptionData setObject:remove forKey:@"remove"];
+}
 
-- (BOOL)registerWarningBlockFromlines:(NSArray *)lines {
-	// Warning block is a GBParagraphSpecialItem containing one or more GBParagraph items.
-	NSString *regex = self.components.warningSectionRegex;
-	if (![[lines firstObject] isMatchedByRegex:regex]) return NO;
+- (void)registerReservedShortDescriptionIfNecessary {
+	// If current comment doens't have short description assigned, this method registers it from registered data.
+	if (self.currentComment.shortDescription) return;
+	if (!self.reservedShortDescriptionData) return;
+	GBLogDebug(@"- Registering reserved short description...");
+	NSArray *lines = [self.reservedShortDescriptionData objectForKey:@"lines"];
+	NSRange range = [[self.reservedShortDescriptionData objectForKey:@"range"] rangeValue];
+	NSString *remove = [self.reservedShortDescriptionData objectForKey:@"remove"];
+	[self registerShortDescriptionFromLines:lines range:range removePrefix:remove];
+}
+
+#pragma mark Directives matching
+
+- (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
+	if ([components count] == 0) return NO;
 	
-	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @warning.
-	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
-	NSString *description = [string stringByMatching:regex capture:1];
-	if ([description length] == 0) {
- 		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Empty @warning block found at %@!", self.sourceFileInfo);
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	component.stringValue = string;
+	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"warning"];
+	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.bugSectionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	component.stringValue = string;
+	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"bug"];
+	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.parameterDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
+	NSString *name = [components objectAtIndex:2];
+	NSString *description = [components objectAtIndex:3];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+
+	// Prepare object representation from the description and register the parameter to the comment.
+	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	[argument.argumentDescription registerComponent:component];
+	[self.currentComment.methodParameters addObject:argument];
+	return YES;
+}
+
+- (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.exceptionDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
+	NSString *name = [components objectAtIndex:2];
+	NSString *description = [components objectAtIndex:3];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Prepare object representation from the description and register the exception to the comment.
+	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	[argument.argumentDescription registerComponent:component];
+	[self.currentComment.methodExceptions addObject:argument];
+	return YES;
+}
+
+- (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.returnDescriptionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *description = [components objectAtIndex:2];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Prepare object representation from the description and register the result to the comment.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	[self.currentComment.methodResult registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.relatedSymbolRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 reference.
+	NSString *reference = [components objectAtIndex:2];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:reference].location];
+	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Convert to markdown and register everything. We use strict links mode. If the link is note recognized, warn and exit.
+	NSString *markdown = [self stringByConvertingCrossReferencesInString:reference withFlags:GBProcessingFlagRelatedItem];
+	if ([markdown isEqualToString:reference]) {
+		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
 		return YES;
 	}
-	GBLogDebug(@"  - Found warning block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
 	
-	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
-	[self pushParagraphIfStackIsEmpty];
-	
-	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
-	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeWarning stringValue:string];
-	[self pushParagraph:NO];
-	[self registerTextItemsFromStringToCurrentParagraph:description];
-	[item registerParagraph:[self peekParagraph]];
-	[self popParagraph];
-	
-	// Register block item to current paragraph.
-	[[self peekParagraph] registerItem:item];
+	// If known link is found, register component, otherwise warn and exit.
+	GBCommentComponent *component = [self commentComponentWithStringValue:reference];
+	component.markdownValue = markdown;
+	component.relatedItem = self.lastReferencedObject;
+	[self.currentComment.relatedItems registerComponent:component];
 	return YES;
-}
-
-- (BOOL)registerBugBlockFromLines:(NSArray *)lines {
-	// Bug block is a GBParagraphSpecialItem containing one or more GBCommentParagraph items.
-	NSString *regex = self.components.bugSectionRegex;
-	if (![[lines firstObject] isMatchedByRegex:regex]) return NO;
-	
-	// Get the description and warn if empty text was found (we still return YES as the block was properly detected as @bug.
-	NSString *string = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
-	NSString *description = [string stringByMatching:regex capture:1];
-	if ([description length] == 0) {
- 		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Empty @bug block found at %@!", self.sourceFileInfo);
-		return YES;
-	}
-	GBLogDebug(@"  - Found bug block '%@' at %@.", [string normalizedDescription], self.sourceFileInfo);
-	
-	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
-	[self pushParagraphIfStackIsEmpty];
-	
-	// Prepare paragraph item by setting up it's description paragraph, split the string into items and register all items to paragraph. Note that this code effectively ends block paragraph here, so any subsequent block will be added to current paragraph instead. This allows @bug blocks being written anywhere in the documentation, but prevents having more than one paragraph within.
-	GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeBug stringValue:string];
-	[self pushParagraph:NO];	
-	[self registerTextItemsFromStringToCurrentParagraph:description];
-	[item registerParagraph:[self peekParagraph]];
-	[self popParagraph];
-	
-	// Register block item to current paragraph.
-	[[self peekParagraph] registerItem:item];
-	return YES;
-}
-
-- (BOOL)registerExampleBlockFromLines:(NSArray *)lines {
-	// Example block is a GBParagraphSpecialItem containing one or more GBCommentParagraph items. The block is only considered as example if each line is prefixed with a single tab or 4 spaces. That leading whitespace is removed from each line in registered data. Note that we allow having mixed lines where one starts with tab and another with spaces!
-	
-	// Validate all lines match required prefix. Note that we first used dictionaryByMatchingRegex:withKeysAndCaptures: but it ended with EXC_BAD_ACCESS and I couldn't figure it out, so reverted to captureComponentsMatchedByRegex:
-	NSString *regex = self.components.exampleSectionRegex;
-	NSMutableArray *linesOfCaptures = [NSMutableArray arrayWithCapacity:[lines count]];
-	for (NSString *line in lines) {
-		NSArray *match = [line captureComponentsMatchedByRegex:regex];
-		if ([match count] == 0) return NO;
-		[linesOfCaptures addObject:match];
-	}
-	
-	// So all lines are indeed prefixed with required example whitespace, let's create the item. First prepare string value containing only text without prefix. Note that capture index 0 contains full text, index 1 just the prefix and index 2 just the text.
-	NSMutableString *stringValue = [NSMutableString string];
-	[linesOfCaptures enumerateObjectsUsingBlock:^(NSArray *captures, NSUInteger idx, BOOL *stop) {
-		if ([stringValue length] > 0) [stringValue appendString:@"\n"];
-		NSString *lineText = [captures objectAtIndex:2];
-		[stringValue appendString:lineText];
-	}];
-	if ([stringValue length] == 0) {
-		if (self.settings.warnOnEmptyDescription) GBLogWarn(@"Found empty example block at %@!", self.sourceFileInfo);
-		return YES;
-	}
-	GBLogDebug(@"  - Found example block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
-	NSString *escapedHTML = [self.settings stringByEscapingHTML:stringValue];
-	
-	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
-	[self pushParagraphIfStackIsEmpty];
-	
-    // Prepare paragraph item. Note that we don't use paragraphs stack as currently we don't process the text for cross refs!
-    GBParagraphSpecialItem *item = [GBParagraphSpecialItem specialItemWithType:GBSpecialItemTypeExample stringValue:stringValue];
-	GBCommentParagraph *paragraph = [GBCommentParagraph paragraph];
-    [paragraph registerItem:[GBParagraphTextItem paragraphItemWithStringValue:escapedHTML]];
-	[item registerParagraph:paragraph];
-	
-    // Register example block to current paragraph.
-    [[self peekParagraph] registerItem:item];
-	return YES;
-}
-
-- (BOOL)registerListBlockFromLines:(NSArray *)lines {
-	// List block contains a hierarhcy of lists, each represented as a GBParagraphListItem, with it's items as GBCommentParagraph. The method handles both, ordered and unordered lists in any depth and any combination. NOTE: list items can be prefixed by tabs or spaces or combination of both, however it's recommended to use single case as depth is calculated simply by testing prefix string length (so single tab is considered same depth as single space).
-#define isMatchingListItemStatement(theText) \
-	([theText isMatchedByRegex:unorderedRegex] || [theText isMatchedByRegex:orderedRegex])
-	
-	// If the first line doesn't contain directive, exit.
-	// If first line doesn't start a list, we should exit.
-	NSString *unorderedRegex = self.components.unorderedListRegex;
-	NSString *orderedRegex = self.components.orderedListRegex;
-	if (!isMatchingListItemStatement([lines firstObject])) return NO;
-	GBLogDebug(@"  - Found list block at %@.", self.sourceFileInfo);
-	
-	// In the first pass, convert the array of lines into an array of pre-processed items. Each item is a dictionary containing the text and line number. The main reason for this step is to combine multiple line item texts into a single string.
-	NSMutableArray *items = [NSMutableArray arrayWithCapacity:[lines count]];
-	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
-		if (isMatchingListItemStatement(line)) {
-			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:3];
-			[data setObject:line forKey:@"text"];
-			[data setObject:[NSNumber numberWithInt:self.currentStartLine + idx] forKey:@"line"];
-			[items addObject:data];
-		} else {
-			NSMutableDictionary *data = [items lastObject];
-			NSString *text = [[data objectForKey:@"text"] stringByAppendingFormat:@"\n%@", line];
-			[data setObject:text forKey:@"text"];
-		}
-	}];
-	
-	// If there isn't paragraph registered yet, create one now, otherwise we'll just add the block to previous paragraph.
-	[self pushParagraphIfStackIsEmpty];
-	NSUInteger paragraphsStackSize = [self.paragraphsStack count];
-	
-	// Now process all items and register all data. Note that each list is described by GBParagraphListItem while it's individual items are represented by GBCommentParagraph objects, where each item can additionally contain sublists, again in the form of GBParagraphListItem (this might be confusing due to usage of words "list item" in the class, but the "item" refers to "paragraph item", not to the list). Here's a graph to make it more obvious:
-	// - GBParagraphListItem (root list, one object created for each list found)
-	//		- GBCommentParagraph (item1's description)
-	//		- GBCommentParagraph (item2's description)
-	//			- GBParagraphListItem (item2's sublist)
-	//				- GBCommentParagraph (item2.1's description)
-	NSMutableArray *listsStack = [NSMutableArray arrayWithCapacity:[items count]];
-	NSMutableArray *indentsStack = [NSMutableArray arrayWithCapacity:[items count]];
-	[items enumerateObjectsUsingBlock:^(NSDictionary *itemData, NSUInteger idx, BOOL *stop) {
-		BOOL ordered = NO;
-		NSArray *components = nil;
-		NSString *text = [itemData objectForKey:@"text"];
-		NSString *sourceInfo = [NSString stringWithFormat:@"%@%%@", self.currentComment.sourceInfo.filename, [itemData objectForKey:@"line"]];
-		
-		// Match list item.
-		components = [text captureComponentsMatchedByRegex:unorderedRegex];
-		if ([components count] > 0) {
-			ordered = NO;
-		} else {
-			components = [text captureComponentsMatchedByRegex:orderedRegex];
-			ordered = YES;
-		}
-		
-		// Get item components.		
-		NSString *indent = [components objectAtIndex:1];
-		NSString *stringValue = [components objectAtIndex:2];
-		
-		if ([listsStack count] == 0 || [indent length] > [[indentsStack peek] length]) {
-			// If lists stack is empty, create root list that will hold all items and push original indent. If we found greater indent, we need to start sublist.
-			GBLogDebug(@"    - Starting list at level %lu...", [indentsStack count] + 1);
-			GBParagraphListItem *item = ordered ? [GBParagraphListItem orderedParagraphListItem] : [GBParagraphListItem unorderedParagraphListItem];
-			[[self peekParagraph] registerItem:item];
-			[listsStack push:item];
-			[indentsStack push:indent];
-		} else if ([indent length] < [[indentsStack peek] length]) {
-			// If indent level is smaller, end sublist and pop current indents until we find a match. Note that we also need to close current paragraph belonging to previous item at the same level!
-			while ([indentsStack count] > 0 && [indent length] < [[indentsStack lastObject] length]) {
-				GBLogDebug(@"    - Ending list at level %lu...", [indentsStack count]);
-				[self popParagraph];
-				[listsStack pop];
-				[indentsStack pop];
-			}
-			[self popParagraph];
-		} else {
-			// If indent matches current one, we're adding new item to current list, but we need to close previous item's paragraph!
-			[self popParagraph];
-		}
-		
-		// Create GBCommentParagraph representing item's text and process the text. We'll end the paragraph representing item's text and sublists when we find another item at the same level or find items at lower levels...
-		GBLogDebug(@"      - Creating list item '%@' from %@ at level %lu...", [stringValue normalizedDescription], sourceInfo, [indentsStack count]);
-		GBParagraphListItem *list = [listsStack peek];
-		[list registerItem:[self pushParagraph:NO]];
-		[self registerTextItemsFromStringToCurrentParagraph:stringValue];
-	}];
-	
-	// At the end we need to unwind paragraphs stack until we clear all added paragraphs.
-	while ([self.paragraphsStack count] > paragraphsStackSize) [self popParagraph];
-	return YES;
-}
-
-- (BOOL)registerDirectivesBlockFromLines:(NSArray *)lines {
-	// Registers a block containing directives (@param, @return etc.).
-	// If the first line doesn't contain directive, exit.
-	NSString *parameterRegex = self.components.parameterDescriptionRegex;
-	NSString *exceptionRegex = self.components.exceptionDescriptionRegex;
-	NSString *returnRegex = self.components.returnDescriptionRegex;
-	NSString *crossRefRegex = self.components.crossReferenceRegex;
-	if (![self isLineMatchingDirectiveStatement:[lines firstObject]]) return NO;
-	
-	// In the first pass, convert the array of lines into an array of pre-processed directive items. Note that we use simplified grouping - if a line matches any directive, we start new directive, otherwise we append text to previous one. The result is an array containing dictionaries with text and line number. Exit if we didn't match any directive.
-	NSMutableArray *directives = [NSMutableArray arrayWithCapacity:[lines count]];
-	for (NSUInteger i=0; i<[lines count]; i++) {
-		NSString *line = [lines objectAtIndex:i];
-		if ([self isLineMatchingDirectiveStatement:line]) {
-			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-			[data setObject:line forKey:@"text"];
-			[data setObject:[NSNumber numberWithInt:self.currentStartLine + i] forKey:@"line"];
-			[directives addObject:data];
-		} else if (i > 0) {
-			NSMutableDictionary *data = [directives lastObject];
-			NSString *text = [[data objectForKey:@"text"] stringByAppendingFormat:@"\n%@", line];
-			[data setObject:text forKey:@"text"];
-		} else {
-			return NO;
-		}
-	};
-	GBLogDebug(@"  - Found directives block at %@.", self.sourceFileInfo);
-	
-	// Process all directives. Note that we must not immediately close paragraphs as we can find additional paragraph blocks belonging to the paragraph later on (i.e. list blocks, example blocks etc.).
-	[directives enumerateObjectsUsingBlock:^(NSDictionary *data, NSUInteger idx, BOOL *stop) {
-		NSArray *components = nil;
-		NSString *directive = [data objectForKey:@"text"];
-		NSString *sourceInfo = [NSString stringWithFormat:@"%@@%@", self.currentComment.sourceInfo.filename, [data objectForKey:@"line"]];
-		
-		// We must close previous directive description paragraph when we encounter another one. Note that this won't register the paragraph to comment as we opened each by specifying them as non-auto registered paragraphs. We leave last directive description paragraph open - we want to add any following paragraph blocks to. The paragraph will be closed either when we end processing or when we encounter another text block. Also note that we don't pop if stack is empty. This can happen when registering @see items which don't push paragraphs!
-		if (idx > 0 && ![self.paragraphsStack isEmpty]) [self popParagraph];
-		
-		// Match @param.
-		components = [directive captureComponentsMatchedByRegex:parameterRegex];
-		if ([components count] > 0) {
-			NSString *name = [components objectAtIndex:1];
-			NSString *text = [components objectAtIndex:2];
-			GBLogDebug(@"    - Found parameter %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph:NO];
-			[self registerTextItemsFromStringToCurrentParagraph:text];
-			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
-			[self.currentComment registerParameter:argument];
-			return;
-		}
-		
-		// Match @exception.
-		components = [directive captureComponentsMatchedByRegex:exceptionRegex];
-		if ([components count] > 0) {
-			NSString *name = [components objectAtIndex:1];
-			NSString *text = [components objectAtIndex:2];
-			GBLogDebug(@"    - Found exception %@ directive with description '%@' at %@...", name, [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph:NO];
-			[self registerTextItemsFromStringToCurrentParagraph:text];
-			GBCommentArgument *argument = [GBCommentArgument argumentWithName:name description:paragraph];
-			[self.currentComment registerException:argument];
-			return;
-		}
-		
-		// Match @return.
-		components = [directive captureComponentsMatchedByRegex:returnRegex];
-		if ([components count] > 0) {
-			NSString *text = [components objectAtIndex:1];
-			GBLogDebug(@"    - Matched result directive with description '%@' at %@...", [text normalizedDescription], sourceInfo);
-			GBCommentParagraph *paragraph = [self pushParagraph:NO];
-			[self registerTextItemsFromStringToCurrentParagraph:text];
-			[self.currentComment registerResult:paragraph];
-			return;
-		}
-		
-		// Match @see.
-		components = [directive captureComponentsMatchedByRegex:crossRefRegex];
-		if ([components count] > 0) {
-			NSString *text = [components objectAtIndex:1];
-			GBParagraphLinkItem *item = [self linkItemFromString:text range:nil description:nil templated:NO];
-			if (item) {
-				GBLogDebug(@"    - Matched cross ref directive %@ at %@...", text, sourceInfo);
-				[self.currentComment registerCrossReference:item];
-			} else if (self.settings.warnOnInvalidCrossReference && !self.currentComment.isCopied) {
-				GBLogWarn(@"Invalid cross ref %@ found at %@!", text, sourceInfo);
-			}
-			return;
-		}
-		
-		// If the line doesn't contain known directive, warn the user.
-		if (self.settings.warnOnUnknownDirective) GBLogWarn(@"Found unknown directive '%@' at %@!", directive, sourceInfo);
-	}];
-
-	return YES;
-}
-
-- (void)registerTextBlockFromLines:(NSArray *)lines {
-	// Registers standard text from the given block of lines. This always starts a new paragraph. Note that this method is just convenience method for registerTextItemsFromStringToCurrentParagraph:. Also note that we keep paragraph open as we may need to append one of the paragraph item blocks later on.
-	NSString *stringValue = [NSString stringByCombiningLines:lines delimitWith:@"\n"];
-	GBLogDebug(@"  - Found text block '%@' at %@.", [stringValue normalizedDescription], self.sourceFileInfo);
-	[self pushParagraph:YES];
-	[self registerTextItemsFromStringToCurrentParagraph:stringValue];
 }
 
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string {
+	if ([string isMatchedByRegex:self.components.warningSectionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.bugSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;
-	if ([string isMatchedByRegex:self.components.crossReferenceRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.relatedSymbolRegex]) return YES;
 	return NO;
 }
 
-#pragma mark Comment text processing
+#pragma mark Text processing methods
 
-- (void)registerTextItemsFromStringToCurrentParagraph:(NSString *)string {
-	// Registers the text from the given string to last paragraph. Text is converted to an array of GBParagraphTextItem, GBParagraphLinkItem and GBParagraphDecoratorItem objects. This is the main entry point for text processing, this is the only message that should be used for processing text from higher level methods. WARNING: The client is responsible for adding proper paragraph to the stack!
-	NSString *simplified = [string stringByReplacingOccurrencesOfRegex:@"(\\*_|_\\*)" withString:@"=!="];
-	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|=!=|`)(.*?)\\1)" withKeysAndCaptures:@"type", 1, @"value", 2, nil];
-	GBCommentParagraph *paragraph = [self peekParagraph];
-	NSRange search = NSMakeRange(0, [simplified length]);
+- (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values. Flags specify various processing directives that affect how processing is handled.
+	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
+	GBCommentComponent *result = [self commentComponentWithStringValue:string];
+	result.markdownValue = [self stringByPreprocessingString:string withFlags:flags];
+	return result;
+}
+
+- (GBCommentComponent *)commentComponentWithStringValue:(NSString *)string {
+	// Creates a new GBCommentComponents, assigns the given string as it's string value and assigns settings and currentSourceInfo. This is an entry point for all comment components creations; it makes sure all data is registered. But it doesn't do any processing!
+	GBCommentComponent *result = [GBCommentComponent componentWithStringValue:string sourceInfo:self.currentSourceInfo];
+	result.settings = self.settings;
+	return result;
+}
+
+- (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+	// Converts all appledoc formatting and cross refs to proper Markdown text suitable for passing to Markdown generator.
+	if ([string length] == 0) return string;
+	
+	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
+	NSString *nested = [string stringByReplacingOccurrencesOfRegex:@"(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*)" withString:@"==!!=="];
+	NSString *simplified = [nested stringByReplacingOccurrencesOfRegex:@"(__|\\*\\*)" withString:@"*"];
+	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|==!!==|`)(.*?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
+	NSRange searchRange = NSMakeRange(0, [simplified length]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[simplified length]];
 	for (NSDictionary *component in components) {
-		// Get range of next formatted section. If not found, exit (we'll deal with remaining text after the loop).
-		NSString *type = [component objectForKey:@"type"];
-		NSRange range = [simplified rangeOfString:type options:0 range:search];
-		if (range.location == NSNotFound) break;
+		// Find marker range within the remaining text. Note that we don't test for marker not found, as this shouldn't happen...
+		NSString *componentMarker = [component objectForKey:@"marker"];
+		NSString *componentText = [component objectForKey:@"value"];
+		NSRange markerRange = [simplified rangeOfString:componentMarker options:0 range:searchRange];
 		
-		// If we skipped some text, add it before handling formatted part!
-		if (range.location > search.location) {
-			NSRange skippedRange = NSMakeRange(search.location, range.location - search.location);
+		// If we skipped some text, convert all cross refs in it and append to the result.
+		if (markerRange.location > searchRange.location) {
+			NSRange skippedRange = NSMakeRange(searchRange.location, markerRange.location - searchRange.location);
 			NSString *skippedText = [simplified substringWithRange:skippedRange];
-			GBLogDebug(@"  - Found '%@' text at %@, processing for cross refs...", skippedText, self.sourceFileInfo);
-			[self registerTextAndLinkItemsFromString:skippedText toObject:paragraph];
-		}
-
-		// Get formatted text and prepare properly decorated component. Note that we warn the user if we find unknown decorator type (this probably just means we changed some decorator value by forgot to change this part, so it's some sort of "exception" catching).
-		NSString *text = [component valueForKey:@"value"];
-		if ([text length] > 0) {
-			GBParagraphDecoratorItem *decorator = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
-			if ([type isEqualToString:@"*"]) {
-				GBLogDebug(@"  - Found '%@' formatted as bold at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
-				decorator.decorationType = GBDecorationTypeBold;
-			} else if ([type isEqualToString:@"_"]) {
-				GBLogDebug(@"  - Found '%@' formatted as italics at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
-				decorator.decorationType = GBDecorationTypeItalics;
-			} else if ([type isEqualToString:@"`"]) {
-				GBLogDebug(@"  - Found '%@' formatted as code at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
-				decorator.decorationType = GBDecorationTypeCode;
-			} else if ([type isEqualToString:@"=!="]) {
-				// Note that this case requires us to properly registere text to inner decorator but register outer one to the paragraph, so we do it manually!
-				GBLogDebug(@"  - Found '%@' formatted as bold-italics at %@, processing for cross refs...", [text normalizedDescription], self.sourceFileInfo);
-				GBParagraphDecoratorItem *inner = [GBParagraphDecoratorItem paragraphItemWithStringValue:text];
-				decorator.decorationType = GBDecorationTypeBold;
-				[decorator registerItem:inner];
-				inner.decorationType = GBDecorationTypeItalics;
-				[self registerTextAndLinkItemsFromString:text toObject:inner];
-				[paragraph registerItem:decorator];
-				decorator = nil;
-			} else {
-				if (self.settings.warnOnUnknownDirective) GBLogWarn(@"Unknown text decorator type %@ detected at %@!", type, self.sourceFileInfo);
-				decorator = nil;
-			}
-			
-			if (decorator) {
-				[self registerTextAndLinkItemsFromString:text toObject:decorator];
-				[paragraph registerItem:decorator];
-			}
-		}
-
-		// Prepare next search range.
-		NSUInteger location = range.location + range.length * 2 + [text length];
-		search = NSMakeRange(location, [simplified length] - location);
-	};
-
-	// If we have some remaining text, append it now.
-	if ([simplified length] > search.location) {
-		NSString *remainingText = [simplified substringWithRange:search];
-		GBLogDebug(@"  - Found '%@' text at %@, processing for cross refs...", [remainingText normalizedDescription], self.sourceFileInfo);
-		[self registerTextAndLinkItemsFromString:remainingText toObject:paragraph];
-	}
-}
-
-- (void)registerTextAndLinkItemsFromString:(NSString *)string toObject:(id)object {
-	// Scans the given string for possible links and converts the text to an array of GBParagraphTextItem and GBParagraphLinkItem objects which are ultimately registered to the given object. NOTE: This message is intended to be sent from registerTextItemsFromStringToCurrentParagraph: and should not be used otherwise! WARNING: The given object must respond to registerItem: message!
-#define registerTextItemFromString(theString) \
-	if ([theString length] > 0) { \
-		GBLogDebug(@"    - Found text '%@'...", [theString normalizedDescription]); \
-		GBParagraphTextItem *textItem = [GBParagraphTextItem paragraphItemWithStringValue:theString]; \
-		[object registerItem:textItem]; \
-		[theString setString:@""]; \
-	}
-#define registerLinkItem(theItem, theType) { \
-	GBLogDebug(@"    - Found %@ %@ cross ref..", theType, theItem.stringValue); \
-	[object registerItem:theItem]; \
-}
-#define skipTextFromString(theString) { \
-	if (theString) { \
-		[text appendString:theString]; \
-		string = [string substringFromIndex:[theString length]]; \
-	} \
-}
-	// Progressively chip away the string and test if it starts with any known cross reference. If so, register link item, otherwise consider the text as normal text item, so skip to the next word.
-	NSMutableString *text = [NSMutableString stringWithCapacity:[string length]];
-	NSRange range = NSMakeRange(0, 0);
-	while ([string length] > 0) {
-		// If the string starts with any recognized cross reference, add the link item and skip it's text, otherwise mark the word until next whitespace as text item.
-		NSString *description = nil;
-		GBParagraphLinkItem *linkItem = [self linkItemFromString:string range:&range description:&description templated:YES];
-		if (linkItem) {
-			skipTextFromString([string substringToIndex:range.location]);
-			registerTextItemFromString(text);
-			registerLinkItem(linkItem, description);
-			string = [string substringFromIndex:range.length];
-		} else {
-			skipTextFromString([string stringByMatching:@"^\\S+"]);
+			NSString *convertedText = [self stringByConvertingCrossReferencesInString:skippedText withFlags:flags];
+			[result appendString:convertedText];
 		}
 		
-		// Skip any leading whitespace until the next word and mark it as text item.
-		skipTextFromString([string stringByMatching:@"^\\s+"]);
+		// Convert the marker to proper Markdown style. Warn if unknown marker is found. This is just a precaution in case we change something above, but forget to update this part, shouldn't happen in released versions as it should get caught by unit tests...
+		GBProcessingFlag linkFlags = flags;
+		NSString *markdownMarker = @"";
+		if ([componentMarker isEqualToString:@"*"]) {
+			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownMarker = @"**";
+		}
+		else if ([componentMarker isEqualToString:@"_"]) {
+			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownMarker = @"_";
+		}
+		else if ([componentMarker isEqualToString:@"`"]) {
+			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownMarker = @"`";
+			linkFlags |= GBProcessingFlagEmbedMarkdownLink;
+		}
+		else if ([componentMarker isEqualToString:@"==!!=="]) {
+			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownMarker = @"***";
+		}
+		else if (self.settings.warnOnUnknownDirective) {
+			GBLogWarn(@"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
+		}
+		
+		// Get formatted text, convert it's cross references and append proper format markers and string to result.
+		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
+		[result appendString:markdownMarker];
+		[result appendString:convertedText];
+		[result appendString:markdownMarker];
+		
+		// Prepare next search range.
+		NSUInteger location = markerRange.location + markerRange.length * 2 + [componentText length];
+		searchRange = NSMakeRange(location, [simplified length] - location);
 	}
 	
-	// Append any remaining text 
-	registerTextItemFromString(text);
+	// If there is some remaining text, process it for cross references and append to result.
+	if ([simplified length] > searchRange.location) {
+		NSString *remainingText = [simplified substringWithRange:searchRange];
+		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText withFlags:flags];
+		[result appendString:convertedText];
+	}
+	
+	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
+	NSString *regex = @"`((?:~!@)?\\[`[^`]*`\\]\\(.+?\\)(?:@!~)?)`";
+	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
+		return capturedStrings[1];
+	}];
+	return clean;
+}
+
+- (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+	// Preprocesses the given string and converts all cross references and URLs to Markdown style - [](). This is the high level method for cross references processing; it works by first detecting existing Markdown sytax links, then processing the string before and after them separately for "simple", Appledoc, cross references. Existing Markdown addresses are also processed for cross refs to registered entities. This is continues until end of string is reached.
+	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	NSRange searchRange = NSMakeRange(0, [string length]);
+	self.lastReferencedObject = nil;
+	while (YES) {
+		// Find next Markdown style link, and use the first one found or exit if none found - we'll process remaining text later on.
+		GBCrossRefData *markdownData = nil;
+		GBCrossRefData markdownLinkData = [self dataForFirstMarkdownInlineLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData markdownRefData = [self dataForFirstMarkdownReferenceLinkInString:string searchRange:searchRange flags:flags];
+		if (GBIsCrossRefValid(markdownLinkData)) {
+			if (GBIsCrossRefValid(markdownRefData)) {
+				markdownData = (markdownLinkData.range.location < markdownRefData.range.location) ? &markdownLinkData : &markdownRefData;
+			} else {
+				markdownData = &markdownLinkData;
+			}
+		} else if (GBIsCrossRefValid(markdownRefData)) {
+			markdownData = &markdownRefData;
+		} else {
+			break;
+		}
+		
+		// Now that we have Markdown syntax link, preprocess the string from the last position to the start of Markdown link.
+		if (markdownData->range.location > searchRange.location) {
+			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location);
+			NSString *skipped = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:convertRange flags:flags];
+			[result appendString:skipped];
+		}
+		
+		// Process Markdown link's address if it's a known object.
+		NSRange addressRange = NSMakeRange(0, [markdownData->address length]);
+		GBProcessingFlag markdownFlags = flags | GBProcessingFlagMarkdownLink;
+		NSString *markdownAddress = [self stringByConvertingSimpleCrossReferencesInString:markdownData->address searchRange:addressRange flags:markdownFlags];
+		[result appendFormat:markdownData->description, markdownAddress];
+		
+		// Process the remaining string or exit if we're done.
+		searchRange.location = markdownData->range.location + markdownData->range.length;
+		searchRange.length = [string length] - searchRange.location;
+		if (searchRange.location >= [string length]) break;
+	}
+	
+	// Process remaining text for simple links if necessary.
+	if (searchRange.location < [string length]) {
+		NSString *remaining = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:searchRange flags:flags];
+		[result appendString:remaining];
+	}
+	return result;
+}
+
+- (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Processes the given range of the given string for any "simple", Appledoc, cross reference and returns new string with all cross references converted to Markdown syntax. GBInsideMarkdownLink flag specifies whether we're handling string inside existing Markdown link; in such case we only test for link at the start of the string and return address only instead of the Markdown syntax.
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
+	NSUInteger lastUsedLocation = searchRange.location;
+	BOOL isInsideMarkdown = (flags & GBProcessingFlagMarkdownLink) > 0;
+	while (YES) {
+		// Find all cross references
+		GBCrossRefData urlData = [self dataForURLLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData objectData = [self dataForClassOrProtocolLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData categoryData = [self dataForCategoryLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData localMemberData = [self dataForLocalMemberLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData remoteMemberData = [self dataForRemoteMemberLinkInString:string searchRange:searchRange flags:flags];
+		GBCrossRefData documentData = [self dataForDocumentLinkInString:string searchRange:searchRange flags:flags];
+		
+		// If we find class or protocol link at the same location as category, ignore class/protocol. This prevents marking text up to open parenthesis being converted to a class/protocol where in fact it's category. The same goes for remote member data!
+		if (GBIsCrossRefInside(objectData, categoryData)) objectData = GBEmptyCrossRefData();
+		if (GBIsCrossRefInside(objectData, remoteMemberData)) objectData = GBEmptyCrossRefData();
+		if (GBIsCrossRefInside(categoryData, remoteMemberData)) categoryData = GBEmptyCrossRefData();
+		
+		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! If no link was found, proceed with next char. If there's no other word, exit (we'll deal with remaining text later on).
+		[links setCount:0];
+		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
+		if (GBIsCrossRefValid(objectData)) [links addPointer:&objectData];
+		if (GBIsCrossRefValid(categoryData)) [links addPointer:&categoryData];
+		if (GBIsCrossRefValid(localMemberData)) [links addPointer:&localMemberData];
+		if (GBIsCrossRefValid(remoteMemberData)) [links addPointer:&remoteMemberData];
+		if (GBIsCrossRefValid(documentData)) [links addPointer:&documentData];
+		if ([links count] == 0) {
+			if (isInsideMarkdown) return string;
+			if (searchRange.location >= [string length] - 1) break;
+			searchRange.location++;
+			searchRange.length--;
+			if (searchRange.length == 0) break;
+			continue;
+		}
+		
+		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
+		while ([links count] > 0) {
+			// Find the lowest index.
+			GBCrossRefData *linkData = NULL;
+			NSUInteger index = NSNotFound;
+			for (NSUInteger i=0; i<[links count]; i++) {
+				GBCrossRefData *data = [links pointerAtIndex:i];
+				if (!linkData || linkData->range.location > data->range.location) {
+					linkData = data;
+					index = i;
+				}
+			}
+			
+			// If there is some text skipped after previous link (or search range), append it to output first.
+			if (linkData->range.location > lastUsedLocation) {
+				NSRange skippedRange = NSMakeRange(lastUsedLocation, linkData->range.location - lastUsedLocation);
+				NSString *skippedText = [string substringWithRange:skippedRange];
+				[result appendString:skippedText];
+			}
+			
+			// Convert the raw link to Markdown syntax and append to output.
+			NSString *markdownLink = isInsideMarkdown ? linkData->address : linkData->markdown;
+			[result appendString:markdownLink];
+			
+			// Update range and remove the link from the temporary array.
+			NSUInteger location = linkData->range.location + linkData->range.length;
+			searchRange.location = location;
+			searchRange.length = [string length] - location;
+			lastUsedLocation = location;
+			[links removePointerAtIndex:index];
+		}
+		
+		// Exit if there's nothing more to process.
+		if (searchRange.location >= [string length]) break;
+	}
+	
+	// If there's some text remaining after all links, append it.
+	if (!isInsideMarkdown && lastUsedLocation < [string length]) {
+		NSString *remainingText = [string substringFromIndex:lastUsedLocation];
+		[result appendString:remainingText];
+	}
+	return result;
+}
+
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags {
+	// Creates Markdown inline style link using the given components. This should be used when converting text to Markdown links as it will prepare special format so that we can later properly format links embedded in code spans!
+	NSString *result = nil;
+	if ((flags & GBProcessingFlagEmbedMarkdownLink) > 0)
+		result = [NSString stringWithFormat:@"[`%@`](%@)", description, address];
+	else
+		result = [NSString stringWithFormat:@"[%@](%@)", description, address];
+	return [self.settings stringByEmbeddingCrossReference:result];
+}
+
+- (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
+	// Converts the given string into blockquote and optionally adds class name to convert to <div>.
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	if ([className length] > 0) [result appendFormat:@"> %%%@%%\n", className];
+	NSArray *lines = [string arrayOfLines];
+	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		[result appendFormat:@"> %@", line];
+		if (idx < [lines count] - 1) [result appendString:@"\n"];
+	}];
+	return result;
+}
+
+- (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines {
+	// Combines all lines from given array delimiting them with new line and automatically trimms all empty lines from the start and end of array. If resulting array is empty, empty string is returned. If only one line remains, the line is returned, otherwise all lines delimited by new-line are returned.
+	NSMutableArray *array = [NSMutableArray arrayWithArray:lines];
+	while ([array count] > 0 && [[array firstObject] length] == 0) [array removeObjectAtIndex:0];
+	while ([array count] > 0 && [[array lastObject] length] == 0) [array removeLastObject];
+	if ([array count] == 0) return @"";
+	if ([array count] == 1) return [array firstObject];
+	return [NSString stringByCombiningLines:array delimitWith:@"\n"];
 }
 
 #pragma mark Cross references detection
 
-- (id)linkItemFromString:(NSString *)string range:(NSRange *)range description:(NSString **)description templated:(BOOL)templated {
-	// Matches any cross reference at the start of the given string and creates GBParagraphLinkItem, match range and description suitable for logging if found. If the string doesn't represent any known cross reference, nil is returned and the other parameters are left untouched. Note that the order of testing is somewhat important (for example we should test for category before class or protocol to avoid text up to open parenthesis being recognized as a class where in fact it's category).
-	GBParagraphLinkItem *result = nil;
-	NSString *desc = nil;
-	if ((result = [self categoryLinkFromString:string range:range templated:templated])) {
-		desc = @"category";
-	} else if ((result = [self classLinkFromString:string range:range templated:templated])) {
-		desc = @"class";
-	} else if ((result = [self protocolLinkFromString:string range:range templated:templated])) {
-		desc = @"protocol";
-	} else if ((result = [self documentLinkFromString:string range:range templated:templated])) {
-		desc = @"document";
-	} else if ((result = [self remoteMemberLinkItemFromString:string range:range templated:templated])) {
-		desc = @"remote member";
-	} else if ((result = [self localMemberLinkFromString:string range:range templated:templated])) {
-		desc = @"local member";
-	} else if ((result = [self urlLinkItemFromString:string range:range templated:templated])) {
-		desc = @"url";
-	}
-	if (result && description) *description = desc;
+- (GBCrossRefData)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first class or protocol cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components objectCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
+
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Validate object name with a class or protocol.
+	id referencedObject = [self.store classWithName:objectName];
+	if (!referencedObject) referencedObject = [self.store protocolWithName:objectName];
+	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
+	
+	// Create link data and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.description = objectName;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
-- (id)remoteMemberLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for remote member cross reference (in the format [Object member]). If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	// If the string starts with remote link
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components remoteMemberCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
+- (GBCrossRefData)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first category cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components categoryCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
+
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
+	NSString *linkText = [[components objectAtIndex:0] stringByTrimmingWhitespaceAndNewLine];
+	NSString *objectName = [[components objectAtIndex:1] stringByTrimmingWhitespaceAndNewLine];
 	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 object name, index 2 member name.
+	// Validate object name with a class or protocol.
+	id referencedObject = [self.store categoryWithName:objectName];
+	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
+
+	// Create link data and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.description = objectName;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
+	return result;
+}
+
+- (GBCrossRefData)dataForLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first local member cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	if (!self.currentContext) return result;
+
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components localMemberCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
+		
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 selector.
 	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
-	NSString *memberName = [components objectAtIndex:2];
+	NSString *selector = [components objectAtIndex:2];
 	
-	// Validate the link to match it to known object. If no known object is matched, warn, update search range and continue with remaining text. This is required so that we treat unknown objects as normal text later on and still catch proper references that may be hiding in the remainder.
+	// Validate selected within current context.
+	GBMethodData *referencedObject = [[[self currentContext] methods] methodBySelector:selector];
+	if (!referencedObject) return result;
+	self.lastReferencedObject = referencedObject;
+	
+	// If we're creating link for related item, we should use method prefix.	
+	if ((flags & GBProcessingFlagRelatedItem) > 0 && self.settings.prefixLocalMembersInRelatedItemsList) selector = referencedObject.prefixedMethodSelector;
+
+	// Create link data and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.description = selector;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
+	return result;
+}
+
+- (GBCrossRefData)dataForRemoteMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first remote member cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components remoteMemberCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
+	
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 object name, index 3 selector.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:2];
+	NSString *selector = [components objectAtIndex:3];
+	
+	// Match object name with one of the known objects. Warn if not found. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedObject = [self.store classWithName:objectName];
 	if (!referencedObject) {
 		referencedObject = [self.store categoryWithName:objectName];
 		if (!referencedObject) {
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
-				if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown object!", linkText, self.sourceFileInfo);
-				return nil;
+				if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown object!", linkText, self.currentSourceInfo);
+				result.range = [string rangeOfString:linkText options:0 range:searchRange];
+				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
+				return result;
 			}
 		}
 	}
 	
-	// Ok, so we have found referenced object in store, now search the member. If member isn't recognized, warn, update search range and continue with remaining text. This is required so that we treat unknown members as normal text later on and still catch proper references in remainder.
-	id referencedMember = [[referencedObject methods] methodBySelector:memberName];
+	// Ok, so we've found a reference to an object, now search for the member. If not found, warn and return. Note that we mark the result so that we won't be searching the range for other links.
+	id referencedMember = [[referencedObject methods] methodBySelector:selector];
 	if (!referencedMember) {
-		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.sourceFileInfo);
-		return nil;
+		if (self.settings.warnOnInvalidCrossReference) GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
+		result.range = [string rangeOfString:linkText options:0 range:searchRange];
+		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
+		return result;
 	}
+	self.lastReferencedObject = referencedMember;
 	
-	// Right, we have valid reference to known remote member, create the link item, prepare range and return.
-	NSString *stringValue = [linkText stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:stringValue];
-	result.href = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
-	result.context = referencedObject;
-	result.member = referencedMember;
-	result.isLocal = NO;
-	if (range) *range = [string rangeOfString:linkText];
+	// Create link data and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
+	result.description = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
-- (id)localMemberLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for local member cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers. NOTE: Note that we can skip local member cross ref testing if no context (i.e. class, category or protocol) is given!
-	if (!self.currentContext) return nil;
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components localMemberCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
+- (GBCrossRefData)dataForDocumentLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first document cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components documentCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
 	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the member selector.
+	// Get link components. Index 0 contains full text, index 1 document name.
 	NSString *linkText = [components objectAtIndex:0];
-	NSString *selector = [components objectAtIndex:1];
+	NSString *documentName = [components objectAtIndex:1];
 	
-	// Validate the selector against the context. If context doesn't implement the method, exit.
-	GBMethodData *referencedMethod = [[[self currentContext] methods] methodBySelector:selector];
-	if (!referencedMethod) return nil;
+	// Validate selected within current context.
+	GBDocumentData *referencedDocument = [self.store documentWithName:documentName];
+	if (!referencedDocument) return result;
+	self.lastReferencedObject = referencedDocument;
 	
-	// Ok, we have valid method, return the link item.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:selector];
-	result.href = [self.settings htmlReferenceForObject:referencedMethod fromSource:self.currentContext];
-	result.context = self.currentContext;
-	result.member = referencedMethod;
-	result.isLocal = YES;
-	if (range) *range = [string rangeOfString:linkText];
+	// Create link data and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedDocument fromSource:self.currentContext];
+	result.description = documentName;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
-- (id)classLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for class cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components objectCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
+- (GBCrossRefData)dataForURLLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first URL cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components urlCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return result;
 	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
-	
-	// Validate the selector against the context. If context doesn't implement the method, exit.
-	GBClassData *referencedObject = [self.store classWithName:objectName];
-	if (!referencedObject) return nil;
-	
-	// Ok, we have valid method, return the link item.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
-	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
-	result.context = referencedObject;
-	result.isLocal = (referencedObject == self.currentContext);
-	if (range) *range = [string rangeOfString:linkText];
-	return result;
-}
-
-- (id)categoryLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for category cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components categoryCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
-	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
-	
-	// Validate the selector against the context. If context doesn't implement the method, exit.
-	GBCategoryData *referencedObject = [self.store categoryWithName:objectName];
-	if (!referencedObject) return nil;
-	
-	// Ok, we have valid method, return the link item.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
-	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
-	result.context = referencedObject;
-	result.isLocal = (referencedObject == self.currentContext);
-	if (range) *range = [string rangeOfString:linkText];
-	return result;
-}
-
-- (id)protocolLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for protocol cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components objectCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
-	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
-	
-	// Validate the selector against the context. If context doesn't implement the method, exit.
-	GBProtocolData *referencedObject = [self.store protocolWithName:objectName];
-	if (!referencedObject) return nil;
-	
-	// Ok, we have valid method, return the link item.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
-	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
-	result.context = referencedObject;
-	result.isLocal = (referencedObject == self.currentContext);
-	if (range) *range = [string rangeOfString:linkText];
-	return result;
-}
-
-- (id)documentLinkFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for document cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components documentCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
-	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
-	
-	// Get the document from the store - note that we need to add -template extension! If not found, exit.
-	NSString *objectID = [self.settings templateFilenameForOutputPath:objectName];
-	GBDocumentData *referencedObject = [self.store documentWithName:objectID];
-	if (!referencedObject) return nil;
-	
-	// Ok, we have valid method, return the link item.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:objectName];
-	result.href = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
-	result.context = referencedObject;
-	result.isLocal = (referencedObject == self.currentContext);
-	if (range) *range = [string rangeOfString:linkText];
-	return result;
-}
-
-- (id)urlLinkItemFromString:(NSString *)string range:(NSRange *)range templated:(BOOL)templated {
-	// Matches the beginning of the string for URL cross reference. If found, GBParagraphLinkItem is prepared and returned. NOTE: The range argument is used to return the range of all link text, including optional <> markers.
-	NSArray *components = [string captureComponentsMatchedByRegex:[self.components urlCrossReferenceRegex:templated]];
-	if ([components count] == 0) return nil;
-	
-	// Get link components. Index 0 contains full text, including optional <>, index 1 just the URL address.
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
 	NSString *linkText = [components objectAtIndex:0];
 	NSString *address = [components objectAtIndex:1];
+	NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
 	
 	// Create link item, prepare range and return.
-	GBParagraphLinkItem *result = [GBParagraphLinkItem paragraphItemWithStringValue:address];
-	result.href = address;
-	if (range) *range = [string rangeOfString:linkText];
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = address;
+	result.description = description;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
 
-#pragma mark Helper methods
-
-- (GBCommentParagraph *)pushParagraphIfStackIsEmpty {
-	// Convenience method for creating and pushing paragraph only if paragraphs stack is currently empty. In such case new paragraph is pushed to stack and returned. Otherwise last paragraph on the stack is returned. This is useful for block handling methods for comment paragraphs (it's not suitable for parameters, exceptions and similar which must create non-autoregistering paragraph).
-	if ([self.paragraphsStack isEmpty]) return [self pushParagraph:YES];
-	return [self peekParagraph];
-}
-
-- (GBCommentParagraph *)pushParagraph:(BOOL)canAutoRegister {
-	// Convenience method for creating and pushing paragraph. Note that auto register flag specifies whether the paragraph should be automatically registered to comment when popping last paragraph from the stack. For normal comment description paragraphs, this should be YES, however for paragraphs describing list items, example blocks, method directives and similar, this should be NO to prevent registering description paragraphs to comment as well in case there is no opened comment paragraph yet...
-	GBCommentParagraph *result = [GBCommentParagraph paragraph];
-	NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:result, @"paragraph", [NSNumber numberWithBool:canAutoRegister], @"register", nil];
-	[self.paragraphsStack push:data];
+- (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first markdown inline link in the given range of the given string. if found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
+	if ([components count] == 0) return result;
+	
+	// Get link components. Index 0 contains full text, index 1 description without brackets, index 2 the address, index 3 optional title.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *description = [components objectAtIndex:1];
+	NSString *address = [components objectAtIndex:2];
+	NSString *title = [components objectAtIndex:3];
+	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
+	
+	// Create link item, prepare range and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = address;
+	result.description = [self markdownLinkWithDescription:description address:[NSString stringWithFormat:@"%%@%@", title] flags:flags];
+	result.markdown = linkText;
 	return result;
 }
 
-- (GBCommentParagraph *)peekParagraph {
-	return [[self.paragraphsStack peek] objectForKey:@"paragraph"];
-}
+- (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+	// Matches the first markdown reference link in the given range of the given string. If found, link data otherwise empty data is returned.
+	GBCrossRefData result = GBEmptyCrossRefData();
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownReferenceLinkRegex range:searchRange];
+	if ([components count] == 0) return result;
+	
+	// Get link components. Index 0 contains full text, index 1 reference ID, index 2 address, index 3 optional title.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *reference = [components objectAtIndex:1];
+	NSString *address = [components objectAtIndex:2];
+	NSString *title = [components objectAtIndex:3];
+	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
 
-- (GBCommentParagraph *)popParagraph {
-	// Pops last paragraph from the stack and returns it. If the stack becomes empty, the paragraph is registered to current comment. This simplifies and automates paragraphs registration.
-	NSDictionary *data = [self.paragraphsStack pop];
-	GBCommentParagraph *result = [data objectForKey:@"paragraph"];
-	BOOL canRegister = [[data objectForKey:@"register"] boolValue];
-	if (canRegister && [self.paragraphsStack isEmpty]) [self.currentComment registerParagraph:result];
+	// Create link item, prepare range and return.
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = address;
+	result.description = [NSString stringWithFormat:@"[%@]: %%@%@", reference, title];
+	result.markdown = linkText;
 	return result;
-}
-
-- (void)popAllParagraphs {
-	while (![self.paragraphsStack isEmpty]) {
-		[self popParagraph];
-	}
 }
 
 #pragma mark Properties
-
-- (NSString *)sourceFileInfo {
-	// Helper method for simplifiying logging of current line and source file information.
-	return [NSString stringWithFormat:@"%@@%lu", self.currentComment.sourceInfo.filename, self.currentStartLine];
-}
 
 - (GBCommentComponentsProvider *)components {
 	return self.settings.commentComponents;
 }
 
-@synthesize paragraphsStack;
-@synthesize currentStartLine;
+@synthesize lastReferencedObject;
+@synthesize reservedShortDescriptionData;
+@synthesize currentSourceInfo;
 @synthesize currentComment;
 @synthesize currentContext;
 @synthesize settings;

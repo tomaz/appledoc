@@ -28,6 +28,7 @@ enum {
 	GBErrorTemplatePathNotDirectory,
 	
 	GBErrorHTMLObjectTemplateMissing = 8000,
+	GBErrorHTMLDocumentTemplateMissing,
 	GBErrorHTMLIndexTemplateMissing,
 	GBErrorHTMLHierarchyTemplateMissing,
 	

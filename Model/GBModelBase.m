@@ -53,7 +53,7 @@
 	if (!self.comment && comment) self.comment = comment;
 }
 
-#pragma mark Declared files handling
+#pragma mark Source information handling
 
 - (void)registerSourceInfo:(GBSourceInfo *)data {
 	NSParameterAssert(data != nil);

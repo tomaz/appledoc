@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#include "mkdio.h"
 #import <objc/runtime.h>
 #import "RegexKitLite.h"
 #import "GBDataObjects.h"
@@ -76,9 +77,13 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
+		
 		self.mergeCategoriesToClasses = YES;
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
+		
+		self.prefixLocalMembersInRelatedItemsList = YES;
+		self.embedCrossReferencesWhenProcessingMarkdown = YES;
 
 		self.warnOnMissingOutputPathArgument = YES;
 		self.warnOnMissingCompanyIdentifier = YES;
@@ -143,6 +148,91 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 }
 
 #pragma mark Common HTML handling
+
+- (NSString *)stringByEmbeddingCrossReference:(NSString *)value {
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return value;
+	return [NSString stringWithFormat:@"~!@%@@!~", value];
+}
+
+- (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
+	// First pass the markdown to discount to get it converted to HTML.
+	NSString *result = nil;
+	MMIOT *document = mkd_string((char *)[markdown cStringUsingEncoding:NSUTF8StringEncoding], (int)[markdown length], 0);
+	mkd_compile(document, 0);
+	char *html = NULL;
+	int size = mkd_document(document, &html);
+	if (size <= 0) {
+		GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown normalizedDescription]);
+	} else {
+		result = [NSString stringWithCString:html encoding:NSASCIIStringEncoding];
+	}
+	mkd_cleanup(document);
+	
+	// Post process embedded cross references if needed.
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
+	__block BOOL insideExampleBlock = NO;
+	NSString *regex = @"<pre>|</pre>|~!@(.+?)@!~";
+	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		// Change flag when inside example block - we need to handle strings differently there!
+		NSString *matchedText = capturedStrings[0];
+		if ([matchedText isEqualToString:@"<pre>"]) {
+			insideExampleBlock = YES;
+			return matchedText;
+		} else if ([matchedText isEqualToString:@"</pre>"]) {
+			insideExampleBlock = NO;
+			return matchedText;
+		}
+		
+		// If outside example block, just return cross reference without embedded prefix and suffix!
+		NSString *linkText = capturedStrings[1];
+		if (!insideExampleBlock) return linkText;
+		
+		// If inside example block, we need to extract description from Markdown text and only use that part! If we don't match Markdown style reference, just use whole text...
+		NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
+		if ([components count] < 1) return linkText;
+		return [components objectAtIndex:1];
+	}];
+	return clean;
+}
+
+- (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
+	NSString *result = markdown;
+	
+	// Clean Markdown inline links.
+	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[1];
+	}];
+	
+	// Clean formatting directives. Couldn't find single regex matcher for cleaning up all cases, so ended up in doing several phases and finally repeating the last one for any remaining cases... This makes unit tests pass...
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*\\*|___|\\*\\*_|_\\*\\*|\\*__|__\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*|__|\\*_|_\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[2];
+	}];
+	
+	// Convert hard coded HTML anchor links as these may cause problems with docsetutil. Basically we get address and description and output only description if found. Otherwise we use address.
+	NSString *anchorRegex = @"<a\\s+href\\s*=\\s*([\"'])([^\\1]*)[\"']\\s*(?:(?:>([^>]*)</a>)|(?:/>))";
+	result = [result stringByReplacingOccurrencesOfRegex:anchorRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		if (captureCount < 2) return capturedStrings[0];
+		if (captureCount < 3) return capturedStrings[2];
+		NSString *description = capturedStrings[3];
+		if ([description length] > 0) return description;
+		return capturedStrings[2];
+	}];
+	
+	// Remove embedded preix/suffix if needed.
+	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
+	result = [result stringByReplacingOccurrencesOfString:@"~!@" withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:@"@!~" withString:@""];
+	return result;
+}
 
 - (NSString *)stringByEscapingHTML:(NSString *)string {
 	// Copied directly from GRMustache's GRMustacheVariableElement.m...
@@ -451,6 +541,9 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize mergeCategoriesToClasses;
 @synthesize keepMergedCategoriesSections;
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
+
+@synthesize prefixLocalMembersInRelatedItemsList;
+@synthesize embedCrossReferencesWhenProcessingMarkdown;
 
 @synthesize createHTML;
 @synthesize createDocSet;

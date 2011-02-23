@@ -32,7 +32,7 @@
  
  The given string should include optional prefix, followed by `%@` and lastly optional suffix. If either prefix or suffix isn't allowed, just pass `%@`. At the runtime, `%@` is replaced by the actual regex for mathching particular cross reference type - actually the whole string becomes the regex for matching cross reference, therefore prefix and suffix can be arbitrary regex expressions themselves! On the other hand, this imposes some limitations to what can be used for them: 
  
- - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?`!
+ - Prefix and suffix must not contain any capturing components as this will break matching code (you can still include groups, but make sure any open parenthesis is marked as non-capturing like this: `(?:...)`!
  - Prefix must not contain any marker used for formatting such as *, _ or combinations. This is actually not checked, but in such case results may be not what you wanted.
  
  @warning *Important:* Note that the given string must contain exactly one `%@` marker. If none is included cross references will not be matched during runtime. If more than one is included, unpredicted behavior may occur. So take care!
@@ -42,27 +42,14 @@
 @property (copy) NSString *crossReferenceMarkersTemplate;
 
 ///---------------------------------------------------------------------------------------
-/// @name Lists definitions
-///---------------------------------------------------------------------------------------
-
-/** Returns the regex used for matching ordered lists with capture 1 containing lists indent and capture 2 string value. */
-@property (readonly) NSString *orderedListRegex;
-
-/** Returns the regex used for matching unordered lists with capture 1 containing list indent and capture 2 string value. */
-@property (readonly) NSString *unorderedListRegex;
-
-///---------------------------------------------------------------------------------------
 /// @name Sections definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching warning section with capture 1 containing description. */
+/** Returns the regex used for matching warning section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *warningSectionRegex;
 
-/** Returns the regex used for matching bug section with capture 1 containing description. */
+/** Returns the regex used for matching bug section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *bugSectionRegex;
-
-/** Returns the regex used for matching example section with capture 1 containing whitespace prefix and capture 2 example text. */
-@property (readonly) NSString *exampleSectionRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Method specific definitions
@@ -71,29 +58,57 @@
 /** Returns the regex used for matching method groups with capture 1 containing section name. */
 @property (readonly) NSString *methodGroupRegex;
 
-/** Returns the regex used for matching different method parameter descriptions within the paragraph. */
-@property (readonly) NSString *argumentsMatchingRegex;
-
-/** Returns the regex used for finding next method parameter description within the paragraph. */
-@property (readonly) NSString *nextArgumentRegex;
-
-/** Returns the regex used for matching method parameter description with capture 1 containing parameter name and capture 2 description. */
+/** Returns the regex used for matching method parameter description with capture 1 containing directive, capture 2 parameter name and capture 3 description text. */
 @property (readonly) NSString *parameterDescriptionRegex;
 
-/** Returns the regex used for matching method return description with capture 1 containing description. */
+/** Returns the regex used for matching method return description with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *returnDescriptionRegex;
 
-/** Returns the regex used for matching method exception description with capture 1 containing exception name and capture 2 description. */
+/** Returns the regex used for matching method exception description with capture 1 containing directive, capture 2 exception name and capture 3 description text. */
 @property (readonly) NSString *exceptionDescriptionRegex;
 
-/** Returns the regex used for matching cross reference directive with capture 1 containing link. */
-@property (readonly) NSString *crossReferenceRegex;
+/** Returns the regex used for matching cross reference directive with capture 1 containing directive, capture 3 link. */
+@property (readonly) NSString *relatedSymbolRegex;
+
+///---------------------------------------------------------------------------------------
+/// @name Markdown specific definitions
+///---------------------------------------------------------------------------------------
+
+/** Returns the regex used for matching Markdown inline style links with capture 1 containing link description part without brackets, 2 the address and 3 optional title.
+ 
+ Here's a diagram of captures for better orientation:
+ 
+	[ description ]( address " title " )
+	  ^^^^^^^^^^^    ^^^^^^^   ^^^^^
+	   |              |         |
+	   |              |         +-- capture3
+	   |              +-- capture2
+	   +-- capture1
+ 
+ @see markdownReferenceLinkRegex
+ */
+@property (readonly) NSString *markdownInlineLinkRegex;
+
+/** Returns the regex used for matching Markdown reference style links with capture 1 reference ID, 2 address and 3 optional title.
+ 
+ Here's a diagram of captures for better orientation:
+ 
+	[ ID ]: address " title "
+	  ^^    ^^^^^^^   ^^^^^
+	  |      |         |
+	  |      |         +-- capture3
+	  |      +-- capture2
+	  +-- capture1
+ 
+ @see markdownInlineLinkRegex
+ */
+@property (readonly) NSString *markdownReferenceLinkRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Cross references definitions
 ///---------------------------------------------------------------------------------------
 
-/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing object name and capture 2 member name. 
+/** Returns the regex used for matching (possible) remote member cross references with capture 1 containing optional - or + prefix, capture 2 object name and capture 3 member selector. 
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
@@ -102,7 +117,7 @@
  */
 - (NSString *)remoteMemberCrossReferenceRegex:(BOOL)templated;
 
-/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing member name.
+/** Returns the regex used for matching (possible) local member cross reference with capture 1 containing optional - or + prefix and capture 2 member selector.
  
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  

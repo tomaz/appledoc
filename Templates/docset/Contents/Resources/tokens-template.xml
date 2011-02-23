@@ -16,7 +16,7 @@
 			{{>Abstract}}
 			{{>DeclaredIn}}			
 			{{>RelatedTokens}}
-			<Declaration type="html"><pre>{{>MethodDeclaration}}</pre></Declaration>
+			<Declaration>{{>MethodDeclaration}}</Declaration>
 			{{#hasParameters}}<Parameters>
 				{{#parameters}}<Parameter>
 					<Name>{{name}}</Name>
@@ -48,29 +48,14 @@ Section RelatedTokens
 EndSection
 
 Section Abstract
-	<Abstract type="html">{{#abstract}}{{>GBCommentParagraph}}{{/abstract}}</Abstract>
+<Abstract>{{#abstract}}{{>GBCommentComponentsList}}{{/abstract}}</Abstract>
 EndSection
 
 Section MethodDeclaration
-{{#formattedComponents}}{{#emphasized}}<em>{{/emphasized}}{{#href}}<a href="{{&href}}">{{/href}}{{value}}{{#href}}</a>{{/href}}{{#emphasized}}</em>{{/emphasized}}{{/formattedComponents}}
+{{#formattedComponents}}{{value}}{{/formattedComponents}}
 EndSection
 
-Section GBCommentParagraph
-	{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
+Section GBCommentComponentsList
+{{#components}}{{&textValue}}{{/components}}
 EndSection
 
-Section GBParagraphItem
-{{#isTextItem}} {{stringValue}}{{/isTextItem}} {{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{href}}">{{stringValue}}</a>{{/isLinkItem}}
-EndSection
-
-Section GBParagraphListItem
-	{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
-EndSection
-
-Section GBParagraphSpecialItem
-	{{#specialItemDescription}}{{>GBCommentParagraph}}{{/specialItemDescription}}
-EndSection
-
-Section GBParagraphDecoratorItem
-	{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
-EndSection
