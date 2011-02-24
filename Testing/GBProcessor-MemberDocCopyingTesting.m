@@ -38,9 +38,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat(derived.comment, isNot(nil));
-	assertThat(derived.comment, isNot(original.comment));	// We actually create a new comment object!
-	assertThat([derived.comment stringValue], is([original.comment stringValue]));
+	assertThat(derived.comment, is(original.comment));
 }
 
 - (void)testProcessObjectsFromStore_shouldCopyDocumentationFromAnySuperclassIfFindIsYes {
@@ -55,7 +53,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat([derived.comment stringValue], is([original.comment stringValue]));
+	assertThat(derived.comment, is(original.comment));
 }
 
 - (void)testProcessObjectsFromStore_shouldNotCopyDocumentationFromSuperclassIfFindIsNo {
@@ -83,7 +81,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat(derived.comment, isNot(nil));
+	assertThat(derived.comment, is(original.comment));
 }
 
 #pragma mark Adopted protocols copying testing
@@ -99,9 +97,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat(derived.comment, isNot(nil));
-	assertThat(derived.comment, isNot(original.comment));	// We actually create a new comment object!
-	assertThat([derived.comment stringValue], is([original.comment stringValue]));
+	assertThat(derived.comment, is(original.comment));
 }
 
 - (void)testProcessObjectsFromStore_shouldCopyDocumentationFromAdoptedProtocolEvenIfUndocumentedObjectsShouldBeDeleted {
@@ -115,7 +111,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat(derived.comment, isNot(nil));
+	assertThat(derived.comment, is(original.comment));
 }
 
 #pragma mark Creation methods

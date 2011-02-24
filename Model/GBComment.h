@@ -112,8 +112,18 @@
 /** Specifies whether the comment is copied from another object or this is the original comment from source code.
  
  This flag is used to ignore unknown cross references warnings for comments copied from another object.
+ 
+ @see isProcessed
  */
 @property (assign) BOOL isCopied;
+
+/** Specifies whether the comment is already processed or not.
+ 
+ This is used mainly for better support of copied comments!
+ 
+ @see isCopied
+ */
+@property (assign) BOOL isProcessed;
 
 /** Specifies whether the comment has short description or not.
  

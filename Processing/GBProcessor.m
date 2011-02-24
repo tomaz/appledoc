@@ -224,13 +224,8 @@
 			GBMethodData *superMethod = [class.methods methodBySelector:method.methodSelector];
 			if (superMethod.comment) {
 				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
-				GBComment *comment = [GBComment commentWithStringValue:superMethod.comment.stringValue];
-				NSString *filename = method.prefferedSourceInfo.filename;
-				NSString *superFilename = superMethod.comment.sourceInfo.filename;
-				if (![filename isEqualToString:superFilename]) filename = [NSString stringWithFormat:@"%@, %@", superFilename, filename];
-				comment.sourceInfo = [GBSourceInfo infoWithFilename:filename lineNumber:method.prefferedSourceInfo.lineNumber];
-				comment.isCopied = YES;
-				method.comment = comment;
+				superMethod.comment.isCopied = YES;
+				method.comment = superMethod.comment;
 				return;
 			}
 			class = class.superclass;
@@ -243,8 +238,8 @@
 		GBMethodData *protocolMethod = [protocol.methods methodBySelector:method.methodSelector];
 		if (protocolMethod.comment) {
 			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
-			GBComment *comment = [GBComment commentWithStringValue:protocolMethod.comment.stringValue];
-			method.comment = comment;
+			protocolMethod.comment.isCopied = YES;
+			method.comment = protocolMethod.comment;
 			return;
 		}
 	}

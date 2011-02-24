@@ -131,6 +131,7 @@ typedef NSUInteger GBProcessingFlag;
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
+	if (comment.isProcessed) return;
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
 	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
@@ -147,6 +148,7 @@ typedef NSUInteger GBProcessingFlag;
 		blockRange.location += blockRange.length;
 	}
 	[self registerReservedShortDescriptionIfNecessary];
+	self.currentComment.isProcessed = YES;
 }
 
 - (BOOL)findCommentBlockInLines:(NSArray *)lines blockRange:(NSRange *)blockRange shortRange:(NSRange *)shortRange {

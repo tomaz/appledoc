@@ -73,6 +73,7 @@
 }
 
 @synthesize isCopied;
+@synthesize isProcessed;
 @synthesize sourceInfo;
 @synthesize stringValue;
 

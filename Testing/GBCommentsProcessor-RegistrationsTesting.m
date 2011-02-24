@@ -418,6 +418,19 @@
 	[self assertComment:comment3 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
 }
 
+#pragma mark Miscellaneous handling
+
+- (void)testProcessCommentWithContextStore_misc_shouldSetIsProcessed {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment = [GBComment commentWithStringValue:@""];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	assertThatBool(comment.isProcessed, equalToBool(YES));
+}
+
 #pragma mark Private methods testing
 
 - (void)testFindCommentBlockInLinesBlockRangeShortRange_shouldDetectSingleComponent {
