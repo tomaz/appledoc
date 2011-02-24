@@ -72,7 +72,11 @@
 	return [self.relatedItems.components count] > 0;
 }
 
-@synthesize isCopied;
+- (BOOL)isCopied {
+	return (self.originalContext != nil);
+}
+
+@synthesize originalContext;
 @synthesize isProcessed;
 @synthesize sourceInfo;
 @synthesize stringValue;

@@ -211,6 +211,33 @@
 	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
+#pragma mark Copied comments handling
+
+- (void)testStringByConvertingCrossReferencesInString_copied_shouldUseUniversalRelativePathForLocalMembers {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBClassData *class = [store classWithName:@"Class"];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"instanceMethod:"];
+	comment.originalContext = class;
+	// execute
+	[processor processComment:comment withContext:class store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:@"[instanceMethod:](../Classes/Class.html#//api/name/instanceMethod:)", nil];
+}
+										 
+- (void)testStringByConvertingCrossReferencesInString_copied_shouldIgnoreCommentIfOriginalContextDoesntMatch {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"instanceMethod:"];
+	comment.originalContext = [store classWithName:@"Class"];
+	// execute
+	[processor processComment:comment withContext:[store protocolWithName:@"Protocol"] store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:nil];
+}
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)defaultProcessor {

@@ -109,13 +109,26 @@
 /// @name Output generator helpers
 ///---------------------------------------------------------------------------------------
 
+/** Specifies the original processing context of the comment.
+ 
+ This value points to the context inside which the comment was parsed. The main reason for this is to restrict processing of copied comments within their original context, so that any cross references are properly handled. The value related to the context is:
+ 
+ - Normal comments attached to classes, categories, protocols or methods as found in source code: the value is `nil`.
+ - Comments assigned to classes, categories or protocols, copied from another class, category or protocol: the value is the pointer to the original object.
+ - Comments assigned to methods, copied from another method: the value is the pointer to original method's parent.
+ 
+ @see isCopied
+ */
+@property (assign) id originalContext;
+
 /** Specifies whether the comment is copied from another object or this is the original comment from source code.
+
+ The value of this property depends on `originalContext`. If original context is assigned, the value is `YES`, otherwise it's `NO`.
  
- This flag is used to ignore unknown cross references warnings for comments copied from another object.
- 
+ @see originalContext
  @see isProcessed
  */
-@property (assign) BOOL isCopied;
+@property (readonly) BOOL isCopied;
 
 /** Specifies whether the comment is already processed or not.
  

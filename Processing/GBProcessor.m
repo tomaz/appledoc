@@ -224,7 +224,7 @@
 			GBMethodData *superMethod = [class.methods methodBySelector:method.methodSelector];
 			if (superMethod.comment) {
 				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
-				superMethod.comment.isCopied = YES;
+				superMethod.comment.originalContext = superMethod.parentObject;
 				method.comment = superMethod.comment;
 				return;
 			}
@@ -238,7 +238,7 @@
 		GBMethodData *protocolMethod = [protocol.methods methodBySelector:method.methodSelector];
 		if (protocolMethod.comment) {
 			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
-			protocolMethod.comment.isCopied = YES;
+			protocolMethod.comment.originalContext = protocolMethod.parentObject;
 			method.comment = protocolMethod.comment;
 			return;
 		}

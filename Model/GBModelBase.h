@@ -78,6 +78,8 @@
 		// merge custom data here...
 	}
  
+ And a link to `comment` and `registerSourceInfo:`.
+ 
  @param source Source object to merge from.
  */
 - (void)mergeDataFromObject:(id)source;

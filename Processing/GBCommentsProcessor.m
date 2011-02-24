@@ -131,6 +131,7 @@ typedef NSUInteger GBProcessingFlag;
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
+	if (comment.originalContext != nil && comment.originalContext != context) return;
 	if (comment.isProcessed) return;
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
 	self.reservedShortDescriptionData = nil;
@@ -714,10 +715,19 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// If we're creating link for related item, we should use method prefix.	
 	if ((flags & GBProcessingFlagRelatedItem) > 0 && self.settings.prefixLocalMembersInRelatedItemsList) selector = referencedObject.prefixedMethodSelector;
+	
+	// If this is copied comment, we need to prepare "universal" relative path even if used in local object. As the comment was copied to other objects, we don't know where it will point to, so we need to make it equally usable in the secondary object(s). Note that this code assumes copied comments can only be used for top-level objects so we simplify stuff a bit.
+	NSString *address = [self.settings htmlReferenceForObject:referencedObject fromSource:referencedObject.parentObject];
+	if (self.currentComment.isCopied) {
+		NSString *descendPath = [self.settings htmlRelativePathToIndexFromObject:referencedObject.parentObject];
+		NSString *path = [self.settings htmlReferenceForObjectFromIndex:referencedObject.parentObject];
+		NSString *prefix = [descendPath stringByAppendingPathComponent:path];
+		address = [prefix stringByAppendingString:address];
+	}
 
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
-	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.address = address;
 	result.description = selector;
 	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
