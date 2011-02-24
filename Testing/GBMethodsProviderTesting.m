@@ -455,6 +455,17 @@
 	assertThat([provider.methods objectAtIndex:0], is(method2));
 }
 
+- (void)testUnregisterMethod_shouldRemoveMethodFromMethodsBySelectors {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
+	[provider registerMethod:method];
+	// execute
+	[provider unregisterMethod:method];
+	// verify
+	assertThat([provider methodBySelector:@"method:"], is(nil));
+}
+
 - (void)testUnregisterMethod_shouldRemoveMethodFromClassMethods {
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];

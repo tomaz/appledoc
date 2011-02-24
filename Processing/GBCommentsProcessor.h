@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol GBObjectDataProviding;
 @class GBComment;
 
 /** Implements comments processing.
@@ -50,12 +49,12 @@
  This method processes the given comment's string value and prepares all derives values. It uses the given store for dependent values such as links and similar, so make sure the store has all possible objects already registered. In order to properly handle "local" links, the method also takes `context` parameter which identifies top-level object to which the object which's comment we're processing belongs to. You can pass `nil` however this prevents any local links being processed!
  
  @param comment The comment to process.
- @param context The `GBObjectDataProviding` identifying current context for handling links or `nil`.
+ @param context The object identifying current context for handling links or `nil`.
  @param store The store to process against.
  @exception NSException Thrown if any of the given parameters is invalid or processing encounters unexpected error.
  @see processComment:withStore:
  */
-- (void)processComment:(GBComment *)comment withContext:(id<GBObjectDataProviding>)context store:(id)store;
+- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store;
 
 /** Processes the given `GBComment` using the given store.
  

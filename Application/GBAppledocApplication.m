@@ -472,8 +472,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
 
 - (void)setCrossrefFormat:(NSString *)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value; }
-- (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = @"<%@>"; }
-- (void)setNoExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = @"<?%@>?"; }
+- (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value ? @"<%@>" : @"<?%@>?"; }
+- (void)setNoExplicitCrossref:(BOOL)value { [self setExplicitCrossref:!value]; }
 
 - (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }

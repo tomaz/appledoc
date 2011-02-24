@@ -2,17 +2,18 @@
 //  GBCommentArgument.h
 //  appledoc
 //
-//  Created by Tomaz Kragelj on 19.9.10.
-//  Copyright (C) 2010, Gentle Bytes. All rights reserved.
+//  Created by Tomaz Kragelj on 16.2.11.
+//  Copyright 2011 Gentle Bytes. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 
-@class GBCommentParagraph;
+@class GBCommentComponentsList;
+@class GBSourceInfo;
 
-/** Describes an argument of a `GBComment`.
+/** Handles individual `GBComment` named argument.
  
- An argument is a named argument such as parameter or exception. It contains the argument (parameter or exception) name as `argumentName` and corresponding description in the form of `GBCommentParagraph` as `argumentDescription`.
+ A comment argument is either a parameter or exception. In any case, the class allows assigning argument name and description. The description is simply a list of comment components in the form of `GBCommentComponentsList`. This allows every parameter contain arbitrary descriptions!
  */
 @interface GBCommentArgument : NSObject
 
@@ -20,38 +21,41 @@
 /// @name Initialization & disposal
 ///---------------------------------------------------------------------------------------
 
-/** Returns a new autoreleased argument with the given name and description.
+/** Returns a new autoreleased instance of the object with the given string value.
  
- Sending this method is equivalent to:
+ This is a helper initializer which allows setting name with a single message. Sending this message is equivalent to sending `argumentWithName:sourceInfo:`, passing the given _value_ and `nil` for source info.
  
-	GBCommentArgument *argument = [[[GBCommentArgument alloc] init] autorelease];
-	argument.argumentName = name;
-	argument.argumentDescription = description;
- 
- @param name The name of the argument.
- @param description Description of the argument.
- @return Returns initialized instance.
- @exception NSException Thrown if name is `nil` or empty string or description is `nil`.
+ @param name Name of the argument.
+ @return Returns initialized object or `nil` if initialization fails.
+ @see argumentWithName:sourceInfo:
  */
-+ (id)argumentWithName:(NSString *)name description:(GBCommentParagraph *)description;
++ (id)argumentWithName:(NSString *)name;
 
-/** Returns a new autoreleased argument with no name and description. */
-+ (id)argument;
+/** Returns a new autoreleased instance of the comment with the given string value and source info.
+ 
+ This is a helper initializer which allows setting default values with a single message.
+ 
+ @param name Name of the argument.
+ @param info Source info to set.
+ @return Returns initialized object or `nil` if initialization fails.
+ @see argumentWithName:
+ */
++ (id)argumentWithName:(NSString *)name sourceInfo:(GBSourceInfo *)info;
 
 ///---------------------------------------------------------------------------------------
-/// @name Values
+/// @name Argument description
 ///---------------------------------------------------------------------------------------
 
 /** The name of the argument.
- 
- @see argumentDescription
  */
 @property (copy) NSString *argumentName;
 
-/** Description of the argument as `GBCommentParagraph`.
- 
- @see argumentName
+/** The description components of the argument as `GBCommentComponentsList`.
  */
-@property (retain) GBCommentParagraph *argumentDescription;
+@property (retain) GBCommentComponentsList *argumentDescription;
+
+/** Source file information.
+ */
+@property (retain) GBSourceInfo *sourceInfo;
 
 @end

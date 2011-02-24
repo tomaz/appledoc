@@ -12,35 +12,17 @@
 		<article>
 			<a title="{{page/title}}" name="top"></a>
 			<div id="container">	
-				{{#object/comment}}{{>GBComment}}{{/object/comment}}
+				{{#object/comment}}{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}{{/object/comment}}
 			</div>
 		</article>
 	</body>
 </html>
 
 
-Section GBComment
-{{#paragraphs}}
-<p>{{>GBCommentParagraph}}</p>
-{{/paragraphs}}
+Section GBCommentComponentsList
+{{#components}}{{>GBCommentComponent}}{{/components}}
 EndSection
 
-Section GBCommentParagraph
-{{#paragraphItems}}{{>GBParagraphItem}}{{/paragraphItems}}
-EndSection
-
-Section GBParagraphItem
-{{#isTextItem}}{{&stringValue}}{{/isTextItem}}{{#isOrderedListItem}}<ol>{{>GBParagraphListItem}}</ol>{{/isOrderedListItem}}{{#isUnorderedListItem}}<ul>{{>GBParagraphListItem}}</ul>{{/isUnorderedListItem}}{{#isWarningSpecialItem}}<p class="warning">{{>GBParagraphSpecialItem}}</p>{{/isWarningSpecialItem}}{{#isBugSpecialItem}}<p class="bug">{{>GBParagraphSpecialItem}}</p>{{/isBugSpecialItem}}{{#isExampleSpecialItem}}<pre>{{>GBParagraphSpecialItem}}</pre>{{/isExampleSpecialItem}}{{#isBoldDecoratorItem}}<strong>{{>GBParagraphDecoratorItem}}</strong>{{/isBoldDecoratorItem}}{{#isItalicsDecoratorItem}}<em>{{>GBParagraphDecoratorItem}}</em>{{/isItalicsDecoratorItem}}{{#isCodeDecoratorItem}}<code>{{>GBParagraphDecoratorItem}}</code>{{/isCodeDecoratorItem}}{{#isLinkItem}}<a href="{{&href}}">{{&stringValue}}</a>{{/isLinkItem}}
-EndSection
-
-Section GBParagraphListItem
-{{#listItems}}<li>{{>GBCommentParagraph}}</li>{{/listItems}}
-EndSection
-
-Section GBParagraphSpecialItem
-{{#specialItemDescription}}{{>GBCommentParagraph}}{{/specialItemDescription}}
-EndSection
-
-Section GBParagraphDecoratorItem
-{{#decoratedItems}}{{>GBParagraphItem}}{{/decoratedItems}}
+Section GBCommentComponent
+{{&htmlValue}}
 EndSection

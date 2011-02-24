@@ -264,13 +264,14 @@
 - (void)testDocumentWithName_shouldReturnProperInstanceOrNil {
 	// setup
 	GBStore *store = [[GBStore alloc] init];
-	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"contents" path:@"path1/document.txt"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"contents" path:@"path1/document1.txt"];
 	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"contents" path:@"path2/document-template.txt"];
 	[store registerDocument:document1];
 	[store registerDocument:document2];
 	// execute & verify
-	assertThat([store documentWithName:@"document"], is(document1));
+	assertThat([store documentWithName:@"document1"], is(document1));
 	assertThat([store documentWithName:@"document-template"], is(document2));
+	assertThat([store documentWithName:@"document"], is(document2));
 	assertThat([store documentWithName:@"something"], is(nil));
 	assertThat([store documentWithName:@""], is(nil));
 	assertThat([store documentWithName:nil], is(nil));

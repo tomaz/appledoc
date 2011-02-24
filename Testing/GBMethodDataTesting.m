@@ -9,6 +9,13 @@
 #import "GBTestObjectsRegistry.h"
 #import "GBDataObjects.h"
 
+@interface GBMethodData (PrivateAPI)
+@property (readonly) NSString *methodSelectorDelimiter;
+@property (readonly) NSString *methodPrefix;
+@end
+
+#pragma mark -
+
 @interface GBMethodDataTesting : GBObjectsAssertor
 @end
 
@@ -452,7 +459,7 @@
 
 - (void)testMethodPrefix_shouldReturnProperPrefix {
 	// setup, execute & verify
-	assertThat([[GBTestObjectsRegistry propertyMethodWithArgument:@"name"] methodPrefix], is(@""));
+	assertThat([[GBTestObjectsRegistry propertyMethodWithArgument:@"name"] methodPrefix], is(@"@property"));
 	assertThat(([[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil] methodPrefix]), is(@"-"));
 	assertThat(([[GBTestObjectsRegistry classMethodWithNames:@"method", nil] methodPrefix]), is(@"+"));
 }

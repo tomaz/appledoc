@@ -226,14 +226,18 @@
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	settings.outputPath = @"anything :)";
 	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document-template.html" basePath:@""];
-	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
-	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@""];
-	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@"path"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document-template.html" basePath:@""];
+	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@""];
+	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@"include"];
+	GBDocumentData *document5 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@"include/sub"];
+	GBDocumentData *document6 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@"include/sub/document-template.html"];
 	// verify
 	assertThat([settings htmlReferenceForObject:document1 fromSource:nil], is(@"docs/document.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:nil], is(@"docs/path/document.html"));
-	assertThat([settings htmlReferenceForObject:document3 fromSource:nil], is(@"docs/path/sub/document.html"));
-	assertThat([settings htmlReferenceForObject:document4 fromSource:nil], is(@"docs/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:nil], is(@"docs/include/document.html"));
+	assertThat([settings htmlReferenceForObject:document3 fromSource:nil], is(@"docs/include/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document4 fromSource:nil], is(@"docs/include/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document5 fromSource:nil], is(@"docs/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:document6 fromSource:nil], is(@"docs/document.html"));
 }
 
 #pragma mark HTML href references handling - top level to top level
@@ -263,8 +267,8 @@
 	GBCategoryData *category2 = [GBCategoryData categoryDataWithName:@"Category2" className:@"Class"];
 	GBProtocolData *protocol1 = [GBProtocolData protocolDataWithName:@"Protocol1"];
 	GBProtocolData *protocol2 = [GBProtocolData protocolDataWithName:@"Protocol2"];
-	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document1.ext"];
-	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"document2.ext"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document1.ext" basePath:@"include"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document2.ext" basePath:@"include/document2.ext"];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class1 fromSource:class2], is(@"../Classes/Class1.html"));
 	assertThat([settings htmlReferenceForObject:class2 fromSource:class1], is(@"../Classes/Class2.html"));
@@ -272,8 +276,8 @@
 	assertThat([settings htmlReferenceForObject:category2 fromSource:category1], is(@"../Categories/Class(Category2).html"));
 	assertThat([settings htmlReferenceForObject:protocol1 fromSource:protocol2], is(@"../Protocols/Protocol1.html"));
 	assertThat([settings htmlReferenceForObject:protocol2 fromSource:protocol1], is(@"../Protocols/Protocol2.html"));
-	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../docs/document1.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../docs/document2.html"));
+	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../docs/include/document1.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../../docs/document2.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToDifferentTypeOfTopLevelObjectReference {
@@ -283,44 +287,45 @@
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
-	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document1.ext"];
-	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document2.ext"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document1.ext" basePath:@"include/document1.ext"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document2.ext" basePath:@"include"];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class fromSource:category], is(@"../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:class fromSource:protocol], is(@"../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
-	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"../../../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"../../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:category fromSource:class], is(@"../Categories/Class(Category).html"));
 	assertThat([settings htmlReferenceForObject:category fromSource:protocol], is(@"../Categories/Class(Category).html"));
 	assertThat([settings htmlReferenceForObject:category fromSource:document1], is(@"../Categories/Class(Category).html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:document2], is(@"../../../Categories/Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:document2], is(@"../../Categories/Class(Category).html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:class], is(@"../Protocols/Protocol.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:category], is(@"../Protocols/Protocol.html"));	
 	assertThat([settings htmlReferenceForObject:protocol fromSource:document1], is(@"../Protocols/Protocol.html"));
-	assertThat([settings htmlReferenceForObject:protocol fromSource:document2], is(@"../../../Protocols/Protocol.html"));	
+	assertThat([settings htmlReferenceForObject:protocol fromSource:document2], is(@"../../Protocols/Protocol.html"));	
 	assertThat([settings htmlReferenceForObject:document1 fromSource:class], is(@"../docs/document1.html"));
 	assertThat([settings htmlReferenceForObject:document1 fromSource:category], is(@"../docs/document1.html"));	
 	assertThat([settings htmlReferenceForObject:document1 fromSource:protocol], is(@"../docs/document1.html"));
-	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../../../docs/document1.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:class], is(@"../docs/path/sub/document2.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:category], is(@"../docs/path/sub/document2.html"));	
-	assertThat([settings htmlReferenceForObject:document2 fromSource:protocol], is(@"../docs/path/sub/document2.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../docs/path/sub/document2.html"));
+	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../../docs/document1.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:class], is(@"../docs/include/document2.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:category], is(@"../docs/include/document2.html"));	
+	assertThat([settings htmlReferenceForObject:document2 fromSource:protocol], is(@"../docs/include/document2.html"));
+	assertThat([settings htmlReferenceForObject:document2 fromSource:document1], is(@"../docs/include/document2.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForDocumentToTopLevelObjectReference {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	settings.outputPath = @"anything :)";
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"document-template.html" basePath:@""];
-	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
-	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@""];
-	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"path/sub/document-template.html" basePath:@"path"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"include/document-template.html" basePath:@""];
+	GBDocumentData *document3 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@"include"];
+	GBDocumentData *document4 = [GBDocumentData documentDataWithContents:@"c" path:@"include/sub/document-template.html" basePath:@"include/sub/document-template.html"];
 	// verify
-	assertThat([settings htmlReferenceForObject:document1 fromSource:nil], is(@"docs/document.html"));
-	assertThat([settings htmlReferenceForObject:document2 fromSource:nil], is(@"docs/path/document.html"));
-	assertThat([settings htmlReferenceForObject:document3 fromSource:nil], is(@"docs/path/sub/document.html"));
-	assertThat([settings htmlReferenceForObject:document4 fromSource:nil], is(@"docs/sub/document.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"../../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document3], is(@"../../../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document4], is(@"../Classes/Class.html"));
 }
 
 #pragma mark HTML href references handling - top level to members
@@ -405,7 +410,131 @@
 	assertThat([settings templateFilenameForOutputPath:@"path/file-template"], is(@"path/file-template"));
 	assertThat([settings templateFilenameForOutputPath:@"path/file-template.html"], is(@"path/file-template.html"));
 }
+
+#pragma mark Text conversion methods
+
+- (void)testStringByEmbeddingCrossReference_shouldEmbeddCrossReferenceIfRequired {
+	// setup
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings2.embedCrossReferencesWhenProcessingMarkdown = NO;
+	// execute
+	NSString *result11 = [settings1 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
+	NSString *result12 = [settings1 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+	NSString *result21 = [settings2 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
+	NSString *result22 = [settings2 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+	// verify
+	assertThat(result11, is(@"~!@[description](address \"title\")@!~"));
+	assertThat(result12, is(@"~!@[`description`](address \"title\")@!~"));
+	assertThat(result21, is(@"[description](address \"title\")"));
+	assertThat(result22, is(@"[`description`](address \"title\")"));
+}
+
+#pragma mark Markdown to HTML conversion
+
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"[description](address)"];
+	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
+	assertThat(result1, is(@"<p><a href=\"address\">description</a></p>"));
+	assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
+}
+
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"\t~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"\t[description](address)"];
+	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
+	assertThat(result1, is(@"<pre><code>description\n</code></pre>"));
+	assertThat(result2, is(@"<pre><code>[description](address)\n</code></pre>"));
+}
+
+#pragma mark Markdown to text conversion
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
+	assertThat(result1, is(@"description"));
+	assertThat(result2, is(@"description"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!@[description](address)@!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t[description](address)"];
+	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
+	assertThat(result1, is(@"\tdescription"));
+	assertThat(result2, is(@"\tdescription"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertMarkdownReferences {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"simple text"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"[description](address \"title\")"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"prefix [description](address) suffix"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"[description1](address) [description2](address) [description3](address)"];
+	// verify
+	assertThat(result1, is(@"simple text"));
+	assertThat(result2, is(@"description"));
+	assertThat(result3, is(@"description"));
+	assertThat(result4, is(@"prefix description suffix"));
+	assertThat(result5, is(@"description1 description2 description3"));
+}
 						  
+- (void)testStringByConvertingMarkdownToText_shouldConvertFormattingMarkers {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"*desc*"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"`desc`"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"prefix *desc* suffix"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"*1* **2** ***3*** _4_ __5__ ___6___"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"_*1*_ *_2_* **_3_** _**4**_ *__5__* __*6*__"];
+	// verify
+	assertThat(result1, is(@"desc"));
+	assertThat(result2, is(@"desc"));
+	assertThat(result3, is(@"prefix desc suffix"));
+	assertThat(result4, is(@"1 2 3 4 5 6"));
+	assertThat(result5, is(@"1 2 3 4 5 6"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertManualAnchors {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\">desc</a>"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"<a href='address'>desc</a>"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\"></a>"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"<a href='address'></a>"];
+	NSString *result5 = [settings stringByConvertingMarkdownToText:@"<a href=\"address\" />"];
+	NSString *result6 = [settings stringByConvertingMarkdownToText:@"<a href='address' />"];
+	NSString *result7 = [settings stringByConvertingMarkdownToText:@"<a\n\n\thref\n=\n\t   'address'\n>desc</a>"];
+	NSString *result8 = [settings stringByConvertingMarkdownToText:@"<a\n\n\thref\n=\n\t   'address'\n/>"];
+	// verify
+	assertThat(result1, is(@"desc"));
+	assertThat(result2, is(@"desc"));
+	assertThat(result3, is(@"address"));
+	assertThat(result4, is(@"address"));
+	assertThat(result5, is(@"address"));
+	assertThat(result6, is(@"address"));
+	assertThat(result7, is(@"desc"));
+	assertThat(result8, is(@"address"));
+}
+
 #pragma mark Private accessor helpers
 
 - (NSDateFormatter *)yearFormatterFromSettings:(GBApplicationSettingsProvider *)settings {
