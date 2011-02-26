@@ -52,21 +52,16 @@
  @param context The object identifying current context for handling links or `nil`.
  @param store The store to process against.
  @exception NSException Thrown if any of the given parameters is invalid or processing encounters unexpected error.
- @see processComment:withStore:
+ @see repeatFirstParagraph
  */
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store;
 
-/** Processes the given `GBComment` using the given store.
+/** Specifies whether first paragraph should be repeated or not regardless of settings.
  
- This method processes the given comment's string value and prepares all derives values. It uses the given store for dependent values such as links and similar, so make sure the store has all possible objects already registered. Sending this message has the same effect as sending `processComment:withContext:store:` to receiver and passing `nil` for context.
+ This is used for top level objects and static documents where we want to include full comment text regardless of the settings. In that situation we need to set this flag to `YES` to override settings, however for methods we must set this flag to `NO` to respect user's settings.
  
- @warning *Important:* This method is provided for simpler unit testing and should not be used by the application. The most important reason for keeping it, is the fact that we introduced context handling when implementing links at which time we already had many unit tests relying on this method. So the easiest way for not being forced to refactor all these tests was to keep the method. It doesn't bloat the class interface either...
- 
- @param comment The comment to process.
- @param store The store to process against.
- @exception NSException Thrown if any of the given parameters is invalid or processing encounters unexpected error.
  @see processComment:withContext:store:
  */
-- (void)processComment:(GBComment *)comment withStore:(id)store;
+@property (assign) BOOL alwaysRepeatFirstParagraph;
 
 @end

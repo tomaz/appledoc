@@ -124,10 +124,6 @@ typedef NSUInteger GBProcessingFlag;
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withStore:(id)store {
-	[self processComment:comment withContext:nil store:store];
-}
-
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
@@ -206,7 +202,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Handle short description and update block range if we're not repeating first paragraph.
 	if (!self.currentComment.shortDescription) {
 		[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:nil];
-		if (!self.settings.repeatFirstParagraphForMemberDescription && ![self.currentContext isStaticDocument] && ![self.currentContext isTopLevelObject]) {
+		if (!self.settings.repeatFirstParagraphForMemberDescription && !self.alwaysRepeatFirstParagraph) {
 			blockRange.location += shortRange.length;
 			blockRange.length -= shortRange.length;
 		}
@@ -875,6 +871,7 @@ typedef NSUInteger GBProcessingFlag;
 
 @synthesize lastReferencedObject;
 @synthesize reservedShortDescriptionData;
+@synthesize alwaysRepeatFirstParagraph;
 @synthesize currentSourceInfo;
 @synthesize currentComment;
 @synthesize currentContext;
