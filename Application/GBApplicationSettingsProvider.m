@@ -74,6 +74,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.keepIntermediateFiles = NO;
+		self.cleanupOutputPathBeforeRunning = YES;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
@@ -550,6 +551,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize installDocSet;
 @synthesize publishDocSet;
 @synthesize keepIntermediateFiles;
+@synthesize cleanupOutputPathBeforeRunning;
 
 @synthesize warnOnMissingOutputPathArgument;
 @synthesize warnOnMissingCompanyIdentifier;

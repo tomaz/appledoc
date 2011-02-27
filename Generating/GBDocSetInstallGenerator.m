@@ -11,6 +11,12 @@
 #import "GBTask.h"
 #import "GBDocSetInstallGenerator.h"
 
+@interface GBDocSetInstallGenerator ()
+- (void)touchInstallMessageFile;
+@end
+
+#pragma mark -
+
 @implementation GBDocSetInstallGenerator
 
 #pragma Generation handling
@@ -39,6 +45,9 @@
 		return  NO;
 	}
 	
+	// Prepare text file with message on the output path to avoid confusion when empty path is found.
+	[self touchInstallMessageFile];
+	
 	// Prepare AppleScript for loading the documentation into the Xcode.
 	GBLogVerbose(@"Installing DocSet to Xcode...");
 	NSMutableString* installScript  = [NSMutableString string];
@@ -56,6 +65,18 @@
 		return NO;
 	}
 	return YES;
+}
+
+- (void)touchInstallMessageFile {
+	// Creates or updates install message file at output path.
+	NSString *filename = [self.settings.outputPath stringByAppendingPathComponent:@"docset-installed.txt"];
+	NSMutableString *message = [NSMutableString string];
+	[message appendString:@"Documentation set was installed to Xcode!\n\n"];
+	[message appendFormat:@"Path: %@\n", self.outputUserPath];
+	[message appendFormat:@"Time: %@", [NSDate date]];
+	NSError *error = nil;
+	[message writeToFile:[filename stringByStandardizingPath] atomically:NO encoding:NSUTF8StringEncoding error:&error];
+	if (error) GBLogNSError(error, @"Failed writting docset installed message file at '%@'!", filename);
 }
 
 #pragma mark Overriden methods
