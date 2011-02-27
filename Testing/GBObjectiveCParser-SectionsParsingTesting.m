@@ -61,16 +61,16 @@
 	assertThat([[sections objectAtIndex:0] sectionName], is(@"Long section name"));
 }
 
-- (void)testParseObjectsFromString_shouldDetectSectionNameRegardlessOfPrefix {
+- (void)testParseObjectsFromString_shouldDetectSectionNameOnlyIfAtStartOfComment {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass /** Some prefix @name Section */ /** */ -(id)method1; @end" sourceFile:@"file" toStore:store];
-	// verify
+	// verify - note that we still create default section!
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(@"Section"));
+	assertThat([[sections objectAtIndex:0] sectionName], is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldIgnoreWhitespaceWithinSectionName {
@@ -85,19 +85,35 @@
 	assertThat([[sections objectAtIndex:0] sectionName], is(@"Section spanning multiple lines whoa!"));
 }
 
-- (void)testParseObjectsFromString_requiresMethodCommentInOrderToDetectSection {
+- (void)testParseObjectsFromString_requiresDetectsSectionEvenIfFollowedByUncommentedMethod {
 	// setup
-	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass /** @name Section */ -(id)method1; @end" sourceFile:@"file" toStore:store];
-	// verify - note that comment is aded to method in such case but default section is created anyway!
-	GBClassData *class = [[store classes] anyObject];
-	NSArray *methods = [[class methods] methods];
-	assertThat([[(GBModelBase *)[methods objectAtIndex:0] comment] stringValue], is(@"@name Section"));
-	NSArray *sections = [[class methods] sections];
+	// verify
+	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(nil));
+	GBMethodSectionData *section = [sections objectAtIndex:0];
+	assertThat(section.sectionName, is(@"Section"));
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([[section.methods objectAtIndex:0] comment], is(nil));
+}
+
+- (void)testParseObjectsFromString_shouldDetectSectionAndCommentForNextCommentedMethod {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass /** @name Section1 */ /* First */ -(id)method1; /** Second */ -(id)method2; @end" sourceFile:@"file" toStore:store];
+	// verify
+	NSArray *sections = [[[[store classes] anyObject] methods] sections];
+	assertThatInteger([sections count], equalToInteger(1));
+	GBMethodSectionData *section = [sections objectAtIndex:0];
+	assertThat(section.sectionName, is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(2));
+	assertThat([[section.methods objectAtIndex:0] comment], is(nil));
+	assertThat([(GBComment *)[[section.methods objectAtIndex:1] comment] stringValue], is(@"Second"));
 }
 
 @end

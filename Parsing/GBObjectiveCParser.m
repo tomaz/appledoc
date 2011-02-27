@@ -91,7 +91,7 @@
 	NSParameterAssert(store != nil);
 	GBLogDebug(@"Parsing objective-c objects...");
 	self.store = store;
-	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename];
+	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename settings:self.settings];
 	while (![self.tokenizer eof]) {
 		if (![self matchNextObject]) {
 			[self.tokenizer consume:1];
@@ -544,7 +544,6 @@
 - (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object {
 	[object setComment:comment];
 	if (comment) GBLogDebug(@"Assigned comment '%@' to '%@'...", [comment.stringValue normalizedDescription], object);
-	//[self.tokenizer resetComments];
 }
 
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {

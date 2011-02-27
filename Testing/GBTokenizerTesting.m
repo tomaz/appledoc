@@ -6,6 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
+#import "GBApplicationSettingsProvider.h"
 #import "GBTokenizer.h"
 
 @interface GBTokenizerTesting : GHTestCase
@@ -361,6 +362,33 @@
 	// verify
 	assertThatInteger([tokenizer.previousComment.sourceInfo lineNumber], equalToInteger(1));
 	assertThatInteger([tokenizer.lastComment.sourceInfo lineNumber], equalToInteger(3));
+}
+
+- (void)testLastCommentString_shouldDetectSectionNameAndAssignItToPreviousCommentWhenValidCommentFollows {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [GBTestObjectsRegistry realSettingsProvider];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** previous */ /** @name name */ /** second */ ONE"] filename:@"file" settings:settings];
+	// verify
+	assertThat(tokenizer.previousComment.stringValue, is(@"@name name"));
+	assertThat(tokenizer.lastComment.stringValue, is(@"second"));
+}
+
+- (void)testLastCommentString_shouldDetectSectionNameAndAssignItToPreviousCommentWhenInvalidCommentFollows {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [GBTestObjectsRegistry realSettingsProvider];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** previous */ /** @name name */ /* second */ ONE"] filename:@"file" settings:settings];
+	// verify
+	assertThat(tokenizer.previousComment.stringValue, is(@"@name name"));
+	assertThat(tokenizer.lastComment, is(nil));
+}
+
+- (void)testLastCommentString_shouldDetectSectionNameAndAssignItToPreviousCommentWhenNoOtherCommentFollows {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [GBTestObjectsRegistry realSettingsProvider];
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** previous */ /** @name name */ ONE"] filename:@"file" settings:settings];
+	// verify
+	assertThat(tokenizer.previousComment.stringValue, is(@"@name name"));
+	assertThat(tokenizer.lastComment, is(nil));
 }
 
 #pragma mark Miscellaneous methods
