@@ -29,6 +29,8 @@
 	<false/>
 	<key>--repeat-first-par</key>
 	<false/>
+	<key>--templates</key>
+	<string>./Templates</string>
 	<key>--verbose</key>
 	<integer>3</integer>
 </dict>

@@ -89,11 +89,12 @@ static NSString *kGBArgHelp = @"help";
 - (void)initializeLoggingSystem;
 - (void)validateSettingsAndArguments:(NSArray *)arguments;
 - (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
+- (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path;
 
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments;
 - (void)injectProjectSettingsFromArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
-- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id value, BOOL *stop))block;
+- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id *value, BOOL *stop))block;
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
@@ -380,6 +381,13 @@ static NSString *kGBArgHelp = @"help";
 	return [[self.fileManager currentDirectoryPath] stringByAppendingPathComponent:suffix];
 }
 
+- (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path {
+	// Appends the given relative path to the given base path if necessary. If relative path points to an exact location (starts with / or ~), it's simply returned, otherwise it's appended to the base path and result is returned.
+	if ([path hasPrefix:@"~"] || [path hasPrefix:@"/"]) return path;
+	if ([path hasPrefix:@"."] && ![path hasPrefix:@".."]) path = [path substringFromIndex:1];
+	return [base stringByAppendingPathComponent:path];
+}
+
 #pragma mark Global and project settings handling
 
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments {
@@ -440,16 +448,38 @@ static NSString *kGBArgHelp = @"help";
 		BOOL dir;
 		if (![self.fileManager fileExistsAtPath:path isDirectory:&dir]) return;
 		if (dir) filename = [path stringByAppendingPathComponent:@"AppledocSettings.plist"];
-		if (!dir) [self.ignoredInputPaths addObject:argument];
+		if (!dir) [self.ignoredInputPaths addObject:argument];	
 		
 		// If we have a plist file, handle it. Note that we need to handle --templates cmd line switch separately so that it's properly accepted by the application!
 		if ([[filename pathExtension] isEqualToString:@"plist"]) {
-			[self injectSettingsFromSettingsFile:filename usingBlock:^BOOL(NSString *option, id value, BOOL *stop) {
+			// Prepare the directory path to the plist file. We'll use it for preparing relative paths.
+			NSString *plistPath = [filename stringByDeletingLastPathComponent];
+
+			// In the first pass, we need to handle --templates option. We need to handle these before any other option from the project settings to prevent global settings overriding project settings! Note how we prevent handling of every option except --templates; we leave that option through to get it set to application settings (that's all the KVC setter does).
+			[self injectSettingsFromSettingsFile:filename usingBlock:^BOOL(NSString *option, id *value, BOOL *stop) {
 				if ([option isEqualToString:kGBArgTemplatesPath]) {
 					NSError *error = nil;
-					if (![self validateTemplatesPath:value error:&error]) [NSException raise:error format:@"Path '%@' from --%@ option in project settings '%@' is not valid!", value, option, filename];
-					[self overrideSettingsWithGlobalSettingsFromPath:path];
+					NSString *templatesPath = [self combineBasePath:plistPath withRelativePath:*value];
+					if (![self validateTemplatesPath:templatesPath error:&error]) [NSException raise:error format:@"Path '%@' from --%@ option in project settings '%@' is not valid!", *value, option, filename];
+					[self overrideSettingsWithGlobalSettingsFromPath:templatesPath];
 					self.templatesFound = YES;
+					*value = templatesPath;
+					return YES;
+				}
+				return NO;
+			}];
+			
+			// In the second pass, we handle all options. Note that we handle --input option manually; there is no KVC setter for it as it's not regular command line option (we get all input paths directly through command line arguments, not via command line switches). Also note that --templates is still allows but it's only going to be passed to application settings this time without being handled.
+			[self injectSettingsFromSettingsFile:filename usingBlock:^BOOL(NSString *option, id *value, BOOL *stop) {
+				// If option is input path, add it to additional paths. We'll append these to any path found from command line. Note that we must properly handle . paths and paths not starting with / or ~; we assume these are relative paths so we prefix them with the path of the settings file!
+				if ([option isEqualToString:kGBArgInputPath]) {
+					for (NSString *inputPath in *value) {
+						inputPath = [self combineBasePath:plistPath withRelativePath:inputPath];
+						[self.additionalInputPaths addObject:inputPath];
+					}
+					return NO;
+				} else if ([option isEqualToString:kGBArgTemplatesPath]) {
+					return NO;
 				}
 				return YES;
 			}];
@@ -461,7 +491,7 @@ static NSString *kGBArgHelp = @"help";
 	// Checks if global settings file exists at the given path and if so, overrides current settings with values from the file.
 	NSString *userPath = [path stringByAppendingPathComponent:@"GlobalSettings.plist"];
 	NSString *filename = [userPath stringByStandardizingPath];
-	[self injectSettingsFromSettingsFile:filename usingBlock:^(NSString *option, id value, BOOL *stop) {
+	[self injectSettingsFromSettingsFile:filename usingBlock:^(NSString *option, id *value, BOOL *stop) {
 		if ([option isEqualToString:kGBArgTemplatesPath]) {
 			ddprintf(@"WARN: Found unsupported --%@ option in global settings file '%@'!\n", option, userPath);
 			return NO;
@@ -474,7 +504,7 @@ static NSString *kGBArgHelp = @"help";
 	}];
 }
 
-- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id value, BOOL *stop))block {
+- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id *value, BOOL *stop))block {
 	// Injects any settings found in the given file to the application settings, overriding current settings with values from the file. To keep code as simple as possible, we're reusing DDCli KVC here: settings file simply uses keys which are equal to command line arguments. Then, by reusing DDCli method for converting switch to KVC key, we're simply sending appropriate KVC messages to receiver. From object's point of view, this is no different than getting KVC messages sent from DDCli. Note that this may cause some KVC messages beeing sent twice or more. The only code added is handling boolean settings (i.e. adding "--no" prefix) and settings that may be entered multiple times (--ignore for example). To even further simplify handling, we're only allowing long command line arguments names in settings files for now!
 	if (![self.fileManager fileExistsAtPath:path]) return;
 
@@ -484,24 +514,12 @@ static NSString *kGBArgHelp = @"help";
 	NSDictionary *settings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
 	if (!settings) [NSException raise:error format:@"Failed reaing settings plist from '%@'!", path];
 	
+	// We first pass each option and it's value to the block. The block can return YES to allow handling it, NO otherwise. It can also pass back a different value (we're passing a pointer to the value!).
 	[settings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
 		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
 		NSString *key = [DDGetoptLongParser keyFromOption:option];		
-		if (!block(option, value, stop)) return;
+		if (!block(option, &value, stop)) return;
 
-		// If option is input path, add it to additional paths. We'll append these to any path found from command line. Note that we must properly handle . paths and paths not starting with / or ~; we assume these are relative paths so we prefix them with the path of the settings file!
-		if ([option isEqualToString:kGBArgInputPath]) {
-			NSString *plistPath = [path stringByDeletingLastPathComponent];
-			for (NSString *inputPath in value) {				
-				if (![inputPath hasPrefix:@"~"] && ![inputPath hasPrefix:@"/"]) {
-					if ([inputPath hasPrefix:@"."] && ![inputPath hasPrefix:@".."]) inputPath = [inputPath substringFromIndex:1];
-					inputPath = [plistPath stringByAppendingPathComponent:inputPath];
-				}
-				[self.additionalInputPaths addObject:inputPath];
-			}
-			return;
-		}
-		
 		// If the value is an array, send as many messages as there are values.
 		if ([value isKindOfClass:[NSArray class]]) {
 			for (NSString *item in value) {
