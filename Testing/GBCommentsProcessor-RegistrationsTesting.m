@@ -45,33 +45,18 @@
 	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Another paragraph", nil];
 }
 
-- (void)testProcessCommentWithContextStore_descriptions_shouldHandleAllTextAsLongDescForDocumentsRegardlessOnSettings {
+- (void)testProcessCommentWithContextStore_descriptions_shouldHandleAllTextAsLongDescBasedOnFlagsRegardlessOnSettingsAndContext {
 	// setup
 	GBStore *store = [GBTestObjectsRegistry store];
-	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
 	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
 	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
 	GBComment *comment1 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph"];
 	GBComment *comment2 = [GBComment commentWithStringValue:comment1.stringValue];
 	// execute
-	[processor1 processComment:comment1 withContext:document store:store];
-	[processor2 processComment:comment2 withContext:document store:store];
-	// verify
-	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
-	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
-}
-
-- (void)testProcessCommentWithContextStore_descriptions_shouldHandleAllTextAsLongDescForTopLevelObjectsRegardlessOnSettings {
-	// setup
-	GBStore *store = [GBTestObjectsRegistry store];
-	GBClassData *class = [GBClassData classDataWithName:@"Class"];
-	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:YES]];
-	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:[self settingsProviderRepeatFirst:NO]];
-	GBComment *comment1 = [GBComment commentWithStringValue:@"Some text\n\nAnother paragraph"];
-	GBComment *comment2 = [GBComment commentWithStringValue:comment1.stringValue];
-	// execute
-	[processor1 processComment:comment1 withContext:class store:store];
-	[processor2 processComment:comment2 withContext:class store:store];
+	processor1.alwaysRepeatFirstParagraph = YES;
+	[processor1 processComment:comment1 withContext:nil store:store];
+	processor2.alwaysRepeatFirstParagraph = YES;
+	[processor2 processComment:comment2 withContext:nil store:store];
 	// verify
 	[self assertComment:comment1 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
 	[self assertComment:comment2 matchesShortDesc:@"Some text" longDesc:@"Some text\n\nAnother paragraph", nil];
