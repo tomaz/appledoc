@@ -154,7 +154,7 @@
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
-/** Indicates whether HTML files should be generated or not.
+/* Indicates whether HTML files should be generated or not.
  
  If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
  
@@ -212,7 +212,7 @@
  */
 @property (assign) BOOL repeatFirstParagraphForMemberDescription;
 
-/* Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
+/** Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
  
  If `YES` undocumented objects are kept and are used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members.
  
@@ -228,7 +228,7 @@
  */
 @property (assign) BOOL keepUndocumentedObjects;
 
-/* Indicates whether undocumented methods or properties should be processed or not.
+/** Indicates whether undocumented methods or properties should be processed or not.
  
  If `YES`, undocumented members are still used for output generation. If `NO`, these members are ignored, as if they are not part of the object. Note that this only affects documented objects: if an object is not documented and none of it's members is documented, the object is not processed for output, even if this value is `YES`!
  
@@ -488,7 +488,7 @@
  
  @param path The path to convert.
  @return Returns filename that can be used for output.
- @see isPathRepresentingTemplateFile
+ @see isPathRepresentingTemplateFile:
  @see templateFilenameForOutputPath:
  */
 - (NSString *)outputFilenameForTemplatePath:(NSString *)path;
@@ -499,7 +499,7 @@
  
  @param path The path to convert.
  @return Returns template filename.
- @see isPathRepresentingTemplateFile
+ @see isPathRepresentingTemplateFile:
  @see outputFilenameForTemplatePath:
  */
 - (NSString *)templateFilenameForOutputPath:(NSString *)path;

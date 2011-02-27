@@ -30,7 +30,6 @@
  
  @param error If copying fails, error description is returned here.
  @return Returns `YES` if all files were succesfully copied, `NO` otherwise.
- @see generateOutputWithStore:error:
  */
 - (BOOL)copyTemplateFilesToOutputPath:(NSError **)error;
 

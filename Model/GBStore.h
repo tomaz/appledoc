@@ -89,7 +89,7 @@
  
  @param document The document to register.
  @exception NSException Thrown if the given document is already registered.
- @see documentWithPath:
+ @see documentWithName:
  @see documents
  */
 - (void)registerDocument:(GBDocumentData *)document;

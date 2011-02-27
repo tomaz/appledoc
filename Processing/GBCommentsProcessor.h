@@ -52,7 +52,7 @@
  @param context The object identifying current context for handling links or `nil`.
  @param store The store to process against.
  @exception NSException Thrown if any of the given parameters is invalid or processing encounters unexpected error.
- @see repeatFirstParagraph
+ @see alwaysRepeatFirstParagraph
  */
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store;
 

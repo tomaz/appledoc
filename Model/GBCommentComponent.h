@@ -32,7 +32,7 @@
  
  @param value String value to set.
  @return Returns initialized object or `nil` if initialization fails.
- @see commentWithStringValue:sourceInfo:
+ @see componentWithStringValue:sourceInfo:
  */
 + (id)componentWithStringValue:(NSString *)value;
 
@@ -43,7 +43,7 @@
  @param value String value to set.
  @param info Source info to set.
  @return Returns initialized object or `nil` if initialization fails.
- @see commentWithStringValue:
+ @see componentWithStringValue:
  */
 + (id)componentWithStringValue:(NSString *)value sourceInfo:(GBSourceInfo *)info;
 

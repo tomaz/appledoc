@@ -17,7 +17,7 @@
 
 /** Trims all characters from the given set from the string end.
  
- Works the same way as `[NSString stringByTrimmingCharactersInSetFromEnd:]` except it trims from end only.
+ Works the same way as `[NSString(GBString) stringByTrimmingCharactersInSetFromEnd:]` except it trims from end only.
  
  @param set The set of characters to trim.
  @return Returns trimmed string.
