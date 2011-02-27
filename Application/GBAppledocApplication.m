@@ -448,11 +448,11 @@ static NSString *kGBArgHelp = @"help";
 		BOOL dir;
 		if (![self.fileManager fileExistsAtPath:path isDirectory:&dir]) return;
 		if (dir) filename = [path stringByAppendingPathComponent:@"AppledocSettings.plist"];
-		if (!dir) [self.ignoredInputPaths addObject:argument];	
 		
 		// If we have a plist file, handle it. Note that we need to handle --templates cmd line switch separately so that it's properly accepted by the application!
 		if ([[filename pathExtension] isEqualToString:@"plist"]) {
 			// Prepare the directory path to the plist file. We'll use it for preparing relative paths.
+			if (!dir) [self.ignoredInputPaths addObject:argument];	
 			NSString *plistPath = [filename stringByDeletingLastPathComponent];
 
 			// In the first pass, we need to handle --templates option. We need to handle these before any other option from the project settings to prevent global settings overriding project settings! Note how we prevent handling of every option except --templates; we leave that option through to get it set to application settings (that's all the KVC setter does).
