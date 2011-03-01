@@ -439,6 +439,43 @@
 	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
 }
 
+- (void)testMergeDataFromObjectsProvider_shouldUseOriginalSectionForExistingMethodsEvenIfFoundInDifferentSection {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerSectionWithName:@"Section1"];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerSectionWithName:@"Section2"];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify
+	NSArray *sections = [original sections];
+	assertThatInteger([sections count], equalToInteger(1));
+	GBMethodSectionData *section = [sections objectAtIndex:0];
+	assertThat([section sectionName], is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+}
+
+- (void)testMergeDataFromObjectsProvider_shouldUseOriginalSectionForExistingMethodsFromDefaultSection {
+	// setup
+	GBMethodsProvider *original = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[original registerSectionWithName:@"Section1"];
+	[original registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	GBMethodsProvider *source = [[GBMethodsProvider alloc] initWithParentObject:self];
+	[source registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"m1", nil]];
+	// execute
+	[original mergeDataFromMethodsProvider:source];
+	// verify
+	NSArray *sections = [original sections];
+	assertThatInteger([sections count], equalToInteger(1));
+	GBMethodSectionData *section = [sections objectAtIndex:0];
+	assertThat([section sectionName], is(@"Section1"));
+	assertThatInteger([section.methods count], equalToInteger(1));
+	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+}
+
 #pragma mark Unregistering handling
 
 - (void)testUnregisterMethod_shouldRemoveMethodFromMethods {

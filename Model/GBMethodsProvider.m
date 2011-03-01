@@ -158,19 +158,30 @@
 	// If a method with the same selector is found while merging from source, we should check if the type also matches. If so, we can merge the data from the source's method. However if the type doesn't match, we should ignore the method alltogether (ussually this is due to custom property implementation). We should probably deal with this scenario more inteligently, but it seems it works...
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging methods from %@...", _parent, source->_parent);
+	
+	// First merge all existing methods regardless of section and prepare the list of all new methods.
+	NSMutableArray *newMethods = [NSMutableArray array];
+	[source.methods enumerateObjectsUsingBlock:^(GBMethodData *sourceMethod, NSUInteger idx, BOOL *stop) {
+		GBMethodData *existingMethod = [self methodBySelector:sourceMethod.methodSelector];
+		if (!existingMethod) {
+			[newMethods addObject:sourceMethod];
+			return;
+		}
+		[existingMethod mergeDataFromObject:sourceMethod];
+	}];
+	if ([newMethods count] == 0) return;
+	
+	// Second merge all sections; only use sections for methods that were not registered yet! Note that we need to remember current section so that we restore it later on.
 	GBMethodSectionData *previousSection = _registeringSection;
 	[source.sections enumerateObjectsUsingBlock:^(GBMethodSectionData *sourceSection, NSUInteger idx, BOOL *stop) {
-		GBMethodSectionData *existingSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
-		if (!existingSection) existingSection = [self registerSectionWithName:sourceSection.sectionName];
-		_registeringSection = existingSection;
-		
-		[sourceSection.methods enumerateObjectsUsingBlock:^(GBMethodData *sourceMethod, NSUInteger idx, BOOL *stop) {
-			GBMethodData *existingMethod = [_methodsBySelectors objectForKey:sourceMethod.methodSelector];
-			if (existingMethod) {
-				if (existingMethod.methodType == sourceMethod.methodType) [existingMethod mergeDataFromObject:sourceMethod];
+		[newMethods enumerateObjectsUsingBlock:^(GBMethodData *sourceMethod, NSUInteger idx, BOOL *stop) {
+			if ([sourceSection.methods containsObject:sourceMethod]) {
+				GBMethodSectionData *existingSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
+				if (!existingSection) existingSection = [self registerSectionWithName:sourceSection.sectionName];
+				_registeringSection = existingSection;
+				[self registerMethod:sourceMethod];
 				return;
 			}
-			[self registerMethod:sourceMethod];
 		}];
 	}];
 	_registeringSection = previousSection;
