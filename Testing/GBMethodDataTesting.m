@@ -96,6 +96,47 @@
 	assertThat([original.methodAttributes objectAtIndex:1], is(@"retain"));
 }
 
+- (void)testMergeDataFromObject_shouldMergeManualPropertyGetterImplementation {
+	// setup
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
+	GBMethodArgument *arg = [GBMethodArgument methodArgumentWithName:@"value"];
+	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"BOOL"] arguments:[NSArray arrayWithObject:arg]];
+	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify - simple testing here, just to make sure both are used and manual implementation is properly detected (i.e. no exception is thrown), fully tested in GBModelBaseTesting!
+	assertThatInteger([original.sourceInfos count], equalToInteger(2));
+}
+
+- (void)testMergeDataFromObject_shouldMergeManualPropertySetterImplementation {
+	// setup
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
+	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"setValue", nil];
+	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify - simple testing here, just to make sure both are used and manual implementation is properly detected (i.e. no exception is thrown), fully tested in GBModelBaseTesting!
+	assertThatInteger([original.sourceInfos count], equalToInteger(2));
+}
+
+- (void)testMergeDataFromObject_shouldMergeManualPropertyGetterAndSetterImplementation {
+	// setup
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
+	GBMethodArgument *arg = [GBMethodArgument methodArgumentWithName:@"value"];
+	GBMethodData *getter = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"BOOL"] arguments:[NSArray arrayWithObject:arg]];
+	[getter registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
+	GBMethodData *setter = [GBTestObjectsRegistry instanceMethodWithNames:@"setValue", nil];
+	[setter registerSourceInfo:[GBSourceInfo infoWithFilename:@"file3" lineNumber:1]];
+	// execute
+	[original mergeDataFromObject:getter];
+	[original mergeDataFromObject:setter];
+	// verify - simple testing here, just to make sure both are used and manual implementation is properly detected (i.e. no exception is thrown), fully tested in GBModelBaseTesting!
+	assertThatInteger([original.sourceInfos count], equalToInteger(3));
+}
+
 - (void)testMergeDataFromObject_shouldUseArgumentNamesFromComment {
 	// setup
 	GBMethodArgument *arg1 = [GBMethodArgument methodArgumentWithName:@"method" types:[NSArray arrayWithObject:@"id"] var:@"var"];
@@ -110,7 +151,35 @@
 	assertThat(mergedArgument.argumentVar, is(@"theVar"));
 }
 
-#pragma mark Convenienve methods testing
+#pragma mark Property helpers
+
+- (void)testPropertySelectors_shouldReturnProperValueForProperties {
+	// setup & execute
+	NSArray *components = [NSArray arrayWithObjects:@"BOOL", @"value", nil];
+	GBMethodData *property1 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:components];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isValue", nil] components:components];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter=setTheValue:", nil] components:components];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isValue", @"setter=setTheValue:", nil] components:components];
+	// verify
+	assertThat(property1.propertyGetterSelector, is(@"value"));
+	assertThat(property1.propertySetterSelector, is(@"setValue:"));
+	assertThat(property2.propertyGetterSelector, is(@"isValue"));
+	assertThat(property2.propertySetterSelector, is(@"setValue:"));
+	assertThat(property3.propertyGetterSelector, is(@"value"));
+	assertThat(property3.propertySetterSelector, is(@"setTheValue:"));
+	assertThat(property4.propertyGetterSelector, is(@"isValue"));
+	assertThat(property4.propertySetterSelector, is(@"setTheValue:"));
+}
+
+- (void)testPropertySelectors_shouldReturnNilForMethods {
+	// setup & execute
+	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"value", nil];
+	// verify
+	assertThat(method.propertyGetterSelector, is(nil));
+	assertThat(method.propertySetterSelector, is(nil));
+}
+
+#pragma mark Convenience methods testing
 
 - (void)testIsInstanceMethod_shouldReturnProperValue {
 	// setup & execute

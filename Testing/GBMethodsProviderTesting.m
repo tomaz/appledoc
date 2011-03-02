@@ -176,6 +176,40 @@
 	assertThat([provider.properties objectAtIndex:1], is(property2));
 }
 
+- (void)testRegisterMethod_shouldProperlyHandlePropertyGettersAndSetters {
+	// setup
+	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
+	GBMethodData *property1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"name1"];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isName2", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name2", nil]];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter=setTheName3:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name3", nil]];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isName4", @"setter=setTheName4:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name4", nil]];
+	// execute
+	[provider registerMethod:property1];
+	[provider registerMethod:property2];
+	[provider registerMethod:property3];
+	[provider registerMethod:property4];
+	// verify
+	assertThat([provider methodBySelector:@"name1"], is(property1));
+	assertThat([provider methodBySelector:@"isName1"], is(nil));
+	assertThat([provider methodBySelector:@"setName1:"], is(property1));
+	assertThat([provider methodBySelector:@"setTheName1:"], is(nil));
+	
+	assertThat([provider methodBySelector:@"name2"], is(property2));
+	assertThat([provider methodBySelector:@"isName2"], is(property2));
+	assertThat([provider methodBySelector:@"setName2:"], is(property2));
+	assertThat([provider methodBySelector:@"setTheName2:"], is(nil));
+	
+	assertThat([provider methodBySelector:@"name3"], is(property3));
+	assertThat([provider methodBySelector:@"isName3"], is(nil));
+	assertThat([provider methodBySelector:@"setName3:"], is(nil));
+	assertThat([provider methodBySelector:@"setTheName3:"], is(property3));
+
+	assertThat([provider methodBySelector:@"name4"], is(property4));
+	assertThat([provider methodBySelector:@"isName4"], is(property4));
+	assertThat([provider methodBySelector:@"setName4:"], is(nil));
+	assertThat([provider methodBySelector:@"setTheName4:"], is(property4));
+}
+
 #pragma mark Sections handling
 
 - (void)testRegisterMethod_shouldAddMethodToLastSection {
