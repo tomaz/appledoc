@@ -275,6 +275,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		
 		// To the parent or another top-level object.
 		if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:sourceParent];
+		if (object.isStaticDocument) return [self htmlReferenceForObject:object fromSource:sourceParent];
 
 		// To same or another member of the same parent.
 		if (object.parentObject == sourceParent) return [self htmlReferenceForMember:object prefixedWith:@"#"];
