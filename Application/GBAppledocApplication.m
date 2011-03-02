@@ -846,6 +846,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
 	ddprintf(@"- RegexKitLite by John Engelhart\n");
 	ddprintf(@"- GRMustache by Gwendal Roué\n");
+	ddprintf(@"- Discount by David Parsons\n");
 	ddprintf(@"- Timing functions from Apple examples\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!\n");
