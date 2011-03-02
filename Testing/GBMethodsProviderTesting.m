@@ -180,9 +180,9 @@
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *property1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"name1"];
-	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isName2", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name2", nil]];
-	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter=setTheName3:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name3", nil]];
-	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isName4", @"setter=setTheName4:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name4", nil]];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter",@"=",@"isName2", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name2", nil]];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter",@"=",@"setTheName3:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name3", nil]];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter",@"=",@"isName4", @"setter",@"=",@"setTheName4:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name4", nil]];
 	// execute
 	[provider registerMethod:property1];
 	[provider registerMethod:property2];

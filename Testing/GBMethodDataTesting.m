@@ -157,9 +157,9 @@
 	// setup & execute
 	NSArray *components = [NSArray arrayWithObjects:@"BOOL", @"value", nil];
 	GBMethodData *property1 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:components];
-	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isValue", nil] components:components];
-	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter=setTheValue:", nil] components:components];
-	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter=isValue", @"setter=setTheValue:", nil] components:components];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter", @"=", @"isValue", nil] components:components];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter", @"=", @"setTheValue:", nil] components:components];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter", @"=", @"isValue", @"setter", @"=", @"setTheValue:", nil] components:components];
 	// verify
 	assertThat(property1.propertyGetterSelector, is(@"value"));
 	assertThat(property1.propertySetterSelector, is(@"setValue:"));

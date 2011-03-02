@@ -19,6 +19,7 @@
 - (BOOL)formatTypesFromArray:(NSArray *)types toArray:(NSMutableArray *)array prefix:(NSString *)prefix suffix:(NSString *)suffix;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href;
+- (NSString *)attributeValueForKey:(NSString *)key;
 - (void)validateMergeWith:(GBMethodData *)source;
 @property (readonly) NSString *methodSelectorDelimiter;
 @property (readonly) NSString *methodPrefix;
@@ -197,35 +198,36 @@
 
 - (NSString *)propertyGetterSelector {
 	if (self.methodType != GBMethodTypeProperty) return nil;
-	__block NSString *result = nil;
-	[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
-		if ([attribute hasPrefix:@"getter"]) {
-			NSRange range = [attribute rangeOfString:@"="];
-			result = [attribute substringFromIndex:range.location + range.length];
-			result = [result stringByTrimmingWhitespaceAndNewLine];
-			*stop = YES;
-		}
-	}];
+	NSString *result = [self attributeValueForKey:@"getter"];
 	if (!result) result = self.methodSelector;
 	return result;
 }
 
 - (NSString *)propertySetterSelector {
 	if (self.methodType != GBMethodTypeProperty) return nil;
-	__block NSString *result = nil;
-	[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
-		if ([attribute hasPrefix:@"setter"]) {
-			NSRange range = [attribute rangeOfString:@"="];
-			result = [attribute substringFromIndex:range.location + range.length];
-			result = [result stringByTrimmingWhitespaceAndNewLine];
-			*stop = YES;
-		}
-	}];
+	NSString *result = [self attributeValueForKey:@"setter"];
 	if (!result) {
 		NSString *firstLetter = [[self.methodSelector substringToIndex:1] uppercaseString];
 		NSString *theRest = [self.methodSelector substringFromIndex:1];
 		result = [NSString stringWithFormat:@"set%@%@:", firstLetter, theRest];
 	}
+	return result;
+}
+
+- (NSString *)attributeValueForKey:(NSString *)key {
+	// Returns the value after equal sign for the given key (i.e. for attributes "getter", "=", "value", this would return "value"). Returns nil if either key isn't found or isn't followed by equal sign and/or a value.
+	__block NSString *result = nil;
+	__block BOOL foundKey = NO;
+	[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
+		if ([attribute isEqualToString:key]) {
+			foundKey = YES;
+			return;
+		}
+		if (foundKey && ![attribute isEqualToString:@"="]) {
+			result = attribute;
+			*stop = YES;
+		}
+	}];
 	return result;
 }
 
