@@ -51,7 +51,7 @@
 	NSParameterAssert(tokenizer != nil);
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
-	GBLogDebug(@"Initializing tokenizer using %@...", tokenizer);
+	GBLogDebug(@"Initializing tokenizer...");
 	self = [super init];
 	if (self) {
 		self.settings = settings;
@@ -207,8 +207,14 @@
 	}
 	
 	// Assign source information so that we can match comments to file and line number later on.
-	if (startingPreviousToken) self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
-	if (startingLastToken) self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
+	if (startingPreviousToken) {
+		self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
+		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.previousCommentBuilder normalizedDescription], self.previousCommentSourceInfo.lineNumber);
+	}
+	if (startingLastToken) {
+		self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
+		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.lastCommentBuilder normalizedDescription], self.lastCommentSourceInfo.lineNumber);
+	}
 	return YES;
 }
 

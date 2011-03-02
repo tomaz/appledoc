@@ -122,8 +122,8 @@
 	// @interface CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
-	GBLogVerbose(@"Matched %@ class definition.", className);
 	[self registerSourceInfoFromCurrentTokenToObject:class];
+	GBLogDebug(@"Matched %@ class definition at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
@@ -138,8 +138,8 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
-	GBLogVerbose(@"Matched %@(%@) category definition...", className, categoryName);
 	[self registerSourceInfoFromCurrentTokenToObject:category];
+	GBLogVerbose(@"Matched %@(%@) category definition at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
@@ -151,7 +151,7 @@
 	// @interface CLASSNAME ( )
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
-	GBLogVerbose(@"Matched %@() extension definition.", className);
+	GBLogVerbose(@"Matched %@() extension definition at line %lu.", className, extension.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:extension];
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
@@ -164,7 +164,7 @@
 	// @protocol PROTOCOLNAME
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
-	GBLogVerbose(@"Matched %@ protocol definition.", protocolName);
+	GBLogVerbose(@"Matched %@ protocol definition at line %lu.", protocolName, protocol.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:protocol];
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
@@ -266,9 +266,9 @@
 		
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
-		GBLogDebug(@"Matched property definition %@.", propertyData);
-		[self registerComment:comment toObject:propertyData];
 		[propertyData registerSourceInfo:filedata];
+		GBLogDebug(@"Matched property definition %@ at line %lu.", propertyData, propertyData.prefferedSourceInfo.lineNumber);
+		[self registerComment:comment toObject:propertyData];
 		[propertyData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
@@ -289,8 +289,8 @@
 	// @implementation CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
-	GBLogVerbose(@"Matched %@ class declaration.", className);
 	[self registerSourceInfoFromCurrentTokenToObject:class];
+	GBLogVerbose(@"Matched %@ class declaration at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchMethodDeclarationsForProvider:class.methods defaultsRequired:NO];
@@ -302,8 +302,8 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
-	GBLogVerbose(@"Matched %@(%@) category declaration.", className, categoryName);
 	[self registerSourceInfoFromCurrentTokenToObject:category];
+	GBLogVerbose(@"Matched %@(%@) category declaration at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchMethodDeclarationsForProvider:category.methods defaultsRequired:NO];
@@ -523,9 +523,9 @@
 		
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
-		GBLogDebug(@"Matched method %@%@.", start, methodData);
-		[self registerComment:comment toObject:methodData];
 		[methodData registerSourceInfo:filedata];		
+		GBLogDebug(@"Matched method %@%@ at line %lu.", start, methodData, methodData.prefferedSourceInfo.lineNumber);
+		[self registerComment:comment toObject:methodData];
 		[methodData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
