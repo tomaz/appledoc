@@ -78,6 +78,10 @@
 		if ([suffix length] >= length) *stop = YES;
 	}];
 	
+	// Make sure we strip long words; note that we're casting to NSMutableString to prevent compiler warnings; although not good coding practice, it's safe in this case...
+	if ([prefix length] > length) prefix = (NSMutableString *)[prefix substringToIndex:length];
+	if ([suffix length] > length) suffix = (NSMutableString *)[suffix substringToIndex:length];
+	
 	return [NSString stringWithFormat:@"%@…%@", prefix, suffix];
 }
 
