@@ -21,6 +21,7 @@ static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
 static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
+static NSString *kGBArgIndexDescPath = @"index-desc";
 static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
 
@@ -177,6 +178,7 @@ static NSString *kGBArgHelp = @"help";
 		GBParser *parser = [GBParser parserWithSettingsProvider:self.settings];
 		[parser parseObjectsFromPaths:inputs toStore:store];
 		[parser parseDocumentsFromPaths:[self.settings.includePaths allObjects] toStore:store];
+		[parser parseCustomDocumentFromPath:self.settings.indexDescriptionPath outputSubpath:@"" key:kGBCustomDocumentIndexDescKey toStore:store];
 		GBAbsoluteTime parseTime = GetCurrentTime();
 		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
 		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
@@ -215,6 +217,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
 		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
 		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
+		{ kGBArgIndexDescPath,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
 		
@@ -373,6 +376,24 @@ static NSString *kGBArgHelp = @"help";
 		if (self.settings.warnOnMissingCompanyIdentifier) {
 			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 		}
+	}
+	
+	// If any of the include paths isn't valid, warn.
+	[self.settings.includePaths enumerateObjectsUsingBlock:^(NSString *userPath, BOOL *stop) {
+		NSString *path = [userPath stringByStandardizingPath];
+		if (![self.fileManager fileExistsAtPath:path]) {
+			ddprintf(@"WARNL --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
+		}
+	}];
+	
+	// If index description path is given but doesn't point to an existing file, warn.
+	if ([self.settings.indexDescriptionPath length] > 0) {
+		BOOL isDir;
+		NSString *path = [self.settings.indexDescriptionPath stringByStandardizingPath];
+		if (![self.fileManager fileExistsAtPath:path isDirectory:&isDir])
+			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+		else if (isDir)
+			ddprintf(@"WARN: --%@ path '%@' is a directory, file is required, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 	}
 }
 
@@ -569,6 +590,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setInclude:(NSString *)path { [self.settings.includePaths addObject:[self standardizeCurrentDirectoryForPath:path]]; }
+- (void)setIndexDesc:(NSString *)path { self.settings.indexDescriptionPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
@@ -714,6 +736,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	ddprintf(@"--%@ = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
 	ddprintf(@"--%@ = %@\n", kGBArgOutputPath, self.settings.outputPath);
+	ddprintf(@"--%@ = %@\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 	for (NSString *path in self.settings.includePaths) ddprintf(@"--%@ = %@\n", kGBArgIncludePath, path);
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
@@ -789,6 +812,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetInstallPath, @"<path>", @"DocSet installation path");
 	PRINT_USAGE(@"-s,", kGBArgIncludePath, @"<path>", @"Include static doc(s) at path");
 	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
+	PRINT_USAGE(@"   ", kGBArgIndexDescPath, @"<path>", @"File including main index description");
 	ddprintf(@"\n");
 	ddprintf(@"PROJECT INFO\n");
 	PRINT_USAGE(@"-p,", kGBArgProjectName, @"<string>", @"Project name");

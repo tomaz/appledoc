@@ -74,6 +74,15 @@
 	assertThat(settings2.docsetUtilPath, is(self.currentPath));
 }
 
+- (void)testIndexDesc_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--index-desc", @"path/file.txt", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--index-desc", @".", nil];
+	// verify
+	assertThat(settings1.indexDescriptionPath, is(@"path/file.txt"));
+	assertThat(settings2.indexDescriptionPath, is(self.currentPath));
+}
+
 - (void)testInclude_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--include", @"path", nil];

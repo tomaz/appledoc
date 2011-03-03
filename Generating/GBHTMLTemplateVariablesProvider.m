@@ -19,6 +19,7 @@
 
 - (NSString *)hrefForObject:(id)object fromObject:(id)source;
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
+- (void)addCustomDocumentWithKey:(id)key toDictionary:(NSMutableDictionary *)dict key:(id)dictKey;
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
@@ -156,6 +157,7 @@
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self addCustomDocumentWithKey:kGBCustomDocumentIndexDescKey toDictionary:result key:@"indexDescription"];
 	[self registerObjectsUsageForIndexInDictionary:result];
 	return result;
 }
@@ -198,6 +200,13 @@
 }
 
 #pragma mark Common values
+
+- (void)addCustomDocumentWithKey:(id)key toDictionary:(NSMutableDictionary *)dict key:(id)dictKey {
+	// Adds custom document with the given key to the given dictionary using the given dictionary key. If custom document isn't found, nothing happens.
+	GBDocumentData *document = [self.store customDocumentWithKey:key];
+	if (!document) return;
+	[dict setObject:document forKey:dictKey];
+}
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
 	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];

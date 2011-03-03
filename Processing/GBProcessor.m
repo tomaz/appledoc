@@ -133,6 +133,12 @@
 		[self processCommentForObject:document];
 		GBLogDebug(@"Finished processing document %@.", document);
 	}
+	for (GBDocumentData *document in self.store.customDocuments) {
+		GBLogInfo(@"Processing custom document %@...", document);
+		self.currentContext = document;
+		[self processCommentForObject:document];
+		GBLogDebug(@"Finished processing custom document %@.", document);
+	}
 }
 
 #pragma mark Common data processing

@@ -328,6 +328,20 @@
 	assertThat([settings htmlReferenceForObject:class fromSource:document4], is(@"../Classes/Class.html"));
 }
 
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForCustomDocumentToTopLevelObjectReference {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@"path"];
+	document1.isCustomDocument = YES;
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
+	document2.isCustomDocument = YES;
+	// verify
+	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"Classes/Class.html"));
+}
+
 #pragma mark HTML href references handling - top level to members
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToItsMemberReference {

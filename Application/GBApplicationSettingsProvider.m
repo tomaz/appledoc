@@ -24,6 +24,8 @@ NSString *kGBTemplatePlaceholderDocSetPackageFilename = @"%DOCSETPACKAGEFILENAME
 NSString *kGBTemplatePlaceholderYear = @"%YEAR";
 NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
+NSString *kGBCustomDocumentIndexDescKey = @"index-description";
+
 #pragma mark -
 
 @interface GBApplicationSettingsProvider ()
@@ -65,6 +67,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
+		self.indexDescriptionPath = nil;
 		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
 		
@@ -405,21 +408,27 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	}
 	else if ([object isKindOfClass:[GBDocumentData class]]) {
 		GBDocumentData *document = object;
-
-		// Get output filename (removing template suffix) and document subpath without filename. Note that we need to remove extension as we'll add html by default!
-		NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
-		NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
-		filename = [filename stringByDeletingPathExtension];
 		
-		// If the document is included as part of a directory structure, we should use subdir, otherwise just leave the filename.
-		if (![document.basePathOfDocument isEqualToString:document.pathOfDocument]) {
-			NSString *includePath = [document.basePathOfDocument lastPathComponent];
-			subpath = [includePath stringByAppendingPathComponent:subpath];
-		}
+		// If this is custom document, just use it's relative path, otherwise take into account the registered path.
+		if (document.isCustomDocument) {
+			basePath = document.basePathOfDocument;
+			name = document.nameOfDocument;
+		} else {
+			// Get output filename (removing template suffix) and document subpath without filename. Note that we need to remove extension as we'll add html by default!
+			NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
+			NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
+			filename = [filename stringByDeletingPathExtension];
+			
+			// If the document is included as part of a directory structure, we should use subdir, otherwise just leave the filename.
+			if (![document.basePathOfDocument isEqualToString:document.pathOfDocument]) {
+				NSString *includePath = [document.basePathOfDocument lastPathComponent];
+				subpath = [includePath stringByAppendingPathComponent:subpath];
+			}
 
-		// Prepare relative path from output path to the document now.
-		basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
-		name = filename;
+			// Prepare relative path from output path to the document now.
+			basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
+			name = filename;
+		}
 	}
 	
 	if (basePath == nil || name == nil) return nil;
@@ -437,6 +446,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 			NSMutableString *result = [NSMutableString stringWithCapacity:[subpath length]];
 			for (NSUInteger i=0; i<[components count]; i++) [result appendString:@"../"];
 			return result;
+		} else {
+			return @"";
 		}
 	}
 	return @"../";
@@ -513,6 +524,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize docsetUtilPath;
 @synthesize templatesPath;
 @synthesize includePaths;
+@synthesize indexDescriptionPath;
 @synthesize ignoredPaths;
 
 @synthesize docsetBundleIdentifier;

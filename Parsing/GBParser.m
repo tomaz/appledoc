@@ -107,6 +107,29 @@
 	GBLogVerbose(@"Parsed %lu static document files.", self.numberOfParsedDocuments);
 }
 
+- (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)store {
+	NSParameterAssert(key != nil);
+	NSParameterAssert(store != nil);
+	self.store = store;
+	GBLogVerbose(@"Parsing custom document from '%@'...", path);
+
+	NSError *error = nil;
+	NSString *contents = [NSString stringWithContentsOfFile:[path stringByStandardizingPath] encoding:NSUTF8StringEncoding error:&error];
+	if (error) {
+		GBLogNSError(error, @"Failed reading contents of custom document '%@'...", path);
+		return;
+	}		
+	if ([contents length] == 0) {
+		GBLogWarn(@"Empty custom document found at '%@'!", path);
+		return;
+	}
+	
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:contents path:path];
+	document.isCustomDocument = YES;
+	document.basePathOfDocument = subpath;
+	[self.store registerCustomDocument:document withKey:key];
+}
+
 #pragma mark Parsing helpers
 
 - (void)parsePath:(NSString *)input usingBlock:(void (^)(NSString *path))block {

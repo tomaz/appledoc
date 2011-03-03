@@ -18,6 +18,16 @@
 					</div>		
 				</div>
 				<div id="container">
+					{{#indexDescription}}
+					<div class="section section-overview index-overview">
+						{{#comment}}
+						{{#hasLongDescription}}
+						{{#longDescription}}{{#components}}{{&htmlValue}}{{/components}}{{/longDescription}}
+						{{/hasLongDescription}}
+						{{/comment}}
+					</div>
+					{{/indexDescription}}
+					
 					{{#hasClasses}}
 					<div class="index-column">
 						<h2 class="index-title">{{strings/indexPage/classesTitle}}</h2>

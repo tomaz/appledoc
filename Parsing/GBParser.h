@@ -52,6 +52,7 @@
  @param store The store to add objects to.
  @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
  @see parseDocumentsFromPaths:toStore:
+ @see parseCustomDocumentFromPath:toStore:
  */
 - (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store;
 
@@ -65,7 +66,21 @@
  @param store The store to add objects to.
  @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
  @see parseObjectsFromPaths:toStore:
+ @see parseCustomDocumentFromPath:outputSubpath:key:toStore:
  */
 - (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)store;
+
+/** Scans the given file and parses it as custom static document files into in-memory objects.
+ 
+ Custom static documents are not standalone documents, but rather fractions of documents used for injection into other parts. For example: main index file documentation. This is the main method for these documents parsing. It is intended to be invoked from the top level application code. Is accepts a path to a filename and parses it the same way as normal static documents. Parsed data is registered to the given `GBStore`, each document using it's document filename without extension as the key. If the document is empty, a warning is issued, and the document is not registered.
+ 
+ @param path The string containing filename and path to the document.
+ @param outputPath The subpath relative to output path the object will be saved to.
+ @param store The store to add objects to.
+ @exception NSException Thrown if a serious problem is detected which prevents us from parsing.
+ @see parseObjectsFromPaths:toStore:
+ @see parseDocumentsFromPath:toStore:
+ */
+- (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)store;
 
 @end

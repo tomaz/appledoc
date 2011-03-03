@@ -27,6 +27,8 @@
 	NSMutableDictionary *_protocolsByName;
 	NSMutableSet *_documents;
 	NSMutableDictionary *_documentsByName;
+	NSMutableSet *_customDocuments;
+	NSMutableDictionary *_customDocumentsByKey;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -94,6 +96,17 @@
  */
 - (void)registerDocument:(GBDocumentData *)document;
 
+/** Registers the given custom document to the store data.
+ 
+ If store doesn't yet have the given document registered, the object is added to custom documents list by it's key. If the list already contains the object, exception is raised.
+ 
+ @param document The document to register.
+ @param key The key to register document with.
+ @exception NSException Thrown if the given document is already registered.
+ @see customDocumentWithKey:
+ */
+- (void)registerCustomDocument:(GBDocumentData *)document withKey:(id)key;
+
 /** Unregisters the given class, category or protocol.
  
  If the object is not part of the store, nothing happens.
@@ -155,6 +168,16 @@
  */
 - (GBDocumentData *)documentWithName:(NSString *)path;
 
+/** Returns the custom document that matches the given key.
+ 
+ If no registered custom document matches the given key, `nil` is returned.
+ 
+ @param key The key of the document.
+ @return Returns document instance or `nil` if no match is found.
+ @see customDocuments
+ */
+- (GBDocumentData *)customDocumentWithKey:(id)key;
+
 /** The list of all registered classes as instances of `GBClassData`.
  
  @see classWithName:
@@ -178,9 +201,17 @@
 
 /** The list of all registered documents as instances of `GBDocumentData`.
  
+ @see documentWithName:
  @see registerDocument:
  */
 @property (readonly) NSSet *documents;
+
+/** The list of all registered custom documents as instances of `GBDocumentData`.
+ 
+ @see customDocumentWithKey:
+ @see registerCustomDocument:withKey:
+ */
+@property (readonly) NSSet *customDocuments;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper methods
