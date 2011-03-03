@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "RegexKitLite.h"
 #import "GRMustache.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
@@ -47,6 +48,7 @@
 - (void)registerObjectInheritsFromSpecificationForClass:(GBClassData *)class toArray:(NSMutableArray *)array;
 - (void)registerObjectConformsToSpecificationForProvider:(id<GBObjectDataProviding>)provider toArray:(NSMutableArray *)array;
 - (void)registerObjectDeclaredInSpecificationForProvider:(GBModelBase *)provider toArray:(NSMutableArray *)array;
+- (void)registerObjectCompanionGuidesSpecificationForObject:(GBModelBase *)object toArray:(NSMutableArray *)array;
 
 - (NSDictionary *)objectSpecificationWithValues:(NSArray *)values title:(NSString *)title;
 - (NSDictionary *)objectSpecificationValueWithData:(id)data href:(NSString *)href;
@@ -251,6 +253,7 @@
 	[self registerObjectInheritsFromSpecificationForClass:object toArray:result];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
+	[self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
 	return [self arrayDescriptorForArray:result];
 }
 
@@ -258,6 +261,7 @@
 	NSMutableArray *result = [NSMutableArray array];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
+	[self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
 	return [self arrayDescriptorForArray:result];
 }
 
@@ -265,6 +269,7 @@
 	NSMutableArray *result = [NSMutableArray array];
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
+	[self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
 	return [self arrayDescriptorForArray:result];
 }
 
@@ -324,6 +329,28 @@
 	}];
 	NSArray *values = [self delimitObjectSpecificationValues:specifications withDelimiter:@"<br />"];
 	NSString *title = [self.settings.stringTemplates valueForKeyPath:@"objectSpecifications.declaredIn"];
+	NSDictionary *data = [self objectSpecificationWithValues:values title:title];
+	[array addObject:data];
+}
+
+- (void)registerObjectCompanionGuidesSpecificationForObject:(GBModelBase *)object toArray:(NSMutableArray *)array {
+	// Prepares companion guides specification with links to all static documents listed in related items of the given object. If the object doesn't contain any related static document, nothing happens.
+	if (!object.comment || !object.comment.hasRelatedItems) return;
+	NSMutableArray *relatedDocuments = [NSMutableArray array];
+	[object.comment.relatedItems.components enumerateObjectsUsingBlock:^(GBCommentComponent *item, NSUInteger idx, BOOL *stop) {
+		if ([item.relatedItem isStaticDocument]) {
+			NSArray *components = [item.markdownValue captureComponentsMatchedByRegex:self.settings.commentComponents.markdownInlineLinkRegex];
+			if ([components count] > 0) {
+				NSString *name = [components objectAtIndex:1];
+				NSString *href = [components objectAtIndex:2];
+				NSDictionary *data = [self objectSpecificationValueWithData:name href:href];
+				[relatedDocuments addObject:data];
+			}
+		}
+	}];
+	if ([relatedDocuments count] == 0) return;
+	NSArray *values = [self delimitObjectSpecificationValues:relatedDocuments withDelimiter:@"<br />"];
+	NSString *title = [self.settings.stringTemplates valueForKeyPath:@"objectSpecifications.companionGuide"];
 	NSDictionary *data = [self objectSpecificationWithValues:values title:title];
 	[array addObject:data];
 }

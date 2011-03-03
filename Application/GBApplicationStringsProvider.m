@@ -39,6 +39,7 @@
 		[result setObject:@"Inherits from" forKey:@"inheritsFrom"];
 		[result setObject:@"Conforms to" forKey:@"conformsTo"];
 		[result setObject:@"Declared in" forKey:@"declaredIn"];
+		[result setObject:@"Companion guide" forKey:@"companionGuide"];
 	}
 	return result;
 }
