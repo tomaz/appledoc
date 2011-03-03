@@ -33,7 +33,7 @@
 	[self assertMethod:[[section methods] objectAtIndex:1] matchesInstanceComponents:@"id", @"method2", nil];
 }
 
-- (void)testParseObjectsFromString_shouldRegisterCommentedMethodsToLastSection {
+- (void)testParseObjectsFromString_shouldRegisterUncommentedMethodsToLastSection {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -73,7 +73,7 @@
 	assertThat([[sections objectAtIndex:0] sectionName], is(nil));
 }
 
-- (void)testParseObjectsFromString_shouldIgnoreWhitespaceWithinSectionName {
+- (void)testParseObjectsFromString_shouldOnlyTakeSectionNameFromTheFirstLineString {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
@@ -82,7 +82,7 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(@"Section spanning multiple lines whoa!"));
+	assertThat([[sections objectAtIndex:0] sectionName], is(@"Section"));
 }
 
 - (void)testParseObjectsFromString_requiresDetectsSectionEvenIfFollowedByUncommentedMethod {
