@@ -4,8 +4,6 @@
 <dict>
 	<key>--company-id</key>
 	<string>com.gentlebytes</string>
-	<key>--create-docset</key>
-	<false/>
 	<key>--ignore</key>
 	<array>
 		<string>ThirdParty</string>
@@ -13,10 +11,6 @@
 		<string>Frameworks</string>
 		<string>Testing</string>
 	</array>
-	<key>--install-docset</key>
-	<false/>
-	<key>--keep-intermediate-files</key>
-	<false/>
 	<key>--logformat</key>
 	<integer>1</integer>
 	<key>--print-settings</key>
@@ -25,8 +19,6 @@
 	<string>Gentle Bytes</string>
 	<key>--project-name</key>
 	<string>appledoc</string>
-	<key>--publish-docset</key>
-	<false/>
 	<key>--repeat-first-par</key>
 	<false/>
 	<key>--templates</key>
