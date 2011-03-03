@@ -74,7 +74,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.keepIntermediateFiles = NO;
-		self.cleanupOutputPathBeforeRunning = YES;
+		self.cleanupOutputPathBeforeRunning = NO;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
@@ -122,8 +122,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Helper methods
 
-- (void)updateHelperClassesWithSettingsValues {
-	
+- (void)updateHelperClassesWithSettingsValues {	
 }
 
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {

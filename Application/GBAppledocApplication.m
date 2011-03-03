@@ -29,6 +29,7 @@ static NSString *kGBArgProjectVersion = @"project-version";
 static NSString *kGBArgProjectCompany = @"project-company";
 static NSString *kGBArgCompanyIdentifier = @"company-id";
 
+static NSString *kGBArgCleanOutput = @"clean-output";
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
@@ -241,6 +242,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgDocSetAtomFilename,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPackageFilename,										0,		DDGetoptRequiredArgument },
 		
+		{ kGBArgCleanOutput,												0,		DDGetoptNoArgument },
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
@@ -355,6 +357,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	// If output path is not given, revert to current path, but do warn the user.
 	if ([self.settings.outputPath length] == 0) {
+		self.settings.cleanupOutputPathBeforeRunning = NO;
 		self.settings.outputPath = [self.fileManager currentDirectoryPath];
 		if (self.settings.warnOnMissingOutputPathArgument) {
 			ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
@@ -371,11 +374,6 @@ static NSString *kGBArgHelp = @"help";
 			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 		}
 	}
-	
-	// Make sure to switch on any setting thats required by "higher" level one.
-	if (self.settings.publishDocSet) self.settings.installDocSet = YES;
-	if (self.settings.installDocSet) self.settings.createDocSet = YES;
-	if (self.settings.createDocSet) self.settings.createHTML = YES;
 }
 
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
@@ -582,14 +580,47 @@ static NSString *kGBArgHelp = @"help";
 - (void)setProjectCompany:(NSString *)value { self.settings.projectCompany = value; }
 - (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
 
-- (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
-- (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
-- (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
-- (void)setPublishDocset:(BOOL)value { self.settings.publishDocSet = value; }
-- (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
-- (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
-- (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
-- (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
+- (void)setCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = value; }
+- (void)setCreateHtml:(BOOL)value { 
+	self.settings.createHTML = value; 
+	if (!value) {
+		self.settings.createDocSet = NO;
+		self.settings.installDocSet = NO;
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setCreateDocset:(BOOL)value { 
+	self.settings.createDocSet = value;
+	if (value) {
+		self.settings.createHTML = YES;
+	} else {
+		self.settings.installDocSet = NO;
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setInstallDocset:(BOOL)value { 
+	self.settings.installDocSet = value; 
+	if (value) {
+		self.settings.createHTML = YES;
+		self.settings.createDocSet = YES;
+		
+	} else {
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setPublishDocset:(BOOL)value { 
+	self.settings.publishDocSet = value; 
+	if (value) {
+		self.settings.createHTML = YES;
+		self.settings.createDocSet = YES;
+		self.settings.installDocSet = YES;
+	}
+}
+- (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
+- (void)setNoCreateHtml:(BOOL)value { [self setCreateHtml:!value]; }
+- (void)setNoCreateDocset:(BOOL)value { [self setCreateDocset:!value]; }
+- (void)setNoInstallDocset:(BOOL)value { [self setInstallDocset:!value]; }
+- (void)setNoPublishDocset:(BOOL)value { [self setPublishDocset:!value]; }
 
 - (void)setCrossrefFormat:(NSString *)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value; }
 - (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value ? @"<%@>" : @"<?%@>?"; }
@@ -708,6 +739,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
 	ddprintf(@"\n");
 	
+	ddprintf(@"--%@ = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
@@ -769,6 +801,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
 	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
 	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
+	PRINT_USAGE(@"   ", kGBArgCleanOutput, @"", @"[b] Remove contents of output path before starting !!CAUTION!!");
 	ddprintf(@"\n");
 	ddprintf(@"OPTIONS\n");
 	PRINT_USAGE(@"   ", kGBArgKeepIntermediateFiles, @"", @"[b] Keep intermediate files in output path");
