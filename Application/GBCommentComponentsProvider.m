@@ -155,6 +155,24 @@
 	return [NSString stringWithFormat:@"^\\s*(\\S%@\\s+)(\\S+)\\s+(?s:(.*))", keyword];
 }
 
+#pragma mark Custom markers
+
+- (NSString *)codeSpanStartMarker {
+	return @"~!@";
+}
+
+- (NSString *)codeSpanEndMarker {
+	return @"@!~";
+}
+
+- (NSString *)appledocBoldStartMarker {
+	return @"~!#";
+}
+
+- (NSString *)appledocBoldEndMarker {
+	return @"#!~";
+}
+
 #pragma Properties
 
 @synthesize crossReferenceMarkersTemplate;

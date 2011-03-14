@@ -363,10 +363,20 @@ extern id kGBCustomDocumentIndexDescKey;
  This should be left to default value, however it's useful to prevent embedding for unit testing.
  
  @see stringByEmbeddingCrossReference:
+ @see embedAppledocBoldMarkersWhenProcessingMarkdown
  */
 @property (assign) BOOL embedCrossReferencesWhenProcessingMarkdown;
 
-/** Returns a new string with the given Markdown reference embedded in special markers.
+/** Specifies whether cross references should be embedded to special strings when processing Markdown.
+ 
+ This should be left to default value, however it's useful to prevent embedding for unit testing.
+ 
+ @see stringByEmbeddingCrossReference:
+ @see embedCrossReferencesWhenProcessingMarkdown
+ */
+@property (assign) BOOL embedAppledocBoldMarkersWhenProcessingMarkdown;
+
+/** Returns a new string with the given Markdown reference embedded in special cross reference markers used for post processing.
  
  This should be used for all generated cross references, so that we can later detect them when converting HTML with `stringByConvertingMarkdownToHTML:`.
  
@@ -378,6 +388,19 @@ extern id kGBCustomDocumentIndexDescKey;
  @see embedCrossReferencesWhenProcessingMarkdown
  */
 - (NSString *)stringByEmbeddingCrossReference:(NSString *)value;
+
+/** Returns a new string with the given value embedded in special bold markers used for post processing.
+ 
+ This should be used for all appledoc style bold markers (single star), so that we can later detect them when converting HTML with `stringByConvertingMarkdownToHTML:`.
+ 
+ @warning *Important:* Behavior of this method depends on `embedAppledocBoldMarkersWhenProcessingMarkdown` value. If it's `YES`, strings are embedded, otherwise value is returned without embedding.
+ 
+ @param value The string to embedd.
+ @return Returns embedded string.
+ @see stringByConvertingMarkdownToHTML:
+ @see embedAppledocBoldMarkersWhenProcessingMarkdown
+ */
+- (NSString *)stringByEmbeddingAppledocBoldMarkers:(NSString *)value;
 
 /** Returns a new string containing HTML representation of the given Markdown string.
  

@@ -405,69 +405,74 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string length] == 0) return string;
 	
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSString *nested = [string stringByReplacingOccurrencesOfRegex:@"(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*)" withString:@"==!!=="];
-	NSString *simplified = [nested stringByReplacingOccurrencesOfRegex:@"(__|\\*\\*)" withString:@"*"];
-	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|==!!==|`)(.*?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
-	NSRange searchRange = NSMakeRange(0, [simplified length]);
-	NSMutableString *result = [NSMutableString stringWithCapacity:[simplified length]];
+	NSArray *components = [string arrayOfDictionariesByMatchingRegex:@"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
+	NSRange searchRange = NSMakeRange(0, [string length]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	for (NSDictionary *component in components) {
 		// Find marker range within the remaining text. Note that we don't test for marker not found, as this shouldn't happen...
 		NSString *componentMarker = [component objectForKey:@"marker"];
 		NSString *componentText = [component objectForKey:@"value"];
-		NSRange markerRange = [simplified rangeOfString:componentMarker options:0 range:searchRange];
+		NSRange markerRange = [string rangeOfString:componentMarker options:0 range:searchRange];
 		
 		// If we skipped some text, convert all cross refs in it and append to the result.
 		if (markerRange.location > searchRange.location) {
 			NSRange skippedRange = NSMakeRange(searchRange.location, markerRange.location - searchRange.location);
-			NSString *skippedText = [simplified substringWithRange:skippedRange];
+			NSString *skippedText = [string substringWithRange:skippedRange];
 			NSString *convertedText = [self stringByConvertingCrossReferencesInString:skippedText withFlags:flags];
 			[result appendString:convertedText];
 		}
 		
 		// Convert the marker to proper Markdown style. Warn if unknown marker is found. This is just a precaution in case we change something above, but forget to update this part, shouldn't happen in released versions as it should get caught by unit tests...
 		GBProcessingFlag linkFlags = flags;
-		NSString *markdownMarker = @"";
+		NSString *markdownStartMarker = @"";
+		NSString *markdownEndMarker = nil;
 		if ([componentMarker isEqualToString:@"*"]) {
 			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"**";
+			markdownStartMarker = [NSString stringWithFormat:@"**%@", self.components.appledocBoldStartMarker];
+			markdownEndMarker = [NSString stringWithFormat:@"%@**", self.components.appledocBoldEndMarker];
 		}
 		else if ([componentMarker isEqualToString:@"_"]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"_";
+			markdownStartMarker = @"_";
 		}
 		else if ([componentMarker isEqualToString:@"`"]) {
 			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"`";
+			markdownStartMarker = @"`";
 			linkFlags |= GBProcessingFlagEmbedMarkdownLink;
 		}
-		else if ([componentMarker isEqualToString:@"==!!=="]) {
+		else if ([componentMarker isEqualToString:@"**"] || [componentMarker isEqualToString:@"__"] || [componentMarker isEqualToString:@"*_"] || [componentMarker isEqualToString:@"_*"]) {
+			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownStartMarker = componentMarker;
+		}
+		else if ([componentMarker isEqualToString:@"*__"] || [componentMarker isEqualToString:@"__*"] || [componentMarker isEqualToString:@"**_"] || [componentMarker isEqualToString:@"_**"] || [componentMarker isEqualToString:@"***"] || [componentMarker isEqualToString:@"___"]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"***";
+			markdownStartMarker = componentMarker;
 		}
 		else if (self.settings.warnOnUnknownDirective) {
 			GBLogWarn(@"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
 		}
+		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
 		
 		// Get formatted text, convert it's cross references and append proper format markers and string to result.
 		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
-		[result appendString:markdownMarker];
+		[result appendString:markdownStartMarker];
 		[result appendString:convertedText];
-		[result appendString:markdownMarker];
+		[result appendString:markdownEndMarker];
 		
 		// Prepare next search range.
 		NSUInteger location = markerRange.location + markerRange.length * 2 + [componentText length];
-		searchRange = NSMakeRange(location, [simplified length] - location);
+		searchRange = NSMakeRange(location, [string length] - location);
 	}
 	
 	// If there is some remaining text, process it for cross references and append to result.
-	if ([simplified length] > searchRange.location) {
-		NSString *remainingText = [simplified substringWithRange:searchRange];
+	if ([string length] > searchRange.location) {
+		NSString *remainingText = [string substringWithRange:searchRange];
 		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText withFlags:flags];
 		[result appendString:convertedText];
 	}
 	
 	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
-	NSString *regex = @"`((?:~!@)?\\[`[^`]*`\\]\\(.+?\\)(?:@!~)?)`";
+	NSString *regex = [NSString stringWithFormat:@"`((?:%@)?\\[`[^`]*`\\]\\(.+?\\)(?:%@)?)`", self.components.codeSpanStartMarker, self.components.codeSpanEndMarker];
 	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
 		return capturedStrings[1];
 	}];

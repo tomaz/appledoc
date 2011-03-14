@@ -35,6 +35,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(id)member prefixedWith:(id)prefix;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block;
 - (NSString *)stringByNormalizingString:(NSString *)string;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
@@ -88,6 +89,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
 		self.embedCrossReferencesWhenProcessingMarkdown = YES;
+		self.embedAppledocBoldMarkersWhenProcessingMarkdown = YES;
 
 		self.warnOnMissingOutputPathArgument = YES;
 		self.warnOnMissingCompanyIdentifier = YES;
@@ -154,7 +156,12 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 
 - (NSString *)stringByEmbeddingCrossReference:(NSString *)value {
 	if (!self.embedCrossReferencesWhenProcessingMarkdown) return value;
-	return [NSString stringWithFormat:@"~!@%@@!~", value];
+	return [NSString stringWithFormat:@"%@%@%@", self.commentComponents.codeSpanStartMarker, value, self.commentComponents.codeSpanEndMarker];
+}
+
+- (NSString *)stringByEmbeddingAppledocBoldMarkers:(NSString *)value {
+	if (!self.embedAppledocBoldMarkersWhenProcessingMarkdown) return value;
+	return [NSString stringWithFormat:@"%@%@%@", self.commentComponents.appledocBoldStartMarker, value, self.commentComponents.appledocBoldEndMarker];
 }
 
 - (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
@@ -171,31 +178,36 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	}
 	mkd_cleanup(document);
 	
-	// Post process embedded cross references if needed.
-	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
-	__block BOOL insideExampleBlock = NO;
-	NSString *regex = @"<pre>|</pre>|~!@(.+?)@!~";
-	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
-		// Change flag when inside example block - we need to handle strings differently there!
-		NSString *matchedText = capturedStrings[0];
-		if ([matchedText isEqualToString:@"<pre>"]) {
-			insideExampleBlock = YES;
+	// We should properly handle cross references: if outside example block, simply strip prexif/suffix markers, otherwise extract description from Markdown style scross reference (i.e. [description](the rest)) and only use that part.
+	if (self.embedCrossReferencesWhenProcessingMarkdown) {
+		NSString *regex = [self stringByEmbeddingCrossReference:@"(.+?)"];
+		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
+			NSString *linkText = capturedStrings[1];
+			if (!insideCode) return linkText;
+			NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
+			if ([components count] < 1) return linkText;
+			return [components objectAtIndex:1];
+		}];
+	}
+
+	// We should properly handle Markdown bold markers (**) converted from appledoc style ones (*): if outside example block, simply strip prefix/suffix markers, otherwise convert back to single stars.
+	if (self.embedAppledocBoldMarkersWhenProcessingMarkdown) {
+		NSString *inner = [self stringByEmbeddingAppledocBoldMarkers:@"(.+?)"];
+		NSString *regex = [NSString stringWithFormat:@"\\*\\*%@\\*\\*|%@", inner, inner];
+		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
+			NSString *matchedText = capturedStrings[0];
+			if ([matchedText hasPrefix:@"**"]) {
+				NSString *formatText = capturedStrings[1];
+				if (!insideCode) return [NSString stringWithFormat:@"**%@**", formatText];
+				return [NSString stringWithFormat:@"*%@*", formatText];
+			} else {
+				return capturedStrings[2];
+			}
 			return matchedText;
-		} else if ([matchedText isEqualToString:@"</pre>"]) {
-			insideExampleBlock = NO;
-			return matchedText;
-		}
-		
-		// If outside example block, just return cross reference without embedded prefix and suffix!
-		NSString *linkText = capturedStrings[1];
-		if (!insideExampleBlock) return linkText;
-		
-		// If inside example block, we need to extract description from Markdown text and only use that part! If we don't match Markdown style reference, just use whole text...
-		NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
-		if ([components count] < 1) return linkText;
-		return [components objectAtIndex:1];
-	}];
-	return clean;
+		}];
+	}
+	
+	return result;
 }
 
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
@@ -230,10 +242,11 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		return capturedStrings[2];
 	}];
 	
-	// Remove embedded preix/suffix if needed.
-	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
-	result = [result stringByReplacingOccurrencesOfString:@"~!@" withString:@""];
-	result = [result stringByReplacingOccurrencesOfString:@"@!~" withString:@""];
+	// Remove embedded preix/suffix.
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanStartMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanEndMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldStartMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldEndMarker withString:@""];
 	return result;
 }
 
@@ -247,6 +260,26 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	[result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
 	[result replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
 	return result;
+}
+
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block {	
+	NSString *theRegex = [NSString stringWithFormat:@"<code>|</code>|%@", regex];
+	__block BOOL insideExampleBlock = NO;
+	return [string stringByReplacingOccurrencesOfRegex:theRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		// Change flag when inside example block - we need to handle strings differently there!
+		NSString *matchedText = capturedStrings[0];
+		if ([matchedText isEqualToString:@"<code>"]) {
+			insideExampleBlock = YES;
+			return matchedText;
+		} else if ([matchedText isEqualToString:@"</code>"]) {
+			insideExampleBlock = NO;
+			return matchedText;
+		}
+		
+		// Invoke parent block when matched the given regex
+		NSString **strings = (NSString **)capturedStrings;
+		return block(captureCount, strings, insideExampleBlock);
+	}];
 }
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
@@ -557,6 +590,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 
 @synthesize prefixLocalMembersInRelatedItemsList;
 @synthesize embedCrossReferencesWhenProcessingMarkdown;
+@synthesize embedAppledocBoldMarkersWhenProcessingMarkdown;
 
 @synthesize createHTML;
 @synthesize createDocSet;

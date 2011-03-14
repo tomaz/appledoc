@@ -169,4 +169,16 @@
 /** Returns the regex containing all possible symbols for matching new lines. */
 @property (readonly) NSString *newLineRegex;
 
+/** Our custom code span start marker. */
+@property (readonly) NSString *codeSpanStartMarker;
+
+/** Our custom code span end marker. */
+@property (readonly) NSString *codeSpanEndMarker;
+
+/** Our custom appledoc style bold start marker. */
+@property (readonly) NSString *appledocBoldStartMarker;
+
+/** Our custom appledoc style bold end marker. */
+@property (readonly) NSString *appledocBoldEndMarker;
+
 @end

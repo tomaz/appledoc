@@ -117,7 +117,7 @@
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
-- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinCodeMarkers {
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinFormattingMarkers {
 	// setup
 	GBStore *store = [self storeWithDefaultObjects];
 	GBCommentsProcessor *processor = [self defaultProcessor];
@@ -133,7 +133,7 @@
 	// verify
 	[self assertComment:comment1 matchesLongDescMarkdown:@"[`Class`](Classes/Class.html)", nil];
 	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class(Category).html)", nil];
-	[self assertComment:comment3 matchesLongDescMarkdown:@"**[Protocol](Protocols/Protocol.html)**", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"**~!#[Protocol](Protocols/Protocol.html)#!~**", nil];
 	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
 }
 
