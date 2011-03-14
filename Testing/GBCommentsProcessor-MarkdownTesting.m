@@ -211,6 +211,19 @@
 	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
+#pragma mark Making sure reasonably complex stuff gets handled properly
+
+- (void)testProcessCommentWithConextStore_markdown_shouldHandleMultipleMarkdownLinks {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some prefix [link1](address1) middle [link2](address2) and suffix"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:@"Some prefix [link1](address1) middle [link2](address2) and suffix", nil];
+}
+
 #pragma mark Copied comments handling
 
 - (void)testStringByConvertingCrossReferencesInString_copied_shouldUseUniversalRelativePathForLocalMembers {

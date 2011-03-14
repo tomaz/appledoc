@@ -504,7 +504,7 @@ typedef NSUInteger GBProcessingFlag;
 		
 		// Now that we have Markdown syntax link, preprocess the string from the last position to the start of Markdown link.
 		if (markdownData->range.location > searchRange.location) {
-			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location);
+			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location - searchRange.location);
 			NSString *skipped = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:convertRange flags:flags];
 			[result appendString:skipped];
 		}
@@ -534,6 +534,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSUInteger lastUsedLocation = searchRange.location;
+	NSUInteger searchEndLocation = searchRange.location + searchRange.length;
 	BOOL isInsideMarkdown = (flags & GBProcessingFlagMarkdownLink) > 0;
 	while (YES) {
 		// Find all cross references
@@ -599,12 +600,13 @@ typedef NSUInteger GBProcessingFlag;
 		}
 		
 		// Exit if there's nothing more to process.
-		if (searchRange.location >= [string length]) break;
+		if (searchRange.location >= searchEndLocation) break;
 	}
 	
 	// If there's some text remaining after all links, append it.
-	if (!isInsideMarkdown && lastUsedLocation < [string length]) {
-		NSString *remainingText = [string substringFromIndex:lastUsedLocation];
+	if (!isInsideMarkdown && lastUsedLocation < searchEndLocation) {
+		NSRange remainingRange = NSMakeRange(lastUsedLocation, searchEndLocation - lastUsedLocation);
+		NSString *remainingText = [string substringWithRange:remainingRange];
 		[result appendString:remainingText];
 	}
 	return result;
