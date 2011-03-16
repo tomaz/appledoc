@@ -594,7 +594,7 @@ typedef NSUInteger GBProcessingFlag;
 			// Update range and remove the link from the temporary array.
 			NSUInteger location = linkData->range.location + linkData->range.length;
 			searchRange.location = location;
-			searchRange.length = [string length] - location;
+			searchRange.length = searchEndLocation - location;
 			lastUsedLocation = location;
 			[links removePointerAtIndex:index];
 		}

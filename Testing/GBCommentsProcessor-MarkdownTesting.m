@@ -224,6 +224,17 @@
 	[self assertComment:comment matchesLongDescMarkdown:@"Some prefix [link1](address1) middle [link2](address2) and suffix", nil];
 }
 
+- (void)testProcessCommentWithContextStore_markdown_shouldHandleSimpleLinksWithinMarkdownLinksProperly {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"[link1](address1) Document and [this class](Class) [link2](address2) longer suffix to make sure"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:@"[link1](address1) [Document](docs/Document.html) and [this class](Classes/Class.html) [link2](address2) longer suffix to make sure", nil];
+}
+
 #pragma mark Copied comments handling
 
 - (void)testStringByConvertingCrossReferencesInString_copied_shouldUseUniversalRelativePathForLocalMembers {
