@@ -111,7 +111,7 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(store != nil);
 	self.store = store;
-	GBLogVerbose(@"Parsing custom document from '%@'...", path);
+	GBLogInfo(@"Parsing custom document from '%@'...", path);
 
 	NSError *error = nil;
 	NSString *contents = [NSString stringWithContentsOfFile:[path stringByStandardizingPath] encoding:NSUTF8StringEncoding error:&error];
