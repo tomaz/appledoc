@@ -108,6 +108,7 @@
 }
 
 - (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)store {
+	if (!path || [path length] == 0) return;
 	NSParameterAssert(key != nil);
 	NSParameterAssert(store != nil);
 	self.store = store;
