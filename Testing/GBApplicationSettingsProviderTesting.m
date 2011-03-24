@@ -496,9 +496,13 @@
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!@[description](address)@!~"];
 	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"\t~!@[[class method]](address)@!~"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"\t[[class method]](address)"];
 	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
 	assertThat(result1, is(@"description"));
 	assertThat(result2, is(@"description"));
+	assertThat(result3, is(@"\t[class method]"));
+	assertThat(result4, is(@"\t[class method]"));
 }
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInExampleBlock {
@@ -507,9 +511,13 @@
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!@[description](address)@!~"];
 	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"\t~!@[[class method]](address)@!~"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"\t[[class method]](address)"];
 	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
 	assertThat(result1, is(@"\tdescription"));
 	assertThat(result2, is(@"\tdescription"));
+	assertThat(result3, is(@"\t[class method]"));
+	assertThat(result4, is(@"\t[class method]"));
 }
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedAppledocBoldMarkersInText {

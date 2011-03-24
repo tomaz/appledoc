@@ -213,8 +213,11 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
 	NSString *result = markdown;
 	
-	// Clean Markdown inline links.
+	// Clean Markdown inline links. Note that we need to additionally handle remote member links [[class method]](address), these are not detected by our standard regex, but using common regex for these cases would incorrectly handle multiple links in the same string (it would greedily match the whole content between the first and the last link as the description). Note that the order of processing is important - we first need to handle "simple" links and then continue with remote members.
 	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[1];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"([^\"]+)\")?\\)" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[1];
 	}];
 	
@@ -242,7 +245,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		return capturedStrings[2];
 	}];
 	
-	// Remove embedded preix/suffix.
+	// Remove embedded prefix/suffix.
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanStartMarker withString:@""];
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanEndMarker withString:@""];
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldStartMarker withString:@""];
