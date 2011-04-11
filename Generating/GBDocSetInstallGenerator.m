@@ -32,7 +32,7 @@
 	NSString *sourceUserPath = self.inputUserPath;
 	NSString *destUserPath = self.outputUserPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
-	NSString *destPath = [destUserPath stringByStandardizingPath];\
+	NSString *destPath = [destUserPath stringByStandardizingPath];
 	
 	// Create destination directory and move files to it.
 	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
