@@ -64,6 +64,7 @@
 	return result;
 }
 
+@synthesize isCustomDocument;
 @synthesize nameOfDocument;
 @synthesize pathOfDocument;
 @synthesize basePathOfDocument;

@@ -32,18 +32,18 @@
 
 #pragma mark Formatting markers conversion
 
-- (void)testStringByPreprocessingString_shouldHandleBoldMarkers {
+- (void)testStringByPreprocessingString_shouldConvertAppledocBoldMarkersToTemporarySyntax {
 	// setup
 	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
 	// verify
-	assertThat(result1, is(@"**bold1** **bold text** ** bolder text **"));
-	assertThat(result2, is(@"**bold1** Middle **bold text**"));
+	assertThat(result1, is(@"**~!#bold1#!~** **~!#bold text#!~** **~!# bolder text #!~**"));
+	assertThat(result2, is(@"**~!#bold1#!~** Middle **~!#bold text#!~**"));
 }
 
-- (void)testStringByPreprocessingString_shouldHandleItalicsMarkers {
+- (void)testStringByPreprocessingString_shouldLeaveItalicsMarkers {
 	// setup
 	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
@@ -54,13 +54,13 @@
 	assertThat(result2, is(@"_bold1_ Middle _bold text_"));
 }
 
-- (void)testStringByPreprocessingString_shouldHandleBoldItalicsMarkers {
+- (void)testStringByPreprocessingString_shouldLeaveBoldItalicsMarkers {
 	// setup
 	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
 	NSString *result = [processor stringByPreprocessingString:@"_*text1*_ *_marked text_* _* text2 *_" withFlags:0];
 	// verify
-	assertThat(result, is(@"***text1*** ***marked text*** *** text2 ***"));
+	assertThat(result, is(@"_*text1*_ *_marked text_* _* text2 *_"));
 }
 
 - (void)testStringByPreprocessingString_shouldHandleMonospaceMarkers {
@@ -79,11 +79,11 @@
 	NSString *result1 = [processor stringByPreprocessingString:@"__text1__ __ marked __" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"**text1** ** marked **" withFlags:0];
 	// verify
-	assertThat(result1, is(@"**text1** ** marked **"));
+	assertThat(result1, is(@"__text1__ __ marked __"));
 	assertThat(result2, is(@"**text1** ** marked **"));
 }
 
-- (void)testStringByPreprocessingString_shouldHandleMarkdownBoldItalicsMarkers {
+- (void)testStringByPreprocessingString_shouldLeaveMarkdownBoldItalicsMarkers {
 	// setup
 	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
@@ -94,11 +94,11 @@
 	NSString *result5 = [processor stringByPreprocessingString:@"___text1___ ___ marked ___" withFlags:0];
 	NSString *result6 = [processor stringByPreprocessingString:@"***text1*** *** marked ***" withFlags:0];
 	// verify
-	assertThat(result1, is(@"***text1*** *** marked ***"));
-	assertThat(result2, is(@"***text1*** *** marked ***"));
-	assertThat(result3, is(@"***text1*** *** marked ***"));
-	assertThat(result4, is(@"***text1*** *** marked ***"));
-	assertThat(result5, is(@"***text1*** *** marked ***"));
+	assertThat(result1, is(@"__*text1*__ __* marked *__"));
+	assertThat(result2, is(@"_**text1**_ _** marked **_"));
+	assertThat(result3, is(@"*__text1__* *__ marked __*"));
+	assertThat(result4, is(@"**_text1_** **_ marked _**"));
+	assertThat(result5, is(@"___text1___ ___ marked ___"));
 	assertThat(result6, is(@"***text1*** *** marked ***"));
 }
 

@@ -98,7 +98,7 @@
 	
 	// Now either copy or move.
 	if (copy) return [self.fileManager copyItemAtPath:standardSource toPath:standardDest error:error];
-	return [self.fileManager moveItemAtPath:source toPath:destination error:error];
+	return [self.fileManager moveItemAtPath:standardSource toPath:standardDest error:error];
 }
 
 #pragma mark Helper methods

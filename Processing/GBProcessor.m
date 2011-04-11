@@ -133,6 +133,12 @@
 		[self processCommentForObject:document];
 		GBLogDebug(@"Finished processing document %@.", document);
 	}
+	for (GBDocumentData *document in self.store.customDocuments) {
+		GBLogInfo(@"Processing custom document %@...", document);
+		self.currentContext = document;
+		[self processCommentForObject:document];
+		GBLogDebug(@"Finished processing custom document %@.", document);
+	}
 }
 
 #pragma mark Common data processing
@@ -165,12 +171,13 @@
 	}
 	
 	// Let comments processor parse comment string value into object representation.
+	self.commentsProcessor.alwaysRepeatFirstParagraph = object.isTopLevelObject || object.isStaticDocument;
 	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
 	// This is where we validate comment parameters and sort them in proper order.
-	if (!comment || [comment.stringValue length] == 0) return;
+	if (!comment || [comment.stringValue length] == 0 || comment.isCopied) return;
 	GBLogDebug(@"Validating processed parameters...");
 	
 	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.

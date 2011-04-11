@@ -151,6 +151,22 @@ typedef NSUInteger GBMethodType;
 /// @name Helper methods
 ///---------------------------------------------------------------------------------------
 
+/** Returns the selector name of the getter for the property.
+ 
+ This searches the `methodAttributes` array for custom getter and returns that value if found. Otherwise it returns default getter. This only applies to properties, returns `nil` otherwise!
+ 
+ @see propertySetterSelector
+ */
+- (NSString *)propertyGetterSelector;
+
+/** Returns the selector name of the setter for the property.
+ 
+ This searches the `methodAttributes` array for custom setter and returns that value if found. Otherwise it returns default setter. This only applies to properties, returns `nil` otherwise!
+ 
+ @see propertyGetterSelector
+ */
+- (NSString *)propertySetterSelector;
+
 /** Returns the array of formatted components optimized for output generation.
  
  This is more or less implemented here for simpler output generator templates. Instead of programming all the conditionals in cumbersome template language, we do it in simple objective-c code, which can even be unit tested.

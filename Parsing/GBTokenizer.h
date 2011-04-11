@@ -39,6 +39,8 @@
 
 /** Returns initialized autoreleased instance using the given source `PKTokenizer`.
  
+ This should only be used for unit testing. It is equal to sending `tokenizerWithSource:filename:settings:` and passing `nil` for settings. Internally this is exactly how the method is handled.
+ 
  @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
  @param filename The name of the file without path used for generating source info.
  @return Returns initialized instance or `nil` if failed.
@@ -46,16 +48,27 @@
  */
 + (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename;
 
+/** Returns initialized autoreleased instance using the given source `PKTokenizer`.
+ 
+ @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
+ @param filename The name of the file without path used for generating source info.
+ @param settings The settings to use for matching comments.
+ @return Returns initialized instance or `nil` if failed.
+ @exception NSException Thrown if the given tokenizer or filename is `nil` or filename is empty string.
+ */
++ (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings;
+
 /** Initializes tokenizer with the given source `PKTokenizer`.
  
  This is designated initializer.
  
  @param tokenizer The underlying (worker) tokenizer to use for actual splitting.
  @param filename The name of the file without path that's the source for _tokenizer_'s input string.
+ @param settings The settings to use for this session.
  @return Returns initialized instance or `nil` if failed.
  @exception NSException Thrown if the given tokenizer or filename is `nil` or filename is empty string.
  */
-- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename;
+- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings;
 
 ///---------------------------------------------------------------------------------------
 /// @name Tokenizing handling

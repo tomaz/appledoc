@@ -55,7 +55,7 @@
 #pragma mark Method specific detection
 
 - (NSString *)methodGroupRegex {
-	GBRETURN_ON_DEMAND(@"(?s:\\Sname\\s+(.*))");
+	GBRETURN_ON_DEMAND(@"(?m:^\\s*\\Sname\\s+(.*))");
 }
 
 - (NSString *)parameterDescriptionRegex {
@@ -153,6 +153,24 @@
 
 - (NSString *)nameDescriptionCaptureRegexForKeyword:(NSString *)keyword {
 	return [NSString stringWithFormat:@"^\\s*(\\S%@\\s+)(\\S+)\\s+(?s:(.*))", keyword];
+}
+
+#pragma mark Custom markers
+
+- (NSString *)codeSpanStartMarker {
+	return @"~!@";
+}
+
+- (NSString *)codeSpanEndMarker {
+	return @"@!~";
+}
+
+- (NSString *)appledocBoldStartMarker {
+	return @"~!#";
+}
+
+- (NSString *)appledocBoldEndMarker {
+	return @"#!~";
 }
 
 #pragma Properties

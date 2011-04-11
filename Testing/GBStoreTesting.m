@@ -277,6 +277,46 @@
 	assertThat([store documentWithName:nil], is(nil));
 }
 
+#pragma mark Custom documents handling
+
+- (void)testRegisterCustomDocumentWithKey_shouldAddDocumentToList {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	// execute
+	[store registerCustomDocument:document withKey:@"a"];
+	// verify
+	assertThatInteger([store.customDocuments count], equalToInteger(1));
+	assertThat([store.customDocuments anyObject], is(document));
+	assertThat([store customDocumentWithKey:@"a"], is(document));
+}
+
+- (void)testRegisterCustomDocumentWithKey_shouldOverwriteSameKey {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	[store registerCustomDocument:document1 withKey:@"a"];
+	// execute
+	[store registerCustomDocument:document2 withKey:@"a"];
+	// verify
+	assertThat([store customDocumentWithKey:@"a"], is(document2));
+}
+
+- (void)testRegisterCustomDocumentWithKey_shouldReturnProperInstanceOrNil {
+	// setup
+	GBStore *store = [[GBStore alloc] init];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
+	// execute
+	[store registerCustomDocument:document1 withKey:@"a"];
+	[store registerCustomDocument:document2 withKey:@"b"];
+	// verify
+	assertThat([store customDocumentWithKey:@"a"], is(document1));
+	assertThat([store customDocumentWithKey:@"b"], is(document2));
+	assertThat([store customDocumentWithKey:@"c"], is(nil));
+}
+
 #pragma mark Unregistration testing
 
 - (void)testUnregisterTopLevelObject_shouldRemoveClass {

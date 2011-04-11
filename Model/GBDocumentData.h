@@ -98,4 +98,10 @@
  */
 @property (readonly) NSString *subpathOfDocument;
 
+/** Specifies whether this is custom document or not.
+ 
+ This is used when creating cross references; if the value is `YES`, `basePathOfDocument` is considered as the subpath from the root output path.
+ */
+@property (assign) BOOL isCustomDocument;
+
 @end

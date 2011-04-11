@@ -19,6 +19,8 @@
 - (BOOL)formatTypesFromArray:(NSArray *)types toArray:(NSMutableArray *)array prefix:(NSString *)prefix suffix:(NSString *)suffix;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href;
+- (NSString *)attributeValueForKey:(NSString *)key;
+- (void)validateMergeWith:(GBMethodData *)source;
 @property (readonly) NSString *methodSelectorDelimiter;
 @property (readonly) NSString *methodPrefix;
 
@@ -194,14 +196,72 @@
 	return @"";
 }
 
+- (NSString *)propertyGetterSelector {
+	if (self.methodType != GBMethodTypeProperty) return nil;
+	NSString *result = [self attributeValueForKey:@"getter"];
+	if (!result) result = self.methodSelector;
+	return result;
+}
+
+- (NSString *)propertySetterSelector {
+	if (self.methodType != GBMethodTypeProperty) return nil;
+	NSString *result = [self attributeValueForKey:@"setter"];
+	if (!result) {
+		NSString *firstLetter = [[self.methodSelector substringToIndex:1] uppercaseString];
+		NSString *theRest = [self.methodSelector substringFromIndex:1];
+		result = [NSString stringWithFormat:@"set%@%@:", firstLetter, theRest];
+	}
+	return result;
+}
+
+- (NSString *)attributeValueForKey:(NSString *)key {
+	// Returns the value after equal sign for the given key (i.e. for attributes "getter", "=", "value", this would return "value"). Returns nil if either key isn't found or isn't followed by equal sign and/or a value.
+	__block NSString *result = nil;
+	__block BOOL foundKey = NO;
+	[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
+		if ([attribute isEqualToString:key]) {
+			foundKey = YES;
+			return;
+		}
+		if (foundKey && ![attribute isEqualToString:@"="]) {
+			result = attribute;
+			*stop = YES;
+		}
+	}];
+	return result;
+}
+
+- (void)validateMergeWith:(GBMethodData *)source {
+	// Validates merging with the given method. This method raises exception if merging is not allowed based on method types. It takes into account manual propery accessors and mutators!
+	if (source.methodType != self.methodType) {
+		GBMethodData *propertyData = nil;
+		GBMethodData *manualData = nil;
+		if (self.methodType == GBMethodTypeProperty && source.methodType == GBMethodTypeInstance) {
+			propertyData = self;
+			manualData = source;
+		} else if (self.methodType == GBMethodTypeInstance && source.methodType == GBMethodTypeProperty) {
+			propertyData = source;
+			manualData = self;
+		} else {
+			[NSException raise:@"Failed merging %@ to %@; method type doesn't match!", source, self];
+		}
+		
+		// We should allow if the getter or setter matches.
+		if ([propertyData.propertyGetterSelector isEqualToString:manualData.methodSelector]) return;
+		if ([propertyData.propertySetterSelector isEqualToString:manualData.methodSelector]) return;
+		[NSException raise:@"Failed merging %@ to %@; getter or setter doesn't match", source, self];
+	} else {
+		NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
+		NSParameterAssert([source.methodResultTypes isEqualToArray:self.methodResultTypes]);
+	}
+}
+
 #pragma mark Overidden methods
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging data from %@...", self, source);
-	NSParameterAssert([source methodType] == self.methodType);
-	NSParameterAssert([[source methodSelector] isEqualToString:self.methodSelector]);
-	NSParameterAssert([[source methodResultTypes] isEqualToArray:self.methodResultTypes]);
+	[self validateMergeWith:source];
 
 	// Use argument var names from the method that has comment. If no method has comment, just keep deafult.
 	if ([source comment] && ![self comment]) {

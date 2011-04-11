@@ -328,6 +328,20 @@
 	assertThat([settings htmlReferenceForObject:class fromSource:document4], is(@"../Classes/Class.html"));
 }
 
+- (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForCustomDocumentToTopLevelObjectReference {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	settings.outputPath = @"anything :)";
+	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBDocumentData *document1 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@"path"];
+	document1.isCustomDocument = YES;
+	GBDocumentData *document2 = [GBDocumentData documentDataWithContents:@"c" path:@"path/document-template.html" basePath:@""];
+	document2.isCustomDocument = YES;
+	// verify
+	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
+	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"Classes/Class.html"));
+}
+
 #pragma mark HTML href references handling - top level to members
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToItsMemberReference {
@@ -454,6 +468,26 @@
 	assertThat(result2, is(@"<pre><code>[description](address)\n</code></pre>"));
 }
 
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertAppledocStyleBoldMarkersInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result = [settings stringByConvertingMarkdownToHTML:@"**~!#text#!~**"];
+	// verify - Discount converts ** part, we just need to cleanup the remaining texts!
+	assertThat(result, is(@"<p><strong>text</strong></p>"));
+}
+
+- (void)testStringByConvertingMarkdownToHTML_shouldConvertAppledocStyleBoldMarkersInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"\t**~!#text#!~**"];
+	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"\t**text**"];
+	// verify - Discount doesn't process text here, so we should revert to original markup!
+	assertThat(result1, is(@"<pre><code>*text*\n</code></pre>"));
+	assertThat(result2, is(@"<pre><code>**text**\n</code></pre>"));
+}
+
 #pragma mark Markdown to text conversion
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInText {
@@ -462,9 +496,13 @@
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!@[description](address)@!~"];
 	NSString *result2 = [settings stringByConvertingMarkdownToText:@"[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"\t~!@[[class method]](address)@!~"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"\t[[class method]](address)"];
 	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
 	assertThat(result1, is(@"description"));
 	assertThat(result2, is(@"description"));
+	assertThat(result3, is(@"\t[class method]"));
+	assertThat(result4, is(@"\t[class method]"));
 }
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedCrossReferencesInExampleBlock {
@@ -473,9 +511,35 @@
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!@[description](address)@!~"];
 	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t[description](address)"];
+	NSString *result3 = [settings stringByConvertingMarkdownToText:@"\t~!@[[class method]](address)@!~"];
+	NSString *result4 = [settings stringByConvertingMarkdownToText:@"\t[[class method]](address)"];
 	// verify - Discount doesn't process links here, but we need to return auto generated to deafult! Note that Discount adds new line!
 	assertThat(result1, is(@"\tdescription"));
 	assertThat(result2, is(@"\tdescription"));
+	assertThat(result3, is(@"\t[class method]"));
+	assertThat(result4, is(@"\t[class method]"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedAppledocBoldMarkersInText {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!#text#!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"**~!#text#!~**"];
+	// verify
+	assertThat(result1, is(@"text"));
+	assertThat(result2, is(@"text"));
+}
+
+- (void)testStringByConvertingMarkdownToText_shouldConvertEmbeddedAppledocBoldMarkersInExampleBlock {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!#text#!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t**~!#text#!~**"];
+	// verify
+	assertThat(result1, is(@"\ttext"));
+	assertThat(result2, is(@"\ttext"));
 }
 
 - (void)testStringByConvertingMarkdownToText_shouldConvertMarkdownReferences {

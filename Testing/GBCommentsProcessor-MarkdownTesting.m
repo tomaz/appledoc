@@ -117,7 +117,7 @@
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
-- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinCodeMarkers {
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinFormattingMarkers {
 	// setup
 	GBStore *store = [self storeWithDefaultObjects];
 	GBCommentsProcessor *processor = [self defaultProcessor];
@@ -133,7 +133,7 @@
 	// verify
 	[self assertComment:comment1 matchesLongDescMarkdown:@"[`Class`](Classes/Class.html)", nil];
 	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class(Category).html)", nil];
-	[self assertComment:comment3 matchesLongDescMarkdown:@"**[Protocol](Protocols/Protocol.html)**", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"**~!#[Protocol](Protocols/Protocol.html)#!~**", nil];
 	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
 }
 
@@ -209,6 +209,30 @@
 	[self assertComponents:comment1.relatedItems matchMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//api/name/instanceMethod:)", nil];
 	[self assertComponents:comment2.relatedItems matchMarkdown:@"[[Class classMethod:]](Classes/Class.html#//api/name/classMethod:)", nil];
 	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
+}
+
+#pragma mark Making sure reasonably complex stuff gets handled properly
+
+- (void)testProcessCommentWithConextStore_markdown_shouldHandleMultipleMarkdownLinks {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"Some prefix [link1](address1) middle [link2](address2) and suffix"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:@"Some prefix [link1](address1) middle [link2](address2) and suffix", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldHandleSimpleLinksWithinMarkdownLinksProperly {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	GBComment *comment = [GBComment commentWithStringValue:@"[link1](address1) Document and [this class](Class) [link2](address2) longer suffix to make sure"];
+	// execute
+	[processor processComment:comment withContext:nil store:store];
+	// verify
+	[self assertComment:comment matchesLongDescMarkdown:@"[link1](address1) [Document](docs/Document.html) and [this class](Classes/Class.html) [link2](address2) longer suffix to make sure", nil];
 }
 
 #pragma mark Copied comments handling

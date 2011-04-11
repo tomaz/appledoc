@@ -16,10 +16,12 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
 
+static NSString *kGBArgInputPath = @"input";
 static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
 static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
+static NSString *kGBArgIndexDescPath = @"index-desc";
 static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
 
@@ -28,6 +30,7 @@ static NSString *kGBArgProjectVersion = @"project-version";
 static NSString *kGBArgProjectCompany = @"project-company";
 static NSString *kGBArgCompanyIdentifier = @"company-id";
 
+static NSString *kGBArgCleanOutput = @"clean-output";
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
@@ -86,12 +89,20 @@ static NSString *kGBArgHelp = @"help";
 @interface GBAppledocApplication ()
 
 - (void)initializeLoggingSystem;
-- (void)initializeGlobalSettingsAndValidateTemplates;
+- (void)deleteContentsOfOutputPath;
 - (void)validateSettingsAndArguments:(NSArray *)arguments;
-- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
-- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
 - (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
+- (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path;
+
+- (void)injectGlobalSettingsFromArguments:(NSArray *)arguments;
+- (void)injectProjectSettingsFromArguments:(NSArray *)arguments;
+- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
+- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id *value, BOOL *stop))block;
+- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error;
+
 @property (readwrite, retain) GBApplicationSettingsProvider *settings;
+@property (retain) NSMutableArray *additionalInputPaths;
+@property (retain) NSMutableArray *ignoredInputPaths;
 @property (assign) NSString *logformat;
 @property (assign) NSString *verbose;
 @property (assign) BOOL templatesFound;
@@ -122,6 +133,8 @@ static NSString *kGBArgHelp = @"help";
 	self = [super init];
 	if (self) {
 		self.settings = [GBApplicationSettingsProvider provider];
+		self.additionalInputPaths = [NSMutableArray array];
+		self.ignoredInputPaths = [NSMutableArray array];
 		self.templatesFound = NO;
 		self.printSettings = NO;
 		self.logformat = @"1";
@@ -141,14 +154,21 @@ static NSString *kGBArgHelp = @"help";
 		[self printVersion];
 		return EXIT_SUCCESS;
 	}
+
+	// Prepare actual input paths by adding all paths from project settings and removing all plist paths.
+	NSMutableArray *inputs = [NSMutableArray array];
+	[inputs addObjectsFromArray:arguments];
+	[inputs addObjectsFromArray:self.additionalInputPaths];
+	[inputs removeObjectsInArray:self.ignoredInputPaths];
 	
 	[self printVersion];
-	[self validateSettingsAndArguments:arguments];
+	[self validateSettingsAndArguments:inputs];
 	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
-	if (self.printSettings) [self printSettingsAndArguments:arguments];
+	if (self.printSettings) [self printSettingsAndArguments:inputs];
 
 	@try {		
 		[self initializeLoggingSystem];
+		[self deleteContentsOfOutputPath];
 		
 		GBLogNormal(@"Initializing...");
 		GBStore *store = [[GBStore alloc] init];		
@@ -156,8 +176,9 @@ static NSString *kGBArgHelp = @"help";
 		
 		GBLogNormal(@"Parsing source files...");
 		GBParser *parser = [GBParser parserWithSettingsProvider:self.settings];
-		[parser parseObjectsFromPaths:arguments toStore:store];
+		[parser parseObjectsFromPaths:inputs toStore:store];
 		[parser parseDocumentsFromPaths:[self.settings.includePaths allObjects] toStore:store];
+		[parser parseCustomDocumentFromPath:self.settings.indexDescriptionPath outputSubpath:@"" key:kGBCustomDocumentIndexDescKey toStore:store];
 		GBAbsoluteTime parseTime = GetCurrentTime();
 		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
 		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
@@ -196,6 +217,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
 		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
 		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
+		{ kGBArgIndexDescPath,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
 		
@@ -223,6 +245,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgDocSetAtomFilename,											0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPackageFilename,										0,		DDGetoptRequiredArgument },
 		
+		{ kGBArgCleanOutput,												0,		DDGetoptNoArgument },
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
@@ -277,7 +300,9 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgHelp,														0,		DDGetoptNoArgument },
 		{ nil,																0,		0 },
 	};
-	[self initializeGlobalSettingsAndValidateTemplates];
+	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+	[self injectGlobalSettingsFromArguments:arguments];
+	[self injectProjectSettingsFromArguments:arguments];
 	[optionParser addOptionsFromTable:options];
 }
 
@@ -291,9 +316,127 @@ static NSString *kGBArgHelp = @"help";
 	[formatter release];
 }
 
-- (void)initializeGlobalSettingsAndValidateTemplates {
-	// This is where we override factory defaults (factory defaults with global templates. This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
-	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+- (void)deleteContentsOfOutputPath {
+	// Removes all files from output path to have a clean start. Although this is not necessary from functionality point of view, it makes the tool less confusing as output only contains files generated by this run. This is sent after initializing logging system, so we can use logging. Note that in case cleanup fails, we simply warn and continue; it the rest of the steps succeed, we can leave everything.
+	if (!self.settings.cleanupOutputPathBeforeRunning) return;
+	
+	NSString *outputPath = self.settings.outputPath;
+	NSString *standardizedOutput = [outputPath stringByStandardizingPath];
+	NSError *error = nil;
+	
+	GBLogInfo(@"Deleting contents of output path '%@'...", outputPath);
+	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:standardizedOutput error:&error];
+	if (error) {
+		GBLogNSError(error, @"Failed enumerating contents of output path '%@'!, for cleaning up!", outputPath);
+		return;
+	}
+	
+	for (NSString *subpath in contents) {
+		GBLogDebug(@"- Deleting '%@'...", subpath);
+		NSString *filename = [standardizedOutput stringByAppendingPathComponent:subpath];
+		if (![self.fileManager removeItemAtPath:filename error:&error] && error) {
+			GBLogNSError(error, @"Failed removing '%@' while cleaning up output!", filename);
+		}
+	}
+}
+
+- (void)validateSettingsAndArguments:(NSArray *)arguments {
+	// Validate we have valid templates path - we use the value of the templatesFound set within initializeGlobalSettingsAndValidateTemplates. We can't simply raise exception there because that message is sent before handling help or version; so we would be required to provide valid templates path even if we just wanted "appledoc --help". As this message is sent afterwards, we can raise exception here. Not as elegant, but needed.
+	if (!self.templatesFound) {
+		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
+	}
+	
+	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
+	if ([arguments count] == 0) [NSException raise:@"At least one directory or file name path is required, use 'appledoc --help'"];
+	for (NSString *path in arguments) {
+		if (![self.fileManager fileExistsAtPath:[path stringByStandardizingPath]]) {
+			[NSException raise:@"Path or file '%@' doesn't exist!", path];
+		}
+	}
+	
+	// Now validate we have all required settings specified.
+	if ([self.settings.projectName length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectName];
+	if ([self.settings.projectCompany length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectCompany];
+	
+	// If output path is not given, revert to current path, but do warn the user.
+	if ([self.settings.outputPath length] == 0) {
+		self.settings.cleanupOutputPathBeforeRunning = NO;
+		self.settings.outputPath = [self.fileManager currentDirectoryPath];
+		if (self.settings.warnOnMissingOutputPathArgument) {
+			ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
+		}
+	}
+	
+	// If company identifier is not given and we have docset enabled, prepare one from company name, but do warn the user.
+	if (self.settings.createDocSet && [self.settings.companyIdentifier length] == 0) {
+		NSString *value = [NSString stringWithFormat:@"com.%@.%@", self.settings.projectCompany, self.settings.projectName];
+		value = [value stringByReplacingOccurrencesOfString:@" " withString:@""];
+		value = [value lowercaseString];
+		self.settings.companyIdentifier = value;
+		if (self.settings.warnOnMissingCompanyIdentifier) {
+			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+		}
+	}
+	
+	// If any of the include paths isn't valid, warn.
+	[self.settings.includePaths enumerateObjectsUsingBlock:^(NSString *userPath, BOOL *stop) {
+		NSString *path = [userPath stringByStandardizingPath];
+		if (![self.fileManager fileExistsAtPath:path]) {
+			ddprintf(@"WARNL --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
+		}
+	}];
+	
+	// If index description path is given but doesn't point to an existing file, warn.
+	if ([self.settings.indexDescriptionPath length] > 0) {
+		BOOL isDir;
+		NSString *path = [self.settings.indexDescriptionPath stringByStandardizingPath];
+		if (![self.fileManager fileExistsAtPath:path isDirectory:&isDir])
+			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+		else if (isDir)
+			ddprintf(@"WARN: --%@ path '%@' is a directory, file is required, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+	}
+}
+
+- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
+	// Validates the given templates path contains all required template files. If not, it returns the reason through the error argument and returns NO. Note that we only do simple "path exist and is directory" tests here, each object that requires templates at the given path will do it's own validation later on and will report errors if it finds something missing.
+	BOOL isDirectory = NO;
+	NSString *trimmed = [path stringByTrimmingWhitespaceAndNewLine];
+	NSString *standardized = [[self standardizeCurrentDirectoryForPath:trimmed] stringByStandardizingPath];
+	if (![self.fileManager fileExistsAtPath:standardized isDirectory:&isDirectory]) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", standardized];
+			*error = [NSError errorWithCode:GBErrorTemplatePathDoesntExist description:desc reason:nil];
+		}
+		return NO;
+	}	
+	if (!isDirectory) {
+		if (error) {
+			NSString *desc = [NSString stringWithFormat:@"Template path '%@' is not directory!", standardized];
+			*error = [NSError errorWithCode:GBErrorTemplatePathNotDirectory description:desc reason:nil];
+		}
+		return NO;
+	}
+	return YES;
+}
+
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
+	// Converts . to actual working directory.
+	if (![path hasPrefix:@"."] || [path hasPrefix:@".."]) return path;
+	NSString *suffix = [path substringFromIndex:1];
+	return [[self.fileManager currentDirectoryPath] stringByAppendingPathComponent:suffix];
+}
+
+- (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path {
+	// Appends the given relative path to the given base path if necessary. If relative path points to an exact location (starts with / or ~), it's simply returned, otherwise it's appended to the base path and result is returned.
+	if ([path hasPrefix:@"~"] || [path hasPrefix:@"/"]) return path;
+	if ([path hasPrefix:@"."] && ![path hasPrefix:@".."]) path = [path substringFromIndex:1];
+	return [base stringByAppendingPathComponent:path];
+}
+
+#pragma mark Global and project settings handling
+
+- (void)injectGlobalSettingsFromArguments:(NSArray *)arguments {
+	// This is where we override factory defaults (factory defaults with global templates). This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
 	self.templatesFound = NO;
 	__block NSString *path = nil;
 	[arguments enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *option, NSUInteger idx, BOOL *stop) {
@@ -330,32 +473,98 @@ static NSString *kGBArgHelp = @"help";
 			self.settings.templatesPath = path;
 			self.templatesFound = YES;
 			return;
-		}		
+		}
 	}
 }
 
-- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path {
-	// Checks if global settings file exists at the given path and if so, overrides current settings with values from the file. To keep code as simple as possible, we're reusing DDCli KVC here: global templates file simply uses keys which are equal to command line arguments. Then, by reusing DDCli method for converting switch to KVC key, we're simply sending appropriate KVC messages to receiver. From object's point of view, this is no different than getting KVC messages sent from DDCli. If we time this message correctly, it's sent after factory defaults are established and before DDCli parses command line! Note that this may cause some KVC messages beeing sent twice or more. The only code added is handling boolean settings (i.e. adding "--no" prefix) and settings that may be entered multiple times (--ignore for example). To even further simplify handling, we're only allowing long command line arguments names in global templates for now!
-	NSString *userPath = [path stringByAppendingPathComponent:@"GlobalSettings.plist"];
-	NSString *filename = [userPath stringByStandardizingPath];
-	if (![self.fileManager fileExistsAtPath:filename]) return;
-	
-	NSError* error = nil;
-	NSData* data = [NSData dataWithContentsOfFile:filename options:0 error:&error];
-	if (!data) [NSException raise:@"Failed reading global templates from '%@'!", userPath];	
-	NSDictionary *globals = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
-	if (!globals) [NSException raise:error format:@"Failed reaing global templates plist from '%@'!", userPath];
-	
-	[globals enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
-		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
-		NSString *key = [DDGetoptLongParser keyFromOption:option];
-		
-		// Warn if templates option is passed - we're already handling templates and pointing to another template wouldn't make much sense.
-		if ([option isEqualToString:kGBArgTemplatesPath]) {
-			ddprintf(@"WARN: Found --%@ option in global setting, this is ignored for globals!\n", option);
+- (void)injectProjectSettingsFromArguments:(NSArray *)arguments {
+	// Checks all command line paths for project settings and injects the settings to the application if found. Note that in case more than one path contains settings, all settings are injected with latest having greater priority. Note that we handle arguments very roughly; we start at back and proceed until we find first option name. This means we will also include last option value... Not too smart, but we need to do this before giving DDCli a chance to parse as we want to have command line switches overriding any project settings and we don't want to duplicate the behavior from DDCli.
+	[arguments enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *argument, NSUInteger idx, BOOL *stop) {
+		if ([argument hasPrefix:@"-"]) {
+			*stop = YES;
 			return;
 		}
 		
+		// Convert the argument to path.
+		NSString *path = [[self standardizeCurrentDirectoryForPath:argument] stringByStandardizingPath];
+		NSString *filename = path;
+		
+		// If we have a directory, check if it contains AppledocSettings.plist; ignore it if not. Note that we don't have to check if the file exists or not, that'll be handled for us inside settings injection method.
+		BOOL dir;
+		if (![self.fileManager fileExistsAtPath:path isDirectory:&dir]) return;
+		if (dir) filename = [path stringByAppendingPathComponent:@"AppledocSettings.plist"];
+		
+		// If we have a plist file, handle it. Note that we need to handle --templates cmd line switch separately so that it's properly accepted by the application!
+		if ([[filename pathExtension] isEqualToString:@"plist"]) {
+			// Prepare the directory path to the plist file. We'll use it for preparing relative paths.
+			if (!dir) [self.ignoredInputPaths addObject:argument];	
+			NSString *plistPath = [filename stringByDeletingLastPathComponent];
+
+			// In the first pass, we need to handle --templates option. We need to handle these before any other option from the project settings to prevent global settings overriding project settings! Note how we prevent handling of every option except --templates; we leave that option through to get it set to application settings (that's all the KVC setter does).
+			[self injectSettingsFromSettingsFile:filename usingBlock:^BOOL(NSString *option, id *value, BOOL *stop) {
+				if ([option isEqualToString:kGBArgTemplatesPath]) {
+					NSError *error = nil;
+					NSString *templatesPath = [self combineBasePath:plistPath withRelativePath:*value];
+					if (![self validateTemplatesPath:templatesPath error:&error]) [NSException raise:error format:@"Path '%@' from --%@ option in project settings '%@' is not valid!", *value, option, filename];
+					[self overrideSettingsWithGlobalSettingsFromPath:templatesPath];
+					self.templatesFound = YES;
+					*value = templatesPath;
+					return YES;
+				}
+				return NO;
+			}];
+			
+			// In the second pass, we handle all options. Note that we handle --input option manually; there is no KVC setter for it as it's not regular command line option (we get all input paths directly through command line arguments, not via command line switches). Also note that --templates is still allows but it's only going to be passed to application settings this time without being handled.
+			[self injectSettingsFromSettingsFile:filename usingBlock:^BOOL(NSString *option, id *value, BOOL *stop) {
+				// If option is input path, add it to additional paths. We'll append these to any path found from command line. Note that we must properly handle . paths and paths not starting with / or ~; we assume these are relative paths so we prefix them with the path of the settings file!
+				if ([option isEqualToString:kGBArgInputPath]) {
+					for (NSString *inputPath in *value) {
+						inputPath = [self combineBasePath:plistPath withRelativePath:inputPath];
+						[self.additionalInputPaths addObject:inputPath];
+					}
+					return NO;
+				} else if ([option isEqualToString:kGBArgTemplatesPath]) {
+					return NO;
+				}
+				return YES;
+			}];
+		}
+	}];
+}
+
+- (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path {
+	// Checks if global settings file exists at the given path and if so, overrides current settings with values from the file.
+	NSString *userPath = [path stringByAppendingPathComponent:@"GlobalSettings.plist"];
+	NSString *filename = [userPath stringByStandardizingPath];
+	[self injectSettingsFromSettingsFile:filename usingBlock:^(NSString *option, id *value, BOOL *stop) {
+		if ([option isEqualToString:kGBArgTemplatesPath]) {
+			ddprintf(@"WARN: Found unsupported --%@ option in global settings file '%@'!\n", option, userPath);
+			return NO;
+		}
+		if ([option isEqualToString:kGBArgInputPath]) {
+			ddprintf(@"WARN: Found unsupported --%@ option in global settings '%@'!\n", option, userPath);
+			return NO;
+		}
+		return YES;
+	}];
+}
+
+- (void)injectSettingsFromSettingsFile:(NSString *)path usingBlock:(BOOL (^)(NSString *option, id *value, BOOL *stop))block {
+	// Injects any settings found in the given file to the application settings, overriding current settings with values from the file. To keep code as simple as possible, we're reusing DDCli KVC here: settings file simply uses keys which are equal to command line arguments. Then, by reusing DDCli method for converting switch to KVC key, we're simply sending appropriate KVC messages to receiver. From object's point of view, this is no different than getting KVC messages sent from DDCli. Note that this may cause some KVC messages beeing sent twice or more. The only code added is handling boolean settings (i.e. adding "--no" prefix) and settings that may be entered multiple times (--ignore for example). To even further simplify handling, we're only allowing long command line arguments names in settings files for now!
+	if (![self.fileManager fileExistsAtPath:path]) return;
+
+	NSError* error = nil;
+	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
+	if (!data) [NSException raise:@"Failed reading settings from '%@'!", path];	
+	NSDictionary *settings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+	if (!settings) [NSException raise:error format:@"Failed reaing settings plist from '%@'!", path];
+	
+	// We first pass each option and it's value to the block. The block can return YES to allow handling it, NO otherwise. It can also pass back a different value (we're passing a pointer to the value!).
+	[settings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
+		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
+		NSString *key = [DDGetoptLongParser keyFromOption:option];		
+		if (!block(option, &value, stop)) return;
+
 		// If the value is an array, send as many messages as there are values.
 		if ([value isKindOfClass:[NSArray class]]) {
 			for (NSString *item in value) {
@@ -369,76 +578,6 @@ static NSString *kGBArgHelp = @"help";
 	}];
 }
 
-- (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
-	// Validates the given templates path contains all required template files. If not, it returns the reason through the error argument and returns NO. Note that we only do simple "path exist and is directory" tests here, each object that requires templates at the given path will do it's own validation later on and will report errors if it finds something missing.
-	BOOL isDirectory = NO;
-	if (![self.fileManager fileExistsAtPath:[path stringByStandardizingPath] isDirectory:&isDirectory]) {
-		if (error) {
-			NSString *desc = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", path];
-			*error = [NSError errorWithCode:GBErrorTemplatePathDoesntExist description:desc reason:nil];
-		}
-		return NO;
-	}	
-	if (!isDirectory) {
-		if (error) {
-			NSString *desc = [NSString stringWithFormat:@"Template path '%@' is not directory!", path];
-			*error = [NSError errorWithCode:GBErrorTemplatePathNotDirectory description:desc reason:nil];
-		}
-		return NO;
-	}
-	return YES;
-}
-
-- (void)validateSettingsAndArguments:(NSArray *)arguments {
-	// Validate we have valid templates path - we use the value of the templatesFound set within initializeGlobalSettingsAndValidateTemplates. We can't simply raise exception there because that message is sent before handling help or version; so we would be required to provide valid templates path even if we just wanted "appledoc --help". As this message is sent afterwards, we can raise exception here. Not as elegant, but needed.
-	if (!self.templatesFound) {
-		[NSException raise:@"No predefined templates path exists and no template path specified from command line!"];
-	}
-
-	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
-	if ([arguments count] == 0) [NSException raise:@"At least one directory or file name path is required, use 'appledoc --help'"];
-	for (NSString *path in arguments) {
-		if (![self.fileManager fileExistsAtPath:[path stringByStandardizingPath]]) {
-			[NSException raise:@"Path or file '%@' doesn't exist!", path];
-		}
-	}
-	
-	// Now validate we have all required settings specified.
-	if ([self.settings.projectName length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectName];
-	if ([self.settings.projectCompany length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectCompany];
-	
-	// If output path is not given, revert to current path, but do warn the user.
-	if ([self.settings.outputPath length] == 0) {
-		self.settings.outputPath = [self.fileManager currentDirectoryPath];
-		if (self.settings.warnOnMissingOutputPathArgument) {
-			ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
-		}
-	}
-	
-	// If company identifier is not given and we have docset enabled, prepare one from company name, but do warn the user.
-	if (self.settings.createDocSet && [self.settings.companyIdentifier length] == 0) {
-		NSString *value = [NSString stringWithFormat:@"com.%@.%@", self.settings.projectCompany, self.settings.projectName];
-		value = [value stringByReplacingOccurrencesOfString:@" " withString:@""];
-		value = [value lowercaseString];
-		self.settings.companyIdentifier = value;
-		if (self.settings.warnOnMissingCompanyIdentifier) {
-			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
-		}
-	}
-	
-	// Make sure to switch on any setting thats required by "higher" level one.
-	if (self.settings.publishDocSet) self.settings.installDocSet = YES;
-	if (self.settings.installDocSet) self.settings.createDocSet = YES;
-	if (self.settings.createDocSet) self.settings.createHTML = YES;
-}
-
-- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
-	// Converts . to actual working directory.
-	if (![path hasPrefix:@"."] || [path hasPrefix:@".."]) return path;
-	NSString *suffix = [path substringFromIndex:1];
-	return [[self.fileManager currentDirectoryPath] stringByAppendingPathComponent:suffix];
-}
-
 #pragma mark Overriden methods
 
 - (NSString *)description {
@@ -448,10 +587,11 @@ static NSString *kGBArgHelp = @"help";
 #pragma mark Callbacks API for DDCliApplication
 
 - (void)setOutput:(NSString *)path { self.settings.outputPath = [self standardizeCurrentDirectoryForPath:path]; }
-- (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setInclude:(NSString *)path { [self.settings.includePaths addObject:[self standardizeCurrentDirectoryForPath:path]]; }
+- (void)setIndexDesc:(NSString *)path { self.settings.indexDescriptionPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setIgnore:(NSString *)path {
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
 	[self.settings.ignoredPaths addObject:path];
@@ -462,14 +602,47 @@ static NSString *kGBArgHelp = @"help";
 - (void)setProjectCompany:(NSString *)value { self.settings.projectCompany = value; }
 - (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
 
-- (void)setCreateHtml:(BOOL)value { self.settings.createHTML = value; }
-- (void)setCreateDocset:(BOOL)value { self.settings.createDocSet = value; }
-- (void)setInstallDocset:(BOOL)value { self.settings.installDocSet = value; }
-- (void)setPublishDocset:(BOOL)value { self.settings.publishDocSet = value; }
-- (void)setNoCreateHtml:(BOOL)value { self.settings.createHTML = !value; }
-- (void)setNoCreateDocset:(BOOL)value { self.settings.createDocSet = !value; }
-- (void)setNoInstallDocset:(BOOL)value { self.settings.installDocSet = !value; }
-- (void)setNoPublishDocset:(BOOL)value { self.settings.publishDocSet = !value; }
+- (void)setCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = value; }
+- (void)setCreateHtml:(BOOL)value { 
+	self.settings.createHTML = value; 
+	if (!value) {
+		self.settings.createDocSet = NO;
+		self.settings.installDocSet = NO;
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setCreateDocset:(BOOL)value { 
+	self.settings.createDocSet = value;
+	if (value) {
+		self.settings.createHTML = YES;
+	} else {
+		self.settings.installDocSet = NO;
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setInstallDocset:(BOOL)value { 
+	self.settings.installDocSet = value; 
+	if (value) {
+		self.settings.createHTML = YES;
+		self.settings.createDocSet = YES;
+		
+	} else {
+		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setPublishDocset:(BOOL)value { 
+	self.settings.publishDocSet = value; 
+	if (value) {
+		self.settings.createHTML = YES;
+		self.settings.createDocSet = YES;
+		self.settings.installDocSet = YES;
+	}
+}
+- (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
+- (void)setNoCreateHtml:(BOOL)value { [self setCreateHtml:!value]; }
+- (void)setNoCreateDocset:(BOOL)value { [self setCreateDocset:!value]; }
+- (void)setNoInstallDocset:(BOOL)value { [self setInstallDocset:!value]; }
+- (void)setNoPublishDocset:(BOOL)value { [self setPublishDocset:!value]; }
 
 - (void)setCrossrefFormat:(NSString *)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value; }
 - (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value ? @"<%@>" : @"<?%@>?"; }
@@ -528,6 +701,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }
 - (void)setDocsetPackageFilename:(NSString *)value { self.settings.docsetPackageFilename = value; }
 
+@synthesize additionalInputPaths;
+@synthesize ignoredInputPaths;
 @synthesize logformat;
 @synthesize verbose;
 @synthesize printSettings;
@@ -561,6 +736,7 @@ static NSString *kGBArgHelp = @"help";
 	
 	ddprintf(@"--%@ = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
 	ddprintf(@"--%@ = %@\n", kGBArgOutputPath, self.settings.outputPath);
+	ddprintf(@"--%@ = %@\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 	for (NSString *path in self.settings.includePaths) ddprintf(@"--%@ = %@\n", kGBArgIncludePath, path);
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
@@ -586,6 +762,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
 	ddprintf(@"\n");
 	
+	ddprintf(@"--%@ = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
 	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
@@ -635,6 +812,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetInstallPath, @"<path>", @"DocSet installation path");
 	PRINT_USAGE(@"-s,", kGBArgIncludePath, @"<path>", @"Include static doc(s) at path");
 	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
+	PRINT_USAGE(@"   ", kGBArgIndexDescPath, @"<path>", @"File including main index description");
 	ddprintf(@"\n");
 	ddprintf(@"PROJECT INFO\n");
 	PRINT_USAGE(@"-p,", kGBArgProjectName, @"<string>", @"Project name");
@@ -647,6 +825,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
 	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
 	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
+	PRINT_USAGE(@"   ", kGBArgCleanOutput, @"", @"[b] Remove contents of output path before starting !!CAUTION!!");
 	ddprintf(@"\n");
 	ddprintf(@"OPTIONS\n");
 	PRINT_USAGE(@"   ", kGBArgKeepIntermediateFiles, @"", @"[b] Keep intermediate files in output path");
@@ -724,6 +903,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"- ParseKit by Todd Ditchendorf\n");
 	ddprintf(@"- RegexKitLite by John Engelhart\n");
 	ddprintf(@"- GRMustache by Gwendal Roué\n");
+	ddprintf(@"- Discount by David Parsons\n");
 	ddprintf(@"- Timing functions from Apple examples\n");
 	ddprintf(@"\n");
 	ddprintf(@"We'd like to thank all authors for their contribution!\n");

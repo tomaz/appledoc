@@ -39,6 +39,7 @@
 		[result setObject:@"Inherits from" forKey:@"inheritsFrom"];
 		[result setObject:@"Conforms to" forKey:@"conformsTo"];
 		[result setObject:@"Declared in" forKey:@"declaredIn"];
+		[result setObject:@"Companion guide" forKey:@"companionGuide"];
 	}
 	return result;
 }
@@ -137,7 +138,7 @@
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"appledoc" forKey:@"tool"];
 		[result setObject:@"2.0.3" forKey:@"version"];
-		[result setObject:@"632" forKey:@"build"];
+		[result setObject:@"668" forKey:@"build"];
 		[result setObject:@"http://appledoc.gentlebytes.com" forKey:@"homepage"];
 	}
 	return result;

@@ -124,10 +124,6 @@ typedef NSUInteger GBProcessingFlag;
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withStore:(id)store {
-	[self processComment:comment withContext:nil store:store];
-}
-
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
 	NSParameterAssert(comment != nil);
 	NSParameterAssert(store != nil);
@@ -206,7 +202,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Handle short description and update block range if we're not repeating first paragraph.
 	if (!self.currentComment.shortDescription) {
 		[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:nil];
-		if (!self.settings.repeatFirstParagraphForMemberDescription && ![self.currentContext isStaticDocument] && ![self.currentContext isTopLevelObject]) {
+		if (!self.settings.repeatFirstParagraphForMemberDescription && !self.alwaysRepeatFirstParagraph) {
 			blockRange.location += shortRange.length;
 			blockRange.length -= shortRange.length;
 		}
@@ -409,69 +405,74 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string length] == 0) return string;
 	
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSString *nested = [string stringByReplacingOccurrencesOfRegex:@"(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*)" withString:@"==!!=="];
-	NSString *simplified = [nested stringByReplacingOccurrencesOfRegex:@"(__|\\*\\*)" withString:@"*"];
-	NSArray *components = [simplified arrayOfDictionariesByMatchingRegex:@"(?s:(\\*|_|==!!==|`)(.*?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
-	NSRange searchRange = NSMakeRange(0, [simplified length]);
-	NSMutableString *result = [NSMutableString stringWithCapacity:[simplified length]];
+	NSArray *components = [string arrayOfDictionariesByMatchingRegex:@"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
+	NSRange searchRange = NSMakeRange(0, [string length]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	for (NSDictionary *component in components) {
 		// Find marker range within the remaining text. Note that we don't test for marker not found, as this shouldn't happen...
 		NSString *componentMarker = [component objectForKey:@"marker"];
 		NSString *componentText = [component objectForKey:@"value"];
-		NSRange markerRange = [simplified rangeOfString:componentMarker options:0 range:searchRange];
+		NSRange markerRange = [string rangeOfString:componentMarker options:0 range:searchRange];
 		
 		// If we skipped some text, convert all cross refs in it and append to the result.
 		if (markerRange.location > searchRange.location) {
 			NSRange skippedRange = NSMakeRange(searchRange.location, markerRange.location - searchRange.location);
-			NSString *skippedText = [simplified substringWithRange:skippedRange];
+			NSString *skippedText = [string substringWithRange:skippedRange];
 			NSString *convertedText = [self stringByConvertingCrossReferencesInString:skippedText withFlags:flags];
 			[result appendString:convertedText];
 		}
 		
 		// Convert the marker to proper Markdown style. Warn if unknown marker is found. This is just a precaution in case we change something above, but forget to update this part, shouldn't happen in released versions as it should get caught by unit tests...
 		GBProcessingFlag linkFlags = flags;
-		NSString *markdownMarker = @"";
+		NSString *markdownStartMarker = @"";
+		NSString *markdownEndMarker = nil;
 		if ([componentMarker isEqualToString:@"*"]) {
 			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"**";
+			markdownStartMarker = [NSString stringWithFormat:@"**%@", self.components.appledocBoldStartMarker];
+			markdownEndMarker = [NSString stringWithFormat:@"%@**", self.components.appledocBoldEndMarker];
 		}
 		else if ([componentMarker isEqualToString:@"_"]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"_";
+			markdownStartMarker = @"_";
 		}
 		else if ([componentMarker isEqualToString:@"`"]) {
 			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"`";
+			markdownStartMarker = @"`";
 			linkFlags |= GBProcessingFlagEmbedMarkdownLink;
 		}
-		else if ([componentMarker isEqualToString:@"==!!=="]) {
+		else if ([componentMarker isEqualToString:@"**"] || [componentMarker isEqualToString:@"__"] || [componentMarker isEqualToString:@"*_"] || [componentMarker isEqualToString:@"_*"]) {
+			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			markdownStartMarker = componentMarker;
+		}
+		else if ([componentMarker isEqualToString:@"*__"] || [componentMarker isEqualToString:@"__*"] || [componentMarker isEqualToString:@"**_"] || [componentMarker isEqualToString:@"_**"] || [componentMarker isEqualToString:@"***"] || [componentMarker isEqualToString:@"___"]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownMarker = @"***";
+			markdownStartMarker = componentMarker;
 		}
 		else if (self.settings.warnOnUnknownDirective) {
 			GBLogWarn(@"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
 		}
+		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
 		
 		// Get formatted text, convert it's cross references and append proper format markers and string to result.
 		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
-		[result appendString:markdownMarker];
+		[result appendString:markdownStartMarker];
 		[result appendString:convertedText];
-		[result appendString:markdownMarker];
+		[result appendString:markdownEndMarker];
 		
 		// Prepare next search range.
 		NSUInteger location = markerRange.location + markerRange.length * 2 + [componentText length];
-		searchRange = NSMakeRange(location, [simplified length] - location);
+		searchRange = NSMakeRange(location, [string length] - location);
 	}
 	
 	// If there is some remaining text, process it for cross references and append to result.
-	if ([simplified length] > searchRange.location) {
-		NSString *remainingText = [simplified substringWithRange:searchRange];
+	if ([string length] > searchRange.location) {
+		NSString *remainingText = [string substringWithRange:searchRange];
 		NSString *convertedText = [self stringByConvertingCrossReferencesInString:remainingText withFlags:flags];
 		[result appendString:convertedText];
 	}
 	
 	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
-	NSString *regex = @"`((?:~!@)?\\[`[^`]*`\\]\\(.+?\\)(?:@!~)?)`";
+	NSString *regex = [NSString stringWithFormat:@"`((?:%@)?\\[`[^`]*`\\]\\(.+?\\)(?:%@)?)`", self.components.codeSpanStartMarker, self.components.codeSpanEndMarker];
 	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
 		return capturedStrings[1];
 	}];
@@ -503,7 +504,7 @@ typedef NSUInteger GBProcessingFlag;
 		
 		// Now that we have Markdown syntax link, preprocess the string from the last position to the start of Markdown link.
 		if (markdownData->range.location > searchRange.location) {
-			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location);
+			NSRange convertRange = NSMakeRange(searchRange.location, markdownData->range.location - searchRange.location);
 			NSString *skipped = [self stringByConvertingSimpleCrossReferencesInString:string searchRange:convertRange flags:flags];
 			[result appendString:skipped];
 		}
@@ -533,6 +534,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSPointerArray *links = [NSPointerArray pointerArrayWithWeakObjects];
 	NSUInteger lastUsedLocation = searchRange.location;
+	NSUInteger searchEndLocation = searchRange.location + searchRange.length;
 	BOOL isInsideMarkdown = (flags & GBProcessingFlagMarkdownLink) > 0;
 	while (YES) {
 		// Find all cross references
@@ -592,18 +594,19 @@ typedef NSUInteger GBProcessingFlag;
 			// Update range and remove the link from the temporary array.
 			NSUInteger location = linkData->range.location + linkData->range.length;
 			searchRange.location = location;
-			searchRange.length = [string length] - location;
+			searchRange.length = searchEndLocation - location;
 			lastUsedLocation = location;
 			[links removePointerAtIndex:index];
 		}
 		
 		// Exit if there's nothing more to process.
-		if (searchRange.location >= [string length]) break;
+		if (searchRange.location >= searchEndLocation) break;
 	}
 	
 	// If there's some text remaining after all links, append it.
-	if (!isInsideMarkdown && lastUsedLocation < [string length]) {
-		NSString *remainingText = [string substringFromIndex:lastUsedLocation];
+	if (!isInsideMarkdown && lastUsedLocation < searchEndLocation) {
+		NSRange remainingRange = NSMakeRange(lastUsedLocation, searchEndLocation - lastUsedLocation);
+		NSString *remainingText = [string substringWithRange:remainingRange];
 		[result appendString:remainingText];
 	}
 	return result;
@@ -875,6 +878,7 @@ typedef NSUInteger GBProcessingFlag;
 
 @synthesize lastReferencedObject;
 @synthesize reservedShortDescriptionData;
+@synthesize alwaysRepeatFirstParagraph;
 @synthesize currentSourceInfo;
 @synthesize currentComment;
 @synthesize currentContext;

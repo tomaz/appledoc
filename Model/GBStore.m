@@ -24,6 +24,8 @@
 		_protocolsByName = [[NSMutableDictionary alloc] init];
 		_documents = [[NSMutableSet alloc] init];
 		_documentsByName = [[NSMutableDictionary alloc] init];
+		_customDocuments = [[NSMutableSet alloc] init];
+		_customDocumentsByKey = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -110,6 +112,13 @@
 	[_documentsByName setObject:document forKey:[name stringByReplacingOccurrencesOfString:@"-template" withString:@""]];
 }
 
+- (void)registerCustomDocument:(GBDocumentData *)document withKey:(id)key {
+	NSParameterAssert(document != nil);
+	GBLogDebug(@"Registering custom document %@...", document);
+	[_customDocuments addObject:document];
+	[_customDocumentsByKey setObject:document forKey:key];
+}
+
 - (void)unregisterTopLevelObject:(id)object {
 	if ([_classes containsObject:object]) {
 		[_classes removeObject:object];
@@ -146,9 +155,14 @@
 	return [_documentsByName objectForKey:path];
 }
 
+- (GBDocumentData *)customDocumentWithKey:(id)key {
+	return [_customDocumentsByKey objectForKey:key];
+}
+
 @synthesize classes = _classes;
 @synthesize categories = _categories;
 @synthesize protocols = _protocols;
 @synthesize documents = _documents;
+@synthesize customDocuments = _customDocuments;
 
 @end

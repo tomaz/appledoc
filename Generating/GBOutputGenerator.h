@@ -72,7 +72,7 @@
 
 /** Copies or moves directory or file from the given source path to the destination path.
  
- This method takes into account `[GBApplicationSettings keepIntermediateFiles]` and either copies or moves files regarding it's value. The method is designed to be used from within subclasses. 
+ This method takes into account `[GBApplicationSettingsProvider keepIntermediateFiles]` and either copies or moves files regarding it's value. The method is designed to be used from within subclasses. 
 
  @param source Source path to copy or move from.
  @param destination Destination path to copy or move to.
@@ -87,7 +87,6 @@
  
  @param store The `GBStore` object that holds the store with all parsed and processed data.
  @param error If generation fails, error description is returned here.
- @see copyTemplateFilesToOutputPath:
  @see writeString:toFile:error:
  @see store
  */
@@ -138,8 +137,6 @@
 /** Returns the path relative to main output path, where all generated data is stored.
  
  At the same this, this also defines the path relative to main templates path, where all template files for this output generator are stored. Default implementation simply returns empty string, each subclass is supposed to override and return prover value.
- 
- @see copyTemplateFilesToOutputPath:
   */
 @property (readonly) NSString *outputSubpath;
 

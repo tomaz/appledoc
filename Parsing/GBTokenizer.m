@@ -8,6 +8,7 @@
 
 #import "RegexKitLite.h"
 #import "PKToken+GBToken.h"
+#import "GBApplicationSettingsProvider.h"
 #import "GBSourceInfo.h"
 #import "GBComment.h"
 #import "GBTokenizer.h"
@@ -28,6 +29,7 @@
 @property (retain) NSString *singleLineCommentRegex;
 @property (retain) NSString *multiLineCommentRegex;
 @property (retain) NSString *commentDelimiterRegex;
+@property (retain) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -38,16 +40,21 @@
 #pragma mark Initialization & disposal
 
 + (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename {
-	return [[[self alloc] initWithSourceTokenizer:tokenizer filename:filename] autorelease];
+	return [self tokenizerWithSource:tokenizer filename:filename settings:nil];
 }
 
-- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename {
++ (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings {
+	return [[[self alloc] initWithSourceTokenizer:tokenizer filename:filename settings:settings] autorelease];
+}
+
+- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings {
 	NSParameterAssert(tokenizer != nil);
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
-	GBLogDebug(@"Initializing tokenizer using %@...", tokenizer);
+	GBLogDebug(@"Initializing tokenizer...");
 	self = [super init];
 	if (self) {
+		self.settings = settings;
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
 		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
 		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}$";
@@ -191,8 +198,23 @@
 		self.tokenIndex++;
 	}
 	
-	if (startingPreviousToken) self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
-	if (startingLastToken) self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
+	// If last comment contains @name, we should assign it to previous one and reset current! This should ideally be handled by higher level component, but it's simplest to do it here. Note that we don't deal with source info here, we'll do immediately after this as long as we properly setup tokens.
+	if (self.settings && [self.lastCommentBuilder isMatchedByRegex:self.settings.commentComponents.methodGroupRegex]) {
+		self.previousCommentBuilder = [self.lastCommentBuilder mutableCopy];
+		[self.lastCommentBuilder setString:@""];
+		startingPreviousToken = startingLastToken;
+		startingLastToken = nil;
+	}
+	
+	// Assign source information so that we can match comments to file and line number later on.
+	if (startingPreviousToken) {
+		self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
+		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.previousCommentBuilder normalizedDescription], self.previousCommentSourceInfo.lineNumber);
+	}
+	if (startingLastToken) {
+		self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
+		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.lastCommentBuilder normalizedDescription], self.lastCommentSourceInfo.lineNumber);
+	}
 	return YES;
 }
 
@@ -294,5 +316,6 @@
 @synthesize singleLineCommentRegex;
 @synthesize multiLineCommentRegex;
 @synthesize commentDelimiterRegex;
+@synthesize settings;
 
 @end

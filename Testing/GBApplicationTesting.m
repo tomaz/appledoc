@@ -74,6 +74,15 @@
 	assertThat(settings2.docsetUtilPath, is(self.currentPath));
 }
 
+- (void)testIndexDesc_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--index-desc", @"path/file.txt", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--index-desc", @".", nil];
+	// verify
+	assertThat(settings1.indexDescriptionPath, is(@"path/file.txt"));
+	assertThat(settings2.indexDescriptionPath, is(self.currentPath));
+}
+
 - (void)testInclude_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--include", @"path", nil];
@@ -146,6 +155,15 @@
 
 #pragma mark Behavior settings testing
 
+- (void)testCleanOutput_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--clean-output", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-clean-output", nil];
+	// verify
+	assertThatBool(settings1.cleanupOutputPathBeforeRunning, equalToBool(YES));
+	assertThatBool(settings2.cleanupOutputPathBeforeRunning, equalToBool(NO));
+}
+
 - (void)testCreateHTML_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--create-html", nil];
@@ -153,6 +171,9 @@
 	// verify
 	assertThatBool(settings1.createHTML, equalToBool(YES));
 	assertThatBool(settings2.createHTML, equalToBool(NO));
+	assertThatBool(settings2.createDocSet, equalToBool(NO));
+	assertThatBool(settings2.installDocSet, equalToBool(NO));
+	assertThatBool(settings2.publishDocSet, equalToBool(NO));
 }
 
 - (void)testCreateDocSet_shouldAssignValueToSettings {
@@ -160,8 +181,11 @@
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--create-docset", nil];
 	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-create-docset", nil];
 	// verify
-	assertThatBool(settings1.createDocSet, equalToBool(YES));
+	assertThatBool(settings1.createHTML, equalToBool(YES));
 	assertThatBool(settings2.createDocSet, equalToBool(NO));
+	assertThatBool(settings1.createDocSet, equalToBool(YES));
+	assertThatBool(settings2.installDocSet, equalToBool(NO));
+	assertThatBool(settings2.publishDocSet, equalToBool(NO));
 }
 
 - (void)testInstallDocSet_shouldAssignValueToSettings {
@@ -169,8 +193,11 @@
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--install-docset", nil];
 	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-install-docset", nil];
 	// verify
+	assertThatBool(settings1.createHTML, equalToBool(YES));
+	assertThatBool(settings1.createDocSet, equalToBool(YES));
 	assertThatBool(settings1.installDocSet, equalToBool(YES));
 	assertThatBool(settings2.installDocSet, equalToBool(NO));
+	assertThatBool(settings2.publishDocSet, equalToBool(NO));
 }
 
 - (void)testPublishDocSet_shouldAssignValueToSettings {
@@ -178,6 +205,9 @@
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--publish-docset", nil];
 	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-publish-docset", nil];
 	// verify
+	assertThatBool(settings1.createHTML, equalToBool(YES));
+	assertThatBool(settings1.createDocSet, equalToBool(YES));
+	assertThatBool(settings1.installDocSet, equalToBool(YES));
 	assertThatBool(settings1.publishDocSet, equalToBool(YES));
 	assertThatBool(settings2.publishDocSet, equalToBool(NO));
 }

@@ -352,7 +352,8 @@ li#jumpto_button select {
 	margin-top:0;
 }
 
-.subtitle {
+.subtitle,
+.index-overview h1 {
 	font-weight: normal;
 	font-size: 180%;
 	color: #3C4C6C;

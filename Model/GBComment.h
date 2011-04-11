@@ -111,7 +111,7 @@
 
 /** Specifies the original processing context of the comment.
  
- This value points to the context inside which the comment was parsed. The main reason for this is to restrict processing of copied comments within their original context, so that any cross references are properly handled. The value related to the context is:
+ This value points to the context inside which the comment was parsed. The main reason for this is to restrict processing of copied comments within their original context, so that any cross references are properly handled(mainly to suppress unrelated warnings). The value related to the context is:
  
  - Normal comments attached to classes, categories, protocols or methods as found in source code: the value is `nil`.
  - Comments assigned to classes, categories or protocols, copied from another class, category or protocol: the value is the pointer to the original object.

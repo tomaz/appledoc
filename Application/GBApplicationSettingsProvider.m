@@ -24,6 +24,8 @@ NSString *kGBTemplatePlaceholderDocSetPackageFilename = @"%DOCSETPACKAGEFILENAME
 NSString *kGBTemplatePlaceholderYear = @"%YEAR";
 NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
+NSString *kGBCustomDocumentIndexDescKey = @"index-description";
+
 #pragma mark -
 
 @interface GBApplicationSettingsProvider ()
@@ -33,6 +35,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(id)member prefixedWith:(id)prefix;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block;
 - (NSString *)stringByNormalizingString:(NSString *)string;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
@@ -65,6 +68,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
+		self.indexDescriptionPath = nil;
 		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
 		
@@ -74,6 +78,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.keepIntermediateFiles = NO;
+		self.cleanupOutputPathBeforeRunning = NO;
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
@@ -84,6 +89,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
 		self.embedCrossReferencesWhenProcessingMarkdown = YES;
+		self.embedAppledocBoldMarkersWhenProcessingMarkdown = YES;
 
 		self.warnOnMissingOutputPathArgument = YES;
 		self.warnOnMissingCompanyIdentifier = YES;
@@ -121,8 +127,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 #pragma mark Helper methods
 
-- (void)updateHelperClassesWithSettingsValues {
-	
+- (void)updateHelperClassesWithSettingsValues {	
 }
 
 - (void)replaceAllOccurencesOfPlaceholderStringsInSettingsValues {
@@ -151,7 +156,12 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 - (NSString *)stringByEmbeddingCrossReference:(NSString *)value {
 	if (!self.embedCrossReferencesWhenProcessingMarkdown) return value;
-	return [NSString stringWithFormat:@"~!@%@@!~", value];
+	return [NSString stringWithFormat:@"%@%@%@", self.commentComponents.codeSpanStartMarker, value, self.commentComponents.codeSpanEndMarker];
+}
+
+- (NSString *)stringByEmbeddingAppledocBoldMarkers:(NSString *)value {
+	if (!self.embedAppledocBoldMarkersWhenProcessingMarkdown) return value;
+	return [NSString stringWithFormat:@"%@%@%@", self.commentComponents.appledocBoldStartMarker, value, self.commentComponents.appledocBoldEndMarker];
 }
 
 - (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
@@ -168,38 +178,46 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	}
 	mkd_cleanup(document);
 	
-	// Post process embedded cross references if needed.
-	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
-	__block BOOL insideExampleBlock = NO;
-	NSString *regex = @"<pre>|</pre>|~!@(.+?)@!~";
-	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
-		// Change flag when inside example block - we need to handle strings differently there!
-		NSString *matchedText = capturedStrings[0];
-		if ([matchedText isEqualToString:@"<pre>"]) {
-			insideExampleBlock = YES;
+	// We should properly handle cross references: if outside example block, simply strip prexif/suffix markers, otherwise extract description from Markdown style scross reference (i.e. [description](the rest)) and only use that part.
+	if (self.embedCrossReferencesWhenProcessingMarkdown) {
+		NSString *regex = [self stringByEmbeddingCrossReference:@"(.+?)"];
+		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
+			NSString *linkText = capturedStrings[1];
+			if (!insideCode) return linkText;
+			NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
+			if ([components count] < 1) return linkText;
+			return [components objectAtIndex:1];
+		}];
+	}
+
+	// We should properly handle Markdown bold markers (**) converted from appledoc style ones (*): if outside example block, simply strip prefix/suffix markers, otherwise convert back to single stars.
+	if (self.embedAppledocBoldMarkersWhenProcessingMarkdown) {
+		NSString *inner = [self stringByEmbeddingAppledocBoldMarkers:@"(.+?)"];
+		NSString *regex = [NSString stringWithFormat:@"\\*\\*%@\\*\\*|%@", inner, inner];
+		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
+			NSString *matchedText = capturedStrings[0];
+			if ([matchedText hasPrefix:@"**"]) {
+				NSString *formatText = capturedStrings[1];
+				if (!insideCode) return [NSString stringWithFormat:@"**%@**", formatText];
+				return [NSString stringWithFormat:@"*%@*", formatText];
+			} else {
+				return capturedStrings[2];
+			}
 			return matchedText;
-		} else if ([matchedText isEqualToString:@"</pre>"]) {
-			insideExampleBlock = NO;
-			return matchedText;
-		}
-		
-		// If outside example block, just return cross reference without embedded prefix and suffix!
-		NSString *linkText = capturedStrings[1];
-		if (!insideExampleBlock) return linkText;
-		
-		// If inside example block, we need to extract description from Markdown text and only use that part! If we don't match Markdown style reference, just use whole text...
-		NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
-		if ([components count] < 1) return linkText;
-		return [components objectAtIndex:1];
-	}];
-	return clean;
+		}];
+	}
+	
+	return result;
 }
 
 - (NSString *)stringByConvertingMarkdownToText:(NSString *)markdown {
 	NSString *result = markdown;
 	
-	// Clean Markdown inline links.
+	// Clean Markdown inline links. Note that we need to additionally handle remote member links [[class method]](address), these are not detected by our standard regex, but using common regex for these cases would incorrectly handle multiple links in the same string (it would greedily match the whole content between the first and the last link as the description). Note that the order of processing is important - we first need to handle "simple" links and then continue with remote members.
 	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[1];
+	}];
+	result = [result stringByReplacingOccurrencesOfRegex:@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"([^\"]+)\")?\\)" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[1];
 	}];
 	
@@ -227,10 +245,11 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		return capturedStrings[2];
 	}];
 	
-	// Remove embedded preix/suffix if needed.
-	if (!self.embedCrossReferencesWhenProcessingMarkdown) return result;
-	result = [result stringByReplacingOccurrencesOfString:@"~!@" withString:@""];
-	result = [result stringByReplacingOccurrencesOfString:@"@!~" withString:@""];
+	// Remove embedded prefix/suffix.
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanStartMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanEndMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldStartMarker withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldEndMarker withString:@""];
 	return result;
 }
 
@@ -244,6 +263,26 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	[result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
 	[result replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, result.length)];
 	return result;
+}
+
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block {	
+	NSString *theRegex = [NSString stringWithFormat:@"<code>|</code>|%@", regex];
+	__block BOOL insideExampleBlock = NO;
+	return [string stringByReplacingOccurrencesOfRegex:theRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		// Change flag when inside example block - we need to handle strings differently there!
+		NSString *matchedText = capturedStrings[0];
+		if ([matchedText isEqualToString:@"<code>"]) {
+			insideExampleBlock = YES;
+			return matchedText;
+		} else if ([matchedText isEqualToString:@"</code>"]) {
+			insideExampleBlock = NO;
+			return matchedText;
+		}
+		
+		// Invoke parent block when matched the given regex
+		NSString **strings = (NSString **)capturedStrings;
+		return block(captureCount, strings, insideExampleBlock);
+	}];
 }
 
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object {
@@ -274,6 +313,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 		
 		// To the parent or another top-level object.
 		if (object.isTopLevelObject) return [self htmlReferenceForObject:object fromSource:sourceParent];
+		if (object.isStaticDocument) return [self htmlReferenceForObject:object fromSource:sourceParent];
 
 		// To same or another member of the same parent.
 		if (object.parentObject == sourceParent) return [self htmlReferenceForMember:object prefixedWith:@"#"];
@@ -404,21 +444,27 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 	}
 	else if ([object isKindOfClass:[GBDocumentData class]]) {
 		GBDocumentData *document = object;
-
-		// Get output filename (removing template suffix) and document subpath without filename. Note that we need to remove extension as we'll add html by default!
-		NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
-		NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
-		filename = [filename stringByDeletingPathExtension];
 		
-		// If the document is included as part of a directory structure, we should use subdir, otherwise just leave the filename.
-		if (![document.basePathOfDocument isEqualToString:document.pathOfDocument]) {
-			NSString *includePath = [document.basePathOfDocument lastPathComponent];
-			subpath = [includePath stringByAppendingPathComponent:subpath];
-		}
+		// If this is custom document, just use it's relative path, otherwise take into account the registered path.
+		if (document.isCustomDocument) {
+			basePath = document.basePathOfDocument;
+			name = document.nameOfDocument;
+		} else {
+			// Get output filename (removing template suffix) and document subpath without filename. Note that we need to remove extension as we'll add html by default!
+			NSString *subpath = [document.subpathOfDocument stringByDeletingLastPathComponent];
+			NSString *filename = [self outputFilenameForTemplatePath:document.pathOfDocument];
+			filename = [filename stringByDeletingPathExtension];
+			
+			// If the document is included as part of a directory structure, we should use subdir, otherwise just leave the filename.
+			if (![document.basePathOfDocument isEqualToString:document.pathOfDocument]) {
+				NSString *includePath = [document.basePathOfDocument lastPathComponent];
+				subpath = [includePath stringByAppendingPathComponent:subpath];
+			}
 
-		// Prepare relative path from output path to the document now.
-		basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
-		name = filename;
+			// Prepare relative path from output path to the document now.
+			basePath = [self.htmlStaticDocumentsSubpath stringByAppendingPathComponent:subpath];
+			name = filename;
+		}
 	}
 	
 	if (basePath == nil || name == nil) return nil;
@@ -436,6 +482,8 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 			NSMutableString *result = [NSMutableString stringWithCapacity:[subpath length]];
 			for (NSUInteger i=0; i<[components count]; i++) [result appendString:@"../"];
 			return result;
+		} else {
+			return @"";
 		}
 	}
 	return @"../";
@@ -512,6 +560,7 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 @synthesize docsetUtilPath;
 @synthesize templatesPath;
 @synthesize includePaths;
+@synthesize indexDescriptionPath;
 @synthesize ignoredPaths;
 
 @synthesize docsetBundleIdentifier;
@@ -544,12 +593,14 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 @synthesize prefixLocalMembersInRelatedItemsList;
 @synthesize embedCrossReferencesWhenProcessingMarkdown;
+@synthesize embedAppledocBoldMarkersWhenProcessingMarkdown;
 
 @synthesize createHTML;
 @synthesize createDocSet;
 @synthesize installDocSet;
 @synthesize publishDocSet;
 @synthesize keepIntermediateFiles;
+@synthesize cleanupOutputPathBeforeRunning;
 
 @synthesize warnOnMissingOutputPathArgument;
 @synthesize warnOnMissingCompanyIdentifier;
