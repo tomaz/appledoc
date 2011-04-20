@@ -14,7 +14,18 @@
  
  The main responsibility of this class is to process comments. As it's a helper class for `GBProcessor`, it's processing is driven by the processor, so there's no need to create instances elsewhere.
  */
-@interface GBCommentsProcessor : NSObject
+@interface GBCommentsProcessor : NSObject {
+    id currentContext;
+    GBComment *currentComment;
+    GBStore *store;
+    GBApplicationSettingsProvider *settings;
+    GBCommentComponentsProvider *components;
+    
+    NSMutableDictionary *reservedShortDescriptionData;
+    GBSourceInfo *currentSourceInfo;
+    id lastReferencedObject;
+    BOOL alwaysRepeatFirstParagraph;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

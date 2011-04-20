@@ -15,7 +15,11 @@
  
  A comment argument is either a parameter or exception. In any case, the class allows assigning argument name and description. The description is simply a list of comment components in the form of `GBCommentComponentsList`. This allows every parameter contain arbitrary descriptions!
  */
-@interface GBCommentArgument : NSObject
+@interface GBCommentArgument : NSObject {
+    NSString *argumentName;
+    GBCommentComponentsList *argumentDescription;
+    GBSourceInfo *sourceInfo;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

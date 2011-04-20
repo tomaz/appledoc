@@ -35,7 +35,64 @@ extern id kGBCustomDocumentIndexDescKey;
  7. Add the switch value printout to `printSettingsAndArguments:`.
  8. Add the switch help printout to `printHelp`.
  */
-@interface GBApplicationSettingsProvider : NSObject
+@interface GBApplicationSettingsProvider : NSObject {
+    NSString *projectName;
+    NSString *projectCompany;
+    NSString *projectVersion;
+    NSString *companyIdentifier;
+    NSString *projectIdentifier;
+    NSString *versionIdentifier;
+    NSString *docsetBundleIdentifier;
+    NSString *docsetBundleName;
+    NSString *docsetCertificateIssuer;
+    NSString *docsetCertificateSigner;
+    NSString *docsetDescription;
+    NSString *docsetFallbackURL;
+    NSString *docsetFeedName;
+    NSString *docsetFeedURL;
+    NSString *docsetPackageURL;
+    NSString *docsetMinimumXcodeVersion;
+    NSString *docsetPlatformFamily;
+    NSString *docsetPublisherIdentifier;
+    NSString *docsetPublisherName;
+    NSString *docsetCopyrightMessage;
+    NSString *docsetBundleFilename;
+    NSString *docsetAtomFilename;
+    NSString *docsetPackageFilename;
+    NSString *templatesPath;
+    NSString *outputPath;
+    NSString *docsetInstallPath;
+    NSString *docsetUtilPath;
+    NSMutableSet *includePaths;
+    NSString *indexDescriptionPath;
+    NSMutableSet *ignoredPaths;
+    BOOL createHTML;
+    BOOL createDocSet;
+    BOOL installDocSet;
+    BOOL publishDocSet;
+    BOOL keepIntermediateFiles;
+    BOOL cleanupOutputPathBeforeRunning;
+    BOOL repeatFirstParagraphForMemberDescription;
+    BOOL keepUndocumentedObjects;
+    BOOL keepUndocumentedMembers;
+    BOOL findUndocumentedMembersDocumentation;
+    BOOL mergeCategoriesToClasses;
+    BOOL keepMergedCategoriesSections;
+    BOOL prefixMergedCategoriesSectionsWithCategoryName;
+    BOOL prefixLocalMembersInRelatedItemsList;
+    BOOL warnOnMissingOutputPathArgument;
+    BOOL warnOnMissingCompanyIdentifier;
+    BOOL warnOnUndocumentedObject;
+    BOOL warnOnUndocumentedMember;
+    BOOL warnOnEmptyDescription;
+    BOOL warnOnUnknownDirective;
+    BOOL warnOnInvalidCrossReference;
+    BOOL warnOnMissingMethodArgument;
+    BOOL embedCrossReferencesWhenProcessingMarkdown;
+    BOOL embedAppledocBoldMarkersWhenProcessingMarkdown;
+    GBCommentComponentsProvider *commentComponents;
+    GBApplicationStringsProvider *stringTemplates;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

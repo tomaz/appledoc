@@ -1,0 +1,39 @@
+/*
+    A Grammar for JSON which specifies which tokens should be discarded
+    
+    Feed this to -[PKParserFactory parserFromGrammar:assembler:] along with a reference
+    to an assembler (a call back delegate), and it will return a PKParser object which can 
+    parse strings conforming to this language/grammar.
+    
+    The when the returned parser is used, the provided assembler will receive method callbacks like:
+
+    -didMatchStart:
+    -didMatchObject:
+    -didMatchProperty:
+    -didMatchArray:
+    etc.
+    
+    whenever a grammar production of the corresponding name has been matched.
+    
+    Each callback method must accept a single PKAssembly argument. The provided assembly
+    will contain information about the progress made on the the string currently being parsed.
+    Also the assembly's stack will contain the tokens parsed so far in the current statement.
+*/
+
+@start        = Empty | array | object;
+
+object        = '{' objectContent '}'!;
+objectContent = Empty | actualObject;
+actualObject  = property commaProperty*;
+commaProperty = ','! property;
+property      = QuotedString ':'! value;         // NOTE: property names are quoted in JSON
+
+array         = '[' arrayContent ']'!;
+arrayContent  = Empty | actualArray;
+actualArray   = value commaValue*;
+commaValue    = ','! value;
+
+value         = null | true | false | array | object | Number | QuotedString;
+null          = 'null'!;
+true          = 'true'!;
+false         = 'false'!;

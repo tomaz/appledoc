@@ -13,6 +13,15 @@
 
 /** Provides common functionality for model objects. */
 @interface GBModelBase : NSObject {
+    GBSourceInfo *prefferedSourceInfo;
+    NSSet *sourceInfos;
+    GBComment *comment;
+    id parentObject;
+    BOOL isStaticDocument;
+    BOOL isTopLevelObject;
+    NSString *htmlLocalReference;
+    NSString *htmlReferenceName;
+    
 	@private
 	NSMutableSet *_sourceInfos;
 	NSMutableDictionary *_sourceInfosByFilenames;

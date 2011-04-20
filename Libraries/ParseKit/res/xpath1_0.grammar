@@ -1,0 +1,80 @@
+/*
+    An XPath 1.0 grammar derived from the XPath 1.0 Specification:
+ 
+    http://www.w3.org/TR/xpath
+    
+
+
+    NOTE-TO-SELF: to avoid infinite recursion, I had to eliminate this production:
+    
+        abbreviatedRelativeLocationPath = relativeLocationPath '//' step;
+    
+    and therefore remove `abbreviatedRelativeLocationPath` from `relativeLocationPath` which changed from
+        
+        relativeLocationPath = step ('/' step)* | abbreviatedRelativeLocationPath;
+        
+    to:
+    
+        relativeLocationPath = '//'? step ('/' step)*;
+    
+
+*/
+
+@start = expr;
+
+@symbols =  '//' '..' '!=' '::' '<=' '>=';
+            
+@wordState = '_';
+@wordChars = '_' '.' '-';
+
+@numberState = '.';              // numbers may start with dot
+@allowsTrailingDot = YES;        // numbers may end with dot
+@symbolState = '+' '-';          // numbers may not start with a plus or minus sign. they're actually unary operators
+@allowsScientificNotation = NO;  // exponents not allowed
+@allowsOctalNotation = NO;       // octal not allowed
+@allowsHexidecimalNotation = NO; // hex not allowed
+
+ 
+expr = orExpr;
+    orExpr = andExpr ('or' andExpr)*;
+        andExpr = equalityExpr ('and' equalityExpr)*;
+            equalityExpr = relationalExpr (('=' | '!=') relationalExpr)*; 
+                relationalExpr = additiveExpr (('<' | '>' | '<=' | '>=') additiveExpr)*;
+                    additiveExpr = multiplicativeExpr (('+' | '-') multiplicativeExpr)*;
+                        multiplicativeExpr = unaryExpr ((multiplyOperator | 'div' | 'mod') unaryExpr)*;
+                            multiplyOperator = '*';
+                            unaryExpr = '-'* unionExpr;
+                                unionExpr = pathExpr ('|' pathExpr)*;
+    
+
+pathExpr = locationPath | filterExpr (('/'| '//') relativeLocationPath)?;
+    locationPath = relativeLocationPath | absoluteLocationPath;
+        relativeLocationPath = '//'? step ('/' step)*;
+        absoluteLocationPath = '/' relativeLocationPath? | abbreviatedAbsoluteLocationPath;
+            abbreviatedAbsoluteLocationPath = '//' relativeLocationPath;
+
+    filterExpr = primaryExpr predicate*;
+        primaryExpr = variableReference | literal | number | functionCall | '(' expr ')';
+            variableReference = '$' qName; // note whitespace is not allowed here. also qName is optional
+            literal = QuotedString;
+            number = Number;
+            functionCall = functionName '(' (argument (',' argument)* )? ')';
+                functionName = qName - nodeType;
+                    qName = (prefix ':')? localPart;
+                        prefix = ncName;
+                        localPart = ncName;
+                            ncName = Word;
+                argument = expr;
+        predicate = '[' predicateExpr ']';
+            predicateExpr = expr;
+                
+
+    step = axisSpecifier nodeTest predicate* | abbreviatedStep;
+        axisSpecifier = axisName '::' | abbreviatedAxisSpecifier;
+            axisName = 'ancestor' | 'ancestor-or-self' | 'attribute' | 'child' | 'descendant' | 'descendant-or-self' | 'following' | 'following-sibling' | 'namespace' | 'parent' | 'preceding' | 'preceding-sibling' | 'self';
+            abbreviatedAxisSpecifier = '@'?;
+        nodeTest = nameTest | nodeType '(' ')' | 'processing-instruction' '(' literal ')';
+            nameTest = '*' | ncName ':' '*' | qName; // note whitespace should not be allowed in second alt here
+            nodeType = 'comment' | 'text' | 'processing-instruction' | 'node';
+        abbreviatedStep = '.' | '..';
+            

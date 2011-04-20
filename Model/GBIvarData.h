@@ -9,7 +9,10 @@
 #import "GBModelBase.h"
 
 /** Describes an ivar */
-@interface GBIvarData : GBModelBase
+@interface GBIvarData : GBModelBase {
+    NSString *nameOfIvar;
+    NSArray *ivarTypes;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

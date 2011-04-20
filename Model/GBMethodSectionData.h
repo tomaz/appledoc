@@ -15,6 +15,8 @@
  Method section contains a list of related methods and is used for grouping different groups of methods in the final output. This is only a thin wrapper over an `NSArray` so it doesn't provide must of validation code found in other classes. It simply defines accessors and mutators for changing the values.
  */
 @interface GBMethodSectionData : NSObject {
+    NSString* sectionName;
+    
 	@private
 	NSMutableArray *_methods;
 }

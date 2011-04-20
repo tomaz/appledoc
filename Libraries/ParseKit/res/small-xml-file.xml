@@ -1,0 +1,6 @@
+<result name="value" foo="bar">
+<url xmls:foo="bar">http://www.apple.com/</url>
+<url xmls:foo="bar" baz="foobar">yes <em/> maam</url>
+<baz/>
+</result>
+<!-- woohoo -->

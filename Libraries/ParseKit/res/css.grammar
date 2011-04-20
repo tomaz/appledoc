@@ -1,0 +1,44 @@
+/**
+    A Grammar for CSS
+    
+    This grammar is intentionally lenient/forgiving. 
+    The purpose is to highlight, not validate (possibly invalid) CSS.
+    
+*/
+
+@multiLineComments = '/*' '*/';
+@wordState = '-';
+
+@start                  = ruleset*;
+ruleset                 = selectors openCurly decls closeCurly;
+selectors               = selector commaSelector*;
+selector                = (selectorWord | hash | dot |colon | gt | openBracket | closeBracket | eq | selectorQuotedString | tilde | pipe)+;
+selectorWord            = Word;
+selectorQuotedString    = QuotedString;
+commaSelector           = comma selector;
+decls                   = Empty | actualDecls;
+actualDecls             = decl decl*;
+decl                    = property colon expr semi;
+property                = Word;
+expr                    = (string | constant | num | openParen | closeParen | comma | fwdSlash)+;
+string                  = QuotedString;
+constant                = Word;
+
+openCurly       = '{';
+closeCurly      = '}';
+openBracket     = '[';
+closeBracket    = ']';
+eq              = '=';
+comma           = ',';
+colon           = ':';
+semi            = ';';
+openParen       = '(';
+closeParen      = ')';
+gt              = '>';
+tilde           = '~';
+pipe            = '|';
+fwdSlash        = '/';
+hash            = '#';
+dot             = '.';
+
+num = Number;

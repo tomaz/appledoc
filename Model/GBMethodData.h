@@ -33,6 +33,8 @@ typedef NSUInteger GBMethodType;
  To aid output templates handling, the method also prepares formatted components that can be used directly within output templates. Formatted components include all whitespace as needed to match desired coding style, so output generators can simply write the given formatted values. Although it could be argued that this should be rather part of output template, the ammount and complexity of template directives would be much greater than doing this in code. As additional bonus, we can have formatting code under unit tests to quickly verify it works as needed. And templates that really need to hande specifics, can still do so... See `formattedComponents` for details.
  */
 @interface GBMethodData : GBModelBase {
+    BOOL isRequired;
+    
 	@private
 	GBMethodType _methodType;
 	NSArray *_methodAttributes;

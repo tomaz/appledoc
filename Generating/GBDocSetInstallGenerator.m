@@ -21,12 +21,12 @@
 
 #pragma Generation handling
 
-- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)theStore error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
 	GBLogInfo(@"Installing DocSet...");
 	
 	// Prepare for run.
-	if (![super generateOutputWithStore:store error:error]) return NO;
+	if (![super generateOutputWithStore:theStore error:error]) return NO;
 	
 	// Prepare source and destination paths and file names.
 	NSString *sourceUserPath = self.inputUserPath;

@@ -12,7 +12,11 @@
  
  Generating phase is where output is generated from parsed and processed data - in other words, this is where the work previous phases has done becomes visible and therefore usable for the users. As such, this class is the engine for generating output, but doesn't do actual generation itself. Instead, it serves as an single and simple entry point for the rest of the application. Internally it delegates actual generation tasks to various lower-level objects, based on user's choices.
  */
-@interface GBGenerator : NSObject
+@interface GBGenerator : NSObject {
+    NSMutableArray *outputGenerators;
+    GBStore *store;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

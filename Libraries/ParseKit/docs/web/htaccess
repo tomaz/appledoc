@@ -1,0 +1,5 @@
+# let's enable php (non-cgi, aka. 'module') for EVERYTHING..'
+# AddType application/x-httpd-php5 .htm .html .php
+
+# better yet..
+AddHandler php5-script .php .html .htm .inc

@@ -1,0 +1,257 @@
+<?php include('common-header.inc'); ?>
+	<title>ParseKit - Cocoa Objective-C Framework for parsing, tokenizing and language processing</title>
+<?php include('common-nav.inc'); ?>
+    	
+<h1>ParseKit Documentation</h1>
+<div id="content">
+<h2 id="home-title">ParseKit</h2>
+
+<p>ParseKit is a Mac OS X Framework written by Todd Ditchendorf in Objective-C 2.0 and released under the MIT Open Source License. ParseKit is suitable for use on Mac OS X Leopard, Snow Leopard or <a href="iphone.html">iPhone OS</a>. ParseKit is an Objective-C implementation of the tools described in <a href="http://www.amazon.com/Building-Parsers-Java-Steven-Metsker/dp/0201719622" title="Amazon.com: Building Parsers With Java(TM): Steven John Metsker: Books">"Building Parsers with Java"</a> by Steven John Metsker. ParseKit includes additional features beyond the designs from the book and also some changes to match common Cocoa/Objective-C conventions. These changes are relatively superficial, however, and Metsker's book is the best documentation available for ParseKit.</p>
+
+<p>The ParseKit Framework offers 3 basic services of general interest to Cocoa developers:</p>
+
+<ol>
+<li><b><a href="/tokenization.html">String Tokenization</a></b> via the Objective-C <tt>PKTokenizer</tt> and <tt>PKToken</tt> classes.</li>
+<li><b>High-Level Language Parsing via Objective-C</b> - An Objective-C parser-building API (the <tt>PKParser</tt> class and sublcasses).</li>
+<li><b><a href="grammars.html">Objective-C Parser Generation via Grammars</a></b> - Generate an Objective-C parser for your custom language using a <a href="http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form">BNF</a>-style grammar syntax (similar to yacc or ANTLR). While parsing, the parser will provide callbacks to your Objective-C code.</li>
+</ol>
+
+<p>The ParseKit source code is available from the <a href="http://code.google.com/p/todparsekit/source/checkout">Subversion repository</a> at the <a href="http://code.google.com/p/todparsekit/">Google Code project page</a>. The latest tagged (stable) version is recommended.</p> <p style="margin-bottom:40px;"><tt>svn co http://todparsekit.googlecode.com/svn/tags/release-1.5-tag</tt></p>
+
+<p>More documentation:</p>
+<ul>
+    <li><a href="iphone.html">Instructions for including ParseKit in your iPhone OS app</a></li>
+	<li><a href="doxygen/">Doxygen-generated Header Docs</a></li>
+</ul>
+
+<p>Projects using ParseKit:</p>
+<ul>
+	<li><a href="http://lucidmac.com/products/spike">Spike</a>: A Rails log file viewer/analyzer by Matt Mower</li>
+	<li><a href="http://github.com/ccgus/jstalk/tree/master">JSTalk</a>: Interprocess Cocoa scripting with JavaScript by Gus Mueller</li>
+	<li><a href="http://github.com/boucher/tdparsekit/tree/master">Objective-J Port</a> of ParseKit by Ross Boucher</li>
+	<li><a href="http://tr.im/http">HTTP Client</a>: HTTP debugging/testing tool</li>
+	<li><a href="http://fluidapp.com">Fluid</a>: Site-Specific Browser for Mac OS X</li>
+	<li><a href="http://cruzapp.com">Cruz</a>: Social Browser for Mac OS X</li>
+	<li><a href="http://parsekit.com/okudakit">OkudaKit</a>: Syntax Highlighting Framework for Mac OS X</li>
+	<li><a href="http://tr.im/exedore">Exedore</a>: XPath 1.0 implemented in Cocoa (ported from <a href="http://saxonica.com/">Saxon</a>)</li>
+</ul>
+
+<h2>Xcode Project</h2>
+<p>The ParseKit Xcode project consists of 6 targets:</p>
+
+<ol>
+<li><b>ParseKit</b> : the ParseKit Objective-C framework. The central feature/codebase of this project.</li>
+<li><b>Tests</b> : a UnitTest Bundle containing hundreds of unit tests (actually, more correctly, interaction tests) for the framework as well as some example classes that serve as real-world uses of the framework.</li>
+<li><b>DemoApp</b> : A simple Cocoa demo app that gives a visual presentation of the results of tokenizing text using the PKTokenizer class.</li>
+<li><b>DebugApp</b> : A simple Cocoa app that exists only to run arbitrary test code thru GDB with breakpoints for debugging (I was not able to do that with the UnitTest bundle).</li>
+<li><b>JSParseKit</b> : A JavaScriptCore-based scripting interface to ParseKit which can be used to expose the entire framework to JavaScript environments.</li>
+<li><b>JSDemoApp</b>: A simple Cocoa application used for exercising the JavaScript interface provided by JSParseKit. Note that this is the only target which links to the WebKit framework. Neither ParseKit nor JSParseKit requires WebKit.</li>
+</ol>
+
+
+
+<h2>ParseKit Framework</h2>
+
+<hr/>
+<h3>Tokenization</h3>
+
+<p>The API for tokenization is provided by the <tt>PKTokenizer</tt> class. Cocoa developers will be familiar with the <tt>NSScanner</tt> class provided by the Foundation Framework which provides a similar service. However, the <tt>PKTokenizer</tt> class is simpler and more powerful for many use cases.</p>
+
+<p>Example usage:</p>
+
+<div class="code">
+<pre>
+NSString *s = @"\"It's 123 blast-off!\", she said, // watch out!\n"
+              @"and &lt;= 3.5 'ticks' later /* wince */, it's blast-off!";
+PKTokenizer *t = [PKTokenizer tokenizerWithString:s];
+
+PKToken *eof = [PKToken EOFToken];
+PKToken *tok = nil;
+
+while ((tok = [t nextToken]) != eof) {
+    NSLog(@" (%@)", tok);
+}
+</pre>
+</div>
+
+<p>outputs:</p>
+<div class="code">
+<pre> ("It's 123 blast-off!")
+ (,)
+ (she)
+ (said)
+ (,)
+ (and)
+ (&lt;=)
+ (3.5)
+ ('ticks')
+ (later)
+ (,)
+ (it's)
+ (blast-off)
+ (!)
+</pre>
+</div>
+
+<p>Each token produced is an object of class <tt>PKToken</tt>. <tt>PKToken</tt>s have a <tt>tokenType</tt> (<tt>Word</tt>, <tt>Symbol</tt>, <tt>Num</tt>, <tt>QuotedString</tt>, etc.) and both a <tt>stringValue</tt> and a <tt>floatValue</tt>.</p>
+
+<p>More information about a token can be easily discovered using the <tt>-debugDescription</tt> method instead of the default <tt>-description</tt>. Replace the line containing <tt>NSLog</tt> above with this line:</p>
+
+<div class="code">
+<pre>
+NSLog(@" (%@)", [tok debugDescription]);
+</pre>
+</div>
+
+<p>and each token's type will be printed as well:</p>
+
+<div class="code">
+<pre> &lt;Quoted String «"It's 123 blast-off!"»>
+ &lt;Symbol «,»>
+ &lt;Word «she»>
+ &lt;Word «said»>
+ &lt;Symbol «,»>
+ &lt;Word «and»>
+ &lt;Symbol «&lt;=»>
+ &lt;Number «3.5»>
+ &lt;Quoted String «'ticks'»>
+ &lt;Word «later»>
+ &lt;Symbol «,»>
+ &lt;Word «it's»>
+ &lt;Word «blast-off»>
+ &lt;Symbol «!»>
+</pre>
+</div>
+
+
+<p>As you can see from the output, <tt>PKTokenzier</tt> is configured by default to properly group characters into tokens including:</p>
+
+<ul>
+<li>single- and double-quoted string tokens</li>
+<li>common multiple character symbols (<tt>&lt;=</tt>)</li>
+<li>apostrophes, dashes and other symbol chars that should not signal the start of a new Symbol token, but rather be included in the current Word or Num token (<tt>it's</tt>, <tt>blast-off</tt>, <tt>3.5</tt>)</li>	
+<li>silently ignoring C- and C++-style comments</li>
+<li>silently ignoring whitespace</li>
+</ul>
+
+
+<p>The PKTokenizer class is very flexible, and <b>all</b> of those features are configurable. PKTokenizer may be configured to:</p>
+
+<ul>
+<li>recognize more (or fewer) multi-char symbols. ex: <div class="code"><pre>[t.symbolState add:@"!="];</pre></div>
+<p><small>allows <tt>!=</tt> to be recognized as a single <tt>Symbol</tt> token rather than two adjacent <tt>Symbol</tt> tokens</small></p>
+</li>
+
+<li>add new internal symbol chars to be included in the current <tt>Word</tt> token OR recognize internal symbols like apostrophe and dash to actually signal a new <tt>Symbol</tt> token rather than being part of the current Word token. ex: 
+<div class="code"><pre>[t.wordState setWordChars:YES from:'_' to:'_'];</pre></div>
+<p><small>allows Word tokens to contain internal underscores</small></p>	
+<div class="code"><pre>[t.wordState setWordChars:NO from:'-' to:'-'];</pre></div>
+<p><small>disallows Word tokens from containing internal dashes.</small></p>	
+</li>
+	
+	
+<li>change which chars singnal the start of a token of any given type. ex: 
+<div class="code"><pre>[t setTokenizerState:t.wordState from:'_' to:'_'];</pre></div>
+<p><small>allows Word tokens to start with underscore</small></p>
+<div class="code"><pre>[t setTokenizerState:t.quoteState from:'*' to:'*'];</pre></div>
+<p><small>allows Quoted String tokens to start with an asterisk, effectively making <tt>*</tt> a new quote symbol (like <tt>"</tt> or <tt>'</tt>)</small></p>
+</li>
+
+<li>turn off recognition of single-line "slash-slash" (<tt>//</tt>) comments. ex: 
+<div class="code"><pre>[t setTokenizerState:t.symbolState from:'/' to:'/'];</pre></div>
+<p><small>slash chars now produce individual Symbol tokens rather than causing the tokenizer to strip text until the next newline char or begin striping for a multiline comment if appropriate (<tt>/*</tt>)</small></p>
+</li>
+
+<li>turn on recognition of "hash" (<tt>#</tt>) single-line comments. ex: 
+<div class="code">
+<pre>[t setTokenizerState:t.commentState from:'#' to:'#'];
+[t.commentState addSingleLineStartSymbol:@"#"];</pre>
+</div>
+</li>
+
+<li>turn on recognition of "XML/HTML" (<tt>&lt;!-- --></tt>) multi-line comments. ex: 
+<div class="code">
+<pre>[t setTokenizerState:t.commentState from:'&lt;' to:'&lt;'];
+[t.commentState addMultiLineStartSymbol:@"&lt;!--" endSymbol:@"-->"];</pre>
+</div>
+</li>
+
+<li>report (rather than silently consume) Comment tokens. ex: 
+<div class="code">
+<pre>t.commentState.reportsCommentTokens = YES; // default is NO</pre>
+</div>
+</li>
+
+<li>report (rather than silently consume) Whitespace tokens. ex: 
+<div class="code">
+<pre>t.whitespaceState.reportsWhitespaceTokens = YES; // default is NO</pre>
+</div>
+</li>
+
+<li>turn on recognition of any characters (say, digits) as whitespace to be silently ignored. ex: 
+<div class="code">
+<pre>[t setTokenizerState:t.whitespaceState from:'0' to:'9'];</pre>
+</div>
+</li>
+
+</ul>
+
+<hr/>
+<h3>Parsing</h3>
+
+<p>ParseKit also includes a collection of token parser subclasses (of the abstract <tt>PKParser</tt> class) including collection parsers such as <tt>PKAlternation</tt>, <tt>PKSequence</tt>, and <tt>PKRepetition</tt> as well as terminal parsers including <tt>PKWord</tt>, <tt>PKNum</tt>, <tt>PKSymbol</tt>, <tt>PKQuotedString</tt>, etc. Also included are parser subclasses which work in individual chars such as <tt>PKChar</tt>, <tt>PKDigit</tt>, and <tt>PKSpecificChar</tt>. These char parsers are useful for things like RegEx parsing. Generally speaking though, the token parsers will be more useful and interesting.</p>
+
+<p>The parser classes represent a <b>Composite</b> pattern. Programs can build a composite parser, in <b>Objective-C</b> (rather than a separate language like with lex&amp;yacc), from a collection of terminal parsers composed into alternations, sequences, and repetitions to represent an infinite number of languages.</p>
+
+<p>Parsers built from ParseKit are <b>non-deterministic, recursive descent parsers</b>, which basically means they trade some performance for ease of user programming and simplicity of implementation.</p>
+
+<p>Here is an example of how one might build a parser for a simple voice-search command language (note: ParseKit does not include any kind of speech recognition technology). The language consists of:</p>
+
+<div class="code">
+<pre>search google for? &lt;search-term&gt;</pre>
+</div>
+
+<div class="code">
+<pre>
+...
+
+	[self parseString:@"search google 'iphone'"];
+...
+	
+- (void)parseString:(NSString *)s {
+	PKSequence *parser = [PKSequence sequence];
+
+	[parser add:[[PKLiteral literalWithString:@"search"] discard]];
+	[parser add:[[PKLiteral literalWithString:@"google"] discard]];
+
+	PKAlternation *optionalFor = [PKAlternation alternation];
+	[optionalFor add:[PKEmpty empty]];
+	[optionalFor add:[PKLiteral literalWithString:@"for"]];
+
+	[parser add:[optionalFor discard]];
+
+	PKParser *searchTerm = [PKQuotedString quotedString];
+	[searchTerm setAssembler:self selector:@selector(workOnSearchTermAssembly:)];
+	[parser add:searchTerm];
+
+	PKAssembly *result = [parser bestMatchFor:[PKTokenAssembly assmeblyWithString:s]];
+	
+	NSLog(@" %@", result);
+
+	// output:
+	//  ['iphone']search/google/'iphone'^
+}
+
+...
+
+- (void)workOnSearchTermAssembly:(PKAssembly *)a {
+	PKToken *t = [a pop]; // a QuotedString token with a stringValue of 'iphone'
+	[self doGoogleSearchForTerm:t.stringValue];
+}
+
+</pre>
+</div>
+
+</div>
+
+<?php include('common-footer.inc'); ?>

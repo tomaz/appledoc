@@ -16,6 +16,9 @@
 /** Describes a class.
  */
 @interface GBClassData : GBModelBase <GBObjectDataProviding> {
+    NSString *nameOfSuperclass;
+    GBClassData *superclass;
+    
 	@private
 	NSString *_className;
 	GBAdoptedProtocolsProvider *_adoptedProtocols;

@@ -53,11 +53,11 @@
 
 #pragma mark File system parsing handling
 
-- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)store {
+- (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)toStore {
 	NSParameterAssert(paths != nil);
-	NSParameterAssert(store != nil);
+	NSParameterAssert(toStore != nil);
 	GBLogVerbose(@"Parsing objects from %lu paths...", [paths count]);
-	self.store = store;
+	self.store = toStore;
 	self.numberOfParsedFiles = 0;
 	for (NSString *input in paths) {
 		[self parsePath:input usingBlock:^(NSString *path) {
@@ -78,11 +78,11 @@
 	GBLogVerbose(@"Parsed %lu source files.", self.numberOfParsedFiles);
 }
 
-- (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)store {
+- (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)toStore {
 	NSParameterAssert(paths != nil);
-	NSParameterAssert(store != nil);
+	NSParameterAssert(toStore != nil);
 	GBLogVerbose(@"Parsing static documents from %u paths...", [paths count]);
-	self.store = store;
+	self.store = toStore;
 	self.numberOfParsedDocuments = 0;
 	for (NSString *input in paths) {
 		[self parsePath:input usingBlock:^(NSString *path) {
@@ -107,11 +107,11 @@
 	GBLogVerbose(@"Parsed %lu static document files.", self.numberOfParsedDocuments);
 }
 
-- (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)store {
+- (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)toStore {
 	if (!path || [path length] == 0) return;
 	NSParameterAssert(key != nil);
-	NSParameterAssert(store != nil);
-	self.store = store;
+	NSParameterAssert(toStore != nil);
+	self.store = toStore;
 	GBLogInfo(@"Parsing custom document from '%@'...", path);
 
 	NSError *error = nil;

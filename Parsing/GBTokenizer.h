@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ParseKit.h"
+#import "GBApplicationSettingsProvider.h"
 
 @class GBSourceInfo;
 @class GBComment;
@@ -31,7 +32,22 @@
  
  @warning *Note:* Both comment values are persistent until a new comment is found! At that time, previous comment contains the value of last comment and the new comment is stored as last comment. This allows us parsing through complex code (like `#ifdef` / `#elif` / `#else` blocks etc.) without fear of loosing any comment information. It does require manual resetting of comments whenever the comment is actually attached to an object. Resetting is performed by sending `resetComments` message to the receiver.
  */
-@interface GBTokenizer : NSObject
+@interface GBTokenizer : NSObject {
+    GBComment *lastComment;
+    GBComment *previousComment;
+    NSString *filename;
+    NSString *input;
+    NSArray *tokens;
+    NSUInteger tokenIndex;
+    NSMutableString *lastCommentBuilder;
+    NSMutableString *previousCommentBuilder;
+    GBSourceInfo *lastCommentSourceInfo;
+    GBSourceInfo *previousCommentSourceInfo;
+    NSString *singleLineCommentRegex;
+    NSString *multiLineCommentRegex;
+    NSString *commentDelimiterRegex;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

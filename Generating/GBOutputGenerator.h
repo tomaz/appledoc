@@ -17,7 +17,13 @@
  
  @warning *Implementation detail:* As this is a subclass of `GBTemplateFilesHandler`, it automatically inherits all template files processing functionality from it. However it overrides `templateUserPath` and `outputUserPath` to use values from `GBApplicationSettingsProvider`. This greatly simplifies output generators handling - instead of requiring clients to setup proper paths, subclasses only need to override `outputSubpath` and return subdirectory which is used for both: actual template files and output files location; in both cases, the subpath is appended to the locations from the settings.
  */
-@interface GBOutputGenerator : GBTemplateFilesHandler
+@interface GBOutputGenerator : GBTemplateFilesHandler {
+    NSString *inputUserPath;
+    GBOutputGenerator *previousGenerator;
+    GBStore *store;
+    NSString *outputSubpath;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

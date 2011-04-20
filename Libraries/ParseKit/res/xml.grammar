@@ -1,0 +1,388 @@
+/**
+    This is a relatively complete TDParseKit grammar for XML 1.0 derived from the XML specification:
+    
+    http://www.w3.org/TR/REC-xml/
+    
+    You can create the parser in ObjC like:
+    
+        NSString *g = .. // fetch this grammar from disk or wherever
+        PKParser *p = [[PKParserFactory factory] parserFromGrammar:g assembler:self];
+
+        NSString *XMLString = .. // fetch some XML 
+        [p parse:XMLString];
+        
+    If implemented, your assembler object will receive callbacks for each production in this grammar, like:
+        
+        - (void)didMatchElement:(PKAssembly *)a;
+        - (void)didMatchAttribute:(PKAssembly *)a;
+    
+    
+    This parser is running successfully on some non-trivial real-world XML documents, 
+    but i'm sure there are bugs (espcially in the DTD stuff). 
+    
+    It's also a little too lenient about a few quoted string values in the spec, and doesnt yet forbid some chars it should.
+    
+    I have some tests, But will need many more if this is to be a serious parser:
+
+    http://code.google.com/p/todparsekit/source/browse/trunk/test/TDXMLParserTest.m
+    
+    
+    (I'd like to write an ObjC SAX interface to this parser)
+
+    (Is this the first XML parser implemented directly in Objective-C?)
+*/
+
+@start = document;
+
+@reportsWhitespaceTokens = YES;
+
+@symbols = '&#' '&#x' '</' '/>' '<![' '<?' '?>' '<?xml';
+@symbols = '<!DOCTYPE' '<!ELEMENT' '<!ATTLIST';
+@symbols = '#PCDATA' '#REQUIRED' '#IMPLIED' '#FIXED' ')*';
+
+@delimitState = '<';
+@delimitedString = '<!--' '-->' nil;
+@delimitedString = '<![CDATA[' ']]>' nil;
+
+
+// [1]       document        ::=        prolog element Misc*
+    
+    document = prolog element misc*;
+
+
+// [2]       Char            ::=       #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]    /* any Unicode character, excluding the surrogate blocks, FFFE, and FFFF. */
+// [3]       S               ::=       (#x20 | #x9 | #xD | #xA)+
+// [4]       NameStartChar   ::=       ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+// [4a]      NameChar        ::=       NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+// [5]       Name            ::=       NameStartChar (NameChar)*
+// [6]       Names           ::=       Name (#x20 Name)*
+// [7]       Nmtoken         ::=       (NameChar)+
+// [8]       Nmtokens        ::=       Nmtoken (#x20 Nmtoken)*
+
+    @wordState = ':' '.' '-' '_';
+    @wordChars = ':' '.' '-' '_';
+
+    nmtoken = Word;
+
+    name = Word & /[^-:\.].*/;
+
+    // names = name (S name)*;
+    // nmtokens = nmtoken (S nmtoken)*;
+
+
+
+// [9]       EntityValue         ::=       '"' ([^%&"] | PEReference | Reference)* '"' |  "'" ([^%&'] | PEReference | Reference)* "'"
+// [10]      AttValue            ::=       '"' ([^<&"] | Reference)* '"' |  "'" ([^<&'] | Reference)* "'"
+// [11]      SystemLiteral       ::=       ('"' [^"]* '"') | ("'" [^']* "'")
+
+    entityValue = QuotedString; // TODO
+    attValue = QuotedString; // TODO
+    systemLiteral = QuotedString;
+
+
+// [12]       PubidLiteral       ::=       '"' PubidChar* '"' | "'" (PubidChar - "'")* "'"
+// [13]       PubidChar          ::=       #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
+    
+    pubidLiteral = QuotedString; // TODO
+
+
+// [14]       CharData       ::=       [^<&]* - ([^<&]* ']]>' [^<&]*)
+    
+    charData = /[^<\&]+/;
+
+
+// [15]       Comment       ::=       '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
+    
+    comment = DelimitedString('<!--', '-->');
+
+
+// [16]       PI       ::=       '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
+// [17]       PITarget       ::=        Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
+    
+    pi = '<?' piTarget ~/?>/* '?>';
+    piTarget = name - /xml/i;
+
+
+// [18]       CDSect       ::=        CDStart CData CDEnd
+// [19]       CDStart       ::=       '<![CDATA['
+// [20]       CData       ::=       (Char* - (Char* ']]>' Char*))
+// [21]       CDEnd       ::=       ']]>'
+    
+    cdSect = DelimitedString('<![CDATA[', ']]>');
+
+
+// [22]       prolog       ::=        XMLDecl? Misc* (doctypedecl Misc*)?
+    
+    prolog = xmlDecl? misc* (doctypedecl misc*)?;
+
+
+// [23]       XMLDecl       ::=       '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
+
+    xmlDecl = '<?xml' versionInfo encodingDecl? sdDecl? S? '?>';
+
+
+// [24]       VersionInfo       ::=        S 'version' Eq ("'" VersionNum "'" | '"' VersionNum '"')
+// [26]       VersionNum       ::=       '1.' [0-9]+
+    
+    versionNum = /(['"])1\.[0-9]\1/;
+    versionInfo = S 'version' eq versionNum;
+
+
+// [25]       Eq       ::=        S? '=' S?
+    
+    eq = S? '=' S?;
+
+
+// [27]       Misc       ::=        Comment | PI | S
+    
+    misc = comment | pi | S;
+
+
+// [28]       doctypedecl       ::=       '<!DOCTYPE' S Name (S ExternalID)? S? ('[' intSubset ']' S?)? '>'
+    
+    doctypedecl = '<!DOCTYPE' S name (S externaID)? S? ('[' intSubset ']' S?)? '>';
+
+
+// [28a]       DeclSep       ::=        PEReference | S
+    
+    declSep = peReference | S;
+
+
+// [28b]       intSubset       ::=       (markupdecl | DeclSep)*
+    
+    intSubset = (markupdecl | declSep)*;
+
+
+// [29]       markupdecl       ::=        elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment
+    
+    markupdecl = elementdecl | attlistDecl | entityDecl | notationDecl | pi | comment;
+
+
+// [30]       extSubset       ::=        TextDecl? extSubsetDecl
+    
+    extSubset = textDecl? extSubsetDecl;
+
+// [31]       extSubsetDecl       ::=       ( markupdecl | conditionalSect | DeclSep)*
+    
+    extSubsetDecl = (markupdecl | conditionalSect | declSep)*;
+
+
+// [32]       SDDecl       ::=        S 'standalone' Eq (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no') '"'))
+    
+    sdDecl = S 'standalone' eq /(["'])(yes|no)\1/;
+
+// [39]       element       ::=        EmptyElemTag | STag content ETag
+
+    element = emptyElemTag | sTag content eTag;
+
+
+// [40]       STag       ::=       '<' Name (S Attribute)* S? '>'
+
+    sTag = '<' name (S attribute)* S? '>';
+
+
+// [41]       Attribute       ::=        Name Eq AttValue
+    
+    attribute = name eq attValue;
+
+
+// [42]       ETag       ::=       '</' Name S? '>'
+    
+    eTag = '</' name S? '>';
+
+
+// [43]       content       ::=        CharData? ((element | Reference | CDSect | PI | Comment) CharData?)*
+    
+    content = Empty | (element | reference | cdSect | pi | comment | charData)+;
+
+
+// [44]       EmptyElemTag       ::=       '<' Name (S Attribute)* S? '/>'
+    
+    emptyElemTag = '<' name (S attribute)* S? '/>';
+
+
+// [45]       elementdecl       ::=       '<!ELEMENT' S Name S contentspec S? '>'
+    
+    elementdecl = '<!ELEMENT' S name S contentspec S? '>';
+
+
+// [46]       contentspec       ::=       'EMPTY' | 'ANY' | Mixed | children
+    
+    contentspec = 'EMPTY' | 'ANY' | mixed | children;
+
+
+// [47]       children       ::=       (choice | seq) ('?' | '*' | '+')?
+    
+    children = (choice | seq) ('?' | '*' | '+')?;
+
+
+// [48]       cp       ::=       (Name | choice | seq) ('?' | '*' | '+')?
+    
+    cp = (name) ('?' | '*' | '+')?; // TODO !!!!!!!!!!!!!!
+
+
+// [49]       choice       ::=       '(' S? cp ( S? '|' S? cp )+ S? ')'
+    
+    choice = '(' S? cp ( S? '|' S? cp )+ S? ')';
+
+
+// [50]       seq       ::=       '(' S? cp ( S? ',' S? cp )* S? ')'
+    
+    seq = '(' S? cp ( S? ',' S? cp )* S? ')';
+
+
+// [51]       Mixed       ::=       '(' S? '#PCDATA' (S? '|' S? Name)* S? ')*' | '(' S? '#PCDATA' S? ')'
+    
+    mixed = '(' S? '#PCDATA' (S? '|' S? name)* S? ')*' | '(' S? '#PCDATA' S? ')';
+
+
+// [52]       AttlistDecl       ::=       '<!ATTLIST' S Name AttDef* S? '>'
+    
+    attlistDecl    = '<!ATTLIST' S name attDef* S? '>';
+
+
+// AttDef       ::=        S Name S AttType S DefaultDecl
+    
+    attDef = S name S attType S defaultDecl;
+
+
+// [54]       AttType       ::=        StringType | TokenizedType | EnumeratedType
+    
+    attType = stringType | tokenizedType | enumeratedType;
+
+
+// [55]       StringType       ::=       'CDATA'
+    
+    stringType = 'CDATA';
+
+
+// [56]       TokenizedType       ::=       'ID' | 'IDREF' | 'IDREFS' | 'ENTITY' | 'ENTITIES' | 'NMTOKEN' | 'NMTOKENS'
+    
+    tokenizedType = 'ID' | 'IDREF' | 'IDREFS' | 'ENTITY' | 'ENTITIES' | 'NMTOKEN' | 'NMTOKENS';
+
+
+// [57]       EnumeratedType       ::=        NotationType | Enumeration
+    
+    enumeratedType = notationType | enumeration;
+
+
+// [58]       NotationType       ::=       'NOTATION' S '(' S? Name (S? '|' S? Name)* S? ')'
+    
+    notationType = 'NOTATION' S '(' S? name (S? '|' S? name)* S? ')';
+
+
+// [59]       Enumeration       ::=       '(' S? Nmtoken (S? '|' S? Nmtoken)* S? ')'
+    
+    enumeration    = '(' S? nmtoken (S? '|' S? nmtoken)* S? ')';
+
+
+// [60]       DefaultDecl       ::=       '#REQUIRED' | '#IMPLIED' | (('#FIXED' S)? AttValue)    
+    
+    defaultDecl = '#REQUIRED' | '#IMPLIED' | (('#FIXED' S)? attValue);
+
+
+// [61]       conditionalSect       ::=        includeSect | ignoreSect
+    
+    conditionalSect = includeSect | ignoreSect;
+
+
+// [62]       includeSect       ::=       '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'    
+
+    includeSect = '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>';
+    
+    
+// [63]       ignoreSect       ::=       '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'    
+
+    ignoreSect = '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>';
+
+
+// [64]       ignoreSectContents       ::=        Ignore ('<![' ignoreSectContents ']]>' Ignore)*
+    
+    ignoreSectContents = ignore ('<![' ignoreSectContents ']]>' ignore)*;
+
+
+// [65]       Ignore       ::=        Char* - (Char* ('<![' | ']]>') Char*)
+    
+    ignore = Word - /[^<]*(<![|]]>).*/;
+
+
+// [66]       CharRef       ::=       '&#' [0-9]+ ';' | '&#x' [0-9a-fA-F]+ ';'
+
+    charRef = '&#' /[0-9]+/ ';' | '&#x' /[0-9a-fA-F]+/ ';';
+
+
+// [67]       Reference       ::=        EntityRef | CharRef
+    
+    reference = entityRef | charRef;
+
+
+// [68]       EntityRef       ::=       '&' Name ';'
+    
+    entityRef = '&' name ';';
+
+
+// [69]       PEReference       ::=       '%' Name ';'
+    
+    peReference = '%' name ';';
+
+
+// [70]       EntityDecl       ::=        GEDecl | PEDecl
+    
+    entityDecl = geDecl | peDecl;
+
+
+// [71]       GEDecl       ::=       '<!ENTITY' S Name S EntityDef S? '>'
+    
+    geDecl = '<!ENTITY' S name S entityDef S? '>';
+
+
+// [72]       PEDecl       ::=       '<!ENTITY' S '%' S Name S PEDef S? '>'
+    
+    peDecl = '<!ENTITY' S '%' S name S peDef S? '>';
+
+
+// [73]       EntityDef       ::=        EntityValue | (ExternalID NDataDecl?)
+    
+    entityDef = entityValue | (externalID nDataDecl?);
+
+
+// [74]       PEDef       ::=        EntityValue | ExternalID
+    
+    peDef = entityValue | externalID;
+
+
+// [75]       ExternalID       ::=       'SYSTEM' S SystemLiteral | 'PUBLIC' S PubidLiteral S SystemLiteral
+    
+    externalID = 'SYSTEM' S systemLiteral | 'PUBLIC' S pubidLiteral S systemLiteral;
+
+
+// [76]       NDataDecl       ::=        S 'NDATA' S Name
+    
+    nDataDecl = S 'NDATA' S name;
+
+
+// [77]       TextDecl       ::=       '<?xml' VersionInfo? EncodingDecl S? '?>'
+
+    textDecl = '<?xml' versionInfo? encodingDecl S? '?>';
+
+
+// [78]       extParsedEnt       ::=        TextDecl? content
+
+    extParsedEnt = textDecl? content;
+
+
+// [80]       EncodingDecl       ::=        S 'encoding' Eq ('"' EncName '"' | "'" EncName "'" )
+// [81]       EncName       ::=       [A-Za-z] ([A-Za-z0-9._] | '-')*
+
+    encName = /[A-Za-z][-A-Za-z0-9._]*/+;
+    encodingDecl = S 'encoding' eq QuotedString;
+
+
+// [82]       NotationDecl       ::=       '<!NOTATION' S Name S (ExternalID | PublicID) S? '>'    
+    
+    notationDecl = '<!NOTATION' S name S (externalID | publicID) S? '>';
+
+
+// [83]       PublicID       ::=       'PUBLIC' S PubidLiteral
+    
+    publicID = 'PUBLIC' S pubidLiteral;

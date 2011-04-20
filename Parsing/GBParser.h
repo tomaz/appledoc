@@ -7,12 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GBObjectiveCParser.h"
+#import "GBApplicationSettingsProvider.h"
 
 /** Handles loading class data from source files.
  
  This is the first phase of appledoc generation process. It walks the given directory hierarchy and loads source files data into memory structure prepared for next phases.
  */
-@interface GBParser : NSObject
+@interface GBParser : NSObject {
+    NSUInteger numberOfParsedFiles;
+    NSUInteger numberOfParsedDocuments;
+    GBObjectiveCParser *objectiveCParser;
+    GBStore *store;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name ￼Initialization & disposal

@@ -1,0 +1,24 @@
+#ABNF 1.0 ISO-8859-1;
+
+// Default grammar language is US English
+language en-US;
+
+// Single language attachment to tokens
+// Note that "fr-CA" (Canadian French) is applied to only
+//  the word "oui" because of precedence rules
+$yes = yes | oui!fr-CA;
+
+// Single language attachment to an expansion
+$people1 = (Michel Tremblay | André Roy)!fr-CA;
+
+// Handling language-specific pronunciations of the same word
+// A capable speech recognizer will listen for Mexican Spanish and
+//   US English pronunciations.
+$people2 = Jose!en-US | Jose!es-MX;
+
+/**
+ * Multi-lingual input possible
+ * @example may I speak to André Roy
+ * @example may I speak to Jose
+ */
+public $request = may I speak to ($people1 | $people2);

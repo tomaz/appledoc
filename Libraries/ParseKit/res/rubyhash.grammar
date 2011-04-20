@@ -1,0 +1,35 @@
+/*
+    {"brand"=>{"name"=>"something",
+    "logo"=>#<File:/var/folders/RK/RK1vsZigGhijmL6ObznDJk+++TI/-Tmp-/CGI66145-4>,
+    "summary"=>"wee", "content"=>"woopy doo"}, "commit"=>"Save",
+    "authenticity_token"=>"43a94d60304a7fb13a4ff61a5960461ce714e92b",
+    "action"=>"create", "controller"=>"admin/brands"}
+*/
+
+@reportsCommentTokens = YES;
+@commentState = '#';
+@multiLineComments = '#<' '>';
+@symbols = '=>';
+
+@start        = Empty | object;
+
+object        = openCurly objectContent closeCurly;
+objectContent = Empty | actualObject;
+actualObject  = property commaProperty*;
+property      = propertyName arrow value;
+commaProperty = comma property;
+propertyName  = QuotedString;         // NOTE: property names are quoted
+
+value         = null | true | false | object | number | string | fileRef;
+
+string        = QuotedString;
+number        = Number;
+fileRef       = Comment;
+null          = 'null';
+true          = 'true';
+false         = 'false';
+
+openCurly     = '{';
+closeCurly    = '}';
+comma         = ',';
+arrow         = '=>';

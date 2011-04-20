@@ -1,0 +1,54 @@
+.openCurly > closeCurly, 
+#comma[foo], 
+colon[foo=bar] bat, 
+openParen[foo="bar"], 
+closeParen, 
+name:psuedo-name, 
+foo[bar|=baz]
+px, 
+px, 
+rgb {
+    -webkit-border-radius:12px;
+    color: rgb(178.5, 35.7, 135.15);
+    background-color: rgb(30, 30, 36);
+    font-family: 'Monaco';
+    font-size: 11 em;
+    font-weight: bold;
+}
+
+body {
+    font:14px/1.4 "Lucida Grande", LucidaGrande, Verdana, Helvetica, Arial;
+}
+
+#content {
+    position:relative;
+    width:650px;
+    margin:20px auto;
+}
+
+#icon {
+    float:left;
+    margin-right:15px;
+}
+
+h1 {
+    padding-top:15px;
+    font-size:48px;
+}
+
+#desc {
+    position:absolute;
+    left:170px; top:75px;
+}
+
+#screenshot {
+    display:block;
+    width:500px;
+    margin:80px auto 35px;
+    border:1px solid silver;
+}
+
+#copyright, #credits, #hostedby {
+    font-size:small;
+    text-align:center;
+}

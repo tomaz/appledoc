@@ -84,13 +84,13 @@
 
 #pragma mark Parsing handling
 
-- (void)parseObjectsFromString:(NSString *)input sourceFile:(NSString *)filename toStore:(id)store {
+- (void)parseObjectsFromString:(NSString *)input sourceFile:(NSString *)filename toStore:(id)toStore {
 	NSParameterAssert(input != nil);
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
-	NSParameterAssert(store != nil);
+	NSParameterAssert(toStore != nil);
 	GBLogDebug(@"Parsing objective-c objects...");
-	self.store = store;
+	self.store = toStore;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename settings:self.settings];
 	while (![self.tokenizer eof]) {
 		if (![self matchNextObject]) {

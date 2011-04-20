@@ -1,0 +1,67 @@
+/*
+    A Fake Grammar for JSON with comments (JSON does not have comments).
+    
+*/
+
+@singleLineComments = '#';
+@multiLineComments = '/*' '*/';
+
+@start        = (Empty | array | object) comment?;
+
+object        = openCurly comment? objectContent closeCurly;
+objectContent = Empty | actualObject;
+actualObject  = property commaProperty*;
+property      = propertyName colon comment? value;
+commaProperty = comma comment? property;
+propertyName  = QuotedString;         // NOTE: property names are quoted in JSON
+
+array         = openBracket comment? arrayContent closeBracket;
+arrayContent  = Empty | actualArray;
+actualArray   = value commaValue*;
+commaValue    = comma comment? value;
+
+value         = (null | true | false | number | string | array | object) comment?;
+
+comment       = Comment;
+string        = QuotedString;
+number        = Number;
+null          = 'null';
+true          = 'true';
+false         = 'false';
+
+openCurly     = '{';
+closeCurly    = '}';
+openBracket   = '[';
+closeBracket  = ']';
+comma         = ',';
+colon         = ':';
+
+
+/*
+
+    The built-in terminal production types are (note titlecase) : Empty, Number, QuotedString, Word, UppercaseWord, LowercaseWord
+    You define collections (alternations, repetitions or sequences) and literal terminals (in quotes). These should be lowercase.
+    The special '@start' production is the outermost production.
+    
+    you can discard tokens by following them with a bang ('!') like:
+    
+    closeCurly = '}'!;
+    
+    Feed this grammar to -[PKParserFactory parserFromGrammar:assembler:] along with a reference
+    to an assembler (a call back delegate), and it will return a PKParser object which can 
+    parse strings conforming to this language/grammar.
+        
+    The when the returned parser is used, the provided assembler will receive method callbacks for each production matched, like:
+
+    -didMatchObjectAssembly:
+    -didMatchObjectContentAssembly:
+    -didMatchPropertyAssembly:
+    -didMatchArrayAssembly:
+    -didMatchOpenCurlyAssembly:
+    etc.
+    
+    Each callback method must accept a single PKAssembly argument. This assembly argument
+    will contain information about the progress made on the the string currently being parsed.
+    Also the assembly's stack will contain the tokens parsed so far in the current statement.
+
+*/

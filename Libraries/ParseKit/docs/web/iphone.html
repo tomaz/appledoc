@@ -1,0 +1,59 @@
+<?php include('common-header.inc'); ?>
+	<title>ParseKit - Cocoa parsing, tokenizing and language processing on iPhone</title>
+<?php include('common-nav.inc'); ?>
+
+        <h1>ParseKit Documentation</h1>
+    <div id="content">
+	
+<h2>ParseKit for iPhone OS Applications</h2>
+
+<p>Including ParseKit in your iPhone OS applications is easy. Follow the steps below.</p>
+
+<ol>
+    <li>
+        <div>Check out the ParseKit sourcecode from <a href="http://code.google.com/p/todparsekit/source/checkout">Google Code</a>. The latest tagged (stable) version is recommended.</div>
+        <p><tt>svn co http://todparsekit.googlecode.com/svn/tags/release-1.5-tag</tt></p>
+    </li>
+    <li>
+        <div>Open your iPhone app Xcode project. Drag the <tt>ParseKit.xcodeproj</tt> file from the finder and drop it at the top of the <tt>Groups &amp; Files</tt> tree in your app's Xcode project window. In the confirmation dialog that appears, click <tt>Add</tt>.</div>
+        <p><img alt="" src="img/step1a.png"/></p>
+        <p><img alt="" src="img/step1b.png"/></p>
+    </li>
+    
+    <li>
+        <div>Click and expand the disclosure triangle next to the blue <tt>ParseKit.xcodeproj</tt> icon to reveal all of the potential products of the ParseKit project.</div>
+        <p><img alt="" src="img/step2a.png"/></p>
+    </li>
+    <li>
+        <div>Click and expand the disclosure triangle next to your app's Target. Drag the <tt>parsekit.a</tt> product under <tt>ParseKit.xcodeproj</tt> to your Target's <tt>Link Binary With Libraries</tt> build phase.</div>
+        <p><img alt="" src="img/step3a.png"/></p>
+    </li>
+    <li>
+        <div>Double-click your Target (<tt>MyApp</tt> shown here) to edit it. In the <tt>General</tt> tab of the Target Info window, click the square <tt>+</tt> button below the <tt>Direct Dependencies</tt> list. In the sheet that appears, select <tt>ParseKitMobile</tt> and click <tt>Add Target</tt>.</div>
+        <p><img alt="" src="img/step4a.png"/></p>
+        <div>You will now see the <tt>ParseKitMobile</tt> target appearing as a dependency under your app's Target.</div>
+        <p><img alt="" src="img/step4b.png"/></p>
+    </li>
+    <li>
+        <p>Next click the <tt>+</tt> button below the <tt>Linked Libraries</tt> list in the same window. Select <tt>libicucore.dylib</tt> and click <tt>Add</tt>. (This is for regular expression features in the <tt>PKPattern</tt> class.)</p>
+        <p><img alt="" src="img/step5a.png"/></p>
+    </li>
+    <li>
+        <div>Under the <tt>Build</tt> tab of your app's Target Info window, edit the <tt>Header Search Paths</tt> Setting to include the path to the <tt>include</tt> folder inside of the ParseKit folder you checked out. Make sure you edit this for <tt>All Configurations</tt>, not just the active one.</div>
+        <p><img alt="" src="img/step6a.png"/></p>
+    </li>
+    
+    <li>
+        <div>Finally, in the same window, edit the <tt>Other Linker Flags</tt> Setting to include the following flags: <tt>-ObjC -all_load</tt>. (This is needed for code in Objective-C categories in the ParseKit static library to execute successfully.)</div>
+        <p><img alt="" src="img/step7a.png"/></p>
+    </li>
+    
+    <li>Ship it!</li>
+    
+</ol>
+
+</div>
+
+
+
+<?php include('common-footer.inc'); ?>

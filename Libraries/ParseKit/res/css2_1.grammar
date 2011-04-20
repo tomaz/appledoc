@@ -1,0 +1,203 @@
+/*
+    This is an attempt to convert the official CSS 2.1 grammar to TDParseKit
+*/
+
+
+@start          = stylesheet;
+
+//  stylesheet
+//      : [ CHARSET_SYM S* STRING S* ';' ]?
+//        [S|CDO|CDC]* [ import [S|CDO|CDC]* ]*
+//        [ [ ruleset | media | page | font_face ] [S|CDO|CDC]* ]*
+//      ;
+charsetSymbol   = '@' 'charset';
+charset         = (charsetSymbol Word ';');
+stylesheet      = charset? import* contents;
+contents        = (ruleset | media | page | fontFace)*;
+stuff           = (cdo|cdc)*;
+
+
+//    import
+//      : IMPORT_SYM S*
+//        [STRING|URI] S* [ medium [ ',' S* medium]* ]? ';' S*
+//      ;
+mediaList       = medium commaMedium*;
+commaMedium     = ',' medium;
+importSymbol    = '@' 'import';
+import          = importSymbol (Word | uri) mediaList? ';';
+
+
+//    media
+//      : MEDIA_SYM S* medium [ ',' S* medium ]* '{' S* ruleset* '}' S*
+//      ;
+
+mediaSymbol     = '@' 'media';
+media           = mediaSymbol mediaList '{' ruleset* '}';
+
+
+
+//    medium
+//      : IDENT S*
+//      ;
+medium          = identifier;
+
+
+
+//    page
+//      : PAGE_SYM S* IDENT? pseudo_page? S*
+//        '{' S* declaration [ ';' S* declaration ]* '}' S*
+//      ;
+pageSymbol      = '@' 'page';
+page            = pagePrefix pageBody;
+pagePrefix      = pageSymbol identifier? pseudoPage?;
+pageBody        = '{' decl decl* '}';
+
+
+//    pseudo_page
+//      : ':' IDENT
+//      ;
+pseudoPage     = ':' identifier;
+
+
+//    font_face
+//      : FONT_FACE_SYM S*
+//        '{' S* declaration [ ';' S* declaration ]* '}' S*
+//      ;
+fontFaceSymbol  = '@' fontFace;
+fontFace        = fontFaceSymbol '{' decl decl* '}';
+
+
+//    operator
+//      : '/' S* | ',' S* | /* empty * /
+//      ;
+operator        = '/' | ',' | Empty;
+
+
+
+//    combinator
+//      : '+' S* | '>' S* | /* empty * /
+//      ;
+combinator      = '+' | '>' | Empty;
+
+
+
+//    unary_operator
+//      : '-' | '+'
+//      ;
+unaryOperator   = '-' | '+';
+
+
+//    property
+//      : IDENT S*
+//      ;
+property        = identifier;
+
+
+//    ruleset
+//      : selector [ ',' S* selector ]*
+//        '{' S* declaration [ ';' S* declaration ]* '}' S*
+//      ;
+ruleset         = selector commaSelector* '{' decl decl* '}';
+commaSelector   = ',' selector;
+
+
+//    selector
+//      : simple_selector [ combinator simple_selector ]*
+//      ;
+selector        = simpleSelector (combinator simpleSelector)*;
+
+
+//    simple_selector
+//      : element_name? [ HASH | class | attrib | pseudo ]* S*
+//      ;
+simpleSelector  = elementName? (hash | class | attrib | pseudo)*;
+
+
+//    class
+//      : '.' IDENT
+//      ;
+class           = '.' identifier;
+
+
+//    element_name
+//      : IDENT | '*'
+//      ;
+elementName    = identifier | '*';
+
+
+//    attrib
+//      : '[' S* IDENT S* [ [ '=' | INCLUDES | DASHMATCH ] S*
+//        [ IDENT | STRING ] S* ]? ']'
+//      ;
+attrib          = '[' identifier (('=' | includes | dashmatch) (identifier | Word))? ']';
+
+
+//    pseudo
+//      : ':' [ IDENT | FUNCTION S* IDENT S* ')' ]
+//      ;
+pseudo          = ':' identifier | function identifier ')';
+
+
+//    declaration
+//      : property ':' S* expr prio?
+//      | /* empty * /
+//      ;
+decl            = (property ':' expr prio?) | Empty;
+
+
+//    prio
+//      : IMPORTANT_SYM S*
+//      ;
+prio            = '!' 'important';
+
+
+//    expr
+//      : term [ operator term ]*
+//      ;
+expr            = term (operator term)*;
+
+
+//    term
+//      : unary_operator?
+//        [ NUMBER S* | PERCENTAGE S* | LENGTH S* | EMS S* | EXS S* | ANGLE S* |
+//          TIME S* | FREQ S* | function ]
+//      | STRING S* | IDENT S* | URI S* | RGB S* | UNICODERANGE S* | hexcolor
+//      ;
+term            = unaryOperator? (Number | percentage | length | ems | exs | angle | time | freq | function)
+                    | Word  | identifier | uri | hexcolor;
+
+
+//    function
+//      : FUNCTION S* expr ')' S*
+//      ;
+function        = XXX expr ')';
+
+
+//    *
+//     * There is a constraint on the color that it must
+//     * have either 3 or 6 hex-digits (i.e., [0-9a-fA-F])
+//     * after the "#"; e.g., "#000" is OK, but "#abcd" is not.
+//     * 
+//    hexcolor
+//      : HASH S*
+//      ;
+hexcolor        = hash;
+
+cdo             = '<!--';
+cdc             = '-->';
+includes        = '~=';
+dashmatch       = '|=';
+
+identifier      = Word;
+
+hash            = '#' (Word|Number);
+ems             = Number 'em';
+exs             = Number 'ex';
+length          = Number ('px'|'cm'|'mm'|'in'|'pt'|'pc');
+angle           = Number ('deg'|'rad'|'grad');
+time            = Number ('s'|'ms');
+freq            = Number ('hz'|'khz');
+dimension       = Number identifier;
+percentage      = Number '%';
+uri             = 'url' '(' (Word|Symbol|Number)+ ')';
+function        = identifier '(';

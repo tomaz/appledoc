@@ -13,7 +13,11 @@
  Template files handler as an object that takes templates path and output path and copies all files from template path to the output path collecting all template files during the process. Template files are all files which names end with `-template` string with arbitrary extension. Such files are collected for post processing, but are not copied over to the output path. It's up to the client or sublcass to handle these files as needed. The object preserves template directory structure.
 
  */
-@interface GBTemplateFilesHandler : NSObject
+@interface GBTemplateFilesHandler : NSObject {
+    NSMutableDictionary *templateFiles;
+    NSString *templateUserPath;
+    NSString *outputUserPath;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Template files handling
