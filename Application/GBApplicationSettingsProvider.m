@@ -190,21 +190,14 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		}];
 	}
 
-	// We should properly handle Markdown bold markers (**) converted from appledoc style ones (*): if outside example block, simply strip prefix/suffix markers, otherwise convert back to single stars.
+	// We should properly handle Markdown bold markers (**) converted from appledoc style ones (*): if outside example block, simply strip prefix/suffix markers, otherwise convert back to single stars. Note that we first need to handle remaining placeholder markers inside example blocks, then cleanup converter formats.
 	if (self.embedAppledocBoldMarkersWhenProcessingMarkdown) {
-		NSString *inner = [self stringByEmbeddingAppledocBoldMarkers:@"(.+?)"];
-		NSString *regex = [NSString stringWithFormat:@"\\*\\*%@\\*\\*|%@", inner, inner];
-		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
-			NSString *matchedText = capturedStrings[0];
-			if ([matchedText hasPrefix:@"**"]) {
-				NSString *formatText = capturedStrings[1];
-				if (!insideCode) return [NSString stringWithFormat:@"**%@**", formatText];
-				return [NSString stringWithFormat:@"*%@*", formatText];
-			} else {
-				return capturedStrings[2];
-			}
-			return matchedText;
-		}];
+		NSString *openingMarker = [NSString stringWithFormat:@"**%@", self.commentComponents.appledocBoldStartMarker];
+		NSString *closingMarker = [NSString stringWithFormat:@"%@**", self.commentComponents.appledocBoldEndMarker];
+		result = [result stringByReplacingOccurrencesOfString:openingMarker withString:@"*"];
+		result = [result stringByReplacingOccurrencesOfString:closingMarker withString:@"*"];
+		result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldStartMarker withString:@""];
+		result = [result stringByReplacingOccurrencesOfString:self.commentComponents.appledocBoldEndMarker withString:@""];
 	}
 	
 	return result;
