@@ -111,6 +111,11 @@
 				[result addObject:[self formattedComponentWithValue:@":"]];
 				[self formatTypesFromArray:argument.argumentTypes toArray:result prefix:@"(" suffix:@")"];
 				if (argument.argumentVar) [result addObject:[self formattedComponentWithValue:argument.argumentVar style:1 href:nil]];
+				if (argument.isVariableArg) {
+					[result addObject:[self formattedComponentWithValue:@","]];
+					[result addObject:[self formattedComponentWithValue:@" "]];
+					[result addObject:[self formattedComponentWithValue:@"..." style:1 href:nil]];
+				}
 			}
 			if (idx < [self.methodArguments count]-1) [result addObject:[self formattedComponentWithValue:@" "]];
 		}];

@@ -453,6 +453,34 @@
 	 nil];
 }
 
+- (void)testFormattedComponents_shouldReturnVariableArgumentInstanceMethodComponents {
+	// setup
+	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
+	NSArray *types = [NSArray arrayWithObjects:@"id", nil];
+	NSArray *macros = [NSArray array];
+	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"format" terminationMacros:macros], nil];
+	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
+	// execute
+	NSArray *result = [method formattedComponents];
+	// verify: {-}-{ }-{(}-{void}-{)}-{method}-{:}-{(}-{id}-{)}-{format}-{,}-{ }-{...}
+	[self assertFormattedComponents:result match:
+	 @"-", 0, GBNULL, 
+	 @" ", 0, GBNULL, 
+	 @"(", 0, GBNULL,
+	 @"void", 0, GBNULL,
+	 @")", 0, GBNULL,
+	 @"method", 0, GBNULL,
+	 @":", 0, GBNULL, 
+	 @"(", 0, GBNULL, 
+	 @"id", 0, GBNULL, 
+	 @")", 0, GBNULL, 
+	 @"format", 1, GBNULL, 
+	 @",", 0, GBNULL,
+	 @" ", 0, GBNULL,
+	 @"...", 1, GBNULL,
+	 nil];
+}
+
 - (void)testFormattedComponents_shouldReturnClassMethodComponents {
 	// setup
 	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
