@@ -41,11 +41,11 @@
 
 #pragma Generation handling
 
-- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)theStore error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
 	
 	// Prepare for run.
-	if (![super generateOutputWithStore:store error:error]) return NO;
+	if (![super generateOutputWithStore:theStore error:error]) return NO;
 	[self.temporaryFiles removeAllObjects];
 	[self initializeSimplifiedObjects];
 	

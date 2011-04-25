@@ -1,0 +1,93 @@
+// proto ::= ( message | extend | enum | import | package | option | ";" )* 
+proto = ( message | extend | enum | import | package | option | ";" )*;
+
+// import ::= "import" strLit ";" 
+import = "import" strLit ";";
+
+// package ::= "package" ident ";" 
+package = "package" ident ";";
+
+// option ::= "option" optionBody ";" 
+option = "option" optionBody ";";
+
+// optionBody ::= ident ( "." ident )* "=" constant 
+optionBody = ident ( "." ident )* "=" constant;
+
+// message ::= "message" ident messageBody 
+message = "message" ident messageBody;
+
+// extend ::= "extend" userType messageBody 
+extend = "extend" userType messageBody;
+
+// enum ::= "enum" ident "{" ( option | enumField | ";" )* "}" 
+enum = "enum" ident "{" ( option | enumField | ";" )* "}";
+
+// enumField ::= ident "=" intLit ";" 
+enumField = ident "=" intLit ";";
+
+// service ::= "service" ident "{" ( option | rpc | ";" )* "}" 
+service = "service" ident "{" ( option | rpc | ";" )* "}";
+
+// rpc ::= "rpc" ident "(" userType ")" "returns" "(" userType ")" ";" 
+rpc = "rpc" ident "(" userType ")" "returns" "(" userType ")" ";";
+
+// messageBody ::= "{" ( field | enum | message | extend | extensions | group | option | ":" )* "}" 
+messageBody = "{" ( field | enum | message | extend | extensions | group | option | ":" )* "}";
+
+// group ::= modifier "group" camelIdent "=" intLit messageBody 
+group = modifier "group" camelIdent "=" intLit messageBody;
+
+// // tag number must be 2^28-1 or lower 
+
+// field ::= modifier type ident "=" intLit ( "[" fieldOption ( "," fieldOption )* "]" )? ";" 
+field = modifier type ident "=" intLit ( "[" fieldOption ( "," fieldOption )* "]" )? ";";
+
+// fieldOption ::= optionBody | "default" "=" constant 
+fieldOption = optionBody | "default" "=" constant;
+
+// extensions ::= "extensions" intLit "to" ( intLit | "max" ) ";" 
+extensions = "extensions" intLit "to" ( intLit | "max" ) ";";
+
+// modifier ::= "required" | "optional" | "repeated" 
+modifier ::= "required" | "optional" | "repeated";
+
+// type ::= "double" | "float" | "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" | "fixed32" | "fixed64" | "sfixed32" | "sfixed64"  | "bool" | "string" | "bytes" | userType 
+type = "double" | "float" | "int32" | "int64" | "uint32" | "uint64" | "sint32" | "sint64" | "fixed32" | "fixed64" | "sfixed32" | "sfixed64"  | "bool" | "string" | "bytes" | userType;
+
+// // leading dot for identifiers means they're fully qualified 
+
+// userType ::= ( "."? ident )+ 
+userType = ( "."? ident )+;
+
+// constant ::= ident | intLit | floatLit | strLit | boolLit 
+constant = ident | numLit | strLit | boolLit;
+
+// ident ::= /[A-Za-z_][\w_]*/ 
+ident = /[A-Za-z_][\w_]*/;
+
+// // according to parser.cc, group names must start with a capital letter as a 
+// // hack for backwards-compatibility 
+
+// camelIdent ::= /[A-Z][\w_]*/ 
+camelIdent = /[A-Z][\w_]*/;
+
+// intLit ::= decInt | hexInt | octInt 
+// decInt ::= /\d+/ 
+// hexInt ::= /0[xX]([A-Fa-f0-9])+/ 
+// octInt ::= /0[0-7]+/ 
+// floatLit ::= /\d+(\.\d+)?([Ee][\+-]?\d+)?/ // allow_f_after_float_ is 
+numLit = Number;
+
+// disabled by default in tokenizer.cc 
+
+// boolLit ::= "true" | "false" 
+boolLit = "true" | "false";
+
+// strLit ::= quote ( hexEscape | octEscape | charEscape | /[^\0\n]/ )* 
+strLit = QuotedString;
+
+// quote 
+// quote ::= /["']/ 
+// hexEscape ::= /\\[Xx][A-Fa-f0-9]{1,2}/ 
+// octEscape ::= /\\0?[0-7]{1,3}/ 
+// charEscape ::= /\\[abfnrtv\\\?'"]/ 

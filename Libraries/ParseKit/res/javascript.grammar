@@ -1,0 +1,430 @@
+@symbols            = '||' '&&' '!=' '!==' '==' '===' '<=' '>=' '++' '--' '+=' '-=' '*=' '/=' '%=' '<<' '>>' '>>>' '<<=' '>>=' '>>>=' '&=' '^=' '|=';
+
+@reportsCommentTokens = YES;
+@commentState       = '/';
+@singleLineComments = '//';
+@multiLineComments  = '/*' '*/';
+
+@start              = program;
+
+if                  = 'if';
+else                = 'else';
+while               = 'while';
+for                 = 'for';
+in                  = 'in';
+break               = 'break';
+continue            = 'continue';
+with                = 'with';
+return              = 'return';
+var                 = 'var';
+delete              = 'delete';
+new                 = 'new';
+this                = 'this';
+false               = 'false';
+true                = 'true';
+null                = 'null';
+undefined           = 'undefined';
+void                = 'void';
+typeof              = 'typeof';
+instanceof          = 'instanceof';
+function            = 'function';
+
+openCurly           = '{';
+closeCurly          = '}';
+openParen           = '(';
+closeParen          = ')';
+openBracket         = '[';
+closeBracket        = ']';
+comma               = ',';
+dot                 = '.';
+semi                = ';';
+colon               = ':';
+equals              = '=';
+not                 = '!';
+lt                  = '<';
+gt                  = '>';
+amp                 = '&';
+pipe                = '|';
+caret               = '^';
+tilde               = '~';
+question            = '?';
+plus                = '+';
+minus               = '-';
+times               = '*';
+div                 = '/';
+mod                 = '%';
+
+or                  = '||';
+and                 = '&&';
+ne                  = '!=';
+isnot               = '!==';
+eq                  = '==';
+is                  = '===';
+le                  = '<=';
+ge                  = '>=';
+plusPlus            = '++';
+minusMinus          = '--';
+plusEq              = '+=';
+minusEq             = '-=';
+timesEq             = '*=';
+divEq               = '/=';
+modEq               = '%=';
+shiftLeft           = '<<';
+shiftRight          = '>>';
+shiftRightExt       = '>>>';
+shiftLeftEq         = '<<=';
+shiftRightEq        = '>>=';
+shiftRightExtEq     = '>>>=';
+andEq               = '&=';
+xorEq               = '^=';
+orEq                = '|=';
+
+assignmentOperator  = equals | plusEq | minusEq | timesEq | divEq | modEq | shiftLeftEq | shiftRightEq | shiftRightExtEq | andEq | xorEq | orEq;
+
+relationalOperator  = lt | gt | ge | le | instanceof;
+equalityOperator    = eq | ne | is | isnot;
+
+shiftOperator       = shiftLeft | shiftRight | shiftRightExt;
+incrementOperator   = plusPlus | minusMinus;
+unaryOperator       = tilde | delete | typeof | void;
+
+multiplicativeOperator = times | div | mod;
+
+
+
+// Program:
+//           empty
+//           Element Program
+
+program             = element+;
+
+
+
+//  Element:
+//           function Identifier ( ParameterListOpt ) CompoundStatement
+//           Statement
+
+element             = func | stmt;
+func                = function identifier openParen paramListOpt closeParen compoundStmt;
+
+
+
+//  ParameterListOpt:
+//           empty
+//           ParameterList
+
+paramListOpt        = Empty | paramList;
+
+
+
+//  ParameterList:
+//           Identifier
+//           Identifier , ParameterList
+
+paramList           = identifier commaIdentifier*;
+commaIdentifier     = comma identifier;
+
+
+
+//  CompoundStatement:
+//           { Statements }
+
+compoundStmt        = openCurly stmts closeCurly;
+
+
+
+//  Statements:
+//           empty
+//           Statement Statements
+
+stmts               = stmt*;
+
+
+
+//  Statement:
+//           ;
+//           if Condition Statement
+//           if Condition Statement else Statement
+//           while Condition Statement
+//           ForParen ; ExpressionOpt ; ExpressionOpt ) Statement
+//           ForBegin ; ExpressionOpt ; ExpressionOpt ) Statement
+//           ForBegin in Expression ) Statement
+//           break ;
+//           continue ;
+//           with ( Expression ) Statement
+//           return ExpressionOpt ;
+//           CompoundStatement
+//           VariablesOrExpression ;
+
+stmt                = semi | ifStmt | ifElseStmt | whileStmt | forParenStmt | forBeginStmt | forInStmt | breakStmt | continueStmt | withStmt | returnStmt | compoundStmt | variablesOrExprStmt;
+ifStmt              = if condition stmt;
+ifElseStmt          = if condition stmt else stmt;
+whileStmt           = while condition stmt;
+forParenStmt        = forParen semi exprOpt semi exprOpt closeParen stmt;
+forBeginStmt        = forBegin semi exprOpt semi exprOpt closeParen stmt;
+forInStmt           = forBegin in expr closeParen stmt;
+breakStmt           = break semi;
+continueStmt        = continue semi;
+withStmt            = with openParen expr closeParen stmt;
+returnStmt          = return exprOpt semi;
+variablesOrExprStmt = variablesOrExpr semi;
+
+
+
+//  Condition:
+//           ( Expression )
+
+condition           = openParen expr closeParen;
+
+
+
+//  ForParen:
+//           for (
+
+forParen            = for openParen;
+
+
+
+//  ForBegin:
+//           ForParen VariablesOrExpression
+
+forBegin            = forParen variablesOrExpr;
+
+
+
+//  VariablesOrExpression:
+//           var Variables
+//           Expression
+
+variablesOrExpr     = varVariables | expr;
+varVariables        = var variables;
+
+
+
+//  Variables:
+//           Variable
+//           Variable , Variables
+
+variables           = variable commaVariable*;
+commaVariable       = comma variable;
+
+
+
+//  Variable:
+//           Identifier
+//           Identifier = AssignmentExpression
+
+variable            = identifier assignment?;
+assignment          = equals assignmentExpr;
+
+
+
+//  ExpressionOpt:
+//           empty
+//           Expression
+
+exprOpt             = Empty | expr; // TODO -- Empty | expr;
+
+
+
+//  Expression:
+//           AssignmentExpression
+//           AssignmentExpression , Expression
+
+expr                = assignmentExpr commaExpr?;
+commaExpr           = comma expr;
+
+
+
+//  AssignmentExpression:
+//           ConditionalExpression
+//           ConditionalExpression AssignmentOperator AssignmentExpression
+
+assignmentExpr      = conditionalExpr extraAssignment?;
+extraAssignment     = assignmentOperator assignmentExpr;
+
+
+
+//  ConditionalExpression:
+//           OrExpression
+//           OrExpression ? AssignmentExpression : AssignmentExpression
+
+conditionalExpr     = orExpr ternaryExpr?;
+ternaryExpr         = question assignmentExpr colon assignmentExpr;
+
+
+
+//  OrExpression:
+//           AndExpression
+//           AndExpression || OrExpression
+
+orExpr              = andExpr orAndExpr*;
+orAndExpr           = or andExpr;
+
+
+
+//  AndExpression:
+//           BitwiseOrExpression
+//           BitwiseOrExpression && AndExpression
+
+andExpr             = bitwiseOrExpr andAndExpr?;
+andAndExpr          = and andExpr;
+
+
+
+//  BitwiseOrExpression:
+//           BitwiseXorExpression
+//           BitwiseXorExpression | BitwiseOrExpression
+
+bitwiseOrExpr       = bitwiseXorExpr pipeBitwiseOrExpr?;
+pipeBitwiseOrExpr   = pipe bitwiseOrExpr;
+
+
+
+//  BitwiseXorExpression:
+//           BitwiseAndExpression
+//           BitwiseAndExpression ^ BitwiseXorExpression
+
+bitwiseXorExpr      = bitwiseAndExpr caretBitwiseXorExpr?;
+caretBitwiseXorExpr = caret bitwiseXorExpr;
+
+
+
+//  BitwiseAndExpression:
+//           EqualityExpression
+//           EqualityExpression & BitwiseAndExpression
+
+bitwiseAndExpr      = equalityExpr ampBitwiseAndExpression?;
+ampBitwiseAndExpression = amp bitwiseAndExpr;
+
+
+
+//  EqualityExpression:
+//           RelationalExpression
+//           RelationalExpression EqualityualityOperator EqualityExpression
+
+equalityExpr        = relationalExpr equalityOpEqualityExpr?;
+equalityOpEqualityExpr = equalityOperator equalityExpr;
+
+
+
+//  RelationalExpression:
+//           ShiftExpression
+//           RelationalExpression RelationalationalOperator ShiftExpression
+
+relationalExpr      = shiftExpr | relationalExprRHS;
+relationalExprRHS   = relationalExpr relationalOperator shiftExpr;
+
+
+
+//  ShiftExpression:
+//           AdditiveExpression
+//           AdditiveExpression ShiftOperator ShiftExpression
+
+shiftExpr           = additiveExpr shiftOpShiftExpr?;
+shiftOpShiftExpr    = shiftOperator shiftExpr;
+
+
+
+//  AdditiveExpression:
+//           MultiplicativeExpression
+//           MultiplicativeExpression + AdditiveExpression
+//           MultiplicativeExpression - AdditiveExpression
+
+additiveExpr        = multiplicativeExpr plusOrMinusExpr?;
+plusOrMinusExpr     = plusExpr | minusExpr;
+plusExpr            = plus additiveExpr;
+minusExpr           = minus additiveExpr;
+
+
+
+//  MultiplicativeExpression:
+//           UnaryExpression
+//           UnaryExpression MultiplicativeOperator MultiplicativeExpression
+
+multiplicativeExpr  = unaryExpr (multiplicativeOperator multiplicativeExpr)?;
+
+
+
+//  UnaryExpression:
+//           MemberExpression
+//           UnaryOperator UnaryExpression
+//           - UnaryExpression
+//           IncrementOperator MemberExpression
+//           MemberExpression IncrementOperator
+//           new Constructor
+//           delete MemberExpression
+
+unaryExpr           = memberExpr | unaryExpr1 | unaryExpr2 | unaryExpr3 | unaryExpr4 | unaryExpr5 | unaryExpr6;
+unaryExpr1          = unaryOperator unaryExpr;
+unaryExpr2          = minus unaryExpr;
+unaryExpr3          = incrementOperator memberExpr;
+unaryExpr4          = memberExpr incrementOperator;
+unaryExpr5          = new constructor;
+unaryExpr6          = delete memberExpr;
+
+
+
+//  Constructor:
+//           this . ConstructorCall
+//           ConstructorCall
+
+constructor         = constructorCall; // TODO ???
+
+
+
+//  ConstructorCall:
+//           Identifier
+//           Identifier ( ArgumentListOpt )
+//           Identifier . ConstructorCall
+
+constructorCall     = identifier parenArgListParen?;  // TODO
+parenArgListParen   = openParen argListOpt closeParen;
+
+
+
+//  MemberExpression:
+//           PrimaryExpression
+//           PrimaryExpression . MemberExpression
+//           PrimaryExpression [ Expression ]
+//           PrimaryExpression ( ArgumentListOpt )
+
+memberExpr          = primaryExpr dotBracketOrParenExpr?;
+dotBracketOrParenExpr = dotMemberExpr | bracketMemberExpr | parenMemberExpr;
+dotMemberExpr       = dot memberExpr;
+bracketMemberExpr   = openBracket expr closeBracket;
+parenMemberExpr     = openParen argListOpt closeParen;
+
+
+
+//  ArgumentListOpt:
+//           empty
+//           ArgumentList
+
+argListOpt          = argList?;
+
+
+
+//  ArgumentList:
+//           AssignmentExpression
+//           AssignmentExpression , ArgumentList
+
+argList             = assignmentExpr commaAssignmentExpr*;
+commaAssignmentExpr = comma assignmentExpr;
+
+
+
+//  PrimaryExpression:
+//           ( Expression )
+//           Identifier
+//           IntegerLiteral
+//           FloatingPointLiteral
+//           StringLiteral
+//           false
+//           true
+//           null
+//           this
+
+primaryExpr         = parenExprParen | identifier | Number | QuotedString | false | true | null | undefined | this;
+parenExprParen      = openParen expr closeParen;
+identifier          = Word;

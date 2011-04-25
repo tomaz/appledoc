@@ -124,16 +124,16 @@ typedef NSUInteger GBProcessingFlag;
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
+- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)theStore {
 	NSParameterAssert(comment != nil);
-	NSParameterAssert(store != nil);
+	NSParameterAssert(theStore != nil);
 	if (comment.originalContext != nil && comment.originalContext != context) return;
 	if (comment.isProcessed) return;
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
 	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
 	self.currentContext = context;
-	self.store = store;	
+	self.store = theStore;	
 	NSArray *lines = [comment.stringValue arrayOfLines];
 	NSUInteger line = comment.sourceInfo.lineNumber;
 	NSRange blockRange = NSMakeRange(0, 0);
@@ -259,12 +259,12 @@ typedef NSUInteger GBProcessingFlag;
 #pragma mark Directives matching
 
 - (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = [theComponents objectAtIndex:1];
+	NSString *description = [theComponents objectAtIndex:2];
 	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -277,12 +277,12 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.bugSectionRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.bugSectionRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = [theComponents objectAtIndex:1];
+	NSString *description = [theComponents objectAtIndex:2];
 	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -295,12 +295,12 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.parameterDescriptionRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.parameterDescriptionRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *name = [components objectAtIndex:2];
-	NSString *description = [components objectAtIndex:3];
+	NSString *name = [theComponents objectAtIndex:2];
+	NSString *description = [theComponents objectAtIndex:3];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
 	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
@@ -314,12 +314,12 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.exceptionDescriptionRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.exceptionDescriptionRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *name = [components objectAtIndex:2];
-	NSString *description = [components objectAtIndex:3];
+	NSString *name = [theComponents objectAtIndex:2];
+	NSString *description = [theComponents objectAtIndex:3];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
 	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
@@ -333,11 +333,11 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.returnDescriptionRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.returnDescriptionRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components objectAtIndex:2];
+	NSString *description = [theComponents objectAtIndex:2];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
 	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
@@ -349,11 +349,11 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.relatedSymbolRegex];
-	if ([components count] == 0) return NO;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.relatedSymbolRegex];
+	if ([theComponents count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 reference.
-	NSString *reference = [components objectAtIndex:2];
+	NSString *reference = [theComponents objectAtIndex:2];
 	NSString *prefix = [string substringToIndex:[string rangeOfString:reference].location];
 	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
@@ -405,10 +405,10 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string length] == 0) return string;
 	
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSArray *components = [string arrayOfDictionariesByMatchingRegex:@"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
+	NSArray *theComponents = [string arrayOfDictionariesByMatchingRegex:@"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
 	NSRange searchRange = NSMakeRange(0, [string length]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
-	for (NSDictionary *component in components) {
+	for (NSDictionary *component in theComponents) {
 		// Find marker range within the remaining text. Note that we don't test for marker not found, as this shouldn't happen...
 		NSString *componentMarker = [component objectForKey:@"marker"];
 		NSString *componentText = [component objectForKey:@"value"];
@@ -651,12 +651,12 @@ typedef NSUInteger GBProcessingFlag;
 	GBCrossRefData result = GBEmptyCrossRefData();
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components objectCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *objectName = [theComponents objectAtIndex:1];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store classWithName:objectName];
@@ -677,12 +677,12 @@ typedef NSUInteger GBProcessingFlag;
 	GBCrossRefData result = GBEmptyCrossRefData();
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components categoryCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [[components objectAtIndex:0] stringByTrimmingWhitespaceAndNewLine];
-	NSString *objectName = [[components objectAtIndex:1] stringByTrimmingWhitespaceAndNewLine];
+	NSString *linkText = [[theComponents objectAtIndex:0] stringByTrimmingWhitespaceAndNewLine];
+	NSString *objectName = [[theComponents objectAtIndex:1] stringByTrimmingWhitespaceAndNewLine];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store categoryWithName:objectName];
@@ -704,12 +704,12 @@ typedef NSUInteger GBProcessingFlag;
 
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components localMemberCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 		
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 selector.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *selector = [components objectAtIndex:2];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *selector = [theComponents objectAtIndex:2];
 	
 	// Validate selected within current context.
 	GBMethodData *referencedObject = [[[self currentContext] methods] methodBySelector:selector];
@@ -741,13 +741,13 @@ typedef NSUInteger GBProcessingFlag;
 	GBCrossRefData result = GBEmptyCrossRefData();
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components remoteMemberCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 object name, index 3 selector.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:2];
-	NSString *selector = [components objectAtIndex:3];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *objectName = [theComponents objectAtIndex:2];
+	NSString *selector = [theComponents objectAtIndex:3];
 	
 	// Match object name with one of the known objects. Warn if not found. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedObject = [self.store classWithName:objectName];
@@ -787,12 +787,12 @@ typedef NSUInteger GBProcessingFlag;
 	GBCrossRefData result = GBEmptyCrossRefData();
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components documentCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, index 1 document name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *documentName = [components objectAtIndex:1];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *documentName = [theComponents objectAtIndex:1];
 	
 	// Validate selected within current context.
 	GBDocumentData *referencedDocument = [self.store documentWithName:documentName];
@@ -812,12 +812,12 @@ typedef NSUInteger GBProcessingFlag;
 	GBCrossRefData result = GBEmptyCrossRefData();
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
 	NSString *regex = [self.components urlCrossReferenceRegex:templated];
-	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([theComponents count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *address = [components objectAtIndex:1];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *address = [theComponents objectAtIndex:1];
 	NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
 	
 	// Create link item, prepare range and return.
@@ -831,14 +831,14 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCrossRefData)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first markdown inline link in the given range of the given string. if found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
+	if ([theComponents count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, index 1 description without brackets, index 2 the address, index 3 optional title.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *description = [components objectAtIndex:1];
-	NSString *address = [components objectAtIndex:2];
-	NSString *title = [components objectAtIndex:3];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *description = [theComponents objectAtIndex:1];
+	NSString *address = [theComponents objectAtIndex:2];
+	NSString *title = [theComponents objectAtIndex:3];
 	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
 	
 	// Create link item, prepare range and return.
@@ -852,14 +852,14 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCrossRefData)dataForFirstMarkdownReferenceLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first markdown reference link in the given range of the given string. If found, link data otherwise empty data is returned.
 	GBCrossRefData result = GBEmptyCrossRefData();
-	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownReferenceLinkRegex range:searchRange];
-	if ([components count] == 0) return result;
+	NSArray *theComponents = [string captureComponentsMatchedByRegex:self.components.markdownReferenceLinkRegex range:searchRange];
+	if ([theComponents count] == 0) return result;
 	
 	// Get link components. Index 0 contains full text, index 1 reference ID, index 2 address, index 3 optional title.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *reference = [components objectAtIndex:1];
-	NSString *address = [components objectAtIndex:2];
-	NSString *title = [components objectAtIndex:3];
+	NSString *linkText = [theComponents objectAtIndex:0];
+	NSString *reference = [theComponents objectAtIndex:1];
+	NSString *address = [theComponents objectAtIndex:2];
+	NSString *title = [theComponents objectAtIndex:3];
 	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
 
 	// Create link item, prepare range and return.

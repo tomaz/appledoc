@@ -39,9 +39,9 @@
 
 #pragma mark Generation handling
 
-- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
+- (BOOL)generateOutputWithStore:(id)theStore error:(NSError **)error {
 	GBLogVerbose(@"%@ is generating output...", [self className]);
-	self.store = store;
+	self.store = theStore;
 	return YES;
 }
 

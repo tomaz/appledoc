@@ -7,12 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GBCommentsProcessor.h"
 
 /** Handles processing of parsed data from any given `GBStore`.
  
  Processing phase is where parsed raw data is prepared for output. The most prominent part is processing comment raw values by validating and preparing links, formatting etc.
  */
-@interface GBProcessor : NSObject
+@interface GBProcessor : NSObject {
+    GBCommentsProcessor *commentsProcessor;
+    id currentContext;
+    GBStore *store;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name ￼Initialization & disposal

@@ -42,8 +42,8 @@
 
 #pragma Generation handling
 
-- (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
-	if (![super generateOutputWithStore:store error:error]) return NO;
+- (BOOL)generateOutputWithStore:(id)theStore error:(NSError **)error {
+	if (![super generateOutputWithStore:theStore error:error]) return NO;
 	if (![self validateTemplates:error]) return NO;
 	if (![self processClasses:error]) return NO;
 	if (![self processCategories:error]) return NO;

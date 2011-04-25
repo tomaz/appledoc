@@ -1,0 +1,23 @@
+svn copy -r1392 https://todparsekit.googlecode.com/svn/trunk/ \
+        https://todparsekit.googlecode.com/svn/tags/release-1.5-tag \
+   -m "Creating 1.5 release tag from -r1392"
+   
+svn copy -r1392 https://todparsekit.googlecode.com/svn/tags/release-1.5-tag \
+       https://todparsekit.googlecode.com/svn/branches/release-1.5-branch \
+  -m "Creating 1.5 release branch from -r1392"
+
+
+
+
+svn delete https://todparsekit.googlecode.com/svn/tags/release-1.4.2-tag \
+  -m "deleting first 1.4.2 release tag"
+  
+svn delete https://todparsekit.googlecode.com/svn/branches/release-1.4.2-branch \
+    -m "deleting first 1.4.2 release branch"
+    
+    
+    
+svn copy -r1361 https://todparsekit.googlecode.com/svn/trunk/ \
+        https://todparsekit.googlecode.com/svn/branches/dev-gcd-branch \
+   -m "Creating a dev branch for testing GCD stuff. from -r1361"
+    

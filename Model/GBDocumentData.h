@@ -14,7 +14,13 @@
 
 /** Describes a static document.
  */
-@interface GBDocumentData : GBModelBase <GBObjectDataProviding> {
+@interface GBDocumentData : GBModelBase <GBObjectDataProviding> {    
+    NSString *nameOfDocument;
+    NSString *pathOfDocument;
+    NSString *basePathOfDocument;
+    NSString *subpathOfDocument;
+    BOOL isCustomDocument;
+    
 	@private
 	GBAdoptedProtocolsProvider *_adoptedProtocols;
 	GBMethodsProvider *_methods;

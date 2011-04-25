@@ -46,11 +46,11 @@
 
 #pragma mark Generation handling
 
-- (void)generateOutputFromStore:(id)store {
-	NSParameterAssert(store != nil);
+- (void)generateOutputFromStore:(id)theStore {
+	NSParameterAssert(theStore != nil);
 	GBLogInfo(@"Generating output from parsed objects...");
-	[self setupGeneratorStepsWithStore:store];
-	[self runGeneratorStepsWithStore:store];
+	[self setupGeneratorStepsWithStore:theStore];
+	[self runGeneratorStepsWithStore:theStore];
 }
 
 - (void)setupGeneratorStepsWithStore:(id)store {
@@ -66,7 +66,7 @@
 	[self.outputGenerators addObject:[GBDocSetPublishGenerator generatorWithSettingsProvider:self.settings]];
 }
 
-- (void)runGeneratorStepsWithStore:(id)store {
+- (void)runGeneratorStepsWithStore:(id)theStore {
 	GBLogDebug(@"Running generation steps...");
 	NSUInteger stepsCount = [self.outputGenerators count];
 	if (stepsCount == 0) {
@@ -85,7 +85,7 @@
 			*stop = YES;
 			return;
 		}
-		if (![generator generateOutputWithStore:store error:&error]) {
+		if (![generator generateOutputWithStore:theStore error:&error]) {
 			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed generaing output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;

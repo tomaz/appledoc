@@ -1,0 +1,8 @@
+<script>
+var x = 0xc0;
+document.write(String.fromCharCode(x));
+document.write("<br> " + x)
+</script>
+
+
+sudo /Users/itod/Downloads/checker-60/scan-build -o Desktop xcodebuild 

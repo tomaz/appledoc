@@ -29,7 +29,13 @@ typedef void(^GBTaskReportBlock)(NSString *output, NSString *error);
  
  You can reuse the same instance for any number of commands. After the command is finished, you can examine it's results through `lastStandardOutput` and `lastStandardError` properties. You can also check the actual command line string used for running the command through `lastCommandLine`; this value includes the command and all parameters in a single string. If any parameter contains whitespace, it is embedded into quotes. All these properties work the same regardless of the way you run the command.
  */
-@interface GBTask : NSObject
+@interface GBTask : NSObject {
+    GBTaskReportBlock reportBlock;
+    NSString *lastCommandLine;
+    NSString *lastStandardOutput;
+    NSString *lastStandardError;
+    BOOL reportIndividualLines;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

@@ -1,0 +1,167 @@
+<?php include('common-header.inc'); ?>
+    <title>ParseKit Objective-C Parser Generation via Grammars</title>
+<?php include('common-nav.inc'); ?>
+
+    <h1>ParseKit Documentation</h1>
+<div id="content">
+        
+    <h2>Objective-C Parser Generation via Grammars</h2>
+    
+    <ul>
+        <li><a href="#basic-syntax">Basic Grammar Syntax</a></li>
+        <li><a href="#production-syntax">Individual Grammar Production Syntax</a></li>
+        <li><a href="#grouping">Grouping</a></li>
+        <li><a href="#instantiating">Instantiating Grammar Parsers in Objective-C</a></li>
+    </ul>
+
+    <a name="basic-syntax"></a>
+    <h3>Basic Grammar Syntax</h3>
+
+    <p>ParseKit allows users to build parsers for custom languages from a declarative, BNF-style grammar without writing any code (well, ok.. a <em>single line</em> of code). Under the hood, grammar support is implemented using the ParseKit Objective-C API, so the grammar syntax closely mirrors the features of the Objective-C API.</p>
+    
+    <p>The grammar below describes a simple toy language called <b>Cold Beer</b> and will serve as a quick introduction to the ParseKit grammar syntax. The rules of the <b>Cold Beer</b> language are as follows. The language consists of a sequence of one or more sentences beginning with the word <tt>&laquo;cold&raquo;</tt> followed by a repetition of either <tt>&laquo;cold&raquo;</tt> or <tt>&laquo;freezing&raquo;</tt> followed by <tt>&laquo;beer&raquo;</tt> and terminated by the symbol <tt>&laquo;.&raquo;</tt>.</p>
+    
+    <p>For example, each of the following lines are valid instances of the <b>Cold Beer</b> language (as is the example as a whole):</p>
+    
+    <div class="code">
+    <pre>
+    cold cold cold freezing cold freezing cold beer.
+    cold cold freezing cold beer.
+    cold freezing beer.
+    cold beer.</pre>
+    </div>
+    
+    <p>The following lines are <b><em>not</em></b> valid <b>Cold Beer</b> statements:</p>
+
+    <div class="code">
+    <pre>
+    freezing cold beer.
+    cold freezing beer
+    beer.</pre>
+    </div>
+    
+    <p>Here is a complete ParseKit grammar for the <b>Cold Beer</b> language.</p>
+    
+    <div class="code">
+    <pre>
+    @start = sentence+;
+    sentence = adjectives 'beer' '.';
+    adjectives = cold adjective*;
+    adjective = cold | freezing;
+    cold = 'cold';
+    freezing = 'freezing';</pre>
+    </div>
+    
+    <p>As shown above, the ParseKit grammar syntax consists of individual language production declarations separated by <tt>&laquo;;&raquo;</tt>. Whitespace is ignored, so the productions can be formatted liberally with whitespace as the programmer prefers. Comments are also allowed and resemble the comment style of Objective-C. So a commented <b>Cold Beer</b> grammar may appear as:</p>
+    
+    <div class="code">
+    <pre>
+    /*
+        A Grammar for the Cold Beer Language
+        by Todd Ditchendorf
+    */
+    @start = sentence+;     // outermost production
+    sentence = adjectives 'beer' '.';
+    adjectives = cold adjective*;
+    adjective = cold | 'freezing';
+    cold = 'cold';
+    freezing = 'freezing';</pre>
+    </div>
+    
+    <a name="production-syntax"></a>
+    <h3>Individual Grammar Production Syntax</h3>
+
+    <p>Every ParseKit grammar <b>must</b> contain <b>one and only one</b> production named <tt>@start</tt>. This will be the <em>highest-level</em> or <em>outermost</em> production rule in the language. For <b>Cold Beer</b>, the outermost production is:</p>
+
+    <div class="code">
+    <pre>
+    @start = sentence+;</pre>
+    </div>
+    
+    <p>Which states that the outermost production of this language consists of a <em>sequence</em> of one or more (<tt>&laquo;+&raquo;</tt>) instances of the <tt>sentence</tt> production.</p>
+
+    <div class="code">
+    <pre>
+    sentence = adjectives 'beer' '.';</pre>
+    </div>
+
+    <p>The <tt>sentence</tt> production states that sentences are a <em>sequence</em> of the <tt>adjective</tt> production followed by the literal strings <tt>beer</tt> and <tt>.</tt></p>
+    
+    <div class="code">
+    <pre>
+    adjectives = cold adjective*;</pre>
+    </div>
+    
+    <p>In turn, <tt>adjectives</tt> is a <em>sequence</em> of a single instance of the <tt>cold</tt> production followed by a <em>repetition</em> (<tt>&laquo;*&raquo;</tt> read as 'zero or more') of the <tt>adjective</tt> production.</p>
+
+    <div class="code">
+    <pre>
+    adjective = cold | freezing;
+    cold = 'cold';
+    freezing = 'freezing';</pre>
+    </div>
+    
+    <p>The <tt>adjective</tt> production is an <em>alternation</em> of either an instance of the <tt>cold</tt> or the <tt>freezing</tt> production. The <tt>cold</tt> production is the literal string <tt>cold</tt> and <tt>freezing</tt> the literal string <tt>freezing</tt>.</p>
+
+    <a name="grouping"></a>
+    <h3>Grouping</h3>
+    
+    <p>A language may be expressed in many different, yet equivalent grammars. Productions may be referenced in any order (even before they are defined) and grouped using parentheses (<tt>&laquo;(&raquo;</tt> and <tt>&laquo;)&raquo;</tt>).</p>
+    
+    <p>For example, the <b>Cold Beer</b> language could also be represented by the following grammar:</p>
+
+    <div class="code">
+    <pre>
+    @start = ('cold' ('cold' | 'freezing')* 'beer' '.')+;</pre>
+    </div>
+
+    <a name="instantiating"></a>
+    <h3>Instantiating Grammar Parsers in Objective-C</h3>
+    
+    <p>Create an Objective-C <tt>PKParser</tt> object by providing the grammar as an <tt>NSString</tt> and an <tt>assembler</tt> object (in this example, <tt>self</tt>).</p>
+    
+    <div class="code">
+    <pre>
+  NSString *g = ... // fetch your grammar from a file on disk
+  
+  PKParser *<b>parser</b> = nil;
+  parser = [[PKParserFactory factory] parserFromGrammar:g assembler:<b>self</b>];
+  
+  NSString *s = @"cold freezing cold beer.";
+  <b>[parser parse:s]</b>;</pre>
+    </div>
+    
+    <p>The provided <tt>assembler</tt> object will receive callbacks whenever one of the language grammar productions is matched -- if the callback method is implemented in the assembler object.</p>
+    
+    <p>For example, an assembler for the <b>Cold Beer</b> language grammar above will receive the following callbacks if implemented:</p>
+    
+      <div class="code">
+      <pre>
+    - (void)didMatchSentence:(PKAssembly *)a;
+    - (void)didMatchAdjectives:(PKAssembly *)a;
+    - (void)didMatchAdjective:(PKAssembly *)a;
+    - (void)didMatchCold:(PKAssembly *)a;
+    - (void)didMatchFreezing:(PKAssembly *)a;</pre>
+      </div>
+      
+     <p>The <tt>PKAssembly</tt> argument will have the most-recently matched tokens on the top of its stack.</p>
+    
+    <p>To prevent leaks when releasing a <tt>PKParser</tt> created via <tt>PKParserFactory</tt>, one final step is required:</p>
+    
+      <div class="code">
+      <pre>
+          PKParser *<b>parser</b> = nil;
+          parser = [[PKParserFactory factory] parserFromGrammar:g assembler:self];
+
+          ... // do parsing
+          
+          // when you are done with the parser, this function must be called before releasing
+          <b>PKReleaseSubparserTree(parser);</b>
+          [p release]</pre>
+      </div>
+      
+      <p>Most non-trivial language grammars define circular relationships in their production rules. The call to <tt>PKReleaseSubparserTree()</tt> is required to prevent Objective-C retain cycle leaks where the <tt>PKParser</tt> objects representing different rules in your grammar have strong references to one another.</p>
+    
+</div>
+
+<?php include('common-footer.inc'); ?>

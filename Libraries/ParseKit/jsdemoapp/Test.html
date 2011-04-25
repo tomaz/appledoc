@@ -1,0 +1,35 @@
+<script>
+try {
+    var s = "\"It's 123 blast-off!\", she said, // watch out!\n"
+            + "and <= 3.5 'ticks' later /* wince */, it's blast-off!";
+
+    var t = new PKTokenizer(s);
+    var eof = PKToken.EOFToken;
+    
+    //t.wordState.setWordChars(true, "!", "!");
+    
+    var tok = null;
+    while ((tok = t.nextToken()) != eof) {
+        print(tok);
+    }
+} catch (e) {
+    print(e);
+}
+
+// prints:
+// <Quoted String «"It's 123 blast-off!"»>
+// <Symbol «,»>
+// <Word «she»>
+// <Word «said»>
+// <Symbol «,»>
+// <Word «and»>
+// <Symbol «<=»>
+// <Number «3.5»>
+// <Quoted String «'ticks'»>
+// <Word «later»>
+// <Symbol «,»>
+// <Word «it's»>
+// <Word «blast-off»>
+// <Symbol «!»>
+
+</script>

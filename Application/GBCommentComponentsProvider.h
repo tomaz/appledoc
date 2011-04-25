@@ -14,7 +14,9 @@
  
  The main responsibility of the class is to determine if a string contains special section definition. In addition, they also return section parameters. This encapsulates keywords and sections handling and simplifies the rest of the application.
  */
-@interface GBCommentComponentsProvider : NSObject
+@interface GBCommentComponentsProvider : NSObject {
+    NSString *crossReferenceMarkersTemplate;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

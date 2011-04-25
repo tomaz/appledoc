@@ -1,0 +1,236 @@
+
+@symbol = '@interface';
+@symbol = '@implementation';
+@symbol = '@end';
+@symbol = '@class';
+@symbol = '@protocol';
+
+//    external-declaration:
+//    function-definition
+//    declaration
+//    class-interface
+//    class-implementation
+//    category-interface
+//    category-implementation
+//    protocol-declaration
+//    class-declaration-list
+
+externalDecl = functionDef | decl | classInterface | classImpl | categoryInterface | categoryImpl | protocolDecl | classDeclList;
+
+//    class-interface:
+//    @interface class-name [ : superclass-name ]
+//    [ protocol-reference-list ]
+//    [ instance-variables ]
+//    [ interface-declaration-list ]
+//    @end
+
+classInterface = '@interface' className (':' superclassName)? protocolRefList? ivars? interfaceDeclList? '@end';
+
+//    class-implementation:
+//    @implementation class-name [ : superclass-name ]
+//    [ instance-variables ]
+//    [ implementation-definition-list ]
+//    @end
+
+classImpl = '@implementation' className (':' superclassName)? ivars? implementationDefList? '@end';
+
+//    category-interface:
+//    @interface class-name ( category-name )
+//    [ protocol-reference-list ]
+//    [ interface-declaration-list ]
+//    @end
+
+categoryInterface = '@interface' className '(' categoryName ')' protocolRefList? interfaceDeclList? '@end';
+
+category-implementation:
+@implementation class-name ( category-name )
+[ implementation-definition-list ]
+@end
+
+protocol-declaration:
+@protocol protocol-name
+[ protocol-reference-list ]
+[ interface-declaration-list ]
+@end
+
+class-declaration-list:
+@class class-list ;
+
+class-list:
+class-name
+class-list , class-name
+
+protocol-reference-list:
+< protocol-list >
+
+protocol-list:
+protocol-name
+protocol-list , protocol-name
+
+class-name:
+identifier
+
+superclass-name:
+identifier
+
+category-name:
+identifier
+
+protocol-name:
+identifier
+
+instance-variables:
+{ [ visibility-specification ] struct-declaration-list [ instance-variables ] }
+
+visibility-specification:
+@private
+@protected
+@public
+
+interface-declaration-list:
+declaration
+method-declaration
+interface-declaration-list declaration
+interface-declaration-list method-declaration
+
+method-declaration:
+class-method-declaration
+instance-method-declaration
+
+class-method-declaration:
++ [ method-type ] method-selector ;
+
+instance-method-declaration:
+- [ method-type ] method-selector ;
+
+implementation-definition-list:
+function-definition
+declaration
+method-definition
+implementation-definition-list function-definition
+implementation-definition-list declaration
+implementation-definition-list method-definition
+
+method-definition:
+class-method-definition
+instance-method-definition
+
+class-method-definition:
++ [ method-type ] method-selector [ declaration-list ] compound-statement
+
+instance-method-definition:
+- [ method-type ] method-selector [ declaration-list ] compound-statement
+
+method-selector:
+unary-selector
+keyword-selector [ , ... ]
+keyword-selector [ , parameter-type-list ]
+
+unary-selector:
+selector
+
+keyword-selector:
+keyword-declarator
+keyword-selector keyword-declarator
+
+keyword-declarator:
+: [ method-type ] identifier
+selector : [ method-type ] identifier
+
+selector:
+identifier
+
+method-type:
+( type-name )
+
+
+Type Specifiers
+type-specifier:
+void
+char
+short
+int
+long
+float
+double
+signed
+unsigned
+id [ protocol-reference-list ]
+class-name [ protocol-reference-list ]
+struct-or-union-specifier
+enum-specifier
+typedef-name
+
+struct-or-union-specifier:
+struct-or-union [ identifier ] { struct-declaration-list }
+struct-or-union [ identifier ] { @defs ( class-name ) }
+struct-or-union identifier
+
+
+Type Qualifiers
+type-qualifier:
+const
+volatile
+protocol-qualifier
+
+protocol-qualifier:
+in
+out
+inout
+bycopy
+byref
+oneway
+
+
+Primary Expressions
+primary-expression:
+identifier
+constant
+string
+( expression )
+self
+message-expression
+selector-expression
+protocol-expression
+encode-expression
+
+message-expression:
+[ receiver message-selector ]
+
+receiver:
+expression
+class-name
+super
+
+message-selector:
+selector
+keyword-argument-list
+
+keyword-argument-list:
+keyword-argument
+keyword-argument-list keyword-argument
+
+keyword-argument:
+selector : expression
+: expression
+
+selector-expression:
+@selector ( selector-name )
+
+selector-name:
+selector
+keyword-name-list
+
+keyword-name-list:
+keyword-name
+keyword-name-list keyword-name
+
+keyword-name:
+selector :
+:
+
+protocol-expression:
+@protocol ( protocol-name )
+
+encode-expression:
+@encode ( type-name )

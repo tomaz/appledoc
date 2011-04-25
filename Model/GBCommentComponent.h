@@ -17,6 +17,14 @@
  @warning *Important:* In order to get proper value of `htmlValue`, `GBApplicationSettingsProvider` instance must be assigned to `settings` before using `htmlValue`! This is handled during processing phase automatically at the time of creation of the component, so it works seamlesly. It's good to be aware of this fact though as it may lead to surprises later on.
  */
 @interface GBCommentComponent : NSObject {
+    NSString *stringValue;
+    NSString *markdownValue;
+    NSString *htmlValue;
+    NSString *textValue;
+    GBSourceInfo *sourceInfo;
+    id relatedItem;
+    id settings;
+    
 	@private
 	NSString *_htmlValue;
 	NSString *_textValue;

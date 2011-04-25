@@ -16,7 +16,10 @@
  
  This class is intended to be reused, create a single instance and pass it the objects - one by one - for which you'd like to get template variables.
  */
-@interface GBHTMLTemplateVariablesProvider : NSObject
+@interface GBHTMLTemplateVariablesProvider : NSObject {
+    GBStore *store;
+    GBApplicationSettingsProvider *settings;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

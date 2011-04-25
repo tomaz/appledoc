@@ -1,0 +1,41 @@
+/*
+    An HTML grammar for use with TDParseKit
+
+    this grammar is intentionally very forgiving (non-strict)
+    the point here is to highlight, not validate, HTML.
+*/
+
+@multiLineComments = '<!--' '-->';
+@commentState = '<';
+@commentState.fallbackState = delimitState;
+
+@delimitedString = '<?' '?>' nil;
+@delimitedString = '<!DOCTYPE' '>' nil;
+@delimitState.fallbackState = symbolState;
+
+@start          = any*;
+any             = element | text | doctype | pi | comment;
+
+pi              = DelimitedString('<?', '?>');
+
+doctype         = DelimitedString('<!DOCTYPE', '>');
+element         = emptyTag | startTag elementContent* endTag;
+elementContent  = element | text | comment | pi;
+text            = /[^<]+/;
+
+emptyTag        = lt tagName attr* fwdSlash gt;
+startTag        = lt junk? tagName attr* gt;
+endTag          = lt fwdSlash tagName gt;
+
+tagName         = Word;
+
+attr            = attrName (eq attrValue)?;
+attrName        = Word;
+attrValue       = QuotedString;
+
+eq              = '=';
+lt              = '<';
+gt              = '>';
+fwdSlash        = '/';
+
+comment         = Comment;

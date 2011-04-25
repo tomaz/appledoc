@@ -1,0 +1,366 @@
+<?php include('common-header.inc'); ?>
+    <title>ParseKit - String Tokenization in Objective-C, Cocoa</title>
+<?php include('common-nav.inc'); ?>
+
+
+    <h1>ParseKit Documentation</h1>
+<div id="content">
+        
+    <h2>Tokenization</h2>
+    
+    <ul>
+        <li><a href="#basic-usage">Basic Usage of <tt>PKTokenizer</tt></a></li>
+        <li><a href="#default-behavior">Default Behavior of <tt>PKTokenizer</tt></a></li>
+        <li><a href="#custom-behavior">Customizing <tt>PKTokenizer</tt> behavior</a></li>
+    </ul>
+
+<a name="basic-usage"></a>
+<h3>Basic Usage of <tt>PKTokenizer</tt></h3>
+
+<p><b>ParseKit</b> provides general-purpose string tokenization services through the <tt><b>PKTokenizer</b></tt> and <tt><b>PKToken</b></tt> classes. Cocoa developers will be familiar with the <tt><b>NSScanner</b></tt> class provided by the Foundation Framework which provides a similar service. However, the <tt>PKTokenizer</tt> class is much easier to use for many common tokenization tasks, and offers powerful configuration options if the default tokenization behavior doesn't match your needs.</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+	<tr>
+		<th><tt><b>PKTokenizer</b></tt></th>
+	</tr>
+	<tr>
+		<td>
+			<p>
+			<tt>+ (id)tokenizerWithString:(NSString *)s;</tt><br/>
+			</p>
+			<p>
+				<tt>- (PKToken *)nextToken;</tt><br/>
+				<tt>...</tt><br/>
+			</p>
+		</td>
+	</tr>
+</table>
+
+<p>To use <tt>PKTokenizer</tt>, create an instance with an <tt>NSString</tt> object and retrieve a series of <tt>PKToken</tt> objects as you repeatedly call the <tt>-nextToken</tt> method. The <tt>EOFToken</tt> singleton signals the end.</p>
+
+<div class="code">
+<pre>
+NSString *s = @"2 != -47. /* comment */ Blast-off!! 'Woo-hoo!' // comment";
+PKTokenizer *t = [PKTokenizer tokenizerWithString:s];
+
+PKToken *eof = [PKToken EOFToken];
+PKToken *tok = nil;
+
+while ((tok = [t nextToken]) != eof) {
+    NSLog(@"(%@) (%.1f) : %@", 
+        tok.stringValue, tok.floatValue, [tok debugDescription]);
+}
+</pre>
+</div>
+
+<p>Outputs:</p>
+
+<div class="code">
+<pre>
+(2) (2.0) : &lt;Number &laquo;2&raquo;>
+(!=) (0.0) : &lt;Symbol &laquo;!=&raquo;>
+(-47) (-47.0) : &lt;Number &laquo;-47&raquo;>
+(.) (0.0) : &lt;Symbol &laquo;.&raquo;>
+(Blast-off) (0.0) : &lt;Word &laquo;Blast-off&raquo;>
+(!) (0.0) : &lt;Symbol &laquo;!&raquo;>
+(!) (0.0) : &lt;Symbol &laquo;!&raquo;>
+('Woo-hoo!') (0.0) : &lt;Quoted String &laquo;'Woo-hoo!'&raquo;>
+</pre>
+</div>
+
+<p>Each <tt>PKToken</tt> object returned has a <tt>stringValue</tt>, a <tt>floatValue</tt> and a <tt>tokenType</tt>. The <tt>tokenType</tt> is and enum value type called <tt>PKTokenType</tt> with possible values of:</p>
+
+<ul>
+	<li><tt>PKTokenTypeWord</tt></li>
+	<li><tt>PKTokenTypeNumber</tt></li>
+	<li><tt>PKTokenTypeQuotedString</tt></li>
+	<li><tt>PKTokenTypeSymbol</tt></li>
+	<li><tt>PKTokenTypeWhitespace</tt></li>
+	<li><tt>PKTokenTypeComment</tt></li>
+	<li><tt>PKTokenTypeDelimitedString</tt></li>
+</ul>
+	
+<p><tt>PKTokens</tt> also have corresponding <tt>BOOL</tt> properties for convenience (<tt>isWord</tt>, <tt>isNumber</tt>, etc.)</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+	<tr>
+		<th><tt><b>PKToken</b></tt></th>
+	</tr>
+	<tr>
+		<td>
+			<p>
+				<tt>+ (PKToken *)EOFToken;</tt><br/>
+			</p>
+			<p>
+				<tt>@property (readonly) PKTokenType tokenType;</tt><br/>
+			</p>
+			<p>
+				<tt>@property (readonly) CGFloat floatValue;</tt><br/>
+				<tt>@property (readonly, copy) NSString *stringValue;</tt><br/>
+			</p>
+			<p>
+				<tt>@property (readonly) BOOL isNumber;</tt><br/>
+				<tt>@property (readonly) BOOL isSymbol;</tt><br/>
+				<tt>@property (readonly) BOOL isWord;</tt><br/>
+				<tt>@property (readonly) BOOL isQuotedString;</tt><br/>
+				<tt>@property (readonly) BOOL isWhitespace;</tt><br/>
+				<tt>@property (readonly) BOOL isComment;</tt><br/>
+				<tt>@property (readonly) BOOL isDelimitedString;</tt><br/>
+			</p>
+			<p>
+				<tt>...</tt><br/>
+			</p>
+		</td>
+	</tr>
+</table>
+
+<a name="default-behavior"></a>
+<h3>Default Behavior of <tt>PKTokenizer</tt></h3>
+
+<p>The default behavior of <tt>PKTokenizer</tt> is correct for most common situations and will fit many tokenization needs without additional configuration.</p>
+
+<h4>Number</h4>
+
+<p>Sequences of digits (<tt>&laquo;2&raquo;</tt> <tt>&laquo;42&raquo;</tt> <tt>&laquo;1054&raquo;</tt>) are recognized as <tt>Number</tt> tokens. Floating point numbers containing a dot (<tt>&laquo;3.14&raquo;</tt>) are recognized as single <tt>Number</tt> tokens as you'd expect (rather than two <tt>Number</tt> tokens separated by a <tt>&laquo;.&raquo;</tt> <tt>Symbol</tt> token). By default, <tt>PKTokenizer</tt> will recognize a <tt>&laquo;-&raquo;</tt> symbol followed immediately by digits (<tt>&laquo;-47&raquo;</tt>) as a number token with a negative value. However, <tt>&laquo;+&raquo;</tt> characters are always seen as the beginning of a <tt>Symbol</tt> token by default, even when followed immediately by digits, so "explicitly-positive" <tt>Number</tt> tokens are not recognized by default (this behavior can be configured, see below).</p>
+	
+<h4>Symbol</h4>
+	
+<p>Most symbol characters (<tt>&laquo;.&raquo;</tt> <tt>&laquo;!&raquo;</tt>) are recognized as single-character <tt>Symbol</tt> tokens (even when sequential such as <tt>&laquo;!&raquo;&laquo;!&raquo;</tt>). However, notice that <tt>PKTokenizer</tt> recognizes common multi-character symbols (<tt>&laquo;!=&raquo;</tt>) as a single <tt>Symbol</tt> token by default. In fact, <tt>PKTokenizer</tt> can be configured to recognize any given string as a multi-character symbol. Alternatively, it can be configured to always recognize each symbol character as an individual <tt>Symbol</tt> token (no mulit-character symbols). The default multi-character symbols recognized by <tt>PKTokenizer</tt> are: <tt>&laquo;&lt;=&raquo;</tt>, <tt>&laquo;&gt;=&raquo;</tt>, <tt>&laquo;!=&raquo;</tt>, <tt>&laquo;==&raquo;</tt>.</p>
+
+<h4>Word</h4>
+<p><tt>&laquo;Blast-off&raquo;</tt> is recognized as a single <tt>Word</tt> token despite containing a symbol character (<tt>&laquo;-&raquo;</tt>) that would normally signal the start of a new <tt>Symbol</tt> token. By default, <tt>PKTokenzier</tt> allows <tt>Word</tt> tokens to <b>contain</b> (but <b>not start with</b>) several symbol and number characters: <tt>&laquo;-&raquo;</tt>, <tt>&laquo;_&raquo;</tt>, <tt>&laquo;'&raquo;</tt>, <tt>&laquo;0&raquo;</tt>-<tt>&laquo;9&raquo;</tt>. The consequence of this behavior is that <tt>PKTokenizer</tt> will recognize the follwing strings as individual <tt>Word</tt> tokens by default: <tt>&laquo;it's&raquo;</tt>, <tt>&laquo;first_name&raquo;</tt>, <tt>&laquo;sat-yr-9&raquo;</tt> <tt>&laquo;Rodham-Clinton&raquo;</tt>. Again, you can configure <tt>PKTokenizer</tt> to alter this default behavior.</p>
+
+<h4>Quoted String</h4>
+<p><tt>PKTokenizer</tt> produces <tt>Quoted String</tt> tokens for substrings enclosed in quote delimiter characters. The default delimiters are single- or double-quotes (<tt>&laquo;'&raquo;</tt> or <tt>&laquo;"&raquo;</tt>). The quote delimiter characters may be changed (see below), but must be a single character. Note that the <tt>stringValue</tt> of <tt>Quoted String</tt> tokens include the quote delimiter characters (&laquo;'Woo-hoo!'&raquo;).</p>
+
+<h4>Whitespace</h4>
+<p>By default, whitespace characters are silently consumed by <tt>PKTokenizer</tt>, and <tt>Whitespace</tt> tokens are never emitted. However, you can configure which characters are considered <tt>Whitespace</tt> characters or even ask <tt>PKTokenizer</tt> to return <tt>Whitespace</tt> tokens containing the literal whitespace <tt>stringValue</tt>s by setting: <tt>t.whitespaceState.reportsWhitespaceTokens = YES</tt>.</p>
+
+<h4>Comment</h4>
+<p>By default, <tt>PKTokenizer</tt> recognizes C-style (<tt>&laquo;//&raquo;</tt>) and C++-style (<tt>&laquo;/*&raquo; &laquo;*/&raquo;</tt>) comments and silently removes the associated comments from the output rather than producing <tt>Comment</tt> tokens. See below for steps to either change comment delimiting markers, report <tt>Comment</tt> tokens, or to turn off comments recognition altogether.</p>
+
+<h4>Delimited String</h4>
+<p>The <tt>Delimited String</tt> token type is a powerful feature of <tt>ParseKit</tt> which can be used much like a regular expression. Use the <tt>Delimited String</tt> token type to ask <tt>PKTokenizer</tt> to recognize tokens with arbitrary start and end symbol strings much like a <tt>Quoted String</tt> but with more power:</p>
+
+<ul>
+    <li>The start and end symbols may be multi-char (e.g. <tt>&laquo;&lt;#&raquo;</tt> <tt>&laquo;#&gt;&raquo;</tt>)</li>
+    <li>The start and end symbols need not match (e.g. <tt>&laquo;&lt;?=&raquo;</tt> <tt>&laquo;?&gt;&raquo;</tt>)</li>
+    <li>The characters allowed within the delimited string may be specified using an <tt>NSCharacterSet</tt></li>
+</ul>
+
+
+<a name="custom-behavior"></a>
+<h3>Customizing <tt>PKTokenizer</tt> behavior</h3>
+
+<p>There are two basic types of decisions <tt>PKTokenizer</tt> must make when tokenizing strings:</p>
+
+<ol>
+	<li>Which token type should be created for a given start character?</li>
+	<li>Which characters are allowed within the current token being created?</li>
+</ol>
+
+
+<p><tt>PKTokenizer</tt>'s behavior with respect to these two types of decisions is totally configurable. Let's tackle them, starting with the second question first.</p>
+
+<h4>Changing which characters are allowed within a token of a particular type</h4>
+
+<p>Once <tt>PKTokenizer</tt> has decided which token type to create for a given start character (see below), it temporarily passes control to one of its "state" helper objects to finish consumption of characters for the current token. Therefore, the logic for deciding which characters are allowed within a token of a given type is controlled by the "state" objects which are instances of subclasses of the abstract <tt>PKTokenizerState</tt> class: <tt>PKWordState</tt>, <tt>PKNumberState</tt>, <tt>PKQuoteState</tt>, <tt>PKSymbolState</tt>, <tt>PKWhitespaceState</tt>, <tt>PKCommentState</tt>, and <tt>PKDelimitState</tt>. The state objects are accessible via properties of the <tt>PKTokenizer</tt> object.</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+	<tr>
+		<th><tt><b>PKTokenizer</b></tt></th>
+	</tr>
+	<tr>
+		<td>
+			<p>
+				<tt>...</tt><br/>
+				<tt>@property (readonly, retain) PKWordState *wordState;</tt><br/>
+				<tt>@property (readonly, retain) PKNumberState *numberState;</tt><br/>
+				<tt>@property (readonly, retain) PKQuoteState *quoteState;</tt><br/>
+				<tt>@property (readonly, retain) PKSymbolState *symbolState;</tt><br/>
+				<tt>@property (readonly, retain) PKWhitespaceState *whitespaceState;</tt><br/>
+				<tt>@property (readonly, retain) PKCommentState *commentState;</tt><br/>
+				<tt>@property (readonly, retain) PKDelimitState *delimitState;</tt><br/>
+			</p>
+		</td>
+	</tr>
+</table>
+
+<p>Some of the <tt>PKTokenizerState</tt> subclasses have methods that alter which characters are allowed within tokens of their associated token type.</p>
+
+<p>For example, if you want to add a new multiple-character symbol like <tt>&laquo;===&raquo;</tt>:</p>
+
+<div class="code">
+<pre>
+...
+PKTokenizer *t = [PKTokenizer tokenizerWithString:s];
+[t.symbolState add:@"==="];
+...</pre>
+</div>
+
+<p>Now <tt>&laquo;===&raquo;</tt> strings will be recognized as a single <tt>Symbol</tt> token with a <tt>stringValue</tt> of <tt>&laquo;===&raquo;</tt>. There is a corresponding <tt>-[PKSymbolState remove:]</tt> method for removing recognition of given multi-char symbols.</p>
+
+<p>If you don't want to allow digits within <tt>Word</tt> tokens (digits <b>are</b> allowed within <tt>Words</tt> by default):</p>
+
+<div class="code">
+<pre>
+...
+[t.wordState setWordChars:NO from:'0' to:'9'];
+...</pre>
+</div>
+
+<p>Say you want to allow floating-point <tt>Number</tt> tokens to end with a <tt>&laquo;.&raquo;</tt>, sans trailing <tt>&laquo;0&raquo;</tt>. In other words, you want <tt>&laquo;49.&raquo;</tt> to be recognized as a single <tt>Number</tt> token with a <tt>floatValue</tt> of <tt>&laquo;49.0&raquo;</tt> rather than a <tt>Number</tt> token followed by a <tt>Symbol</tt> token with a <tt>stringValue</tt> of <tt>&laquo;.&raquo;</tt>:</p>
+
+<div class="code">
+<pre>
+...
+t.numberState.allowsTrailingDot = YES;
+...</pre>
+</div>
+
+<p>Recognition of scientific notation (exponential numbers) can be enabled to recognize numbers like <tt>&laquo;10e+100&raquo;</tt>, <tt>&laquo;6.626068E-34&raquo;</tt> and <tt>&laquo;6.0221415e23&raquo;</tt>. The resulting <tt>PKToken</tt> objects will have <tt>floatValue</tt>s which represent the full value of the exponential number, yet retain the original exponential representation as their <tt>stringValue</tt>s.</p>
+
+<div class="code">
+<pre>
+...
+t.numberState.allowsScentificNotation = YES;
+...</pre>
+</div>
+
+<p>Similarly, recognition of common octal and hexadecimal number notation can be enabled to recognize numbers like <tt>&laquo;020&raquo;</tt> (octal 16) and <tt>&laquo;0x20&raquo;</tt> (hex 32).</p>
+
+<div class="code">
+<pre>
+...
+t.numberState.allowsOctalNotation = YES;
+t.numberState.allowsHexadecimalNotation = YES;
+...</pre>
+</div>
+
+<p>The resulting <tt>PKToken</tt> objects will have a <tt>tokenType</tt> of <tt>PKTokenTypeNumber</tt> and a <tt>stringValue</tt> matching the original source notation (<tt>&laquo;020&raquo;</tt> or <tt>&laquo;0x20&raquo;</tt>). Their <tt>floatValue</tt>s will represent the normal decimal value of the number (in this case 16 and 32).</p>
+
+<p>You can also configure which characters are recognized as whitespace within a whitespace token. To treat digits as whitespace characters within whitespace tokens:</p>
+
+<div class="code">
+<pre>
+...
+[t.whitespaceState setWhitespaceChars:YES from:'0' to:'9'];
+...</pre>
+</div>
+
+<p>By default, whitespace chars are silently consumed by a tokenizer's <tt>PKWhitespaceState</tt>. To force reporting of <tt>PKToken</tt>s of type <tt>PKTokenTypeWhitespace</tt> containing the encountered whitespace chars as their <tt>stringValue</tt>s (e.g. this would be necessary for a typical XML parser in which significant whitespace must be reported):</p>
+
+<div class="code">
+<pre>
+...
+t.whitespaceState.reportsWhitespaceTokens = YES;
+...</pre>
+</div>
+
+<p>Similarly, comments are also silently consumed by default. To report <tt>Comment</tt> tokens instead:</p>
+
+<div class="code">
+<pre>
+...
+t.commentState.reportsCommentTokens = YES;
+...</pre>
+</div>
+
+
+<h4>Changing which token type is created for a given start character</h4>
+
+<p><tt>PKTokenizer</tt> controls the logic for deciding which token type should be created for a given start character before passing the responsibility for completing tokens to its "state" helper objects. To change which token type is created for a given start character, you must call a method of the <tt>PKTokenizer</tt> object itself: <tt>-[PKTokenizer setTokenizerState:from:to:]</tt>.</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+	<tr>
+		<th><tt><b>PKTokenizer</b></tt></th>
+	</tr>
+	<tr>
+		<td>
+			<p>
+				<tt>...</tt>
+				<pre>- (void)setTokenizerState:(PKTokenizerState *)state 
+                     from:(PKUniChar)start 
+                       to:(PKUniChar)end;</pre>
+				<tt>...</tt><br/>
+			</p>
+		</td>
+	</tr>
+</table>
+
+<p>For example, suppose you want to turn off support for <tt>Number</tt> tokens altogether. To recognize digits as signaling the start of <tt>Word</tt> tokens:</p>
+
+<div class="code">
+<pre>
+...
+PKTokenizer *t = [PKTokenizerWithString:s];
+[t setTokenizerState:t.wordState from:'0' to:'9'];
+...</pre>
+</div>
+
+<p>This will cause <tt>PKTokenizer</tt> to begin creating a <tt>Word</tt> token (rather than a <tt>Number</tt> token) whenever a digit (<tt>&laquo;0&raquo;</tt>, <tt>&laquo;1&raquo;</tt>, <tt>&laquo;2&raquo;</tt>, <tt>&laquo;3&raquo;</tt>,<tt>&laquo;4&raquo;</tt>, <tt>&laquo;5&raquo;</tt>, <tt>&laquo;6&raquo;</tt>, <tt>&laquo;7&raquo;</tt>, <tt>&laquo;8&raquo;</tt>, <tt>&laquo;9&raquo;</tt>, <tt>&laquo;0&raquo;</tt> ) is encountered.</p>
+
+<p>As another example, say you want to add support for new <tt>Quoted String</tt> token delimiters, such as <tt>&laquo;#&raquo;</tt>. This would cause a string like <tt>#oh hai#</tt> to be recognized as a <tt>Quoted String </tt> token rather than a <tt>Symbol</tt>, two <tt>Word</tt>s, and a <tt>Symbol</tt>. Here's how:</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.quoteState from:'#' to:'#'];
+...</pre>
+</div>
+
+<p>Note that if the <tt>from:</tt> and <tt>to:</tt> arguments are the same char, only behavior for that single char is affected.</p>
+
+<p>Alternatively, say you want to recognize <tt>&laquo;+&raquo;</tt> characters followed immediately by digits as explicitly positive <tt>Number</tt> tokens rather than as a <tt>Symbol</tt> token followed by a <tt>Number</tt> token:</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.numberState from:'+' to:'+'];
+...</pre>
+</div>
+
+<p>Finally, customization of comments recognition may be necessary. By default, PKTokenizer passes control to its <tt>commentState</tt> object which silently consumes the comment text found after <tt>&laquo;//&raquo;</tt> or between <tt>&laquo;/*&raquo; &laquo;*/&raquo;</tt>. This default behavior is achieved with the sequence:</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.commentState from:'/' to:'/'];
+[t.commentState addSingleLineStartSymbol:@"//"];
+[t.commentState addMultiLineStartSymbol:@"/*" endSymbol:@"*/"];
+...</pre>
+</div>
+
+<p>To recognize single-line comments starting with <tt>#</tt>:</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.commentState from:'#' to:'#'];
+[t.commentState addSingleLineStartSymbol:@"#"];
+...</pre>
+</div>
+
+<p>To recognize multi-line "XML"- or "HTML"-style comments:</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.commentState from:'&lt;' to:'&lt;'];
+[t.commentState addMultiLineStartSymbol:@"&lt;!--" endSymbol:@"-->"];
+...</pre>
+</div>
+
+<p>To disable comments recognition altogether, tell <tt>PKTokenizer</tt> to pass control to its <tt>symbolState</tt> instead of its <tt>commentState</tt>.</p>
+
+<div class="code">
+<pre>
+...
+[t setTokenizerState:t.symbolState from:'/' to:'/'];
+...</pre>
+</div>
+
+<p>Now <tt>PKTokenizer</tt> will return individual <tt>Symbol</tt> tokens for all <tt>&laquo;/&raquo;</tt> and <tt>&laquo;*&raquo;</tt> characters, as well as any other characters set as part of a comment start or end symbol.</p>
+
+</div>
+<?php include('common-footer.inc'); ?>

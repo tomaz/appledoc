@@ -1,0 +1,15 @@
+@symbols = '<@' '<@=' '@>';
+
+@start = (ignored | importantStuff)*;
+ignored = ~startMarker;
+
+importantStuff = print | eval;
+print = printStartMarker keyPath endMarker;
+eval = evalStartMarker keyPath endMarker;
+
+keyPath = Word dotWord*;
+dotWord = ('.' Word);
+
+printStartMarker = '<@=';
+evalStartMarker = '<@';
+endMarker = '@>';

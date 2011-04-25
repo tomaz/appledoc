@@ -12,7 +12,10 @@
  
  Declared file provides information about where an object was declared - i.e. source file name and line number. This can be used for generating output and for diagnostics and as debug information.
  */
-@interface GBSourceInfo : NSObject
+@interface GBSourceInfo : NSObject {
+    NSString *filename;
+    NSUInteger lineNumber;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

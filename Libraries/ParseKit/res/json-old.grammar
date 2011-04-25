@@ -1,0 +1,26 @@
+/**
+    A Grammar for JSON
+    
+    NOTE:   This grammar has a fatal flaw. it does not allow for the heirarchical nature of
+            JSON. Objects and arrays may only be one level deep according to this grammar.
+            This is a limitation of my grammar parser: it does not allow circular references.
+            That wll be fixed soon
+            
+ */
+null          = 'null';
+true          = 'true';
+false         = 'false';
+value         = null | true | false | Num | QuotedString;  // here's the flaw. should include: "array | object"
+
+commaValue    = ',' value;
+actualArray   = value commaValue*;
+arrayContent  = Empty | actualArray;
+array         = '[' arrayContent ']';
+
+property      = QuotedString ':' value;         // NOTE: property names are quoted in JSON
+commaProperty = ',' property;
+actualObject  = property commaProperty*;
+objectContent = Empty | actualObject;
+object        = '{' objectContent '}';
+
+start         = (array | object);

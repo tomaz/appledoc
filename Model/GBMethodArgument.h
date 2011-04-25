@@ -10,6 +10,8 @@
 
 /** Defines a single method argument. */
 @interface GBMethodArgument : NSObject {
+    BOOL isVariableArg;
+    
 	@private
 	NSString *_argumentName;
 	NSArray *_argumentTypes;

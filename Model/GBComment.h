@@ -29,7 +29,18 @@
  
  @warning *Note:* Although derived values are prepared based on `stringValue`, nothing prevents clients to setup derived values directly, "on the fly" if needed. However splitting the interface allows us to simplify parsing code and allow us to handle derives values when we have complete information available.
  */
-@interface GBComment : NSObject
+@interface GBComment : NSObject {
+    GBCommentComponent *shortDescription;
+    GBCommentComponentsList *longDescription;
+    GBCommentComponentsList *relatedItems;
+    NSMutableArray *methodParameters;
+    NSMutableArray *methodExceptions;
+    GBCommentComponentsList *methodResult;
+    id originalContext;
+    BOOL isProcessed;
+    GBSourceInfo *sourceInfo;
+    NSString *stringValue;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Initialization & disposal

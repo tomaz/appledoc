@@ -1,0 +1,25 @@
+<script>
+try {
+    // a parser for this grammar:
+    // 'hot'* 'coffee'
+    
+    var parser = new PKSequence();
+    parser.add(new PKRepetition(new PKLiteral("hot")));
+    parser.add(new PKLiteral("coffee"));
+    
+    var s = "hot hot hot coffee";
+    var a = new PKTokenAssembly(s);
+    a = parser.completeMatch(a);
+    print(a);
+} catch (e) {
+    print(e);
+}
+
+// prints:
+// [hot, hot, hot, coffee]hot/hot/hot/coffee^
+
+// the line above is the string representation of a TokenAssembly
+// the first half of the string shows that the assembly's stack currently contains four literal tokens [hot, hot, hot, coffee]
+// the second half shows what has been consumed from the string, and the current cursor position (at the end)
+
+</script>

@@ -1,0 +1,121 @@
+/*
+A Grammar for Apple's NSPredicate String Format Syntax
+
+See: http://developer.apple.com/documentation/Cocoa/Conceptual/Predicates/Articles/pSyntax.html
+
+*/
+
+@wordState = '#';
+@wordChars = '.' '[' ']';
+
+@symbols = '==' '>=' '=>' '<=' '=<' '!=' '<>' '&&' '||';
+
+@start = expr;
+
+// Expressions
+    expr                 = orTerm orOrTerm*;
+    orOrTerm             = or orTerm;
+    orTerm               = andTerm andAndTerm*;
+    andAndTerm           = and andTerm;
+    andTerm              = primaryExpr | compoundExpr; 
+    compoundExpr         = '('! expr ')'!;
+    primaryExpr          = predicate | negatedPredicate;
+    negatedPredicate     = not predicate;
+
+    predicate      = boolPredicate | comparisonPredicate | stringTestPredicate | collectionTestPredicate;
+
+
+// values
+    value   = keyPath | string | num | bool | array;
+
+    string  = QuotedString;
+    num     = Number;
+    bool    = true | false;
+    true    = 'true'!;
+    false   = 'false'!;
+
+// arrays
+    array               = '{' arrayContentsOpt '}'!;
+    arrayContentsOpt    = Empty | arrayContents;
+    arrayContents       = value commaValue*;
+    commaValue          = ','! value;
+
+
+// keyPaths
+    keyPath = Word;
+
+//    keyPath        = key dotKey*;
+//    key            = name memberAccess?;
+//    name           = Word;
+//    dotKey         = '.' key;
+//    memberAccess   = '[' (num | 'FIRST' | 'LAST' | 'SIZE') ']';
+
+
+// Comparison Tests
+    comparisonPredicate     = numComparisonPredicate | collectionComparisonPredicate;
+
+    numComparisonPredicate  = numComparisonValue comparisonOp numComparisonValue;
+    numComparisonValue      = keyPath | num;
+
+    comparisonOp            = eq | gt | lt | gtEq | ltEq | notEq | between;
+
+    eq      = '=' | '==';
+    gt      = '>';
+    lt      = '<';
+    gtEq    = '>=' | '=>';
+    ltEq    = '<=' | '=<';
+    notEq   = '!=' | '<>';
+    between = 'BETWEEN';
+
+// breaking these out to make the assembler callbacks simpler
+    collectionComparisonPredicate   = collectionLtPredicate | collectionGtPredicate | collectionLtEqPredicate | collectionGtEqPredicate | collectionEqPredicate | collectionNotEqPredicate;
+    
+    collectionLtPredicate           = aggregateOp collection lt value;
+    collectionGtPredicate           = aggregateOp collection gt value;
+    collectionLtEqPredicate         = aggregateOp collection ltEq value;
+    collectionGtEqPredicate         = aggregateOp collection gtEq value;
+    collectionEqPredicate           = aggregateOp collection eq value;
+    collectionNotEqPredicate        = aggregateOp collection notEq value;
+    
+
+
+// Boolean Value Predicates
+    boolPredicate  = truePredicate | falsePredicate;
+
+    truePredicate  = 'TRUEPREDICATE'!;
+    falsePredicate = 'FALSEPREDICATE'!;
+
+
+
+// Compound Expressions
+    and = 'AND'! | '&&'!;
+    or  = 'OR'!  | '||'!;
+    not = 'NOT'! | '!'!;
+
+
+
+// String Tests
+    stringTestPredicate = string stringTestOp value;
+
+    stringTestOp = beginswith | contains | endswith | like | matches;
+
+    beginswith  = 'BEGINSWITH';
+    contains    = 'CONTAINS';
+    endswith    = 'ENDSWITH';
+    like        = 'LIKE';
+    matches     = 'MATCHES';
+
+
+// Collection Tests
+    collectionTestPredicate = value in collection;
+    collection              = keyPath | array;
+    in                      = 'IN'!;
+
+
+// Aggregate Operators
+    aggregateOp = any | some | all | none;
+    any         = 'ANY';
+    some        = 'SOME';
+    all         = 'ALL';
+    none        = 'NONE';
+

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		25633D54135F37110060C731 /* libmarkdown-i386.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25633D53135F37110060C731 /* libmarkdown-i386.a */; };
+		25633D56135F37370060C731 /* libmarkdown-x86_64.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25633D55135F37360060C731 /* libmarkdown-x86_64.a */; };
+		25633EB7135F3E8A0060C731 /* liblibParseKit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25633EB6135F3E8A0060C731 /* liblibParseKit.a */; };
 		7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */; };
 		7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
 		7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */; };
@@ -88,12 +91,9 @@
 		733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
-		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
-		7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
-		7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
 		7359B149129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14A129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
 		7359B14B129A5A0700F67AD1 /* GRMustache.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B123129A5A0600F67AD1 /* GRMustache.m */; };
@@ -198,7 +198,6 @@
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
 		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
 		73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
-		73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
@@ -211,8 +210,133 @@
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		25633D0D135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
+			remoteInfo = ParseKit;
+		};
+		25633D0F135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D389F1CE0F1965E600558235;
+			remoteInfo = JSParseKit;
+		};
+		25633D11135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D3FDC5830FFC4BFC00F1F797;
+			remoteInfo = ParseKitMobile;
+		};
+		25633D13135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D3C7D87A0A411FBF005DD154;
+			remoteInfo = Tests;
+		};
+		25633D15135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D33494100E2963FD00406085;
+			remoteInfo = DemoApp;
+		};
+		25633D17135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D34185040E520D3F0081B0DC;
+			remoteInfo = DebugApp;
+		};
+		25633D19135F35CA0060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D389F2030F196A7500558235;
+			remoteInfo = JSDemoApp;
+		};
+		25633E87135F3E580060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 25633D6D135F3BF40060C731;
+			remoteInfo = libParseKit;
+		};
+		25633EB8135F3EA60060C731 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 25633D6C135F3BF40060C731;
+			remoteInfo = libParseKit;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		25633CFA135F35700060C731 /* libmarkdown-i386.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmarkdown-i386.a"; sourceTree = "<group>"; };
+		25633CFB135F35700060C731 /* libmarkdown-x86_64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmarkdown-x86_64.a"; sourceTree = "<group>"; };
+		25633CFC135F35700060C731 /* libmarkdown.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmarkdown.a; sourceTree = "<group>"; };
+		25633CFD135F35C90060C731 /* ParseKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ParseKit.xcodeproj; path = ParseKit/ParseKit.xcodeproj; sourceTree = "<group>"; };
+		25633D1B135F35F30060C731 /* libmarkdown.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmarkdown.a; path = Libraries/Discount/libmarkdown.a; sourceTree = "<group>"; };
+		25633D20135F36B80060C731 /* ParseKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseKit.h; sourceTree = "<group>"; };
+		25633D21135F36B80060C731 /* PKAlternation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAlternation.h; sourceTree = "<group>"; };
+		25633D22135F36B80060C731 /* PKAny.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAny.h; sourceTree = "<group>"; };
+		25633D23135F36B80060C731 /* PKAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAssembly.h; sourceTree = "<group>"; };
+		25633D24135F36B80060C731 /* PKCaseInsensitiveLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCaseInsensitiveLiteral.h; sourceTree = "<group>"; };
+		25633D25135F36B80060C731 /* PKChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKChar.h; sourceTree = "<group>"; };
+		25633D26135F36B80060C731 /* PKCharacterAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCharacterAssembly.h; sourceTree = "<group>"; };
+		25633D27135F36B80060C731 /* PKCollectionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCollectionParser.h; sourceTree = "<group>"; };
+		25633D28135F36B80060C731 /* PKComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKComment.h; sourceTree = "<group>"; };
+		25633D29135F36B80060C731 /* PKCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCommentState.h; sourceTree = "<group>"; };
+		25633D2A135F36B80060C731 /* PKDelimitedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitedString.h; sourceTree = "<group>"; };
+		25633D2B135F36B80060C731 /* PKDelimitState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitState.h; sourceTree = "<group>"; };
+		25633D2C135F36B80060C731 /* PKDifference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDifference.h; sourceTree = "<group>"; };
+		25633D2D135F36B80060C731 /* PKDigit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDigit.h; sourceTree = "<group>"; };
+		25633D2E135F36B80060C731 /* PKEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmpty.h; sourceTree = "<group>"; };
+		25633D2F135F36B80060C731 /* PKIntersection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKIntersection.h; sourceTree = "<group>"; };
+		25633D30135F36B80060C731 /* PKLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLetter.h; sourceTree = "<group>"; };
+		25633D31135F36B80060C731 /* PKLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLiteral.h; sourceTree = "<group>"; };
+		25633D32135F36B80060C731 /* PKLowercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLowercaseWord.h; sourceTree = "<group>"; };
+		25633D33135F36B80060C731 /* PKMultiLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKMultiLineCommentState.h; sourceTree = "<group>"; };
+		25633D34135F36B80060C731 /* PKNegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNegation.h; sourceTree = "<group>"; };
+		25633D35135F36B80060C731 /* PKNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumber.h; sourceTree = "<group>"; };
+		25633D36135F36B80060C731 /* PKNumberState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumberState.h; sourceTree = "<group>"; };
+		25633D37135F36B80060C731 /* PKParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParser.h; sourceTree = "<group>"; };
+		25633D38135F36B80060C731 /* PKParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParserFactory.h; sourceTree = "<group>"; };
+		25633D39135F36B80060C731 /* PKPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKPattern.h; sourceTree = "<group>"; };
+		25633D3A135F36B80060C731 /* PKQuotedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuotedString.h; sourceTree = "<group>"; };
+		25633D3B135F36B80060C731 /* PKQuoteState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuoteState.h; sourceTree = "<group>"; };
+		25633D3C135F36B80060C731 /* PKReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKReader.h; sourceTree = "<group>"; };
+		25633D3D135F36B80060C731 /* PKRepetition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRepetition.h; sourceTree = "<group>"; };
+		25633D3E135F36B80060C731 /* PKSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSequence.h; sourceTree = "<group>"; };
+		25633D3F135F36B80060C731 /* PKSingleLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSingleLineCommentState.h; sourceTree = "<group>"; };
+		25633D40135F36B80060C731 /* PKSpecificChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSpecificChar.h; sourceTree = "<group>"; };
+		25633D41135F36B80060C731 /* PKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbol.h; sourceTree = "<group>"; };
+		25633D42135F36B80060C731 /* PKSymbolNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolNode.h; sourceTree = "<group>"; };
+		25633D43135F36B80060C731 /* PKSymbolRootNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolRootNode.h; sourceTree = "<group>"; };
+		25633D44135F36B80060C731 /* PKSymbolState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolState.h; sourceTree = "<group>"; };
+		25633D45135F36B80060C731 /* PKTerminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTerminal.h; sourceTree = "<group>"; };
+		25633D46135F36B80060C731 /* PKToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKToken.h; sourceTree = "<group>"; };
+		25633D47135F36B80060C731 /* PKTokenArraySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenArraySource.h; sourceTree = "<group>"; };
+		25633D48135F36B80060C731 /* PKTokenAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenAssembly.h; sourceTree = "<group>"; };
+		25633D49135F36B80060C731 /* PKTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizer.h; sourceTree = "<group>"; };
+		25633D4A135F36B80060C731 /* PKTokenizerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizerState.h; sourceTree = "<group>"; };
+		25633D4B135F36B80060C731 /* PKTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrack.h; sourceTree = "<group>"; };
+		25633D4C135F36B80060C731 /* PKTrackException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrackException.h; sourceTree = "<group>"; };
+		25633D4D135F36B80060C731 /* PKTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTypes.h; sourceTree = "<group>"; };
+		25633D4E135F36B80060C731 /* PKUppercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKUppercaseWord.h; sourceTree = "<group>"; };
+		25633D4F135F36B80060C731 /* PKWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespace.h; sourceTree = "<group>"; };
+		25633D50135F36B80060C731 /* PKWhitespaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespaceState.h; sourceTree = "<group>"; };
+		25633D51135F36B80060C731 /* PKWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWord.h; sourceTree = "<group>"; };
+		25633D52135F36B80060C731 /* PKWordState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWordState.h; sourceTree = "<group>"; };
+		25633D53135F37110060C731 /* libmarkdown-i386.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmarkdown-i386.a"; path = "Libraries/Discount/libmarkdown-i386.a"; sourceTree = "<group>"; };
+		25633D55135F37360060C731 /* libmarkdown-x86_64.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmarkdown-x86_64.a"; path = "Libraries/Discount/libmarkdown-x86_64.a"; sourceTree = "<group>"; };
+		25633EB6135F3E8A0060C731 /* liblibParseKit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = liblibParseKit.a; sourceTree = SOURCE_ROOT; };
 		7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-SectionsParsingTesting.m"; sourceTree = "<group>"; };
 		7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodSectionData.h; sourceTree = "<group>"; };
 		7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodSectionData.m; sourceTree = "<group>"; };
@@ -248,7 +372,6 @@
 		7340F02711FCC63100E712A4 /* NSObject+GBObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GBObject.m"; sourceTree = "<group>"; };
 		73473D2F12A38B730011336C /* GBHTMLOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBHTMLOutputGenerator.h; sourceTree = "<group>"; };
 		73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBHTMLOutputGenerator.m; sourceTree = "<group>"; };
-		7355E12D1312736D00B9C000 /* libmarkdown.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmarkdown.a; sourceTree = "<group>"; };
 		7355E131131273A000B9C000 /* mkdio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mkdio.h; sourceTree = "<group>"; };
 		7359B11F129A5A0600F67AD1 /* GRBoolean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GRBoolean.h; path = GRMustache/GRBoolean.h; sourceTree = "<group>"; };
 		7359B120129A5A0600F67AD1 /* GRBoolean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GRBoolean.m; path = GRMustache/GRBoolean.m; sourceTree = "<group>"; };
@@ -407,61 +530,6 @@
 		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
 		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ClassParsingTesting.m"; sourceTree = "<group>"; };
 		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
-		73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libParseKitLib.a; sourceTree = "<group>"; };
-		73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseKit.h; sourceTree = "<group>"; };
-		73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAlternation.h; sourceTree = "<group>"; };
-		73FC6FC711FCE9E900AAD0B9 /* PKAny.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAny.h; sourceTree = "<group>"; };
-		73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAssembly.h; sourceTree = "<group>"; };
-		73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCaseInsensitiveLiteral.h; sourceTree = "<group>"; };
-		73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKChar.h; sourceTree = "<group>"; };
-		73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCharacterAssembly.h; sourceTree = "<group>"; };
-		73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCollectionParser.h; sourceTree = "<group>"; };
-		73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKComment.h; sourceTree = "<group>"; };
-		73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCommentState.h; sourceTree = "<group>"; };
-		73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitedString.h; sourceTree = "<group>"; };
-		73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitState.h; sourceTree = "<group>"; };
-		73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDifference.h; sourceTree = "<group>"; };
-		73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDigit.h; sourceTree = "<group>"; };
-		73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmailState.h; sourceTree = "<group>"; };
-		73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmpty.h; sourceTree = "<group>"; };
-		73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKIntersection.h; sourceTree = "<group>"; };
-		73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLetter.h; sourceTree = "<group>"; };
-		73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLiteral.h; sourceTree = "<group>"; };
-		73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLowercaseWord.h; sourceTree = "<group>"; };
-		73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKMultiLineCommentState.h; sourceTree = "<group>"; };
-		73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNegation.h; sourceTree = "<group>"; };
-		73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumber.h; sourceTree = "<group>"; };
-		73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumberState.h; sourceTree = "<group>"; };
-		73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParser.h; sourceTree = "<group>"; };
-		73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParserFactory.h; sourceTree = "<group>"; };
-		73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKPattern.h; sourceTree = "<group>"; };
-		73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuotedString.h; sourceTree = "<group>"; };
-		73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuoteState.h; sourceTree = "<group>"; };
-		73FC6FE211FCE9E900AAD0B9 /* PKReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKReader.h; sourceTree = "<group>"; };
-		73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRepetition.h; sourceTree = "<group>"; };
-		73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSequence.h; sourceTree = "<group>"; };
-		73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSingleLineCommentState.h; sourceTree = "<group>"; };
-		73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSpecificChar.h; sourceTree = "<group>"; };
-		73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbol.h; sourceTree = "<group>"; };
-		73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolNode.h; sourceTree = "<group>"; };
-		73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolRootNode.h; sourceTree = "<group>"; };
-		73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolState.h; sourceTree = "<group>"; };
-		73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTerminal.h; sourceTree = "<group>"; };
-		73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKToken.h; sourceTree = "<group>"; };
-		73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenArraySource.h; sourceTree = "<group>"; };
-		73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenAssembly.h; sourceTree = "<group>"; };
-		73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizer.h; sourceTree = "<group>"; };
-		73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizerState.h; sourceTree = "<group>"; };
-		73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrack.h; sourceTree = "<group>"; };
-		73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrackException.h; sourceTree = "<group>"; };
-		73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTwitterState.h; sourceTree = "<group>"; };
-		73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTypes.h; sourceTree = "<group>"; };
-		73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKUppercaseWord.h; sourceTree = "<group>"; };
-		73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKURLState.h; sourceTree = "<group>"; };
-		73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespace.h; sourceTree = "<group>"; };
-		73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespaceState.h; sourceTree = "<group>"; };
-		73FC6FF911FCE9E900AAD0B9 /* PKWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWord.h; sourceTree = "<group>"; };
-		73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWordState.h; sourceTree = "<group>"; };
 		73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+GBToken.h"; sourceTree = "<group>"; };
 		73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+GBToken.m"; sourceTree = "<group>"; };
 		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
@@ -496,13 +564,11 @@
 				733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */,
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
 				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
-				733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */,
 				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
 				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
 				73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
-				7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,11 +576,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				25633EB7135F3E8A0060C731 /* liblibParseKit.a in Frameworks */,
+				25633D56135F37370060C731 /* libmarkdown-x86_64.a in Frameworks */,
+				25633D54135F37110060C731 /* libmarkdown-i386.a in Frameworks */,
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
-				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 				73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
-				7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -524,6 +591,10 @@
 		08FB7794FE84155DC02AAC07 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
+				25633EB6135F3E8A0060C731 /* liblibParseKit.a */,
+				25633D55135F37360060C731 /* libmarkdown-x86_64.a */,
+				25633D53135F37110060C731 /* libmarkdown-i386.a */,
+				25633D1B135F35F30060C731 /* libmarkdown.a */,
 				73EA656912B7944E00398BD1 /* Readme.markdown */,
 				73EEB7A812CA2BE700E546DB /* Developer Notes.markdown */,
 				739038301319926400B9CA74 /* AppledocSettings.plist */,
@@ -540,11 +611,10 @@
 		08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				25633D1F135F36B80060C731 /* ParseKit */,
+				25633CFD135F35C90060C731 /* ParseKit.xcodeproj */,
 				73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */,
-				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
 				7355E1301312737600B9C000 /* Discount */,
-				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
-				7355E12D1312736D00B9C000 /* libmarkdown.a */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				73D8E98911FCC97100966C4A /* AppKit.framework */,
 				73D8E98B11FCC97100966C4A /* Cocoa.framework */,
@@ -562,6 +632,80 @@
 				733EA125122BDD020060CBDE /* AppledocTests.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		25633CFE135F35C90060C731 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				25633D0E135F35CA0060C731 /* ParseKit.framework */,
+				25633D10135F35CA0060C731 /* JSParseKit.framework */,
+				25633D12135F35CA0060C731 /* libparsekit.a */,
+				25633D14135F35CA0060C731 /* Tests.octest */,
+				25633D16135F35CA0060C731 /* DemoApp.app */,
+				25633D18135F35CA0060C731 /* DebugApp.app */,
+				25633D1A135F35CA0060C731 /* JSDemoApp.app */,
+				25633E88135F3E580060C731 /* liblibParseKit.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		25633D1F135F36B80060C731 /* ParseKit */ = {
+			isa = PBXGroup;
+			children = (
+				25633D20135F36B80060C731 /* ParseKit.h */,
+				25633D21135F36B80060C731 /* PKAlternation.h */,
+				25633D22135F36B80060C731 /* PKAny.h */,
+				25633D23135F36B80060C731 /* PKAssembly.h */,
+				25633D24135F36B80060C731 /* PKCaseInsensitiveLiteral.h */,
+				25633D25135F36B80060C731 /* PKChar.h */,
+				25633D26135F36B80060C731 /* PKCharacterAssembly.h */,
+				25633D27135F36B80060C731 /* PKCollectionParser.h */,
+				25633D28135F36B80060C731 /* PKComment.h */,
+				25633D29135F36B80060C731 /* PKCommentState.h */,
+				25633D2A135F36B80060C731 /* PKDelimitedString.h */,
+				25633D2B135F36B80060C731 /* PKDelimitState.h */,
+				25633D2C135F36B80060C731 /* PKDifference.h */,
+				25633D2D135F36B80060C731 /* PKDigit.h */,
+				25633D2E135F36B80060C731 /* PKEmpty.h */,
+				25633D2F135F36B80060C731 /* PKIntersection.h */,
+				25633D30135F36B80060C731 /* PKLetter.h */,
+				25633D31135F36B80060C731 /* PKLiteral.h */,
+				25633D32135F36B80060C731 /* PKLowercaseWord.h */,
+				25633D33135F36B80060C731 /* PKMultiLineCommentState.h */,
+				25633D34135F36B80060C731 /* PKNegation.h */,
+				25633D35135F36B80060C731 /* PKNumber.h */,
+				25633D36135F36B80060C731 /* PKNumberState.h */,
+				25633D37135F36B80060C731 /* PKParser.h */,
+				25633D38135F36B80060C731 /* PKParserFactory.h */,
+				25633D39135F36B80060C731 /* PKPattern.h */,
+				25633D3A135F36B80060C731 /* PKQuotedString.h */,
+				25633D3B135F36B80060C731 /* PKQuoteState.h */,
+				25633D3C135F36B80060C731 /* PKReader.h */,
+				25633D3D135F36B80060C731 /* PKRepetition.h */,
+				25633D3E135F36B80060C731 /* PKSequence.h */,
+				25633D3F135F36B80060C731 /* PKSingleLineCommentState.h */,
+				25633D40135F36B80060C731 /* PKSpecificChar.h */,
+				25633D41135F36B80060C731 /* PKSymbol.h */,
+				25633D42135F36B80060C731 /* PKSymbolNode.h */,
+				25633D43135F36B80060C731 /* PKSymbolRootNode.h */,
+				25633D44135F36B80060C731 /* PKSymbolState.h */,
+				25633D45135F36B80060C731 /* PKTerminal.h */,
+				25633D46135F36B80060C731 /* PKToken.h */,
+				25633D47135F36B80060C731 /* PKTokenArraySource.h */,
+				25633D48135F36B80060C731 /* PKTokenAssembly.h */,
+				25633D49135F36B80060C731 /* PKTokenizer.h */,
+				25633D4A135F36B80060C731 /* PKTokenizerState.h */,
+				25633D4B135F36B80060C731 /* PKTrack.h */,
+				25633D4C135F36B80060C731 /* PKTrackException.h */,
+				25633D4D135F36B80060C731 /* PKTypes.h */,
+				25633D4E135F36B80060C731 /* PKUppercaseWord.h */,
+				25633D4F135F36B80060C731 /* PKWhitespace.h */,
+				25633D50135F36B80060C731 /* PKWhitespaceState.h */,
+				25633D51135F36B80060C731 /* PKWord.h */,
+				25633D52135F36B80060C731 /* PKWordState.h */,
+			);
+			name = ParseKit;
+			path = ParseKit/include/ParseKit;
 			sourceTree = "<group>";
 		};
 		733EA47C122CE8C40060CBDE /* RegexKitLite */ = {
@@ -590,6 +734,9 @@
 		7355E1301312737600B9C000 /* Discount */ = {
 			isa = PBXGroup;
 			children = (
+				25633CFA135F35700060C731 /* libmarkdown-i386.a */,
+				25633CFB135F35700060C731 /* libmarkdown-x86_64.a */,
+				25633CFC135F35700060C731 /* libmarkdown.a */,
 				7355E131131273A000B9C000 /* mkdio.h */,
 			);
 			path = Discount;
@@ -961,67 +1108,6 @@
 			name = Bundle;
 			sourceTree = "<group>";
 		};
-		73FC6FC411FCE9E900AAD0B9 /* ParseKit */ = {
-			isa = PBXGroup;
-			children = (
-				73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */,
-				73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */,
-				73FC6FC711FCE9E900AAD0B9 /* PKAny.h */,
-				73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */,
-				73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */,
-				73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */,
-				73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */,
-				73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */,
-				73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */,
-				73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */,
-				73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */,
-				73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */,
-				73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */,
-				73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */,
-				73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */,
-				73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */,
-				73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */,
-				73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */,
-				73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */,
-				73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */,
-				73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */,
-				73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */,
-				73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */,
-				73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */,
-				73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */,
-				73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */,
-				73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */,
-				73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */,
-				73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */,
-				73FC6FE211FCE9E900AAD0B9 /* PKReader.h */,
-				73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */,
-				73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */,
-				73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */,
-				73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */,
-				73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */,
-				73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */,
-				73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */,
-				73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */,
-				73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */,
-				73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */,
-				73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */,
-				73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */,
-				73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */,
-				73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */,
-				73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */,
-				73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */,
-				73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */,
-				73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */,
-				73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */,
-				73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */,
-				73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */,
-				73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */,
-				73FC6FF911FCE9E900AAD0B9 /* PKWord.h */,
-				73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */,
-			);
-			path = ParseKit;
-			sourceTree = "<group>";
-		};
 		73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */ = {
 			isa = PBXGroup;
 			children = (
@@ -1081,6 +1167,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				25633EB9135F3EA60060C731 /* PBXTargetDependency */,
 			);
 			name = appledoc;
 			productInstallPath = "$(HOME)/bin";
@@ -1108,6 +1195,12 @@
 			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* appledoc */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 25633CFE135F35C90060C731 /* Products */;
+					ProjectRef = 25633CFD135F35C90060C731 /* ParseKit.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* appledoc */,
@@ -1115,6 +1208,65 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		25633D0E135F35CA0060C731 /* ParseKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ParseKit.framework;
+			remoteRef = 25633D0D135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D10135F35CA0060C731 /* JSParseKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = JSParseKit.framework;
+			remoteRef = 25633D0F135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D12135F35CA0060C731 /* libparsekit.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libparsekit.a;
+			remoteRef = 25633D11135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D14135F35CA0060C731 /* Tests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.octest;
+			remoteRef = 25633D13135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D16135F35CA0060C731 /* DemoApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = DemoApp.app;
+			remoteRef = 25633D15135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D18135F35CA0060C731 /* DebugApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = DebugApp.app;
+			remoteRef = 25633D17135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633D1A135F35CA0060C731 /* JSDemoApp.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = JSDemoApp.app;
+			remoteRef = 25633D19135F35CA0060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		25633E88135F3E580060C731 /* liblibParseKit.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = liblibParseKit.a;
+			remoteRef = 25633E87135F3E580060C731 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		733EA121122BDD020060CBDE /* Resources */ = {
@@ -1330,11 +1482,20 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		25633EB9135F3EA60060C731 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libParseKit;
+			targetProxy = 25633EB8135F3EA60060C731 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1355,6 +1516,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Libraries/Discount\"",
 				);
 				PRODUCT_NAME = appledoc;
 			};
@@ -1364,6 +1527,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1380,6 +1544,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Libraries/Discount\"",
 				);
 				PRODUCT_NAME = appledoc;
 			};

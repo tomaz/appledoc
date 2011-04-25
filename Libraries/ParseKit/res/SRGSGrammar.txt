@@ -1,0 +1,218 @@
+selfIdentHeader  ::=
+    '#ABNF' #x20 VersionNumber (#x20 CharEncoding)? ';'
+       [Additional constraints:
+          - The semicolon (';') must immediately be followed
+            by an end-of-line.
+       ]
+
+VersionNumber    ::=
+    '1.0'
+     
+CharEncoding     ::=
+    Nmtoken
+
+BaseURI          ::=
+    ABNF_URI
+
+LanguageCode     ::=
+    Nmtoken
+        [Additional constraints:
+          - The language code must be a valid language identifier.
+        ]
+
+RuleName         ::=
+    '$' ConstrainedName
+
+ConstrainedName  ::=
+    Name - (Char* ('.' | ':' | '-') Char*)
+
+TagFormat        ::=
+    ABNF_URI
+
+LexiconURI       ::=
+    ABNF_URI | ABNF_URI_with_Media_Type
+
+SingleQuotedCharacters ::=
+    ''' [^']* '''
+     
+DoubleQuotedCharacters ::=
+    '"' [^"]* '"'
+     
+QuotedCharacters ::=
+    SingleQuotedCharacters | DoubleQuotedCharacters
+
+Weight           ::=
+    '/' Number '/'
+
+
+Repeat           ::=
+    [0-9]+ ('-' [0-9]*)?
+        [Additional constraints:
+          - A number to the right of the hyphen must not be
+            greater than the number to the left of the hyphen.
+        ]
+
+
+Probability      ::=
+    '/' Number '/'
+        [Additional constraints:
+          - The float value must be in the range of "0.0"
+            to "1.0" (inclusive).
+        ]
+
+Number            ::=
+    [0-9]+  |  [0-9]+ '.' [0-9]*  |  [0-9]* '.' [0-9]+
+
+ExternalRuleRef  ::=
+    '$' ABNF_URI | '$' ABNF_URI_with_Media_Type
+        [Additional constraints:
+          - The referenced grammar must have the same mode
+            ("voice" or "dtmf") as the referencing grammar.
+          - If the URI reference contains a fragment
+            identifier, the referenced rule must be a
+            public rule of another grammar.
+          - If the URI reference does not contain a fragment
+            identifier, i.e. if it is an implicit root rule reference,
+            then the referenced grammar must declare a root
+            rule.
+        ]
+
+Token            ::=
+    Nmtoken | DoubleQuotedCharacters
+
+LanguageAttachment ::=
+    '!' LanguageCode
+
+Tag              ::=
+    '{' [^}]* '}'
+    | '{!{' (Char* - (Char* '}!}' Char*)) '}!}'
+
+------------------------------------------------------------
+
+ABNF_URI
+ and ABNF_URI_with_Media_Type
+ are defined
+in Section 1.6 Terminology.
+
+Name is defined by the XML Name production [XML §2.3].
+
+Nmtoken is defined by the XML Nmtoken production [XML §2.3].
+
+NameChar is defined by the XML NameChar production [XML §2.3].
+
+Char is defined by the XML Char production [XML §2.2].
+
+
+
+
+
+
+
+
+
+
+
+
+
+grammar         ::=
+    selfIdentHeader declaration* ruleDefinition*
+
+declaration     ::=
+    baseDecl | languageDecl | modeDecl | rootRuleDecl
+    | tagFormatDecl | lexiconDecl | metaDecl | tagDecl
+
+baseDecl     ::=
+    'base' BaseURI ';'
+        [Additional constraints:
+          - A base declaration must not appear more than
+            once in grammar.
+        ]
+
+languageDecl    ::=
+    'language' LanguageCode ';'
+        [Additional constraints:
+          - A language declaration must not appear more than
+            once in grammar.
+          - A language declaration is required if the
+            grammar mode is "voice".
+        ]
+
+modeDecl        ::=
+    'mode' 'voice' ';' | 'mode' 'dtmf' ';'
+        [Additional constraints:
+          - A mode declaration must not appear more than
+            once in grammar.
+        ]
+
+rootRuleDecl    ::=
+    'root' RuleName ';'
+        [Additional constraints:
+          - A root rule declaration must not appear more
+            than once in grammar.
+          - The root rule must be a rule that is defined
+            within the grammar.
+        ]
+
+tagFormatDecl   ::=
+    'tag-format' TagFormat ';'
+        [Additional constraints:
+          - A tag-format declaration must not appear more
+            than once in grammar.
+        ]
+
+lexiconDecl     ::=
+    'lexicon' LexiconURI ';'
+
+metaDecl        ::=
+   'http-equiv' QuotedCharacters 'is' QuotedCharacters ';'
+   | 'meta' QuotedCharacters 'is' QuotedCharacters ';'
+
+
+tagDecl        ::=
+   Tag ';'
+
+
+ruleDefinition  ::=
+    scope? RuleName '=' ruleExpansion ';'
+        [Additional constraints:
+          - The rule name must be unique within a grammar,
+            i.e. no rule must be defined more than once
+            within a grammar.
+        ]
+
+scope           ::=
+    'private' | 'public'
+
+ruleExpansion   ::=
+    ruleAlternative ( '|' ruleAlternative )*
+
+ruleAlternative ::=
+    Weight? sequenceElement+
+
+sequenceElement ::=
+    subexpansion | subexpansion repeatOperator
+
+subexpansion    ::=
+    Token LanguageAttachment?
+    | ruleRef 
+    | Tag
+    | '(' ')'
+    | '(' ruleExpansion ')' LanguageAttachment?
+    | '[' ruleExpansion ']' LanguageAttachment?
+
+ruleRef         ::=
+    localRuleRef | ExternalRuleRef | specialRuleRef
+
+localRuleRef    ::=
+    RuleName
+        [Additional constraints:
+          - The referenced rule must be defined within the
+            same grammar.
+        ]
+
+specialRuleRef  ::=
+    '$NULL' | '$VOID' | '$GARBAGE'
+
+
+repeatOperator  ::=
+    '<' Repeat Probability? '>'

@@ -10,6 +10,11 @@
 
 /** Concrete `GBOutputGenerator` that generates documentation set files.
  */
-@interface GBDocSetOutputGenerator : GBOutputGenerator
+@interface GBDocSetOutputGenerator : GBOutputGenerator {
+    NSArray *classes;
+    NSArray *categories;
+    NSArray *protocols;
+    NSMutableSet *temporaryFiles;
+}
 
 @end
