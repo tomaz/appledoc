@@ -11,6 +11,5 @@
 #import "GBAppledocApplication.h"
 
 int main(int argc, const char *argv[]) {
-	objc_startCollectorThread();
 	return DDCliAppRunWithClass([GBAppledocApplication class]);
 }
