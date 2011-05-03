@@ -202,8 +202,13 @@
         }
         else if (ch == '?')
         {
+#ifdef DEBUG
+			// As Xcode injects additional cmd line args, we simply ignore all unknown parameters.
+			continue;
+#else
             [self handleArgumentNotRecognized: last_argv command: command];
             return nil;
+#endif
         }
         
         NSString * nsoptarg = nil;
@@ -225,7 +230,24 @@
     }
     
     NSRange range = NSMakeRange(optind, argc - optind);
-    return [arguments subarrayWithRange: range];
+	NSArray *result = [arguments subarrayWithRange: range];
+#ifdef DEBUG	
+	// This removes cmd line args injected by Xcode, including their values.
+	NSMutableArray *clean = [NSMutableArray arrayWithArray:result];
+	for (NSUInteger i=0; i<[clean count]; i++) {
+		if ([[clean objectAtIndex:i] hasPrefix:@"-"]) {
+			[clean removeObjectAtIndex:i];
+			if (i < [clean count]) {
+				[clean removeObjectAtIndex:i];
+				i--;
+			}
+			i--;
+		}
+	}
+	return clean;
+#else
+    return result;
+#endif
 }
 
 + (NSString *) keyFromOption: (NSString *) option;

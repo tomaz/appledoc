@@ -50,7 +50,7 @@ static GRYes *yes = nil;
     return NSUIntegerMax;  //denotes an object that cannot be released
 }
 
-- (oneway void)release {
+- (oneway void)release NS_AUTOMATED_REFCOUNT_UNAVAILABLE {
     //do nothing
 }
 
@@ -99,7 +99,7 @@ static GRNo *no = nil;
     return NSUIntegerMax;  //denotes an object that cannot be released
 }
 
-- (oneway void)release {
+- (oneway void)release NS_AUTOMATED_REFCOUNT_UNAVAILABLE  {
     //do nothing
 }
 
