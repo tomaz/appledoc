@@ -208,7 +208,7 @@ static NSString *kGBArgHelp = @"help";
 		return EXIT_FAILURE;
 	}
 	
-	return EXIT_SUCCESS;
+	return kGBLogBasedResult;
 }
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {

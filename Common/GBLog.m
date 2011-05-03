@@ -10,9 +10,14 @@
 
 #pragma mark Log level handling
 
-@implementation GBLog
-
 NSUInteger kGBLogLevel = LOG_LEVEL_NORMAL;
+NSInteger kGBLogBasedResult = EXIT_SUCCESS;
+
+void GBLogUpdateResult(NSInteger result) {
+	if (result > kGBLogBasedResult) kGBLogBasedResult = result;
+}
+
+@implementation GBLog
 
 + (void)setLogLevel:(NSUInteger)value {
 	kGBLogLevel = value;
