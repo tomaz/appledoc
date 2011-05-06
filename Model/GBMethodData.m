@@ -20,7 +20,7 @@
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value;
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href;
 - (NSString *)attributeValueForKey:(NSString *)key;
-- (void)validateMergeWith:(GBMethodData *)source;
+- (BOOL)validateMergeWith:(GBMethodData *)source;
 @property (readonly) NSString *methodSelectorDelimiter;
 @property (readonly) NSString *methodPrefix;
 
@@ -236,8 +236,8 @@
 	return result;
 }
 
-- (void)validateMergeWith:(GBMethodData *)source {
-	// Validates merging with the given method. This method raises exception if merging is not allowed based on method types. It takes into account manual propery accessors and mutators!
+- (BOOL)validateMergeWith:(GBMethodData *)source {
+	// Validates merging with the given method. This method raises exception if merging is not allowed based on method types. It takes into account manual propery accessors and mutators! Note that in case class method is being matched with instance, we prevent merging - this is to allow same selectors (due to how we currently handle class/instance methods (i.e. don't distinguish between them when matching by selectors) we simply need to prevent merging taking place in such case).
 	if (source.methodType != self.methodType) {
 		GBMethodData *propertyData = nil;
 		GBMethodData *manualData = nil;
@@ -247,18 +247,21 @@
 		} else if (self.methodType == GBMethodTypeInstance && source.methodType == GBMethodTypeProperty) {
 			propertyData = source;
 			manualData = self;
+		} else if (self.methodType == GBMethodTypeInstance && source.methodType == GBMethodTypeClass) {
+			return NO;
 		} else {
 			[NSException raise:@"Failed merging %@ to %@; method type doesn't match!", source, self];
 		}
 		
 		// We should allow if the getter or setter matches.
-		if ([propertyData.propertyGetterSelector isEqualToString:manualData.methodSelector]) return;
-		if ([propertyData.propertySetterSelector isEqualToString:manualData.methodSelector]) return;
+		if ([propertyData.propertyGetterSelector isEqualToString:manualData.methodSelector]) return YES;
+		if ([propertyData.propertySetterSelector isEqualToString:manualData.methodSelector]) return YES;
 		[NSException raise:@"Failed merging %@ to %@; getter or setter doesn't match", source, self];
 	} else {
 		NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
 		NSParameterAssert([source.methodResultTypes isEqualToArray:self.methodResultTypes]);
 	}
+	return YES;
 }
 
 #pragma mark Overidden methods
@@ -266,7 +269,7 @@
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging data from %@...", self, source);
-	[self validateMergeWith:source];
+	if (![self validateMergeWith:source]) return;
 
 	// Use argument var names from the method that has comment. If no method has comment, just keep deafult.
 	if ([source comment] && ![self comment]) {
