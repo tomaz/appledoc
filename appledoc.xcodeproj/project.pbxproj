@@ -161,6 +161,7 @@
 		73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
 		73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
 		73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */; };
+		73C4C8611377DFF70024FA77 /* GBExitCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C4C8601377DFF70024FA77 /* GBExitCodes.m */; };
 		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; };
 		73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
@@ -346,6 +347,8 @@
 		73AF4ECA130938F3001152DB /* GBCommentComponentsList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommentComponentsList.h; sourceTree = "<group>"; };
 		73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsList.m; sourceTree = "<group>"; };
 		73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsListTesting.m; sourceTree = "<group>"; };
+		73C4C85F1377DFF70024FA77 /* GBExitCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBExitCodes.h; sourceTree = "<group>"; };
+		73C4C8601377DFF70024FA77 /* GBExitCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBExitCodes.m; sourceTree = "<group>"; };
 		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73D2524312A2EA340024F9F9 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		73D2524412A2ED610024F9F9 /* GBOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOutputGenerator.h; sourceTree = "<group>"; };
@@ -752,6 +755,8 @@
 				731E7CE711F9962D00AAF15D /* NSException+GBException.m */,
 				7367298212A3D7A000879D1B /* NSError+GBError.h */,
 				7367298312A3D7A000879D1B /* NSError+GBError.m */,
+				73C4C85F1377DFF70024FA77 /* GBExitCodes.h */,
+				73C4C8601377DFF70024FA77 /* GBExitCodes.m */,
 				73D54C9511F8D1F500CCDDB0 /* ThirdParty */,
 			);
 			path = Common;
@@ -1326,6 +1331,7 @@
 				73AF4EC813093570001152DB /* GBCommentComponent.m in Sources */,
 				73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */,
 				73FAC0F9130BCB6F00F22475 /* GBCommentArgument.m in Sources */,
+				73C4C8611377DFF70024FA77 /* GBExitCodes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -46,10 +46,6 @@ extern NSUInteger kGBLogLevel;
 extern NSInteger kGBLogBasedResult;
 void GBLogUpdateResult(NSInteger result);
 
-#define GBLogBasedResultFatal 503
-#define GBLogBasedResultError 502
-#define GBLogBasedResultWarn 501
-
 #define LOG_FLAG_FATAL		(1 << 0) // 0...0000001
 #define LOG_FLAG_ERROR		(1 << 1) // 0...0000010
 #define LOG_FLAG_WARN		(1 << 2) // 0...0000100
@@ -68,9 +64,9 @@ void GBLogUpdateResult(NSInteger result);
 
 #define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 
-#define GBLogFatal(frmt, ...)	{ GBLogUpdateResult(GBLogBasedResultFatal); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__); }
-#define GBLogError(frmt, ...)	{ GBLogUpdateResult(GBLogBasedResultError); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__); }
-#define GBLogWarn(frmt, ...)	{ GBLogUpdateResult(GBLogBasedResultWarn); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_WARN, frmt, ##__VA_ARGS__); }
+#define GBLogFatal(frmt, ...)	{ GBLogUpdateResult(GBEXIT_LOG_FATAL); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__); }
+#define GBLogError(frmt, ...)	{ GBLogUpdateResult(GBEXIT_LOG_ERROR); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__); }
+#define GBLogWarn(frmt, ...)	{ GBLogUpdateResult(GBEXIT_LOG_WARNING); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_WARN, frmt, ##__VA_ARGS__); }
 #define GBLogNormal(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_NORMAL, frmt, ##__VA_ARGS__)
 #define GBLogInfo(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_INFO, frmt, ##__VA_ARGS__)
 #define GBLogVerbose(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_VERBOSE, frmt, ##__VA_ARGS__)

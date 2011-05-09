@@ -148,11 +148,11 @@ static NSString *kGBArgHelp = @"help";
 - (int)application:(DDCliApplication *)app runWithArguments:(NSArray *)arguments {
 	if (self.help) {
 		[self printHelp];
-		return EXIT_SUCCESS;
+		return GBEXIT_SUCCESS;
 	}
 	if (self.version) {
 		[self printVersion];
-		return EXIT_SUCCESS;
+		return GBEXIT_SUCCESS;
 	}
 
 	// Prepare actual input paths by adding all paths from project settings and removing all plist paths.
@@ -165,6 +165,7 @@ static NSString *kGBArgHelp = @"help";
 	[self validateSettingsAndArguments:inputs];
 	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	if (self.printSettings) [self printSettingsAndArguments:inputs];
+	kGBLogBasedResult = GBEXIT_SUCCESS;
 
 	@try {		
 		[self initializeLoggingSystem];
@@ -205,9 +206,10 @@ static NSString *kGBArgHelp = @"help";
 	}
 	@catch (NSException *e) {
 		GBLogException(e, @"Oops, something went wrong...");
-		return EXIT_FAILURE;
+		return GBEXIT_ASSERT_GENERIC;
 	}
 	
+	GBLogDebug(@"Exiting with result %ld...", kGBLogBasedResult);
 	return kGBLogBasedResult;
 }
 
