@@ -85,6 +85,28 @@
 	assertThatInteger([original.sourceInfos count], equalToInteger(1));
 }
 
+- (void)testMergeDataFromObject_shouldMergeMethodWithDifferentResultType {
+	// setup
+	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"id"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
+	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"NSString *"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify - should keep original return type
+	assertThatInteger([original.methodResultTypes count], equalToInteger(1));
+	assertThat([original.methodResultTypes objectAtIndex:0], is(@"id"));
+}
+
+- (void)testMergeDataFromObject_shouldMergePropertyWithDifferentResultType {
+	// setup
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", @"retain", nil] components:[NSArray arrayWithObjects:@"id", @"value", nil]];
+	GBMethodData *source = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readwrite", @"retain", nil] components:[NSArray arrayWithObjects:@"NSString *", @"value", nil]];
+	// execute
+	[original mergeDataFromObject:source];
+	// verify - should keep original return type
+	assertThatInteger([original.methodResultTypes count], equalToInteger(1));
+	assertThat([original.methodResultTypes objectAtIndex:0], is(@"id"));
+}
+
 - (void)testMergeDataFromObject_shouldMergePropertyWithDifferentAttributes {
 	// setup
 	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", @"retain", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];

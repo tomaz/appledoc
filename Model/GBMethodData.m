@@ -259,7 +259,6 @@
 		[NSException raise:@"Failed merging %@ to %@; getter or setter doesn't match", source, self];
 	} else {
 		NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
-		NSParameterAssert([source.methodResultTypes isEqualToArray:self.methodResultTypes]);
 	}
 	return YES;
 }
