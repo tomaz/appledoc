@@ -375,7 +375,8 @@
 			}
 		}
 		
-		// Finally remove merged category from the store.
+		// Finally clean all empty sections and remove merged category from the store.
+		[class.methods unregisterEmptySections];
 		[self.store unregisterTopLevelObject:category];
 	}
 }

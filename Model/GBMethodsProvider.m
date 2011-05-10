@@ -98,15 +98,16 @@
 			[self addMethod:method toSortedArray:_properties];
 			break;
 	}
-	
-	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;
-	
+		
 	// Register property getters and setters. Note that we always register setter even if it's just readonly property...
 	if (method.isProperty) {
 		NSString *getterSelector = method.propertyGetterSelector;
 		if (![getterSelector isEqualToString:method.methodSelector]) [_methodsBySelectors setObject:method forKey:getterSelector];
 		[_methodsBySelectors setObject:method forKey:method.propertySetterSelector];
 	}
+
+	// Register the selector so that we can handle existing methods later on. The first line prefers instance to class methods!
+	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;
 	[_methodsBySelectors setObject:method forKey:method.methodSelector];
 }
 
