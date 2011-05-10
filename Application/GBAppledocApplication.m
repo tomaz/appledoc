@@ -315,8 +315,8 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)initializeLoggingSystem {
 	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
-	[[DDTTYLogger sharedInstance] setLogFormatter:formatter];
-	[DDLog addLogger:[DDTTYLogger sharedInstance]];
+	[[GBConsoleLogger sharedInstance] setLogFormatter:formatter];
+	[DDLog addLogger:[GBConsoleLogger sharedInstance]];
 	[GBLog setLogLevelFromVerbose:self.verbose];
 	[formatter release];
 }

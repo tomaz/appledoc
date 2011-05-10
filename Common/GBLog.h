@@ -129,6 +129,14 @@ void GBLogUpdateResult(NSInteger result);
 
 @end
 
+#pragma mark Our custom loggers
+
+@interface GBConsoleLogger : DDAbstractLogger <DDLogger>
+
++ (GBConsoleLogger *)sharedInstance;
+
+@end
+
 #pragma mark Log formatters
 
 @interface GBLogFormat0Formatter : NSObject <DDLogFormatter>

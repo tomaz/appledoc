@@ -68,6 +68,48 @@ void GBLogUpdateResult(NSInteger result) {
 
 @end
 
+#pragma mark Custom loggers
+
+@implementation GBConsoleLogger
+
+static GBConsoleLogger *sharedConsoleLogger;
+
++ (void)initialize {
+	static BOOL initialized = NO;
+	if (!initialized) {
+		initialized = YES;		
+		sharedConsoleLogger = [[GBConsoleLogger alloc] init];
+	}
+}
+
++ (GBConsoleLogger *)sharedInstance {
+	return sharedConsoleLogger;
+}
+
+- (void)logMessage:(DDLogMessage *)logMessage {
+	// Note that we asume formatter is always attached - this is not a generic logger, so this will work for our case! It should still work in case log message is nil by doing nothing...
+	NSString *logMsg = logMessage->logMsg;
+	if (formatter) logMsg = [formatter formatLogMessage:logMessage];	
+	if (logMsg) {
+		switch (logMessage->logFlag) {
+			case LOG_FLAG_FATAL:
+			case LOG_FLAG_ERROR:
+			case LOG_FLAG_WARN:
+				ddfprintf(stderr, @"%@\n", logMsg);
+				break;
+			default:
+				ddfprintf(stdout, @"%@\n", logMsg);
+				break;
+		}
+	}
+}
+
+- (NSString *)loggerName {
+	return @"cocoa.lumberjack.gbconsolelogger";
+}
+
+@end
+
 #pragma mark Log formatting handling
 
 static NSString *GBLogLevel(DDLogMessage *msg) {
