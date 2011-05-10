@@ -28,7 +28,7 @@ extern id kGBCustomDocumentIndexDescKey;
  
  1. Create a new global string as `static NSString` containing the command line switch name.
  2. Register the switch to `DDCli` (add negated switch if it's a boolean).
- 3. Add unit test in `GBAppledocApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean switches require testing normal and negated variants!).
+ 3. Add unit test in `GBApplicationTesting.m` that validates the switch is properly mapped to setting property (note that boolean switches require testing normal and negated variants!).
  4. Add KVC setter and map to corresponding property to make the test pass (again booleans require two setters).
  5. If the switch value uses template placeholders, add unit test in `GBApplicationSettingsProviderTesting.m` that validates the switch is handled.
  6. If previous point was used, add the code to `replaceAllOccurencesOfPlaceholderStringsInSettingsValues` to make the test pass.
@@ -219,6 +219,16 @@ extern id kGBCustomDocumentIndexDescKey;
  @see keepIntermediateFiles
  */
 @property (assign) BOOL cleanupOutputPathBeforeRunning;
+
+/** Species the threshold below which exit codes are truncated to zero.
+ 
+ This affects the reported exit code when ending a run session. It allows users preventing reporting certain types of exit codes, based on the given threshold. If the reported exit code is lower than the given threshold, zero is returned instead. If the reported exit code is equal or greater than the threshold, it is returned as the result of the tool.
+ 
+ This is useful to prevent higher level tools invoking appledoc (Xcode for example) treating reported warnings as invalid run for example. By default, this value is zero, so no exit code is suppressed.
+ 
+ @warning *Note:* Generally appledoc uses higher exit codes for more severe issues, so the greater the threshold, the more "permissive" the exit code will be, regardless of what happens inside the tool. However, crashes are always reported with proper exit codes, regardless of threshold value! Also note that the threshold value relies on the implementation of the exit codes #define values!
+ */
+@property (assign) int exitCodeThreshold;
 
 /** Indicates whether the first paragraph needs to be repeated within method and property description or not.
  

@@ -11,8 +11,8 @@
 
 #pragma mark - Exit code "domains"
 
-#define GBEXIT_DOMAIN_ASSERT	10
-#define GBEXIT_DOMAIN_LOG		20
+#define GBEXIT_DOMAIN_LOG		1
+#define GBEXIT_DOMAIN_ASSERT	250
 
 
 #pragma mark - Internal inconsistencies codes

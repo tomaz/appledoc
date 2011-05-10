@@ -36,6 +36,7 @@ static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
 static NSString *kGBArgPublishDocSet = @"publish-docset";
 static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
+static NSString *kGBArgExitCodeThreshold = @"exit-threshold";
 
 static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
@@ -209,8 +210,9 @@ static NSString *kGBArgHelp = @"help";
 		return GBEXIT_ASSERT_GENERIC;
 	}
 	
-	GBLogDebug(@"Exiting with result %ld...", kGBLogBasedResult);
-	return kGBLogBasedResult;
+	int result = (kGBLogBasedResult >= self.settings.exitCodeThreshold) ? kGBLogBasedResult : 0;
+	GBLogDebug(@"Exiting with result %ld (reported result was %ld)...", result, kGBLogBasedResult);
+	return result;
 }
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {
@@ -269,6 +271,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
+		{ kGBArgExitCodeThreshold,											0,		DDGetoptRequiredArgument },
 		{ GBNoArg(kGBArgKeepIntermediateFiles),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedMembers),							0,		DDGetoptNoArgument },
@@ -650,6 +653,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value ? @"<%@>" : @"<?%@>?"; }
 - (void)setNoExplicitCrossref:(BOOL)value { [self setExplicitCrossref:!value]; }
 
+- (void)setExitThreshold:(int)value { self.settings.exitCodeThreshold = value; }
 - (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
@@ -778,6 +782,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
 	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
+	ddprintf(@"--%@ = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
@@ -840,6 +845,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");
 	PRINT_USAGE(@"   ", kGBArgExplicitCrossRef, @"", @"[b] Shortcut for explicit default cross ref template");
 	PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
+	PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
 	ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");

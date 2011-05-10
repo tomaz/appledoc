@@ -92,6 +92,7 @@
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
+		735259D713793ED7003F0D09 /* GBExitCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C4C8601377DFF70024FA77 /* GBExitCodes.m */; };
 		7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
 		7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7355E12D1312736D00B9C000 /* libmarkdown.a */; };
 		7359B149129A5A0700F67AD1 /* GRBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = 7359B120129A5A0600F67AD1 /* GRBoolean.m */; };
@@ -1235,6 +1236,7 @@
 				7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
 				73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */,
 				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
+				735259D713793ED7003F0D09 /* GBExitCodes.m in Sources */,
 				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
 				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */,

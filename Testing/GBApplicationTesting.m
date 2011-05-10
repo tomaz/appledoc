@@ -300,6 +300,13 @@
 	assertThat(settings.commentComponents.crossReferenceMarkersTemplate, is(@"FORMAT"));
 }
 
+- (void)testExitCodeThreshold_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--exit-threshold", @"2", nil];
+	// verify
+	assertThatInteger(settings.exitCodeThreshold, equalToInteger(2));
+}
+
 #pragma mark Warnings settings testing
 
 - (void)testWarnOnMissingOutputPath_shouldAssignValueToSettings {

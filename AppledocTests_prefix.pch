@@ -15,6 +15,7 @@
 	#import "NSError+GBError.h"
 	#import "NSFileManager+GBFileManager.h"
 	#import "GBLog.h"
+	#import "GBExitCodes.h"
 
 	#define HC_SHORTHAND
 	#import <GHUnit/GHUnit.h>
