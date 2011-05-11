@@ -239,6 +239,10 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		return capturedStrings[2];
 	}];
 	
+	// Remove escaped HTML entitites or docsetutil will complain.
+	result = [result stringByReplacingOccurrencesOfString:@"<" withString:@""];
+	result = [result stringByReplacingOccurrencesOfString:@">" withString:@""];
+	
 	// Remove embedded prefix/suffix.
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanStartMarker withString:@""];
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanEndMarker withString:@""];
