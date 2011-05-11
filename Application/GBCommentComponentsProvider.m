@@ -63,7 +63,7 @@
 }
 
 - (NSString *)returnDescriptionRegex {
-	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:return|returns)"]);
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:return|returns|result)"]);
 }
 
 - (NSString *)exceptionDescriptionRegex {

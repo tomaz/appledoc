@@ -56,7 +56,7 @@
 	if (self) {
 		self.settings = settings;
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
-		self.multiLineCommentRegex = @"(?s:/\\*\\*(.*)\\*/)";
+		self.multiLineCommentRegex = @"(?s:/\\*[*!](.*)\\*/)";
 		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}$";
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];

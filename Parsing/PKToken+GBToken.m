@@ -22,6 +22,7 @@
 	if ([self isComment]) {
 		if ([[self stringValue] hasPrefix:@"///"]) return YES;
 		if ([[self stringValue] hasPrefix:@"/**"]) return YES;
+		if ([[self stringValue] hasPrefix:@"/*!"]) return YES;
 	}
 	return NO;
 }
