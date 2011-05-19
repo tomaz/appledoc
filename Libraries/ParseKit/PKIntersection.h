@@ -17,7 +17,7 @@
 
 /*!
     @class      PKIntersection
-    @brief      A <tt>PKIntersection</tt> matches input that matches all of its subparsers. It is basically a representation of "Logical And" or "&".
+    @brief      A <tt>PKIntersection</tt> matches input that matches all of its subparsers. It is basically a representation of "Logical And".
     @details    The example below would match any token which is both a word and matches the given regular expression pattern. 
                 Using a <tt>PKIntersection</tt> in this case would improve performance over using just a <tt>PKPattern</tt> parser as the regular expression would be evaluated fewer times.
  
