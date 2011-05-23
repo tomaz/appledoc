@@ -22,7 +22,7 @@
 /*!
     @class      PKCommentState
     @brief      This state will either delegate to a comment-handling state, or return a <tt>PKSymbol</tt> token with just the first char in it.
-    @details    By default, C and C++ style comments. (<tt>//</tt> to end of line and <tt>/&0x002A; &0x002A;/</tt>)
+    @details    By default, C and C++ style comments. 
 */
 @interface PKCommentState : PKTokenizerState {
     PKSymbolRootNode *rootNode;
@@ -48,8 +48,8 @@
 
 /*!
     @brief      Adds the given strings as a multi-line comment start and end markers. both may be multi-char
-    @details    <tt>start</tt> and <tt>end</tt> may be different strings. e.g. <tt>/&0x002A;</tt> and <tt>&0x002A;/</tt>. Also, the actual comment may or may not be multi-line.
-    @param      start a single- or multi-character marker that should be recognized as the start of a multi-line comment
+    @details    <tt>start</tt> and <tt>end</tt> may be different strings. 
+	@param      start a single- or multi-character marker that should be recognized as the start of a multi-line comment
     @param      end a single- or multi-character marker that should be recognized as the end of a multi-line comment that began with <tt>start</tt>
 */
 - (void)addMultiLineStartMarker:(NSString *)start endMarker:(NSString *)end;
@@ -71,7 +71,7 @@
 
 /*!
     @property   balancesEOFTerminatedComments
-    @brief      if true, this state will append a matching comment string (<tt>&0x002A;/</tt> [C++] or <tt>:)</tt> [XQuery]) to quotes terminated by EOF. Default is NO.
+    @brief      if true, this state will append a matching comment string to quotes terminated by EOF. Default is NO.
 */
 @property (nonatomic) BOOL balancesEOFTerminatedComments;
 @end
