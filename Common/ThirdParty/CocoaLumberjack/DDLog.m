@@ -468,6 +468,13 @@ typedef struct LoggerNode LoggerNode;
 	}
 }
 
+static NSString *GBStoreFilename = nil;
+static NSUInteger GBStoreLine = 0;
++ (void)storeFilename:(NSString *)file line:(NSUInteger)line {
+	GBStoreFilename = [file retain];
+	GBStoreLine = line;
+}
+
 + (void)log:(BOOL)synchronous
       level:(int)level
        flag:(int)flag
@@ -488,6 +495,12 @@ typedef struct LoggerNode LoggerNode;
 		                                                           file:file
 		                                                       function:function
 		                                                           line:line];
+		
+		if (GBStoreFilename) {
+			logMessage->originalFilename = GBStoreFilename;
+			logMessage->originalLine = GBStoreLine;
+			GBStoreFilename = nil;
+		}
 		
 		[self queueLogMessage:logMessage synchronously:synchronous];
 		

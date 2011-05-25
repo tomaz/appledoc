@@ -267,6 +267,12 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
        line:(int)line
      format:(NSString *)format, ...;
 
+/** Sets the given filename and line to be stored to the next log message.
+ 
+ This is used for nicer Xcode integration when issuing warnings and errors: we don't want Xcode pointing to appledoc files, but instead to user's source files that caused warnings/errors! After next log:level:flag:file:function:line:format: call, these values are reset.
+ */
++ (void)storeFilename:(NSString *)file line:(NSUInteger)line;
+
 /**
  * Since logging can be asynchronous, there may be times when you want to flush the logs.
  * The framework invokes this automatically when the application quits.
@@ -440,6 +446,9 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
 	const char *function;
 	int lineNumber;
 	mach_port_t machThreadID;
+	
+	NSString *originalFilename;
+	NSUInteger originalLine;
 
 // The private variables below are only calculated if needed.
 // You should use the public methods to access this information.

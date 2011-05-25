@@ -44,7 +44,7 @@
 	if (![self nameOfSuperclass]) {
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
 	} else if (sourceClass.nameOfSuperclass && ![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
-		GBLogWarn(@"%@: Merged class's %@ superclass is different from current!", self, sourceClass);
+		GBLogXWarn(self.prefferedSourceInfo, @"%@: Merged class's %@ superclass is different from current!", self, sourceClass);
 	}
 	
 	// Forward merging request to components.

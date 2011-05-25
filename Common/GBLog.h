@@ -73,6 +73,10 @@ void GBLogUpdateResult(NSInteger result);
 #define GBLogDebug(frmt, ...)	SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_DEBUG, frmt, ##__VA_ARGS__)
 #define GBLogIsEnabled(level)	((kGBLogLevel & level) > 0)
 
+// Macros that store given file/line info. Mostly used for better Xcode integration!
+#define GBLogXError(source,frmt,...) { [DDLog storeFilename:[source filename] line:[source lineNumber]]; GBLogError(frmt, ##__VA_ARGS__); }
+#define GBLogXWarn(source,frmt,...) { [DDLog storeFilename:[source filename] line:[source lineNumber]]; GBLogWarn(frmt, ##__VA_ARGS__); }
+
 // Helper macros for logging exceptions. Note that we don't use formatting here as it would make the output unreadable
 // in higher level log formats. The information is already verbose enough!
 #define GBLogExceptionLine(frmt,...) { ddprintf(frmt, ##__VA_ARGS__); ddprintf(@"\n"); }
@@ -149,4 +153,7 @@ void GBLogUpdateResult(NSInteger result);
 @end
 
 @interface GBLogFormat3Formatter : NSObject <DDLogFormatter>
+@end
+
+@interface GBLogFormatXcodeFormatter : NSObject <DDLogFormatter>
 @end
