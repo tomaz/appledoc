@@ -29,7 +29,7 @@
 	GBLogDebug(@"Initializing document with contents %@...", [contents normalizedDescription]);
 	self = [super init];
 	if (self) {
-		GBSourceInfo *info = [GBSourceInfo infoWithFilename:[path lastPathComponent] lineNumber:1];
+		GBSourceInfo *info = [GBSourceInfo infoWithFilename:path lineNumber:1];
 		[self registerSourceInfo:info];
 		self.nameOfDocument = [path lastPathComponent];
 		self.pathOfDocument = path;

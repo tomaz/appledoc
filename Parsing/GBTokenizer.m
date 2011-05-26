@@ -61,7 +61,7 @@
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];
 		self.previousCommentBuilder = [NSMutableString string];
-		self.filename = [filename lastPathComponent];
+		self.filename = filename;
 		self.input = tokenizer.string;
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
 		[self consumeComments];

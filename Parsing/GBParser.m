@@ -71,7 +71,7 @@
 				return;
 			}
 			
-			[self.objectiveCParser parseObjectsFromString:contents sourceFile:[path lastPathComponent] toStore:self.store];
+			[self.objectiveCParser parseObjectsFromString:contents sourceFile:path toStore:self.store];
 			self.numberOfParsedFiles++;
 		}];
 	}

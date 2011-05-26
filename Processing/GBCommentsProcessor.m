@@ -182,7 +182,7 @@ typedef NSUInteger GBProcessingFlag;
 
 - (void)processCommentBlockInLines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
 	// The given range is guaranteed to point to actual block within the lines array, so we only need to determine the kind of block and how to handle it. We only need to handle short description based on settings if this is first block within the comment.
-	NSString *filename = self.currentComment.sourceInfo.filename;
+	NSString *filename = self.currentComment.sourceInfo.fullpath;
 	NSUInteger lineNumber = self.currentComment.sourceInfo.lineNumber + blockRange.location;
 	self.currentSourceInfo = [GBSourceInfo infoWithFilename:filename ? filename : @"unknownfile" lineNumber:lineNumber];
 	

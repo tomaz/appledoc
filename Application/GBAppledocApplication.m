@@ -878,7 +878,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"\n");
 	ddprintf(@"MISCELLANEOUS\n");
 	PRINT_USAGE(@"   ", kGBArgLogFormat, @"<number>", @"Log format [0-3]");
-	PRINT_USAGE(@"   ", kGBArgVerbose, @"<number>", @"Log verbosity level [0-6]");
+	PRINT_USAGE(@"   ", kGBArgVerbose, @"<value>", @"Log verbosity level [0-6,xcode]");
 	PRINT_USAGE(@"   ", kGBArgVersion, @"", @"Display version and exit");
 	PRINT_USAGE(@"   ", kGBArgHelp, @"", @"Display this help and exit");
 	ddprintf(@"\n");

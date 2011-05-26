@@ -54,8 +54,10 @@ void GBLogUpdateResult(NSInteger result) {
 }
 
 + (id<DDLogFormatter>)logFormatterForLogFormat:(NSString *)level {
-	level = [level lowercaseString];
-	if ([level isEqualToString:@"xcode"]) return [[[GBLogFormatXcodeFormatter alloc] init] autorelease];
+	if ([level isKindOfClass:[NSString class]]) {
+		level = [level lowercaseString];
+		if ([level isEqualToString:@"xcode"]) return [[[GBLogFormatXcodeFormatter alloc] init] autorelease];
+	}
 	
 	NSInteger value = [level integerValue];
 	if (value < 0) value = 0;
@@ -163,14 +165,14 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 	if (m->originalFilename) {
 		NSString *level = nil;
 		switch (m->logFlag) {
-			case LOG_FLAG_FATAL:	level = @"fatal";
-			case LOG_FLAG_ERROR:	level = @"error";
-			case LOG_FLAG_WARN:		level = @"warning";
-			case LOG_FLAG_NORMAL:	level = @"normal";
-			case LOG_FLAG_INFO:		level = @"info";
-			case LOG_FLAG_VERBOSE:	level = @"verbose";
-			case LOG_FLAG_DEBUG:	level = @"debug";
-			default:				level = @"unknown";
+			case LOG_FLAG_FATAL:	level = @"fatal"; break;
+			case LOG_FLAG_ERROR:	level = @"error"; break;
+			case LOG_FLAG_WARN:		level = @"warning"; break;
+			case LOG_FLAG_NORMAL:	level = @"normal"; break;
+			case LOG_FLAG_INFO:		level = @"info"; break;
+			case LOG_FLAG_VERBOSE:	level = @"verbose"; break;
+			case LOG_FLAG_DEBUG:	level = @"debug"; break;
+			default:				level = @"unknown"; break;
 		}
 		return [NSString stringWithFormat:@"%@:%u: %@: %@", m->originalFilename, m->originalLine, level, GBLogMessage(m)];
 	}

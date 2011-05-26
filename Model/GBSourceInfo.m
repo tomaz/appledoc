@@ -10,6 +10,7 @@
 
 @interface GBSourceInfo ()
 
+@property (readwrite, copy) NSString *fullpath;
 @property (readwrite, copy) NSString *filename;
 @property (readwrite, assign) NSUInteger lineNumber;
 
@@ -25,7 +26,8 @@
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
 	GBSourceInfo *result = [[[GBSourceInfo alloc] init] autorelease];
-	result.filename = filename;
+	result.fullpath = [filename stringByStandardizingPath];
+	result.filename = [filename lastPathComponent];
 	result.lineNumber = lineNumber;
 	return result;
 }
@@ -49,6 +51,7 @@
 
 #pragma mark Properties
 
+@synthesize fullpath;
 @synthesize filename;
 @synthesize lineNumber;
 

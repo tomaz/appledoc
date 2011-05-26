@@ -20,7 +20,7 @@
 
 /** Returns a new autoreleased `GBSourceInfo` with the given values.
  
- @param filename The name of the file without path.
+ @param filename The name of the file including full path.
  @param lineNumber Line number within the file.
  @return Returns autoreleased object.
  @exception NSException Thrown if the given filename is `nil` or empty string.
@@ -41,6 +41,12 @@
  @return `NSOrderedAscending` if the value of _data_ is greater than the receiver, `NSOrderedSame` if they’re equal, and `NSOrderedDescending` if the _data_ is less than the receiver.
  */
 - (NSComparisonResult)compare:(GBSourceInfo *)data;
+
+/** Full path to the file name.
+ 
+ @see filename
+ */
+@property (readonly, copy) NSString *fullpath;
 
 /** The name of the file, without path.
  
