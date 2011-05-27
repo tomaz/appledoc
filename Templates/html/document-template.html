@@ -9,6 +9,17 @@
 		{{#strings/appledocData}}<meta name="generator" content="{{tool}} {{version}} (build {{build}})" />{{/strings/appledocData}}
 	</head>
 	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				{{#page}}<h1><a id="libraryTitle" href="../index.html">{{projectName}} {{strings/objectPage/libraryTitlePostfix}}</a></h1>
+				{{#projectCompanyURL}}<a id="developerHome" href="{{projectCompanyURL}}">{{/projectCompanyURL}}{{projectCompany}}{{#projectCompanyURL}}</a>{{/projectCompanyURL}}{{/page}}
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">{{page/title}}</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar"></ul>
+		</header>
 		<article>
 			<a title="{{page/title}}" name="top"></a>
 			<div id="container">	
