@@ -82,6 +82,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.keepUndocumentedObjects = NO;
 		self.keepUndocumentedMembers = NO;
 		self.findUndocumentedMembersDocumentation = YES;
+		self.treatDocSetIndexingErrorsAsFatals = NO;
 		self.exitCodeThreshold = 0;
 		
 		self.mergeCategoriesToClasses = YES;
@@ -599,6 +600,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize publishDocSet;
 @synthesize keepIntermediateFiles;
 @synthesize cleanupOutputPathBeforeRunning;
+@synthesize treatDocSetIndexingErrorsAsFatals;
 @synthesize exitCodeThreshold;
 
 @synthesize warnOnMissingOutputPathArgument;

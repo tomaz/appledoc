@@ -182,8 +182,12 @@
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
 	if (!result) {
-		if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
-		return NO;
+		if (self.settings.treatDocSetIndexingErrorsAsFatals) {
+			if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to index the documentation set!" reason:task.lastStandardError];
+			return NO;
+		} else {
+			GBLogWarn(@"docsetutil failed to index the documentation set, continuing with what was indexed...");
+		}
 	}
 	return YES;
 }

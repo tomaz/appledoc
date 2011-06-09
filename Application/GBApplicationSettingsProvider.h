@@ -220,16 +220,6 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL cleanupOutputPathBeforeRunning;
 
-/** Species the threshold below which exit codes are truncated to zero.
- 
- This affects the reported exit code when ending a run session. It allows users preventing reporting certain types of exit codes, based on the given threshold. If the reported exit code is lower than the given threshold, zero is returned instead. If the reported exit code is equal or greater than the threshold, it is returned as the result of the tool.
- 
- This is useful to prevent higher level tools invoking appledoc (Xcode for example) treating reported warnings as invalid run for example. By default, this value is zero, so no exit code is suppressed.
- 
- @warning *Note:* Generally appledoc uses higher exit codes for more severe issues, so the greater the threshold, the more "permissive" the exit code will be, regardless of what happens inside the tool. However, crashes are always reported with proper exit codes, regardless of threshold value! Also note that the threshold value relies on the implementation of the exit codes #define values!
- */
-@property (assign) int exitCodeThreshold;
-
 /** Indicates whether the first paragraph needs to be repeated within method and property description or not.
  
  If `YES`, first paragraph is repeated in members description, otherwise not.
@@ -317,6 +307,22 @@ extern id kGBCustomDocumentIndexDescKey;
  If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.
  */
 @property (assign) BOOL prefixLocalMembersInRelatedItemsList;
+
+/** Specifies whether we should treat docsetutil indexing errors as fatals or not.
+ 
+ Turning this to `YES` will cause docsetutil indexing error failing build, otherwise it will continue with remaining files. The main reason for implementing this is to allow handling uncompatible descriptions as graceful as possible.
+ */
+@property (assign) BOOL treatDocSetIndexingErrorsAsFatals;
+
+/** Species the threshold below which exit codes are truncated to zero.
+ 
+ This affects the reported exit code when ending a run session. It allows users preventing reporting certain types of exit codes, based on the given threshold. If the reported exit code is lower than the given threshold, zero is returned instead. If the reported exit code is equal or greater than the threshold, it is returned as the result of the tool.
+ 
+ This is useful to prevent higher level tools invoking appledoc (Xcode for example) treating reported warnings as invalid run for example. By default, this value is zero, so no exit code is suppressed.
+ 
+ @warning *Note:* Generally appledoc uses higher exit codes for more severe issues, so the greater the threshold, the more "permissive" the exit code will be, regardless of what happens inside the tool. However, crashes are always reported with proper exit codes, regardless of threshold value! Also note that the threshold value relies on the implementation of the exit codes #define values!
+ */
+@property (assign) int exitCodeThreshold;
 
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
