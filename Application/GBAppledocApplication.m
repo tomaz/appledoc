@@ -387,7 +387,7 @@ static NSString *kGBArgHelp = @"help";
 	[self.settings.includePaths enumerateObjectsUsingBlock:^(NSString *userPath, BOOL *stop) {
 		NSString *path = [userPath stringByStandardizingPath];
 		if (![self.fileManager fileExistsAtPath:path]) {
-			ddprintf(@"WARNL --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
+			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
 		}
 	}];
 	
