@@ -21,6 +21,7 @@
  - `methodParameters`: The list of all method parameters. Only used for methods.
  - `methodResult`: Description of method result. Only used for methods.
  - `methodExceptions`: The list of all possible exceptions. Only used for methods.
+ - `availability`: A text representing the version at which this method / property is available. Can also be applied to other entities
  - `relatedItems`: The list of all related items. Used for cross referencing other entities.
  
  All lists must be provided in the desired order of output - i.e. output formatters don't apply any sorting, they simply emit the values in the given order.
@@ -105,6 +106,11 @@
  */
 @property (retain) GBCommentComponentsList *methodResult;
 
+/** Entity availability description.
+
+ */
+@property (retain) GBCommentComponentsList *availability;
+
 ///---------------------------------------------------------------------------------------
 /// @name Output generator helpers
 ///---------------------------------------------------------------------------------------
@@ -170,6 +176,12 @@
  @see hasMethodExceptions
  */
 @property (readonly) BOOL hasMethodResult;
+
+/** Specifies whether the `availability` contains at least one object or not.
+ 
+ @see availability
+ */
+@property (readonly) BOOL hasAvailability;
 
 /** Specifies whether the `relatedItems` contains at least one object or not.
  */

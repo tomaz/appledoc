@@ -70,6 +70,9 @@
 /** Returns the regex used for matching cross reference directive with capture 1 containing directive, capture 3 link. */
 @property (readonly) NSString *relatedSymbolRegex;
 
+/** Returns the regex used for matching cross reference directive with capture 1 containing directive, capture 2 description text. */
+@property (readonly) NSString *availabilityRegex;
+
 ///---------------------------------------------------------------------------------------
 /// @name Markdown specific definitions
 ///---------------------------------------------------------------------------------------

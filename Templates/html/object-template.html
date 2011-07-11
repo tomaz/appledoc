@@ -238,6 +238,13 @@ Section Method
 	</div>
 	{{/hasMethodResult}}
 	
+	{{#hasAvailability}}
+	<div class="method-subsection availability">
+		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
+		{{#availability}}{{>GBCommentComponentsList}}{{/availability}}
+	</div>
+	{{/hasAvailability}}
+	
 	{{#hasLongDescription}}
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
