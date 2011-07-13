@@ -5,7 +5,8 @@
 		<title>{{page/title}}</title>
 		<meta id="xcode-display" name="xcode-display" content="render"/>
 		<meta name="viewport" content="width=550" />
-		<link rel="stylesheet" type="text/css" href="{{page/cssPath}}" />
+		<link rel="stylesheet" type="text/css" href="{{page/cssPath}}" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="{{page/cssPrintPath}}" />	
 		{{#strings/appledocData}}<meta name="generator" content="{{tool}} {{version}} (build {{build}})" />{{/strings/appledocData}}
 	</head>
 	<body>

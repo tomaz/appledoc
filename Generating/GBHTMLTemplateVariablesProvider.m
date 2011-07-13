@@ -145,6 +145,7 @@
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForDocument:object] forKey:@"title"];
 	[page setObject:[path stringByAppendingPathComponent:@"css/styles.css"] forKey:@"cssPath"];
+	[page setObject:[path stringByAppendingPathComponent:@"css/stylesPrint.css"] forKey:@"cssPrintPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
