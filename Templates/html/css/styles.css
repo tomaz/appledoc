@@ -38,6 +38,15 @@ a:hover {
 	color: #36C;
 }
 
+h2 {
+	border-bottom: 1px solid #8391A8;
+	color: #3C4C6C;
+	font-size: 187%;
+	font-weight: normal;
+	margin-top: 1.75em;
+	padding-bottom: 2px;	
+}
+
 /* @group Common page elements */
 
 #top_header {
