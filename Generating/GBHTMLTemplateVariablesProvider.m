@@ -102,6 +102,8 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
@@ -115,6 +117,9 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
+	
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
@@ -128,6 +133,8 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	return result;
 }
@@ -142,7 +149,10 @@
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
 	[result setObject:object forKey:@"object"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[self addFooterVarsToDictionary:result];
 	return result;
 }
 
@@ -159,6 +169,9 @@
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
+	
 	[self addCustomDocumentWithKey:kGBCustomDocumentIndexDescKey toDictionary:result key:@"indexDescription"];
 	[self registerObjectsUsageForIndexInDictionary:result];
 	return result;
@@ -175,6 +188,9 @@
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
+	
 	[self registerObjectsUsageForIndexInDictionary:result];
 	return result;
 }
@@ -245,7 +261,14 @@
 
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
-	return [NSString stringWithFormat:template, [[object.nameOfDocument lastPathComponent] stringByDeletingPathExtension]];
+	
+	//Remove the -template if any
+	NSString *lastComp=[[object.nameOfDocument lastPathComponent] stringByDeletingPathExtension];
+	NSString *suffix=@"-template";
+	if([lastComp hasSuffix:suffix])
+		lastComp=[lastComp substringToIndex:[lastComp length] - [suffix length]];
+	
+	return [NSString stringWithFormat:template, lastComp];
 }
 
 - (NSDictionary *)specificationsForClass:(GBClassData *)object {
