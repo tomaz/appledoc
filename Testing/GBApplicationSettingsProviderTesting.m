@@ -457,6 +457,15 @@
 	assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
 }
 
+- (void)testStringByConvertingMarkdownToHTML_shouldAllowUsageOfUTF8CharacterSet {
+	// setup
+	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
+	// execute
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"对"];
+	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
+	assertThat(result1, is(@"对"));
+}
+
 - (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];

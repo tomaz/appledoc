@@ -11,6 +11,7 @@
 #import "RegexKitLite.h"
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
+#import "GBLog.h"
 
 NSString *kGBTemplatePlaceholderCompanyID = @"%COMPANYID";
 NSString *kGBTemplatePlaceholderProjectID = @"%PROJECTID";
@@ -169,16 +170,24 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 - (NSString *)stringByConvertingMarkdownToHTML:(NSString *)markdown {
 	// First pass the markdown to discount to get it converted to HTML.
 	NSString *result = nil;
-	MMIOT *document = mkd_string((char *)[markdown cStringUsingEncoding:NSUTF8StringEncoding], (int)[markdown length], 0);
-	mkd_compile(document, 0);
-	char *html = NULL;
-	int size = mkd_document(document, &html);
-	if (size <= 0) {
-		GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown normalizedDescription]);
-	} else {
-		result = [NSString stringWithCString:html encoding:NSASCIIStringEncoding];
+	const char* input=[markdown cStringUsingEncoding:NSUTF8StringEncoding];
+	
+	if(input) {
+		MMIOT *document = mkd_string((char *)input, (int)strlen(input), 0);
+		mkd_compile(document, 0);
+		
+		char *html = NULL;
+		int size = mkd_document(document, &html);
+		
+		if (size <= 0) {
+			GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown description]);
+		} else {
+			result = [NSString stringWithCString:html encoding:NSUTF8StringEncoding];
+			if(!result)
+				result = [NSString stringWithCString:html encoding:NSASCIIStringEncoding];
+		}
+		mkd_cleanup(document);
 	}
-	mkd_cleanup(document);
 	
 	// We should properly handle cross references: if outside example block, simply strip prexif/suffix markers, otherwise extract description from Markdown style scross reference (i.e. [description](the rest)) and only use that part.
 	if (self.embedCrossReferencesWhenProcessingMarkdown) {
