@@ -32,6 +32,7 @@
 		self.methodParameters = [NSMutableArray array];
 		self.methodExceptions = [NSMutableArray array];
 		self.methodResult = [GBCommentComponentsList componentsList];
+		self.availability = [GBCommentComponentsList componentsList];
 	}
 	return self;
 }
@@ -72,6 +73,10 @@
 	return [self.relatedItems.components count] > 0;
 }
 
+- (BOOL)hasAvailability {
+	return [self.availability.components count] > 0;
+}
+
 - (BOOL)isCopied {
 	return (self.originalContext != nil);
 }
@@ -88,5 +93,6 @@
 @synthesize methodParameters;
 @synthesize methodExceptions;
 @synthesize methodResult;
+@synthesize availability;
 
 @end

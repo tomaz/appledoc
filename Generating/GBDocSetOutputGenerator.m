@@ -293,6 +293,10 @@
 				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.methodResult forKey:@"abstract"];
 				[data setObject:resultData forKey:@"returnValue"];
 			}
+			if (method.comment.hasAvailability) {
+				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.availability forKey:@"abstract"];
+				[data setObject:resultData forKey:@"availability"];
+			}
 		}
 	}
 }

@@ -74,6 +74,7 @@
 		[result setObject:@"Properties" forKey:@"propertiesTitle"];
 		[result setObject:@"Parameters" forKey:@"parametersTitle"];
 		[result setObject:@"Return Value" forKey:@"resultTitle"];
+		[result setObject:@"Availability" forKey:@"availability"];
 		[result setObject:@"Discussion" forKey:@"discussionTitle"];
 		[result setObject:@"Exceptions" forKey:@"exceptionsTitle"];
 		[result setObject:@"See Also" forKey:@"seeAlsoTitle"];
