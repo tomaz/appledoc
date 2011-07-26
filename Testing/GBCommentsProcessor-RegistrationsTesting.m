@@ -196,7 +196,8 @@
 						  @"@param name Desc\n"
 						  @"@exception name Desc\n"
 						  @"@return Desc"
-						  @"@see Class"];
+						  @"@see Class"
+						  @"@since Version 1.0"];
 	// execute
 	[processor processComment:comment withContext:nil store:store];
 	// verify
@@ -223,6 +224,10 @@
 		assertThat(c.sourceInfo, isNot(nil));
 	}
 	for (GBCommentComponent *c in comment.relatedItems.components) {
+		assertThat(c.settings, is(settings));
+		assertThat(c.sourceInfo, isNot(nil));
+	}
+	for (GBCommentComponent *c in comment.availability.components) {
 		assertThat(c.settings, is(settings));
 		assertThat(c.sourceInfo, isNot(nil));
 	}
@@ -281,6 +286,20 @@
 	// verify - we only use parameter description if there is nothing else found in the comment.
 	[self assertCommentComponents:comment1.methodResult matchesStringValues:@"Description", nil];
 	[self assertCommentComponents:comment2.methodResult matchesStringValues:@"Description1\nLine2\n\nParagraph2", nil];
+}
+
+- (void)testProcessCommentWithContextStore_methods_shouldRegisterAvailabilityDescriptionProperly {
+	// setup
+	GBStore *store = [GBTestObjectsRegistry store];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:[GBTestObjectsRegistry realSettingsProvider]];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"@since Description"];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"@available Description1\nLine2\n\nParagraph2"];
+	// execute
+	[processor processComment:comment1 withContext:nil store:store];
+	[processor processComment:comment2 withContext:nil store:store];
+	// verify - we only use parameter description if there is nothing else found in the comment.
+	[self assertCommentComponents:comment1.availability matchesStringValues:@"Description", nil];
+	[self assertCommentComponents:comment2.availability matchesStringValues:@"Description1\nLine2\n\nParagraph2", nil];
 }
 
 #pragma mark Common directives testing
@@ -371,7 +390,8 @@
 						  @"@exception exc Exception\n"
 						  @"@param name2 Description2\n"
 						  @"@return Return\n"
-						  @"@param name3 Description3\n"];
+						  @"@param name3 Description3\n"
+						  @"@since Version 1.0\n"];
 	// execute
 	[processor processComment:comment withContext:nil store:store];
 	// verify - we only use parameter description if there is nothing else found in the comment.
@@ -381,6 +401,7 @@
 	 @"name3", @"Description3", GBEND, nil];
 	[self assertMethodArguments:comment.methodExceptions matches:@"exc", @"Exception", GBEND, nil];
 	[self assertCommentComponents:comment.methodResult matchesStringValues:@"Return", nil];
+	[self assertCommentComponents:comment.availability matchesStringValues:@"Version 1.0", nil];
 }
 
 - (void)testProcessCommentWithContextStore_combinations_shouldRegisterWarningAfterMethodBlockAsMainDescription {
@@ -390,17 +411,21 @@
 	GBComment *comment1 = [GBComment commentWithStringValue:@"@param name Description\n@warning Warning"];
 	GBComment *comment2 = [GBComment commentWithStringValue:@"@exception name Description\n@warning Warning"];
 	GBComment *comment3 = [GBComment commentWithStringValue:@"@return Description\n@warning Warning"];
+	GBComment *comment4 = [GBComment commentWithStringValue:@"@since Description\n@warning Warning"];
 	// execute
 	[processor processComment:comment1 withContext:nil store:store];
 	[processor processComment:comment2 withContext:nil store:store];
 	[processor processComment:comment3 withContext:nil store:store];
+	[processor processComment:comment4 withContext:nil store:store];
 	// verify - we only use parameter description if there is nothing else found in the comment.
 	[self assertMethodArguments:comment1.methodParameters matches:@"name", @"Description", GBEND, nil];
 	[self assertMethodArguments:comment2.methodExceptions matches:@"name", @"Description", GBEND, nil];
 	[self assertCommentComponents:comment3.methodResult matchesStringValues:@"Description", nil];
+	[self assertCommentComponents:comment4.availability matchesStringValues:@"Description", nil];
 	[self assertComment:comment1 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
 	[self assertComment:comment2 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
 	[self assertComment:comment3 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
+	[self assertComment:comment4 matchesShortDesc:@"Warning" longDesc:@"@warning Warning", nil];
 }
 
 #pragma mark Miscellaneous handling

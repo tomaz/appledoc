@@ -74,6 +74,10 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:sa|see)"]);
 }
 
+- (NSString *)availabilityRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(?:available|since)"]);
+}
+
 #pragma mark Markdown detection
 
 - (NSString *)markdownInlineLinkRegex {

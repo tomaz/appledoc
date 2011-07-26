@@ -25,6 +25,7 @@
 	assertThat(comment.methodParameters, isNot(nil));
 	assertThat(comment.methodExceptions, isNot(nil));
 	assertThat(comment.methodResult, isNot(nil));
+	assertThat(comment.availability, isNot(nil));
 }
 
 #pragma mark Comment components testing

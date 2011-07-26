@@ -69,6 +69,7 @@ typedef NSUInteger GBProcessingFlag;
 - (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processRelatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processAvailabilityBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string;
 
 - (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
@@ -195,7 +196,10 @@ typedef NSUInteger GBProcessingFlag;
 		if ([self processParamBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processExceptionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processReturnBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processAvailabilityBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		
+		
 		GBLogXWarn(self.currentSourceInfo, @"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
 	}
 		
@@ -332,6 +336,22 @@ typedef NSUInteger GBProcessingFlag;
 	return YES;
 }
 
+- (BOOL)processAvailabilityBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.availabilityRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *description = [components objectAtIndex:2];
+	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	GBLogDebug(@"- Registering availability description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Prepare object representation from the description and register the result to the comment.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	[self.currentComment.availability registerComponent:component];
+	return YES;
+}
+
 - (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.returnDescriptionRegex];
 	if ([components count] == 0) return NO;
@@ -379,6 +399,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.availabilityRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.relatedSymbolRegex]) return YES;
 	return NO;
 }
