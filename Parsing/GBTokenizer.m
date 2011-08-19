@@ -194,7 +194,8 @@
 		}
 		
 		// Append string value to current comment and proceed with next token.
-		[self.lastCommentBuilder appendString:value];
+        if (value)
+            [self.lastCommentBuilder appendString:value];
 		self.tokenIndex++;
 	}
 	
