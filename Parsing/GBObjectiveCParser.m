@@ -21,6 +21,7 @@
 @property (retain) GBTokenizer *tokenizer;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
+@property (assign) BOOL includeInOutput;
 
 @end
 
@@ -92,6 +93,21 @@
 	GBLogDebug(@"Parsing objective-c objects...");
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename settings:self.settings];
+    self.includeInOutput = YES;
+    for (NSString *excludeOutputPath in self.settings.excludeOutputPaths) {
+        if ([filename isEqualToString:excludeOutputPath]) {
+            self.includeInOutput = NO;
+            break;
+        }
+        
+        NSString *excludeOutputDir = excludeOutputPath;
+        if (![excludeOutputDir hasSuffix:@"/"])
+            excludeOutputDir = [NSString stringWithFormat:@"%@/", excludeOutputDir];
+        if ([filename hasPrefix:excludeOutputDir]) {
+            self.includeInOutput = NO;
+            break;
+        }
+    }
 	while (![self.tokenizer eof]) {
 		if (![self matchNextObject]) {
 			[self.tokenizer consume:1];
@@ -111,6 +127,7 @@
 @synthesize tokenizer;
 @synthesize settings;
 @synthesize store;
+@synthesize includeInOutput;
 
 @end
 
@@ -122,6 +139,7 @@
 	// @interface CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
+    class.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:class];
 	GBLogDebug(@"Matched %@ class definition at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
@@ -138,6 +156,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+    category.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:category];
 	GBLogVerbose(@"Matched %@(%@) category definition at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
@@ -151,6 +170,7 @@
 	// @interface CLASSNAME ( )
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
+    extension.includeInOutput = self.includeInOutput;
 	GBLogVerbose(@"Matched %@() extension definition at line %lu.", className, extension.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:extension];
 	[self registerLastCommentToObject:extension];
@@ -164,6 +184,7 @@
 	// @protocol PROTOCOLNAME
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
+    protocol.includeInOutput = self.includeInOutput;
 	GBLogVerbose(@"Matched %@ protocol definition at line %lu.", protocolName, protocol.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:protocol];
 	[self registerLastCommentToObject:protocol];
@@ -289,6 +310,7 @@
 	// @implementation CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBClassData *class = [GBClassData classDataWithName:className];
+    class.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:class];
 	GBLogVerbose(@"Matched %@ class declaration at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
@@ -302,6 +324,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
+    category.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:category];
 	GBLogVerbose(@"Matched %@(%@) category declaration at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];

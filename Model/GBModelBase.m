@@ -19,6 +19,7 @@
 	if (self) {
 		_sourceInfos = [[NSMutableSet alloc] init];
 		_sourceInfosByFilenames = [[NSMutableDictionary alloc] init];
+        _includeInOutput = YES;
 	}
 	return self;
 }
@@ -103,5 +104,6 @@
 @synthesize parentObject;
 @synthesize htmlLocalReference;
 @synthesize htmlReferenceName;
+@synthesize includeInOutput = _includeInOutput;
 
 @end
