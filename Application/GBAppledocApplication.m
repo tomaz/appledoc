@@ -24,6 +24,7 @@ static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
 static NSString *kGBArgIndexDescPath = @"index-desc";
 static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
+static NSString *kGBArgExcludeOutputPath = @"exclude-output";
 
 static NSString *kGBArgProjectName = @"project-name";
 static NSString *kGBArgProjectVersion = @"project-version";
@@ -220,6 +221,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgOutputPath,													'o',	DDGetoptRequiredArgument },
 		{ kGBArgTemplatesPath,												't',	DDGetoptRequiredArgument },
 		{ kGBArgIgnorePath,													'i',	DDGetoptRequiredArgument },
+		{ kGBArgExcludeOutputPath,											'x',	DDGetoptRequiredArgument },
 		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
 		{ kGBArgIndexDescPath,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
@@ -601,6 +603,9 @@ static NSString *kGBArgHelp = @"help";
 	if ([path hasPrefix:@"*"]) path = [path substringFromIndex:1];
 	[self.settings.ignoredPaths addObject:path];
 }
+- (void)setExcludeOutput:(NSString *)path {
+	[self.settings.excludeOutputPaths addObject:path];
+}
 
 - (void)setProjectName:(NSString *)value { self.settings.projectName = value; }
 - (void)setProjectVersion:(NSString *)value { self.settings.projectVersion = value; }
@@ -745,6 +750,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 	for (NSString *path in self.settings.includePaths) ddprintf(@"--%@ = %@\n", kGBArgIncludePath, path);
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
+	for (NSString *path in self.settings.excludeOutputPaths) ddprintf(@"--%@ = %@\n", kGBArgExcludeOutputPath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetUtilPath, self.settings.docsetUtilPath);
 	ddprintf(@"\n");
@@ -819,6 +825,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgDocSetInstallPath, @"<path>", @"DocSet installation path");
 	PRINT_USAGE(@"-s,", kGBArgIncludePath, @"<path>", @"Include static doc(s) at path");
 	PRINT_USAGE(@"-i,", kGBArgIgnorePath, @"<path>", @"Ignore given path");
+	PRINT_USAGE(@"-x,", kGBArgExcludeOutputPath, @"<path>", @"Exclude given path from output");
 	PRINT_USAGE(@"   ", kGBArgIndexDescPath, @"<path>", @"File including main index description");
 	ddprintf(@"\n");
 	ddprintf(@"PROJECT INFO\n");

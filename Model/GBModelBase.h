@@ -16,6 +16,7 @@
 	@private
 	NSMutableSet *_sourceInfos;
 	NSMutableDictionary *_sourceInfosByFilenames;
+    BOOL _includeInOutput;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -127,5 +128,8 @@
  @see htmlLocalReference
  */
 @property (copy) NSString *htmlReferenceName;
+
+/** Whether output should be generated for this class.  If `NO`, this class is purely made available for the processing of other classes. */
+@property (assign) BOOL includeInOutput;
 
 @end
