@@ -164,6 +164,12 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (retain) NSMutableSet *ignoredPaths;
 
+/** The list of all full or partial paths to exclude from output generation.
+
+ Source code in these paths is still parsed and possibly used for copying to classes not in the excludeOutputPaths.
+ */
+@property (retain) NSMutableSet *excludeOutputPaths;
+
 ///---------------------------------------------------------------------------------------
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------

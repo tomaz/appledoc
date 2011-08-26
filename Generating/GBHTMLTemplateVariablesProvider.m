@@ -426,6 +426,7 @@
 	NSArray *classes = [self.store classesSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[classes count]];
 	for (GBClassData *class in classes) {
+        if (!class.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
 		[data setObject:[self hrefForObject:class fromObject:nil] forKey:@"href"];
 		[data setObject:class.nameOfClass forKey:@"title"];
@@ -438,6 +439,7 @@
 	NSArray *categories = [self.store categoriesSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[categories count]];
 	for (GBCategoryData *category in categories) {
+        if (!category.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
 		[data setObject:[self hrefForObject:category fromObject:nil] forKey:@"href"];
 		[data setObject:category.idOfCategory forKey:@"title"];
@@ -450,6 +452,7 @@
 	NSArray *protocols = [self.store protocolsSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[protocols count]];
 	for (GBProtocolData *protocol in protocols) {
+        if (!protocol.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
 		[data setObject:[self hrefForObject:protocol fromObject:nil] forKey:@"href"];
 		[data setObject:protocol.nameOfProtocol forKey:@"title"];
@@ -462,6 +465,7 @@
 	// This returns the array of all root classes, each class containing further arrays of subclasses and so on. Ussually root classes array only contains single NSObject class, but can also include all root classes (not derived from NSObject). The algorithm for creating hierarhy is not state of the art, but it's quite simple and effective: for each class we iterate over it's whole hierarchy until we arrive at it's root class, creating an flat list of hierarchy for this class. Then we use the flat list to add all unknown class names to the hierarchy dictionary, together with all subclasses. When we process all classes like this, we have a dictionary with proper inheritance.
 	NSMutableDictionary *hierarchy = [NSMutableDictionary dictionaryWithCapacity:[self.store.classes count]];
 	for (GBClassData *class in [self.store.classes allObjects]) {
+        if (!class.includeInOutput) continue;
 		// Build the flat list of class hierarchy up to the root class. The flat lists array starts with root and ends with current class. Note how we treat unknown classes as root classes - if a class doesn't have a pointer to superclass, but does have it's name, we add the name to the flat list. Although this does end with usable hierarhcy, it does leave things open for improvements (i.e. deriving from NSView will not create the hierarchy all the way down to NSObject, but will instead use NSView as a root view, besides NSObject).
 		GBClassData *c = class;
 		NSMutableArray *flatlist = [NSMutableArray array];

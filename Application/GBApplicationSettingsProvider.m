@@ -72,6 +72,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.indexDescriptionPath = nil;
 		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
+        self.excludeOutputPaths = [NSMutableSet set];
 		
 		self.createHTML = YES;
 		self.createDocSet = YES;
@@ -570,6 +571,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize includePaths;
 @synthesize indexDescriptionPath;
 @synthesize ignoredPaths;
+@synthesize excludeOutputPaths;
 
 @synthesize docsetBundleIdentifier;
 @synthesize docsetBundleName;

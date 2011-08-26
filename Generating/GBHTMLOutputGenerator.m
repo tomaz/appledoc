@@ -56,6 +56,7 @@
 
 - (BOOL)processClasses:(NSError **)error {
 	for (GBClassData *class in self.store.classes) {
+        if (!class.includeInOutput) continue;
 		GBLogInfo(@"Generating output for class %@...", class);
 		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
@@ -72,6 +73,7 @@
 
 - (BOOL)processCategories:(NSError **)error {
 	for (GBCategoryData *category in self.store.categories) {
+        if (!category.includeInOutput) continue;
 		GBLogInfo(@"Generating output for category %@...", category);
 		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
@@ -88,6 +90,7 @@
 
 - (BOOL)processProtocols:(NSError **)error {
 	for (GBProtocolData *protocol in self.store.protocols) {
+        if (!protocol.includeInOutput) continue;
 		GBLogInfo(@"Generating output for protocol %@...", protocol);
 		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
