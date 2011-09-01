@@ -170,11 +170,11 @@
 }
 
 - (NSString *)appledocBoldStartMarker {
-	return @"~!#";
+	return @"~!$";
 }
 
 - (NSString *)appledocBoldEndMarker {
-	return @"#!~";
+	return @"$!~";
 }
 
 #pragma Properties
