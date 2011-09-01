@@ -308,7 +308,7 @@
 			NSString *objectName = [(GBClassData *)object nameOfClass];
 			return [NSString stringWithFormat:@"//apple_ref/occ/cl/%@", objectName];
 		} else if ([object isKindOfClass:[GBCategoryData class]]) {
-			NSString *objectName = [(GBCategoryData *)object nameOfClass];
+			NSString *objectName = [(GBCategoryData *)object idOfCategory];
 			return [NSString stringWithFormat:@"//apple_ref/occ/cat/%@", objectName];
 		} else {
 			NSString *objectName = [(GBProtocolData *)object nameOfProtocol];
@@ -326,7 +326,7 @@
 			objectName = [(GBClassData *)parent nameOfClass];
 			objectID = ([(GBMethodData *)object methodType] == GBMethodTypeClass) ? @"cl" : @"inst";
 		} else if ([parent isKindOfClass:[GBCategoryData class]]) {
-			objectName = [(GBCategoryData *)parent nameOfClass];
+			objectName = [(GBCategoryData *)parent idOfCategory];
 			objectID = @"intf";
 		} else {
 			objectName = [(GBProtocolData *)parent nameOfProtocol];
