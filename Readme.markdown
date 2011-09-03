@@ -34,6 +34,13 @@ Before running the tool, you need to copy all required template files from Templ
 - ~/Library/Application Support/appledoc
 - ~/.appledoc
 
+You can also use install-appledoc.sh script to perform quick installation. Open Terminal and switch to appledoc directory. Type following command:
+
+	sudo sh install-appledoc.sh 
+
+It compiles appledoc and installs its binary to /usr/local/bin and templatest to - ~/.appledoc by default. You can override this directories with -b and -t options respectively. For example:
+
+	sudo sh install-appledoc.sh -b /usr/bin -t ~/Library/Application\ Support/appledoc
 
 Using appledoc
 ==============
