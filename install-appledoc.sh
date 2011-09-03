@@ -37,5 +37,5 @@ xcodebuild -target appledoc -configuration Release install
 echo "Installing binary to $BINARY_DIR"
 cp /tmp/appledoc.dst/usr/local/bin/appledoc $BINARY_DIR
 
-echo "Copying temapltes to $TEMPLATES_DIR"
+echo "Copying templates to $TEMPLATES_DIR"
 cp -R Templates/ $TEMPLATES_DIR
