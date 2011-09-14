@@ -1,4 +1,3 @@
-
 //
 //  GBProcessor.m
 //  appledoc
@@ -294,7 +293,7 @@
 
 - (void)setupKnownObjectsFromStore {
 	// Setups links to superclasses and adopted protocols. This should be sent first so that the data is prepared for later processing.
-	GBLogInfo(@"Checking for known superclasgses and adopted protocols...");
+	GBLogInfo(@"Checking for known superclasses and adopted protocols...");
 	for (GBClassData *class in self.store.classes) {
 		[self setupSuperclassForClass:class];
 		[self setupAdoptedProtocolsFromProvider:class.adoptedProtocols];
