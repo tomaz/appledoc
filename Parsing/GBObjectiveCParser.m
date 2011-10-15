@@ -261,8 +261,6 @@
 		NSMutableArray *propertyComponents = [NSMutableArray array];
 		__block BOOL parseAttribute = NO;
 		__block NSUInteger parenthesisDepth = 0;
-		__block BOOL parseBlockName = NO;
-		__block NSString *blockName = nil;
 		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			if ([token matches:@"__attribute__"]) {
 				parseAttribute = YES;
@@ -276,14 +274,8 @@
 				}					
 			} else {
 				[propertyComponents addObject:[token stringValue]];
-				if (parseBlockName) {
-					blockName = [token stringValue];
-					parseBlockName = NO;
-				}
-				if ([token matches:@"^"]) parseBlockName = YES;
 			}
 		}];
-		if (blockName) [propertyComponents addObject:blockName];
 		
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
@@ -531,6 +523,21 @@
 					}];
 					*stop = YES; // Ignore the rest of parameters as vararg is the last and above block consumed end token which would confuse above block!
 				}
+                
+                // If we have no more colon before end, consume the rest of the tokens to get optional termination macros.
+                __block BOOL hasColon = NO;
+                [self.tokenizer lookaheadTo:end usingBlock:^(PKToken *token, BOOL *stop) {
+                    if ([token matches:@":"]) {
+                        hasColon = YES;
+                        *stop = YES;
+                    }
+                }];
+                if (!hasColon) {
+					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+						[terminationMacros addObject:[token stringValue]];
+					}];
+					*stop = YES; // Ignore the rest of parameters as vararg is the last and above block consumed end token which would confuse above block!
+                }
 			}
 			
 			GBMethodArgument *argument = nil;
