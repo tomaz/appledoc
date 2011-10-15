@@ -87,6 +87,23 @@
 	return [self.tokens objectAtIndex:self.tokenIndex + delta - 1];
 }
 
+- (void)lookaheadTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *stop))block {
+    NSUInteger tokenCount = [self.tokens count];
+	BOOL quit = NO;
+    for (NSUInteger index = self.tokenIndex; index < tokenCount; ++index) {
+        PKToken *token = [self.tokens objectAtIndex:index];
+		if ([token isComment]) {
+			index++;
+			continue;
+		}
+		if ([token matches:end]) {
+            break;
+		}
+        block(token, &quit);
+		if (quit) break;
+	}
+}
+
 - (PKToken *)currentToken {
 	if ([self eof]) return [PKToken EOFToken];
 	return [self.tokens objectAtIndex:self.tokenIndex];
