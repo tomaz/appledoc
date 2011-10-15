@@ -9,6 +9,7 @@
 #import "GRMustache.h"
 #import "GBMethodArgument.h"
 #import "GBMethodData.h"
+#import "RegexKitLite.h"
 
 @interface GBMethodData ()
 
@@ -40,9 +41,44 @@
 
 + (id)propertyDataWithAttributes:(NSArray *)attributes components:(NSArray *)components {
 	NSParameterAssert([components count] >= 2);	// At least one return and the name!
-	NSMutableArray *results = [NSMutableArray arrayWithArray:components];
-	[results removeLastObject];	// Remove ;
-	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:[components lastObject]];
+    
+    // extract return type and property name
+    NSString *propertyName = nil;
+    NSMutableArray *results = [NSMutableArray array];
+    BOOL nextComponentIsBlockPropertyName = NO;
+    BOOL nextComponentIsBlockReturnComponent = NO;
+    NSUInteger parenthesisLevel = 0;
+    for (NSString *component in components) {
+        if ([component isEqualToString:@"^"]) {
+            [results addObject:component];
+            nextComponentIsBlockPropertyName = YES;
+        } else if (nextComponentIsBlockPropertyName) {
+            propertyName = component;
+            nextComponentIsBlockPropertyName = NO;
+            nextComponentIsBlockReturnComponent = YES;
+        } else if (nextComponentIsBlockReturnComponent) {
+            if (parenthesisLevel > 0 || [component isEqualToString:@"("]) {
+                [results addObject:component];
+            }
+        } else if ([component isMatchedByRegex:@"^[_a-zA-Z][_a-zA-Z0-9]*$"]) {
+            if (results.count == 0) {
+                [results addObject:component];
+            } else if (propertyName == nil) {
+                propertyName = component;
+            } else {
+                // ignore termination macro
+            }
+        } else if (propertyName == nil) {
+            [results addObject:component];
+        }
+        if ([component isEqualToString:@"("]) {
+            ++parenthesisLevel;
+        } else if ([component isEqualToString:@")"]) {
+            --parenthesisLevel;
+        }
+    }
+    
+	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:propertyName];
 	return [[[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]] autorelease];
 }
 

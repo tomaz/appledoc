@@ -88,8 +88,18 @@
  @param offset The offset from the current position.
  @return Returns the token at the given offset or EOF token if offset point after EOF.
  @see consume:
+ @see lookaheadTo:usingBlock:
  */
 - (PKToken *)lookahead:(NSUInteger)offset;
+
+/** Enumerates but does not consume all tokens starting at current token up until the given end token is detected.
+ 
+ For each token, the given block is called which gives client a chance to inspect and handle tokens. End token is not reported. Note that this method automatically skips any comment tokens and only enumerates actual language tokens.
+ 
+ @param end Ending token.
+ @see lookahead:
+ */
+- (void)lookaheadTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *stop))block;
 
 /** Consumes the given ammoun of tokens, starting at the current position.
  
