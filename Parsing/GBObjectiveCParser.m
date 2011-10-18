@@ -261,8 +261,6 @@
 		NSMutableArray *propertyComponents = [NSMutableArray array];
 		__block BOOL parseAttribute = NO;
 		__block NSUInteger parenthesisDepth = 0;
-		__block BOOL parseBlockName = NO;
-		__block NSString *blockName = nil;
 		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			if ([token matches:@"__attribute__"]) {
 				parseAttribute = YES;
@@ -276,14 +274,8 @@
 				}					
 			} else {
 				[propertyComponents addObject:[token stringValue]];
-				if (parseBlockName) {
-					blockName = [token stringValue];
-					parseBlockName = NO;
-				}
-				if ([token matches:@"^"]) parseBlockName = YES;
 			}
 		}];
-		if (blockName) [propertyComponents addObject:blockName];
 		
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
@@ -507,7 +499,6 @@
 			__block NSString *argumentVar = nil;
 			__block NSMutableArray *argumentTypes = [NSMutableArray array];
 			__block NSMutableArray *terminationMacros = [NSMutableArray array];
-			__block BOOL isVarArg = NO;
 			if ([[self.tokenizer currentToken] matches:@":"]) {
 				[self.tokenizer consume:1];
 				
@@ -524,24 +515,42 @@
 				
 				// If we have variable args block following, consume the rest of the tokens to get optional termination macros.
 				if ([[self.tokenizer lookahead:0] matches:@","] && [[self.tokenizer lookahead:1] matches:@"..."]) {
-					isVarArg = YES;
 					[self.tokenizer consume:2];
 					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 						[terminationMacros addObject:[token stringValue]];
 					}];
 					*stop = YES; // Ignore the rest of parameters as vararg is the last and above block consumed end token which would confuse above block!
 				}
-			}
-			
-			GBMethodArgument *argument = nil;
-			if ([argumentTypes count] == 0)
-				argument = [GBMethodArgument methodArgumentWithName:argumentName];
-			else if (!isVarArg)
-				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar];
-			else
-				argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar terminationMacros:terminationMacros];
-			[methodArgs addObject:argument];
-			*consume = NO;
+                
+                // If we have no more colon before end, consume the rest of the tokens to get optional termination macros.
+                __block BOOL hasColon = NO;
+                [self.tokenizer lookaheadTo:end usingBlock:^(PKToken *token, BOOL *stop) {
+                    if ([token matches:@":"]) {
+                        hasColon = YES;
+                        *stop = YES;
+                    }
+                }];
+                if (!hasColon) {
+					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+						[terminationMacros addObject:[token stringValue]];
+					}];
+					*stop = YES; // Ignore the rest of parameters
+                }
+                
+                if (terminationMacros.count == 0) {
+                    terminationMacros = nil;
+                }
+			} else {
+                // remaining tokens are termination macros
+                [self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+                    [terminationMacros addObject:[token stringValue]];
+                }];
+                *stop = YES; // Ignore the rest of parameters
+            }
+            
+            GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar terminationMacros:terminationMacros];
+            [methodArgs addObject:argument];
+            *consume = NO;
 		}];
 		
 		// Create method instance and register it.
