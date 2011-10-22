@@ -23,39 +23,40 @@
 
 /** Returns autoreleased method argument with the given parameters.
  
- Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
+ Internally this sends allocated instance `initWithName:types:var:variableArg:terminationMacros:` message, so check it's documentation for details.
  
  @param name The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
- @param macros Array of variable arg termination macros or `nil` if not variable arg.
+ @param variableArg whether the last named parameter accepts indefinite number of arguments
+ @param macros Array of termination macros
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.
- @see initWithName:types:var:terminationMacros:
+ @see initWithName:types:var:variableArg:terminationMacros:
  */
-+ (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros;
++ (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros;
 
 /** Returns autoreleased method argument with the given parameters.
  
- Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
+ Internally this sends allocated instance `initWithName:types:var:variableArg:terminationMacros:` message, so check it's documentation for details.
  
  @param name The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.
- @see initWithName:types:var:terminationMacros:
+ @see initWithName:types:var:variableArg:terminationMacros:
  */
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var;
 
 /** Returns autoreleased type-less method argument.
  
- Internally this sends allocated instance `initWithName:types:var:terminationMacros:` message, so check it's documentation for details.
+ Internally this sends allocated instance `initWithName:types:var:variableArg:terminationMacros:` message, so check it's documentation for details.
  
  @param name The name of the method argument, part of method selector.
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if the argument is `nil` or empty string.
- @see initWithName:types:var:terminationMacros:
+ @see initWithName:types:var:variableArg:terminationMacros:
  */
 + (id)methodArgumentWithName:(NSString *)name;
 
@@ -68,11 +69,12 @@
  @param argument The name of the method argument, part of method selector.
  @param types Array of argument types in the form of `NSString` instances or `nil` if not used.
  @param var Array of arguments in the form of `GBMethodArgument` instances or `nil` if not used.
- @param macros Array of variable arg termination macros or `nil` if not variable arg.
+ @param variableArg whether the last named parameter accepts indefinite number of arguments
+ @param macros Array of termination macros
  @return Returns initialized object or `nil` if initialization fails.
  @exception NSException Thrown if either of the given parameters is invalid.
  */
-- (id)initWithName:(NSString *)argument types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros;
+- (id)initWithName:(NSString *)argument types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros;
 
 ///---------------------------------------------------------------------------------------
 /// @name Argument data
