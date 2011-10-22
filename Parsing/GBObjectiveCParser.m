@@ -499,6 +499,7 @@
 			__block NSString *argumentVar = nil;
 			__block NSMutableArray *argumentTypes = [NSMutableArray array];
 			__block NSMutableArray *terminationMacros = [NSMutableArray array];
+            __block BOOL variableArg = NO;
 			if ([[self.tokenizer currentToken] matches:@":"]) {
 				[self.tokenizer consume:1];
 				
@@ -515,6 +516,7 @@
 				
 				// If we have variable args block following, consume the rest of the tokens to get optional termination macros.
 				if ([[self.tokenizer lookahead:0] matches:@","] && [[self.tokenizer lookahead:1] matches:@"..."]) {
+                    variableArg = YES;
 					[self.tokenizer consume:2];
 					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 						[terminationMacros addObject:[token stringValue]];
@@ -548,7 +550,7 @@
                 *stop = YES; // Ignore the rest of parameters
             }
             
-            GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar terminationMacros:terminationMacros];
+            GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:argumentName types:argumentTypes var:argumentVar variableArg:variableArg terminationMacros:terminationMacros];
             [methodArgs addObject:argument];
             *consume = NO;
 		}];
