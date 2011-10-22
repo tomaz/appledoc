@@ -12,19 +12,19 @@
 
 #pragma mark Initialization & disposal
 
-+ (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
-	return [[[self alloc] initWithName:name types:types var:var terminationMacros:macros] autorelease];
++ (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros {
+	return [[[self alloc] initWithName:name types:types var:var variableArg:variableArg terminationMacros:macros] autorelease];
 }
 
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var {
-	return [self methodArgumentWithName:name types:types var:var terminationMacros:nil];
+	return [self methodArgumentWithName:name types:types var:var variableArg:NO terminationMacros:nil];
 }
 
 + (id)methodArgumentWithName:(NSString *)name {
-	return [self methodArgumentWithName:name types:[NSArray array] var:nil terminationMacros:nil];
+	return [self methodArgumentWithName:name types:[NSArray array] var:nil variableArg:NO terminationMacros:nil];
 }
 
-- (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var terminationMacros:(NSArray *)macros {
+- (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros {
 	NSParameterAssert(name != nil);
 	NSParameterAssert(([types count] == 0 && var == nil) || ([types count] > 0 && var != nil));
 	self = [super init];
@@ -33,7 +33,7 @@
 		_argumentTypes = [types retain];
 		_argumentVar = [var copy];
 		_terminationMacros = macros ? [macros retain] : [[NSArray alloc] init];
-		self.isVariableArg = (macros != nil);
+		self.isVariableArg = variableArg;
 	}
 	return self;
 }
