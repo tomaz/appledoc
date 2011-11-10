@@ -47,6 +47,7 @@
     NSMutableArray *results = [NSMutableArray array];
     BOOL nextComponentIsBlockPropertyName = NO;
     BOOL nextComponentIsBlockReturnComponent = NO;
+    BOOL inProtocolsList = NO;
     NSUInteger parenthesisLevel = 0;
     for (NSString *component in components) {
         if ([component isEqualToString:@"^"]) {
@@ -60,8 +61,14 @@
             if (parenthesisLevel > 0 || [component isEqualToString:@"("]) {
                 [results addObject:component];
             }
+        } else if ([component isEqualToString:@"<"]) {
+            inProtocolsList = YES;
+            [results addObject:component];
+        } else if ([component isEqualToString:@">"]) {
+            inProtocolsList = NO;
+            [results addObject:component];
         } else if ([component isMatchedByRegex:@"^[_a-zA-Z][_a-zA-Z0-9]*$"]) {
-            if (results.count == 0) {
+            if (results.count == 0 || inProtocolsList) {
                 [results addObject:component];
             } else if (propertyName == nil) {
                 propertyName = component;
