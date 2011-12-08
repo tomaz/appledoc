@@ -315,7 +315,7 @@
 	assertThat([tokenizer.lastComment stringValue], is(@"line"));
 }
 
-- (void)testLastCommentString_shouldRemoveCommonPrefix {
+- (void)testLastCommentString_shouldRemoveCommonPrefixInMultilineComments {
 	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** first\n * second */ ONE"] filename:@"file"];
 	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second */ ONE"] filename:@"file"];
 	GBTokenizer *tokenizer3 = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/** \n * first\n * second\n */ ONE"] filename:@"file"];
@@ -323,6 +323,12 @@
 	assertThat([tokenizer1.lastComment stringValue], is(@"first\nsecond"));
 	assertThat([tokenizer2.lastComment stringValue], is(@"\nfirst\nsecond"));
 	assertThat([tokenizer3.lastComment stringValue], is(@"\nfirst\nsecond\n"));
+}
+
+- (void)testLastCommentString_shouldKeepCommonPrefixInSingleLineComments {
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// halo\n/// * first\n/// * second"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment stringValue], is(@"halo\n* first\n* second"));
 }
 
 - (void)testLastCommentString_shouldKeepExampleTabs {
