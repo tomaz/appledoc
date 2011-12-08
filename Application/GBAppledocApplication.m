@@ -40,6 +40,7 @@ static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
 static NSString *kGBArgExitCodeThreshold = @"exit-threshold";
 
 static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
+static NSString *kGBArgUseSingleStar = @"use-single-star";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
 static NSString *kGBArgFindUndocumentedMembersDocumentation = @"search-undocumented-doc";
@@ -270,6 +271,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
 		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
 		{ kGBArgRepeatFirstParagraph,										0,		DDGetoptNoArgument },
+		{ kGBArgUseSingleStar,												0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
@@ -401,6 +403,11 @@ static NSString *kGBArgHelp = @"help";
 			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 		else if (isDir)
 			ddprintf(@"WARN: --%@ path '%@' is a directory, file is required, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+	}
+	
+	// If we're using backwards compatibility mode, warn about potential incompatibility with Markdown!
+	if (self.settings.useSingleStarForBold) {
+		ddprintf(@"WARN: --%@ may cause incompatibility with Markdown (* unordered lists etc.)", kGBArgUseSingleStar);
 	}
 }
 
@@ -664,6 +671,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
 - (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
 - (void)setRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = value; }
+- (void)setUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = value; }
 - (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
 - (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
 - (void)setPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = value; }
@@ -672,6 +680,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = !value; }
 - (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
 - (void)setNoRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = !value; }
+- (void)setNoUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = !value; }
 - (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
@@ -784,6 +793,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
 	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
 	ddprintf(@"--%@ = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
+	ddprintf(@"--%@ = %@\n", kGBArgUseSingleStar, PRINT_BOOL(self.settings.useSingleStarForBold));
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
@@ -847,6 +857,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgKeepUndocumentedMembers, @"", @"[b] Keep undocumented members");
 	PRINT_USAGE(@"   ", kGBArgFindUndocumentedMembersDocumentation, @"", @"[b] Search undocumented members documentation");
 	PRINT_USAGE(@"   ", kGBArgRepeatFirstParagraph, @"", @"[b] Repeat first paragraph in member documentation");
+	PRINT_USAGE(@"   ", kGBArgUseSingleStar, @"", @"[b] Use single star for bold marker");
 	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"", @"[b] Merge categories to classes");
 	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"", @"[b] Keep merged categories sections");
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");

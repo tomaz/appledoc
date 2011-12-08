@@ -32,15 +32,32 @@
 
 #pragma mark Formatting markers conversion
 
-- (void)testStringByPreprocessingString_shouldConvertAppledocBoldMarkersToTemporarySyntax {
+- (void)testStringByPreprocessingString_shouldConvertAppledocBoldMarkersToTemporarySyntaxIfRequested {
 	// setup
-	GBCommentsProcessor *processor = [self defaultProcessor];
+	id settings = [GBTestObjectsRegistry realSettingsProvider];
+	[settings setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	[settings setUseSingleStarForBold:YES];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
 	// execute
 	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
 	// verify
 	assertThat(result1, is(@"**~!$bold1$!~** **~!$bold text$!~** **~!$ bolder text $!~**"));
 	assertThat(result2, is(@"**~!$bold1$!~** Middle **~!$bold text$!~**"));
+}
+
+- (void)testStringByPreprocessingString_shouldNotConvertAppledocBoldMarkersToTemporarySyntaxIfPrevented {
+	// setup
+	id settings = [GBTestObjectsRegistry realSettingsProvider];
+	[settings setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	[settings setUseSingleStarForBold:NO];
+	GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
+	// execute
+	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
+	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
+	// verify
+	assertThat(result1, is(@"*bold1* *bold text* * bolder text *"));
+	assertThat(result2, is(@"*bold1* Middle *bold text*"));
 }
 
 - (void)testStringByPreprocessingString_shouldLeaveItalicsMarkers {

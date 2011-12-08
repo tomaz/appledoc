@@ -257,6 +257,15 @@
 	assertThatBool(settings2.repeatFirstParagraphForMemberDescription, equalToBool(NO));
 }
 
+- (void)testUseSingleStarForBold_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--use-single-star", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-use-single-star", nil];
+	// verify
+	assertThatBool(settings1.useSingleStarForBold, equalToBool(YES));
+	assertThatBool(settings2.useSingleStarForBold, equalToBool(NO));
+}
+
 - (void)testMergeCategoriesToClasses_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--merge-categories", nil];

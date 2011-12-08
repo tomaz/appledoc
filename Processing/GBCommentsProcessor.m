@@ -426,7 +426,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string length] == 0) return string;
 	
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSArray *components = [string arrayOfDictionariesByMatchingRegex:@"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)" withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
+	NSString *pattern = @"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)";
+	NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
 	NSRange searchRange = NSMakeRange(0, [string length]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	for (NSDictionary *component in components) {
@@ -448,9 +449,13 @@ typedef NSUInteger GBProcessingFlag;
 		NSString *markdownStartMarker = @"";
 		NSString *markdownEndMarker = nil;
 		if ([componentMarker isEqualToString:@"*"]) {
-			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
-			markdownStartMarker = [NSString stringWithFormat:@"**%@", self.components.appledocBoldStartMarker];
-			markdownEndMarker = [NSString stringWithFormat:@"%@**", self.components.appledocBoldEndMarker];
+			if (self.settings.useSingleStarForBold) {
+				GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+				markdownStartMarker = [NSString stringWithFormat:@"**%@", self.components.appledocBoldStartMarker];
+				markdownEndMarker = [NSString stringWithFormat:@"%@**", self.components.appledocBoldEndMarker];
+			} else {
+				markdownStartMarker = componentMarker;
+			}
 		}
 		else if ([componentMarker isEqualToString:@"_"]) {
 			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);

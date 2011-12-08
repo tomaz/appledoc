@@ -117,7 +117,7 @@
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
-- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinFormattingMarkers {
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinStandardMarkdownFormattingMarkers {
 	// setup
 	GBStore *store = [self storeWithDefaultObjects];
 	GBCommentsProcessor *processor = [self defaultProcessor];
@@ -125,16 +125,43 @@
 	GBComment *comment2 = [GBComment commentWithStringValue:@"`Class(Category)`"];
 	GBComment *comment3 = [GBComment commentWithStringValue:@"*Protocol*"];
 	GBComment *comment4 = [GBComment commentWithStringValue:@"_Document_"];
+	GBComment *comment5 = [GBComment commentWithStringValue:@"**Protocol**"];
+	GBComment *comment6 = [GBComment commentWithStringValue:@"__Document__"];
 	// execute
 	[processor processComment:comment1 withContext:nil store:store];
 	[processor processComment:comment2 withContext:nil store:store];
 	[processor processComment:comment3 withContext:nil store:store];
 	[processor processComment:comment4 withContext:nil store:store];
+	[processor processComment:comment5 withContext:nil store:store];
+	[processor processComment:comment6 withContext:nil store:store];
 	// verify
 	[self assertComment:comment1 matchesLongDescMarkdown:@"[`Class`](Classes/Class.html)", nil];
 	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class(Category).html)", nil];
-	[self assertComment:comment3 matchesLongDescMarkdown:@"**~!$[Protocol](Protocols/Protocol.html)$!~**", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"*[Protocol](Protocols/Protocol.html)*", nil];
 	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
+	[self assertComment:comment5 matchesLongDescMarkdown:@"**[Protocol](Protocols/Protocol.html)**", nil];
+	[self assertComment:comment6 matchesLongDescMarkdown:@"__[Document](docs/Document.html)__", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinCustomFormattingMarkers {
+	// setup
+	GBStore *store = [self storeWithDefaultObjects];
+	id settings1 = [GBTestObjectsRegistry realSettingsProvider];
+	[settings1 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	[settings1 setUseSingleStarForBold:NO];
+	GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:settings1];
+	GBComment *comment1 = [GBComment commentWithStringValue:@"*Protocol*"];
+	id settings2 = [GBTestObjectsRegistry realSettingsProvider];
+	[settings2 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+	[settings2 setUseSingleStarForBold:YES];
+	GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:settings2];
+	GBComment *comment2 = [GBComment commentWithStringValue:@"*Protocol*"];
+	// execute
+	[processor1 processComment:comment1 withContext:nil store:store];
+	[processor2 processComment:comment2 withContext:nil store:store];
+	// verify
+	[self assertComment:comment1 matchesLongDescMarkdown:@"*[Protocol](Protocols/Protocol.html)*", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"**~!$[Protocol](Protocols/Protocol.html)$!~**", nil];
 }
 
 - (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWhenEmbeddingIsTurnedOn {

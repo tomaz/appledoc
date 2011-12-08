@@ -232,6 +232,12 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL repeatFirstParagraphForMemberDescription;
 
+/** Indicates whether we should treat single stars as bold markers or not.
+ 
+ If `YES`, single star markers (`*text*`) should be treated as bold markers (`**text**`), otherwise not. This is mainly used for backwards compatibility, but should be disabled as it can cause unexpected issues, such as converting unordered lists into bold etc.
+ */
+@property (assign) BOOL useSingleStarForBold;
+
 /** Indicates whether undocumented classes, categories or protocols should be kept or ignored when generating output.
  
  If `YES` undocumented objects are kept and are used for output generation. If `NO`, these objects are ignored, but only if all their members are also not documented - as soon as a single member is documented, the object is included in output together with all of it's documented members.
