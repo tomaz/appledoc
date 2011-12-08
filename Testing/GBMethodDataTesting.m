@@ -72,6 +72,30 @@
 	assertThat(data.methodSelector, is(@"isSelected"));
 }
 
+#pragma mark - Property initializations
+
+- (void)testMethodData_shouldInitializePropertyWithSingleComponent {
+	// setup & execute
+	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", nil];
+	NSArray *components = [NSArray arrayWithObjects:@"UIView", @"*", @"value", nil];
+	GBMethodData *data = [GBMethodData propertyDataWithAttributes:attributes components:components];
+	// verify
+	assertThat(data.methodAttributes, onlyContains(@"readonly", nil));
+	assertThat(data.methodResultTypes, onlyContains(@"UIView", @"*", nil));
+	assertThat(data.methodSelector, is(@"value"));
+}
+
+- (void)testMethodData_shouldInitializePropertyWithMultipleComponents {
+	// setup & execute
+	NSArray *attributes = [NSArray arrayWithObjects:@"nonatomic", @"assign", nil];
+	NSArray *components = [NSArray arrayWithObjects:@"IBOutlet", @"UIView", @"*", @"value", nil];
+	GBMethodData *data = [GBMethodData propertyDataWithAttributes:attributes components:components];
+	// verify
+	assertThat(data.methodAttributes, onlyContains(@"nonatomic", @"assign", nil));
+	assertThat(data.methodResultTypes, onlyContains(@"IBOutlet", @"UIView", @"*", nil));
+	assertThat(data.methodSelector, is(@"value"));
+}
+
 #pragma mark Merging testing
 
 - (void)testMergeDataFromObject_shouldMergeImplementationDetails {
