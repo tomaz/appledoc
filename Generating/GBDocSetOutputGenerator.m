@@ -266,7 +266,10 @@
 		if ([object.comment.relatedItems.components count] > 0) {
 			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.relatedItems.components count]];
 			for (GBCommentComponent *crossref in object.comment.relatedItems.components) {
-				if (crossref.relatedItem) [related addObject:[self tokenIdentifierForObject:crossref.relatedItem]];
+				if (crossref.relatedItem) {
+					NSString *tokenIdentifier = [self tokenIdentifierForObject:crossref.relatedItem];
+					if (tokenIdentifier) [related addObject:tokenIdentifier];
+				}
 			}
 			if ([related count] > 0) {
 				[data setObject:[GRYes yes] forKey:@"hasRelatedTokens"];
@@ -314,7 +317,7 @@
 			NSString *objectName = [(GBProtocolData *)object nameOfProtocol];
 			return [NSString stringWithFormat:@"//apple_ref/occ/intf/%@", objectName];
 		}
-	} else {
+	} else if (!object.isStaticDocument) {
 		// Members are slighly more complex - their identifier is different regarding to whether they are part of class or category/protocol. Then it depends on whether they are method or property. Finally their parent object (class/category/protocol) name (again class name for category) and selector should be added.
 		if (!object.parentObject) [NSException raise:@"Can't create token identifier for %@; object is not top level and has no parent assigned!", object];
 		
