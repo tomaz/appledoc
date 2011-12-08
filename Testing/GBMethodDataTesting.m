@@ -504,7 +504,7 @@
 	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
 	NSArray *types = [NSArray arrayWithObjects:@"id", nil];
 	NSArray *macros = [NSArray array];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"format" variableArg:NO terminationMacros:macros], nil];
+	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"format" variableArg:YES terminationMacros:macros], nil];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];

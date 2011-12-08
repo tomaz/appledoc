@@ -63,7 +63,7 @@
 	}
 	
 	NSUInteger i=0;
-	
+
 	for (NSString *attribute in method.methodAttributes) {
 		GHAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property %@ attribute doesn't match at flat idx %ld!", method, i-1);
 	}
@@ -85,7 +85,7 @@
 		if (argument.isVariableArg) {
 			GHAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method %@ argument va_arg ... doesn't match at flat idx %ld!", method, i-1);
 			for (NSString *macro in argument.terminationMacros) {
-				GHAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method %@ argument va_arg termination macro doesn't match at flat isx %ld!", method, i-1);
+				GHAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method %@ argument va_arg termination macro doesn't match at flat idx %ld!", method, i-1);
 			}
 		}
 	}

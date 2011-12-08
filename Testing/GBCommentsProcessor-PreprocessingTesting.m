@@ -39,8 +39,8 @@
 	NSString *result1 = [processor stringByPreprocessingString:@"*bold1* *bold text* * bolder text *" withFlags:0];
 	NSString *result2 = [processor stringByPreprocessingString:@"*bold1* Middle *bold text*" withFlags:0];
 	// verify
-	assertThat(result1, is(@"**~!#bold1#!~** **~!#bold text#!~** **~!# bolder text #!~**"));
-	assertThat(result2, is(@"**~!#bold1#!~** Middle **~!#bold text#!~**"));
+	assertThat(result1, is(@"**~!$bold1$!~** **~!$bold text$!~** **~!$ bolder text $!~**"));
+	assertThat(result2, is(@"**~!$bold1$!~** Middle **~!$bold text$!~**"));
 }
 
 - (void)testStringByPreprocessingString_shouldLeaveItalicsMarkers {

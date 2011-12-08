@@ -97,6 +97,7 @@
 	
 	// In case we end up with no property name, just take the last component...
 	if (!propertyName) propertyName = [components lastObject];
+	if ([results containsObject:propertyName]) [results removeObject:propertyName];
     
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:propertyName];
 	return [[[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]] autorelease];

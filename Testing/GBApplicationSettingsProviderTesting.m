@@ -462,8 +462,8 @@
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"对"];
-	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
-	assertThat(result1, is(@"对"));
+	// verify
+	assertThat(result1, is(@"<p>对</p>"));
 }
 
 - (void)testStringByConvertingMarkdownToHTML_shouldConvertEmbeddedCrossReferencesInExampleBlock {
@@ -481,7 +481,7 @@
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
-	NSString *result = [settings stringByConvertingMarkdownToHTML:@"**~!#text#!~**"];
+	NSString *result = [settings stringByConvertingMarkdownToHTML:@"**~!$text$!~**"];
 	// verify - Discount converts ** part, we just need to cleanup the remaining texts!
 	assertThat(result, is(@"<p><strong>text</strong></p>"));
 }
@@ -490,7 +490,7 @@
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
-	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"\t**~!#text#!~**"];
+	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"\t**~!$text$!~**"];
 	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"\t**text**"];
 	// verify - Discount doesn't process text here, so we should revert to original markup!
 	assertThat(result1, is(@"<pre><code>*text*\n</code></pre>"));
@@ -533,8 +533,8 @@
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
-	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!#text#!~"];
-	NSString *result2 = [settings stringByConvertingMarkdownToText:@"**~!#text#!~**"];
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"~!$text$!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"**~!$text$!~**"];
 	// verify
 	assertThat(result1, is(@"text"));
 	assertThat(result2, is(@"text"));
@@ -544,8 +544,8 @@
 	// setup
 	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
 	// execute
-	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!#text#!~"];
-	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t**~!#text#!~**"];
+	NSString *result1 = [settings stringByConvertingMarkdownToText:@"\t~!$text$!~"];
+	NSString *result2 = [settings stringByConvertingMarkdownToText:@"\t**~!$text$!~**"];
 	// verify
 	assertThat(result1, is(@"\ttext"));
 	assertThat(result2, is(@"\ttext"));

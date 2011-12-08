@@ -56,12 +56,12 @@
 	assertThat([tokenizer2.lastComment stringValue], is(@"comment"));
 }
 
-- (void)testInitWithTokenizer_shouldUseLastPathComponentAsFilename {
+- (void)testInitWithTokenizer_shouldUseFullPathAsFilename {
 	// setup & execute
 	GBTokenizer *tokenizer1 = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"/Users/Path/to/filename.h"];
 	GBTokenizer *tokenizer2 = [GBTokenizer tokenizerWithSource:[self defaultTokenizer] filename:@"filename.h"];
 	// verify
-	assertThat([tokenizer1 valueForKey:@"filename"], is(@"filename.h"));
+	assertThat([tokenizer1 valueForKey:@"filename"], is(@"/Users/Path/to/filename.h"));
 	assertThat([tokenizer2 valueForKey:@"filename"], is(@"filename.h"));
 }
 
