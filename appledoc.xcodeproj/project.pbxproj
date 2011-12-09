@@ -45,7 +45,6 @@
 		733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC72D811FDA3D300AAD0B9 /* GBAdoptedProtocolsProviderTesting.m */; };
 		733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BBB612004928005ED6CD /* GBCategoryDataTesting.m */; };
 		733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BA761200135B005ED6CD /* GBClassDataTesting.m */; };
-		733EA141122BDEC60060CBDE /* AppledocTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 73FC6D8D11FCCB7000AAD0B9 /* AppledocTests-Info.plist */; };
 		733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FB8122B9D510060CBDE /* GBCommentTesting.m */; };
 		733EA145122BDEC90060CBDE /* GBIvarDataTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7367BAFB12002854005ED6CD /* GBIvarDataTesting.m */; };
 		733EA146122BDEC90060CBDE /* GBIvarsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC730F11FDAB8E00AAD0B9 /* GBIvarsProviderTesting.m */; };
@@ -1100,7 +1099,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Gentle Bytes";
 			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "appledoc" */;
@@ -1128,7 +1127,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				733EA141122BDEC60060CBDE /* AppledocTests-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
