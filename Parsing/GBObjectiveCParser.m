@@ -18,10 +18,12 @@
 @interface GBObjectiveCParser ()
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
+- (void)updateLastComment:(GBComment **)comment sectionComment:(GBComment **)sectionComment sectionName:(NSString **)sectionName;
 @property (retain) GBTokenizer *tokenizer;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
 @property (assign) BOOL includeInOutput;
+@property (assign) BOOL propertyAfterPragma;
 
 @end
 
@@ -94,6 +96,7 @@
 	self.store = store;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename settings:self.settings];
     self.includeInOutput = YES;
+	self.propertyAfterPragma = NO;
     for (NSString *excludeOutputPath in self.settings.excludeOutputPaths) {
         if ([filename isEqualToString:excludeOutputPath]) {
             self.includeInOutput = NO;
@@ -122,12 +125,23 @@
 	return result;
 }
 
+#pragma mark Helper methods
+
+- (void)updateLastComment:(GBComment **)comment sectionComment:(GBComment **)sectionComment sectionName:(NSString **)sectionName {
+	if (comment) *comment = [self.tokenizer lastComment];
+	if (sectionComment) {
+		*sectionComment = [self.tokenizer previousComment];
+		if (sectionName) *sectionName = [self sectionNameFromComment:*sectionComment];
+	}
+}
+
 #pragma mark Properties
 
 @synthesize tokenizer;
 @synthesize settings;
 @synthesize store;
 @synthesize includeInOutput;
+@synthesize propertyAfterPragma;
 
 @end
 
@@ -238,15 +252,18 @@
 }
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
-	GBComment *comment = [self.tokenizer lastComment];
-	NSString *sectionName = [self sectionNameFromComment:[self.tokenizer previousComment]];
+	__block GBComment *comment;
+	__block GBComment *sectionComment;
+	__block NSString *sectionName;
 	__block BOOL firstToken = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
+	[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
 		if (firstToken) {
-			[self.tokenizer resetComments];
+			if (!self.propertyAfterPragma) [self.tokenizer resetComments];
+			self.propertyAfterPragma = NO;
 			firstToken = NO;
 		}
 		
@@ -436,17 +453,28 @@
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required {
 	// This method only matches class or instance methods, not properties!
 	// - (void)assertIvar:(GBIvarData *)ivar matches:(NSString *)firstType,... NS_REQUIRES_NIL_TERMINATION;
-	GBComment *comment = [self.tokenizer lastComment];
-	GBComment *sectionComment = [self.tokenizer previousComment];
-	NSString *sectionName = [self sectionNameFromComment:sectionComment];
+	__block GBComment *comment;
+	__block GBComment *sectionComment;
+	__block NSString *sectionName;	
 	__block BOOL assertMethod = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
 	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
+	[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement...
+		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement... Note that we skip subsequent - or + tokens so that we can handle stuff like '#pragma mark -' gracefully (note that we also do it for + although that shouldn't be necessary, but feels safer).
 		if (assertMethod) {
+			if ([token matches:@"-"] || [token matches:@"+"]) {
+				[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
+				return;
+			}
 			if (![token matches:@"("]) {
+				if ([token matches:@"@property"]) {
+					self.propertyAfterPragma = YES;
+					*consume = NO;
+					*stop = YES;
+					return;
+				}
 				[self.tokenizer resetComments];
 				*stop = YES;
 				return;
