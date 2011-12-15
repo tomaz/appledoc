@@ -251,9 +251,8 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		return capturedStrings[2];
 	}];
 	
-	// Remove escaped HTML entitites or docsetutil will complain.
-	result = [result stringByReplacingOccurrencesOfString:@"<" withString:@""];
-	result = [result stringByReplacingOccurrencesOfString:@">" withString:@""];
+	// Replace any & sign with &amp; otherwise docsetutil will fail. However according to Apple stuff like &amp;ndash; should still be properly displayed in Xcode quick help when using html mode, which I can verify from my quick tests.
+	result = [result stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
 	
 	// Remove embedded prefix/suffix.
 	result = [result stringByReplacingOccurrencesOfString:self.commentComponents.codeSpanStartMarker withString:@""];
