@@ -445,7 +445,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	}
 	else if ([object isKindOfClass:[GBCategoryData class]]) {
 		basePath = @"Categories";
-		name = [object idOfCategory];
+		name = [NSString stringWithFormat:@"%@+%@", [object nameOfClass], [object nameOfCategory]];
 	}
 	else if ([object isKindOfClass:[GBProtocolData class]]) {		
 		basePath = @"Protocols";
