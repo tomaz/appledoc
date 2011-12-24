@@ -257,6 +257,15 @@
 	assertThatBool(settings2.repeatFirstParagraphForMemberDescription, equalToBool(NO));
 }
 
+- (void)testPreprocessHeaderDoc_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--preprocess-headerdoc", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-preprocess-headerdoc", nil];
+	// verify
+	assertThatBool(settings1.preprocessHeaderDoc, equalToBool(YES));
+	assertThatBool(settings2.preprocessHeaderDoc, equalToBool(NO));
+}
+
 - (void)testUseSingleStarForBold_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--use-single-star", nil];

@@ -40,6 +40,7 @@ static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
 static NSString *kGBArgExitCodeThreshold = @"exit-threshold";
 
 static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
+static NSString *kGBArgPreprocessHeaderDoc = @"preprocess-headerdoc";
 static NSString *kGBArgUseSingleStar = @"use-single-star";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
@@ -271,6 +272,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
 		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
 		{ kGBArgRepeatFirstParagraph,										0,		DDGetoptNoArgument },
+		{ kGBArgPreprocessHeaderDoc,										0,		DDGetoptNoArgument },
 		{ kGBArgUseSingleStar,												0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
@@ -671,6 +673,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
 - (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
 - (void)setRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = value; }
+- (void)setPreprocessHeaderdoc:(BOOL)value { self.settings.preprocessHeaderDoc = value; }
 - (void)setUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = value; }
 - (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
 - (void)setKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = value; }
@@ -681,6 +684,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = !value; }
 - (void)setNoRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = !value; }
 - (void)setNoUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = !value; }
+- (void)setNoPreprocessHeaderdoc:(BOOL)value { self.settings.preprocessHeaderDoc = !value; }
 - (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }

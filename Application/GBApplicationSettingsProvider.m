@@ -79,6 +79,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.installDocSet = YES;
 		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
+		self.preprocessHeaderDoc = NO;
 		self.useSingleStarForBold = NO;
 		self.keepIntermediateFiles = NO;
 		self.cleanupOutputPathBeforeRunning = NO;
@@ -593,6 +594,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize docsetPackageFilename;
 
 @synthesize repeatFirstParagraphForMemberDescription;
+@synthesize preprocessHeaderDoc;
 @synthesize useSingleStarForBold;
 @synthesize keepUndocumentedObjects;
 @synthesize keepUndocumentedMembers;

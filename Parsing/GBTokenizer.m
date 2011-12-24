@@ -17,6 +17,8 @@
 
 - (BOOL)consumeComments;
 - (NSString *)commentValueFromString:(NSString *)value isMultiline:(BOOL)multiline;
+- (NSString *)lineByPreprocessingHeaderDocDirectives:(NSString *)line;
+- (NSArray *)linesByReorderingHeaderDocDirectives:(NSArray *)lines;
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer;
 @property (retain) NSString *filename;
 @property (retain) NSString *input;
@@ -245,26 +247,26 @@
 - (NSString *)commentValueFromString:(NSString *)value isMultiline:(BOOL)multiline {
 	if ([value length] == 0) return nil;
 	NSArray *lines = [value componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-	NSMutableArray *comments = [NSMutableArray arrayWithCapacity:[lines count]];
+	NSMutableArray *strippedLines = [NSMutableArray arrayWithCapacity:[lines count]];
 	
 	// First pass: removes delimiters. We simply detect 3+ delimiter chars in any combination. If removing delimiter yields empty line, discard it.
 	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
 		NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 		NSString *delimited = [stripped stringByReplacingOccurrencesOfRegex:self.commentDelimiterRegex withString:@""];
 		if ([stripped length] > [delimited length]) {
-			if ([delimited length] > 0) [comments addObject:delimited];
+			if ([delimited length] > 0) [strippedLines addObject:delimited];
 			return;
 		}
-		[comments addObject:line];
+		[strippedLines addObject:line];
 	}];
 
 	// If all lines start with a *, ignore the prefix. Note that we ignore first line as it can only contain /** and text! We also ignore last line as if it only contains */
 	NSString *prefixRegex = @"(?m:^\\s*\\*[ ]*)";
-	__block BOOL stripPrefix = ([comments count] > 1);
+	__block BOOL stripPrefix = ([strippedLines count] > 1);
 	if (stripPrefix) {
-		[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+		[strippedLines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
 			NSString *stripped = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-			if (idx == [comments count]-1 && [stripped length] == 0) {
+			if (idx == [strippedLines count]-1 && [stripped length] == 0) {
 				return;
 			}
 			if ((!multiline || idx > 0) && ![stripped isMatchedByRegex:prefixRegex]) {
@@ -273,74 +275,68 @@
 			}
 		}];
 	}
-
-    /*
-     The following brings HeaderDoc comments in line with AppleDoc
-     
-     --------------------------------
-     */
-    
-    // make sure that @param and @return is placed at the end (after abstract etc.)
-    NSMutableArray *reorderedParams = [NSMutableArray array];
-    NSMutableArray *reorderedNonParams = [NSMutableArray array];
-    
-    NSRegularExpression *regexParam = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@(param|result|return)" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    NSRegularExpression *regexNonParam = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@[a-z]" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
-    
-    BOOL isParamBlock = NO;
-    for (NSString *aLine in comments) {
-        
-        if ([regexParam numberOfMatchesInString:aLine options:0 range:NSMakeRange(0, [aLine length])] > 0) {
-            isParamBlock = YES;
-        } else if ([regexNonParam numberOfMatchesInString:aLine options:0 range:NSMakeRange(0, [aLine length])] > 0) {
-            isParamBlock = NO;
-        }
-        
-        if (isParamBlock) {
-            [reorderedParams addObject:aLine];
-        } else {
-            [reorderedNonParams addObject:aLine];
-        }
-    }
-    
-    [reorderedNonParams addObjectsFromArray:reorderedParams];
-    
-    comments = [reorderedNonParams copy];
-    
-    
+	
+	// Preprocess header doc directives.
+	NSArray *preprocessedLines = [self linesByReorderingHeaderDocDirectives:strippedLines];
     
 	// Finally remove common line prefix and a single prefix space (but leave multiple spaces to properly handle space prefixed example blocks!) and compose all objects into final comment.
 	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
 	NSString *spacesPrefixRegex = @"^ {2,}";
 	NSString *tabPrefixRegex = @"^\t";
 	NSMutableString *result = [NSMutableString stringWithCapacity:[value length]];
-	[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
+	[preprocessedLines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
 		if (stripPrefix) line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
 		if (![line isMatchedByRegex:spacesPrefixRegex] && ![line isMatchedByRegex:tabPrefixRegex]) line = [line stringByTrimmingCharactersInSet:spacesSet];
-        
-        
-        // remove the entire line when it contains @method or property or class
-        line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
-        
-        // remove unsupported headerDoc words
-        line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
-        
-        // replace methodgroup with name
-        line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
-        
+        line = [self lineByPreprocessingHeaderDocDirectives:line];
 		[result appendString:line];
-		if (idx < [comments count] - 1) [result appendString:@"\n"];
+		if (idx < [strippedLines count] - 1) [result appendString:@"\n"];
 	}];	
-	
-    /*
-     The previous lines bring HeaderDoc comments in line with AppleDoc
-     
-     --------------------------------
-     */
-    
+	    
 	// If the result is empty string, return nil, otherwise return the comment string.
 	if ([result length] == 0) return nil;
 	return result;
+}
+
+- (NSString *)lineByPreprocessingHeaderDocDirectives:(NSString *)line {
+	if (!self.settings.preprocessHeaderDoc) return line;
+	
+	// Remove the entire line when it contains @method or property or class.
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
+
+	// Remove unsupported headerDoc words.
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
+
+	// Replace methodgroup with name.
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
+	return line;
+}
+
+- (NSArray *)linesByReorderingHeaderDocDirectives:(NSArray *)lines {
+	if (!self.settings.preprocessHeaderDoc) return lines;
+
+	// Make sure that @param and @return is placed at the end (after abstract etc.)
+	NSMutableArray *reorderedParams = [NSMutableArray array];
+	NSMutableArray *reorderedNonParams = [NSMutableArray array];    
+	NSRegularExpression *directiveExpression = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@(param|result|return)" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+	NSRegularExpression *lineExpression = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@[a-z]" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+
+	BOOL isParamBlock = NO;
+	for (NSString *line in lines) {
+		if ([directiveExpression numberOfMatchesInString:line options:0 range:NSMakeRange(0, [line length])] > 0) {
+			isParamBlock = YES;
+		} else if ([lineExpression numberOfMatchesInString:line options:0 range:NSMakeRange(0, [line length])] > 0) {
+			isParamBlock = NO;
+		}
+		
+		if (isParamBlock) {
+			[reorderedParams addObject:line];
+		} else {
+			[reorderedNonParams addObject:line];
+		}
+	}
+
+	[reorderedNonParams addObjectsFromArray:reorderedParams];    
+	return reorderedNonParams;
 }
 
 - (void)resetComments {

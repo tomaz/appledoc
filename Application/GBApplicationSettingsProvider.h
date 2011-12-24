@@ -232,6 +232,12 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL repeatFirstParagraphForMemberDescription;
 
+/** Indicates whether we should preprocess header doc style comments or not.
+ 
+ If `YES`, appledoc will try to do best to handle header doc comments while preprocessing.
+ */
+@property (assign) BOOL preprocessHeaderDoc;
+
 /** Indicates whether we should treat single stars as bold markers or not.
  
  If `YES`, single star markers (`*text*`) should be treated as bold markers (`**text**`), otherwise not. This is mainly used for backwards compatibility, but should be disabled as it can cause unexpected issues, such as converting unordered lists into bold etc.
