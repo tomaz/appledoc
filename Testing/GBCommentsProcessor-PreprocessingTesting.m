@@ -147,8 +147,8 @@
 	NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"Class(Unknown)" withFlags:0];
 	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"<Class(Unknown)>" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html)"));
-	assertThat(result2, is(@"[Class(Category)](Categories/Class(Category).html)"));
+	assertThat(result1, is(@"[Class(Category)](Categories/Class+Category.html)"));
+	assertThat(result2, is(@"[Class(Category)](Categories/Class+Category.html)"));
 	assertThat(result3, is(@"Class(Unknown)"));
 	assertThat(result4, is(@"<Class(Unknown)>"));
 }
@@ -347,10 +347,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class(Unknown) method:]" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[Unknown(Category) method:]" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
-	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
-	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
-	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class(Category).html#//api/name/method:)"));
+	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
+	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
+	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
+	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
 	assertThat(result5, is(@"[Class(Unknown) method:]"));
 	assertThat(result6, is(@"[Unknown(Category) method:]"));
 }
@@ -517,8 +517,8 @@
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Class(Category) Class" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Class Class(Category)" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[Class(Category)](Categories/Class(Category).html) [Class](Classes/Class.html)"));
-	assertThat(result2, is(@"[Class](Classes/Class.html) [Class(Category)](Categories/Class(Category).html)"));
+	assertThat(result1, is(@"[Class(Category)](Categories/Class+Category.html) [Class](Classes/Class.html)"));
+	assertThat(result2, is(@"[Class](Classes/Class.html) [Class(Category)](Categories/Class+Category.html)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertCategoryAndProtocol {
@@ -531,8 +531,8 @@
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"Protocol(Category) Protocol" withFlags:0];
 	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"Protocol Protocol(Category)" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[Protocol(Category)](Categories/Protocol(Category).html) [Protocol](Protocols/Protocol.html)"));
-	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Protocol(Category)](Categories/Protocol(Category).html)"));
+	assertThat(result1, is(@"[Protocol(Category)](Categories/Protocol+Category.html) [Protocol](Protocols/Protocol.html)"));
+	assertThat(result2, is(@"[Protocol](Protocols/Protocol.html) [Protocol(Category)](Categories/Protocol+Category.html)"));
 }
 
 #pragma mark Manual links detection testing
@@ -584,7 +584,7 @@
 	NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text](document)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](Classes/Class.html)"));
-	assertThat(result2, is(@"[text](Categories/Class(Category).html)"));
+	assertThat(result2, is(@"[text](Categories/Class+Category.html)"));
 	assertThat(result3, is(@"[text](Protocols/Protocol.html)"));
 	assertThat(result4, is(@"[text](docs/document.html)"));
 }

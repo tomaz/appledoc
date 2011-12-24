@@ -145,8 +145,8 @@
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	// execute & verify
 	assertThat([settings htmlReferenceNameForObject:class], is(@"Class.html"));
-	assertThat([settings htmlReferenceNameForObject:category], is(@"Class(Category).html"));
-	assertThat([settings htmlReferenceNameForObject:extension], is(@"Class().html"));
+	assertThat([settings htmlReferenceNameForObject:category], is(@"Class+Category.html"));
+	assertThat([settings htmlReferenceNameForObject:extension], is(@"Class+.html"));
 	assertThat([settings htmlReferenceNameForObject:protocol], is(@"Protocol.html"));
 }
 
@@ -205,8 +205,8 @@
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[category.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class(Category).html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class(Category).html#//api/name/method:"));
+	assertThat([settings htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class+Category.html"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//api/name/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForProtocolFromIndex {
@@ -252,7 +252,7 @@
 	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"document.ext"];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class fromSource:class], is(@"Class.html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:category], is(@"Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:category], is(@"Class+Category.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:protocol], is(@"Protocol.html"));
 	assertThat([settings htmlReferenceForObject:document fromSource:document], is(@"document.html"));
 }
@@ -272,8 +272,8 @@
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class1 fromSource:class2], is(@"../Classes/Class1.html"));
 	assertThat([settings htmlReferenceForObject:class2 fromSource:class1], is(@"../Classes/Class2.html"));
-	assertThat([settings htmlReferenceForObject:category1 fromSource:category2], is(@"../Categories/Class(Category1).html"));
-	assertThat([settings htmlReferenceForObject:category2 fromSource:category1], is(@"../Categories/Class(Category2).html"));
+	assertThat([settings htmlReferenceForObject:category1 fromSource:category2], is(@"../Categories/Class+Category1.html"));
+	assertThat([settings htmlReferenceForObject:category2 fromSource:category1], is(@"../Categories/Class+Category2.html"));
 	assertThat([settings htmlReferenceForObject:protocol1 fromSource:protocol2], is(@"../Protocols/Protocol1.html"));
 	assertThat([settings htmlReferenceForObject:protocol2 fromSource:protocol1], is(@"../Protocols/Protocol2.html"));
 	assertThat([settings htmlReferenceForObject:document1 fromSource:document2], is(@"../docs/include/document1.html"));
@@ -294,10 +294,10 @@
 	assertThat([settings htmlReferenceForObject:class fromSource:protocol], is(@"../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:class fromSource:document1], is(@"../Classes/Class.html"));
 	assertThat([settings htmlReferenceForObject:class fromSource:document2], is(@"../../Classes/Class.html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:class], is(@"../Categories/Class(Category).html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:protocol], is(@"../Categories/Class(Category).html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:document1], is(@"../Categories/Class(Category).html"));
-	assertThat([settings htmlReferenceForObject:category fromSource:document2], is(@"../../Categories/Class(Category).html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:class], is(@"../Categories/Class+Category.html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:protocol], is(@"../Categories/Class+Category.html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:document1], is(@"../Categories/Class+Category.html"));
+	assertThat([settings htmlReferenceForObject:category fromSource:document2], is(@"../../Categories/Class+Category.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:class], is(@"../Protocols/Protocol.html"));
 	assertThat([settings htmlReferenceForObject:protocol fromSource:category], is(@"../Protocols/Protocol.html"));	
 	assertThat([settings htmlReferenceForObject:protocol fromSource:document1], is(@"../Protocols/Protocol.html"));

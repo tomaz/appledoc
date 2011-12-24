@@ -77,7 +77,7 @@
 	[processor processComment:comment4 withContext:nil store:store];
 	// verify
 	[self assertComment:comment1 matchesLongDescMarkdown:@"[Class](Classes/Class.html)", nil];
-	[self assertComment:comment2 matchesLongDescMarkdown:@"[Class(Category)](Categories/Class(Category).html)", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"[Class(Category)](Categories/Class+Category.html)", nil];
 	[self assertComment:comment3 matchesLongDescMarkdown:@"[Protocol](Protocols/Protocol.html)", nil];
 	[self assertComment:comment4 matchesLongDescMarkdown:@"[Document](docs/Document.html)", nil];
 }
@@ -136,7 +136,7 @@
 	[processor processComment:comment6 withContext:nil store:store];
 	// verify
 	[self assertComment:comment1 matchesLongDescMarkdown:@"[`Class`](Classes/Class.html)", nil];
-	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class(Category).html)", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"[`Class(Category)`](Categories/Class+Category.html)", nil];
 	[self assertComment:comment3 matchesLongDescMarkdown:@"*[Protocol](Protocols/Protocol.html)*", nil];
 	[self assertComment:comment4 matchesLongDescMarkdown:@"_[Document](docs/Document.html)_", nil];
 	[self assertComment:comment5 matchesLongDescMarkdown:@"**[Protocol](Protocols/Protocol.html)**", nil];
@@ -198,7 +198,7 @@
 	[processor processComment:comment4 withContext:nil store:store];
 	// verify
 	[self assertComponents:comment1.relatedItems matchMarkdown:@"[Class](Classes/Class.html)", nil];
-	[self assertComponents:comment2.relatedItems matchMarkdown:@"[Class(Category)](Categories/Class(Category).html)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[Class(Category)](Categories/Class+Category.html)", nil];
 	[self assertComponents:comment3.relatedItems matchMarkdown:@"[Protocol](Protocols/Protocol.html)", nil];
 	[self assertComponents:comment4.relatedItems matchMarkdown:@"[Document](docs/Document.html)", nil];
 }
