@@ -273,7 +273,42 @@
 			}
 		}];
 	}
-	
+
+    /*
+     The following brings HeaderDoc comments in line with AppleDoc
+     
+     --------------------------------
+     */
+    
+    // make sure that @param and @return is placed at the end (after abstract etc.)
+    NSMutableArray *reorderedParams = [NSMutableArray array];
+    NSMutableArray *reorderedNonParams = [NSMutableArray array];
+    
+    NSRegularExpression *regexParam = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@(param|result|return)" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    NSRegularExpression *regexNonParam = [NSRegularExpression regularExpressionWithPattern:@"^\\s*@[a-z]" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
+    
+    BOOL isParamBlock = NO;
+    for (NSString *aLine in comments) {
+        
+        if ([regexParam numberOfMatchesInString:aLine options:0 range:NSMakeRange(0, [aLine length])] > 0) {
+            isParamBlock = YES;
+        } else if ([regexNonParam numberOfMatchesInString:aLine options:0 range:NSMakeRange(0, [aLine length])] > 0) {
+            isParamBlock = NO;
+        }
+        
+        if (isParamBlock) {
+            [reorderedParams addObject:aLine];
+        } else {
+            [reorderedNonParams addObject:aLine];
+        }
+    }
+    
+    [reorderedNonParams addObjectsFromArray:reorderedParams];
+    
+    comments = [reorderedNonParams copy];
+    
+    
+    
 	// Finally remove common line prefix and a single prefix space (but leave multiple spaces to properly handle space prefixed example blocks!) and compose all objects into final comment.
 	NSCharacterSet *spacesSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
 	NSString *spacesPrefixRegex = @"^ {2,}";
@@ -282,10 +317,27 @@
 	[comments enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
 		if (stripPrefix) line = [line stringByReplacingOccurrencesOfRegex:prefixRegex withString:@""];
 		if (![line isMatchedByRegex:spacesPrefixRegex] && ![line isMatchedByRegex:tabPrefixRegex]) line = [line stringByTrimmingCharactersInSet:spacesSet];
+        
+        
+        // remove the entire line when it contains @method or property or class
+        line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
+        
+        // remove unsupported headerDoc words
+        line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
+        
+        // replace methodgroup with name
+        line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
+        
 		[result appendString:line];
 		if (idx < [comments count] - 1) [result appendString:@"\n"];
 	}];	
 	
+    /*
+     The previous lines bring HeaderDoc comments in line with AppleDoc
+     
+     --------------------------------
+     */
+    
 	// If the result is empty string, return nil, otherwise return the comment string.
 	if ([result length] == 0) return nil;
 	return result;
