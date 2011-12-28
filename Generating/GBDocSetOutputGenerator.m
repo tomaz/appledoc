@@ -231,6 +231,77 @@
 			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
 			[self addTokensXmlModelObjectDataForObject:method toData:data];
 			[membersData addObject:data];
+            
+            // for all properties we need to add getters and setters to the docSet
+            if (method.isProperty) {
+                // TODO: In the docset the Declaration statement for the getter/setter method should read @property ....
+                // TODO: maybe we need to test that there aren't duplicates.
+                
+                GBMethodData *property = method;
+                
+                // 1. Setup Setter
+                // - returns void
+                NSArray *results = [NSArray arrayWithObjects:@"void", nil];
+                // - expects an argument of the same type as the property 
+                NSArray *types = [property methodResultTypes];
+                // - use property's setterSelector as name and avoid duplication of the colon by trimming it
+                NSString *setterName = [property propertySetterSelector];
+                setterName = [setterName stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+                // - create arguments array using the above
+                NSArray *arguments = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:setterName
+                                                                                                 types:types 
+                                                                                                   var:@"val"]];
+                // - create setter method for property
+                GBMethodData *setterMethod = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
+                GBLogDebug(@"Adding setter method for property: %@", property);
+                GBLogDebug(@"%@", setterMethod);
+                
+                // - copy parentObject and comment from property
+                setterMethod.parentObject = property.parentObject;
+                setterMethod.comment = property.comment;
+                
+                
+                // 2. getter            
+                // - returns the same type as the property
+                NSArray *getterResults = [property methodResultTypes];
+                // -  use property getterSelector as getter method name
+                NSString *getterName = [property propertyGetterSelector];
+                // - create getter method
+                GBMethodData *getterMethod = [GBMethodData methodDataWithType:GBMethodTypeInstance 
+                                                                       result:getterResults 
+                                                                    arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:getterName]]];
+                GBLogDebug(@"Adding getter method for property: %@", property);
+                GBLogDebug(@"'%@'", getterMethod);
+                
+                // - copy parentObject and comment from property
+                getterMethod.parentObject = property.parentObject;
+                getterMethod.comment = property.comment;
+                
+                
+                // 3. Copy Source Infos from property to getter/setter
+                for (GBSourceInfo *info in property.sourceInfos) {
+                    [setterMethod registerSourceInfo:info];
+                    [getterMethod registerSourceInfo:info];
+                }
+                
+                // 4. Add Getter to XML and also copy anchor from property
+                data = [NSMutableDictionary dictionaryWithCapacity:4];			
+                [data setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
+                [self addTokensXmlModelObjectDataForObject:getterMethod
+                                                    toData:data];
+                // append dictionary to array of members
+                [membersData addObject:data];
+                
+                
+                // 5. Add Setter to XML and also copy anchor from property
+                data = [NSMutableDictionary dictionaryWithCapacity:4];
+                [data setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
+                [self addTokensXmlModelObjectDataForObject:setterMethod
+                                                    toData:data];
+                // append dictionary to array of members
+                [membersData addObject:data];
+                
+            }
 		}
 		
 		// Prepare the variables for the template.
