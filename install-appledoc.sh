@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env bash
+
+# Enable errexit: Exit if any "simple command" fails
+set -e
 
 BINARY_DIR=/usr/local/bin/
 TEMPLATES_DIR=~/.appledoc
