@@ -71,6 +71,9 @@
 		} else if ([component isEqualToString:@"*"]) {
 			[results addObject:component];
 			nextComponentIsPropertyName = YES;
+		} else if ([component isEqualToString:@"id"]) {
+			[results addObject:component];
+			nextComponentIsPropertyName = YES;
         } else if ([component isMatchedByRegex:@"^[_a-zA-Z][_a-zA-Z0-9]$"]) {
 			if (results.count == 0 || inProtocolsList) {
                 [results addObject:component];
