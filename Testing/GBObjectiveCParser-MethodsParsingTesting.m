@@ -278,6 +278,19 @@
 	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"retain", @"nonatomic", @"IBOutlet", @"NSString", @"*", @"name", nil];
 }
 
+- (void)testParseObjectsFromString_shouldRegisterComplexPropertyDefinition2 {
+	// setup
+	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
+	GBStore *store = [[GBStore alloc] init];
+	// execute
+	[parser parseObjectsFromString:@"@interface MyClass @property (weak) IBOutlet id delegate; @end" sourceFile:@"filename.h" toStore:store];
+	// verify
+	GBClassData *class = [[store classes] anyObject];
+	NSArray *methods = [[class methods] methods];
+	assertThatInteger([methods count], equalToInteger(1));
+	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"weak", @"IBOutlet", @"id", @"delegate", nil];
+}
+
 - (void)testParseObjectsFromString_shouldRegisterBlockPropertyDefinition {
 	// setup
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
