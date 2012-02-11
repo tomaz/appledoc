@@ -47,6 +47,28 @@ h2 {
 	padding-bottom: 2px;	
 }
 
+table {
+    margin-bottom: 4em;
+    border-collapse:collapse;
+    vertical-align: middle;
+}
+
+td {
+    border: 1px solid #9BB3CD;
+    padding: .667em;
+    font-size: 100%;
+}
+
+th {
+    border: 1px solid #9BB3CD;
+    padding: .3em .667em .3em .667em;
+    background: #93A5BB;
+    font-size: 103%;
+    font-weight: bold;
+    color: white;
+    text-align: left;
+}
+
 /* @group Common page elements */
 
 #top_header {
@@ -423,12 +445,16 @@ li#jumpto_button select {
 }
 
 .section-specification table {
+    margin-bottom: 0em;
 	border-top: 1px solid #d6e0e5;
 }
 
 .section-specification td {
 	vertical-align: top;
 	border-bottom: 1px solid #d6e0e5;
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-top-width: 0px;
 	padding: .6em;
 }
 
