@@ -88,6 +88,7 @@ th {
 }
 
 #contents, #overview_contents {
+	-webkit-overflow-scrolling: touch;
 	border-top: 1px solid #2B334F;
 	position: absolute;
 	top: 91px;
