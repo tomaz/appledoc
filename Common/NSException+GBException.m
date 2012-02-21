@@ -10,7 +10,7 @@
 
 @interface NSException (GBExceptionPrivate)
 
-+ (NSString *)reasonWithError:(NSError *)error message:(NSString *)message;
++ (NSString *)reasonWithError:(NSString *)name message:(NSString *)message;
 
 @end
 
@@ -25,7 +25,7 @@
 	va_end(args);
 }
 
-+ (void)raise:(NSError *)error format:(NSString *)format, ... {
++ (void)raise:(NSString *)name format:(NSString *)format, ... {
 	NSString *message = nil;
 	if (format) {
 		va_list args;
@@ -34,20 +34,14 @@
 		va_end(args);
 	}
 	
-	NSString *reason = [self reasonWithError:error message:message];
+	NSString *reason = [self reasonWithError:name message:message];
 	[self raise:reason];
 }
 
-+ (NSString *)reasonWithError:(NSError *)error message:(NSString *)message {
-	NSInteger code = [error code];
-	NSString *domain = [error domain];
-	NSString *description = [error localizedDescription];
-	NSString *reason = [error localizedFailureReason];
-	
++ (NSString *)reasonWithError:(NSString *)name message:(NSString *)message {
 	NSMutableString *result = [NSMutableString string];
 	if (message) [result appendFormat:@"%@\n", message];
-	[result appendFormat:@"Error: %@, code %i: %@\n", domain, code, description];
-	if (reason) [result appendFormat:@"Reason: %@", reason];
+	[result appendFormat:@"Error: %@\n", name];
 	return result;
 }
 
