@@ -25,7 +25,7 @@
 	va_end(args);
 }
 
-+ (void)raise:(NSError *)error format:(NSString *)format, ... {
++ (void)raiseWithError:(NSError *)error format:(NSString *)format, ... {
 	NSString *message = nil;
 	if (format) {
 		va_list args;

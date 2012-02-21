@@ -460,7 +460,7 @@ static NSString *kGBArgHelp = @"help";
 		while ([opt hasPrefix:@"-"]) opt = [opt substringFromIndex:1];
 		if ([opt isEqualToString:@"t"] || [opt isEqualToString:kGBArgTemplatesPath]) {
 			NSError *error = nil;
-			if (![self validateTemplatesPath:path error:&error]) [NSException raise:error format:@"Path '%@' from %@ is not valid!", path, option];			
+			if (![self validateTemplatesPath:path error:&error]) [NSException raiseWithError:error format:@"Path '%@' from %@ is not valid!", path, option];			
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
 			self.templatesFound = YES;
 			*stop = YES;
@@ -521,7 +521,7 @@ static NSString *kGBArgHelp = @"help";
 				if ([option isEqualToString:kGBArgTemplatesPath]) {
 					NSError *error = nil;
 					NSString *templatesPath = [self combineBasePath:plistPath withRelativePath:*value];
-					if (![self validateTemplatesPath:templatesPath error:&error]) [NSException raise:error format:@"Path '%@' from --%@ option in project settings '%@' is not valid!", *value, option, filename];
+					if (![self validateTemplatesPath:templatesPath error:&error]) [NSException raiseWithError:error format:@"Path '%@' from --%@ option in project settings '%@' is not valid!", *value, option, filename];
 					[self overrideSettingsWithGlobalSettingsFromPath:templatesPath];
 					self.templatesFound = YES;
 					*value = templatesPath;
@@ -573,7 +573,7 @@ static NSString *kGBArgHelp = @"help";
 	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
 	if (!data) [NSException raise:@"Failed reading settings from '%@'!", path];	
 	NSDictionary *settings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
-	if (!settings) [NSException raise:error format:@"Failed reaing settings plist from '%@'!", path];
+	if (!settings) [NSException raiseWithError:error format:@"Failed reaing settings plist from '%@'!", path];
 	
 	// We first pass each option and it's value to the block. The block can return YES to allow handling it, NO otherwise. It can also pass back a different value (we're passing a pointer to the value!).
 	[settings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
