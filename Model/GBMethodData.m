@@ -322,7 +322,8 @@
 		if ([propertyData.propertySetterSelector isEqualToString:manualData.methodSelector]) return YES;
 		[NSException raise:@"Failed merging %@ to %@; getter or setter doesn't match", source, self];
 	} else {
-		NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
+		// If assertion from code below is present, it breaks cases where category declares a property which is also getter for a property from class declaration. See #184 https://github.com/tomaz/appledoc/issues/184 for details. I'm leaving the code commented for the moment to see if it also affects some other user (don't think so, but just in case).
+		//NSParameterAssert([source.methodSelector isEqualToString:self.methodSelector]);
 	}
 	return YES;
 }
