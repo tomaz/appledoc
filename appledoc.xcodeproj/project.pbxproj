@@ -176,6 +176,7 @@
 		73E0CF46131047E700FAFEC0 /* GBCommentsProcessor-MarkdownTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E0CF45131047E700FAFEC0 /* GBCommentsProcessor-MarkdownTesting.m */; };
 		73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E1B7D3130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m */; };
 		73E1B7D6130BE7C000E3D710 /* GBCommentsProcessor-PreprocessingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E1B7D5130BE7C000E3D710 /* GBCommentsProcessor-PreprocessingTesting.m */; };
+		73E4A42714F51EC400C0620F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98B11FCC97100966C4A /* Cocoa.framework */; };
 		73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
 		73F2CA75123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
 		73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA71123E4161009B406B /* GBCommentsProcessor.m */; };
@@ -514,9 +515,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
-				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
+				73E4A42714F51EC400C0620F /* Cocoa.framework in Frameworks */,
 				73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
+				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 				7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

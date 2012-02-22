@@ -8,6 +8,7 @@
 
 #include "mkdio.h"
 #import <objc/runtime.h>
+#import <Cocoa/Cocoa.h>
 #import "RegexKitLite.h"
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
@@ -69,6 +70,10 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
 		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
+		if (![[NSFileManager defaultManager] fileExistsAtPath:self.docsetUtilPath]) {
+			NSString *xcodePath = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Xcode"];
+			self.docsetUtilPath = [xcodePath stringByAppendingPathComponent:@"Contents/Developer/usr/bin/docsetutil"];
+		}
 		self.indexDescriptionPath = nil;
 		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
