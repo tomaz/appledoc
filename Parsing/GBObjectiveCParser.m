@@ -550,22 +550,22 @@
 						[terminationMacros addObject:[token stringValue]];
 					}];
 					*stop = YES; // Ignore the rest of parameters as vararg is the last and above block consumed end token which would confuse above block!
-				}
-                
-                // If we have no more colon before end, consume the rest of the tokens to get optional termination macros.
-                __block BOOL hasColon = NO;
-                [self.tokenizer lookaheadTo:end usingBlock:^(PKToken *token, BOOL *stop) {
-                    if ([token matches:@":"]) {
-                        hasColon = YES;
-                        *stop = YES;
-                    }
-                }];
-                if (!hasColon) {
-					[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-						[terminationMacros addObject:[token stringValue]];
+				} else {                
+					// If we have no more colon before end, consume the rest of the tokens to get optional termination macros.
+					__block BOOL hasColon = NO;
+					[self.tokenizer lookaheadTo:end usingBlock:^(PKToken *token, BOOL *stop) {
+						if ([token matches:@":"]) {
+							hasColon = YES;
+							*stop = YES;
+						}
 					}];
-					*stop = YES; // Ignore the rest of parameters
-                }
+					if (!hasColon) {
+						[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+							[terminationMacros addObject:[token stringValue]];
+						}];
+						*stop = YES; // Ignore the rest of parameters
+					}
+				}
                 
                 if (terminationMacros.count == 0) {
                     terminationMacros = nil;
