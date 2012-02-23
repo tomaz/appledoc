@@ -296,6 +296,14 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL mergeCategoriesToClasses;
 
+/** Indicates wheter category comment should be merged to the end of the class comment or not.
+ 
+ This is only applicable if `mergeCategoriesToClasses` is `YES`.
+ 
+ @see mergeCategoriesToClasses
+ */
+@property (assign) BOOL mergeCategoryCommentToClass;
+
 /** Indicates whether category or extension sections should be preserved when merging into extended class.
  
  If `YES`, all the sections from category or extension documentation are preserved. In such case, `prefixMergedCategoriesSectionsWithCategoryName` may optionally be used to prefix section name with category name or not. If `NO`, category or extension sections are ignored and a single section with category name is created in the class.

@@ -284,6 +284,15 @@
 	assertThatBool(settings2.mergeCategoriesToClasses, equalToBool(NO));
 }
 
+- (void)testMergeCategoryCommentToClass_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--merge-category-comment", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-merge-category-comment", nil];
+	// verify
+	assertThatBool(settings1.mergeCategoryCommentToClass, equalToBool(YES));
+	assertThatBool(settings2.mergeCategoryCommentToClass, equalToBool(NO));
+}
+
 - (void)testKeepMergedCategoriesSections_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-merged-sections", nil];

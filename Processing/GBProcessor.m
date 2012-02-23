@@ -375,6 +375,16 @@
 			}
 		}
 		
+		// Append category comment to class.
+		if (self.settings.mergeCategoryCommentToClass && [category.comment.stringValue length] > 0) {
+			GBLogDebug(@"Merging category %@ comment to class...", category);
+			if ([class.comment.stringValue length] > 0) {
+				class.comment.stringValue = [NSString stringWithFormat:@"%@\n%@", class.comment.stringValue, category.comment.stringValue];
+			} else {
+				class.comment = category.comment;
+			}
+		}
+		
 		// Finally clean all empty sections and remove merged category from the store.
 		[class.methods unregisterEmptySections];
 		[self.store unregisterTopLevelObject:category];

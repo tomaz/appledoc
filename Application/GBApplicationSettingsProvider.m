@@ -95,6 +95,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.exitCodeThreshold = 0;
 		
 		self.mergeCategoriesToClasses = YES;
+		self.mergeCategoryCommentToClass = YES;
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
 		
@@ -606,6 +607,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize findUndocumentedMembersDocumentation;
 
 @synthesize mergeCategoriesToClasses;
+@synthesize mergeCategoryCommentToClass;
 @synthesize keepMergedCategoriesSections;
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
 
