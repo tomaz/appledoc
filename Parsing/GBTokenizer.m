@@ -312,7 +312,7 @@
 }
 
 - (NSArray *)linesByReorderingHeaderDocDirectives:(NSArray *)lines {
-#if MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
+#if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
 	if (!self.settings.preprocessHeaderDoc) return lines;
 
 	// Make sure that @param and @return is placed at the end (after abstract etc.)
