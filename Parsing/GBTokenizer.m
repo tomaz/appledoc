@@ -312,6 +312,7 @@
 }
 
 - (NSArray *)linesByReorderingHeaderDocDirectives:(NSArray *)lines {
+#if MAC_OS_X_VERSION_MIN_REQUIRED > __MAC_10_6
 	if (!self.settings.preprocessHeaderDoc) return lines;
 
 	// Make sure that @param and @return is placed at the end (after abstract etc.)
@@ -337,6 +338,9 @@
 
 	[reorderedNonParams addObjectsFromArray:reorderedParams];    
 	return reorderedNonParams;
+#else
+    return lines;
+#endif
 }
 
 - (void)resetComments {
