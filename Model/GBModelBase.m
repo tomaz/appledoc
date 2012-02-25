@@ -46,12 +46,12 @@
 	}
 	
 	// Merge comment.
-	GBComment *comment = [(GBModelBase *)source comment];
-	if (self.comment && comment) {
-		GBLogXWarn(self.prefferedSourceInfo, @"%@: Comment found in %@ and %@!", self, self.comment.sourceInfo, comment.sourceInfo);
+	GBComment *theComment = [(GBModelBase *)source comment];
+	if (self.comment && theComment) {
+		GBLogXWarn(self.prefferedSourceInfo, @"%@: Comment found in %@ and %@!", self, self.comment.sourceInfo, theComment.sourceInfo);
 		return;
 	}
-	if (!self.comment && comment) self.comment = comment;
+	if (!self.comment && theComment) self.comment = theComment;
 }
 
 #pragma mark Source information handling

@@ -125,16 +125,16 @@ typedef NSUInteger GBProcessingFlag;
 
 #pragma mark Processing handling
 
-- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)store {
+- (void)processComment:(GBComment *)comment withContext:(id)context store:(id)aStore {
 	NSParameterAssert(comment != nil);
-	NSParameterAssert(store != nil);
+	NSParameterAssert(aStore != nil);
 	if (comment.originalContext != nil && comment.originalContext != context) return;
 	if (comment.isProcessed) return;
 	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
 	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
 	self.currentContext = context;
-	self.store = store;	
+	self.store = aStore;	
 	NSArray *lines = [comment.stringValue arrayOfLines];
 	NSUInteger line = comment.sourceInfo.lineNumber;
 	NSRange blockRange = NSMakeRange(0, 0);

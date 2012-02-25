@@ -51,21 +51,21 @@
 	return [[[self alloc] initWithSourceTokenizer:tokenizer filename:filename settings:settings] autorelease];
 }
 
-- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings {
+- (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)aFilename settings:(id)theSettings {
 	NSParameterAssert(tokenizer != nil);
-	NSParameterAssert(filename != nil);
-	NSParameterAssert([filename length] > 0);
+	NSParameterAssert(aFilename != nil);
+	NSParameterAssert([aFilename length] > 0);
 	GBLogDebug(@"Initializing tokenizer...");
 	self = [super init];
 	if (self) {
-		self.settings = settings;
+		self.settings = theSettings;
 		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
 		self.multiLineCommentRegex = @"(?s:/\\*[*!](.*)\\*/)";
 		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}$";
 		self.tokenIndex = 0;
 		self.lastCommentBuilder = [NSMutableString string];
 		self.previousCommentBuilder = [NSMutableString string];
-		self.filename = filename;
+		self.filename = aFilename;
 		self.input = tokenizer.string;
 		self.tokens = [self allTokensFromTokenizer:tokenizer];
 		[self consumeComments];

@@ -93,8 +93,8 @@
 
 #pragma mark Object variables handling
 
-- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)aStore {
+	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
 	[page setObject:[self specificationsForClass:object] forKey:@"specifications"];
@@ -108,8 +108,8 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)aStore {
+	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
 	[page setObject:[self specificationsForCategory:object] forKey:@"specifications"];
@@ -124,8 +124,8 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)aStore {
+	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
 	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
@@ -139,8 +139,8 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)aStore {
+	self.store = aStore;
 	NSString *path = [self.settings htmlRelativePathToIndexFromObject:object];
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForDocument:object] forKey:@"title"];
@@ -159,8 +159,8 @@
 
 #pragma mark Index variables handling
 
-- (NSDictionary *)variablesForIndexWithStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForIndexWithStore:(id)aStore {
+	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];
 	[self addFooterVarsToDictionary:page];
@@ -178,8 +178,8 @@
 	return result;
 }
 
-- (NSDictionary *)variablesForHierarchyWithStore:(id)store {
-	self.store = store;
+- (NSDictionary *)variablesForHierarchyWithStore:(id)aStore {
+	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForHierarchy] forKey:@"title"];
 	[self addFooterVarsToDictionary:page];

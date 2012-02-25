@@ -66,11 +66,11 @@
 
 #pragma mark Processing handling
 
-- (void)processObjectsFromStore:(id)store {
-	NSParameterAssert(store != nil);
+- (void)processObjectsFromStore:(id)aStore {
+	NSParameterAssert(aStore != nil);
 	GBLogVerbose(@"Processing parsed objects...");
 	self.currentContext = nil;
-	self.store = store;
+	self.store = aStore;
 	[self setupKnownObjectsFromStore];
 	[self mergeKnownCategoriesFromStore];
 	[self processClasses];

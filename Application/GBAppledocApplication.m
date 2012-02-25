@@ -573,11 +573,11 @@ static NSString *kGBArgHelp = @"help";
 	NSError* error = nil;
 	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
 	if (!data) [NSException raise:@"Failed reading settings from '%@'!", path];	
-	NSDictionary *settings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
-	if (!settings) [NSException raiseWithError:error format:@"Failed reaing settings plist from '%@'!", path];
+	NSDictionary *theSettings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
+	if (!theSettings) [NSException raiseWithError:error format:@"Failed reaing settings plist from '%@'!", path];
 	
 	// We first pass each option and it's value to the block. The block can return YES to allow handling it, NO otherwise. It can also pass back a different value (we're passing a pointer to the value!).
-	[settings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
+	[theSettings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
 		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
 		NSString *key = [DDGetoptLongParser keyFromOption:option];		
 		if (!block(option, &value, stop)) return;
