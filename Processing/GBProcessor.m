@@ -171,7 +171,7 @@
 	
 	// Let comments processor parse comment string value into object representation.
 	self.commentsProcessor.alwaysRepeatFirstParagraph = object.isTopLevelObject || object.isStaticDocument;
-	[self.commentsProcessor processComment:object.comment withContext:self.currentContext store:self.store];
+	[self.commentsProcessor processCommentForObject:object withContext:self.currentContext store:self.store];
 }
 
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {

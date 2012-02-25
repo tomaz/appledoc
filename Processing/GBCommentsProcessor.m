@@ -78,6 +78,7 @@ typedef NSUInteger GBProcessingFlag;
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags;
+- (BOOL)isCrossReference:(GBCrossRefData *)data matchingObject:(id)object;
 
 - (GBCrossRefData)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (GBCrossRefData)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
@@ -92,6 +93,7 @@ typedef NSUInteger GBProcessingFlag;
 - (NSString *)stringByCombiningTrimmedLines:(NSArray *)lines;
 
 @property (retain) id currentContext;
+@property (retain) id currentObject;
 @property (retain) GBComment *currentComment;
 @property (retain) GBStore *store;
 @property (retain) GBApplicationSettingsProvider *settings;
@@ -124,6 +126,13 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 #pragma mark Processing handling
+
+- (void)processCommentForObject:(GBModelBase *)object withContext:(id)context store:(id)aStore {
+	NSParameterAssert(object != nil);
+	self.currentObject = object;
+	[self processComment:object.comment withContext:context store:aStore];
+	self.currentObject = nil;
+}
 
 - (void)processComment:(GBComment *)comment withContext:(id)context store:(id)aStore {
 	NSParameterAssert(comment != nil);
@@ -576,6 +585,11 @@ typedef NSUInteger GBProcessingFlag;
 		if (GBIsCrossRefInside(objectData, remoteMemberData)) objectData = GBEmptyCrossRefData();
 		if (GBIsCrossRefInside(categoryData, remoteMemberData)) categoryData = GBEmptyCrossRefData();
 		
+		// Prevent forming cross reference to current top-level object. Also prevent forming cross reference to current member.
+		if (GBIsCrossRefValid(objectData) && [self isCrossReference:&objectData matchingObject:self.currentContext]) objectData = GBEmptyCrossRefData();
+		if (GBIsCrossRefValid(categoryData) && [self isCrossReference:&categoryData matchingObject:self.currentContext]) categoryData = GBEmptyCrossRefData();
+		if (GBIsCrossRefValid(localMemberData) && [self isCrossReference:&localMemberData matchingObject:self.currentObject]) localMemberData = GBEmptyCrossRefData();
+		
 		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! If no link was found, proceed with next char. If there's no other word, exit (we'll deal with remaining text later on).
 		[links setCount:0];
 		if (GBIsCrossRefValid(urlData)) [links addPointer:&urlData];
@@ -636,6 +650,20 @@ typedef NSUInteger GBProcessingFlag;
 		[result appendString:remainingText];
 	}
 	return result;
+}
+
+- (BOOL)isCrossReference:(GBCrossRefData *)data matchingObject:(id)object {
+	if ([object isTopLevelObject]) {
+		if ([object isKindOfClass:[GBClassData class]])
+			if ([data->description isEqualToString:[object nameOfClass]]) return YES;
+		else if ([object isKindOfClass:[GBCategoryData class]])
+			if ([data->description isEqualToString:[object idOfCategory]]) return YES;
+		else if ([object isKindOfClass:[GBProtocolData class]])
+			if ([data->description isEqualToString:[object nameOfProtocol]]) return YES;
+	} else {
+		if ([data->description isEqualToString:[object methodSelector]]) return YES;
+	}
+	return NO;
 }
 
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags {
@@ -907,6 +935,7 @@ typedef NSUInteger GBProcessingFlag;
 @synthesize alwaysRepeatFirstParagraph;
 @synthesize currentSourceInfo;
 @synthesize currentComment;
+@synthesize currentObject;
 @synthesize currentContext;
 @synthesize settings;
 @synthesize store;
