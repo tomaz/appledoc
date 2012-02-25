@@ -28,12 +28,12 @@ li {
 	margin-bottom: 10px;
 }
 
-a {
+a, a code {
 	text-decoration: none;
 	color: #36C;
 }
 
-a:hover {
+a:hover, a:hover code {
 	text-decoration: underline;
 	color: #36C;
 }
