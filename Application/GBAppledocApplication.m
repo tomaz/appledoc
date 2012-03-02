@@ -41,6 +41,7 @@ static NSString *kGBArgExitCodeThreshold = @"exit-threshold";
 
 static NSString *kGBArgRepeatFirstParagraph = @"repeat-first-par";
 static NSString *kGBArgPreprocessHeaderDoc = @"preprocess-headerdoc";
+static NSString *kGBArgPrintInformationBlockTitles = @"print-information-block-titles";
 static NSString *kGBArgUseSingleStar = @"use-single-star";
 static NSString *kGBArgKeepUndocumentedObjects = @"keep-undocumented-objects";
 static NSString *kGBArgKeepUndocumentedMembers = @"keep-undocumented-members";
@@ -274,6 +275,8 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgFindUndocumentedMembersDocumentation,						0,		DDGetoptNoArgument },
 		{ kGBArgRepeatFirstParagraph,										0,		DDGetoptNoArgument },
 		{ kGBArgPreprocessHeaderDoc,										0,		DDGetoptNoArgument },
+		{ kGBArgPrintInformationBlockTitles,								0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgPrintInformationBlockTitles),						0,		DDGetoptNoArgument },
 		{ kGBArgUseSingleStar,												0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
@@ -675,6 +678,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setSearchUndocumentedDoc:(BOOL)value { self.settings.findUndocumentedMembersDocumentation = value; }
 - (void)setRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = value; }
 - (void)setPreprocessHeaderdoc:(BOOL)value { self.settings.preprocessHeaderDoc = value; }
+- (void)setPrintInformationBlockTitles:(BOOL)value { self.settings.printInformationBlockTitles = value; }
 - (void)setUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = value; }
 - (void)setMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = value; }
 - (void)setMergeCategoryComment:(BOOL)value { self.settings.mergeCategoryCommentToClass = value; }
@@ -687,6 +691,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoRepeatFirstPar:(BOOL)value { self.settings.repeatFirstParagraphForMemberDescription = !value; }
 - (void)setNoUseSingleStar:(BOOL)value { self.settings.useSingleStarForBold = !value; }
 - (void)setNoPreprocessHeaderdoc:(BOOL)value { self.settings.preprocessHeaderDoc = !value; }
+- (void)setNoPrintInformationBlockTitles:(BOOL)value { self.settings.printInformationBlockTitles = !value; }
 - (void)setNoMergeCategories:(BOOL)value { self.settings.mergeCategoriesToClasses = !value; }
 - (void)setNoMergeCategoryComment:(BOOL)value { self.settings.mergeCategoryCommentToClass = !value; }
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
@@ -801,6 +806,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
 	ddprintf(@"--%@ = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
 	ddprintf(@"--%@ = %@\n", kGBArgPreprocessHeaderDoc, PRINT_BOOL(self.settings.preprocessHeaderDoc));
+	ddprintf(@"--%@ = %@\n", kGBArgPrintInformationBlockTitles, PRINT_BOOL(self.settings.printInformationBlockTitles));
 	ddprintf(@"--%@ = %@\n", kGBArgUseSingleStar, PRINT_BOOL(self.settings.useSingleStarForBold));
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
 	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoryComment, PRINT_BOOL(self.settings.mergeCategoryCommentToClass));
@@ -867,6 +873,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgFindUndocumentedMembersDocumentation, @"", @"[b] Search undocumented members documentation");
 	PRINT_USAGE(@"   ", kGBArgRepeatFirstParagraph, @"", @"[b] Repeat first paragraph in member documentation");
 	PRINT_USAGE(@"   ", kGBArgPreprocessHeaderDoc, @"", @"[b] Preprocess header doc comments - 10.7 only!");
+	PRINT_USAGE(@"   ", kGBArgPrintInformationBlockTitles, @"", @"[b] Print title of information blocks. \"Note:\", \"Warning:\", etc.");
 	PRINT_USAGE(@"   ", kGBArgUseSingleStar, @"", @"[b] Use single star for bold marker");
 	PRINT_USAGE(@"   ", kGBArgMergeCategoriesToClasses, @"", @"[b] Merge categories to classes");
 	PRINT_USAGE(@"   ", kGBArgMergeCategoryComment, @"", @"[b] Merge category comment to class");

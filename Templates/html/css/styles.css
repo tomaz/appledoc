@@ -409,6 +409,13 @@ li#jumpto_button select {
 	height: 0.7em;
 }
 
+.note {
+	border: 1px solid #5088C5;
+	background-color: white;
+	margin: 1.667em 0 1.75em 0;
+	padding: 0 .667em .083em .750em;
+}
+
 .warning {
 	border: 1px solid #5088C5;
 	background-color: #F0F3F7;
