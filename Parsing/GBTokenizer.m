@@ -302,10 +302,14 @@
 	
 	// Remove the entire line when it contains @method or property or class.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
-
+	
 	// Remove unsupported headerDoc words.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
-
+	
+	// Remove unsupported Doxygen words.
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(brief))\\s?" withString:@""];    
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(details))\\s?" withString:@"\n"];
+	
 	// Replace methodgroup with name.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
 	return line;
