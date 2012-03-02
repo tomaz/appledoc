@@ -56,6 +56,6 @@ Section MethodDeclaration
 EndSection
 
 Section GBCommentComponentsList
-{{#components}}{{&textValue}}{{/components}}
+{{#components}}{{textValue}}{{/components}}
 EndSection
 
