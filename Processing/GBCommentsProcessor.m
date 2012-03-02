@@ -314,10 +314,17 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
 	NSString *name = [components objectAtIndex:2];
 	NSString *description = [components objectAtIndex:3];
-	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	NSRange range = [string rangeOfString:description];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+	
 	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
-
+	
 	// Prepare object representation from the description and register the parameter to the comment.
 	GBCommentArgument *argument = [GBCommentArgument argumentWithName:name sourceInfo:self.currentSourceInfo];
 	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
@@ -333,7 +340,14 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
 	NSString *name = [components objectAtIndex:2];
 	NSString *description = [components objectAtIndex:3];
-	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	NSRange range = [string rangeOfString:description];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+
 	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
@@ -351,7 +365,14 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *description = [components objectAtIndex:2];
-	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	NSRange range = [string rangeOfString:description];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+
 	GBLogDebug(@"- Registering availability description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
@@ -367,7 +388,14 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *description = [components objectAtIndex:2];
-	NSString *prefix = [string substringToIndex:[string rangeOfString:description].location];
+	NSRange range = [string rangeOfString:description];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+
 	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
@@ -383,7 +411,14 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Get data from captures. Index 1 is directive, index 2 reference.
 	NSString *reference = [components objectAtIndex:2];
-	NSString *prefix = [string substringToIndex:[string rangeOfString:reference].location];
+	NSRange range = [string rangeOfString:reference];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+
 	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
