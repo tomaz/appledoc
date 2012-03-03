@@ -565,5 +565,20 @@ span.tooltip:hover span.tooltip {
 	color: #666;
 }
 
+#tocContainer.hideInXcode {
+	display: none;
+	border: 0px solid black;
+}
+
+#top_header.hideInXcode {
+	display: none;
+}
+
+#contents.hideInXcode {
+	border: 0px solid black;
+	top: 0px;
+	left: 0px;
+}
+
 /* @end */
 
