@@ -306,12 +306,32 @@
 	// Remove unsupported headerDoc words.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
 	
-	// Remove unsupported Doxygen words.
-	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(brief))\\s?" withString:@""];    
-	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(details))\\s?" withString:@"\n"];
-	
 	// Replace methodgroup with name.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
+	
+	// Remove unsupported Doxygen words. This should ease the pain of migrating large amount of comments using doxygen markup.
+	// Comments like the following are cleaned up, and made ready for the markup appledoc expects
+
+	/**
+	 @brief Brief Comment
+	 @details Detailed Comment.
+	 */
+	
+	// Becomes....
+
+	/**
+	 Brief Comment
+	 
+	 Detailed Comment.
+	 */
+
+	
+	// Removes any occurance of @brief and it's surrounding whitespace
+	line = [line stringByReplacingOccurrencesOfRegex:@"\\s*@brief\\s*" withString:@""];
+
+	// Replaces any occurance of @details and it's surrounding whitespace with a newline
+	line = [line stringByReplacingOccurrencesOfRegex:@"^\\s*@details\\s*" withString:@"\n"];
+	
 	return line;
 }
 

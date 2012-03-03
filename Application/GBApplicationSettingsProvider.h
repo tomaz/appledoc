@@ -238,6 +238,12 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL preprocessHeaderDoc;
 
+/** Indicates whether we should prepend the name of an information block before the comment
+ 
+ If `YES`, appledoc will add "Warning: " to the text of a warning informationg block, "Note: " to note blocks, and "Bug: " to bug blocks.
+ */
+@property (assign) BOOL printInformationBlockTitles;
+
 /** Indicates whether we should treat single stars as bold markers or not.
  
  If `YES`, single star markers (`*text*`) should be treated as bold markers (`**text**`), otherwise not. This is mainly used for backwards compatibility, but should be disabled as it can cause unexpected issues, such as converting unordered lists into bold etc.

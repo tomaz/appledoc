@@ -51,6 +51,10 @@
 /** Returns the regex used for matching bug section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *bugSectionRegex;
 
+/** Returns the regex used for matching note section with capture 1 containing directive and capture 2 description text. */
+@property (readonly) NSString *noteSectionRegex;
+
+
 ///---------------------------------------------------------------------------------------
 /// @name Method specific definitions
 ///---------------------------------------------------------------------------------------

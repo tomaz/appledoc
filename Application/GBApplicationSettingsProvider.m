@@ -85,6 +85,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.publishDocSet = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.preprocessHeaderDoc = NO;
+		self.printInformationBlockTitles = YES;
 		self.useSingleStarForBold = NO;
 		self.keepIntermediateFiles = NO;
 		self.cleanupOutputPathBeforeRunning = NO;
@@ -601,6 +602,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 
 @synthesize repeatFirstParagraphForMemberDescription;
 @synthesize preprocessHeaderDoc;
+@synthesize printInformationBlockTitles;
 @synthesize useSingleStarForBold;
 @synthesize keepUndocumentedObjects;
 @synthesize keepUndocumentedMembers;
