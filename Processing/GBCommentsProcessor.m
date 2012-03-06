@@ -200,6 +200,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSArray *block = [lines subarrayWithRange:blockRange];
 	if ([self isLineMatchingDirectiveStatement:[block firstObject]]) {
 		NSString *string = [self stringByCombiningTrimmedLines:block];
+		if ([self processNoteBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processParamBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
@@ -270,6 +271,24 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 #pragma mark Directives matching
+
+- (BOOL)processNoteBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.noteSectionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	GBLogDebug(@"- Registering note block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	component.stringValue = string;
+	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"note"];
+	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
 
 - (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.warningSectionRegex];
@@ -438,6 +457,7 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string {
+	if ([string isMatchedByRegex:self.components.noteSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.warningSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.bugSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
@@ -717,7 +737,11 @@ typedef NSUInteger GBProcessingFlag;
 	if ([className length] > 0) [result appendFormat:@"> %%%@%%\n", className];
 	NSArray *lines = [string arrayOfLines];
 	[lines enumerateObjectsUsingBlock:^(NSString *line, NSUInteger idx, BOOL *stop) {
-		[result appendFormat:@"> %@", line];
+		NSString *class = @"";
+		if (self.settings.printInformationBlockTitles && 0 == idx && [className length] > 0) {
+			class = [NSString stringWithFormat:@"**%@:** ", [className capitalizedString]];
+		}
+		[result appendFormat:@"> %@%@", class, line];
 		if (idx < [lines count] - 1) [result appendString:@"\n"];
 	}];
 	return result;
