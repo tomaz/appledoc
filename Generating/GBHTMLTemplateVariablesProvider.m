@@ -12,6 +12,7 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBObjectDataProviding.h"
 #import "GBDataObjects.h"
+#import "GBDocumentData.h"
 #import "GBHTMLTemplateVariablesProvider.h"
 
 #pragma mark -
@@ -62,6 +63,7 @@
 
 - (NSString *)pageTitleForIndex;
 - (NSString *)pageTitleForHierarchy;
+- (NSArray *)documentsForIndex;
 - (NSArray *)classesForIndex;
 - (NSArray *)categoriesForIndex;
 - (NSArray *)protocolsForIndex;
@@ -166,6 +168,7 @@
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
+	[result setObject:[self documentsForIndex] forKey:@"docs"];
 	[result setObject:[self classesForIndex] forKey:@"classes"];
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
@@ -203,6 +206,7 @@
 	if ([object isKindOfClass:[GBClassData class]] && ![[self.store classes] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBCategoryData class]] && ![[self.store categories] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBProtocolData class]] && ![[self.store protocols] containsObject:object]) return nil;
+	if ([object isKindOfClass:[GBDocumentData class]] && ![[self.store documents] containsObject:object]) return nil;
 	return [self.settings htmlReferenceForObject:object fromSource:source];
 }
 
@@ -422,6 +426,18 @@
 	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
+- (NSArray*)documentsForIndex{
+    NSArray *documents = [self.store documentsSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[documents count]];
+	for (GBDocumentData *document in documents) {
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:document fromObject:nil] forKey:@"href"];
+		[data setObject:document.prettyNameOfDocument forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
 - (NSArray *)classesForIndex {
 	NSArray *classes = [self.store classesSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[classes count]];
@@ -519,9 +535,11 @@
 }
 
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict {
+	BOOL documents = [self.store.documents count] > 0;
 	BOOL classes = [self.store.classes count] > 0;
 	BOOL categories = [self.store.categories count] > 0;
 	BOOL protocols = [self.store.protocols count] > 0; 
+	[dict setObject:documents ? [GRYes yes] : [GRNo no] forKey:@"hasDocs"];
 	[dict setObject:classes ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
 	[dict setObject:categories ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
 	[dict setObject:protocols ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];

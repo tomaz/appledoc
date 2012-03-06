@@ -101,6 +101,7 @@
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"%@ Reference" forKey:@"titleTemplate"];
+		[result setObject:@"Programming Guides" forKey:@"docsTitle"];
 		[result setObject:@"Class References" forKey:@"classesTitle"];
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
@@ -126,6 +127,7 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
+		[result setObject:@"Programming Guides" forKey:@"docsTitle"];
 		[result setObject:@"Classes" forKey:@"classesTitle"];
 		[result setObject:@"Categories" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocols" forKey:@"protocolsTitle"];

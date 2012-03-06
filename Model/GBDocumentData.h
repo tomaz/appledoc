@@ -68,6 +68,7 @@
  @see basePathOfDocument
  */
 @property (copy) NSString *nameOfDocument;
+@property (copy) NSString *prettyNameOfDocument;
 
 /** Full path of the document source, including the file name and extension.
  

@@ -38,6 +38,11 @@
 
 #pragma mark Helper methods
 
+- (NSArray *)documentsSortedByName{
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"prettyNameOfDocument" ascending:YES]];
+	return [[self.documents allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
 - (NSArray *)classesSortedByName {
 	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES]];
 	return [[self.classes allObjects] sortedArrayUsingDescriptors:descriptors];
