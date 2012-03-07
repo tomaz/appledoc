@@ -46,7 +46,7 @@
 	// execute
 	[processor processComment:comment withContext:nil store:store];
 	// verify
-	[self assertComment:comment matchesLongDescMarkdown:@"Some text", @"> %warning%\n> Another paragraph\n> \n> And another", nil];
+	[self assertComment:comment matchesLongDescMarkdown:@"Some text", @"> %warning%\n> **Warning:** Another paragraph\n> \n> And another", nil];
 }
 
 - (void)testProcessCommentWithContextStore_markdown_shouldConvertBug {
@@ -57,7 +57,7 @@
 	// execute
 	[processor processComment:comment withContext:nil store:store];
 	// verify
-	[self assertComment:comment matchesLongDescMarkdown:@"Some text", @"> %bug%\n> Another paragraph\n> \n> And another", nil];
+	[self assertComment:comment matchesLongDescMarkdown:@"Some text", @"> %bug%\n> **Bug:** Another paragraph\n> \n> And another", nil];
 }
 
 #pragma mark Inline cross references handling
