@@ -29,6 +29,8 @@
 - (void)initializeSimplifiedObjects;
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
+
+@property (retain) NSArray *documents;
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
@@ -134,9 +136,11 @@
 	NSMutableDictionary *vars = [NSMutableDictionary dictionary];
 	[vars setObject:self.settings.projectName forKey:@"projectName"];
 	[vars setObject:@"index.html" forKey:@"indexFilename"];
+	[vars setObject:([self.documents count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasDocs"];
 	[vars setObject:([self.classes count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
 	[vars setObject:([self.categories count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
 	[vars setObject:([self.protocols count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[vars setObject:self.documents forKey:@"docs"];
 	[vars setObject:self.classes forKey:@"classes"];
 	[vars setObject:self.categories forKey:@"categories"];
 	[vars setObject:self.protocols forKey:@"protocols"];
@@ -167,6 +171,7 @@
 
 	// Write each object as a separate token file.
 	NSUInteger index = 1;
+	if (![self processTokensXmlForObjects:self.documents type:@"doc" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.classes type:@"cl" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.categories type:@"cat" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.protocols type:@"intf" template:templatePath index:&index error:error]) return NO;
@@ -343,11 +348,14 @@
 		} else if ([object isKindOfClass:[GBCategoryData class]]) {
 			NSString *objectName = [(GBCategoryData *)object idOfCategory];
 			return [NSString stringWithFormat:@"//apple_ref/occ/cat/%@", objectName];
-		} else {
+		} else if ([object isKindOfClass:[GBProtocolData class]]){
 			NSString *objectName = [(GBProtocolData *)object nameOfProtocol];
 			return [NSString stringWithFormat:@"//apple_ref/occ/intf/%@", objectName];
 		}
-	} else if (!object.isStaticDocument) {
+	} else if ([object isKindOfClass:[GBDocumentData class]]){
+        NSString *objectName = [(GBDocumentData *)object prettyNameOfDocument];
+        return [NSString stringWithFormat:@"//apple_ref/occ/doc/%@", objectName];
+    } else if (!object.isStaticDocument) {
 		// Members are slighly more complex - their identifier is different regarding to whether they are part of class or category/protocol. Then it depends on whether they are method or property. Finally their parent object (class/category/protocol) name (again class name for category) and selector should be added.
 		if (!object.parentObject) [NSException raise:@"Can't create token identifier for %@; object is not top level and has no parent assigned!", object];
 		
@@ -380,6 +388,7 @@
 	// Prepare flat list of objects for library nodes.
 	GBLogDebug(@"Initializing simplified object representations...");
 	NSUInteger index = 1;
+	self.documents = [self simplifiedObjectsFromObjects:[self.store documentsSortedByName] value:@"prettyNameOfDocument" index:&index];
 	self.classes = [self simplifiedObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
 	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
 	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
@@ -419,6 +428,7 @@
 	return result;
 }
 
+@synthesize documents;
 @synthesize classes;
 @synthesize categories;
 @synthesize protocols;

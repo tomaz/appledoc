@@ -218,6 +218,9 @@
 ///---------------------------------------------------------------------------------------
 
 /** Returns all registered classes sorted by their name. */
+- (NSArray *)documentsSortedByName;
+
+/** Returns all registered classes sorted by their name. */
 - (NSArray *)classesSortedByName;
 
 /** Returns all registered categories sorted by their name. */

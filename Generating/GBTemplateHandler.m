@@ -35,6 +35,10 @@ static NSString *kGBValueKey = @"value";
 	return [[[self alloc] init] autorelease];
 }
 
+- (NSString*)templateString{
+    return _templateString;
+}
+
 - (id)init {
 	self = [super init];
 	if (self) {
