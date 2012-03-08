@@ -180,13 +180,18 @@
 	if ([newMethods count] == 0) return;
 	
 	// Second merge all sections; only use sections for methods that were not registered yet! Note that we need to remember current section so that we restore it later on.
+	__block GBMethodSectionData *unnamedSection = nil;
 	GBMethodSectionData *previousSection = _registeringSection;
 	[source.sections enumerateObjectsUsingBlock:^(GBMethodSectionData *sourceSection, NSUInteger idx, BOOL *stop) {
 		[newMethods enumerateObjectsUsingBlock:^(GBMethodData *sourceMethod, NSUInteger idx, BOOL *stop) {
 			if ([sourceSection.methods containsObject:sourceMethod]) {
-				GBMethodSectionData *existingSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
-				if (!existingSection) existingSection = [self registerSectionWithName:sourceSection.sectionName];
-				_registeringSection = existingSection;
+				if (!sourceSection.sectionName) {
+					if (!unnamedSection) unnamedSection = [self registerSectionWithName:nil];
+					_registeringSection = unnamedSection;
+				} else {
+					_registeringSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
+					if (!_registeringSection) _registeringSection = [self registerSectionWithName:sourceSection.sectionName];
+				}
 				[self registerMethod:sourceMethod];
 				return;
 			}
