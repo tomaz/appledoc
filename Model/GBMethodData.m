@@ -8,6 +8,7 @@
 
 #import "GRMustache.h"
 #import "GBMethodArgument.h"
+#import "GBMethodSectionData.h"
 #import "GBMethodData.h"
 #import "RegexKitLite.h"
 
@@ -389,6 +390,7 @@
 @synthesize methodSelectorDelimiter = _methodSelectorDelimiter;
 @synthesize methodPrefix = _methodPrefix;
 @synthesize prefixedMethodSelector = _prefixedMethodSelector;
+@synthesize methodSection;
 @synthesize isRequired;
 
 @end

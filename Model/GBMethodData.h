@@ -9,7 +9,7 @@
 #import "GBModelBase.h"
 
 @class GBMethodArgument;
-
+@class GBMethodSectionData;
 
 /** Defines different method types. */
 enum {
@@ -112,6 +112,12 @@ typedef NSUInteger GBMethodType;
  @see methodSelector
  */
 @property (readonly) NSString *prefixedMethodSelector;
+
+/** The section this method belongs to.
+ 
+ Primarily used so that we can setup proper section name when merging from protocols.
+ */
+@property (retain) GBMethodSectionData *methodSection;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper properties

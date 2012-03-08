@@ -245,6 +245,10 @@
 		GBMethodData *protocolMethod = [protocol.methods methodBySelector:method.methodSelector];
 		if (protocolMethod.comment) {
 			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
+			if (protocolMethod.methodSection.sectionName && !method.methodSection.sectionName) {
+				GBLogDebug(@"Copying section name %@ from %@...", protocolMethod.methodSection.sectionName, protocol);
+				method.methodSection.sectionName = protocolMethod.methodSection.sectionName;
+			}
 			protocolMethod.comment.originalContext = protocolMethod.parentObject;
 			method.comment = protocolMethod.comment;
 			return;

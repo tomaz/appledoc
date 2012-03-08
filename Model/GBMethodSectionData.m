@@ -6,6 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
+#import "GBMethodData.h"
 #import "GBMethodSectionData.h"
 
 @implementation GBMethodSectionData
@@ -16,11 +17,13 @@
 	NSParameterAssert(method != nil);
 	if (!_methods) _methods = [[NSMutableArray alloc] init];
 	[_methods addObject:method];
+	method.methodSection = self;
 }
 
 - (BOOL)unregisterMethod:(GBMethodData *)method {
 	if ([_methods containsObject:method]) {
 		[_methods removeObject:method];
+		method.methodSection = nil;
 		return YES;
 	}
 	return NO;
