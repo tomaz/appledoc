@@ -279,7 +279,7 @@
 		__block BOOL parseAttribute = NO;
 		__block NSUInteger parenthesisDepth = 0;
 		[self.tokenizer consumeTo:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-			if ([token matches:@"__attribute__"]) {
+			if ([token matches:@"__attribute__"] || [token matches:@"DEPRECATED_ATTRIBUTE"]) {
 				parseAttribute = YES;
 				parenthesisDepth = 0;
 			} else if (parseAttribute) {
@@ -499,7 +499,7 @@
 		__block NSUInteger parenthesisDepth = 0;
 		__block NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
-			if ([token matches:@"__attribute__"]) {
+			if ([token matches:@"__attribute__"] || [token matches:@"DEPRECATED_ATTRIBUTE"]) {
 				parseAttribute = YES;
 				parenthesisDepth = 0;
 				return;
