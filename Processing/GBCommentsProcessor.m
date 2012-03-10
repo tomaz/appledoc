@@ -716,7 +716,7 @@ typedef NSUInteger GBProcessingFlag;
 		else if ([object isKindOfClass:[GBProtocolData class]])
 			if ([data->description isEqualToString:[object nameOfProtocol]]) return YES;
 	} else {
-		if ([data->description isEqualToString:[object methodSelector]]) return YES;
+		if (![object isKindOfClass:[GBDocumentData class]] && [data->description isEqualToString:[object methodSelector]]) return YES;
 	}
 	return NO;
 }
