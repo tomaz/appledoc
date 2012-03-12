@@ -9,7 +9,9 @@
 /* Begin PBXBuildFile section */
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
-		73D274B9150E05DA004D27F4 /* appledoc.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73D274B8150E05DA004D27F4 /* appledoc.1 */; };
+		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
+		73ED942D150E7B200032FD07 /* CommandLineArgumentsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED942C150E7B200032FD07 /* CommandLineArgumentsParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -19,7 +21,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				73D274B9150E05DA004D27F4 /* appledoc.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -30,7 +31,12 @@
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		73D274B7150E05DA004D27F4 /* appledoc-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "appledoc-Prefix.pch"; sourceTree = "<group>"; };
-		73D274B8150E05DA004D27F4 /* appledoc.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = appledoc.1; sourceTree = "<group>"; };
+		73D274D3150E08FE004D27F4 /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
+		73D274D4150E08FE004D27F4 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
+		73D274DC150E0D60004D27F4 /* Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appledoc.h; sourceTree = "<group>"; };
+		73D274DD150E0D60004D27F4 /* Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appledoc.m; sourceTree = "<group>"; };
+		73ED942B150E7B200032FD07 /* CommandLineArgumentsParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandLineArgumentsParser.h; sourceTree = "<group>"; };
+		73ED942C150E7B200032FD07 /* CommandLineArgumentsParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommandLineArgumentsParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				73D274B3150E05DA004D27F4 /* appledoc */,
+				73D274CD150E08C4004D27F4 /* Third Party */,
 				73D274B0150E05DA004D27F4 /* Frameworks */,
 				73D274AE150E05DA004D27F4 /* Products */,
 			);
@@ -73,8 +80,7 @@
 		73D274B3150E05DA004D27F4 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
-				73D274B4150E05DA004D27F4 /* main.m */,
-				73D274B8150E05DA004D27F4 /* appledoc.1 */,
+				73D274CC150E08AA004D27F4 /* Application */,
 				73D274B6150E05DA004D27F4 /* Supporting Files */,
 			);
 			path = appledoc;
@@ -83,9 +89,39 @@
 		73D274B6150E05DA004D27F4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				73D274B4150E05DA004D27F4 /* main.m */,
 				73D274B7150E05DA004D27F4 /* appledoc-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		73D274CC150E08AA004D27F4 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				73D274DC150E0D60004D27F4 /* Appledoc.h */,
+				73D274DD150E0D60004D27F4 /* Appledoc.m */,
+				73ED942B150E7B200032FD07 /* CommandLineArgumentsParser.h */,
+				73ED942C150E7B200032FD07 /* CommandLineArgumentsParser.m */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		73D274CD150E08C4004D27F4 /* Third Party */ = {
+			isa = PBXGroup;
+			children = (
+				73D274CE150E08E4004D27F4 /* DDCli */,
+			);
+			name = "Third Party";
+			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		73D274CE150E08E4004D27F4 /* DDCli */ = {
+			isa = PBXGroup;
+			children = (
+				73D274D3150E08FE004D27F4 /* DDCliUtil.h */,
+				73D274D4150E08FE004D27F4 /* DDCliUtil.m */,
+			);
+			path = DDCli;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -115,6 +151,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0430;
+				ORGANIZATIONNAME = "Tomaz Kragelj";
 			};
 			buildConfigurationList = 73D274A7150E05DA004D27F4 /* Build configuration list for PBXProject "appledoc" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -139,6 +176,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B5150E05DA004D27F4 /* main.m in Sources */,
+				73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */,
+				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
+				73ED942D150E7B200032FD07 /* CommandLineArgumentsParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -229,6 +269,7 @@
 				73D274BE150E05DA004D27F4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
