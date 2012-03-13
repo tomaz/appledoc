@@ -6,7 +6,9 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#define HC_SHORTHAND
 #import <SenTestingKit/SenTestingKit.h>
+#import <OCHamcrest/OCHamcrest.h>
 
 @interface TestCaseBase : SenTestCase
 

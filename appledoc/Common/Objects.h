@@ -7,3 +7,4 @@
 //
 
 #import "Logging.h"
+#import "Settings.h"

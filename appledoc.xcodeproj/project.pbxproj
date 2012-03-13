@@ -13,6 +13,11 @@
 		7317FAC4150F56A500B39CFD /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
 		7317FAC6150F56AB00B39CFD /* CommandLineArgumentsParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED942C150E7B200032FD07 /* CommandLineArgumentsParser.m */; };
+		7317FAC9150F57FD00B39CFD /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC8150F57FD00B39CFD /* Settings.m */; };
+		7317FACA150F57FD00B39CFD /* Settings.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC8150F57FD00B39CFD /* Settings.m */; };
+		7317FACE150F633900B39CFD /* SettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.m */; };
+		7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
+		7317FADB150F67E500B39CFD /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -22,6 +27,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		7317FADA150F67D900B39CFD /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				7317FADB150F67E500B39CFD /* OCHamcrest.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		73D274AB150E05DA004D27F4 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -41,6 +56,10 @@
 		7317FABC150F544400B39CFD /* AppledocTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppledocTests-Prefix.pch"; sourceTree = "<group>"; };
 		7317FAC1150F556800B39CFD /* TestCaseBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseBase.h; sourceTree = "<group>"; };
 		7317FAC2150F556800B39CFD /* TestCaseBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCaseBase.m; sourceTree = "<group>"; };
+		7317FAC7150F57FD00B39CFD /* Settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Settings.h; sourceTree = "<group>"; };
+		7317FAC8150F57FD00B39CFD /* Settings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Settings.m; sourceTree = "<group>"; };
+		7317FACD150F633900B39CFD /* SettingsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTests.m; sourceTree = "<group>"; };
+		7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = AppledocTests/Libraries/OCHamcrest.framework; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -63,6 +82,7 @@
 			files = (
 				7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */,
 				7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */,
+				7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +100,7 @@
 		7317FAA3150F51FD00B39CFD /* AppledocTests */ = {
 			isa = PBXGroup;
 			children = (
+				7317FACB150F630F00B39CFD /* Common */,
 				7317FAC0150F551600B39CFD /* Testing Base */,
 				7317FAA4150F51FD00B39CFD /* Supporting Files */,
 			);
@@ -105,13 +126,21 @@
 			path = TestingBase;
 			sourceTree = "<group>";
 		};
+		7317FACB150F630F00B39CFD /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				7317FACD150F633900B39CFD /* SettingsTests.m */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		73D274A2150E05DA004D27F4 = {
 			isa = PBXGroup;
 			children = (
 				73D274B3150E05DA004D27F4 /* appledoc */,
 				7317FAA3150F51FD00B39CFD /* AppledocTests */,
 				73D274CD150E08C4004D27F4 /* Third Party */,
-				73D274B0150E05DA004D27F4 /* Frameworks */,
+				73D274B0150E05DA004D27F4 /* Frameworks & Libraries */,
 				73D274AE150E05DA004D27F4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -125,14 +154,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		73D274B0150E05DA004D27F4 /* Frameworks */ = {
+		73D274B0150E05DA004D27F4 /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
+				7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */,
 			);
-			name = Frameworks;
+			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
 		};
 		73D274B3150E05DA004D27F4 /* appledoc */ = {
@@ -189,6 +219,8 @@
 				73ED944C150F3CF40032FD07 /* Objects.h */,
 				73ED9444150E9FEC0032FD07 /* Logging.h */,
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
+				7317FAC7150F57FD00B39CFD /* Settings.h */,
+				7317FAC8150F57FD00B39CFD /* Settings.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -202,6 +234,7 @@
 			buildPhases = (
 				7317FA95150F51FD00B39CFD /* Sources */,
 				7317FA96150F51FD00B39CFD /* Frameworks */,
+				7317FADA150F67D900B39CFD /* CopyFiles */,
 				7317FA98150F51FD00B39CFD /* ShellScript */,
 			);
 			buildRules = (
@@ -282,6 +315,8 @@
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
 				7317FAC6150F56AB00B39CFD /* CommandLineArgumentsParser.m in Sources */,
+				7317FACA150F57FD00B39CFD /* Settings.m in Sources */,
+				7317FACE150F633900B39CFD /* SettingsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +329,7 @@
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED942D150E7B200032FD07 /* CommandLineArgumentsParser.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
+				7317FAC9150F57FD00B39CFD /* Settings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,7 +340,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "";
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/AppledocTests/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
@@ -317,7 +356,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "";
-				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"\"$(SRCROOT)/AppledocTests/Libraries\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
