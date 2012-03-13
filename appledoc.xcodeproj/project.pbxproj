@@ -183,14 +183,6 @@
 		73F2CA77123E4161009B406B /* GBProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F2CA73123E4161009B406B /* GBProcessor.m */; };
 		73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
 		73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
-		73F568BF12A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; };
-		73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; };
-		73F568C112A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; };
-		73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; };
-		73F568C312A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; };
-		73F568C412A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; };
-		73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; };
-		73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; };
 		73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
 		73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
@@ -384,14 +376,6 @@
 		73F2CA72123E4161009B406B /* GBProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBProcessor.h; sourceTree = "<group>"; };
 		73F2CA73123E4161009B406B /* GBProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = GBProcessor.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
-		73F568B712A22A7900A72BB2 /* DDASLLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDASLLogger.h; sourceTree = "<group>"; };
-		73F568B812A22A7900A72BB2 /* DDASLLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDASLLogger.m; sourceTree = "<group>"; };
-		73F568B912A22A7900A72BB2 /* DDFileLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDFileLogger.h; sourceTree = "<group>"; };
-		73F568BA12A22A7900A72BB2 /* DDFileLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDFileLogger.m; sourceTree = "<group>"; };
-		73F568BB12A22A7900A72BB2 /* DDLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDLog.h; sourceTree = "<group>"; };
-		73F568BC12A22A7900A72BB2 /* DDLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDLog.m; sourceTree = "<group>"; };
-		73F568BD12A22A7900A72BB2 /* DDTTYLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDTTYLogger.h; sourceTree = "<group>"; };
-		73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDTTYLogger.m; sourceTree = "<group>"; };
 		73F568D212A22CFF00A72BB2 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		73F70DB51227B34300D19EBA /* GBComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBComment.h; sourceTree = "<group>"; };
 		73F70DB61227B34300D19EBA /* GBComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBComment.m; sourceTree = "<group>"; };
@@ -767,28 +751,12 @@
 		73D54C9511F8D1F500CCDDB0 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
-				73D54C9611F8D21000CCDDB0 /* CocoaLumberjack */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 				7359B11E129A59EC00F67AD1 /* GRMustache */,
 				735BCB48124EE91700FB6C4A /* Miscellaneous */,
 			);
 			path = ThirdParty;
-			sourceTree = "<group>";
-		};
-		73D54C9611F8D21000CCDDB0 /* CocoaLumberjack */ = {
-			isa = PBXGroup;
-			children = (
-				73F568B712A22A7900A72BB2 /* DDASLLogger.h */,
-				73F568B812A22A7900A72BB2 /* DDASLLogger.m */,
-				73F568B912A22A7900A72BB2 /* DDFileLogger.h */,
-				73F568BA12A22A7900A72BB2 /* DDFileLogger.m */,
-				73F568BB12A22A7900A72BB2 /* DDLog.h */,
-				73F568BC12A22A7900A72BB2 /* DDLog.m */,
-				73F568BD12A22A7900A72BB2 /* DDTTYLogger.h */,
-				73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */,
-			);
-			path = CocoaLumberjack;
 			sourceTree = "<group>";
 		};
 		73D54CD511F8D43D00CCDDB0 /* DDCli */ = {
@@ -1234,11 +1202,7 @@
 				7359B168129A5A0700F67AD1 /* GRMustacheURLTemplateLoader.m in Sources */,
 				7359B16A129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */,
 				7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
-				73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */,
-				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
 				735259D713793ED7003F0D09 /* GBExitCodes.m in Sources */,
-				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
-				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */,
 				739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */,
 				7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */,
@@ -1317,10 +1281,6 @@
 				7359B167129A5A0700F67AD1 /* GRMustacheURLTemplateLoader.m in Sources */,
 				7359B169129A5A0700F67AD1 /* GRMustacheVariableElement.m in Sources */,
 				7359B16B129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
-				73F568BF12A22A7900A72BB2 /* DDASLLogger.m in Sources */,
-				73F568C112A22A7900A72BB2 /* DDFileLogger.m in Sources */,
-				73F568C312A22A7900A72BB2 /* DDLog.m in Sources */,
-				73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
 				73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */,
 				73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */,
 				731872C512A3B75C0035509F /* GBDocSetOutputGenerator.m in Sources */,

@@ -7,6 +7,7 @@
 //
 
 #import "timing.h"
+#import "GBExitCodes.h"
 #import "DDCliUtil.h"
 #import "DDGetoptLongParser.h"
 #import "GBStore.h"
@@ -324,11 +325,7 @@ static NSString *kGBArgHelp = @"help";
 #pragma mark Application handling
 
 - (void)initializeLoggingSystem {
-	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
-	[[GBConsoleLogger sharedInstance] setLogFormatter:formatter];
-	[DDLog addLogger:[GBConsoleLogger sharedInstance]];
-	[GBLog setLogLevelFromVerbose:self.verbose];
-	[formatter release];
+	initialize_logging();
 }
 
 - (void)deleteContentsOfOutputPath {
