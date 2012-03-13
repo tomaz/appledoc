@@ -6,29 +6,16 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "Appledoc.h"
 
 @implementation Appledoc
+
+#pragma mark - Initialization & disposal
 
 - (id)init {
 	self = [super init];
 	return self;
 }
-
-//#pragma mark - DDCliApplicationDelegate
-//
-//- (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionsParser {
-//    [optionsParser setGetoptLongOnly: YES];
-//    DDGetoptOption optionTable[] = {
-//        {@"output",     'o',    DDGetoptRequiredArgument},
-//        {@"help",       'h',    DDGetoptNoArgument},
-//        {nil,           0,      0},
-//    };
-//    [optionsParser addOptionsFromTable: optionTable];
-//}
-//
-//- (int)application:(DDCliApplication *)app runWithArguments:(NSArray *)arguments {
-//	return 0;
-//}
 
 @end

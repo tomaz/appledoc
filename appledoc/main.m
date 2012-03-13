@@ -7,22 +7,11 @@
 //
 
 #import "DDCliUtil.h"
-#import "Objects.h"
-#import "CommandLineArgumentsParser.h"
+#import "Appledoc.h"
 
 int main(int argc, char *argv[]) {
 	@autoreleasepool {
-		CommandLineArgumentsParser *argumentsParser = [[CommandLineArgumentsParser alloc] init];
-		[argumentsParser registerOption:@"verbose" shortcut:'v' requirement:GBCommandLineValueRequired];
-		[argumentsParser parseOptionsWithArguments:argv count:argc block:^(NSString *argument, id value, BOOL *stop) {
-			if (value == GBCommandLineArgumentResults.unknownArgument) {
-				ddprintf(@"unknown %@\n", argument);
-				*stop = YES;
-			} else if (value == GBCommandLineArgumentResults.missingValue) {
-				ddprintf(@"missing %@\n", argument);
-				*stop = YES;
-			}
-		}];
+		Appledoc *appledoc = [[Appledoc alloc] init];
 	}
     return 0;
 }
