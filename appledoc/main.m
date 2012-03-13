@@ -7,6 +7,7 @@
 //
 
 #import "DDCliUtil.h"
+#import "Objects.h"
 #import "CommandLineArgumentsParser.h"
 
 int main(int argc, char *argv[]) {
