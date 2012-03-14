@@ -33,16 +33,28 @@
 
 @property (nonatomic, strong) NSArray *inputPaths;
 
-#pragma mark - Helper methods
+#pragma mark - Debugging aid
 
+@property (nonatomic, assign) BOOL printSettings;
+
+@end
+
+#pragma mark -
+
+@interface Settings (Helpers)
 - (void)applyFactoryDefaults;
 - (void)applyGlobalSettingsFromCmdLineSettings:(Settings *)settings;
 - (void)applyProjectSettingsFromCmdLineSettings:(Settings *)settings;
 - (void)registerOptionsToCommandLineParser:(CommandLineArgumentsParser *)parser;
-
 @end
 
-#pragma mark - Settings keys
+@interface Settings (Diagnostics)
+- (void)printSettingValuesIfNeeded;
++ (void)printAppledocVersion;
++ (void)printAppledocHelp;
+@end
+
+#pragma mark -
 
 /** All the keys used for settings defined in a convenient namespaced struct.
  
@@ -55,4 +67,6 @@ extern const struct GBSettingsKeys {
 	__unsafe_unretained NSString *companyIdentifier;
 	
 	__unsafe_unretained NSString *inputPaths;
+	
+	__unsafe_unretained NSString *printSettings;
 } GBSettingsKeys;

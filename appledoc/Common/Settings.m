@@ -10,8 +10,8 @@
 
 @interface Settings ()
 - (BOOL)isKeyArray:(NSString *)key;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, strong) Settings *parent;
+@property (nonatomic, readwrite, copy) NSString *name;
+@property (nonatomic, readwrite, strong) Settings *parent;
 @property (nonatomic, strong) NSMutableSet *arrayKeys;
 @property (nonatomic, strong) NSMutableDictionary *storage;
 @end
@@ -115,11 +115,6 @@
 
 #pragma mark - Introspection
 
-- (NSString *)nameOfSettingsForKey:(NSString *)key {
-	Settings *level = [self settingsForKey:key];
-	return level.name;
-}
-
 - (Settings *)settingsForKey:(NSString *)key {
 	Settings *level = self;
 	while (level) {
@@ -127,6 +122,11 @@
 		level = level.parent;
 	}
 	return level;
+}
+
+- (BOOL)isKeyPresentAtThisLevel:(NSString *)key {
+	if ([self.storage objectForKey:key]) return YES;
+	return NO;
 }
 
 - (BOOL)isKeyArray:(NSString *)key {

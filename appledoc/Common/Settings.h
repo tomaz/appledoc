@@ -69,8 +69,13 @@
 
 #pragma mark - Introspection
 
-- (NSString *)nameOfSettingsForKey:(NSString *)key;
 - (Settings *)settingsForKey:(NSString *)key;
+- (BOOL)isKeyPresentAtThisLevel:(NSString *)key;
+
+#pragma mark - Properties
+
+@property (nonatomic, readonly, copy) NSString *name;
+@property (nonatomic, readonly, strong) Settings *parent;
 
 @end
 

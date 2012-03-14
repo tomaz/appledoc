@@ -21,6 +21,7 @@
 		73280F28150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
+		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -330,6 +331,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				739704641510CEFD00486507 /* DDCliUtil.m in Sources */,
 				7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */,
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
