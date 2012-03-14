@@ -91,6 +91,31 @@
 	}];
 }
 
+#pragma mark - setObject:forKey:
+
+- (void)testSetObjectForKeyShouldUseLastValueIfSentMultipleTimes {
+	[self runWithSettings:^(Settings *settings) {
+		// setup
+		[settings setObject:@"1" forKey:@"string"];
+		// execute
+		[settings setObject:@"2" forKey:@"string"];
+		// verify
+		assertThat([settings objectForKey:@"string"], is(@"2"));
+	}];
+}
+
+- (void)testSetObjectForKeyShouldStoreArrayIfKeyIsRegisteredAsArray {
+	[self runWithSettings:^(Settings *settings) {
+		// setup
+		[settings registerArrayForKey:@"string"];
+		[settings setObject:@"1" forKey:@"string"];
+		// execute
+		[settings setObject:@"2" forKey:@"string"];
+		// verify
+		assertThat([settings objectForKey:@"string"], onlyContains(@"1", @"2", nil));
+	}];
+}
+
 #pragma mark - registerOptionsToCommandLineParser:
 
 - (void)testRegisterOptionsToCommandLineParserShouldRegisterProjectOptions {

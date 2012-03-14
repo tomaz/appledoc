@@ -46,6 +46,10 @@
 + (id)settingsWithName:(NSString *)name parent:(Settings *)parent;
 - (id)initWithName:(NSString *)name parent:(Settings *)parent;
 
+#pragma mark - Optional registration helpers
+
+- (void)registerArrayForKey:(NSString *)key;
+
 #pragma mark - Values handling
 
 - (id)objectForKey:(NSString *)key;

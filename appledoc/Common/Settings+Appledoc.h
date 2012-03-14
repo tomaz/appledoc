@@ -18,16 +18,26 @@
  */
 @interface Settings (Appledoc)
 
-#pragma mark - Project values
+#pragma mark - Initialization & disposal
+
++ (id)appledocSettingsWithName:(NSString *)name parent:(Settings *)parent;
+
+#pragma mark - Project information
 
 @property (nonatomic, copy) NSString *projectVersion;
 @property (nonatomic, copy) NSString *projectName;
 @property (nonatomic, copy) NSString *companyName;
 @property (nonatomic, copy) NSString *companyIdentifier;
 
+#pragma mark - Paths
+
+@property (nonatomic, strong) NSArray *inputPaths;
+
 #pragma mark - Helper methods
 
 - (void)applyFactoryDefaults;
+- (void)applyGlobalSettingsFromCmdLineSettings:(Settings *)settings;
+- (void)applyProjectSettingsFromCmdLineSettings:(Settings *)settings;
 - (void)registerOptionsToCommandLineParser:(CommandLineArgumentsParser *)parser;
 
 @end
@@ -43,4 +53,6 @@ extern const struct GBSettingsKeys {
 	__unsafe_unretained NSString *projectVersion;
 	__unsafe_unretained NSString *companyName;
 	__unsafe_unretained NSString *companyIdentifier;
+	
+	__unsafe_unretained NSString *inputPaths;
 } GBSettingsKeys;

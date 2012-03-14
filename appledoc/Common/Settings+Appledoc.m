@@ -11,17 +11,26 @@
 
 @implementation Settings (Appledoc)
 
-#pragma mark - Project values
+#pragma mark - Initialization & disposal
 
-GB_SYNTHESIZE_COPY(NSString *, projectVersion, setProjectVersion)
-GB_SYNTHESIZE_COPY(NSString *, projectName, setProjectName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyName, setCompanyName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier) // Required!
++ (id)appledocSettingsWithName:(NSString *)name parent:(Settings *)parent {
+	id result = [self settingsWithName:name parent:parent];
+	if (result) {
+		[result registerArrayForKey:GBSettingsKeys.inputPaths];
+	}
+	return result;
+}
 
 #pragma mark - Helper methods
 
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
+}
+
+- (void)applyGlobalSettingsFromCmdLineSettings:(Settings *)settings {
+}
+
+- (void)applyProjectSettingsFromCmdLineSettings:(Settings *)settings {
 }
 
 - (void)registerOptionsToCommandLineParser:(CommandLineArgumentsParser *)parser {
@@ -30,6 +39,17 @@ GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier) // Requi
 	[parser registerOption:GBSettingsKeys.companyName shortcut:'c' requirement:GBCommandLineValueRequired];
 	[parser registerOption:GBSettingsKeys.companyIdentifier requirement:GBCommandLineValueRequired];
 }
+
+#pragma mark - Project information
+
+GB_SYNTHESIZE_COPY(NSString *, projectVersion, setProjectVersion)
+GB_SYNTHESIZE_COPY(NSString *, projectName, setProjectName) // Required!
+GB_SYNTHESIZE_COPY(NSString *, companyName, setCompanyName) // Required!
+GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier) // Required!
+
+#pragma mark - Paths
+
+GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths)
 
 @end
 
@@ -40,4 +60,6 @@ const struct GBSettingsKeys GBSettingsKeys = {
 	.projectVersion = @"project-version",
 	.companyName = @"company-name",
 	.companyIdentifier = @"company-id",
+	
+	.inputPaths = @"input",
 };

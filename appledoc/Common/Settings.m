@@ -11,6 +11,7 @@
 @interface Settings ()
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) Settings *parent;
+@property (nonatomic, strong) NSMutableSet *arrayKeys;
 @property (nonatomic, strong) NSMutableDictionary *storage;
 @end
 
@@ -20,6 +21,7 @@
 
 @synthesize name = _name;
 @synthesize parent = _parent;
+@synthesize arrayKeys = _arrayKeys;
 @synthesize storage = _storage;
 
 #pragma mark - Initialization & disposal
@@ -33,9 +35,16 @@
 	if (self) {
 		self.name = name;
 		self.parent = parent;
+		self.arrayKeys = [NSMutableSet set];
 		self.storage = [NSMutableDictionary dictionary];
 	}
 	return self;
+}
+
+#pragma mark - Optional registration helpers
+
+- (void)registerArrayForKey:(NSString *)key {
+	[self.arrayKeys addObject:key];
 }
 
 #pragma mark - Values handling
@@ -45,6 +54,11 @@
 	return [level.storage objectForKey:key];
 }
 - (void)setObject:(id)value forKey:(NSString *)key {
+	if ([self.arrayKeys containsObject:key] && ![key isKindOfClass:[NSArray class]]) {
+		NSMutableArray *array = [NSMutableArray arrayWithObject:value];
+		[self.storage setObject:array forKey:key];
+		return;
+	}
 	return [self.storage setObject:value forKey:key];
 }
 

@@ -14,10 +14,10 @@
 int main(int argc, char *argv[]) {
 	@autoreleasepool {
 		// Initialize the settings stack.
-		Settings *factoryDefaults = [Settings settingsWithName:@"Factory" parent:nil];
-		Settings *globalSettings = [Settings settingsWithName:@"Global" parent:factoryDefaults];
-		Settings *projectSettings = [Settings settingsWithName:@"Project" parent:globalSettings];
-		Settings *settings = [Settings settingsWithName:@"CmdLine" parent:projectSettings];
+		Settings *factoryDefaults = [Settings appledocSettingsWithName:@"Factory" parent:nil];
+		Settings *globalSettings = [Settings appledocSettingsWithName:@"Global" parent:factoryDefaults];
+		Settings *projectSettings = [Settings appledocSettingsWithName:@"Project" parent:globalSettings];
+		Settings *settings = [Settings appledocSettingsWithName:@"CmdLine" parent:projectSettings];
 
 		// Initialize command line parser and parse settings.
 		CommandLineArgumentsParser *parser = [[CommandLineArgumentsParser alloc] init];
@@ -36,8 +36,13 @@ int main(int argc, char *argv[]) {
 		}];
 		if (!commandLineValid) return 1;
 		
-		// Prepare factory defaults and read in global and project settings (if specified).
+		// Prepare command line settings with additional data.
+		settings.inputPaths = parser.arguments;
+		
+		// Apply factory defaults, global and project settings.
 		[factoryDefaults applyFactoryDefaults];
+		[globalSettings applyGlobalSettingsFromCmdLineSettings:settings];
+		[projectSettings applyProjectSettingsFromCmdLineSettings:settings];
 
 		// Initialize and run the application.
 		Appledoc *appledoc = [[Appledoc alloc] init];
