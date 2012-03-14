@@ -69,3 +69,15 @@
 - (Settings *)settingsForKey:(NSString *)key;
 
 @end
+
+#pragma mark - Convenience one-line synthesize macros for concrete properties
+
+#define GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, valueAccessor, valueMutator, val) \
+	- (type)accessorSel { return [self valueAccessor:GBSettingsKeys.accessorSel]; } \
+	- (void)mutatorSel:(type)value { [self valueMutator:val forKey:GBSettingsKeys.accessorSel]; }
+#define GB_SYNTHESIZE_OBJECT(type, accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, value)
+#define GB_SYNTHESIZE_COPY(type, accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, [value copy])
+#define GB_SYNTHESIZE_BOOL(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(BOOL, accessorSel, mutatorSel, boolForKey, setBool, value)
+#define GB_SYNTHESIZE_INT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(NSInteger, accessorSel, mutatorSel, integerForKey, setInteger, value)
+#define GB_SYNTHESIZE_UINT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(NSUInteger, accessorSel, mutatorSel, unsignedIntegerForKey, setUnsignedInteger, value)
+#define GB_SYNTHESIZE_FLOAT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(CGFloat, accessorSel, mutatorSel, floatForKey, setFloat, value)

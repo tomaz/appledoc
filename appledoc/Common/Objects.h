@@ -7,4 +7,4 @@
 //
 
 #import "Logging.h"
-#import "Settings.h"
+#import "Settings+Appledoc.h"

@@ -6,19 +6,19 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Settings+Appledoc.h"
+#import "Objects+TestingPrivateAPI.h"
 #import "TestCaseBase.h"
-#import "Settings.h"
-
-@interface Settings (TestingPrivateAPI)
-@property (nonatomic, strong) Settings *parent;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSDictionary *storage;
-@end
-
-#pragma mark - 
 
 @interface SettingsTests : TestCaseBase
+@end
+
+@interface SettingsTests (CreationMethods)
 - (void)runWithSettings:(void(^)(Settings *settings))handler;
+@end
+
+@interface SettingsTests (HelperMethods)
+- (NSSet *)registeredOptionsForParser:(CommandLineArgumentsParser *)parser;
 @end
 
 @implementation SettingsTests
@@ -91,11 +91,43 @@
 	}];
 }
 
-#pragma mark - Creator methods
+#pragma mark - registerOptionsToCommandLineParser:
+
+- (void)testRegisterOptionsToCommandLineParserShouldRegisterProjectOptions {
+	[self runWithSettings:^(Settings *settings) {
+		// setup
+		CommandLineArgumentsParser *parser = [CommandLineArgumentsParser new];
+		// execute
+		[settings registerOptionsToCommandLineParser:parser];
+		// verify
+		NSSet *registeredOptions = [self registeredOptionsForParser:parser];
+		assertThat(registeredOptions, hasItems(@"project-name", @"project-version", @"company-name", @"company-id", nil));
+	}];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SettingsTests (CreationMethods)
 
 - (void)runWithSettings:(void(^)(Settings *settings))handler {
 	Settings *settings = [Settings settingsWithName:@"name" parent:nil];
 	handler(settings);
+}
+
+@end
+
+@implementation SettingsTests (HelperMethods)
+
+- (NSSet *)registeredOptionsForParser:(CommandLineArgumentsParser *)parser {
+	NSDictionary *registeredOptions = parser.registeredOptions;
+	NSMutableSet *result = [NSMutableSet setWithCapacity:registeredOptions.count];
+	[registeredOptions.allValues enumerateObjectsUsingBlock:^(NSDictionary *optionData, NSUInteger idx, BOOL *stop) {
+		NSString *optionName = [optionData objectForKey:@"long"];
+		[result addObject:optionName];
+	}];
+	return result;
 }
 
 @end

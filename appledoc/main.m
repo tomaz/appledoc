@@ -12,6 +12,7 @@
 int main(int argc, char *argv[]) {
 	@autoreleasepool {
 		Appledoc *appledoc = [[Appledoc alloc] init];
+		[appledoc setupSettingsFromCmdLineArgs:argv count:argc];
 	}
     return 0;
 }
