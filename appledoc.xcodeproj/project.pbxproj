@@ -68,6 +68,7 @@
 		73280F26150FE48700D1E6E8 /* Settings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Settings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Settings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
+		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -234,6 +235,7 @@
 		73ED9443150E9FD00032FD07 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				7397046A1511283300486507 /* AppledocInfo.h */,
 				73ED944C150F3CF40032FD07 /* Objects.h */,
 				73ED9444150E9FEC0032FD07 /* Logging.h */,
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
@@ -270,6 +272,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 73D274BC150E05DA004D27F4 /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
+				739704691511264900486507 /* Prepare tool name, version and build number */,
 				73D274A9150E05DA004D27F4 /* Sources */,
 				73D274AA150E05DA004D27F4 /* Frameworks */,
 				73D274AB150E05DA004D27F4 /* CopyFiles */,
@@ -323,6 +326,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		739704691511264900486507 /* Prepare tool name, version and build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Prepare tool name, version and build number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nversion=`$git describe --abbrev=0 --tags`\ncount=`$git rev-list --all |wc -l`\necho -e \"#define GB_APPLEDOC_NAME @\\\"$PRODUCT_NAME\\\"\\n#define GB_APPLEDOC_VERSION @\\\"$version\\\"\\n#define GB_APPLEDOC_BUILD $count\" > AppledocInfo.h";
 		};
 /* End PBXShellScriptBuildPhase section */
 

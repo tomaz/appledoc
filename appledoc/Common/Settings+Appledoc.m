@@ -5,8 +5,8 @@
 //  Created by Tomaž Kragelj on 3/13/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
-
 #import "DDCliUtil.h"
+#import "AppledocInfo.h"
 #import "CommandLineArgumentsParser.h"
 #import "Settings+Appledoc.h"
 
@@ -126,12 +126,12 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
 }
 
 + (void)printAppledocVersion {
-	ddprintf(@"appledoc: version 3.0a1 (build 100)\n");
+	ddprintf(@"%@: version %@ (build %lu)\n", GB_APPLEDOC_NAME, GB_APPLEDOC_VERSION, GB_APPLEDOC_BUILD);
 	ddprintf(@"\n");
 }
 
 + (void)printAppledocHelp {
-	ddprintf(@"Usage: appledoc [OPTIONS] <paths to files or dirs>\n");
+	ddprintf(@"Usage: %@ [OPTIONS] <paths to files or dirs>\n", GB_APPLEDOC_NAME);
 }
 
 @end
