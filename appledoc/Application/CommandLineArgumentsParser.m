@@ -61,7 +61,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 
 #pragma mark - Options registration
 
-- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBCommandLineValueRequirement)requirement {
+- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirement)requirement {
 	// Register option data.
 	NSMutableDictionary *data = [NSMutableDictionary dictionary];
 	[data setObject:longOption forKey:GBCommandLineKeys.longOption];
@@ -73,7 +73,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	[self.registeredOptionsByLongNames setObject:data forKey:longOption];
 
 	// If this is a swich, register negative form (i.e. if the option is named --option, negative form is --no-option). Note that negative form doesn't use short code!
-	if (requirement == GBCommandLineValueNone) {		
+	if (requirement == GBValueNone) {		
 		NSMutableDictionary *negData = [NSMutableDictionary dictionary];
 		NSString *negLongOption = [NSString stringWithFormat:@"no-%@", longOption];
 		[negData setObject:negLongOption forKey:GBCommandLineKeys.longOption];
@@ -82,12 +82,12 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	}
 }
 
-- (void)registerOption:(NSString *)longOption requirement:(GBCommandLineValueRequirement)requirement {
+- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirement)requirement {
 	[self registerOption:longOption shortcut:0 requirement:requirement];
 }
 
 - (void)registerSwitch:(NSString *)longOption shortcut:(char)shortOption {
-	[self registerOption:longOption shortcut:shortOption requirement:GBCommandLineValueNone];
+	[self registerOption:longOption shortcut:shortOption requirement:GBValueNone];
 }
 
 - (void)registerSwitch:(NSString *)longOption {
@@ -140,9 +140,9 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 		} else {
 			// Prepare the value or notify about problem with it.
 			name = [data objectForKey:GBCommandLineKeys.longOption];
-			GBCommandLineValueRequirement requirement = [[data objectForKey:GBCommandLineKeys.requirement] unsignedIntegerValue];
+			GBValueRequirement requirement = [[data objectForKey:GBCommandLineKeys.requirement] unsignedIntegerValue];
 			switch (requirement) {
-				case GBCommandLineValueRequired:
+				case GBValueRequired:
 					// Option requires value: check next option and if it "looks like" an option (i.e. starts with -- or -), notify about missing value. Also notify about missing value if this is the last option.
 					if (index < arguments.count - 1) {
 						value = [arguments objectAtIndex:index + 1];
@@ -155,7 +155,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 						value = GBCommandLineArgumentResults.missingValue;
 					}
 					break;
-				case GBCommandLineValueOptional:
+				case GBValueOptional:
 					// Options can have optional value: check next option and if it "looks like" a value (i.e. doens't start with -- or -), use it. Otherwie assume YES (the same if there's no more option).
 					if (index < arguments.count - 1) {
 						value = [arguments objectAtIndex:index + 1];

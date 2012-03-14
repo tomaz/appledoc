@@ -142,6 +142,18 @@
 	}];
 }
 
+- (void)testRegisterOptionsToCommandLineParserShouldRegisterMiscellaneousOptions {
+	[self runWithSettings:^(Settings *settings) {
+		// setup
+		CommandLineArgumentsParser *parser = [CommandLineArgumentsParser new];
+		// execute
+		[settings registerOptionsToCommandLineParser:parser];
+		// verify
+		NSSet *registeredOptions = [self registeredOptionsForParser:parser];
+		assertThat(registeredOptions, hasItems(@"print-settings", @"version", @"help", nil));
+	}];
+}
+
 @end
 
 #pragma mark -

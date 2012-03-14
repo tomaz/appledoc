@@ -115,6 +115,16 @@
 
 #pragma mark - Introspection
 
+- (void)enumerateSettings:(void(^)(Settings *settings, BOOL *stop))handler {
+	Settings *settings = self;
+	BOOL stop = NO;
+	while (settings) {
+		handler(settings, &stop);
+		if (stop) break;
+		settings = settings.parent;
+	}
+}
+
 - (Settings *)settingsForKey:(NSString *)key {
 	Settings *level = self;
 	while (level) {

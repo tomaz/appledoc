@@ -69,6 +69,7 @@
 
 #pragma mark - Introspection
 
+- (void)enumerateSettings:(void(^)(Settings *settings, BOOL *stop))handler;
 - (Settings *)settingsForKey:(NSString *)key;
 - (BOOL)isKeyPresentAtThisLevel:(NSString *)key;
 
@@ -81,12 +82,12 @@
 
 #pragma mark - Convenience one-line synthesize macros for concrete properties
 
-#define GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, valueAccessor, valueMutator, val) \
-	- (type)accessorSel { return [self valueAccessor:GBSettingsKeys.accessorSel]; } \
-	- (void)mutatorSel:(type)value { [self valueMutator:val forKey:GBSettingsKeys.accessorSel]; }
-#define GB_SYNTHESIZE_OBJECT(type, accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, value)
-#define GB_SYNTHESIZE_COPY(type, accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, [value copy])
-#define GB_SYNTHESIZE_BOOL(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(BOOL, accessorSel, mutatorSel, boolForKey, setBool, value)
-#define GB_SYNTHESIZE_INT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(NSInteger, accessorSel, mutatorSel, integerForKey, setInteger, value)
-#define GB_SYNTHESIZE_UINT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(NSUInteger, accessorSel, mutatorSel, unsignedIntegerForKey, setUnsignedInteger, value)
-#define GB_SYNTHESIZE_FLOAT(accessorSel, mutatorSel) GB_SYNTHESIZE_PROPERTY(CGFloat, accessorSel, mutatorSel, floatForKey, setFloat, value)
+#define GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, valueAccessor, valueMutator, key, val) \
+	- (type)accessorSel { return [self valueAccessor:key]; } \
+	- (void)mutatorSel:(type)value { [self valueMutator:val forKey:key]; }
+#define GB_SYNTHESIZE_OBJECT(type, accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, key, value)
+#define GB_SYNTHESIZE_COPY(type, accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(type, accessorSel, mutatorSel, objectForKey, setObject, key, [value copy])
+#define GB_SYNTHESIZE_BOOL(accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(BOOL, accessorSel, mutatorSel, boolForKey, setBool, key, value)
+#define GB_SYNTHESIZE_INT(accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(NSInteger, accessorSel, mutatorSel, integerForKey, setInteger, key, value)
+#define GB_SYNTHESIZE_UINT(accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(NSUInteger, accessorSel, mutatorSel, unsignedIntegerForKey, setUnsignedInteger, key, value)
+#define GB_SYNTHESIZE_FLOAT(accessorSel, mutatorSel, key) GB_SYNTHESIZE_PROPERTY(CGFloat, accessorSel, mutatorSel, floatForKey, setFloat, key, value)

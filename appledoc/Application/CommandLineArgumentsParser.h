@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-typedef NSUInteger GBCommandLineValueRequirement;
+typedef NSUInteger GBValueRequirement;
 typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOOL *stop);
 
 /** Handles command line arguments parsing.
@@ -16,7 +16,7 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
  ```
  int main(int argv, char **argv) {
 	CommandLineParser *parser = [CommandLineParser new];
-	[parser registerOption:@"verbose" shortcut:'v' requirement:GBCommandLineValueRequired];
+	[parser registerOption:@"verbose" shortcut:'v' requirement:GBValueRequired];
 	[parser registerSwitch:@"help" shortcut:'h'];
 	...
 	[parser parseOptionsWithArguments:argv count:argc block:^(NSString *argument, id value, BOOL *stop) {
@@ -36,14 +36,14 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
  }
  ```
  
- @warning **Important:** This class is similar to `DDCli` from Dave Dribin, but works under arc! It also uses a different approach to command line parsing - instead of using "push" model like `DDCli` (i.e. sending KVO notifications to pass arguments to a delegate), it uses "pull" model: you let it parse the values and then ask the class for specific argument values. With this approach, it centralizes arguments handling - instead of splitting it over various delegate and KVO mutator methods, you can do it in a single place. Internally, it relies on `getopt_long` to do actual parsing.
+ @warning **Important:** This class is similar to `DDCli` from Dave Dribin, but works under arc! It also uses a different approach to command line parsing - instead of using "push" model like `DDCli` (i.e. sending KVO notifications to pass arguments to a delegate), it uses "pull" model: you let it parse the values and then ask the class for specific argument values. With this approach, it centralizes arguments handling - instead of splitting it over various delegate and KVO mutator methods, you can do it in a single place.
  */
 @interface CommandLineArgumentsParser : NSObject
 
 #pragma mark - Options registration
 
-- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBCommandLineValueRequirement)requirement;
-- (void)registerOption:(NSString *)longOption requirement:(GBCommandLineValueRequirement)requirement;
+- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirement)requirement;
+- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirement)requirement;
 - (void)registerSwitch:(NSString *)longOption shortcut:(char)shortOption;
 - (void)registerSwitch:(NSString *)longOption;
 
@@ -70,7 +70,7 @@ extern const struct GBCommandLineArgumentResults {
 
 /** Various command line argument value requirements. */
 enum {
-	GBCommandLineValueRequired, ///< Command line argument requires a value.
-	GBCommandLineValueOptional, ///< Command line argument can optionally have a value, but is not required.
-	GBCommandLineValueNone ///< Command line argument doesn't use a value.
+	GBValueRequired, ///< Command line argument requires a value.
+	GBValueOptional, ///< Command line argument can optionally have a value, but is not required.
+	GBValueNone ///< Command line argument is on/off switch.
 };

@@ -53,20 +53,3 @@
 + (void)printAppledocVersion;
 + (void)printAppledocHelp;
 @end
-
-#pragma mark -
-
-/** All the keys used for settings defined in a convenient namespaced struct.
- 
- Note that these are purposely made equal to command line arguments for simpler handling!
- */
-extern const struct GBSettingsKeys {
-	__unsafe_unretained NSString *projectName;
-	__unsafe_unretained NSString *projectVersion;
-	__unsafe_unretained NSString *companyName;
-	__unsafe_unretained NSString *companyIdentifier;
-	
-	__unsafe_unretained NSString *inputPaths;
-	
-	__unsafe_unretained NSString *printSettings;
-} GBSettingsKeys;

@@ -8,6 +8,7 @@
 #import "DDCliUtil.h"
 #import "AppledocInfo.h"
 #import "CommandLineArgumentsParser.h"
+#import "Settings+Definitions.h"
 #import "Settings+Appledoc.h"
 
 @implementation Settings (Appledoc)
@@ -17,25 +18,25 @@
 + (id)appledocSettingsWithName:(NSString *)name parent:(Settings *)parent {
 	id result = [self settingsWithName:name parent:parent];
 	if (result) {
-		[result registerArrayForKey:GBSettingsKeys.inputPaths];
+		[result registerArrayForKey:@"input"];
 	}
 	return result;
 }
 
 #pragma mark - Project information
 
-GB_SYNTHESIZE_COPY(NSString *, projectVersion, setProjectVersion)
-GB_SYNTHESIZE_COPY(NSString *, projectName, setProjectName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyName, setCompanyName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier) // Required!
+GB_SYNTHESIZE_COPY(NSString *, projectVersion, setProjectVersion, @"project-version")
+GB_SYNTHESIZE_COPY(NSString *, projectName, setProjectName, @"project-name") // Required!
+GB_SYNTHESIZE_COPY(NSString *, companyName, setCompanyName, @"company-name") // Required!
+GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier, @"company-id") // Required!
 
 #pragma mark - Paths
 
-GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths)
+GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths, @"input")
 
 #pragma mark - Debugging aid
 
-GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
+GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings, @"print-settings")
 
 @end
 
@@ -54,15 +55,12 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
 }
 
 - (void)registerOptionsToCommandLineParser:(CommandLineArgumentsParser *)parser {
-	[parser registerOption:GBSettingsKeys.projectName shortcut:'p' requirement:GBCommandLineValueRequired];
-	[parser registerOption:GBSettingsKeys.projectVersion shortcut:'v' requirement:GBCommandLineValueRequired];
-	[parser registerOption:GBSettingsKeys.companyName shortcut:'c' requirement:GBCommandLineValueRequired];
-	[parser registerOption:GBSettingsKeys.companyIdentifier requirement:GBCommandLineValueRequired];
-	
-	[parser registerSwitch:GBSettingsKeys.printSettings];
-	
-	[parser registerSwitch:@"version"];
-	[parser registerSwitch:@"help" shortcut:'?'];
+	// Enumerate all options and ignore separators. Note that we don't have to register internal options as these aren't parsed on command line!
+	GBEnumerateOptions(^(GBOptionDefinition *option, BOOL *stop) {
+		if (!GBOptionIsCmdLine(option)) return;
+		NSUInteger requirement = GBOptionRequirements(option);
+		[parser registerOption:option->longOption shortcut:option->shortOption requirement:requirement];
+	});
 }
 
 @end
@@ -74,45 +72,63 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
 - (void)printSettingValuesIfNeeded {
 	if (!self.printSettings) return;
 	
-	#define GB_ADD_SETTING(key) { \
-		NSMutableArray *columns = [NSMutableArray array]; \
-		Settings *settings = self; \
-		while (settings) { \
-			if (columns.count == 0) { \
-				lengths[0] = MAX(key.length, lengths[0]); \
-				[columns addObject:key]; \
-			} \
-			if (rows.count == 1) { \
-				lengths[columns.count] = settings.name.length; \
-				[headers addObject:settings.name]; \
-			} \
-			NSString *value = [settings isKeyPresentAtThisLevel:key] ? [settings objectForKey:key] : @""; \
-			lengths[columns.count] = MAX(value.length, lengths[columns.count]); \
-			[columns addObject:value]; \
-			settings = settings.parent; \
-		} \
-		[rows addObject:columns]; \
+#define GB_UPDATE_MAX_LENGTH(value) \
+	NSNumber *length = [lengths objectAtIndex:columns.count]; \
+	NSUInteger maxLength = MAX(value.length, length.unsignedIntegerValue); \
+	if (maxLength > length.unsignedIntegerValue) { \
+		NSNumber *newMaxLength = [NSNumber numberWithUnsignedInteger:maxLength]; \
+		[lengths replaceObjectAtIndex:columns.count withObject:newMaxLength]; \
 	}
-	
+
 	ddprintf(@"Input files and paths:\n");
 	for (NSString *path in self.inputPaths) ddprintf(@"- %@\n", path);
 	ddprintf(@"\n");
 	
-	// Prepare the data.
-	NSUInteger lengths[] = { 0, 0, 0, 0, 0, 0 }; // Just use plain C array to simplify calculations with risk of overflowing if adding more levels...
 	NSMutableArray *rows = [NSMutableArray array];
+	NSMutableArray *lengths = [NSMutableArray array];
+	
+	// First add header row. Note that first element is the setting.
 	NSMutableArray *headers = [NSMutableArray arrayWithObject:@"Setting"];
+	[lengths addObject:[NSNumber numberWithUnsignedInteger:[headers.lastObject length]]];
+	[self enumerateSettings:^(Settings *settings, BOOL *stop) {
+		[headers addObject:settings.name];
+		[lengths addObject:[NSNumber numberWithUnsignedInteger:settings.name.length]];
+	}];
 	[rows addObject:headers];
-	GB_ADD_SETTING(GBSettingsKeys.projectName)
-	GB_ADD_SETTING(GBSettingsKeys.projectVersion)
-	GB_ADD_SETTING(GBSettingsKeys.companyName)
-	GB_ADD_SETTING(GBSettingsKeys.companyIdentifier)
+	
+	// Append all rows for options.
+	GBEnumerateOptions(^(GBOptionDefinition *option, BOOL *stop) {
+		if (!GBOptionIsPrint(option)) return;
+		
+		// Add separator. Note that we don't care about its length, we'll simply draw it over the whole line if needed.
+		if (GBOptionIsSeparator(option)) {
+			NSArray *separators = [NSArray arrayWithObject:option->description];
+			[rows addObject:[NSArray array]];
+			[rows addObject:separators];
+			return;
+		}
+		
+		// Prepare values array. Note that the first element is simply the name of the option.
+		NSMutableArray *columns = [NSMutableArray array];
+		NSString *longOption = option->longOption;
+		GB_UPDATE_MAX_LENGTH(longOption)
+		[columns addObject:longOption];
 
-	// Draw all rows. Note that we need to use pointer to C array otherwise clang complains...
-	NSUInteger *columnLengths = lengths;	
+		// Now append value for the option on each settings level and update maximum size.
+		[self enumerateSettings:^(Settings *settings, BOOL *stop) {
+			NSString *value = [settings isKeyPresentAtThisLevel:longOption] ? [[settings objectForKey:longOption] description] : @"";
+			GB_UPDATE_MAX_LENGTH(value)
+			[columns addObject:value];
+		}];
+		
+		// Add the row.
+		[rows addObject:columns];
+	});
+
+	// Draw all rows.
 	[rows enumerateObjectsUsingBlock:^(NSArray *columns, NSUInteger rowIdx, BOOL *stopRow) {
 		[columns enumerateObjectsUsingBlock:^(NSString *value, NSUInteger colIdx, BOOL *stopCol) {
-			NSUInteger columnSize = columnLengths[colIdx];
+			NSUInteger columnSize = [[lengths objectAtIndex:colIdx] unsignedIntegerValue];
 			NSUInteger valueSize = value.length;
 			ddprintf(@"%@", value);
 			while (valueSize <= columnSize) {
@@ -120,7 +136,6 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
 				valueSize++;
 			}
 		}];
-		if (rowIdx == 0) ddprintf(@"\n");
 		ddprintf(@"\n");
 	}];
 }
@@ -132,19 +147,7 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings)
 
 + (void)printAppledocHelp {
 	ddprintf(@"Usage: %@ [OPTIONS] <paths to files or dirs>\n", GB_APPLEDOC_NAME);
+	ddprintf(@"\n");
 }
 
 @end
-
-#pragma mark -
-
-const struct GBSettingsKeys GBSettingsKeys = {
-	.projectName = @"project-name",
-	.projectVersion = @"project-version",
-	.companyName = @"company-name",
-	.companyIdentifier = @"company-id",
-	
-	.inputPaths = @"input",
-	
-	.printSettings = @"print-settings",
-};
