@@ -121,7 +121,7 @@
 @implementation SettingsTests (HelperMethods)
 
 - (NSSet *)registeredOptionsForParser:(CommandLineArgumentsParser *)parser {
-	NSDictionary *registeredOptions = parser.registeredOptions;
+	NSDictionary *registeredOptions = parser.registeredOptionsByLongNames;
 	NSMutableSet *result = [NSMutableSet setWithCapacity:registeredOptions.count];
 	[registeredOptions.allValues enumerateObjectsUsingBlock:^(NSDictionary *optionData, NSUInteger idx, BOOL *stop) {
 		NSString *optionName = [optionData objectForKey:@"long"];

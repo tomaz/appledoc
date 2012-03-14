@@ -25,26 +25,6 @@
 @end
 
 @implementation AppledocTests
-
-#pragma mark - setupSettingsFromCmdLineArgs:count:
-
-- (void)testSetupSettingsFromCmdLineArgsCountShouldSetupSettings {
-	[self runWithAppledoc:^(Appledoc *appledoc) {
-		// execute
-		[appledoc setupSettingsFromCmdLineArgs:NULL count:0];
-		// verify
-		assertThat(appledoc.settings, isNot(nil));
-		assertThat(appledoc.settings.name, is(@"CmdLine"));
-		assertThat(appledoc.settings.parent, isNot(nil));
-		assertThat(appledoc.settings.parent.name, is(@"Project"));
-		assertThat(appledoc.settings.parent.parent, isNot(nil));
-		assertThat(appledoc.settings.parent.parent.name, is(@"Global"));
-		assertThat(appledoc.settings.parent.parent.parent, isNot(nil));
-		assertThat(appledoc.settings.parent.parent.parent.name, is(@"Factory"));
-		assertThat(appledoc.settings.parent.parent.parent.parent, equalTo(nil));
-	}];
-}
-
 @end
 
 #pragma mark -

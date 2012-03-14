@@ -6,16 +6,14 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-@class CommandLineArgumentsParser;
+@class Settings;
 
 /** Main appledoc class.
  
- To use it, instantiate it, pass it command line arguments (this will also setup factory defaults, global and project settings). Once ready, run the tool to do its job.
+ To use it, instantiate it, pass it desired settings stack and invoke run method!
  */
 @interface Appledoc : NSObject
 
-- (void)setupSettingsFromCmdLineArgs:(char **)argv count:(int)argc;
-
-@property (nonatomic, strong) CommandLineArgumentsParser *commandLineParser;
+@property (nonatomic, strong) Settings *settings;
 
 @end

@@ -18,5 +18,5 @@
 @end
 
 @interface CommandLineArgumentsParser (TestingPrivateAPI)
-@property (nonatomic, strong) NSDictionary *registeredOptions;
+@property (nonatomic, strong) NSDictionary *registeredOptionsByLongNames;
 @end

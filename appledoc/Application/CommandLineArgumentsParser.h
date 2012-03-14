@@ -29,7 +29,9 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
 		}
 		... you can do somethig with valid argument here if needed
 	}];
-	...
+	... you can access all parsed options and arguments here...
+	id value1 = [parser valueForOption:@"verbose"];
+	NSArray *arguments = parser.arguments;
 	return 0;
  }
  ```
