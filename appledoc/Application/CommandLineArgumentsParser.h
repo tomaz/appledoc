@@ -48,9 +48,8 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
 #pragma mark - Options parsing
 
 - (BOOL)parseOptionsUsingDefaultArgumentsWithBlock:(GBCommandLineArgumentParseBlock)handler;
-- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineArgumentParseBlock)handler;
 - (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineArgumentParseBlock)handler;
-@property (nonatomic, assign) BOOL logParsingErrors;
+- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineArgumentParseBlock)handler;
 
 #pragma mark - Getting parsed results
 
