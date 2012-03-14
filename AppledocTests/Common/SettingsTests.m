@@ -116,6 +116,18 @@
 	}];
 }
 
+- (void)testSetObjectForKeyShouldStoreAllValuesIfKeyIsRegisteredAsArrayAndArrayIsPassed {
+	[self runWithSettings:^(Settings *settings) {
+		// setup
+		[settings registerArrayForKey:@"string"];
+		[settings setObject:@"1" forKey:@"string"];
+		// execute
+		[settings setObject:[NSArray arrayWithObjects:@"2", @"3", nil] forKey:@"string"];
+		// verify
+		assertThat([settings objectForKey:@"string"], onlyContains(@"1", @"2", @"3", nil));
+	}];
+}
+
 #pragma mark - registerOptionsToCommandLineParser:
 
 - (void)testRegisterOptionsToCommandLineParserShouldRegisterProjectOptions {

@@ -9,6 +9,7 @@
 #import "Settings.h"
 
 @interface Settings ()
+- (BOOL)isKeyArray:(NSString *)key;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) Settings *parent;
 @property (nonatomic, strong) NSMutableSet *arrayKeys;
@@ -50,12 +51,26 @@
 #pragma mark - Values handling
 
 - (id)objectForKey:(NSString *)key {
+	if ([self isKeyArray:key]) {
+		NSMutableArray *allValues = [NSMutableArray array];
+		Settings *settings = self;
+		while (settings) {
+			NSArray *currentLevelValues = [settings.storage objectForKey:key];
+			[allValues addObjectsFromArray:currentLevelValues];
+			settings = settings.parent;
+		}
+		return allValues;
+	}
 	Settings *level = [self settingsForKey:key];
 	return [level.storage objectForKey:key];
 }
 - (void)setObject:(id)value forKey:(NSString *)key {
-	if ([self.arrayKeys containsObject:key] && ![key isKindOfClass:[NSArray class]]) {
-		NSMutableArray *array = [NSMutableArray arrayWithObject:value];
+	if ([self isKeyArray:key] && ![key isKindOfClass:[NSArray class]]) {
+		NSMutableArray *array = [NSMutableArray array];
+		if ([value isKindOfClass:[NSArray class]])
+			[array addObjectsFromArray:value];
+		else
+			[array addObject:value];
 		[self.storage setObject:array forKey:key];
 		return;
 	}
@@ -112,6 +127,10 @@
 		level = level.parent;
 	}
 	return level;
+}
+
+- (BOOL)isKeyArray:(NSString *)key {
+	return [self.arrayKeys containsObject:key];
 }
 
 @end
