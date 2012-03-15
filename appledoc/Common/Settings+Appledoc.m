@@ -147,7 +147,57 @@ GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings, @"print-settings")
 
 + (void)printAppledocHelp {
 	ddprintf(@"Usage: %@ [OPTIONS] <paths to files or dirs>\n", GB_APPLEDOC_NAME);
-	ddprintf(@"\n");
+
+	// Prepare all rows.
+	__block NSUInteger maxNameTypeLength = 0;
+	NSMutableArray *rows = [NSMutableArray array];
+	GBEnumerateOptions(^(GBOptionDefinition *option, BOOL *stop) {
+		if (!GBOptionIsHelp(option)) return;
+		
+		// Prepare separator.
+		if (GBOptionIsSeparator(option)) {
+			[rows addObject:[NSArray array]];
+			[rows addObject:[NSArray arrayWithObject:option->description]];
+			return;
+		}
+		
+		// Prepare option description.
+		NSString *shortOption = (option->shortOption > 0) ? [NSString stringWithFormat:@"-%c", option->shortOption] : @"  ";
+		NSString *longOption = [NSString stringWithFormat:@"--%@", option->longOption];
+		NSString *description = option->description;
+		NSUInteger requirements = GBOptionRequirements(option);
+		
+		// Prepare option type and update longest option+type string size for better alignment later on.
+		NSString *type = @"";
+		if (requirements == GBValueRequired)
+			type = @" <value>";
+		else if (requirements == GBValueOptional)
+			type = @" [<value>]";
+		maxNameTypeLength = MAX(longOption.length + type.length, maxNameTypeLength);
+		NSString *nameAndType = [NSString stringWithFormat:@"%@%@", longOption, type];
+
+		// Add option info to rows array.
+		NSMutableArray *columns = [NSMutableArray array];
+		[columns addObject:shortOption];
+		[columns addObject:nameAndType];
+		[columns addObject:description];
+		[rows addObject:columns];
+	});
+	
+	// Display all rows aligning long option columns properly.
+	[rows enumerateObjectsUsingBlock:^(NSArray *columns, NSUInteger rowIdx, BOOL *stop) {
+		[columns enumerateObjectsUsingBlock:^(NSString *column, NSUInteger colIdx, BOOL *stop) {
+			ddprintf(@"%@ ", column);
+			if (colIdx == 1) {
+				NSUInteger length = column.length;
+				while (length < maxNameTypeLength) {
+					ddprintf(@" ");
+					length++;
+				}
+			}
+		}];
+		ddprintf(@"\n");
+	}];
 }
 
 @end

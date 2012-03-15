@@ -14,12 +14,14 @@ GBOptionDefinition GBSettingDefinitions[] = {
 	{ 'v',	@"project-version",		@"Project version",											GBValueRequired },
 	{ 'c',	@"company-name",		@"Company name",											GBValueRequired },
 	{ 0,	@"company-id",			@"Company UTI (i.e. reverse DNS name)",						GBValueRequired },
+	
+	{ 0,	nil,					@"PATHS",													GBOptionSeparator|GBOptionNoCmdLine },
 	{ 0,	@"input",				@"Array of input paths for global and project settings",	GBOptionNoCmdLine|GBOptionInvisible },
 
 	{ 0,	nil,					@"MISCELLANEOUS",											GBOptionSeparator|GBOptionNoCmdLine },
 	{ 0,	@"print-settings",		@"Print settings for current run",							GBValueNone },
-	{ 0,	@"version",				@"Display version and exit",								GBValueNone|GBOptionInvisible },
-	{ '?',	@"help",				@"Display this help and exit",								GBValueNone|GBOptionInvisible },
+	{ 0,	@"version",				@"Display version and exit",								GBValueNone|GBOptionNoPrint },
+	{ '?',	@"help",				@"Display this help and exit",								GBValueNone|GBOptionNoPrint },
 
 	{ 0,	nil, nil, 0 }
 };
