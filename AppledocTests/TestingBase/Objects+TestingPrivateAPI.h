@@ -7,16 +7,16 @@
 //
 
 #import "Objects.h"
-#import "CommandLineArgumentsParser.h"
+#import "GBCommandLineParser.h"
 
 // Commonly used objects private APIs that allow unit testing
 
-@interface Settings (TestingPrivateAPI)
+@interface GBSettings (TestingPrivateAPI)
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, strong) Settings *parent;
+@property (nonatomic, strong) GBSettings *parent;
 @property (nonatomic, strong) NSMutableDictionary *storage;
 @end
 
-@interface CommandLineArgumentsParser (TestingPrivateAPI)
+@interface GBCommandLineParser (TestingPrivateAPI)
 @property (nonatomic, strong) NSDictionary *registeredOptionsByLongNames;
 @end

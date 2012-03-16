@@ -1,6 +1,6 @@
 //
-//  Settings.h
-//  appledoc
+//  GBSettings.h
+//  GBCli
 //
 //  Created by Tomaž Kragelj on 3/13/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
@@ -14,9 +14,9 @@
  
  ```
  // Initialize settings hierarchy
- Settings *factoryDefaults = [Settings settingsWithName:@"FactoryDefaults" parent:nil];
- Settings *fileSettings = [Settings settingsWithName:@"File" parent:factoryDefaults];
- Settings *settings = [Settings settingsWithName:@"CommandLine" parent:fileSettings];
+ GBSettings *factoryDefaults = [GBSettings settingsWithName:@"FactoryDefaults" parent:nil];
+ GBSettings *fileSettings = [GBSettings settingsWithName:@"File" parent:factoryDefaults];
+ GBSettings *settings = [GBSettings settingsWithName:@"CommandLine" parent:fileSettings];
  
  // Setup default values
  [factoryDefaults setObject:@"Some value" forKey:@"MyString"];
@@ -33,18 +33,20 @@
  BOOL b = [settings boolForKey:@"MyBool"]; // NO
  
  // Determine which level certain setting comes from
- NSString *n = [settings nameOfSettingsForKey:@"MyInteger"]; // @"File"
- Settings *s = [settings settingsForKey:@"MyString"]; // factoryDefaults
+ GBSettings *s = [settings settingsForKey:@"MyString"]; // factoryDefaults
  ```
- 
- @warning **Implementation details:** Although this could be implemented as reusable component, I chose to build in all settings too. This makes the app simpler. If needed, the class can easily be added to a different project and simply delete all specific settings properties with new set while leaving core implementation untouched. To make it simpler to distinguish between the two, all application specific settings are implemented in Settings(Application) category.
  */
-@interface Settings : NSObject
+@interface GBSettings : NSObject
 
 #pragma mark - Initialization & disposal
 
-+ (id)settingsWithName:(NSString *)name parent:(Settings *)parent;
-- (id)initWithName:(NSString *)name parent:(Settings *)parent;
++ (id)settingsWithName:(NSString *)name parent:(GBSettings *)parent;
+- (id)initWithName:(NSString *)name parent:(GBSettings *)parent;
+
+#pragma mark - Settings serialization support
+
+- (BOOL)loadSettingsFromPlist:(NSString *)path error:(NSError **)error;
+- (BOOL)saveSettingsToPlist:(NSString *)path error:(NSError **)error;
 
 #pragma mark - Optional registration helpers
 
@@ -67,16 +69,22 @@
 - (CGFloat)floatForKey:(NSString *)key;
 - (void)setFloat:(CGFloat)value forKey:(NSString *)key;
 
+#pragma mark - Arguments handling
+
+- (void)addArgument:(NSString *)argument;
+@property (nonatomic, strong) NSArray *arguments;
+
 #pragma mark - Introspection
 
-- (void)enumerateSettings:(void(^)(Settings *settings, BOOL *stop))handler;
-- (Settings *)settingsForKey:(NSString *)key;
+- (void)enumerateSettings:(void(^)(GBSettings *settings, BOOL *stop))handler;
+- (GBSettings *)settingsForKey:(NSString *)key;
 - (BOOL)isKeyPresentAtThisLevel:(NSString *)key;
+- (BOOL)isKeyArray:(NSString *)key;
 
 #pragma mark - Properties
 
 @property (nonatomic, readonly, copy) NSString *name;
-@property (nonatomic, readonly, strong) Settings *parent;
+@property (nonatomic, readonly, strong) GBSettings *parent;
 
 @end
 

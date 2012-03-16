@@ -8,11 +8,11 @@
 
 #import "Objects+TestingPrivateAPI.h"
 #import "Appledoc.h"
-#import "Settings.h"
+#import "GBSettings.h"
 #import "TestCaseBase.h"
 
 @interface Appledoc (TestingPrivateAPI)
-@property (nonatomic, strong) Settings *settings;
+@property (nonatomic, strong) GBSettings *settings;
 @end
 
 #pragma mark - 

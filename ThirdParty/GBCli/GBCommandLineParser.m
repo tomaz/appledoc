@@ -1,13 +1,13 @@
 //
-//  CommandLineArgumentsParser.m
-//  appledoc
+//  GBCommandLineParser.m
+//  GBCli
 //
 //  Created by Tomaž Kragelj on 3/12/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
 #import <getopt.h>
-#import "CommandLineArgumentsParser.h"
+#import "GBCommandLineParser.h"
 
 const struct GBCommandLineKeys {
 	__unsafe_unretained NSString *longOption;
@@ -21,15 +21,10 @@ const struct GBCommandLineKeys {
 	.notAnOption = @"not-an-option",
 };
 
-const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
-	.missingValue = @"missing-value",
-	.unknownArgument = @"unknown-argument",
-};
-
 #pragma mark -
 
-@interface CommandLineArgumentsParser ()
-- (NSDictionary *)optionDataForOption:(NSString *)shortOrLongName;
+@interface GBCommandLineParser ()
+- (NSDictionary *)optionDataForOption:(NSString *)shortOrLongName value:(NSString **)value;
 - (BOOL)isShortOrLongOptionName:(NSString *)value;
 @property (nonatomic, strong) NSMutableDictionary *parsedOptions;
 @property (nonatomic, strong) NSMutableArray *parsedArguments;
@@ -39,7 +34,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 
 #pragma mark -
 
-@implementation CommandLineArgumentsParser
+@implementation GBCommandLineParser
 
 @synthesize parsedOptions;
 @synthesize parsedArguments;
@@ -61,7 +56,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 
 #pragma mark - Options registration
 
-- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirement)requirement {
+- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirements)requirement {
 	// Register option data.
 	NSMutableDictionary *data = [NSMutableDictionary dictionary];
 	[data setObject:longOption forKey:GBCommandLineKeys.longOption];
@@ -82,7 +77,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	}
 }
 
-- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirement)requirement {
+- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirements)requirement {
 	[self registerOption:longOption shortcut:0 requirement:requirement];
 }
 
@@ -96,14 +91,14 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 
 #pragma mark - Options parsing
 
-- (BOOL)parseOptionsUsingDefaultArgumentsWithBlock:(GBCommandLineArgumentParseBlock)handler {
+- (BOOL)parseOptionsUsingDefaultArgumentsWithBlock:(GBCommandLineParseBlock)handler {
     NSProcessInfo *processInfo = [NSProcessInfo processInfo];
     NSArray *arguments = [processInfo arguments];
     NSString *command = [processInfo processName];
 	return [self parseOptionsWithArguments:arguments commandLine:command block:handler];
 }
 
-- (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineArgumentParseBlock)handler {
+- (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineParseBlock)handler {
 	if (argc == 0) return YES;
 	NSString *command = [NSString stringWithUTF8String:argv[0]];
 	NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:argc - 1];
@@ -114,7 +109,7 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	return [self parseOptionsWithArguments:arguments commandLine:command block:handler];
 }
 
-- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineArgumentParseBlock)handler {
+- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineParseBlock)handler {
 	// Cleanup in case parsing is invoked multiple times.
 	[self.parsedOptions removeAllObjects];
 	[self.parsedArguments removeAllObjects];
@@ -125,67 +120,80 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	// Parse options (options start with -- or -).
 	NSUInteger index = 0;
 	while (index < arguments.count) {
+		id value = nil;
 		NSString *input = [arguments objectAtIndex:index];
-		NSDictionary *data = [self optionDataForOption:input];
+		NSDictionary *data = [self optionDataForOption:input value:&value];
 		if (data == GBCommandLineKeys.notAnOption) break; // no more options, only arguments left...
 		
-		NSString *name = nil;
-		id value = nil;
+		NSString *name = [data valueForKey:GBCommandLineKeys.longOption];
+		GBParseFlags flags = GBParseFlagOption;
 		
 		if (data == nil) {
 			// If no registered option matches given one, notify observer.
 			name = input;
-			value = GBCommandLineArgumentResults.unknownArgument;
+			flags = GBParseFlagUnknownOption;
 			result = NO;
 		} else {
 			// Prepare the value or notify about problem with it.
-			name = [data objectForKey:GBCommandLineKeys.longOption];
-			GBValueRequirement requirement = [[data objectForKey:GBCommandLineKeys.requirement] unsignedIntegerValue];
+			GBValueRequirements requirement = [[data objectForKey:GBCommandLineKeys.requirement] unsignedIntegerValue];
 			switch (requirement) {
 				case GBValueRequired:
-					// Option requires value: check next option and if it "looks like" an option (i.e. starts with -- or -), notify about missing value. Also notify about missing value if this is the last option.
-					if (index < arguments.count - 1) {
-						value = [arguments objectAtIndex:index + 1];
-						if ([self isShortOrLongOptionName:value]) {
-							value = GBCommandLineArgumentResults.missingValue;
+					// Option requires value: check next option and if it "looks like" an option (i.e. starts with -- or -), notify about missing value. Also notify about missing value if this is the last option. If we already have the value (via --name=value syntax), no need to search.
+					if (!value) {
+						if (index < arguments.count - 1) {
+							value = [arguments objectAtIndex:index + 1];
+							if ([self isShortOrLongOptionName:value]) {
+								flags = GBParseFlagMissingValue;
+							} else {
+								index++;
+							}
 						} else {
-							index++;
+							flags = GBParseFlagMissingValue;
 						}
-					} else {
-						value = GBCommandLineArgumentResults.missingValue;
 					}
 					break;
 				case GBValueOptional:
-					// Options can have optional value: check next option and if it "looks like" a value (i.e. doens't start with -- or -), use it. Otherwie assume YES (the same if there's no more option).
-					if (index < arguments.count - 1) {
-						value = [arguments objectAtIndex:index + 1];
-						if ([self isShortOrLongOptionName:value]) {
-							value = [NSNumber numberWithInt:YES];
+					// Options can have optional value: check next option and if it "looks like" a value (i.e. doens't start with -- or -), use it. Otherwie assume YES (the same if there's no more option). If we already have the value (via --name=value syntax), no need to search.
+					if (!value) {
+						if (index < arguments.count - 1) {
+							value = [arguments objectAtIndex:index + 1];
+							if ([self isShortOrLongOptionName:value]) {
+								value = [NSNumber numberWithInt:YES];
+							} else {
+								index++;
+							}
 						} else {
-							index++;
+							value = [NSNumber numberWithInt:YES];
 						}
-					} else {
-						value = [NSNumber numberWithInt:YES];
 					}
 					break;
 				default:
-					// Option is a boolean "switch": return either YES or NO, depending on the switch name (--option or --no-option). Note that we always report positive option name (we only use negative form internally)!
+					// Option is a boolean "switch": return either YES or NO, depending on the switch name (--option or --no-option). Note that we always report positive option name (we only use negative form internally)! If we already have a valud (via --name=value syntax), convert value to boolean.
 					if ([input hasPrefix:@"--no-"]) {
-						name = [input substringFromIndex:5];
-						value = [NSNumber numberWithBool:NO];
+						if (value) {
+							BOOL cmdLineValue = [value boolValue];
+							value = [NSNumber numberWithBool:!cmdLineValue];
+						} else {
+							value = [NSNumber numberWithBool:NO];
+						}
 					} else {
-						value = [NSNumber numberWithBool:YES];
+						if (value) {
+							BOOL cmdLineValue = [value boolValue];
+							value = [NSNumber numberWithBool:cmdLineValue];
+						} else {
+							value = [NSNumber numberWithBool:YES];
+						}
 					}
 					break;
 			}
 		}
 		
 		// Prepare remaining parameters and notify observer. If observer stops the operation, quit immediately.
-		handler(name, value, &stop);
+		handler(flags, name, value, &stop);
 		if (stop) return NO;
 		
 		// Remember parsed option and continue with next one.
-		[self.parsedOptions setObject:value forKey:name];
+		if (value) [self.parsedOptions setObject:value forKey:name];
 		index++;
 	}
 	
@@ -193,6 +201,8 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 	while (index < arguments.count) {
 		NSString *input = [arguments objectAtIndex:index];
 		[self.parsedArguments addObject:input];
+		handler(GBParseFlagArgument, nil, input, &stop);
+		if (stop) return NO;
 		index++;
 	}
 	
@@ -201,15 +211,28 @@ const struct GBCommandLineArgumentResults GBCommandLineArgumentResults = {
 
 #pragma mark - Helper methods
 
-- (NSDictionary *)optionDataForOption:(NSString *)shortOrLongName {
+- (NSDictionary *)optionDataForOption:(NSString *)shortOrLongName value:(NSString **)value {
+	NSString *name = nil;
+	NSDictionary *options = nil;
+	
+	// Extract the option name.
 	if ([shortOrLongName hasPrefix:@"--"]) {
-		NSString *longName = [shortOrLongName substringFromIndex:2];
-		return [self.registeredOptionsByLongNames objectForKey:longName];
+		name = [shortOrLongName substringFromIndex:2];
+		options = self.registeredOptionsByLongNames;
 	} else if ([shortOrLongName hasPrefix:@"-"]) {
-		NSString *shortName = [shortOrLongName substringFromIndex:1];
-		return [self.registeredOptionsByShortNames objectForKey:shortName];
+		name = [shortOrLongName substringFromIndex:1];
+		options = self.registeredOptionsByShortNames;
+	} else {
+		return GBCommandLineKeys.notAnOption;
 	}
-	return GBCommandLineKeys.notAnOption;
+	
+	// If the name includes value, extract that too.
+	NSRange valueRange = [name rangeOfString:@"=" options:NSBackwardsSearch];
+	if (valueRange.location != NSNotFound) {
+		if (value) *value = [name substringFromIndex:valueRange.location + 1];
+		name = [name substringToIndex:valueRange.location];
+	}
+	return [options objectForKey:name];
 }
 
 - (BOOL)isShortOrLongOptionName:(NSString *)value {

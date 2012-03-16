@@ -1,13 +1,14 @@
 //
-//  CommandLineArgumentsParser.h
-//  appledoc
+//  GBCommandLineParser.h
+//  GBCli
 //
 //  Created by Tomaž Kragelj on 3/12/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-typedef NSUInteger GBValueRequirement;
-typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOOL *stop);
+typedef NSUInteger GBValueRequirements;
+typedef NSUInteger GBParseFlags;
+typedef void(^GBCommandLineParseBlock)(GBParseFlags flags, NSString *argument, id value, BOOL *stop);
 
 /** Handles command line arguments parsing.
  
@@ -15,7 +16,7 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
  
  ```
  int main(int argv, char **argv) {
-	CommandLineParser *parser = [CommandLineParser new];
+	GBCommandLineParser *parser = [[GBCommandLineParser alloc] init];
 	[parser registerOption:@"verbose" shortcut:'v' requirement:GBValueRequired];
 	[parser registerSwitch:@"help" shortcut:'h'];
 	...
@@ -38,20 +39,20 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
  
  @warning **Important:** This class is similar to `DDCli` from Dave Dribin, but works under arc! It also uses a different approach to command line parsing - instead of using "push" model like `DDCli` (i.e. sending KVO notifications to pass arguments to a delegate), it uses "pull" model: you let it parse the values and then ask the class for specific argument values. With this approach, it centralizes arguments handling - instead of splitting it over various delegate and KVO mutator methods, you can do it in a single place.
  */
-@interface CommandLineArgumentsParser : NSObject
+@interface GBCommandLineParser : NSObject
 
 #pragma mark - Options registration
 
-- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirement)requirement;
-- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirement)requirement;
+- (void)registerOption:(NSString *)longOption shortcut:(char)shortOption requirement:(GBValueRequirements)requirement;
+- (void)registerOption:(NSString *)longOption requirement:(GBValueRequirements)requirement;
 - (void)registerSwitch:(NSString *)longOption shortcut:(char)shortOption;
 - (void)registerSwitch:(NSString *)longOption;
 
 #pragma mark - Options parsing
 
-- (BOOL)parseOptionsUsingDefaultArgumentsWithBlock:(GBCommandLineArgumentParseBlock)handler;
-- (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineArgumentParseBlock)handler;
-- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineArgumentParseBlock)handler;
+- (BOOL)parseOptionsUsingDefaultArgumentsWithBlock:(GBCommandLineParseBlock)handler;
+- (BOOL)parseOptionsWithArguments:(char **)argv count:(int)argc block:(GBCommandLineParseBlock)handler;
+- (BOOL)parseOptionsWithArguments:(NSArray *)arguments commandLine:(NSString *)cmd block:(GBCommandLineParseBlock)handler;
 
 #pragma mark - Getting parsed results
 
@@ -62,15 +63,17 @@ typedef void(^GBCommandLineArgumentParseBlock)(NSString *argument, id value, BOO
 
 #pragma mark -
 
-/** Various parse results. */
-extern const struct GBCommandLineArgumentResults {
-	__unsafe_unretained id missingValue; ///< The argument requires a value, but it's missing.
-	__unsafe_unretained id unknownArgument; ///< The argument is not registered.
-} GBCommandLineArgumentResults;
-
 /** Various command line argument value requirements. */
 enum {
 	GBValueRequired, ///< Command line argument requires a value.
 	GBValueOptional, ///< Command line argument can optionally have a value, but is not required.
 	GBValueNone ///< Command line argument is on/off switch.
+};
+
+/** Various parsing flags. */
+enum {
+	GBParseFlagOption,
+	GBParseFlagArgument,
+	GBParseFlagMissingValue,
+	GBParseFlagUnknownOption,
 };

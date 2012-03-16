@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-@class Settings;
+@class GBSettings;
 
 /** Main appledoc class.
  
@@ -14,6 +14,6 @@
  */
 @interface Appledoc : NSObject
 
-@property (nonatomic, strong) Settings *settings;
+@property (nonatomic, strong) GBSettings *settings;
 
 @end

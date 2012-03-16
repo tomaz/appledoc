@@ -1,37 +1,39 @@
-//
-//  Settings.m
-//  appledoc
+
+//  GBSettings.m
+//  GBCli
 //
 //  Created by Tomaž Kragelj on 3/13/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "Settings.h"
+#import "GBSettings.h"
 
-@interface Settings ()
-- (BOOL)isKeyArray:(NSString *)key;
+@interface GBSettings ()
 @property (nonatomic, readwrite, copy) NSString *name;
-@property (nonatomic, readwrite, strong) Settings *parent;
+@property (nonatomic, readwrite, strong) GBSettings *parent;
 @property (nonatomic, strong) NSMutableSet *arrayKeys;
 @property (nonatomic, strong) NSMutableDictionary *storage;
 @end
 
 #pragma mark -
 
-@implementation Settings
+@implementation GBSettings {
+	NSMutableArray *_arguments;
+}
 
 @synthesize name = _name;
 @synthesize parent = _parent;
 @synthesize arrayKeys = _arrayKeys;
+@synthesize arguments = _arguments;
 @synthesize storage = _storage;
 
 #pragma mark - Initialization & disposal
 
-+ (id)settingsWithName:(NSString *)name parent:(Settings *)parent {
++ (id)settingsWithName:(NSString *)name parent:(GBSettings *)parent {
 	return [[self alloc] initWithName:name parent:parent];
 }
 
-- (id)initWithName:(NSString *)name parent:(Settings *)parent {
+- (id)initWithName:(NSString *)name parent:(GBSettings *)parent {
 	self = [super init];
 	if (self) {
 		self.name = name;
@@ -40,6 +42,34 @@
 		self.storage = [NSMutableDictionary dictionary];
 	}
 	return self;
+}
+
+#pragma mark - Settings serialization support
+
+- (BOOL)loadSettingsFromPlist:(NSString *)path error:(NSError **)error {
+	NSFileManager *manager = [NSFileManager defaultManager];
+	if (![manager fileExistsAtPath:path]) return YES;
+	
+	// Load data into dictionary.
+	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:error];
+	if (!data) return NO;
+	NSDictionary *values = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:error];
+	if (!values) return NO;
+	
+	// Copy all values to ourself. Remove - or -- prefix which can optionally be used in the file!
+	[self.storage removeAllObjects];
+	[values enumerateKeysAndObjectsUsingBlock:^(NSString *key, id result, BOOL *stop) {
+		while ([key hasPrefix:@"-"]) key = [key substringFromIndex:1];
+		[self setObject:result forKey:key];
+	}];
+	return YES;
+}
+
+- (BOOL)saveSettingsToPlist:(NSString *)path error:(NSError **)error {
+	// Note that we only save settings from current level!
+	NSData *data = [NSPropertyListSerialization dataWithPropertyList:self.storage format:NSPropertyListXMLFormat_v1_0 options:0 error:error];
+	if (!data) return NO;
+	return [data writeToFile:path options:NSDataWritingAtomic error:error];
 }
 
 #pragma mark - Optional registration helpers
@@ -53,7 +83,7 @@
 - (id)objectForKey:(NSString *)key {
 	if ([self isKeyArray:key]) {
 		NSMutableArray *allValues = [NSMutableArray array];
-		Settings *settings = self;
+		GBSettings *settings = self;
 		while (settings) {
 			NSArray *currentLevelValues = [settings.storage objectForKey:key];
 			[allValues addObjectsFromArray:currentLevelValues];
@@ -61,17 +91,22 @@
 		}
 		return allValues;
 	}
-	Settings *level = [self settingsForKey:key];
+	GBSettings *level = [self settingsForKey:key];
 	return [level.storage objectForKey:key];
 }
 - (void)setObject:(id)value forKey:(NSString *)key {
 	if ([self isKeyArray:key] && ![key isKindOfClass:[NSArray class]]) {
-		NSMutableArray *array = [NSMutableArray array];
+		NSMutableArray *array = [self.storage objectForKey:key];
+		if (![array isKindOfClass:[NSMutableArray class]]) {
+			id existing = array;
+			array = [NSMutableArray array];
+			if (existing) [array addObject:existing];
+			[self.storage setObject:array forKey:key];
+		}
 		if ([value isKindOfClass:[NSArray class]])
 			[array addObjectsFromArray:value];
 		else
 			[array addObject:value];
-		[self.storage setObject:array forKey:key];
 		return;
 	}
 	return [self.storage setObject:value forKey:key];
@@ -113,10 +148,17 @@
 	[self setObject:number forKey:key];
 }
 
+#pragma mark - Arguments handling
+
+- (void)addArgument:(NSString *)argument {
+	if (!_arguments) _arguments = [[NSMutableArray alloc] init];
+	[_arguments addObject:argument];
+}
+
 #pragma mark - Introspection
 
-- (void)enumerateSettings:(void(^)(Settings *settings, BOOL *stop))handler {
-	Settings *settings = self;
+- (void)enumerateSettings:(void(^)(GBSettings *settings, BOOL *stop))handler {
+	GBSettings *settings = self;
 	BOOL stop = NO;
 	while (settings) {
 		handler(settings, &stop);
@@ -125,8 +167,8 @@
 	}
 }
 
-- (Settings *)settingsForKey:(NSString *)key {
-	Settings *level = self;
+- (GBSettings *)settingsForKey:(NSString *)key {
+	GBSettings *level = self;
 	while (level) {
 		if ([level.storage objectForKey:key]) break;
 		level = level.parent;

@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "Settings.h"
+#import "GBSettings.h"
 
-@class CommandLineArgumentsParser;
+@class GBCommandLineParser;
 
 /** All appledoc settings as simple properties.
  
@@ -16,11 +16,11 @@
  
  @warning **Implementation detail:** Note that we could easily add all properties directly to Settings, but as the class is designed to be as reusable as possible, that would break reusability. All in all, Objective C offers powerful extending mechanism in the form of categories, and this seems like a perfect fit.
  */
-@interface Settings (Appledoc)
+@interface GBSettings (Appledoc)
 
 #pragma mark - Initialization & disposal
 
-+ (id)appledocSettingsWithName:(NSString *)name parent:(Settings *)parent;
++ (id)appledocSettingsWithName:(NSString *)name parent:(GBSettings *)parent;
 
 #pragma mark - Project information
 
@@ -36,20 +36,30 @@
 #pragma mark - Debugging aid
 
 @property (nonatomic, assign) BOOL printSettings;
+@property (nonatomic, assign) BOOL printVersion;
+@property (nonatomic, assign) BOOL printHelp;
 
 @end
 
 #pragma mark -
 
-@interface Settings (Helpers)
+@interface GBSettings (Helpers)
 - (void)applyFactoryDefaults;
-- (void)applyGlobalSettingsFromCmdLineSettings:(Settings *)settings;
-- (void)applyProjectSettingsFromCmdLineSettings:(Settings *)settings;
-- (void)registerOptionsToCommandLineParser:(CommandLineArgumentsParser *)parser;
+- (void)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings;
+- (void)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings;
 @end
 
-@interface Settings (Diagnostics)
-- (void)printSettingValuesIfNeeded;
-+ (void)printAppledocVersion;
-+ (void)printAppledocHelp;
-@end
+#pragma mark - 
+
+extern const struct GBOptions {
+	__unsafe_unretained NSString *projectVersion;
+	__unsafe_unretained NSString *projectName;
+	__unsafe_unretained NSString *companyName;
+	__unsafe_unretained NSString *companyIdentifier;
+	
+	__unsafe_unretained NSString *inputPaths;
+	
+	__unsafe_unretained NSString *printSettings;
+	__unsafe_unretained NSString *printVersion;
+	__unsafe_unretained NSString *printHelp;
+} GBOptions;

@@ -14,11 +14,11 @@
 @end
 
 @interface SettingsTests (CreationMethods)
-- (void)runWithSettings:(void(^)(Settings *settings))handler;
+- (void)runWithSettings:(void(^)(GBSettings *settings))handler;
 @end
 
 @interface SettingsTests (HelperMethods)
-- (NSSet *)registeredOptionsForParser:(CommandLineArgumentsParser *)parser;
+- (NSSet *)registeredOptionsForParser:(GBCommandLineParser *)parser;
 @end
 
 @implementation SettingsTests
@@ -27,9 +27,9 @@
 
 - (void)testInitWithNameParentShouldSetupDefaultObjects {
 	// setup
-	Settings *parent = [Settings settingsWithName:@"p" parent:nil];
+	GBSettings *parent = [GBSettings settingsWithName:@"p" parent:nil];
 	// execute
-	Settings *settings = [[Settings alloc] initWithName:@"n" parent:parent];
+	GBSettings *settings = [[GBSettings alloc] initWithName:@"n" parent:parent];
 	// verify
 	assertThat(settings.name, is(@"n"));
 	assertThat(settings.parent, is(parent));
@@ -39,7 +39,7 @@
 #pragma mark - Validate mutators
 
 - (void)testMutatorsShouldChangeValue {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// execute
 		[settings setObject:@"hello" forKey:@"string"];
 		[settings setBool:YES forKey:@"bool"];
@@ -56,9 +56,9 @@
 }
 
 - (void)testMutatorsShouldChangeValueOnGivenInstance {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
-		Settings *child = [Settings settingsWithName:@"child" parent:settings];
+		GBSettings *child = [GBSettings settingsWithName:@"child" parent:settings];
 		// execute
 		[child setObject:@"v1" forKey:@"k1"];
 		[settings setObject:@"v2" forKey:@"k2"];
@@ -73,7 +73,7 @@
 #pragma mark - Validate accessors
 
 - (void)testAccessorsShouldGetValueFromCurrentInstance {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
 		[settings setObject:@"hello" forKey:@"string"];
 		// execute & verify
@@ -82,9 +82,9 @@
 }
 
 - (void)testAccessorsShouldGetValueFromParentIfCurrentInstanceDoesntProvideIt {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
-		Settings *child = [Settings settingsWithName:@"child" parent:settings];
+		GBSettings *child = [GBSettings settingsWithName:@"child" parent:settings];
 		[settings setObject:@"hello" forKey:@"string"];
 		// execute & verify
 		assertThat([child objectForKey:@"string"], is(@"hello"));
@@ -94,7 +94,7 @@
 #pragma mark - setObject:forKey:
 
 - (void)testSetObjectForKeyShouldUseLastValueIfSentMultipleTimes {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
 		[settings setObject:@"1" forKey:@"string"];
 		// execute
@@ -105,7 +105,7 @@
 }
 
 - (void)testSetObjectForKeyShouldStoreArrayIfKeyIsRegisteredAsArray {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
 		[settings registerArrayForKey:@"string"];
 		[settings setObject:@"1" forKey:@"string"];
@@ -117,7 +117,7 @@
 }
 
 - (void)testSetObjectForKeyShouldStoreAllValuesIfKeyIsRegisteredAsArrayAndArrayIsPassed {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
 		[settings registerArrayForKey:@"string"];
 		[settings setObject:@"1" forKey:@"string"];
@@ -131,9 +131,9 @@
 #pragma mark - registerOptionsToCommandLineParser:
 
 - (void)testRegisterOptionsToCommandLineParserShouldRegisterProjectOptions {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
-		CommandLineArgumentsParser *parser = [CommandLineArgumentsParser new];
+		GBCommandLineParser *parser = [GBCommandLineParser new];
 		// execute
 		[settings registerOptionsToCommandLineParser:parser];
 		// verify
@@ -143,9 +143,9 @@
 }
 
 - (void)testRegisterOptionsToCommandLineParserShouldRegisterMiscellaneousOptions {
-	[self runWithSettings:^(Settings *settings) {
+	[self runWithSettings:^(GBSettings *settings) {
 		// setup
-		CommandLineArgumentsParser *parser = [CommandLineArgumentsParser new];
+		GBCommandLineParser *parser = [GBCommandLineParser new];
 		// execute
 		[settings registerOptionsToCommandLineParser:parser];
 		// verify
@@ -160,8 +160,8 @@
 
 @implementation SettingsTests (CreationMethods)
 
-- (void)runWithSettings:(void(^)(Settings *settings))handler {
-	Settings *settings = [Settings settingsWithName:@"name" parent:nil];
+- (void)runWithSettings:(void(^)(GBSettings *settings))handler {
+	GBSettings *settings = [GBSettings settingsWithName:@"name" parent:nil];
 	handler(settings);
 }
 
@@ -169,7 +169,7 @@
 
 @implementation SettingsTests (HelperMethods)
 
-- (NSSet *)registeredOptionsForParser:(CommandLineArgumentsParser *)parser {
+- (NSSet *)registeredOptionsForParser:(GBCommandLineParser *)parser {
 	NSDictionary *registeredOptions = parser.registeredOptionsByLongNames;
 	NSMutableSet *result = [NSMutableSet setWithCapacity:registeredOptions.count];
 	[registeredOptions.allValues enumerateObjectsUsingBlock:^(NSDictionary *optionData, NSUInteger idx, BOOL *stop) {
