@@ -19,6 +19,15 @@
 
 @implementation SettingsTests
 
+#pragma mark - appledocSettingsWithName:parent:
+
+- (void)testAppledocSettingsWithNameParentShouldSetupAllArrayKeys {
+	// setup & execute
+	GBSettings *settings = [GBSettings appledocSettingsWithName:@"name" parent:nil];
+	// verify
+	assertThatBool([settings isKeyArray:GBOptions.inputPaths], equalToBool(YES));
+}
+
 #pragma mark - Verify we've wired up settings correctly!
 
 - (void)testProjectPropertiesAreWiredToCorrectCmdLineSwitches {
@@ -40,9 +49,10 @@
 	[self runWithSettings:^(GBSettings *settings) {
 		// execute
 		[settings setObject:@"1" forKey:GBOptions.inputPaths];
+		[settings setObject:@"2" forKey:GBOptions.templatesPath];
 		// verify
-		assertThatBool([settings isKeyArray:GBOptions.inputPaths], equalToBool(YES));
 		assertThat(settings.inputPaths, onlyContains(@"1", nil));
+		assertThat(settings.templatesPath, equalTo(@"2"));
 	}];
 }
 

@@ -6,9 +6,16 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 #import "DDCliUtil.h"
+#import "Extensions.h"
 #import "AppledocInfo.h"
 #import "GBCommandLineParser.h"
 #import "Settings+Appledoc.h"
+
+@interface GBSettings (HelpersPrivate)
+- (BOOL)validateTemplatesAtPath:(NSString *)path error:(NSError **)error;
+@end
+
+#pragma mark -
 
 @implementation GBSettings (Appledoc)
 
@@ -32,6 +39,7 @@ GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier, GBOption
 #pragma mark - Paths
 
 GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths, GBOptions.inputPaths)
+GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templatesPath)
 
 #pragma mark - Debugging aid
 
@@ -49,10 +57,88 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 	self.projectVersion = @"1.0";
 }
 
-- (void)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings {
+- (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings {
+	__block NSError *error = nil;
+
+	// First try the templates path from command line, if given.
+	NSString *pathFromCmdLine = settings.templatesPath;
+	if (pathFromCmdLine.length > 0) {
+		if ([self validateTemplatesAtPath:pathFromCmdLine error:&error]) {
+			return YES;
+		}
+	}
+	
+	// Second try applicaton support directory. Note that we assign path to factory defaults...
+	__block BOOL found = NO;
+	NSArray *appSupportPaths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, NO);
+	[appSupportPaths enumerateObjectsUsingBlock:^(NSString *appSupportPath, NSUInteger idx, BOOL *stop) {
+		NSString *path = [appSupportPath stringByAppendingPathComponent:@"appledoc"];
+		if ([self validateTemplatesAtPath:path error:&error]) {
+			NSString *filename = [[path stringByAppendingPathComponent:@"GlobalSettings.plist"] stringByStandardizingPath];
+			if ([self loadSettingsFromPlist:filename error:&error]) {			
+				self.parent.templatesPath = path;
+				found = YES;
+				*stop = YES;
+			}
+		}
+	}];
+	if (found) return YES;
+	
+	// Lastly try ~/.appledoc directory. Note that we assign path to factory defaults...
+	NSString *homePath = @"~/.appledoc";
+	if ([self validateTemplatesAtPath:homePath error:&error]) {
+		NSString *filename = [[homePath stringByAppendingPathComponent:@"GlobalSettings.plist"] stringByStandardizingPath];
+		if ([self loadSettingsFromPlist:filename error:&error]) {
+			self.parent.templatesPath = homePath;
+			return YES;
+		}
+	}
+	
+	// If there was an error with any of the attempts show it now! If no error was detected, exit due to not finding global templates!
+	if (error) {
+		ddprintf(@"Applying global templates failed:\n");
+		if (error.localizedDescription) ddprintf(@"Error: %@\n", error.localizedDescription);
+		if (error.localizedFailureReason) ddprintf(@"Reason: %@\n", error.localizedFailureReason);
+	} else {
+		ddprintf(@"No predefined templates path exists and no template path specified from command line!\n");
+	}
+	return NO;
 }
 
-- (void)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings {
+- (BOOL)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings {
+	return YES;
+}
+
+@end
+
+#pragma mark - 
+
+@implementation GBSettings (HelpersPrivate)
+
+- (BOOL)validateTemplatesAtPath:(NSString *)path error:(NSError **)error {
+	BOOL isDirectory = NO;
+	NSFileManager *manager = [NSFileManager defaultManager];
+	NSString *standardized = [path stringByStandardizingPath];
+	
+	// If path doesn't exist, exit.
+	if (![manager fileExistsAtPath:standardized isDirectory:&isDirectory]) {
+		if (*error) {
+			NSString *description = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", path];
+			*error = [NSError errorWithCode:GBTemplatePathNotFound description:description reason:nil];
+		}
+		return NO;
+	}
+	
+	// If path isn't a directory, exit.
+	if (!isDirectory) {
+		if (*error) {
+			NSString *description = [NSString stringWithFormat:@"Template path '%@' exists, but is not directory!", path];
+			*error = [NSError errorWithCode:GBTemplatePathNotDirectory description:description reason:nil];
+		}
+		return NO;
+	}
+	
+	return YES;
 }
 
 @end
@@ -62,10 +148,11 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 const struct GBOptions GBOptions = {
 	.projectVersion = @"project-version",
 	.projectName = @"project-name",
-	.companyName = @"company-name",
+	.companyName = @"project-company",
 	.companyIdentifier = @"company-id",
 	
 	.inputPaths = @"input",
+	.templatesPath = @"templates",
 	
 	.printSettings = @"print-settings",
 	.printVersion = @"version",

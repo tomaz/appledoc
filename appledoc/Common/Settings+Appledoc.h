@@ -32,6 +32,7 @@
 #pragma mark - Paths
 
 @property (nonatomic, strong) NSArray *inputPaths;
+@property (nonatomic, strong) NSString *templatesPath;
 
 #pragma mark - Debugging aid
 
@@ -45,8 +46,8 @@
 
 @interface GBSettings (Helpers)
 - (void)applyFactoryDefaults;
-- (void)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings;
-- (void)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings;
+- (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings;
+- (BOOL)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings;
 @end
 
 #pragma mark - 
@@ -58,6 +59,7 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *companyIdentifier;
 	
 	__unsafe_unretained NSString *inputPaths;
+	__unsafe_unretained NSString *templatesPath;
 	
 	__unsafe_unretained NSString *printSettings;
 	__unsafe_unretained NSString *printVersion;

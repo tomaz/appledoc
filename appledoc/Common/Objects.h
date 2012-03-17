@@ -6,5 +6,6 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Extensions.h"
 #import "Logging.h"
 #import "Settings+Appledoc.h"

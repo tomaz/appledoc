@@ -22,7 +22,8 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 0,	GBOptions.companyIdentifier,	@"Company UTI (i.e. reverse DNS name)",						GBValueRequired },
 		
 		{ 0,	nil,							@"PATHS",													GBOptionSeparator },
-		{ 0,	GBOptions.inputPaths,			@"Array of input paths for global and project settings",	GBOptionNoCmdLine|GBOptionInvisible },
+		{ 0,	GBOptions.inputPaths,			@"Array of input paths for global and project settings",	GBValueRequired|GBOptionNoCmdLine|GBOptionInvisible },
+		{ 't',	GBOptions.templatesPath,		@"Template files path",										GBValueRequired },
 		
 		{ 0,	nil,							@"MISCELLANEOUS",											GBOptionSeparator },
 		{ 0,	GBOptions.printSettings,		@"[b] Print settings for current run",						GBValueNone },
@@ -120,8 +121,8 @@ int main(int argc, char *argv[]) {
 		
 		// Apply factory defaults, global and project settings, then print settings if necessary.
 		[factoryDefaults applyFactoryDefaults];
-		[globalSettings applyGlobalSettingsFromCmdLineSettings:settings];
-		[projectSettings applyProjectSettingsFromCmdLineSettings:settings];
+		if (![globalSettings applyGlobalSettingsFromCmdLineSettings:settings]) return 1;
+		if (![projectSettings applyProjectSettingsFromCmdLineSettings:settings]) return 1;
 		if (settings.printSettings) [options printValuesFromSettings:settings];
 
 		// Initialize and run the application.
