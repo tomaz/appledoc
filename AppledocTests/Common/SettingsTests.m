@@ -17,140 +17,45 @@
 - (void)runWithSettings:(void(^)(GBSettings *settings))handler;
 @end
 
-@interface SettingsTests (HelperMethods)
-- (NSSet *)registeredOptionsForParser:(GBCommandLineParser *)parser;
-@end
-
 @implementation SettingsTests
 
-#pragma mark - Validate constructors
+#pragma mark - Verify we've wired up settings correctly!
 
-- (void)testInitWithNameParentShouldSetupDefaultObjects {
-	// setup
-	GBSettings *parent = [GBSettings settingsWithName:@"p" parent:nil];
-	// execute
-	GBSettings *settings = [[GBSettings alloc] initWithName:@"n" parent:parent];
-	// verify
-	assertThat(settings.name, is(@"n"));
-	assertThat(settings.parent, is(parent));
-	assertThat(settings.storage, isNot(nil));
-}
-
-#pragma mark - Validate mutators
-
-- (void)testMutatorsShouldChangeValue {
+- (void)testProjectPropertiesAreWiredToCorrectCmdLineSwitches {
 	[self runWithSettings:^(GBSettings *settings) {
 		// execute
-		[settings setObject:@"hello" forKey:@"string"];
-		[settings setBool:YES forKey:@"bool"];
-		[settings setInteger:-12 forKey:@"integer"];
-		[settings setUnsignedInteger:50 forKey:@"uinteger"];
-		[settings setFloat:4.0 forKey:@"float"];
+		[settings setObject:@"1" forKey:GBOptions.projectName];
+		[settings setObject:@"2" forKey:GBOptions.projectVersion];
+		[settings setObject:@"3" forKey:GBOptions.companyName];
+		[settings setObject:@"4" forKey:GBOptions.companyIdentifier];
 		// verify
-		assertThat([settings objectForKey:@"string"], is(@"hello"));
-		assertThatBool([settings boolForKey:@"bool"], equalToBool(YES));
-		assertThatInteger([settings integerForKey:@"integer"], equalToInteger(-12));
-		assertThatUnsignedInteger([settings unsignedIntegerForKey:@"uinteger"], equalToUnsignedInteger(50));
-		assertThatDouble([settings floatForKey:@"float"], equalToDouble(4.0));
+		assertThat(settings.projectName, equalTo(@"1"));
+		assertThat(settings.projectVersion, equalTo(@"2"));
+		assertThat(settings.companyName, equalTo(@"3"));
+		assertThat(settings.companyIdentifier, equalTo(@"4"));
 	}];
 }
 
-- (void)testMutatorsShouldChangeValueOnGivenInstance {
+- (void)testPathsPropertiesAreWiredToCorrectCmdLineSwitches {
 	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		GBSettings *child = [GBSettings settingsWithName:@"child" parent:settings];
 		// execute
-		[child setObject:@"v1" forKey:@"k1"];
-		[settings setObject:@"v2" forKey:@"k2"];
+		[settings setObject:@"1" forKey:GBOptions.inputPaths];
 		// verify
-		assertThat([child.storage objectForKey:@"k1"], is(@"v1"));
-		assertThat([child.storage objectForKey:@"k2"], equalTo(nil));
-		assertThat([settings.storage objectForKey:@"k1"], equalTo(nil));
-		assertThat([settings.storage objectForKey:@"k2"], is(@"v2"));
+		assertThatBool([settings isKeyArray:GBOptions.inputPaths], equalToBool(YES));
+		assertThat(settings.inputPaths, onlyContains(@"1", nil));
 	}];
 }
 
-#pragma mark - Validate accessors
-
-- (void)testAccessorsShouldGetValueFromCurrentInstance {
+- (void)testDebuggingAidPropertiesAreWiredToCorrectCmdLineSwitches {
 	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		[settings setObject:@"hello" forKey:@"string"];
-		// execute & verify
-		assertThat([settings objectForKey:@"string"], is(@"hello"));
-	}];
-}
-
-- (void)testAccessorsShouldGetValueFromParentIfCurrentInstanceDoesntProvideIt {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		GBSettings *child = [GBSettings settingsWithName:@"child" parent:settings];
-		[settings setObject:@"hello" forKey:@"string"];
-		// execute & verify
-		assertThat([child objectForKey:@"string"], is(@"hello"));
-	}];
-}
-
-#pragma mark - setObject:forKey:
-
-- (void)testSetObjectForKeyShouldUseLastValueIfSentMultipleTimes {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		[settings setObject:@"1" forKey:@"string"];
 		// execute
-		[settings setObject:@"2" forKey:@"string"];
+		[settings setBool:YES forKey:GBOptions.printSettings];
+		[settings setBool:YES forKey:GBOptions.printVersion];
+		[settings setBool:YES forKey:GBOptions.printHelp];
 		// verify
-		assertThat([settings objectForKey:@"string"], is(@"2"));
-	}];
-}
-
-- (void)testSetObjectForKeyShouldStoreArrayIfKeyIsRegisteredAsArray {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		[settings registerArrayForKey:@"string"];
-		[settings setObject:@"1" forKey:@"string"];
-		// execute
-		[settings setObject:@"2" forKey:@"string"];
-		// verify
-		assertThat([settings objectForKey:@"string"], onlyContains(@"1", @"2", nil));
-	}];
-}
-
-- (void)testSetObjectForKeyShouldStoreAllValuesIfKeyIsRegisteredAsArrayAndArrayIsPassed {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		[settings registerArrayForKey:@"string"];
-		[settings setObject:@"1" forKey:@"string"];
-		// execute
-		[settings setObject:[NSArray arrayWithObjects:@"2", @"3", nil] forKey:@"string"];
-		// verify
-		assertThat([settings objectForKey:@"string"], onlyContains(@"1", @"2", @"3", nil));
-	}];
-}
-
-#pragma mark - registerOptionsToCommandLineParser:
-
-- (void)testRegisterOptionsToCommandLineParserShouldRegisterProjectOptions {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		GBCommandLineParser *parser = [GBCommandLineParser new];
-		// execute
-		[settings registerOptionsToCommandLineParser:parser];
-		// verify
-		NSSet *registeredOptions = [self registeredOptionsForParser:parser];
-		assertThat(registeredOptions, hasItems(@"project-name", @"project-version", @"company-name", @"company-id", nil));
-	}];
-}
-
-- (void)testRegisterOptionsToCommandLineParserShouldRegisterMiscellaneousOptions {
-	[self runWithSettings:^(GBSettings *settings) {
-		// setup
-		GBCommandLineParser *parser = [GBCommandLineParser new];
-		// execute
-		[settings registerOptionsToCommandLineParser:parser];
-		// verify
-		NSSet *registeredOptions = [self registeredOptionsForParser:parser];
-		assertThat(registeredOptions, hasItems(@"print-settings", @"version", @"help", nil));
+		assertThatBool(settings.printSettings, equalToBool(YES));
+		assertThatBool(settings.printVersion, equalToBool(YES));
+		assertThatBool(settings.printHelp, equalToBool(YES));
 	}];
 }
 
@@ -161,22 +66,8 @@
 @implementation SettingsTests (CreationMethods)
 
 - (void)runWithSettings:(void(^)(GBSettings *settings))handler {
-	GBSettings *settings = [GBSettings settingsWithName:@"name" parent:nil];
+	GBSettings *settings = [GBSettings appledocSettingsWithName:@"name" parent:nil];
 	handler(settings);
-}
-
-@end
-
-@implementation SettingsTests (HelperMethods)
-
-- (NSSet *)registeredOptionsForParser:(GBCommandLineParser *)parser {
-	NSDictionary *registeredOptions = parser.registeredOptionsByLongNames;
-	NSMutableSet *result = [NSMutableSet setWithCapacity:registeredOptions.count];
-	[registeredOptions.allValues enumerateObjectsUsingBlock:^(NSDictionary *optionData, NSUInteger idx, BOOL *stop) {
-		NSString *optionName = [optionData objectForKey:@"long"];
-		[result addObject:optionName];
-	}];
-	return result;
 }
 
 @end

@@ -17,7 +17,7 @@
 + (id)appledocSettingsWithName:(NSString *)name parent:(GBSettings *)parent {
 	id result = [self settingsWithName:name parent:parent];
 	if (result) {
-		[result registerArrayForKey:@"input"];
+		[result registerArrayForKey:GBOptions.inputPaths];
 	}
 	return result;
 }

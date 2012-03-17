@@ -7,7 +7,6 @@
 //
 
 #import "TestCaseBase.h"
-#import "CommandLineArgumentsParser.h"
 
 @implementation TestCaseBase
 
