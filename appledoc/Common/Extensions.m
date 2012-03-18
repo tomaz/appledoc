@@ -21,3 +21,15 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation NSFileManager (Appledoc)
+
+- (BOOL)fileExistsAndIsDirectoryAtPath:(NSString *)path {
+	BOOL isDirectory = NO;
+	BOOL exists = [self fileExistsAtPath:path isDirectory:&isDirectory];
+	return (exists && isDirectory);
+}
+	
+@end

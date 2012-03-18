@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 		options.printValuesHeader = ^{ return @"%APPNAME version %APPVERSION (build %APPBUILD)\n"; };
 		options.printValuesArgumentsHeader = ^{ return @"Running with paths:\n"; };
 		options.printValuesOptionsHeader = ^{ return @"Running with options:\n"; };
-		options.printValuesFooter = ^{ return @"\nEnd of values print...\n"; };
+		options.printValuesFooter = ^{ return @"\n"; };
 		options.printHelpHeader = ^{ return @"Usage %APPNAME [OPTIONS] <input paths separated by space>"; };
 		options.printHelpFooter = ^{ 
 			NSMutableString *result = [NSMutableString string];

@@ -12,9 +12,13 @@
 + (NSError *)errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
 @end
 
+enum {
+	GBErrorCodeTemplatePathNotFound,
+	GBErrorCodeTemplatePathNotDirectory,
+};
+
 #pragma mark - 
 
-enum {
-	GBTemplatePathNotFound,
-	GBTemplatePathNotDirectory,
-};
+@interface NSFileManager (Appledoc)
+- (BOOL)fileExistsAndIsDirectoryAtPath:(NSString *)path;
+@end
