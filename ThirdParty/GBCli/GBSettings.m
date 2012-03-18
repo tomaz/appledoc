@@ -8,6 +8,10 @@
 
 #import "GBSettings.h"
 
+static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB881A16A";
+
+#pragma mark - 
+
 @interface GBSettings ()
 @property (nonatomic, readwrite, copy) NSString *name;
 @property (nonatomic, readwrite, strong) GBSettings *parent;
@@ -17,9 +21,7 @@
 
 #pragma mark -
 
-@implementation GBSettings {
-	NSMutableArray *_arguments;
-}
+@implementation GBSettings
 
 @synthesize name = _name;
 @synthesize parent = _parent;
@@ -40,6 +42,7 @@
 		self.parent = parent;
 		self.arrayKeys = [NSMutableSet set];
 		self.storage = [NSMutableDictionary dictionary];
+		[self registerArrayForKey:GBSettingsArgumentsKey];
 	}
 	return self;
 }
@@ -48,7 +51,7 @@
 
 - (BOOL)loadSettingsFromPlist:(NSString *)path error:(NSError **)error {
 	NSFileManager *manager = [NSFileManager defaultManager];
-	if (![manager fileExistsAtPath:path]) return YES;
+	if (![manager fileExistsAtPath:path]) return NO;
 	
 	// Load data into dictionary.
 	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:error];
@@ -151,9 +154,9 @@
 #pragma mark - Arguments handling
 
 - (void)addArgument:(NSString *)argument {
-	if (!_arguments) _arguments = [[NSMutableArray alloc] init];
-	[_arguments addObject:argument];
+	[self setObject:argument forKey:GBSettingsArgumentsKey];
 }
+GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
 
 #pragma mark - Introspection
 

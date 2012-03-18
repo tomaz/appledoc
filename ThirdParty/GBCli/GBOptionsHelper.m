@@ -214,7 +214,7 @@
 	NSString *build = self.applicationBuildFromBlockOrNil;
 	if (version) [output appendFormat:@": version %@", version];
 	if (build) [output appendFormat:@" (build %@)", build];
-	printf("%s", output.UTF8String);
+	printf("%s\n", output.UTF8String);
 }
 
 - (void)printHelp {	
@@ -310,7 +310,10 @@
 #pragma mark - Rendering helpers
 
 - (void)replacePlaceholdersAndPrintStringFromBlock:(GBOptionStringBlock)block {
-	if (!block) return;
+	if (!block) {
+		printf("\n");
+		return;
+	}
 	NSString *string = block();
 	string = [string stringByReplacingOccurrencesOfString:@"%APPNAME" withString:self.applicationNameFromBlockOrDefault];
 	string = [string stringByReplacingOccurrencesOfString:@"%APPVERSION" withString:self.applicationVersionFromBlockOrNil];
