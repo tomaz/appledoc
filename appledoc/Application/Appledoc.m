@@ -8,11 +8,13 @@
 
 #import "Objects.h"
 #import "Store.h"
+#import "Parser.h"
 #import "Appledoc.h"
 
 @implementation Appledoc
 
 @synthesize store = _store;
+@synthesize parser = _parser;
 
 #pragma mark - Initialization & disposal
 
@@ -23,9 +25,18 @@
 
 #pragma mark - Running
 
-- (void)runWithSettings:(GBSettings *)settings {
+- (NSInteger)runWithSettings:(GBSettings *)settings {
 	LogNormal(@"Starting appledoc...");
-	LogNormal(@"Appledoc is finished.");
+	NSUInteger result = 0;
+	
+	result = [self.parser runWithSettings:settings store:self.store];
+	if (result != 0) {
+		LogError(@"Parsing finished with error code %ld, exiting!", result);
+		return result;
+	}
+	
+	LogInfo(@"Appledoc finished.");
+	return result;
 }
 
 #pragma mark - Properties
@@ -35,6 +46,13 @@
 	LogDebug(@"Initializing store due to first access...");
 	_store = [[Store alloc] init];
 	return _store;
+}
+
+- (Parser *)parser {
+	if (_parser) return _parser;
+	LogDebug(@"Initializing parser due to first access...");
+	_parser = [[Parser alloc] init];
+	return _parser;
 }
 
 @end

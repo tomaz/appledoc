@@ -10,7 +10,7 @@
 
 @implementation NSError (GBError)
 
-+ (NSError *)errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason {
++ (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason {
 	NSMutableDictionary *info = nil;
 	if ([description length] > 0 || [reason length] > 0) {
 		info = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -26,10 +26,31 @@
 
 @implementation NSFileManager (Appledoc)
 
-- (BOOL)fileExistsAndIsDirectoryAtPath:(NSString *)path {
+- (BOOL)gb_fileExistsAndIsDirectoryAtPath:(NSString *)path {
 	BOOL isDirectory = NO;
 	BOOL exists = [self fileExistsAtPath:path isDirectory:&isDirectory];
 	return (exists && isDirectory);
 }
 	
+@end
+
+#pragma mark - 
+
+@implementation NSString (Appledoc)
+
+- (NSString *)gb_stringByStandardizingCurrentDir {
+	// Converts . to actual working directory.
+	if (![self hasPrefix:@"."] || [self hasPrefix:@".."]) return self;
+	NSFileManager *manager = [NSFileManager defaultManager];
+	NSString *suffix = [self substringFromIndex:1];
+	NSString *currentDir = [manager currentDirectoryPath];
+	return [currentDir stringByAppendingPathComponent:suffix];
+}
+
+- (NSString *)gb_stringByStandardizingCurrentDirAndPath {
+	NSString *result = [self gb_stringByStandardizingCurrentDir];
+	result = [result stringByStandardizingPath];
+	return result;
+}
+
 @end

@@ -9,6 +9,7 @@
 #define HC_SHORTHAND
 #import <SenTestingKit/SenTestingKit.h>
 #import <OCHamcrest/OCHamcrest.h>
+#import <OCMock/OCMock.h>
 
 @interface TestCaseBase : SenTestCase
 

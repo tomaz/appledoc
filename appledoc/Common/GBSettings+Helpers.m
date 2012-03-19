@@ -15,7 +15,6 @@
 
 @interface GBSettings (HelpersPrivate)
 - (BOOL)validateTemplatesAtPath:(NSString *)path error:(NSError **)error;
-- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
 @property (nonatomic, readonly) NSString *globalSettingsFilename;
 @property (nonatomic, readonly) NSString *projectSettingsFilename;
 @end
@@ -83,9 +82,9 @@
 	NSFileManager *manager = [NSFileManager defaultManager];
 	[settings.arguments enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		// Prepare the filename (if it's a dir, test for a project file inside. If not found, continue.
-		NSString *filename = [[self standardizeCurrentDirectoryForPath:path] stringByStandardizingPath];
-		if (![manager fileExistsAndIsDirectoryAtPath:filename]) return;
-		if ([manager fileExistsAndIsDirectoryAtPath:filename]) {
+		NSString *filename = [path gb_stringByStandardizingCurrentDirAndPath];
+		if (![manager gb_fileExistsAndIsDirectoryAtPath:filename]) return;
+		if ([manager gb_fileExistsAndIsDirectoryAtPath:filename]) {
 			filename = [filename stringByAppendingPathComponent:self.projectSettingsFilename];
 			if (![manager fileExistsAtPath:filename]) return;
 		}
@@ -138,7 +137,7 @@
 	// We must have at least one valid path.
 	__block BOOL atLeastOneValidPath = NO;
 	[self.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
-		NSString *standardized = [[self standardizeCurrentDirectoryForPath:path] stringByStandardizingPath];
+		NSString *standardized = [path gb_stringByStandardizingCurrentDirAndPath];
 		if (![manager fileExistsAtPath:standardized]) {
 			ddprintf(@"WARN: Input path '%@' doesn't exist, ignoring!\n", path);
 			return;
@@ -165,36 +164,27 @@
 
 - (BOOL)validateTemplatesAtPath:(NSString *)path error:(NSError **)error {
 	NSFileManager *manager = [NSFileManager defaultManager];
-	NSString *standardized = [[self standardizeCurrentDirectoryForPath:path] stringByStandardizingPath];
+	NSString *standardized = [path gb_stringByStandardizingCurrentDirAndPath];
 	
 	// If path doesn't exist, exit.
 	if (![manager fileExistsAtPath:standardized]) {
 		if (*error) {
 			NSString *description = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", path];
-			*error = [NSError errorWithCode:GBErrorCodeTemplatePathNotFound description:description reason:nil];
+			*error = [NSError gb_errorWithCode:GBErrorCodeTemplatePathNotFound description:description reason:nil];
 		}
 		return NO;
 	}
 	
 	// If path isn't a directory, exit.
-	if (![manager fileExistsAndIsDirectoryAtPath:standardized]) {
+	if (![manager gb_fileExistsAndIsDirectoryAtPath:standardized]) {
 		if (*error) {
 			NSString *description = [NSString stringWithFormat:@"Template path '%@' exists, but is not directory!", path];
-			*error = [NSError errorWithCode:GBErrorCodeTemplatePathNotDirectory description:description reason:nil];
+			*error = [NSError gb_errorWithCode:GBErrorCodeTemplatePathNotDirectory description:description reason:nil];
 		}
 		return NO;
 	}
 	
 	return YES;
-}
-
-- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path {
-	// Converts . to actual working directory.
-	if (![path hasPrefix:@"."] || [path hasPrefix:@".."]) return path;
-	NSFileManager *manager = [NSFileManager defaultManager];
-	NSString *suffix = [path substringFromIndex:1];
-	NSString *currentDir = [manager currentDirectoryPath];
-	return [currentDir stringByAppendingPathComponent:suffix];
 }
 
 - (NSString *)globalSettingsFilename {

@@ -7,8 +7,9 @@
 //
 
 #import "Objects+TestingPrivateAPI.h"
+#import "Store.h"
+#import "Parser.h"
 #import "Appledoc.h"
-#import "GBSettings.h"
 #import "TestCaseBase.h"
 
 @interface Appledoc (TestingPrivateAPI)
@@ -25,6 +26,35 @@
 @end
 
 @implementation AppledocTests
+
+#pragma mark - Properties
+
+- (void)testLazyAccessorsShouldInitializeObjects {
+	[self runWithAppledoc:^(Appledoc *appledoc) {
+		// execute & verify
+		assertThat([appledoc.store class], equalTo([Store class]));
+		assertThat([appledoc.parser class], equalTo([Parser class]));
+	}];
+}
+
+#pragma mark - runWithSettings:
+
+- (void)testRunWithSettingsShouldInvokeAllSubcomponents {
+	[self runWithAppledoc:^(Appledoc *appledoc) {
+		// setup
+		id settings = [OCMockObject niceMockForClass:[GBSettings class]];
+		id store = [OCMockObject niceMockForClass:[Store class]];
+		id parser = [OCMockObject mockForClass:[Parser class]];
+		[[parser expect] runWithSettings:settings store:store];
+		appledoc.store = store;
+		appledoc.parser = parser;
+		// execute
+		[appledoc runWithSettings:settings];
+		// verify
+		[parser verify];
+	}];
+}
+
 @end
 
 #pragma mark -

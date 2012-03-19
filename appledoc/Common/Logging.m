@@ -12,11 +12,6 @@
 
 // NOTE: All functions here are purposely using C interface to keep as little overhead as possible.
 
-#pragma mark - Definitions of external symbols
-
-logger_function_t log_function = NULL;
-NSUInteger log_level = LOG_LEVEL_NORMAL;
-
 #pragma mark - Common formatting functions
 
 static FILE *log_output_for_flag(int flag) {
@@ -63,6 +58,9 @@ static char *log_flag_description(int flag) {
 
 #pragma mark - Logging implementation
 
+static void log_function_none(int flag, const char *path, const char *function, int line, NSString *message) {
+}
+
 static void log_function_0(int flag, const char *path, const char *function, int line, NSString *message) {
 	FILE *output = log_output_for_flag(flag);
 	fprintf(output, "%s\n", message.UTF8String);
@@ -108,3 +106,8 @@ void initialize_logging_from_settings(GBSettings *settings) {
 		default: log_function = log_function_0; break;
 	}
 }
+
+#pragma mark - Definitions of external symbols
+
+logger_function_t log_function = log_function_none;
+NSUInteger log_level = LOG_LEVEL_NORMAL;

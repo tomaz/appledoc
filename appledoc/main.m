@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
 		// Initialize and run the application.
 		initialize_logging_from_settings(settings);
 		Appledoc *appledoc = [[Appledoc alloc] init];
-		[appledoc runWithSettings:settings];
+		return [appledoc runWithSettings:settings];
 	}
     return 0;
 }

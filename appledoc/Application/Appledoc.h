@@ -8,15 +8,17 @@
 
 @class GBSettings;
 @class Store;
+@class Parser;
 
 /** Main appledoc class.
  
- To use it, instantiate it, pass it desired settings stack and invoke run method!
+ To use it, instantiate it and invoke `runWithSettings:`! You can optionally supply it desired objects to work with, such as store or parser, but this is meant more or less for unit testing purposes; default objects are used if nothing is given.
  */
 @interface Appledoc : NSObject
 
-- (void)runWithSettings:(GBSettings *)settings;
+- (NSInteger)runWithSettings:(GBSettings *)settings;
 
 @property (nonatomic, strong) Store *store;
+@property (nonatomic, strong) Parser *parser;
 
 @end

@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface NSError (Appledoc)
-+ (NSError *)errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
++ (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
 @end
 
 enum {
@@ -20,5 +20,12 @@ enum {
 #pragma mark - 
 
 @interface NSFileManager (Appledoc)
-- (BOOL)fileExistsAndIsDirectoryAtPath:(NSString *)path;
+- (BOOL)gb_fileExistsAndIsDirectoryAtPath:(NSString *)path;
+@end
+
+#pragma mark - 
+
+@interface NSString (Appledoc)
+- (NSString *)gb_stringByStandardizingCurrentDir;
+- (NSString *)gb_stringByStandardizingCurrentDirAndPath;
 @end
