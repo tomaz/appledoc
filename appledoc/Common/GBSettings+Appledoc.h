@@ -1,5 +1,5 @@
 //
-//  Settings+Appledoc.h
+//  GBSettings+Appledoc.h
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 3/13/12.
@@ -40,14 +40,6 @@
 @property (nonatomic, assign) BOOL printVersion;
 @property (nonatomic, assign) BOOL printHelp;
 
-@end
-
-#pragma mark -
-
-@interface GBSettings (Helpers)
-- (void)applyFactoryDefaults;
-- (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings;
-- (BOOL)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings;
 @end
 
 #pragma mark - 

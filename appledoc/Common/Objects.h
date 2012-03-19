@@ -8,4 +8,4 @@
 
 #import "Extensions.h"
 #import "Logging.h"
-#import "Settings+Appledoc.h"
+#import "GBSettings+Appledoc.h"

@@ -15,8 +15,8 @@
 		7317FACE150F633900B39CFD /* SettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.m */; };
 		7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		7317FADB150F67E500B39CFD /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
-		73280F28150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */; };
-		73280F29150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */; };
+		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
+		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
 		734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
 		734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
@@ -24,6 +24,7 @@
 		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
 		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
+		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
 		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
@@ -67,8 +68,8 @@
 		7317FACD150F633900B39CFD /* SettingsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTests.m; sourceTree = "<group>"; };
 		7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = AppledocTests/Libraries/OCHamcrest.framework; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
-		73280F26150FE48700D1E6E8 /* Settings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Settings+Appledoc.h"; sourceTree = "<group>"; };
-		73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Settings+Appledoc.m"; sourceTree = "<group>"; };
+		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
+		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
 		734849E51511F7870031EF85 /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
 		734849E61511F7870031EF85 /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
@@ -76,6 +77,8 @@
 		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
 		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
 		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
+		738BE17215172D8D009079C8 /* GBSettings+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "GBSettings+Helpers.h"; sourceTree = "<group>"; };
+		738BE17315172D8D009079C8 /* GBSettings+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Helpers.m"; sourceTree = "<group>"; };
 		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
 		739C11AE1515320C004D139B /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
 		739C11AF1515320C004D139B /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extensions.m; sourceTree = "<group>"; };
@@ -261,8 +264,10 @@
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
 				739C11AE1515320C004D139B /* Extensions.h */,
 				739C11AF1515320C004D139B /* Extensions.m */,
-				73280F26150FE48700D1E6E8 /* Settings+Appledoc.h */,
-				73280F27150FE48700D1E6E8 /* Settings+Appledoc.m */,
+				73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */,
+				73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */,
+				738BE17215172D8D009079C8 /* GBSettings+Helpers.h */,
+				738BE17315172D8D009079C8 /* GBSettings+Helpers.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -373,7 +378,7 @@
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
 				7317FACE150F633900B39CFD /* SettingsTests.m in Sources */,
-				73280F29150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */,
+				73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
 				73280F321510989600D1E6E8 /* AppledocTests.m in Sources */,
 				734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */,
 				734849EC1511F7870031EF85 /* GBSettings.m in Sources */,
@@ -390,11 +395,12 @@
 				73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */,
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
-				73280F28150FE48700D1E6E8 /* Settings+Appledoc.m in Sources */,
+				73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
 				734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */,
 				734849EB1511F7870031EF85 /* GBSettings.m in Sources */,
 				734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B01515320C004D139B /* Extensions.m in Sources */,
+				738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

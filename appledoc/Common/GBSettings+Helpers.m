@@ -1,15 +1,17 @@
 //
-//  Settings+Appledoc.m
+//  GBSettings+Helpers.m
 //  appledoc
 //
-//  Created by Tomaž Kragelj on 3/13/12.
+//  Created by Tomaž Kragelj on 3/19/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
+
 #import "DDCliUtil.h"
 #import "Extensions.h"
 #import "AppledocInfo.h"
 #import "GBCommandLineParser.h"
-#import "Settings+Appledoc.h"
+#import "GBSettings+Appledoc.h"
+#import "GBSettings+Helpers.h"
 
 @interface GBSettings (HelpersPrivate)
 - (BOOL)validateTemplatesAtPath:(NSString *)path error:(NSError **)error;
@@ -19,38 +21,6 @@
 @end
 
 #pragma mark -
-
-@implementation GBSettings (Appledoc)
-
-#pragma mark - Initialization & disposal
-
-+ (id)appledocSettingsWithName:(NSString *)name parent:(GBSettings *)parent {
-	id result = [self settingsWithName:name parent:parent];
-	if (result) {
-		[result registerArrayForKey:GBOptions.inputPaths];
-	}
-	return result;
-}
-
-#pragma mark - Project information
-
-GB_SYNTHESIZE_COPY(NSString *, projectVersion, setProjectVersion, GBOptions.projectVersion)
-GB_SYNTHESIZE_COPY(NSString *, projectName, setProjectName, GBOptions.projectName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyName, setCompanyName, GBOptions.companyName) // Required!
-GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier, GBOptions.companyIdentifier) // Required!
-
-#pragma mark - Paths
-
-GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths, GBOptions.inputPaths)
-GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templatesPath)
-
-#pragma mark - Debugging aid
-
-GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings, GBOptions.printSettings)
-GB_SYNTHESIZE_BOOL(printVersion, setPrintVersion, GBOptions.printVersion)
-GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
-
-@end
 
 #pragma mark -
 
@@ -62,7 +32,7 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 
 - (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings {
 	__block NSError *error = nil;
-
+	
 	// First try the templates path from command line, if given.
 	NSString *pathFromCmdLine = settings.templatesPath;
 	if (pathFromCmdLine.length > 0) {
@@ -142,6 +112,31 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 	return YES;
 }
 
+- (BOOL)validateSettings {
+	NSFileManager *manager = [NSFileManager defaultManager];
+	
+	// We must have at least one valid path.
+	__block BOOL atLeastOneValidPath = NO;
+	[self.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
+		NSString *standardized = [[self standardizeCurrentDirectoryForPath:path] stringByStandardizingPath];
+		if (![manager fileExistsAtPath:standardized]) {
+			ddprintf(@"WARN: Input path '%@' doesn't exist, ignoring!\n", path);
+			return;
+		}
+		atLeastOneValidPath = YES;
+	}];
+	if (!atLeastOneValidPath) {
+		ddprintf(@"ERROR: No");
+		if (self.arguments.count > 0) ddprintf(@" valid");
+		ddprintf(@" input path given, aborting!\n");
+		return NO;
+	}
+	
+	// Everything valid, allow running the tool!
+	ddprintf(@"\n");
+	return YES;
+}
+
 @end
 
 #pragma mark - 
@@ -191,19 +186,3 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 }
 
 @end
-
-#pragma mark - 
-
-const struct GBOptions GBOptions = {
-	.projectVersion = @"project-version",
-	.projectName = @"project-name",
-	.companyName = @"project-company",
-	.companyIdentifier = @"company-id",
-	
-	.inputPaths = @"input",
-	.templatesPath = @"templates",
-	
-	.printSettings = @"print-settings",
-	.printVersion = @"version",
-	.printHelp = @"help",
-};

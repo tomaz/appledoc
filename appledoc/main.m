@@ -8,7 +8,8 @@
 
 #import "DDCliUtil.h"
 #import "AppledocInfo.h"
-#import "Settings+Appledoc.h"
+#import "GBSettings+Appledoc.h"
+#import "GBSettings+Helpers.h"
 #import "GBCommandLineParser.h"
 #import "GBOptionsHelper.h"
 #import "Appledoc.h"
@@ -47,10 +48,8 @@ int main(int argc, char *argv[]) {
 		GBOptionsHelper *options = [[GBOptionsHelper alloc] init];
 		options.applicationVersion = ^{ return GB_APPLEDOC_VERSION; };
 		options.applicationBuild = ^{ return GB_APPLEDOC_BUILD; };
-		options.printValuesHeader = ^{ return @"%APPNAME version %APPVERSION (build %APPBUILD)\n"; };
 		options.printValuesArgumentsHeader = ^{ return @"Running with paths:\n"; };
 		options.printValuesOptionsHeader = ^{ return @"Running with options:\n"; };
-		options.printValuesFooter = ^{ return @"\n"; };
 		options.printHelpHeader = ^{ return @"Usage %APPNAME [OPTIONS] <input paths separated by space>"; };
 		options.printHelpFooter = ^{ 
 			NSMutableString *result = [NSMutableString string];
@@ -119,11 +118,17 @@ int main(int argc, char *argv[]) {
 			return 0;
 		}
 		
-		// Apply factory defaults, global and project settings, then print settings if necessary.
+		// We always print version so we can simplify debugging to a degree.
+		[options printVersion];
+		
+		// Apply factory defaults, global and project settings.
 		[factoryDefaults applyFactoryDefaults];
 		if (![globalSettings applyGlobalSettingsFromCmdLineSettings:settings]) return 1;
 		if (![projectSettings applyProjectSettingsFromCmdLineSettings:settings]) return 1;
+
+		// Print settings if necessary, then validate.
 		if (settings.printSettings) [options printValuesFromSettings:settings];
+		if (![settings validateSettings]) return 1;
 
 		// Initialize and run the application.
 		Appledoc *appledoc = [[Appledoc alloc] init];
