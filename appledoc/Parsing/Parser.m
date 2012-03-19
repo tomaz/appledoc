@@ -36,7 +36,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		[blockSelf parsePath:path withBlock:^(NSString *path) {
 			if (![blockSelf isSourceCodeFile:path]) return;
-			LogParDebug(@"Parsing contents of file '%@'...", path);
+			LogParInfo(@"Parsing contents of file '%@'...", path);
 		}];
 	}];
 	LogParInfo(@"Parsing finished.");
@@ -46,7 +46,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 #pragma mark - Parsing helpers
 
 - (void)parsePath:(NSString *)path withBlock:(ParserPathBlock)handler {
-	LogParInfo(@"Parsing '%@'...", path);
+	LogParVerbose(@"Parsing '%@'...", path);
 	NSString *standardized = [path gb_stringByStandardizingCurrentDirAndPath];
 	
 	if (![self.fileManager fileExistsAtPath:standardized]) {
@@ -54,10 +54,12 @@ typedef void(^ParserPathBlock)(NSString *path);
 		return;
 	}
 	
-	if ([self.fileManager gb_fileExistsAndIsDirectoryAtPath:standardized])
+	if ([self.fileManager gb_fileExistsAndIsDirectoryAtPath:standardized]) {
 		[self parseDirectory:standardized withBlock:handler];
-	else
-		[self parseFile:standardized withBlock:handler];
+		return;
+	}
+	
+	[self parseFile:standardized withBlock:handler];
 }
 
 - (void)parseDirectory:(NSString *)path withBlock:(ParserPathBlock)handler {
