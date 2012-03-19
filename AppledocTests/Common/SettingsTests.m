@@ -26,6 +26,7 @@
 	GBSettings *settings = [GBSettings appledocSettingsWithName:@"name" parent:nil];
 	// verify
 	assertThatBool([settings isKeyArray:GBOptions.inputPaths], equalToBool(YES));
+	assertThatBool([settings isKeyArray:GBOptions.ignoredPaths], equalToBool(YES));
 }
 
 #pragma mark - Verify we've wired up settings correctly!
@@ -48,11 +49,13 @@
 - (void)testPathsPropertiesAreWiredToCorrectCmdLineSwitches {
 	[self runWithSettings:^(GBSettings *settings) {
 		// execute
-		[settings setObject:@"1" forKey:GBOptions.inputPaths];
-		[settings setObject:@"2" forKey:GBOptions.templatesPath];
+		[settings setObject:@"input" forKey:GBOptions.inputPaths];
+		[settings setObject:@"ignore" forKey:GBOptions.ignoredPaths];
+		[settings setObject:@"template" forKey:GBOptions.templatesPath];
 		// verify
-		assertThat(settings.inputPaths, onlyContains(@"1", nil));
-		assertThat(settings.templatesPath, equalTo(@"2"));
+		assertThat(settings.inputPaths, onlyContains(@"input", nil));
+		assertThat(settings.ignoredPaths, onlyContains(@"ignore", nil));
+		assertThat(settings.templatesPath, equalTo(@"template"));
 	}];
 }
 

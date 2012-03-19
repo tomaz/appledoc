@@ -15,6 +15,7 @@
 	id result = [self settingsWithName:name parent:parent];
 	if (result) {
 		[result registerArrayForKey:GBOptions.inputPaths];
+		[result registerArrayForKey:GBOptions.ignoredPaths];
 	}
 	return result;
 }
@@ -29,6 +30,7 @@ GB_SYNTHESIZE_COPY(NSString *, companyIdentifier, setCompanyIdentifier, GBOption
 #pragma mark - Paths
 
 GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths, GBOptions.inputPaths)
+GB_SYNTHESIZE_OBJECT(NSArray *, ignoredPaths, setIgnoredPaths, GBOptions.ignoredPaths)
 GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templatesPath)
 
 #pragma mark - Debugging aid
@@ -54,6 +56,7 @@ const struct GBOptions GBOptions = {
 	
 	.inputPaths = @"input",
 	.templatesPath = @"templates",
+	.ignoredPaths = @"ignore",
 	
 	.printSettings = @"print-settings",
 	.printVersion = @"version",

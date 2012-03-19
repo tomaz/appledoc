@@ -32,7 +32,8 @@
 #pragma mark - Paths
 
 @property (nonatomic, strong) NSArray *inputPaths;
-@property (nonatomic, strong) NSString *templatesPath;
+@property (nonatomic, strong) NSArray *ignoredPaths;
+@property (nonatomic, copy) NSString *templatesPath;
 
 #pragma mark - Debugging aid
 
@@ -56,6 +57,7 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *companyIdentifier;
 	
 	__unsafe_unretained NSString *inputPaths;
+	__unsafe_unretained NSString *ignoredPaths;
 	__unsafe_unretained NSString *templatesPath;
 	
 	__unsafe_unretained NSString *printSettings;

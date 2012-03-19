@@ -32,9 +32,11 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 - (NSInteger)runTask {
 	LogParNormal(@"Starting parsing...");
+	__weak Parser *blockSelf = self;
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
-		[self parsePath:path withBlock:^(NSString *path) {
-			//LogParDebug(@"Parsing contents of file '%@'...", path);
+		[blockSelf parsePath:path withBlock:^(NSString *path) {
+			if (![blockSelf isSourceCodeFile:path]) return;
+			LogParDebug(@"Parsing contents of file '%@'...", path);
 		}];
 	}];
 	LogParInfo(@"Parsing finished.");
@@ -67,7 +69,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 	// Get contents of the directory.
 	NSError *error = nil;
-	NSArray *contents = [self.fileManager subpathsOfDirectoryAtPath:path error:&error];
+	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
 	if (error) {
 		LogParNSError(error, @"Failed fetching contents of '%@'!", path);
 		return;
@@ -102,10 +104,14 @@ typedef void(^ParserPathBlock)(NSString *path);
 #pragma mark - Helper methods
 
 - (BOOL)isPathIgnored:(NSString *)path {
-//	for (NSString *ignored in self.settings.ignoredPaths) {
-//		if ([path hasSuffix:ignored]) return YES;
-//	}
-	return NO;
+	__block BOOL result = NO;
+	[self.settings.ignoredPaths enumerateObjectsUsingBlock:^(NSString *ignored, NSUInteger idx, BOOL *stop) {
+		if ([path hasSuffix:ignored]) {
+			result = YES;
+			*stop = YES;
+		}
+	}];
+	return result;
 }
 
 - (BOOL)isFileIgnored:(NSString *)filename {
@@ -117,6 +123,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 	if ([filename isEqualToString:@".git"]) return YES;
 	if ([filename isEqualToString:@".svn"]) return YES;
 	if ([filename isEqualToString:@".hg"]) return YES;
+	if ([filename hasSuffix:@".xcodeproj"]) return YES;
 	return NO;
 }
 
