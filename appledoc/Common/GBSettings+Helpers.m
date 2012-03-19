@@ -123,6 +123,17 @@
 
 - (BOOL)validateSettings {
 	NSFileManager *manager = [NSFileManager defaultManager];
+	__block BOOL result = NO;
+	
+	// Verify we have all required values.
+	if (self.projectName.length == 0) {
+		ddprintf(@"ERROR: Missing project name (--%@)!\n", GBOptions.projectName);
+		result = NO;
+	}
+	if (self.companyName.length == 0) {
+		ddprintf(@"ERROR: Missing company name (--%@)!\n", GBOptions.companyName);
+		result = NO;
+	}
 	
 	// We must have at least one valid path.
 	__block BOOL atLeastOneValidPath = NO;
@@ -138,12 +149,12 @@
 		ddprintf(@"ERROR: No");
 		if (self.arguments.count > 0) ddprintf(@" valid");
 		ddprintf(@" input path given, aborting!\n");
-		return NO;
+		result = NO;
 	}
 	
-	// Everything valid, allow running the tool!
+	// Add a new line and return validation result.
 	ddprintf(@"\n");
-	return YES;
+	return result;
 }
 
 @end
