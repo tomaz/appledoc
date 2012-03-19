@@ -152,15 +152,7 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 }
 
 - (GBSettings *)settingsForArgument:(NSString *)argument {
-	__block GBSettings *result = nil;
-	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
-		NSArray *arguments = [settings objectForLocalKey:GBSettingsArgumentsKey];
-		if ([arguments containsObject:argument]) {
-			result = settings;
-			*stop = YES;
-		}
-	}];
-	return result;
+	return [self settingsForArrayValue:argument key:GBSettingsArgumentsKey];
 }
 
 GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
@@ -188,6 +180,18 @@ GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
 		if (stop) break;
 		settings = settings.parent;
 	}
+}
+
+- (GBSettings *)settingsForArrayValue:(NSString *)value key:(NSString *)key {
+	__block GBSettings *result = nil;
+	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
+		NSArray *arguments = [settings objectForLocalKey:key];
+		if ([arguments containsObject:value]) {
+			result = settings;
+			*stop = YES;
+		}
+	}];
+	return result;
 }
 
 - (GBSettings *)settingsForKey:(NSString *)key {

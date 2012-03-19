@@ -155,7 +155,9 @@
 				id value = [settings objectForKey:longOption];
 				if ([settings isKeyArray:longOption]) {
 					NSMutableString *arrayValue = [NSMutableString string];
-					[(NSArray *)value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+					[(NSArray *)value enumerateObjectsUsingBlock:^(NSString *obj, NSUInteger idx, BOOL *stop) {
+						GBSettings *level = [settings settingsForArrayValue:obj key:longOption];
+						if (level != settings) return;
 						if (arrayValue.length > 0) [arrayValue appendString:@", "];
 						[arrayValue appendString:obj];
 					}];

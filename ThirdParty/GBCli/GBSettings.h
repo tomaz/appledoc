@@ -80,6 +80,7 @@
 #pragma mark - Introspection
 
 - (void)enumerateSettings:(void(^)(GBSettings *settings, BOOL *stop))handler;
+- (GBSettings *)settingsForArrayValue:(NSString *)value key:(NSString *)key;
 - (GBSettings *)settingsForKey:(NSString *)key;
 - (BOOL)isKeyPresentAtThisLevel:(NSString *)key;
 - (BOOL)isKeyArray:(NSString *)key;
