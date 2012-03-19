@@ -123,7 +123,7 @@
 
 - (BOOL)validateSettings {
 	NSFileManager *manager = [NSFileManager defaultManager];
-	__block BOOL result = NO;
+	__block BOOL result = YES;
 	
 	// Verify we have all required values.
 	if (self.projectName.length == 0) {
