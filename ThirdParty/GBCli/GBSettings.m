@@ -129,7 +129,7 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 
 - (NSUInteger)unsignedIntegerForKey:(NSString *)key {
 	NSNumber *number = [self objectForKey:key];
-	return [number unsignedIntegerValue];
+	return (NSUInteger)[number integerValue];
 }
 - (void)setUnsignedInteger:(NSUInteger)value forKey:(NSString *)key {
 	NSNumber *number = [NSNumber numberWithUnsignedInteger:value];
