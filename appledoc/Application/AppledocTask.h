@@ -17,8 +17,9 @@
 
 - (NSInteger)runWithSettings:(GBSettings *)settings store:(Store *)store;
 
-@property (nonatomic, strong, readonly) GBSettings *settings;
 @property (nonatomic, strong, readonly) Store *store;
+@property (nonatomic, strong, readonly) GBSettings *settings;
+@property (nonatomic, strong) NSFileManager *fileManager;
 
 @end
 

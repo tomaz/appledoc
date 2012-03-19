@@ -7,6 +7,7 @@
 //
 
 #import "GBSettings+Appledoc.h"
+#import "Objects.h"
 #import "Store.h"
 #import "AppledocTask.h"
 
@@ -19,8 +20,9 @@
 
 @implementation AppledocTask
 
-@synthesize settings = _settings;
 @synthesize store = _store;
+@synthesize settings = _settings;
+@synthesize fileManager = _fileManager;
 
 #pragma mark - Running the task
 
@@ -28,6 +30,14 @@
 	self.settings = settings;
 	self.store = store;
 	return [self runTask];
+}
+
+#pragma mark - Properties
+
+- (NSFileManager *)fileManager {
+	if (_fileManager) return _fileManager;
+	_fileManager = [NSFileManager defaultManager];
+	return _fileManager;
 }
 
 @end

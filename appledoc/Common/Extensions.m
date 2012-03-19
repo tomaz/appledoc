@@ -26,6 +26,12 @@
 
 @implementation NSFileManager (Appledoc)
 
+- (BOOL)gb_fileExistsAndIsFileAtPath:(NSString *)path {
+	BOOL isDirectory = NO;
+	BOOL exists = [self fileExistsAtPath:path isDirectory:&isDirectory];
+	return (exists && !isDirectory);
+}
+
 - (BOOL)gb_fileExistsAndIsDirectoryAtPath:(NSString *)path {
 	BOOL isDirectory = NO;
 	BOOL exists = [self fileExistsAtPath:path isDirectory:&isDirectory];

@@ -17,22 +17,26 @@
 
 static void registerOptionDefinitions(GBOptionsHelper *options) {
 	GBOptionDefinition definitions[] = {
-		{ 0,	nil,							@"PROJECT INFO",											GBOptionSeparator },
-		{ 'p',	GBOptions.projectName,			@"Project name",											GBValueRequired },
-		{ 'v',	GBOptions.projectVersion,		@"Project version",											GBValueRequired },
-		{ 'c',	GBOptions.companyName,			@"Company name",											GBValueRequired },
-		{ 0,	GBOptions.companyIdentifier,	@"Company UTI (i.e. reverse DNS name)",						GBValueRequired },
+		{ 0,	nil,								@"PROJECT INFO",											GBOptionSeparator },
+		{ 'p',	GBOptions.projectName,				@"Project name",											GBValueRequired },
+		{ 'v',	GBOptions.projectVersion,			@"Project version",											GBValueRequired },
+		{ 'c',	GBOptions.companyName,				@"Company name",											GBValueRequired },
+		{ 0,	GBOptions.companyIdentifier,		@"Company UTI (i.e. reverse DNS name)",						GBValueRequired },
 		
-		{ 0,	nil,							@"PATHS",													GBOptionSeparator },
-		{ 0,	GBOptions.inputPaths,			@"Array of input paths for global and project settings",	GBValueRequired|GBOptionNoCmdLine|GBOptionInvisible },
-		{ 't',	GBOptions.templatesPath,		@"Template files path",										GBValueRequired },
+		{ 0,	nil,								@"PATHS",													GBOptionSeparator },
+		{ 0,	GBOptions.inputPaths,				@"Array of input paths for global and project settings",	GBValueRequired|GBOptionNoCmdLine|GBOptionInvisible },
+		{ 't',	GBOptions.templatesPath,			@"Template files path",										GBValueRequired },
 		
-		{ 0,	nil,							@"MISCELLANEOUS",											GBOptionSeparator },
-		{ 0,	GBOptions.loggingFormat,		@"Log format (0-3)",										GBValueRequired },
-		{ 0,	GBOptions.loggingLevel,			@"Log verbosity (0-5)",										GBValueRequired },
-		{ 0,	GBOptions.printSettings,		@"[b] Print settings for current run",						GBValueNone },
-		{ 0,	GBOptions.printVersion,			@"Display version and exit",								GBValueNone|GBOptionNoPrint },
-		{ '?',	GBOptions.printHelp,			@"Display this help and exit",								GBValueNone|GBOptionNoPrint },
+		{ 0,	nil,								@"LOGGING",													GBOptionSeparator },
+		{ 0,	GBOptions.loggingLevel,				@"Log verbosity (0-5)",										GBValueRequired },
+		{ 0,	GBOptions.loggingFormat,			@"Log format (0-3)",										GBValueRequired },
+		{ 0,	GBOptions.loggingCommonEnabled,		@"[D] Enable common logging",								GBValueNone|GBOptionNoHelp },
+		{ 0,	GBOptions.loggingParsingEnabled,	@"[D] Enable parser logging",								GBValueNone|GBOptionNoHelp },
+
+		{ 0,	nil,								@"MISCELLANEOUS",											GBOptionSeparator },
+		{ 0,	GBOptions.printSettings,			@"[b] Print settings for current run",						GBValueNone },
+		{ 0,	GBOptions.printVersion,				@"Display version and exit",								GBValueNone|GBOptionNoPrint },
+		{ '?',	GBOptions.printHelp,				@"Display this help and exit",								GBValueNone|GBOptionNoPrint },
 		
 		{ 0,	nil, nil, 0 }
 	};

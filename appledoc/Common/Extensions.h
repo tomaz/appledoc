@@ -20,6 +20,7 @@ enum {
 #pragma mark - 
 
 @interface NSFileManager (Appledoc)
+- (BOOL)gb_fileExistsAndIsFileAtPath:(NSString *)path;
 - (BOOL)gb_fileExistsAndIsDirectoryAtPath:(NSString *)path;
 @end
 

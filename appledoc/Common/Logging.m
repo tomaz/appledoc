@@ -105,6 +105,8 @@ void initialize_logging_from_settings(GBSettings *settings) {
 		case 3: log_function = log_function_3; break;
 		default: log_function = log_function_0; break;
 	}
+	if (settings.loggingCommonEnabled) log_level |= LOG_FLAG_COMMON;
+	if (settings.loggingParsingEnabled) log_level |= LOG_FLAG_PARSING;
 }
 
 #pragma mark - Definitions of external symbols
