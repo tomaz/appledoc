@@ -75,12 +75,6 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 	return [data writeToFile:path options:NSDataWritingAtomic error:error];
 }
 
-#pragma mark - Optional registration helpers
-
-- (void)registerArrayForKey:(NSString *)key {
-	[self.arrayKeys addObject:key];
-}
-
 #pragma mark - Values handling
 
 - (id)objectForKey:(NSString *)key {
@@ -88,14 +82,14 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 		NSMutableArray *allValues = [NSMutableArray array];
 		GBSettings *settings = self;
 		while (settings) {
-			NSArray *currentLevelValues = [settings.storage objectForKey:key];
+			NSArray *currentLevelValues = [settings objectForLocalKey:key];
 			[allValues addObjectsFromArray:currentLevelValues];
 			settings = settings.parent;
 		}
 		return allValues;
 	}
 	GBSettings *level = [self settingsForKey:key];
-	return [level.storage objectForKey:key];
+	return [level objectForLocalKey:key];
 }
 - (void)setObject:(id)value forKey:(NSString *)key {
 	if ([self isKeyArray:key] && ![key isKindOfClass:[NSArray class]]) {
@@ -104,7 +98,7 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 			id existing = array;
 			array = [NSMutableArray array];
 			if (existing) [array addObject:existing];
-			[self.storage setObject:array forKey:key];
+			[self setObject:array forLocalKey:key];
 		}
 		if ([value isKindOfClass:[NSArray class]])
 			[array addObjectsFromArray:value];
@@ -112,7 +106,7 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 			[array addObject:value];
 		return;
 	}
-	return [self.storage setObject:value forKey:key];
+	[self setObject:value forLocalKey:key];
 }
 
 - (BOOL)boolForKey:(NSString *)key {
@@ -156,7 +150,33 @@ static NSString * const GBSettingsArgumentsKey = @"B450A340-EC4F-40EC-B18D-B52DB
 - (void)addArgument:(NSString *)argument {
 	[self setObject:argument forKey:GBSettingsArgumentsKey];
 }
+
+- (GBSettings *)settingsForArgument:(NSString *)argument {
+	__block GBSettings *result = nil;
+	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
+		NSArray *arguments = [settings objectForLocalKey:GBSettingsArgumentsKey];
+		if ([arguments containsObject:argument]) {
+			result = settings;
+			*stop = YES;
+		}
+	}];
+	return result;
+}
+
 GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
+
+#pragma mark - Registration & low level handling
+
+- (void)registerArrayForKey:(NSString *)key {
+[self.arrayKeys addObject:key];
+}
+
+- (id)objectForLocalKey:(NSString *)key {
+	return [self.storage objectForKey:key];
+}
+- (void)setObject:(id)value forLocalKey:(NSString *)key {
+	[self.storage setObject:value forKey:key];
+}
 
 #pragma mark - Introspection
 
@@ -171,12 +191,14 @@ GB_SYNTHESIZE_OBJECT(NSArray *, arguments, setArguments, GBSettingsArgumentsKey)
 }
 
 - (GBSettings *)settingsForKey:(NSString *)key {
-	GBSettings *level = self;
-	while (level) {
-		if ([level.storage objectForKey:key]) break;
-		level = level.parent;
-	}
-	return level;
+	__block GBSettings *result = nil;
+	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
+		if ([settings isKeyPresentAtThisLevel:key]) {
+			result = settings;
+			*stop = YES;
+		}
+	}];
+	return result;
 }
 
 - (BOOL)isKeyPresentAtThisLevel:(NSString *)key {

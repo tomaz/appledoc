@@ -112,6 +112,15 @@
 	return YES;
 }
 
+- (void)consolidateSettings {
+	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
+		NSArray *inputPaths = [settings objectForLocalKey:GBOptions.inputPaths];
+		[inputPaths enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
+			[settings addArgument:path];
+		}];
+	}];
+}
+
 - (BOOL)validateSettings {
 	NSFileManager *manager = [NSFileManager defaultManager];
 	

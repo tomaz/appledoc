@@ -112,6 +112,7 @@
 	NSMutableArray *rows = [NSMutableArray array];
 	NSMutableArray *lengths = [NSMutableArray array];
 	__weak GBOptionsHelper *blockSelf = self;
+	__block NSUInteger settingsHierarchyLevels = 0;
 	
 	// First add header row. Note that first element is the setting.
 	NSMutableArray *headers = [NSMutableArray arrayWithObject:@"Option"];
@@ -119,6 +120,7 @@
 	[settings enumerateSettings:^(GBSettings *settings, BOOL *stop) {
 		[headers addObject:settings.name];
 		[lengths addObject:[NSNumber numberWithUnsignedInteger:settings.name.length]];
+		settingsHierarchyLevels++;
 	}];
 	[rows addObject:headers];
 	
@@ -183,7 +185,12 @@
 	if (settings.arguments.count > 0) {
 		[self replacePlaceholdersAndPrintStringFromBlock:self.printValuesArgumentsHeader];
 		[settings.arguments enumerateObjectsUsingBlock:^(NSString *argument, NSUInteger idx, BOOL *stop) {
-			printf("- %s\n", argument.UTF8String);
+			printf("- %s", argument.UTF8String);
+			if (settingsHierarchyLevels > 1) {
+				GBSettings *level = [settings settingsForArgument:argument];
+				printf(" (%s)", level.name.UTF8String);
+			}
+			printf("\n");
 		}];
 		printf("\n");
 	}

@@ -121,10 +121,11 @@ int main(int argc, char *argv[]) {
 		// We always print version so we can simplify debugging to a degree.
 		[options printVersion];
 		
-		// Apply factory defaults, global and project settings.
+		// Apply factory defaults, global and project settings, then consolidate.
 		[factoryDefaults applyFactoryDefaults];
 		if (![globalSettings applyGlobalSettingsFromCmdLineSettings:settings]) return 1;
 		if (![projectSettings applyProjectSettingsFromCmdLineSettings:settings]) return 1;
+		[settings consolidateSettings];
 
 		// Print settings if necessary, then validate.
 		if (settings.printSettings) [options printValuesFromSettings:settings];

@@ -13,6 +13,7 @@
 - (void)applyFactoryDefaults;
 - (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings;
 - (BOOL)applyProjectSettingsFromCmdLineSettings:(GBSettings *)settings;
+- (void)consolidateSettings;
 - (BOOL)validateSettings;
 
 @end

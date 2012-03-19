@@ -48,10 +48,6 @@
 - (BOOL)loadSettingsFromPlist:(NSString *)path error:(NSError **)error;
 - (BOOL)saveSettingsToPlist:(NSString *)path error:(NSError **)error;
 
-#pragma mark - Optional registration helpers
-
-- (void)registerArrayForKey:(NSString *)key;
-
 #pragma mark - Values handling
 
 - (id)objectForKey:(NSString *)key;
@@ -72,7 +68,14 @@
 #pragma mark - Arguments handling
 
 - (void)addArgument:(NSString *)argument;
+- (GBSettings *)settingsForArgument:(NSString *)argument;
 @property (nonatomic, strong) NSArray *arguments;
+
+#pragma mark - Registration & low level handling
+
+- (void)registerArrayForKey:(NSString *)key;
+- (id)objectForLocalKey:(NSString *)key;
+- (void)setObject:(id)value forLocalKey:(NSString *)key;
 
 #pragma mark - Introspection
 
