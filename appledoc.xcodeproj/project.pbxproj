@@ -24,6 +24,8 @@
 		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
 		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
+		73500D3015174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
+		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
 		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
@@ -68,7 +70,7 @@
 		7317FACD150F633900B39CFD /* SettingsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTests.m; sourceTree = "<group>"; };
 		7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = AppledocTests/Libraries/OCHamcrest.framework; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
-		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
+		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
 		734849E51511F7870031EF85 /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
@@ -77,7 +79,9 @@
 		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
 		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
 		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
-		738BE17215172D8D009079C8 /* GBSettings+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; path = "GBSettings+Helpers.h"; sourceTree = "<group>"; };
+		73500D2E15174910000416E3 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Store.h; sourceTree = "<group>"; };
+		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
+		738BE17215172D8D009079C8 /* GBSettings+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Helpers.h"; sourceTree = "<group>"; };
 		738BE17315172D8D009079C8 /* GBSettings+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Helpers.m"; sourceTree = "<group>"; };
 		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
 		739C11AE1515320C004D139B /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
@@ -177,6 +181,22 @@
 			path = GBCli;
 			sourceTree = "<group>";
 		};
+		73500D2B151748C8000416E3 /* Parsing */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Parsing;
+			sourceTree = "<group>";
+		};
+		73500D2D151748F3000416E3 /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				73500D2E15174910000416E3 /* Store.h */,
+				73500D2F15174910000416E3 /* Store.m */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
 		73D274A2150E05DA004D27F4 = {
 			isa = PBXGroup;
 			children = (
@@ -213,6 +233,8 @@
 			children = (
 				73ED9443150E9FD00032FD07 /* Common */,
 				73D274CC150E08AA004D27F4 /* Application */,
+				73500D2D151748F3000416E3 /* Store */,
+				73500D2B151748C8000416E3 /* Parsing */,
 				73D274B6150E05DA004D27F4 /* Supporting Files */,
 			);
 			path = appledoc;
@@ -384,6 +406,7 @@
 				734849EC1511F7870031EF85 /* GBSettings.m in Sources */,
 				734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B11515320C004D139B /* Extensions.m in Sources */,
+				73500D3115174910000416E3 /* Store.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -401,6 +424,7 @@
 				734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B01515320C004D139B /* Extensions.m in Sources */,
 				738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */,
+				73500D3015174910000416E3 /* Store.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

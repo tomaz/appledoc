@@ -33,6 +33,8 @@ GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templa
 
 #pragma mark - Debugging aid
 
+GB_SYNTHESIZE_UINT(loggingFormat, setLoggingFormat, GBOptions.loggingFormat)
+GB_SYNTHESIZE_UINT(loggingLevel, setLoggingLevel, GBOptions.loggingLevel)
 GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings, GBOptions.printSettings)
 GB_SYNTHESIZE_BOOL(printVersion, setPrintVersion, GBOptions.printVersion)
 GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
@@ -50,6 +52,8 @@ const struct GBOptions GBOptions = {
 	.inputPaths = @"input",
 	.templatesPath = @"templates",
 	
+	.loggingFormat = @"log-format",
+	.loggingLevel = @"verbose",
 	.printSettings = @"print-settings",
 	.printVersion = @"version",
 	.printHelp = @"help",

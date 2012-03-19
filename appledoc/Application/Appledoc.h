@@ -7,6 +7,7 @@
 //
 
 @class GBSettings;
+@class Store;
 
 /** Main appledoc class.
  
@@ -14,6 +15,8 @@
  */
 @interface Appledoc : NSObject
 
-@property (nonatomic, strong) GBSettings *settings;
+- (void)runWithSettings:(GBSettings *)settings;
+
+@property (nonatomic, strong) Store *store;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #include <sys/timeb.h>
+#import "GBSettings+Appledoc.h"
 #import "Logging.h"
 
 // NOTE: All functions here are purposely using C interface to keep as little overhead as possible.
@@ -62,11 +63,16 @@ static char *log_flag_description(int flag) {
 
 #pragma mark - Logging implementation
 
+static void log_function_0(int flag, const char *path, const char *function, int line, NSString *message) {
+	FILE *output = log_output_for_flag(flag);
+	fprintf(output, "%s\n", message.UTF8String);
+}
+
 static void log_function_1(int flag, const char *path, const char *function, int line, NSString *message) {
 	FILE *output = log_output_for_flag(flag);
 	char *time = log_current_time();
 	char *level = log_flag_description(flag);
-	fprintf(output, "%s %s > %s\n", time, level, [message UTF8String]);
+	fprintf(output, "%s %s > %s\n", time, level, message.UTF8String);
 }
 
 static void log_function_2(int flag, const char *path, const char *function, int line, NSString *message) {
@@ -74,17 +80,31 @@ static void log_function_2(int flag, const char *path, const char *function, int
 	char *time = log_current_time();
 	char *file = log_file_name(path);
 	char *level = log_flag_description(flag);
-	fprintf(output, "%s: %s:%d %s > %s\n", time, file, line, level, [message UTF8String]);
+	fprintf(output, "%s: %s:%d %s > %s\n", time, file, line, level, message.UTF8String);
 }
 
 static void log_function_3(int flag, const char *path, const char *function, int line, NSString *message) {
 	FILE *output = log_output_for_flag(flag);
 	char *time = log_current_time();
 	char *level = log_flag_description(flag);
-	fprintf(output, "%s: %s (line %d) %s > %s\n", time, function, line, level, [message UTF8String]);
+	fprintf(output, "%s: %s (line %d) %s > %s\n", time, function, line, level, message.UTF8String);
 }
 
-void initialize_logging() {
-	log_level = LOG_LEVEL_NORMAL;
-	log_function = log_function_3;
+void initialize_logging_from_settings(GBSettings *settings) {
+	switch (settings.loggingLevel) {
+		case 0: log_level = LOG_LEVEL_ERROR; break;
+		case 1: log_level = LOG_LEVEL_WARN; break;
+		case 2: log_level = LOG_LEVEL_NORMAL; break;
+		case 3: log_level = LOG_LEVEL_INFO; break;
+		case 4: log_level = LOG_LEVEL_VERBOSE; break;
+		case 5: log_level = LOG_LEVEL_DEBUG; break;
+		default: log_level = LOG_LEVEL_NORMAL; break;
+	}
+	switch (settings.loggingFormat) {
+		case 0: log_function = log_function_0; break;
+		case 1: log_function = log_function_1; break;
+		case 2: log_function = log_function_2; break;
+		case 3: log_function = log_function_3; break;
+		default: log_function = log_function_0; break;
+	}
 }

@@ -7,6 +7,7 @@
 //
 
 #import "DDCliUtil.h"
+#import "Logging.h"
 #import "AppledocInfo.h"
 #import "GBSettings+Appledoc.h"
 #import "GBSettings+Helpers.h"
@@ -27,6 +28,8 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 't',	GBOptions.templatesPath,		@"Template files path",										GBValueRequired },
 		
 		{ 0,	nil,							@"MISCELLANEOUS",											GBOptionSeparator },
+		{ 0,	GBOptions.loggingFormat,		@"Log format (0-3)",										GBValueRequired },
+		{ 0,	GBOptions.loggingLevel,			@"Log verbosity (0-5)",										GBValueRequired },
 		{ 0,	GBOptions.printSettings,		@"[b] Print settings for current run",						GBValueNone },
 		{ 0,	GBOptions.printVersion,			@"Display version and exit",								GBValueNone|GBOptionNoPrint },
 		{ '?',	GBOptions.printHelp,			@"Display this help and exit",								GBValueNone|GBOptionNoPrint },
@@ -132,8 +135,9 @@ int main(int argc, char *argv[]) {
 		if (![settings validateSettings]) return 1;
 
 		// Initialize and run the application.
+		initialize_logging_from_settings(settings);
 		Appledoc *appledoc = [[Appledoc alloc] init];
-		appledoc.settings = settings;
+		[appledoc runWithSettings:settings];
 	}
     return 0;
 }

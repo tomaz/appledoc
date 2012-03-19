@@ -6,10 +6,12 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class GBSettings;
+
 #pragma mark - Logger setup
 
 typedef void(*logger_function_t)(int flag, const char *file, const char *function, int line, NSString *message);
-extern void initialize_logging();
+extern void initialize_logging_from_settings(GBSettings *settings);
 extern logger_function_t log_function;
 extern NSUInteger log_level;
 

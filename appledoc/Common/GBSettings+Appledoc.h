@@ -36,6 +36,8 @@
 
 #pragma mark - Debugging aid
 
+@property (nonatomic, assign) NSUInteger loggingFormat;
+@property (nonatomic, assign) NSUInteger loggingLevel;
 @property (nonatomic, assign) BOOL printSettings;
 @property (nonatomic, assign) BOOL printVersion;
 @property (nonatomic, assign) BOOL printHelp;
@@ -53,6 +55,8 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *inputPaths;
 	__unsafe_unretained NSString *templatesPath;
 	
+	__unsafe_unretained NSString *loggingFormat;
+	__unsafe_unretained NSString *loggingLevel;
 	__unsafe_unretained NSString *printSettings;
 	__unsafe_unretained NSString *printVersion;
 	__unsafe_unretained NSString *printHelp;
