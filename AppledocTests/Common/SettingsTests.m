@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "Settings+Appledoc.h"
+#import "GBSettings+Appledoc.h"
 #import "Objects+TestingPrivateAPI.h"
 #import "TestCaseBase.h"
 
