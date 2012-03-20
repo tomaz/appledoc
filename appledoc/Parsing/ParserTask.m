@@ -32,7 +32,7 @@
 	NSString *string = [NSString stringWithContentsOfFile:standardized encoding:NSUTF8StringEncoding error:&error];
 	if (!string) {
 		LogParNSError(error, @"Failed reading contents of '%@'!", filename);
-		return 1;
+		return GBResultSystemError;
 	}
 	self.filename = standardized;
 	self.settings = settings;

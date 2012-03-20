@@ -26,7 +26,7 @@
 
 #pragma mark - Running the task
 
-- (NSInteger)runWithSettings:(GBSettings *)settings store:(Store *)store {
+- (GBResult)runWithSettings:(GBSettings *)settings store:(Store *)store {
 	self.settings = settings;
 	self.store = store;
 	return [self runTask];

@@ -27,4 +27,9 @@
 - (void)popState;
 @property (nonatomic, strong) ObjectiveCParserState *fileState;
 @property (nonatomic, strong) ObjectiveCParserState *interfaceState;
+@property (nonatomic, strong) ObjectiveCParserState *propertyState;
+@property (nonatomic, strong) ObjectiveCParserState *methodState;
+@property (nonatomic, strong) ObjectiveCParserState *pragmaMarkState;
+@property (nonatomic, strong) ObjectiveCParserState *enumState;
+@property (nonatomic, strong) ObjectiveCParserState *structState;
 @end

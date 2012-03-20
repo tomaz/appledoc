@@ -1,14 +1,14 @@
 //
-//  ObjectiveCParserState.m
+//  ObjectiveCStructState.m
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 3/20/12.
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "ObjectiveCParserState.h"
+#import "ObjectiveCStructState.h"
 
-@implementation ObjectiveCParserState
+@implementation ObjectiveCStructState
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	return GBResultOk;

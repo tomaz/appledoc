@@ -10,7 +10,14 @@
 #import "TokensStream.h"
 #import "ObjectiveCFileState.h"
 #import "ObjectiveCInterfaceState.h"
+#import "ObjectiveCPropertyState.h"
+#import "ObjectiveCMethodState.h"
+#import "ObjectiveCPragmaMarkState.h"
+#import "ObjectiveCEnumState.h"
+#import "ObjectiveCStructState.h"
 #import "ObjectiveCParser.h"
+
+#pragma mark - 
 
 @interface ObjectiveCParser ()
 @property (nonatomic, strong) TokensStream *tokensStream;
@@ -18,6 +25,11 @@
 @property (nonatomic, strong) ObjectiveCParserState *currentState;
 @property (nonatomic, strong) ObjectiveCParserState *fileState;
 @property (nonatomic, strong) ObjectiveCParserState *interfaceState;
+@property (nonatomic, strong) ObjectiveCParserState *propertyState;
+@property (nonatomic, strong) ObjectiveCParserState *methodState;
+@property (nonatomic, strong) ObjectiveCParserState *pragmaMarkState;
+@property (nonatomic, strong) ObjectiveCParserState *enumState;
+@property (nonatomic, strong) ObjectiveCParserState *structState;
 @end
 
 #pragma mark - 
@@ -29,6 +41,11 @@
 @synthesize currentState = _currentState;
 @synthesize fileState = _fileState;
 @synthesize interfaceState = _interfaceState;
+@synthesize propertyState = _propertyState;
+@synthesize methodState = _methodState;
+@synthesize pragmaMarkState = _pragmaMarkState;
+@synthesize enumState = _enumState;
+@synthesize structState = _structState;
 
 #pragma mark - Initialization & disposal
 
@@ -57,11 +74,11 @@
 	[self pushState:self.fileState];
 	
 	// Parse all tokens.
-	NSInteger result = 0;
+	GBResult result = GBResultOk;
 	while (!self.tokensStream.eof) {
 		LogParDebug(@"Parsing token '%@'...", self.tokensStream.current.stringValue);
 		result = [self.currentState parseStream:self.tokensStream forParser:self store:self.store];
-		if (result != 0) break;
+		if (result != GBResultOk) break;
 	}
 	
 	LogParDebug(@"Finished parsing '%@'.", [self.filename lastPathComponent]);
@@ -96,6 +113,41 @@
 	LogParDebug(@"Initializing interface state due to first access...");
 	_interfaceState = [[ObjectiveCInterfaceState alloc] init];
 	return _interfaceState;
+}
+
+- (ObjectiveCParserState *)propertyState {
+	if (_propertyState) return _propertyState;
+	LogParDebug(@"Initializing property state due to first access...");
+	_propertyState = [[ObjectiveCPropertyState alloc] init];
+	return _propertyState;
+}
+
+- (ObjectiveCParserState *)methodState {
+	if (_methodState) return _methodState;
+	LogParDebug(@"Initializing method state due to first access...");
+	_methodState = [[ObjectiveCMethodState alloc] init];
+	return _methodState;
+}
+
+- (ObjectiveCParserState *)pragmaMarkState {
+	if (_pragmaMarkState) return _pragmaMarkState;
+	LogParDebug(@"Initializing pragma mark state due to first access...");
+	_pragmaMarkState = [[ObjectiveCPragmaMarkState alloc] init];
+	return _pragmaMarkState;
+}
+
+- (ObjectiveCParserState *)enumState {
+	if (_enumState) return _enumState;
+	LogParDebug(@"Initializing enum state due to first access...");
+	_enumState = [[ObjectiveCEnumState alloc] init];
+	return _enumState;
+}
+
+- (ObjectiveCParserState *)structState {
+	if (_structState) return _structState;
+	LogParDebug(@"Initializing struct state due to first access...");
+	_structState = [[ObjectiveCStructState alloc] init];
+	return _structState;
 }
 
 @end

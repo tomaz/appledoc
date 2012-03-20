@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
 		7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB5150F52D500B39CFD /* SenTestingKit.framework */; };
 		7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB7150F534100B39CFD /* Cocoa.framework */; };
 		7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC2150F556800B39CFD /* TestCaseBase.m */; };
@@ -14,7 +15,7 @@
 		7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
 		7317FACE150F633900B39CFD /* SettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.m */; };
 		7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
-		7317FADB150F67E500B39CFD /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
+		7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
@@ -52,20 +53,38 @@
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
+		73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
+		73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
+		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
+		73E289F51518E24D00D53484 /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
+		73E289F61518E24D00D53484 /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
+		73E28A021518E59E00D53484 /* ParseKit.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 7329790B15188CB500592A9D /* ParseKit.framework */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F989AD1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
 		73F989AE1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
+		73F989B21518C01F0068697C /* ObjCExamples1.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F989B01518BFDD0068697C /* ObjCExamples1.h */; };
+		73F989B51518C5830068697C /* ObjCExamples1.m in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F989B31518C50D0068697C /* ObjCExamples1.m */; };
+		73F989B81518C63E0068697C /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
+		73F989BC1518C6530068697C /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
+		73F989C01518C6AE0068697C /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
+		73F989C41518C6C10068697C /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
+		73F989C81518C6D50068697C /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
+		73F989CC1518C9000068697C /* ObjectiveCParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989CB1518C9000068697C /* ObjectiveCParserTests.m */; };
+		73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		7317FADA150F67D900B39CFD /* CopyFiles */ = {
+		7317FADA150F67D900B39CFD /* Copy frameworks to products directory */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				7317FADB150F67E500B39CFD /* OCHamcrest.framework in CopyFiles */,
+				7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */,
+				73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */,
+				73E28A021518E59E00D53484 /* ParseKit.framework in Copy frameworks to products directory */,
 			);
+			name = "Copy frameworks to products directory";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		73D274AB150E05DA004D27F4 /* CopyFiles */ = {
@@ -77,9 +96,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		73F989B11518C00D0068697C /* Copy resources to bundle */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+				73F989B21518C01F0068697C /* ObjCExamples1.h in Copy resources to bundle */,
+				73F989B51518C5830068697C /* ObjCExamples1.m in Copy resources to bundle */,
+			);
+			name = "Copy resources to bundle";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		7317FA9A150F51FD00B39CFD /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7317FAB5150F52D500B39CFD /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		7317FAB7150F534100B39CFD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -136,6 +169,19 @@
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
 		73F989AB1518A9BC0068697C /* ObjectiveCInterfaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCInterfaceState.h; sourceTree = "<group>"; };
 		73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCInterfaceState.m; sourceTree = "<group>"; };
+		73F989B01518BFDD0068697C /* ObjCExamples1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjCExamples1.h; sourceTree = "<group>"; };
+		73F989B31518C50D0068697C /* ObjCExamples1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjCExamples1.m; sourceTree = "<group>"; };
+		73F989B61518C63D0068697C /* ObjectiveCPropertyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCPropertyState.h; sourceTree = "<group>"; };
+		73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPropertyState.m; sourceTree = "<group>"; };
+		73F989BA1518C6530068697C /* ObjectiveCMethodState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCMethodState.h; sourceTree = "<group>"; };
+		73F989BB1518C6530068697C /* ObjectiveCMethodState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCMethodState.m; sourceTree = "<group>"; };
+		73F989BE1518C6AD0068697C /* ObjectiveCPragmaMarkState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCPragmaMarkState.h; sourceTree = "<group>"; };
+		73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPragmaMarkState.m; sourceTree = "<group>"; };
+		73F989C21518C6C10068697C /* ObjectiveCEnumState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCEnumState.h; sourceTree = "<group>"; };
+		73F989C31518C6C10068697C /* ObjectiveCEnumState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCEnumState.m; sourceTree = "<group>"; };
+		73F989C61518C6D40068697C /* ObjectiveCStructState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCStructState.h; sourceTree = "<group>"; };
+		73F989C71518C6D40068697C /* ObjectiveCStructState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCStructState.m; sourceTree = "<group>"; };
+		73F989CB1518C9000068697C /* ObjectiveCParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParserTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +268,16 @@
 				7329791715189D1B00592A9D /* ObjectiveCFileState.m */,
 				73F989AB1518A9BC0068697C /* ObjectiveCInterfaceState.h */,
 				73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */,
+				73F989B61518C63D0068697C /* ObjectiveCPropertyState.h */,
+				73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */,
+				73F989BA1518C6530068697C /* ObjectiveCMethodState.h */,
+				73F989BB1518C6530068697C /* ObjectiveCMethodState.m */,
+				73F989BE1518C6AD0068697C /* ObjectiveCPragmaMarkState.h */,
+				73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */,
+				73F989C21518C6C10068697C /* ObjectiveCEnumState.h */,
+				73F989C31518C6C10068697C /* ObjectiveCEnumState.m */,
+				73F989C61518C6D40068697C /* ObjectiveCStructState.h */,
+				73F989C71518C6D40068697C /* ObjectiveCStructState.m */,
 			);
 			name = "Objective C";
 			path = ObjectiveC;
@@ -266,7 +322,9 @@
 		73500D3B15176222000416E3 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
+				73F989CD1518C9B30068697C /* Test data */,
 				734425121517631F00B6EC33 /* ParserTests.m */,
+				73F989CB1518C9000068697C /* ObjectiveCParserTests.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -360,6 +418,8 @@
 			children = (
 				7397046A1511283300486507 /* AppledocInfo.h */,
 				73ED944C150F3CF40032FD07 /* Objects.h */,
+				73118B10151906F100E9D7F1 /* Constants.h */,
+				73118B11151906F100E9D7F1 /* Constants.m */,
 				73ED9444150E9FEC0032FD07 /* Logging.h */,
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
 				739C11AE1515320C004D139B /* Extensions.h */,
@@ -372,6 +432,15 @@
 			path = Common;
 			sourceTree = "<group>";
 		};
+		73F989CD1518C9B30068697C /* Test data */ = {
+			isa = PBXGroup;
+			children = (
+				73F989B01518BFDD0068697C /* ObjCExamples1.h */,
+				73F989B31518C50D0068697C /* ObjCExamples1.m */,
+			);
+			name = "Test data";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -381,7 +450,8 @@
 			buildPhases = (
 				7317FA95150F51FD00B39CFD /* Sources */,
 				7317FA96150F51FD00B39CFD /* Frameworks */,
-				7317FADA150F67D900B39CFD /* CopyFiles */,
+				7317FADA150F67D900B39CFD /* Copy frameworks to products directory */,
+				73F989B11518C00D0068697C /* Copy resources to bundle */,
 				7317FA98150F51FD00B39CFD /* ShellScript */,
 			);
 			buildRules = (
@@ -494,6 +564,12 @@
 				73297915151899CA00592A9D /* ObjectiveCParserState.m in Sources */,
 				7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */,
 				73F989AE1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */,
+				73F989CC1518C9000068697C /* ObjectiveCParserTests.m in Sources */,
+				73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */,
+				73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */,
+				73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */,
+				73E289F51518E24D00D53484 /* ObjectiveCEnumState.m in Sources */,
+				73E289F61518E24D00D53484 /* ObjectiveCStructState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,6 +596,12 @@
 				73297914151899CA00592A9D /* ObjectiveCParserState.m in Sources */,
 				7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */,
 				73F989AD1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */,
+				73F989B81518C63E0068697C /* ObjectiveCPropertyState.m in Sources */,
+				73F989BC1518C6530068697C /* ObjectiveCMethodState.m in Sources */,
+				73F989C01518C6AE0068697C /* ObjectiveCPragmaMarkState.m in Sources */,
+				73F989C41518C6C10068697C /* ObjectiveCEnumState.m in Sources */,
+				73F989C81518C6D50068697C /* ObjectiveCStructState.m in Sources */,
+				73118B12151906F100E9D7F1 /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,8 +618,10 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
@@ -554,8 +638,10 @@
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
+				GCC_ENABLE_OBJC_GC = unsupported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;

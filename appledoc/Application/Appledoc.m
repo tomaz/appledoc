@@ -27,10 +27,10 @@
 
 - (NSInteger)runWithSettings:(GBSettings *)settings {
 	LogNormal(@"Starting appledoc...");
-	NSUInteger result = 0;
+	GBResult result = GBResultOk;
 	
 	result = [self.parser runWithSettings:settings store:self.store];
-	if (result != 0) {
+	if (result != GBResultOk) {
 		LogError(@"Parsing finished with error code %ld, exiting!", result);
 		return result;
 	}

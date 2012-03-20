@@ -38,14 +38,16 @@
 		LogParVerbose(@"@protocol %@", protocolName);
 		[stream consume:3];
 		[parser pushState:parser.interfaceState];
-//	} else if ([stream matches:@"enum", nil]) {
-//		//[parser pushState:parser.enumState];
-//	} else if ([stream matches:@"struct", nil]) {
-//		//[parser pushState:parser.structState];
+	} else if ([stream matches:@"enum", nil]) {
+		// Match enum for constants.
+		[parser pushState:parser.enumState];
+	} else if ([stream matches:@"struct", nil]) {
+		// Match struct for namespaced constants.
+		[parser pushState:parser.structState];
 	} else {
 		[stream consume:1];
 	}
-	return 0;
+	return GBResultOk;
 }
 
 @end
