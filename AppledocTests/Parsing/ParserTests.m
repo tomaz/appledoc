@@ -7,6 +7,8 @@
 //
 
 #import "GBSettings+Appledoc.h"
+#import "Extensions.h"
+#import "ObjectiveCParser.h"
 #import "Parser.h"
 #import "TestCaseBase.h"
 
@@ -20,6 +22,15 @@
 #pragma mark - 
 
 @implementation ParserTests
+
+#pragma mark - Properties
+
+- (void)testLazyAccessorsShouldInitializeObjects {
+	[self runWithParser:^(Parser *parser) {
+		// execute & verify
+		assertThat(parser.objectiveCParser, instanceOf([ObjectiveCParser class]));
+	}];
+}
 
 #pragma mark - runTask
 
@@ -35,6 +46,26 @@
 		// verify
 		STAssertNoThrow([settings verify], nil);
 		STAssertNoThrow([arguments verify], nil);
+	}];
+}
+
+- (void)testRunTaskShouldInvokeObjectiveCParserOnSourceFiles {
+	[self runWithParser:^(Parser *parser) {
+		// setup
+		id settings = [OCMockObject niceMockForClass:[GBSettings class]];
+		[[[settings stub] andReturn:[NSArray arrayWithObject:@"file.m"]] arguments];
+		id objcParser = [OCMockObject niceMockForClass:[ObjectiveCParser class]];
+		[[objcParser expect] parseFile:@"file.m" withSettings:settings store:OCMOCK_ANY];
+		BOOL yes = YES, no = NO;
+		id manager = [OCMockObject niceMockForClass:[NSFileManager class]];
+		[[[manager stub] andReturnValue:OCMOCK_VALUE(yes)] fileExistsAtPath:OCMOCK_ANY];
+		[[[manager stub] andReturnValue:OCMOCK_VALUE(no)] gb_fileExistsAndIsDirectoryAtPath:OCMOCK_ANY];
+		parser.fileManager = manager;
+		parser.objectiveCParser = objcParser;
+		// execute
+		[parser runWithSettings:settings store:nil];
+		// verify
+		STAssertNoThrow([objcParser verify], nil);
 	}];
 }
 

@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "Store.h"
+#import "ObjectiveCParser.h"
 #import "Parser.h"
 
 typedef void(^ParserPathBlock)(NSString *path);
@@ -28,19 +29,24 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 @implementation Parser
 
+@synthesize objectiveCParser = _objectiveCParser;
+
 #pragma mark - Task invocation
 
 - (NSInteger)runTask {
 	LogParNormal(@"Starting parsing...");
 	__weak Parser *blockSelf = self;
+	__block NSInteger result = 0;
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		[blockSelf parsePath:path withBlock:^(NSString *path) {
 			if (![blockSelf isSourceCodeFile:path]) return;
-			LogParInfo(@"Parsing contents of file '%@'...", path);
+			LogParInfo(@"Parsing source file '%@'...", path);
+			NSInteger parseResult = [self.objectiveCParser parseFile:path withSettings:self.settings store:self.store];
+			if (parseResult > result) result = parseResult;
 		}];
 	}];
 	LogParInfo(@"Parsing finished.");
-	return 0;
+	return result;
 }
 
 #pragma mark - Parsing helpers
@@ -136,6 +142,14 @@ typedef void(^ParserPathBlock)(NSString *path);
 	if ([extension isEqualToString:@"m"]) return YES;
 	if ([extension isEqualToString:@"mm"]) return YES;
 	return NO;
+}
+
+#pragma mark - Properties
+
+- (ParserTask *)objectiveCParser {
+	if (_objectiveCParser) return _objectiveCParser;
+	_objectiveCParser = [[ObjectiveCParser alloc] init];
+	return _objectiveCParser;
 }
 
 @end

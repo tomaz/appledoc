@@ -18,6 +18,10 @@
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
+		732978F415187F3E00592A9D /* ParserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F315187F3E00592A9D /* ParserTask.m */; };
+		732978F515187F3E00592A9D /* ParserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F315187F3E00592A9D /* ParserTask.m */; };
+		732978F91518824700592A9D /* ObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F81518824700592A9D /* ObjectiveCParser.m */; };
+		732978FA1518824700592A9D /* ObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F81518824700592A9D /* ObjectiveCParser.m */; };
 		734425131517631F00B6EC33 /* ParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.m */; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
 		734425171517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
@@ -79,6 +83,10 @@
 		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
+		732978F215187F3E00592A9D /* ParserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParserTask.h; sourceTree = "<group>"; };
+		732978F315187F3E00592A9D /* ParserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTask.m; sourceTree = "<group>"; };
+		732978F71518824700592A9D /* ObjectiveCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParser.h; sourceTree = "<group>"; };
+		732978F81518824700592A9D /* ObjectiveCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParser.m; sourceTree = "<group>"; };
 		734425121517631F00B6EC33 /* ParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTests.m; sourceTree = "<group>"; };
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
 		734425151517645A00B6EC33 /* AppledocTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTask.m; sourceTree = "<group>"; };
@@ -200,6 +208,10 @@
 			children = (
 				73500D321517581A000416E3 /* Parser.h */,
 				73500D331517581A000416E3 /* Parser.m */,
+				732978F215187F3E00592A9D /* ParserTask.h */,
+				732978F315187F3E00592A9D /* ParserTask.m */,
+				732978F71518824700592A9D /* ObjectiveCParser.h */,
+				732978F81518824700592A9D /* ObjectiveCParser.m */,
 			);
 			path = Parsing;
 			sourceTree = "<group>";
@@ -437,6 +449,8 @@
 				73500D351517581A000416E3 /* Parser.m in Sources */,
 				734425131517631F00B6EC33 /* ParserTests.m in Sources */,
 				734425171517645A00B6EC33 /* AppledocTask.m in Sources */,
+				732978F515187F3E00592A9D /* ParserTask.m in Sources */,
+				732978FA1518824700592A9D /* ObjectiveCParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -457,6 +471,8 @@
 				73500D3015174910000416E3 /* Store.m in Sources */,
 				73500D341517581A000416E3 /* Parser.m in Sources */,
 				734425161517645A00B6EC33 /* AppledocTask.m in Sources */,
+				732978F415187F3E00592A9D /* ParserTask.m in Sources */,
+				732978F91518824700592A9D /* ObjectiveCParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
