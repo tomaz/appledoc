@@ -28,7 +28,7 @@
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
 	self.loggingCommonEnabled = YES;
-	self.loggingParsingEnabled = YES;
+	self.loggingParsingEnabled = NO;
 }
 
 - (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings {

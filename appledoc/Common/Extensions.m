@@ -60,3 +60,13 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation PKToken (Appledoc)
+
+- (BOOL)matches:(NSString *)v {
+	return [self.stringValue isEqualToString:v];
+}
+
+@end

@@ -34,29 +34,29 @@ typedef void(^ParserPathBlock)(NSString *path);
 #pragma mark - Task invocation
 
 - (NSInteger)runTask {
-	LogParNormal(@"Starting parsing...");
+	LogNormal(@"Starting parsing...");
 	__weak Parser *blockSelf = self;
 	__block NSInteger result = 0;
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		[blockSelf parsePath:path withBlock:^(NSString *path) {
 			if (![blockSelf isSourceCodeFile:path]) return;
-			LogParInfo(@"Parsing source file '%@'...", path);
+			LogInfo(@"Parsing source file '%@'...", path);
 			NSInteger parseResult = [self.objectiveCParser parseFile:path withSettings:self.settings store:self.store];
 			if (parseResult > result) result = parseResult;
 		}];
 	}];
-	LogParInfo(@"Parsing finished.");
+	LogInfo(@"Parsing finished.");
 	return result;
 }
 
 #pragma mark - Parsing helpers
 
 - (void)parsePath:(NSString *)path withBlock:(ParserPathBlock)handler {
-	LogParVerbose(@"Parsing '%@'...", path);
+	LogVerbose(@"Parsing '%@'...", path);
 	NSString *standardized = [path gb_stringByStandardizingCurrentDirAndPath];
 	
 	if (![self.fileManager fileExistsAtPath:standardized]) {
-		LogParWarn(@"'%@' doesn't exist, skipping!", path);
+		LogWarn(@"'%@' doesn't exist, skipping!", path);
 		return;
 	}
 	
@@ -70,16 +70,16 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 - (void)parseDirectory:(NSString *)path withBlock:(ParserPathBlock)handler {
 	if ([self isPathIgnored:path]) {
-		LogParNormal(@"Path '%@' ignored, skipping...", path);
+		LogNormal(@"Path '%@' ignored, skipping...", path);
 		return;
 	}	
-	LogParVerbose(@"Parsing directory '%@'...", path);
+	LogVerbose(@"Parsing directory '%@'...", path);
 
 	// Get contents of the directory.
 	NSError *error = nil;
 	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:path error:&error];
 	if (error) {
-		LogParNSError(error, @"Failed fetching contents of '%@'!", path);
+		LogNSError(error, @"Failed fetching contents of '%@'!", path);
 		return;
 	}
 	
@@ -102,10 +102,10 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 - (void)parseFile:(NSString *)path withBlock:(ParserPathBlock)handler {
 	if ([self isPathIgnored:path]) {
-		LogParNormal(@"Path '%@' ignored, skipping...", path);
+		LogNormal(@"Path '%@' ignored, skipping...", path);
 		return;
 	}
-	LogParVerbose(@"Parsing file '%@'...", path);
+	LogVerbose(@"Parsing file '%@'...", path);
 	handler(path);
 }
 

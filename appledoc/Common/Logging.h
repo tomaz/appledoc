@@ -66,7 +66,7 @@ extern NSUInteger log_level;
 #define LogInfo(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_INFO | LOG_FLAG_COMMON, frmt, ##__VA_ARGS__)
 #define LogVerbose(frmt, ...)	LOG_MAYBE(log_level, LOG_FLAG_VERBOSE | LOG_FLAG_COMMON, frmt, ##__VA_ARGS__)
 #define LogDebug(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_DEBUG | LOG_FLAG_COMMON, frmt, ##__VA_ARGS__)
-#define LogNSError(error, frmt, ...)	LOG_NS_ERROR(log_level, LOG_FLAG_ERROR | LOG_FLAG_COMMON, error, frmt, ##__VA_ARGS)
+#define LogNSError(error, frmt, ...)	LOG_NS_ERROR(log_level, LOG_FLAG_ERROR | LOG_FLAG_COMMON, error, frmt, ##__VA_ARGS__)
 
 #define LogParError(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_ERROR | LOG_FLAG_PARSING, frmt, ##__VA_ARGS__)
 #define LogParWarn(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_WARN | LOG_FLAG_PARSING, frmt, ##__VA_ARGS__)
