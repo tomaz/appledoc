@@ -32,8 +32,8 @@
 - (void)testLazyAccessorsShouldInitializeObjects {
 	[self runWithAppledoc:^(Appledoc *appledoc) {
 		// execute & verify
-		assertThat([appledoc.store class], equalTo([Store class]));
-		assertThat([appledoc.parser class], equalTo([Parser class]));
+		assertThat(appledoc.store, instanceOf([Store class]));
+		assertThat(appledoc.parser, instanceOf([Parser class]));
 	}];
 }
 
@@ -51,7 +51,7 @@
 		// execute
 		[appledoc runWithSettings:settings];
 		// verify
-		[parser verify];
+		STAssertNoThrow([parser verify], nil);
 	}];
 }
 
