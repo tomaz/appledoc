@@ -40,9 +40,11 @@
 		[parser pushState:parser.interfaceState];
 	} else if ([stream matches:@"enum", nil]) {
 		// Match enum for constants.
+		LogParDebug(@"Matched %@, testing for enum.", stream.current);
 		[parser pushState:parser.enumState];
 	} else if ([stream matches:@"struct", nil]) {
 		// Match struct for namespaced constants.
+		LogParDebug(@"Matched %@, testing for struct.", stream.current);
 		[parser pushState:parser.structState];
 	} else {
 		[stream consume:1];

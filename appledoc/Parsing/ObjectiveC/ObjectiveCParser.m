@@ -20,6 +20,7 @@
 #pragma mark - 
 
 @interface ObjectiveCParser ()
+- (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
 @property (nonatomic, strong) NSMutableArray *statesStack;
 @property (nonatomic, strong) ObjectiveCParserState *currentState;
@@ -77,12 +78,22 @@
 	GBResult result = GBResultOk;
 	while (!self.tokensStream.eof) {
 		LogParDebug(@"Parsing token '%@'...", self.tokensStream.current.stringValue);
-		result = [self.currentState parseStream:self.tokensStream forParser:self store:self.store];
-		if (result != GBResultOk) break;
+		GBResult pr = [self.currentState parseStream:self.tokensStream forParser:self store:self.store];
+		if ([self isParseResultFailure:result]) {
+			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, pr);
+			result = pr;
+			break;
+		}
 	}
 	
 	LogParDebug(@"Finished parsing '%@'.", [self.filename lastPathComponent]);
 	return result;
+}
+
+- (BOOL)isParseResultFailure:(GBResult)result {
+	if (result == GBResultOk) return NO;
+	if (result == GBResultFailedMatch) return NO;
+	return YES;
 }
 
 #pragma mark - States handling

@@ -11,6 +11,7 @@
 enum {
 	GBResultOk = 0,
 	GBResultSystemError,
+	GBResultFailedMatch,
 };
 typedef NSInteger GBResult;
 
