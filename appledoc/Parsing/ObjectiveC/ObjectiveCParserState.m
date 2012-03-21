@@ -16,7 +16,7 @@
 	return GBResultOk;
 }
 
-#pragma mark - Parsing helpers
+#pragma mark - Stream helpers
 
 - (NSUInteger)lookAheadStream:(TokensStream *)stream block:(void(^)(PKToken *token, BOOL *stop))handler {
 	// Looks ahead given stream until stopped or EOF. Each encountered token is passed to given block. Result is number of look ahead tokens until stopped or EOF.
