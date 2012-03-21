@@ -29,10 +29,13 @@
 		
 		// Trim description and clean up.
 		NSString *trimmed = [description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-		if (trimmed.length == 0)
+		if (trimmed.length == 0) {
 			LogParDebug(@"Empty pragma mark description, bailing out!");
-		else
+		} else {
+			LogParVerbose(@"");
 			LogParVerbose(@"#pragma mark %@", trimmed);
+			LogParVerbose(@"");
+		}
 		[parser popState];
 	} else {
 		[stream consume:1];

@@ -22,6 +22,7 @@
 	} else if ([stream matches:@"@", @"end", nil]) {
 		// Match end of interface or implementation.
 		LogParVerbose(@"@end");
+		LogParVerbose(@"");
 		[stream consume:2];
 		[parser popState];
 	} else if ([stream matches:@"#", @"pragma", @"mark", nil]) {

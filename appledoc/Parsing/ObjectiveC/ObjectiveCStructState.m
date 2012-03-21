@@ -26,6 +26,7 @@
 		}];
 		[declaration appendString:@"}"];
 		LogParVerbose(@"%@", declaration);
+		LogParVerbose(@"");
 		[parser popState];
 	} else {
 		[stream consume:1];
