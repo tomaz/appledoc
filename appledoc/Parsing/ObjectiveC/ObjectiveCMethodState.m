@@ -70,6 +70,7 @@
 	} else {
 		[stream consume:1];
 		[parser popState];
+		return GBResultFailedMatch;
 	}
 	return GBResultOk;
 }

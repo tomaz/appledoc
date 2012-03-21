@@ -22,6 +22,7 @@
 		// Get all words until the end of line.
 		NSMutableString *description = [NSMutableString string];
 		while (stream.current.location.y == line) {
+			LogParDebug(@"Matched %@.", stream.current);
 			[description appendFormat:@"%@ ", stream.current.stringValue];
 			[stream consume:1];
 		}
@@ -36,6 +37,7 @@
 	} else {
 		[stream consume:1];
 		[parser popState];
+		return GBResultFailedMatch;
 	}
 	return GBResultOk;
 }
