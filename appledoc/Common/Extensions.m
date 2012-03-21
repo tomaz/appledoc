@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import <objc/runtime.h>
 #import "Extensions.h"
 
 @implementation NSError (GBError)
@@ -63,10 +64,21 @@
 
 #pragma mark - 
 
+static const void *GBLocationKey = @"GBLocation";
+
 @implementation PKToken (Appledoc)
 
 - (BOOL)matches:(NSString *)v {
 	return [self.stringValue isEqualToString:v];
+}
+
+- (NSPoint)location {
+	NSValue *storage = objc_getAssociatedObject(self, GBLocationKey);
+	return [storage pointValue];
+}
+- (void)setLocation:(NSPoint)val {
+	NSValue *storage = [NSValue valueWithPoint:val];
+	objc_setAssociatedObject(self, GBLocationKey, storage, OBJC_ASSOCIATION_RETAIN);
 }
 
 @end

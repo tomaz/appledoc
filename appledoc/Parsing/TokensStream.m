@@ -10,6 +10,7 @@
 #import "TokensStream.h"
 
 @interface TokensStream ()
+- (void)assignLocationInformationToTokens:(NSArray *)tokens fromString:(NSString *)string;
 @property (nonatomic, strong, readwrite) NSArray *tokens;
 @property (nonatomic, assign, readwrite) NSUInteger position;
 @end
@@ -32,10 +33,41 @@
 	if (self) {
 		NSMutableArray *tokens = [NSMutableArray array];
 		[tokenizer enumerateTokensUsingBlock:^(PKToken *token, BOOL *stop) { [tokens addObject:token]; }];
+		[self assignLocationInformationToTokens:tokens fromString:tokenizer.string];
 		self.tokens = tokens;
 		self.position = 0;
 	}
 	return self;
+}
+
+#pragma mark - Preparing token information
+
+- (void)assignLocationInformationToTokens:(NSArray *)tokens fromString:(NSString *)string {
+	__block NSUInteger offset = 0;
+	__block NSUInteger lineNumber = 1;
+	__block NSUInteger tokenIndex = 0;
+	NSCharacterSet *newlines = [NSCharacterSet newlineCharacterSet];
+	[string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+		// Prepare location for all tokens on this line.
+		while (tokenIndex < tokens.count) {
+			PKToken *token = [tokens objectAtIndex:tokenIndex];
+			if (token.offset >= offset + line.length) break;
+			token.location = NSMakePoint(token.offset - offset, lineNumber);
+			tokenIndex++;
+		}
+		
+		// If we're out of tokens end, otherwise update offset (don't forget to skip all new lines!)
+		if (tokenIndex >= tokens.count) *stop = YES;
+		offset += line.length;
+		while (offset < string.length) {
+			unichar ch = [string characterAtIndex:offset];
+			if (![newlines characterIsMember:ch]) break;
+			offset++;
+		}
+		
+		// Continue with next line.
+		lineNumber++;
+	}];
 }
 
 #pragma mark - Stream handling
