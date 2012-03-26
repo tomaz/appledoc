@@ -27,6 +27,16 @@ This is experimental branch. It's focus is on [bringing appledoc to next level](
 
 Current focus: **source code parser**
 
+Command line usage for various tasks:
+
+- Testing source code parser:
+
+		appledoc -p MyProject -v 1.0 -c MyCompany -u com.mycompany -v 4 --log-format=0 --log-common=0 --log-parsing=1 <path(s)>
+	
+	This will only log parser tokens so you can test if it "understands" everything from your source files.
+
+- Use `appledoc --help` for help, or add `--print-settings` switch to see all the values used on the current run session (for simpler debugging).
+
 For questions and feedback on experimental branch, use [Google groups forum](https://groups.google.com/forum/#!forum/appledoc).
 
 appledoc requires Xcode 4 or greater for compiling and OS X 10.7 for running!

@@ -21,7 +21,7 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 'p',	GBOptions.projectName,				@"Project name",												GBValueRequired },
 		{ 'v',	GBOptions.projectVersion,			@"Project version",												GBValueRequired },
 		{ 'c',	GBOptions.companyName,				@"Company name",												GBValueRequired },
-		{ 0,	GBOptions.companyIdentifier,		@"Company UTI (i.e. reverse DNS name)",							GBValueRequired },
+		{ 'u',	GBOptions.companyIdentifier,		@"Company UTI (i.e. reverse DNS name)",							GBValueRequired },
 		
 		{ 0,	nil,								@"PATHS",														GBOptionSeparator },
 		{ 0,	GBOptions.inputPaths,				@"[a] Array of input paths for global and project settings",	GBValueRequired|GBOptionNoCmdLine|GBOptionInvisible },
