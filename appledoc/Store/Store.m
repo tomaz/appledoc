@@ -10,4 +10,15 @@
 
 @implementation Store
 
+#pragma mark - Classes, categories and protocols handling
+
+- (void)beginClassWithName:(NSString *)name {
+}
+
+- (void)beginExtensionForClassWithName:(NSString *)name {
+}
+
+- (void)beginCategoryWithName:(NSString *)category forClass:(NSString *)name {
+}
+
 @end

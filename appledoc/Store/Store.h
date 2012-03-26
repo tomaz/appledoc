@@ -12,4 +12,10 @@
  */
 @interface Store : NSObject
 
+#pragma mark - Classes, categories and protocols handling
+
+- (void)beginClassWithName:(NSString *)name;
+- (void)beginExtensionForClass:(NSString *)name;
+- (void)beginCategoryWithName:(NSString *)category forClass:(NSString *)name;
+
 @end
