@@ -45,7 +45,11 @@ It compiles appledoc and installs its binary to /usr/local/bin and templatest to
 Using appledoc
 ==============
 
-Use `appledoc --help` to see the list of all command line switches. Read more about appledoc on [appledoc site](http://appledoc.gentlebytes.com) - don't forget to check short help, documentation and tips while there! Use [appledoc issues page](https://github.com/tomaz/appledoc/issues) to submit bug and feature requests. Before submitting, read through open issues to see if the issue is already there and vote on it or add a comment. You can also check closed issues as your request may have already been covered but the issue remains - feel free to add a comment!
+Use `appledoc --help` to see the list of all command line switches. Read more about appledoc on [appledoc site](http://gentlebytes.com/appledoc) - don't forget to check short help, documentation and tips while there!
+
+Use [appledoc Google group](https://groups.google.com/forum/#!forum/appledoc) as a forum for questions on usage or other general questions.
+
+Use [appledoc issues page](https://github.com/tomaz/appledoc/issues) to submit bug and feature requests. Before submitting new issues, check the forums to see if your question is answered there - unless you can confirm your issue as a new feature request or a bug, you should start at the forum to keep GitHub issues clean. Also read through issues to see if the issue is already there and vote on it or add a comment (don't forget about closed issues).
 
 Installation tips
 -----------------
