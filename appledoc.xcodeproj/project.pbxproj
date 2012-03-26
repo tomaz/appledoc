@@ -35,7 +35,6 @@
 		73368F1112F42AE000A54A74 /* GBCommentComponentsProviderTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73368F1012F42AE000A54A74 /* GBCommentComponentsProviderTesting.m */; };
 		73397A2812A5070700EDC035 /* GBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73397A2712A5070700EDC035 /* GBTask.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
-		733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 		733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98B11FCC97100966C4A /* Cocoa.framework */; };
@@ -211,7 +210,26 @@
 		73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
 		73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
+		D818BACE15203AA700B26451 /* GHUnit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
+		D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
+		D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D818BACD15203A9E00B26451 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D818BACE15203AA700B26451 /* GHUnit.framework in CopyFiles */,
+				D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */,
+				D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -497,7 +515,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				733EA12F122BDD7B0060CBDE /* GHUnit.framework in Frameworks */,
+				D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */,
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
 				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
 				733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */,
@@ -545,7 +563,7 @@
 		08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */,
+				73FC720411FD7FB200AAD0B9 /* Test Target Only */,
 				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
 				7355E1301312737600B9C000 /* Discount */,
 				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
@@ -1029,14 +1047,14 @@
 			path = ParseKit;
 			sourceTree = "<group>";
 		};
-		73FC720411FD7FB200AAD0B9 /* Copy to ~/Library/Frameworks!!! */ = {
+		73FC720411FD7FB200AAD0B9 /* Test Target Only */ = {
 			isa = PBXGroup;
 			children = (
 				733EA0F1122BDC5B0060CBDE /* GHUnit.framework */,
 				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
-			name = "Copy to ~/Library/Frameworks!!!";
+			name = "Test Target Only";
 			sourceTree = "<group>";
 		};
 		73FC730911FDAB5800AAD0B9 /* Helpers */ = {
@@ -1068,6 +1086,7 @@
 				733EA121122BDD020060CBDE /* Resources */,
 				733EA122122BDD020060CBDE /* Sources */,
 				733EA123122BDD020060CBDE /* Frameworks */,
+				D818BACD15203A9E00B26451 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1450,6 +1469,7 @@
 				);
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "\"@loader_path/../Frameworks\"";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
@@ -1486,6 +1506,7 @@
 				);
 				INFOPLIST_FILE = "AppledocTests-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "\"@loader_path/../Frameworks\"";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/Libraries\"",
