@@ -40,6 +40,11 @@
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
 }
 
+#pragma mark - Finalizing registration for current object
+
+- (void)endCurrentObject {
+}
+
 #pragma mark - General information
 
 - (void)setCurrentSourceInfo:(PKToken *)value { _currentSourceInfo = value; }

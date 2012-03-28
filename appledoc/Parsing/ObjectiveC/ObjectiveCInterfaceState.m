@@ -11,7 +11,18 @@
 @implementation ObjectiveCInterfaceState
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
-	if ([stream matches:@"-", nil] || [stream matches:@"+", nil]) {
+	if ([stream matches:@"<", nil]) {
+		// Match adopted protocol(s).
+		LogParDebug(@"Matching adopted protocols.");
+		NSArray *delimiters = [NSArray arrayWithObjects:@"<", @",", @">", nil];
+		GBResult result = [self skipStream:stream until:@">" block:^(PKToken *token) {
+			if ([token matches:delimiters]) return;
+			LogParDebug(@"Matched adopted protocol %@", token);
+			[store setCurrentSourceInfo:token];
+			[store appendAdoptedProtocolWithName:token.stringValue];
+		}];
+		if (result == GBResultFailedMatch) [stream consume:1];
+	} else if ([stream matches:@"-", nil] || [stream matches:@"+", nil]) {
 		// Match method declaration or implementation. Must not consume otherwise we can't distinguish between instance and class method!
 		LogParDebug(@"Matched %@, testing for method.", stream.current);
 		[parser pushState:parser.methodState];
@@ -23,6 +34,8 @@
 		// Match end of interface or implementation.
 		LogParVerbose(@"@end");
 		LogParVerbose(@"");
+		[store setCurrentSourceInfo:stream.current];
+		[store endCurrentObject];
 		[stream consume:2];
 		[parser popState];
 	} else if ([stream matches:@"#", @"pragma", @"mark", nil]) {

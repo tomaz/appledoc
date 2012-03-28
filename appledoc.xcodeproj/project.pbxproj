@@ -17,6 +17,7 @@
 		7317FACE150F633900B39CFD /* SettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.m */; };
 		7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
+		7320AB6115232471006BAB51 /* ObjectiveCInterfaceStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.m */; };
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
@@ -125,6 +126,7 @@
 		7317FACD150F633900B39CFD /* SettingsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTests.m; sourceTree = "<group>"; };
 		7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = AppledocTests/Libraries/OCHamcrest.framework; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
+		7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCInterfaceStateTests.m; sourceTree = "<group>"; };
 		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
@@ -153,7 +155,6 @@
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
 		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
-		736D827F152079A000873993 /* ObjCFileLevelExamples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjCFileLevelExamples.h; sourceTree = "<group>"; };
 		737C829F152302680064DC46 /* ObjCFileStateSources.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ObjCFileStateSources.plist; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
@@ -334,6 +335,7 @@
 				734425121517631F00B6EC33 /* ParserTests.m */,
 				73F989CB1518C9000068697C /* ObjectiveCParserTests.m */,
 				7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */,
+				7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.m */,
 				737C82A8152310C80064DC46 /* ObjectiveCStateTestsBase.h */,
 				737C82A9152310C80064DC46 /* ObjectiveCStateTestsBase.m */,
 			);
@@ -446,7 +448,6 @@
 		73F989CD1518C9B30068697C /* Test data */ = {
 			isa = PBXGroup;
 			children = (
-				736D827F152079A000873993 /* ObjCFileLevelExamples.h */,
 				737C829F152302680064DC46 /* ObjCFileStateSources.plist */,
 			);
 			name = "Test data";
@@ -584,6 +585,7 @@
 				7316285C15208124002B5FA9 /* ObjectiveCFileStateTests.m in Sources */,
 				737C82A3152307AE0064DC46 /* TestStrings.m in Sources */,
 				737C82AA152310C80064DC46 /* ObjectiveCStateTestsBase.m in Sources */,
+				7320AB6115232471006BAB51 /* ObjectiveCInterfaceStateTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
