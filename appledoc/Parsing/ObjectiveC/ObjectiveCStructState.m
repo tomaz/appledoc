@@ -16,8 +16,8 @@
 		NSString *name = stream.current.stringValue;
 		LogParDebug(@"Matched struct %@.", name);
 		NSMutableString *declaration = [NSMutableString stringWithFormat:@"struct %@ {\n", name];
-		[self skipStream:stream until:@"{" block:^(PKToken *token) { }];
-		[self skipStream:stream until:@"}" block:^(PKToken *token) {
+		[self matchStream:stream until:@"{" block:^(PKToken *token) { }];
+		[self matchStream:stream until:@"}" block:^(PKToken *token) {
 			LogParDebug(@"Matched %@", token);
 			if ([token matches:@";"] || [token matches:@"="]) {
 				PKToken *nameToken = [stream la:token offset:-1];

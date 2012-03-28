@@ -31,7 +31,7 @@
 	return offset + 1;
 }
 
-- (NSUInteger)skipStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token))handler {
+- (NSUInteger)matchStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token))handler {
 	// Skips all token until the given one (or any of the given ones in case end is array) is encountered or EOF reached. Each token is passed to given block. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
 	__block NSUInteger result = NSNotFound;
 	NSUInteger count = [self lookAheadStream:stream block:^(PKToken *token, BOOL *stopParsing) {
@@ -58,7 +58,7 @@
 - (NSUInteger)matchStream:(TokensStream *)stream start:(NSString *)start end:(NSString *)end block:(void(^)(PKToken *token))handler {
 	// Matches given start token at current stream position and continues until the given end token (or any of the given end tokens in case end is array) is encountered. Each token, including start and end is passed to given block. If current stream position doesn't match start, no parsing is done and NSNotFound is returned. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
 	if (start && ![stream matches:start, nil]) return NSNotFound;
-	return [self skipStream:stream until:end block:handler];
+	return [self matchStream:stream until:end block:handler];
 }
 
 @end

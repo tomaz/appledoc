@@ -31,6 +31,6 @@
  */
 @interface ObjectiveCParserState (SubclassPrivateAPI)
 - (NSUInteger)lookAheadStream:(TokensStream *)stream block:(void(^)(PKToken *token, BOOL *stop))handler;
-- (NSUInteger)skipStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token))handler;
+- (NSUInteger)matchStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token))handler;
 - (NSUInteger)matchStream:(TokensStream *)stream start:(NSString *)start end:(NSString *)end block:(void(^)(PKToken *token))handler;
 @end

@@ -19,7 +19,7 @@
  */
 @interface Store (Registrations)
 
-#pragma mark - Classes, categories and protocols handling
+#pragma mark - Classes, categories and protocols
 
 - (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived;
 - (void)beginExtensionForClassWithName:(NSString *)name;
@@ -27,9 +27,21 @@
 - (void)beginProtocolWithName:(NSString *)name;
 - (void)appendAdoptedProtocolWithName:(NSString *)name;
 
-#pragma mark - Finalizing registration for current object
+#pragma mark - Methods and properties
+
+- (void)beginPropertyDefinition;
+- (void)beginPropertyAttributes;
+- (void)appendPropertyName:(NSString *)name;
+
+#pragma mark - General objects
+
+- (void)beginTypeDefinition;
+- (void)appendType:(NSString *)type;
+
+#pragma mark - Finalizing registrations
 
 - (void)endCurrentObject;
+- (void)cancelCurrentObject;
 
 #pragma mark - General information
 

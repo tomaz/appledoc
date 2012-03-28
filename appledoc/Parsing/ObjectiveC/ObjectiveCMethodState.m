@@ -33,7 +33,7 @@
 		// Parse components.
 		LogParDebug(@"Matching method arguments.");
 		NSArray *end = [NSArray arrayWithObjects:@";", @"{", nil];
-		matchedEndTokenIndex = [self skipStream:stream until:end block:^(PKToken *token) {
+		matchedEndTokenIndex = [self matchStream:stream until:end block:^(PKToken *token) {
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];
 		}];

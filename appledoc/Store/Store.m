@@ -40,9 +40,31 @@
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
 }
 
+#pragma mark - Methods and properties
+
+- (void)beginPropertyDefinition {
+}
+
+- (void)beginPropertyAttributes {
+}
+
+- (void)appendPropertyName:(NSString *)name {
+}
+
+#pragma mark - General objects
+
+- (void)beginTypeDefinition {
+}
+
+- (void)appendType:(NSString *)type {
+}
+
 #pragma mark - Finalizing registration for current object
 
 - (void)endCurrentObject {
+}
+
+- (void)cancelCurrentObject {
 }
 
 #pragma mark - General information
