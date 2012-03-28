@@ -10,22 +10,22 @@
 #import "ObjectiveCParser.h"
 #import "TestCaseBase.h"
 
-@interface ObjectiveCParserTests : TestCaseBase
+@interface ObjectiveCFileStateTests : TestCaseBase
 @end
 
-@interface ObjectiveCParserTests (CreationMethods)
+@interface ObjectiveCFileStateTests (CreationMethods)
 - (void)runWithState:(void(^)(ObjectiveCFileState *state))handler;
 @end
 
 #pragma mark - 
 
-@implementation ObjectiveCParserTests
+@implementation ObjectiveCFileStateTests
 
 @end
 
 #pragma mark - 
 
-@implementation ObjectiveCParserTests (CreationMethods)
+@implementation ObjectiveCFileStateTests (CreationMethods)
 
 - (void)runWithState:(void(^)(ObjectiveCFileState *state))handler {
 	ObjectiveCFileState* state = [ObjectiveCFileState new];

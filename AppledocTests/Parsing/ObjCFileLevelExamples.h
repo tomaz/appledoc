@@ -98,12 +98,19 @@ struct MyStruct MyStruct = {
 	.field3 = @"hello"
 };
 
-#pragma mark - Constants
+#pragma mark - Constants (not supported at this point, use enum!)
 
-extern static const NSString *MyConstant;
-extern static NSString * const MyConstant;
-extern id MyConstant;
+extern NSString * const MyConstant;
+extern NSString * MyConstant;
+extern type const MyConstant;
+extern type MyConstant;
 
-static const NSString *MyConstant = @"hello";
-static NSString * const MyConstant = @"whatever";
-if MyConstant = @"value";
+static NSString * const MyConstant = @"value";
+static NSString * MyConstant = @"value";
+static type const MyConstant = value;
+static type MyConstant = value;
+
+NSString * const MyConstant = @"value";
+NSString * MyConstant = @"value";
+type const MyConstant = @"value";
+type MyConstant = @"value";

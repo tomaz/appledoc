@@ -35,6 +35,6 @@ enum {
 #pragma mark - 
 
 @interface PKToken (Appledoc)
-- (BOOL)matches:(NSString *)value;
+- (BOOL)matches:(id)expected;
 @property (nonatomic, assign) NSPoint location;
 @end

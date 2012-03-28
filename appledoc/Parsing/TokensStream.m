@@ -93,18 +93,7 @@
 		
 		// Matching concrete token or one of possible tokens. For array match one of the given tokens. For single token, match that token exactly.
 		PKToken *token = [self la:i];
-		if ([expected isKindOfClass:[NSArray class]]) {
-			BOOL atLeastOneMatch = NO;
-			for (NSString *possibleMatche in expected) {
-				if ([token matches:possibleMatche]) {
-					atLeastOneMatch = YES;
-					break;
-				}
-			}
-			if (!atLeastOneMatch) return NO; // Token doesn't match any of expected => no match!
-		} else {
-			if (![token matches:expected]) return NO; // Token doesn't match expected => no match!
-		}
+		if (![token matches:expected]) return NO;
 	}
 	return YES;
 }
@@ -120,7 +109,7 @@
 }
 
 - (PKToken *)la:(PKToken *)token offset:(NSInteger)offset {
-	// Look ahead for given number of tokens.
+	// Look ahead for given number of tokens, starting at the given one.
 	NSUInteger index = [self.tokens indexOfObjectIdenticalTo:token];
 	return [self.tokens objectAtIndex:index + offset];
 }

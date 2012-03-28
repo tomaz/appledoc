@@ -13,6 +13,7 @@
 #import "ObjectiveCPragmaMarkState.h"
 #import "ObjectiveCEnumState.h"
 #import "ObjectiveCStructState.h"
+#import "ObjectiveCConstantState.h"
 #import "ObjectiveCParser.h"
 #import "TestCaseBase.h"
 
@@ -39,6 +40,7 @@
 		assertThat(parser.pragmaMarkState, instanceOf([ObjectiveCPragmaMarkState class]));
 		assertThat(parser.enumState, instanceOf([ObjectiveCEnumState class]));
 		assertThat(parser.structState, instanceOf([ObjectiveCStructState class]));
+		assertThat(parser.constantState, instanceOf([ObjectiveCConstantState class]));
 	}];
 }
 

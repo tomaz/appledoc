@@ -15,17 +15,41 @@
 	if ([stream matches:@"enum", nil]) {
 		LogParDebug(@"Matched enum.");
 		NSMutableString *declaration = [NSMutableString stringWithString:@"enum {\n"];
-		[self skipStream:stream until:@"{" block:^(PKToken *token) { }];
-		[self skipStream:stream until:@"}" block:^(PKToken *token) {
-			if ([token matches:@","]) return;
-			if ([token matches:@"}"]) return;
+		NSArray *delimiters = [NSArray arrayWithObjects:@",", @"}", nil];
+		
+		// Match '{', exit if not found.
+		LogParDebug(@"Matching enum body start.");
+		GBResult result = [self skipStream:stream until:@"{" block:^(PKToken *token) { }];
+		if (result == NSNotFound) {
+			LogParDebug(@"Failed matching enum body start, bailing out.");
+			[stream consume:1];
+			[parser popState];
+			return GBResultFailedMatch;
+		}
+		
+		// Match all values up until '}', exit if not found.
+		LogParDebug(@"Matching enum body.");
+		result = [self skipStream:stream until:@"}" block:^(PKToken *token) {			
+			if ([token matches:delimiters]) {
+				LogParDebug(@"Matched %@.", token);
+				return;
+			}
 			if ([token matches:@"="]) {
+				LogParDebug(@"Matched %@, skipping value.", token);
 				[stream consume:1];
 				return;
 			}
 			LogParDebug(@"Matched enum constant %@", token);
 			[declaration appendFormat:@"%@,\n", token.stringValue];
 		}];
+		if (result == NSNotFound) {
+			LogParDebug(@"Failed matching }, bailing out.");
+			[stream consume:1];
+			[parser popState];
+			return GBResultFailedMatch;
+		}
+		
+		// Finish off.
 		[declaration appendString:@"};"];
 		LogParVerbose(@"%@", declaration);
 		LogParVerbose(@"");

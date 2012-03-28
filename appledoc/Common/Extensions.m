@@ -68,8 +68,21 @@ static const void *GBLocationKey = @"GBLocation";
 
 @implementation PKToken (Appledoc)
 
-- (BOOL)matches:(NSString *)v {
-	return [self.stringValue isEqualToString:v];
+- (BOOL)matches:(id)expected {
+	// If expected is an array, allow if any of the objects matches. Otherwise we require exact match.
+	if ([expected isKindOfClass:[NSArray class]]) {
+		BOOL atLeastOneMatch = NO;
+		for (NSString *possibleMatch in expected) {
+			if ([self.stringValue isEqual:possibleMatch]) {
+				atLeastOneMatch = YES;
+				break;
+			}
+		}
+		if (!atLeastOneMatch) return NO; // Token doesn't match any of expected => no match!
+	} else {
+		if (![self.stringValue isEqual:expected]) return NO; // Token doesn't match expected => no match!
+	}
+	return YES;
 }
 
 - (NSPoint)location {
