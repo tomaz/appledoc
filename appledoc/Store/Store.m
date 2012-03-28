@@ -6,19 +6,43 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "Store.h"
 
-@implementation Store
+#pragma mark - 
+
+@implementation Store {
+	PKToken *_currentSourceInfo;
+}
+
+@end
+
+#pragma mark - 
+
+@implementation Store (Registrations)
 
 #pragma mark - Classes, categories and protocols handling
 
-- (void)beginClassWithName:(NSString *)name {
+- (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived {
+	NSUInteger i=0;
+	LogParDebug(@"%@ is %d", name, i);
 }
 
 - (void)beginExtensionForClassWithName:(NSString *)name {
 }
 
-- (void)beginCategoryWithName:(NSString *)category forClass:(NSString *)name {
+- (void)beginCategoryWithName:(NSString *)category forClassWithName:(NSString *)name {
 }
+
+- (void)beginProtocolWithName:(NSString *)name {
+}
+
+- (void)appendAdoptedProtocolWithName:(NSString *)name {
+}
+
+#pragma mark - General information
+
+- (void)setCurrentSourceInfo:(PKToken *)value { _currentSourceInfo = value; }
+- (PKToken *)currentSourceInfo { return _currentSourceInfo; }
 
 @end

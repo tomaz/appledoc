@@ -8,11 +8,14 @@
 
 #import "ParserTask.h"
 
+@class PKTokenizer;
 @class ObjectiveCParserState;
 
 /** Concrete implementation of ParserTask for parsing Objective C source code.
  */
 @interface ObjectiveCParser : ParserTask
+
+@property (nonatomic, strong) PKTokenizer *tokenizer;
 
 @end
 

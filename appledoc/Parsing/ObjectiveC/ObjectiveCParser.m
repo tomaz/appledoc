@@ -37,6 +37,7 @@
 
 @implementation ObjectiveCParser
 
+@synthesize tokenizer = _tokenizer;
 @synthesize tokensStream = _tokensStream;
 @synthesize statesStack = _statesStack;
 @synthesize currentState = _currentState;
@@ -64,11 +65,8 @@
 	LogParDebug(@"Parsing '%@' for Objective C data...", [self.filename lastPathComponent]);
 	
 	// Prepare tokenizer and tokens stream for this session.
-	PKTokenizer *tokenizer = [PKTokenizer tokenizerWithString:string];
-	[tokenizer setTokenizerState:tokenizer.wordState from:'_' to:'_'];	// Allow words to start with _
-	[tokenizer.symbolState add:@"..."];	// Allow ... as single token
-	//tokenizer.commentState.reportsCommentTokens = YES;
-	self.tokensStream = [TokensStream tokensStreamWithTokenizer:tokenizer];
+	self.tokenizer.string = string;
+	self.tokensStream = [TokensStream tokensStreamWithTokenizer:self.tokenizer];
 	
 	// Start parsing on the "file" level.
 	[self.statesStack removeAllObjects];
@@ -159,6 +157,18 @@
 	LogParDebug(@"Initializing struct state due to first access...");
 	_structState = [[ObjectiveCStructState alloc] init];
 	return _structState;
+}
+
+#pragma mark - Properties
+
+- (PKTokenizer *)tokenizer {
+	if (_tokenizer) return _tokenizer;
+	LogParDebug(@"Initializing tokenizer due to first access...");
+	_tokenizer = [PKTokenizer tokenizer];
+	[_tokenizer setTokenizerState:_tokenizer.wordState from:'_' to:'_'];	// Allow words to start with _
+	[_tokenizer.symbolState add:@"..."];	// Allow ... as single token
+	//_tokenizer.commentState.reportsCommentTokens = YES;
+	return _tokenizer;
 }
 
 @end

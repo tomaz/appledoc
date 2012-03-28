@@ -10,6 +10,7 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <OCHamcrest/OCHamcrest.h>
 #import <OCMock/OCMock.h>
+#import "Objects.h"
 
 @interface TestCaseBase : SenTestCase
 
