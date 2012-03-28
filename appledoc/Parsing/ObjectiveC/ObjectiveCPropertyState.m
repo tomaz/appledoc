@@ -26,7 +26,7 @@
 		LogParDebug(@"Matching attributes...");
 		if ([stream matches:@"(", nil]) {
 			[store beginPropertyAttributes];
-			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token) {
+			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
 				LogParDebug(@"Matched %@.", token);
 				if ([token matches:@","]) return;
 				[store appendType:token.stringValue];
@@ -44,12 +44,12 @@
 		// Parse declaration.
 		LogParDebug(@"Matching types and name.");
 		[store beginTypeDefinition];
-		GBResult found = [self matchStream:stream until:@";" block:^(PKToken *token) {
+		GBResult found = [self matchStream:stream until:@";" block:^(PKToken *token, NSUInteger lookahead) {
 			LogParDebug(@"Matched %@.", token);
 			if ([token matches:@";"]) {
 				[declaration appendFormat:@"%@ ", token.stringValue];
 				return;
-			} else if ([[stream la:token offset:1] matches:@";"]) {
+			} else if ([[stream la:lookahead+1] matches:@";"]) {
 				[store endCurrentObject];
 				[store appendPropertyName:token.stringValue];
 				[declaration appendFormat:@"%@ ", token.stringValue];

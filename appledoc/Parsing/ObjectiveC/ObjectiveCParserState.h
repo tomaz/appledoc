@@ -30,7 +30,7 @@
  Do not use these from elsewhere!
  */
 @interface ObjectiveCParserState (SubclassPrivateAPI)
-- (NSUInteger)lookAheadStream:(TokensStream *)stream block:(void(^)(PKToken *token, BOOL *stop))handler;
-- (NSUInteger)matchStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token))handler;
-- (NSUInteger)matchStream:(TokensStream *)stream start:(NSString *)start end:(NSString *)end block:(void(^)(PKToken *token))handler;
+- (NSUInteger)lookAheadStream:(TokensStream *)stream block:(void(^)(PKToken *token, NSUInteger lookahead, BOOL *stop))handler;
+- (NSUInteger)matchStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler;
+- (NSUInteger)matchStream:(TokensStream *)stream start:(NSString *)start end:(NSString *)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler;
 @end

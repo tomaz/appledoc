@@ -20,7 +20,7 @@
 		
 		// Parse return types.
 		LogParDebug(@"Matching method result...");
-		matchedEndTokenIndex = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token) {
+		matchedEndTokenIndex = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];
 		}];
@@ -33,7 +33,7 @@
 		// Parse components.
 		LogParDebug(@"Matching method arguments.");
 		NSArray *end = [NSArray arrayWithObjects:@";", @"{", nil];
-		matchedEndTokenIndex = [self matchStream:stream until:end block:^(PKToken *token) {
+		matchedEndTokenIndex = [self matchStream:stream until:end block:^(PKToken *token, NSUInteger lookahead) {
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];
 		}];
@@ -47,7 +47,7 @@
 		if (matchedEndTokenIndex == 1) {
 			LogParDebug(@"Skipping method code block...");
 			__block NSUInteger blockLevel = 1;
-			NSUInteger tokensCount = [self lookAheadStream:stream block:^(PKToken *token, BOOL *stop) {
+			NSUInteger tokensCount = [self lookAheadStream:stream block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				if ([token matches:@"{"]) {
 					LogParDebug(@"Matched open brace at block level %lu", blockLevel);
 					blockLevel++;

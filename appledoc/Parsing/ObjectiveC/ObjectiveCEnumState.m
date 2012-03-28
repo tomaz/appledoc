@@ -19,7 +19,7 @@
 		
 		// Match '{', exit if not found.
 		LogParDebug(@"Matching enum body start.");
-		GBResult result = [self matchStream:stream until:@"{" block:^(PKToken *token) { }];
+		GBResult result = [self matchStream:stream until:@"{" block:^(PKToken *token, NSUInteger lookahead) { }];
 		if (result == NSNotFound) {
 			LogParDebug(@"Failed matching enum body start, bailing out.");
 			[stream consume:1];
@@ -29,7 +29,7 @@
 		
 		// Match all values up until '}', exit if not found.
 		LogParDebug(@"Matching enum body.");
-		result = [self matchStream:stream until:@"}" block:^(PKToken *token) {			
+		result = [self matchStream:stream until:@"}" block:^(PKToken *token, NSUInteger lookahead) {			
 			if ([token matches:delimiters]) {
 				LogParDebug(@"Matched %@.", token);
 				return;

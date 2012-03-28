@@ -15,7 +15,7 @@
 		// Match adopted protocol(s).
 		LogParDebug(@"Matching adopted protocols.");
 		NSArray *delimiters = [NSArray arrayWithObjects:@"<", @",", @">", nil];
-		GBResult result = [self matchStream:stream until:@">" block:^(PKToken *token) {
+		GBResult result = [self matchStream:stream until:@">" block:^(PKToken *token, NSUInteger la) {
 			if ([token matches:delimiters]) return;
 			LogParDebug(@"Matched adopted protocol %@", token);
 			[store setCurrentSourceInfo:token];
