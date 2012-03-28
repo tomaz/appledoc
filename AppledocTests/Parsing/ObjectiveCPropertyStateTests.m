@@ -20,6 +20,8 @@
 
 @implementation ObjectiveCPropertyStateTests
 
+#pragma mark - Properties without attributes
+
 - (void)testParseStreamForParserStoreShouldDetectPropertyWithNoAttributes {
 	[self runWithState:^(ObjectiveCPropertyState *state) {
 		[self runWithString:@"@property type name;" block:^(id parser, id tokens) {
@@ -29,6 +31,113 @@
 			[[store expect] beginPropertyDefinition];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
+			[[store expect] endCurrentObject];
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] endCurrentObject];
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyWithNoAttributesWithMultipleTypes {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property type1 type2 type3 name;" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginTypeDefinition];
+			[[store expect] appendType:@"type1"];
+			[[store expect] appendType:@"type2"];
+			[[store expect] appendType:@"type3"];
+			[[store expect] endCurrentObject];
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] endCurrentObject];
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+#pragma mark - Properties with attributes
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyWithSingleAttribute {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property (attr) type name;" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendType:@"attr"];
+			[[store expect] endCurrentObject];
+			[[store expect] beginTypeDefinition];
+			[[store expect] appendType:@"type"];
+			[[store expect] endCurrentObject];
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] endCurrentObject];
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributes {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property (attr1, attr2, attr3) type name;" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendType:@"attr1"];
+			[[store expect] appendType:@"attr2"];
+			[[store expect] appendType:@"attr3"];
+			[[store expect] endCurrentObject];
+			[[store expect] beginTypeDefinition];
+			[[store expect] appendType:@"type"];
+			[[store expect] endCurrentObject];
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] endCurrentObject];
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributesAndTypes {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property (attr1, attr2, attr3) type1 type2 type3 name;" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendType:@"attr1"];
+			[[store expect] appendType:@"attr2"];
+			[[store expect] appendType:@"attr3"];
+			[[store expect] endCurrentObject];
+			[[store expect] beginTypeDefinition];
+			[[store expect] appendType:@"type1"];
+			[[store expect] appendType:@"type2"];
+			[[store expect] appendType:@"type3"];
 			[[store expect] endCurrentObject];
 			[[store expect] appendPropertyName:@"name"];
 			[[store expect] endCurrentObject];

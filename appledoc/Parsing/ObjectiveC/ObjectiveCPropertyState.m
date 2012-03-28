@@ -26,9 +26,10 @@
 		LogParDebug(@"Matching attributes...");
 		if ([stream matches:@"(", nil]) {
 			[store beginPropertyAttributes];
+			NSArray *delimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
 			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
 				LogParDebug(@"Matched %@.", token);
-				if ([token matches:@","]) return;
+				if ([token matches:delimiters]) return;
 				[store appendType:token.stringValue];
 				[declaration appendFormat:@"%@ ", token.stringValue];
 			}];
