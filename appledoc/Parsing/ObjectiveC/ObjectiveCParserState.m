@@ -36,28 +36,20 @@
 	__block NSUInteger result = NSNotFound;
 	NSUInteger count = [self lookAheadStream:stream block:^(PKToken *token, NSUInteger lookahead, BOOL *stopParsing) {
 		handler(token, lookahead);
-		if ([end isKindOfClass:[NSArray class]]) {
-			[end enumerateObjectsUsingBlock:^(NSString *endToken, NSUInteger idx, BOOL *stopEndChecking) {
-				if ([token matches:endToken]) {
-					result = idx;
-					*stopEndChecking = YES;
-					*stopParsing = YES;
-				}
-			}];
-		} else {
-			if ([token matches:end]) {
-				result = 0;
-				*stopParsing = YES;
-			}
-		}
+		result = [token matchResult:end];
+		if (result == NSNotFound) return;
+		*stopParsing = YES;
 	}];
 	if (result != NSNotFound) [stream consume:count];
 	return result;
 }
 
-- (NSUInteger)matchStream:(TokensStream *)stream start:(NSString *)start end:(NSString *)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler {
-	// Matches given start token at current stream position and continues until the given end token (or any of the given end tokens in case end is array) is encountered. Each token, including start and end is passed to given block. If current stream position doesn't match start, no parsing is done and NSNotFound is returned. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
-	if (start && ![stream matches:start, nil]) return NSNotFound;
+- (NSUInteger)matchStream:(TokensStream *)stream start:(id)start end:(id)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler {
+	// Matches given start token (or any of the given ones if start is array) at current stream position and continues until the given end token (or any of the given end tokens in case end is array) is encountered. Each token, including start and end is passed to given block. If current stream position doesn't match start, no parsing is done and NSNotFound is returned. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
+	if (start) {
+		if (![stream.current matches:start]) return NSNotFound;
+		[stream consume:1];
+	}
 	return [self matchStream:stream until:end block:handler];
 }
 

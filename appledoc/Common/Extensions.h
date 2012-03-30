@@ -36,5 +36,6 @@ enum {
 
 @interface PKToken (Appledoc)
 - (BOOL)matches:(id)expected;
+- (NSUInteger)matchResult:(id)expected;
 @property (nonatomic, assign) NSPoint location;
 @end
