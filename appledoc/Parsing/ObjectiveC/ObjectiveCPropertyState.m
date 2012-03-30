@@ -29,13 +29,14 @@
 			NSArray *delimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
 			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
 				LogParDebug(@"Matched %@.", token);
+				[declaration appendFormat:@"%@ ", token.stringValue];
 				if ([token matches:delimiters]) return;
 				[store appendType:token.stringValue];
-				[declaration appendFormat:@"%@ ", token.stringValue];
 			}];
 			if (found == NSNotFound) {
 				LogParDebug(@"Failed matching attributes, bailing out.");
-				[store cancelCurrentObject];
+				[store cancelCurrentObject]; // attribute types
+				[store cancelCurrentObject]; // property definition
 				[parser popState];
 				return GBResultFailedMatch;
 			}

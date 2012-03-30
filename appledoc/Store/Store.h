@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "StoreConstants.h"
+
 @class PKToken;
 
 /** The main data store for the application.
@@ -27,11 +29,19 @@
 - (void)beginProtocolWithName:(NSString *)name;
 - (void)appendAdoptedProtocolWithName:(NSString *)name;
 
-#pragma mark - Methods and properties
+#pragma mark - Properties
 
 - (void)beginPropertyDefinition;
 - (void)beginPropertyAttributes;
 - (void)appendPropertyName:(NSString *)name;
+
+#pragma mark - Methods
+
+- (void)beginMethodDefinition;
+- (void)appendMethodType:(NSString *)type;
+- (void)beginMethodArgument;
+- (void)appendMethodArgumentSelector:(NSString *)name;
+- (void)appendMethodArgumentVariable:(NSString *)name;
 
 #pragma mark - General objects
 

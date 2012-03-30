@@ -40,7 +40,7 @@
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
 }
 
-#pragma mark - Methods and properties
+#pragma mark - Properties
 
 - (void)beginPropertyDefinition {
 }
@@ -49,6 +49,23 @@
 }
 
 - (void)appendPropertyName:(NSString *)name {
+}
+
+#pragma mark - Methods
+
+- (void)beginMethodDefinition {
+}
+
+- (void)appendMethodType:(NSString *)type {
+}
+
+- (void)beginMethodArgument {
+}
+
+- (void)appendMethodArgumentSelector:(NSString *)name {
+}
+
+- (void)appendMethodArgumentVariable:(NSString *)name {
 }
 
 #pragma mark - General objects

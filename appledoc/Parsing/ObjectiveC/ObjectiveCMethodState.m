@@ -14,37 +14,93 @@
 	// Match method definition or declaration (skipping body in later case), then return to previous stream. If current stream position doesn't start a method, consume one token and return.
 	if ([stream matches:@"-", nil] || [stream matches:@"+", nil]) {
 		LogParDebug(@"Matched %@, testing for method.", stream.current);
-		NSMutableString *declaration = [NSMutableString stringWithString:stream.current.stringValue];
-		NSUInteger matchedEndTokenIndex;
+		BOOL isInstanceMethod = [stream.current matches:@"-"];
+		[store setCurrentSourceInfo:stream.current];
+		[store beginMethodDefinition];
+		[store appendMethodType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
 		[stream consume:1];
+
+		NSMutableString *declaration = [NSMutableString stringWithString:stream.current.stringValue];
+		NSArray *delimiters = [NSArray arrayWithObjects:@")", @"(", @";", @"{", nil];
 		
 		// Parse return types.
-		LogParDebug(@"Matching method result...");
-		matchedEndTokenIndex = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
-			LogParDebug(@"Matched %@.", token);
-			[declaration appendFormat:@"%@ ", token.stringValue];
-		}];
-		if (matchedEndTokenIndex == NSNotFound) { 
-			LogParDebug(@"Failed matching method result, bailing out!");
-			[parser popState];
-			return GBResultFailedMatch;
+		if ([stream.current matches:@"("]) {
+			LogParDebug(@"Matching method result...");
+			[store beginTypeDefinition];
+			NSUInteger resultEndTokenIndex = [self matchStream:stream start:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead) {
+				LogParDebug(@"Matched %@.", token);
+				[declaration appendFormat:@"%@ ", token.stringValue];
+				if ([token matches:delimiters]) return;
+				[store appendType:token.stringValue];
+			}];
+			if (resultEndTokenIndex != 0) { 
+				LogParDebug(@"Failed matching method result, bailing out!");
+				[store cancelCurrentObject]; // result types
+				[store cancelCurrentObject]; // method definition
+				[parser popState];
+				return GBResultFailedMatch;
+			}
+			[store endCurrentObject];
 		}
 		
-		// Parse components.
+		// Parse all arguments.
 		LogParDebug(@"Matching method arguments.");
-		NSArray *end = [NSArray arrayWithObjects:@";", @"{", nil];
-		matchedEndTokenIndex = [self matchStream:stream until:end block:^(PKToken *token, NSUInteger lookahead) {
-			LogParDebug(@"Matched %@.", token);
-			[declaration appendFormat:@"%@ ", token.stringValue];
-		}];
-		if (matchedEndTokenIndex == NSNotFound) {
-			LogParDebug(@"Failed matching method arguments, bailing out!");
-			[parser popState];
-			return GBResultFailedMatch;
+		BOOL isMatchingMethodBody = NO;
+		while (!stream.eof) {
+			LogParDebug(@"Matching method argument %@.", stream.current);
+			
+			// Parse selector name for the argument and skip colon.
+			[store beginMethodArgument];
+			[store appendMethodArgumentSelector:stream.current.stringValue];
+			[declaration appendFormat:@"%@ ", stream.current.stringValue];
+			[stream consume:1];
+			if ([stream.current matches:@":"]) {
+				// If colon is found, try match variable types and name.
+				LogParDebug(@"Matched colon, expecting types and variable name.");
+				isMatchingMethodBody = YES;
+				[declaration appendFormat:@"%@ ", stream.current.stringValue];
+				[stream consume:1];
+			
+				// Parse optional argument variable types.
+				if ([stream.current matches:@"("]) {
+					LogParDebug(@"Matching method argument variable types.");
+					[store beginTypeDefinition];
+					NSUInteger endTokenIndex = [self matchStream:stream start:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead) {
+						LogParDebug(@"Matched %@.", token);
+						[declaration appendFormat:@"%@ ", token.stringValue];
+						if ([token matches:delimiters]) return;
+						[store appendType:token.stringValue];
+					}];
+					if (endTokenIndex != 0) {
+						LogParDebug(@"Failed matching method argument variable types, bailing out!");
+						[store cancelCurrentObject]; // type definitions
+						[store cancelCurrentObject]; // method argument.
+						[store cancelCurrentObject]; // method definition
+						[parser popState];
+						return GBResultFailedMatch;
+					}
+					[store endCurrentObject]; // type definitions
+				}
+				
+				// Parse argument variable name.
+				LogParDebug(@"Matching method argument variable name.");
+				[declaration appendFormat:@"%@ ", stream.current.stringValue];
+				[store appendMethodArgumentVariable:stream.current.stringValue];
+				[stream consume:1];
+			}
+			[store endCurrentObject]; // method argument;
+			
+			// Continue with next argument unless we reached end of definition.
+			NSArray *end = [NSArray arrayWithObjects:@";", @"{", nil];
+			NSUInteger endTokenIndex = [stream.current matchResult:end];
+			if (endTokenIndex == NSNotFound) continue;
+			if (endTokenIndex == 1) isMatchingMethodBody = YES;			
+			[declaration appendFormat:@"%@ ", stream.current.stringValue];
+			break;
 		}
 		
 		// Skip method code block.
-		if (matchedEndTokenIndex == 1) {
+		if (isMatchingMethodBody) {
 			LogParDebug(@"Skipping method code block...");
 			__block NSUInteger blockLevel = 1;
 			NSUInteger tokensCount = [self lookAheadStream:stream block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
@@ -66,6 +122,7 @@
 		}
 		
 		LogParVerbose(@"%@", declaration);
+		[store endCurrentObject]; // method definition
 		[parser popState];
 	} else {
 		[stream consume:1];
