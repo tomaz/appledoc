@@ -48,6 +48,12 @@
 - (void)appendMethodArgumentSelector:(NSString *)name;
 - (void)appendMethodArgumentVariable:(NSString *)name;
 
+#pragma mark - Enumerations
+
+- (void)beginEnumeration;
+- (void)appendEnumerationItem:(NSString *)name;
+- (void)appendEnumerationValue:(NSString *)value;
+
 #pragma mark - General objects
 
 - (void)beginTypeDefinition;
