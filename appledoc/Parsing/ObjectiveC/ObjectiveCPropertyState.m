@@ -23,8 +23,8 @@
 		NSMutableString *declaration = [NSMutableString stringWithString:@"@property "];
 
 		// Parse attributes.
-		LogParDebug(@"Matching attributes...");
 		if ([stream matches:@"(", nil]) {
+			LogParDebug(@"Matching attributes...");
 			[store beginPropertyAttributes];
 			NSArray *delimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
 			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {

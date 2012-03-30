@@ -43,6 +43,7 @@
 - (void)consume:(NSUInteger)count;
 - (void)rewind:(NSUInteger)count;
 
+@property (nonatomic, strong, readonly) NSString *string;
 @property (nonatomic, strong, readonly) NSArray *tokens;
 @property (nonatomic, assign, readonly) NSUInteger position;
 

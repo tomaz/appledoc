@@ -29,6 +29,11 @@
 - (void)beginProtocolWithName:(NSString *)name;
 - (void)appendAdoptedProtocolWithName:(NSString *)name;
 
+#pragma mark - Method groups
+
+- (void)beginMethodGroup;
+- (void)appendDescription:(NSString *)description;
+
 #pragma mark - Properties
 
 - (void)beginPropertyDefinition;

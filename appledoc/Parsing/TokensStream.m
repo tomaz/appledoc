@@ -11,6 +11,7 @@
 
 @interface TokensStream ()
 - (void)assignLocationInformationToTokens:(NSArray *)tokens fromString:(NSString *)string;
+@property (nonatomic, strong, readwrite) NSString *string;
 @property (nonatomic, strong, readwrite) NSArray *tokens;
 @property (nonatomic, assign, readwrite) NSUInteger position;
 @end
@@ -19,6 +20,7 @@
 
 @implementation TokensStream
 
+@synthesize string = _string;
 @synthesize tokens = _tokens;
 @synthesize position = _position;
 
@@ -34,6 +36,7 @@
 		NSMutableArray *tokens = [NSMutableArray array];
 		[tokenizer enumerateTokensUsingBlock:^(PKToken *token, BOOL *stop) { [tokens addObject:token]; }];
 		[self assignLocationInformationToTokens:tokens fromString:tokenizer.string];
+		self.string = tokenizer.string;
 		self.tokens = tokens;
 		self.position = 0;
 	}
@@ -73,6 +76,8 @@
 #pragma mark - Stream handling
 
 - (BOOL)matches:(id)first, ... {
+	if (self.eof) return NO;
+	
 	// Get the array of all expected matches.
 	NSMutableArray *expectedMatches = [NSMutableArray array];
 	va_list args;
