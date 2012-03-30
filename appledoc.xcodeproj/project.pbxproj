@@ -27,8 +27,6 @@
 		7329790315188A4C00592A9D /* ObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329790115188A4C00592A9D /* ObjectiveCParser.m */; };
 		7329790615188B0800592A9D /* TokensStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329790515188B0800592A9D /* TokensStream.m */; };
 		7329790715188B0800592A9D /* TokensStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329790515188B0800592A9D /* TokensStream.m */; };
-		7329790C15188CB500592A9D /* ParseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7329790B15188CB500592A9D /* ParseKit.framework */; };
-		7329790D15188CB500592A9D /* ParseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7329790B15188CB500592A9D /* ParseKit.framework */; };
 		73297914151899CA00592A9D /* ObjectiveCParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73297913151899CA00592A9D /* ObjectiveCParserState.m */; };
 		73297915151899CA00592A9D /* ObjectiveCParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73297913151899CA00592A9D /* ObjectiveCParserState.m */; };
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
@@ -59,12 +57,13 @@
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
+		73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
+		73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
 		73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
 		73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
 		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
 		73E289F51518E24D00D53484 /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
 		73E289F61518E24D00D53484 /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
-		73E28A021518E59E00D53484 /* ParseKit.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 7329790B15188CB500592A9D /* ParseKit.framework */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F989AD1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
 		73F989AE1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
@@ -86,7 +85,6 @@
 			files = (
 				7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */,
 				73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */,
-				73E28A021518E59E00D53484 /* ParseKit.framework in Copy frameworks to products directory */,
 			);
 			name = "Copy frameworks to products directory";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -137,7 +135,6 @@
 		7329790115188A4C00592A9D /* ObjectiveCParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParser.m; sourceTree = "<group>"; };
 		7329790415188B0800592A9D /* TokensStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TokensStream.h; sourceTree = "<group>"; };
 		7329790515188B0800592A9D /* TokensStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TokensStream.m; sourceTree = "<group>"; };
-		7329790B15188CB500592A9D /* ParseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ParseKit.framework; path = ThirdParty/Libraries/ParseKit.framework; sourceTree = "<group>"; };
 		73297912151899CA00592A9D /* ObjectiveCParserState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParserState.h; sourceTree = "<group>"; };
 		73297913151899CA00592A9D /* ObjectiveCParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParserState.m; sourceTree = "<group>"; };
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
@@ -175,6 +172,8 @@
 		73D274D4150E08FE004D27F4 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
 		73D274DC150E0D60004D27F4 /* Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appledoc.h; sourceTree = "<group>"; };
 		73D274DD150E0D60004D27F4 /* Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appledoc.m; sourceTree = "<group>"; };
+		73D5401F1525A5D100C57E1B /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libParseKitLib.a; path = ThirdParty/Libraries/libParseKitLib.a; sourceTree = "<group>"; };
+		73D540221525A5FF00C57E1B /* parsekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = parsekit; path = ThirdParty/Libraries/parsekit; sourceTree = "<group>"; };
 		73ED9444150E9FEC0032FD07 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
@@ -202,7 +201,7 @@
 				7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */,
 				7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */,
 				73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */,
-				7329790D15188CB500592A9D /* ParseKit.framework in Frameworks */,
+				73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,7 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */,
-				7329790C15188CB500592A9D /* ParseKit.framework in Frameworks */,
+				73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,12 +367,13 @@
 		73D274B0150E05DA004D27F4 /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				73D5401F1525A5D100C57E1B /* libParseKitLib.a */,
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
-				7329790B15188CB500592A9D /* ParseKit.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
 				7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */,
 				73500D3C1517625E000416E3 /* OCMock.framework */,
+				73D540221525A5FF00C57E1B /* parsekit */,
 			);
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
@@ -643,6 +643,11 @@
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -663,6 +668,11 @@
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
 			};
@@ -689,6 +699,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/ThirdParty/Libraries/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -710,6 +721,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/ThirdParty/Libraries/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 			};
@@ -724,6 +736,11 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -737,6 +754,11 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
