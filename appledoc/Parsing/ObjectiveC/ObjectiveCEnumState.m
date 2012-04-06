@@ -22,7 +22,7 @@
 		
 		// Skip stream until '{', exit if not found.
 		LogParDebug(@"Matching enum body start.");
-		GBResult result = [self matchStream:stream until:@"{" block:^(PKToken *token, NSUInteger lookahead) { }];
+		NSUInteger result = [stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { }];
 		if (result == NSNotFound) {
 			LogParDebug(@"Failed matching enum body start, bailing out.");
 			[stream consume:1];
@@ -36,7 +36,7 @@
 		__block BOOL isMatchingValue = NO;
 		__block PKToken *valueStartToken = nil;
 		__block PKToken *valueEndToken = nil;
-		result = [self matchStream:stream until:@"}" block:^(PKToken *token, NSUInteger lookahead) {
+		result = [stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			// When we match end of item or body, we should stop matching for value and continue with next item.
 			if ([token matches:delimiters]) {
 				if (isMatchingValue) {

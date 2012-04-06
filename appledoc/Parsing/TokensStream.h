@@ -8,6 +8,8 @@
 
 @class PKTokenizer;
 
+typedef void(^GBMatchBlock)(PKToken *token, NSUInteger lookahead, BOOL *stop);
+
 /** Helper class that simplifies tokenizing an input string.
  
  It works on top of PKToken and PKTokenizer by loading all tokens from a given string into an array thus allowing clients inspecting and rewinding the stream to their will. Here's an example of usage:
@@ -42,6 +44,10 @@
 - (PKToken *)current;
 - (void)consume:(NSUInteger)count;
 - (void)rewind:(NSUInteger)count;
+
+- (NSUInteger)lookAheadWithBlock:(GBMatchBlock)handler;
+- (NSUInteger)matchUntil:(id)end block:(GBMatchBlock)handler;
+- (NSUInteger)matchStart:(id)start end:(id)end block:(GBMatchBlock)handler;
 
 @property (nonatomic, strong, readonly) NSString *string;
 @property (nonatomic, strong, readonly) NSArray *tokens;

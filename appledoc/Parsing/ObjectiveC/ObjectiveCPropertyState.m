@@ -27,7 +27,7 @@
 			LogParDebug(@"Matching attributes...");
 			[store beginPropertyAttributes];
 			NSArray *delimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
-			GBResult found = [self matchStream:stream start:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead) {
+			NSUInteger found = [stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				LogParDebug(@"Matched %@.", token);
 				[declaration appendFormat:@"%@ ", token.stringValue];
 				if ([token matches:delimiters]) return;
@@ -46,7 +46,7 @@
 		// Parse declaration.
 		LogParDebug(@"Matching types and name.");
 		[store beginTypeDefinition];
-		GBResult found = [self matchStream:stream until:@";" block:^(PKToken *token, NSUInteger lookahead) {
+		NSUInteger found = [stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
 			if ([token matches:@";"]) {
 				[declaration appendFormat:@"%@ ", token.stringValue];

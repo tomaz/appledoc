@@ -138,6 +138,48 @@
 	self.position -= count;
 }
 
+#pragma mark - Higher level matching helpers
+
+- (NSUInteger)lookAheadWithBlock:(GBMatchBlock)handler {
+	// Looks ahead given stream until stopped or EOF. Each encountered token is passed to given block. Result is number of look ahead tokens until stopped or EOF.
+	NSUInteger offset = 0;
+	while (self.position + offset < self.tokens.count) {
+		BOOL stop = NO;
+		PKToken *token = [self la:offset];
+		handler(token, offset, &stop);
+		if (stop) break;
+		offset++;
+	}
+	return offset + 1;
+}
+
+- (NSUInteger)matchUntil:(id)end block:(GBMatchBlock)handler {
+	// Matches all token until the given one (or any of the given ones in case end is array) is encountered or EOF reached. Each token is passed to given block. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
+	__block NSUInteger result = NSNotFound;
+	__block BOOL stop = NO;
+	NSUInteger count = [self lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stopParsing) {
+		handler(token, lookahead, &stop);
+		if (stop) {
+			result = NSNotFound;
+			return;
+		}
+		result = [token matchResult:end];
+		if (result == NSNotFound) return;
+		*stopParsing = YES;
+	}];
+	if (result != NSNotFound) [self consume:count];
+	return result;
+}
+
+- (NSUInteger)matchStart:(id)start end:(id)end block:(GBMatchBlock)handler {
+	// Matches given start token (or any of the given ones if start is array) at current stream position and continues until the given end token (or any of the given end tokens in case end is array) is encountered. Each token, including start and end is passed to given block. If current stream position doesn't match start, no parsing is done and NSNotFound is returned. Result is index of the matched end token if end token is an array or 0 for single token. If no match was found, NSNotFound is returned.
+	if (start) {
+		if (![self.current matches:start]) return NSNotFound;
+		[self consume:1];
+	}
+	return [self matchUntil:end block:handler];
+}
+
 @end
 
 #pragma mark - 

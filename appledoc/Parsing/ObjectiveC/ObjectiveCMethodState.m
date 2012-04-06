@@ -27,7 +27,7 @@
 		if ([stream.current matches:@"("]) {
 			LogParDebug(@"Matching method result...");
 			[store beginTypeDefinition];
-			NSUInteger resultEndTokenIndex = [self matchStream:stream start:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead) {
+			NSUInteger resultEndTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				LogParDebug(@"Matched %@.", token);
 				[declaration appendFormat:@"%@ ", token.stringValue];
 				if ([token matches:delimiters]) return;
@@ -65,7 +65,7 @@
 				if ([stream.current matches:@"("]) {
 					LogParDebug(@"Matching method argument variable types.");
 					[store beginTypeDefinition];
-					NSUInteger endTokenIndex = [self matchStream:stream start:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead) {
+					NSUInteger endTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 						LogParDebug(@"Matched %@.", token);
 						[declaration appendFormat:@"%@ ", token.stringValue];
 						if ([token matches:delimiters]) return;
@@ -103,7 +103,7 @@
 		if (isMatchingMethodBody) {
 			LogParDebug(@"Skipping method code block...");
 			__block NSUInteger blockLevel = 1;
-			NSUInteger tokensCount = [self lookAheadStream:stream block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+			NSUInteger tokensCount = [stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				if ([token matches:@"{"]) {
 					LogParDebug(@"Matched open brace at block level %lu", blockLevel);
 					blockLevel++;

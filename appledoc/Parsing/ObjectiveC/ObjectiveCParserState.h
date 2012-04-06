@@ -22,15 +22,3 @@
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store;
 
 @end
-
-#pragma mark - 
-
-/** Helper methods for concrete subclasses.
- 
- Do not use these from elsewhere!
- */
-@interface ObjectiveCParserState (SubclassPrivateAPI)
-- (NSUInteger)lookAheadStream:(TokensStream *)stream block:(void(^)(PKToken *token, NSUInteger lookahead, BOOL *stop))handler;
-- (NSUInteger)matchStream:(TokensStream *)stream until:(id)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler;
-- (NSUInteger)matchStream:(TokensStream *)stream start:(id)start end:(id)end block:(void(^)(PKToken *token, NSUInteger lookahead))handler;
-@end

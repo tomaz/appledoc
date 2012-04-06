@@ -22,7 +22,7 @@
 		// Skip stream until '{', exit if not found. Take the last token before { as struct name.
 		LogParDebug(@"Matching struct body start."); {
 			NSArray *delimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
-			GBResult result = [self matchStream:stream until:@"{" block:^(PKToken *token, NSUInteger lookahead) { 
+			NSUInteger result = [stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				LogParDebug(@"Matched %@", token);
 				if ([token matches:delimiters]) return;
 				nameToken = token;
@@ -41,7 +41,7 @@
 		LogParDebug(@"Matching struct body."); {
 			NSArray *delimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
 			NSMutableArray *itemTokens = [NSMutableArray array];
-			GBResult result = [self matchStream:stream until:@"}" block:^(PKToken *token, NSUInteger lookahead) {
+			NSUInteger result = [stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 				LogParDebug(@"Matched %@.", token);
 				if ([token matches:delimiters]) {
 					if (itemTokens.count > 0) {
