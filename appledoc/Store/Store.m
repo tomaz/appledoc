@@ -87,6 +87,22 @@
 - (void)appendEnumerationValue:(NSString *)value {
 }
 
+#pragma mark - Structs
+
+- (void)beginStruct {
+}
+
+#pragma mark - Constants
+
+- (void)beginConstant {
+}
+
+- (void)appendConstantType:(NSString *)type {
+}
+
+- (void)appendConstantName:(NSString *)name {
+}
+
 #pragma mark - General objects
 
 - (void)beginTypeDefinition {
