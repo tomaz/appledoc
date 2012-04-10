@@ -47,7 +47,6 @@
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 		737C82A3152307AE0064DC46 /* TestStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A2152307AE0064DC46 /* TestStrings.m */; };
-		737C82A415230AAF0064DC46 /* ObjCFileStateSources.plist in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 737C829F152302680064DC46 /* ObjCFileStateSources.plist */; };
 		737C82AA152310C80064DC46 /* ObjectiveCStateTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A9152310C80064DC46 /* ObjectiveCStateTestsBase.m */; };
 		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
 		738F419015232E6B008CB370 /* ObjectiveCPropertyStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.m */; };
@@ -110,7 +109,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				737C82A415230AAF0064DC46 /* ObjCFileStateSources.plist in Copy resources to bundle */,
 			);
 			name = "Copy resources to bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,7 +158,6 @@
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
 		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
-		737C829F152302680064DC46 /* ObjCFileStateSources.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ObjCFileStateSources.plist; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
 		737C82A8152310C80064DC46 /* ObjectiveCStateTestsBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCStateTestsBase.h; sourceTree = "<group>"; };
@@ -346,7 +343,6 @@
 		73500D3B15176222000416E3 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
-				73F989CD1518C9B30068697C /* Test data */,
 				734425121517631F00B6EC33 /* ParserTests.m */,
 				73F989CB1518C9000068697C /* ObjectiveCParserTests.m */,
 				7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */,
@@ -464,14 +460,6 @@
 				738BE17315172D8D009079C8 /* GBSettings+Helpers.m */,
 			);
 			path = Common;
-			sourceTree = "<group>";
-		};
-		73F989CD1518C9B30068697C /* Test data */ = {
-			isa = PBXGroup;
-			children = (
-				737C829F152302680064DC46 /* ObjCFileStateSources.plist */,
-			);
-			name = "Test data";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
