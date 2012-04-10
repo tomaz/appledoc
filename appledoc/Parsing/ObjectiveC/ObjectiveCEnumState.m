@@ -8,7 +8,15 @@
 
 #import "ObjectiveCEnumState.h"
 
+@interface ObjectiveCEnumState ()
+@property (nonatomic, strong) NSArray *enumItemDelimiters;
+@end
+
 @implementation ObjectiveCEnumState
+
+@synthesize enumItemDelimiters = _enumItemDelimiters;
+
+#pragma mark - Parsing
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	// Enumeration can optionally have a name, we're only interested in values, so skip everything until {
@@ -17,7 +25,7 @@
 	[store beginEnumeration];
 	
 	NSMutableString *declaration = [NSMutableString stringWithString:@"enum {\n"];
-	NSArray *delimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+	NSArray *delimiters = self.enumItemDelimiters;
 	
 	// Skip stream until '{', exit if not found.
 	LogParDebug(@"Matching enum body start.");
@@ -83,6 +91,14 @@
 	[store endCurrentObject];
 	[parser popState];
 	return GBResultOk;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)enumItemDelimiters {
+	if (_enumItemDelimiters) return _enumItemDelimiters;
+	_enumItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+	return _enumItemDelimiters;
 }
 
 @end

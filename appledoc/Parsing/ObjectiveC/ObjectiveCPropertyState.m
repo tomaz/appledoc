@@ -9,7 +9,17 @@
 #import "Objects.h"
 #import "ObjectiveCPropertyState.h"
 
+@interface ObjectiveCPropertyState ()
+@property (nonatomic, strong) NSArray *propertyAttributeDelimiters;
+@end
+
+#pragma mark - 
+
 @implementation ObjectiveCPropertyState
+
+@synthesize propertyAttributeDelimiters = _propertyAttributeDelimiters;
+
+#pragma mark - Parsing
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	// Match property, then return to previous stream. If current stream position doesn't start a property, consume one token and return.
@@ -24,7 +34,7 @@
 	if ([stream matches:@"(", nil]) {
 		LogParDebug(@"Matching attributes...");
 		[store beginPropertyAttributes];
-		NSArray *delimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
+		NSArray *delimiters = self.propertyAttributeDelimiters;
 		NSUInteger found = [stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];
@@ -69,6 +79,14 @@
 	LogParVerbose(@"%@", declaration);
 	[parser popState];
 	return GBResultOk;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)propertyAttributeDelimiters {
+	if (_propertyAttributeDelimiters) return _propertyAttributeDelimiters;
+	_propertyAttributeDelimiters = [NSArray arrayWithObjects:@"(", @",", @")", nil];
+	return _propertyAttributeDelimiters;
 }
 
 @end

@@ -8,13 +8,23 @@
 
 #import "ObjectiveCInterfaceState.h"
 
+@interface ObjectiveCInterfaceState ()
+@property (nonatomic, strong) NSArray *interfaceAdoptedProtocolDelimiters;
+@end
+
+#pragma mark - 
+
 @implementation ObjectiveCInterfaceState
+
+@synthesize interfaceAdoptedProtocolDelimiters = _interfaceAdoptedProtocolDelimiters;
+
+#pragma mark - Stream parsing
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	if ([stream matches:@"<", nil]) {
 		// Match adopted protocol(s).
 		LogParDebug(@"Matching adopted protocols.");
-		NSArray *delimiters = [NSArray arrayWithObjects:@"<", @",", @">", nil];
+		NSArray *delimiters = self.interfaceAdoptedProtocolDelimiters;
 		NSUInteger result = [stream matchUntil:@">" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			if ([token matches:delimiters]) return;
 			LogParDebug(@"Matched adopted protocol %@", token);
@@ -46,6 +56,14 @@
 		[stream consume:1];
 	}
 	return GBResultOk;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)interfaceAdoptedProtocolDelimiters {
+	if (_interfaceAdoptedProtocolDelimiters) return _interfaceAdoptedProtocolDelimiters;
+	_interfaceAdoptedProtocolDelimiters = [NSArray arrayWithObjects:@"<", @",", @">", nil];
+	return _interfaceAdoptedProtocolDelimiters;
 }
 
 @end

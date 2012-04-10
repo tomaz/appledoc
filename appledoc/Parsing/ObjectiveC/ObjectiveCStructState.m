@@ -8,7 +8,17 @@
 
 #import "ObjectiveCStructState.h"
 
+@interface ObjectiveCStructState ()
+@property (nonatomic, strong) NSArray *structBodyStartDelimiters;
+@property (nonatomic, strong) NSArray *structItemDelimiters;
+@end
+
 @implementation ObjectiveCStructState
+
+@synthesize structBodyStartDelimiters = _structBodyStartDelimiters;
+@synthesize structItemDelimiters = _structItemDelimiters;
+
+#pragma mark - Parsing
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	// Name is required, but skip everything else until '{'. Then match all definitions of type `type(s) <def>=value,` or `type(s) <def>;`.
@@ -20,7 +30,7 @@
 	
 	// Skip stream until '{', exit if not found. Take the last token before { as struct name.
 	LogParDebug(@"Matching struct body start."); {
-		NSArray *delimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
+		NSArray *delimiters = self.structBodyStartDelimiters;
 		NSUInteger result = [stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@", token);
 			if ([token matches:delimiters]) return;
@@ -38,7 +48,7 @@
 	
 	// Match struct definition until '}', exit if not found.
 	LogParDebug(@"Matching struct body."); {
-		NSArray *delimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+		NSArray *delimiters = self.structItemDelimiters;
 		NSMutableArray *itemTokens = [NSMutableArray array];
 		NSUInteger result = [stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
@@ -71,6 +81,20 @@
 	[store endCurrentObject];
 	[parser popState];
 	return GBResultOk;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)structBodyStartDelimiters {
+	if (_structBodyStartDelimiters) return _structBodyStartDelimiters;
+	_structBodyStartDelimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
+	return _structBodyStartDelimiters;
+}
+
+- (NSArray *)structItemDelimiters {
+	if (_structItemDelimiters) return _structItemDelimiters;
+	_structItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+	return _structItemDelimiters;
 }
 
 @end

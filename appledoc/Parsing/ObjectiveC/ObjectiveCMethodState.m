@@ -8,7 +8,19 @@
 
 #import "ObjectiveCMethodState.h"
 
+@interface ObjectiveCMethodState ()
+@property (nonatomic, strong) NSArray *methodTypeDelimiters;
+@property (nonatomic, strong) NSArray *methodEndDelimiters;
+@end
+
+#pragma mark - 
+
 @implementation ObjectiveCMethodState
+
+@synthesize methodTypeDelimiters = _methodTypeDelimiters;
+@synthesize methodEndDelimiters = _methodEndDelimiters;
+
+#pragma mark - Parsing
 
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	// Match method definition or declaration (skipping body in later case), then return to previous stream. If current stream position doesn't start a method, consume one token and return.
@@ -20,7 +32,7 @@
 	[stream consume:1];
 
 	NSMutableString *declaration = [NSMutableString stringWithString:stream.current.stringValue];
-	NSArray *delimiters = [NSArray arrayWithObjects:@")", @"(", @";", @"{", nil];
+	NSArray *delimiters = self.methodTypeDelimiters;
 	
 	// Parse return types.
 	if ([stream.current matches:@"("]) {
@@ -90,7 +102,7 @@
 		[store endCurrentObject]; // method argument;
 		
 		// Continue with next argument unless we reached end of definition.
-		NSArray *end = [NSArray arrayWithObjects:@";", @"{", nil];
+		NSArray *end = self.methodEndDelimiters;
 		NSUInteger endTokenIndex = [stream.current matchResult:end];
 		if (endTokenIndex == NSNotFound) continue;
 		if (endTokenIndex == 1) isMatchingMethodBody = YES;			
@@ -124,6 +136,20 @@
 	[store endCurrentObject]; // method definition
 	[parser popState];
 	return GBResultOk;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)methodTypeDelimiters {
+	if (_methodTypeDelimiters) return _methodTypeDelimiters;
+	_methodTypeDelimiters = [NSArray arrayWithObjects:@")", @"(", @";", @"{", nil];
+	return _methodTypeDelimiters;
+}
+
+- (NSArray *)methodEndDelimiters {
+	if (_methodEndDelimiters) return _methodEndDelimiters;
+	_methodEndDelimiters = [NSArray arrayWithObjects:@";", @"{", nil];
+	return _methodEndDelimiters;
 }
 
 @end
