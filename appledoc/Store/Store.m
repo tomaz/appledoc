@@ -9,10 +9,47 @@
 #import "Objects.h"
 #import "Store.h"
 
+@interface Store ()
+@property (nonatomic, strong) PKToken *currentSourceInfo;
+@property (nonatomic, strong) NSMutableArray *registrationStack;
+@property (nonatomic, readonly) id currentRegistrationObject;
+@end
+
 #pragma mark - 
 
-@implementation Store {
-	PKToken *_currentSourceInfo;
+@implementation Store
+
+@synthesize currentSourceInfo = _currentSourceInfo;
+@synthesize currentRegistrationObject = _currentRegistrationObject;
+@synthesize registrationStack = _registrationStack;
+
+#pragma mark - Forwarding registrations to objects
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+	// Pass selector over to current registration object. If it doesn't recognize it, runtime will fail with "unrecognized selector sent to instance" message. Note that this message is only sent for unrecognized selectors, so we don't have to check our superclass!
+	return [self.currentRegistrationObject methodSignatureForSelector:selector];
+}
+
+- (void)forwardInvocation:(NSInvocation *)invocation {
+	// If current registration object responds to given method, pass it over, otherwise fail.
+	if ([self.currentRegistrationObject respondsToSelector:invocation.selector]) {
+		[invocation invokeWithTarget:self.currentRegistrationObject];
+		return;
+	}
+	[self doesNotRecognizeSelector:invocation.selector];
+}
+
+#pragma mark - Properties
+
+- (id)currentRegistrationObject {
+	return [self.registrationStack lastObject];
+}
+
+- (NSMutableArray *)registrationStack {
+	if (_registrationStack) return _registrationStack;
+	LogDebug(@"Initializing registration stack due to first access...");
+	_registrationStack = [[NSMutableArray alloc] init];
+	return _registrationStack;
 }
 
 @end
@@ -24,8 +61,6 @@
 #pragma mark - Classes, categories and protocols handling
 
 - (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived {
-	NSUInteger i=0;
-	LogParDebug(@"%@ is %d", name, i);
 }
 
 - (void)beginExtensionForClassWithName:(NSString *)name {
@@ -45,7 +80,7 @@
 - (void)beginMethodGroup {
 }
 
-- (void)appendDescription:(NSString *)description {
+- (void)appendMethodGroupDescription:(NSString *)description {
 }
 
 #pragma mark - Properties
@@ -118,10 +153,5 @@
 
 - (void)cancelCurrentObject {
 }
-
-#pragma mark - General information
-
-- (void)setCurrentSourceInfo:(PKToken *)value { _currentSourceInfo = value; }
-- (PKToken *)currentSourceInfo { return _currentSourceInfo; }
 
 @end

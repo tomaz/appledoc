@@ -7,75 +7,18 @@
 //
 
 #import "StoreConstants.h"
+#import "StoreRegistrations.h"
+#import "StoreObject.h"
 
 @class PKToken;
 
 /** The main data store for the application.
  
  The store contains all objects parsed from input files. It's designed as the central object for passing data around various components.
+ 
+ @warning **Implementation detail:** Store is implemented in the way to make registration of various objects as easy as possible. Therefore it let's you build up the objects as data is parsed in. For each object there's corresponding begin method which you need to call prior to registering various data. After all data is collected, you should send `endCurrentObject` to actually register the object with the store. If you detect any incosistency, you should send `cancelCurrentObject` to cancel further registrations. You can nest begin/end/cancel calls, but they need to be balanced: each begin must be followed by an end or cancel! Internally, Store uses a stack on which objects are added when they are started and removed once they are done or cancelled.
+ 
+ @warning **Implementation detail:** Note that Store only handles top-level objects such as classes, categories, protocols, enums etc. If you send any registration message it doesn't recognize, it will try to see if its current object recognizes it and forward the message to it if so. If not, you'll end with unrecognized selector error during runtime.
  */
 @interface Store : NSObject
-@end
-
-/** Store category declaring API for registering data.
- */
-@interface Store (Registrations)
-
-#pragma mark - Classes, categories and protocols
-
-- (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived;
-- (void)beginExtensionForClassWithName:(NSString *)name;
-- (void)beginCategoryWithName:(NSString *)category forClassWithName:(NSString *)name;
-- (void)beginProtocolWithName:(NSString *)name;
-- (void)appendAdoptedProtocolWithName:(NSString *)name;
-
-#pragma mark - Method groups
-
-- (void)beginMethodGroup;
-- (void)appendDescription:(NSString *)description;
-
-#pragma mark - Properties
-
-- (void)beginPropertyDefinition;
-- (void)beginPropertyAttributes;
-- (void)appendPropertyName:(NSString *)name;
-
-#pragma mark - Methods
-
-- (void)beginMethodDefinition;
-- (void)appendMethodType:(NSString *)type;
-- (void)beginMethodArgument;
-- (void)appendMethodArgumentSelector:(NSString *)name;
-- (void)appendMethodArgumentVariable:(NSString *)name;
-
-#pragma mark - Enumerations
-
-- (void)beginEnumeration;
-- (void)appendEnumerationItem:(NSString *)name;
-- (void)appendEnumerationValue:(NSString *)value;
-
-#pragma mark - Structs
-
-- (void)beginStruct;
-
-#pragma mark - Constants
-
-- (void)beginConstant;
-- (void)appendConstantType:(NSString *)type;
-- (void)appendConstantName:(NSString *)name;
-
-#pragma mark - General objects
-
-- (void)beginTypeDefinition;
-- (void)appendType:(NSString *)type;
-
-#pragma mark - Finalizing registrations
-
-- (void)endCurrentObject;
-- (void)cancelCurrentObject;
-
-#pragma mark - General information
-
-@property (nonatomic, strong) PKToken *currentSourceInfo;
-
 @end

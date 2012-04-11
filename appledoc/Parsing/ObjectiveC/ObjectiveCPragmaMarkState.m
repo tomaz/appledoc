@@ -60,7 +60,7 @@
 	LogParVerbose(@"#pragma mark %@", trimmed);
 	LogParVerbose(@"");
 	[store beginMethodGroup];
-	[store appendDescription:trimmed];
+	[store appendMethodGroupDescription:trimmed];
 	[store endCurrentObject];
 	[parser popState];
 	return GBResultOk;

@@ -29,7 +29,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodGroup];
-			[[store expect] appendDescription:@"word"];
+			[[store expect] appendMethodGroupDescription:@"word"];
 			[[store expect] endCurrentObject];
 			[[parser expect] popState];
 			// execute
@@ -48,7 +48,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodGroup];
-			[[store expect] appendDescription:@"word1 word2 word3"];
+			[[store expect] appendMethodGroupDescription:@"word1 word2 word3"];
 			[[store expect] endCurrentObject];
 			[[parser expect] popState];
 			// execute
@@ -69,7 +69,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodGroup];
-			[[store expect] appendDescription:@"word1 word2 word3"];
+			[[store expect] appendMethodGroupDescription:@"word1 word2 word3"];
 			[[store expect] endCurrentObject];
 			[[parser expect] popState];
 			// execute
@@ -88,7 +88,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodGroup];
-			[[store expect] appendDescription:@"word1 word2 word3 -"];
+			[[store expect] appendMethodGroupDescription:@"word1 word2 word3 -"];
 			[[store expect] endCurrentObject];
 			[[parser expect] popState];
 			// execute

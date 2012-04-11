@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
 		7316285C15208124002B5FA9 /* ObjectiveCFileStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */; };
+		7316B9D715359DEE000F12F3 /* StoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316B9D615359DEE000F12F3 /* StoreObject.m */; };
+		7316B9D815359DEE000F12F3 /* StoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316B9D615359DEE000F12F3 /* StoreObject.m */; };
 		7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB5150F52D500B39CFD /* SenTestingKit.framework */; };
 		7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB7150F534100B39CFD /* Cocoa.framework */; };
 		7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC2150F556800B39CFD /* TestCaseBase.m */; };
@@ -119,6 +121,9 @@
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileStateTests.m; sourceTree = "<group>"; };
+		7316B9D515359DEE000F12F3 /* StoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreObject.h; sourceTree = "<group>"; };
+		7316B9D615359DEE000F12F3 /* StoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreObject.m; sourceTree = "<group>"; };
+		7316B9DA1535A048000F12F3 /* StoreRegistrations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreRegistrations.h; sourceTree = "<group>"; };
 		7317FA9A150F51FD00B39CFD /* AppledocTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppledocTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7317FAB5150F52D500B39CFD /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		7317FAB7150F534100B39CFD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -332,10 +337,13 @@
 		73500D2D151748F3000416E3 /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				73500D2E15174910000416E3 /* Store.h */,
-				73500D2F15174910000416E3 /* Store.m */,
 				73D540251525A8BA00C57E1B /* StoreConstants.h */,
 				73D540261525A8BA00C57E1B /* StoreConstants.m */,
+				7316B9DA1535A048000F12F3 /* StoreRegistrations.h */,
+				73500D2E15174910000416E3 /* Store.h */,
+				73500D2F15174910000416E3 /* Store.m */,
+				7316B9D515359DEE000F12F3 /* StoreObject.h */,
+				7316B9D615359DEE000F12F3 /* StoreObject.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -601,6 +609,7 @@
 				73D5402A1525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.m in Sources */,
 				73D5402C1525D59600C57E1B /* ObjectiveCEnumStateTests.m in Sources */,
 				73343BFF15264062006EFF6F /* ObjectiveCStructStateTests.m in Sources */,
+				7316B9D815359DEE000F12F3 /* StoreObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -634,6 +643,7 @@
 				73F989C81518C6D50068697C /* ObjectiveCStructState.m in Sources */,
 				73118B12151906F100E9D7F1 /* Constants.m in Sources */,
 				73D540271525A8BA00C57E1B /* StoreConstants.m in Sources */,
+				7316B9D715359DEE000F12F3 /* StoreObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
