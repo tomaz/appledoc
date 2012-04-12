@@ -59,6 +59,23 @@
 	}];
 }
 
+- (void)testLoggingPropertiesAreWiredToCorrectCmdLineSwitched {
+	[self runWithSettings:^(GBSettings *settings) {
+		// execute
+		[settings setInteger:2 forKey:GBOptions.loggingFormat];
+		[settings setInteger:3 forKey:GBOptions.loggingLevel];
+		[settings setBool:YES forKey:GBOptions.loggingCommonEnabled];
+		[settings setBool:YES forKey:GBOptions.loggingStoreEnabled];
+		[settings setBool:YES forKey:GBOptions.loggingParsingEnabled];
+		// verify
+		assertThatUnsignedInteger(settings.loggingFormat, equalToUnsignedInteger(2));
+		assertThatUnsignedInteger(settings.loggingLevel, equalToUnsignedInteger(3));
+		assertThatBool(settings.loggingCommonEnabled, equalToBool(YES));
+		assertThatBool(settings.loggingStoreEnabled, equalToBool(YES));
+		assertThatBool(settings.loggingParsingEnabled, equalToBool(YES));
+	}];
+}
+
 - (void)testDebuggingAidPropertiesAreWiredToCorrectCmdLineSwitches {
 	[self runWithSettings:^(GBSettings *settings) {
 		// execute

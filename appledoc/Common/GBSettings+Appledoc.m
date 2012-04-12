@@ -42,6 +42,7 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 GB_SYNTHESIZE_UINT(loggingFormat, setLoggingFormat, GBOptions.loggingFormat)
 GB_SYNTHESIZE_UINT(loggingLevel, setLoggingLevel, GBOptions.loggingLevel)
 GB_SYNTHESIZE_BOOL(loggingCommonEnabled, setLoggingCommonEnabled, GBOptions.loggingCommonEnabled)
+GB_SYNTHESIZE_BOOL(loggingStoreEnabled, setLoggingStoreEnabled, GBOptions.loggingStoreEnabled)
 GB_SYNTHESIZE_BOOL(loggingParsingEnabled, setLoggingParsingEnabled, GBOptions.loggingParsingEnabled)
 
 @end
@@ -65,5 +66,6 @@ const struct GBOptions GBOptions = {
 	.loggingLevel = @"verbose",
 	.loggingFormat = @"log-format",
 	.loggingCommonEnabled = @"log-common",
+	.loggingStoreEnabled = @"log-store",
 	.loggingParsingEnabled = @"log-parsing",
 };

@@ -31,8 +31,9 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 0,	nil,								@"LOGGING",														GBOptionSeparator },
 		{ 0,	GBOptions.loggingLevel,				@"Log verbosity (0-5)",											GBValueRequired },
 		{ 0,	GBOptions.loggingFormat,			@"Log format (0-3)",											GBValueRequired },
-		{ 0,	GBOptions.loggingCommonEnabled,		@"[D] Enable common logging",									GBValueNone|GBOptionNoHelp },
-		{ 0,	GBOptions.loggingParsingEnabled,	@"[D] Enable parser logging",									GBValueNone|GBOptionNoHelp },
+		{ 0,	GBOptions.loggingCommonEnabled,		@"[b] Enable common logging",									GBValueNone|GBOptionNoHelp },
+		{ 0,	GBOptions.loggingStoreEnabled,		@"[b] Enable store logging",									GBValueNone|GBOptionNoHelp },
+		{ 0,	GBOptions.loggingParsingEnabled,	@"[b] Enable parser logging",									GBValueNone|GBOptionNoHelp },
 
 		{ 0,	nil,								@"MISCELLANEOUS",												GBOptionSeparator },
 		{ 0,	GBOptions.printSettings,			@"[b] Print settings for current run",							GBValueNone },

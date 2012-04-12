@@ -27,12 +27,14 @@
 
 - (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
 	// Pass selector over to current registration object. If it doesn't recognize it, runtime will fail with "unrecognized selector sent to instance" message. Note that this message is only sent for unrecognized selectors, so we don't have to check our superclass!
+	LogStoDebug(@"Getting signature for %@...", NSStringFromSelector(selector));
 	return [self.currentRegistrationObject methodSignatureForSelector:selector];
 }
 
 - (void)forwardInvocation:(NSInvocation *)invocation {
 	// If current registration object responds to given method, pass it over, otherwise fail.
 	if ([self.currentRegistrationObject respondsToSelector:invocation.selector]) {
+		LogStoDebug(@"Forwarding %@ to %@...", NSStringFromSelector(invocation.selector), self.currentRegistrationObject);
 		[invocation invokeWithTarget:self.currentRegistrationObject];
 		return;
 	}
@@ -47,7 +49,7 @@
 
 - (NSMutableArray *)registrationStack {
 	if (_registrationStack) return _registrationStack;
-	LogDebug(@"Initializing registration stack due to first access...");
+	LogStoDebug(@"Initializing registration stack due to first access...");
 	_registrationStack = [[NSMutableArray alloc] init];
 	return _registrationStack;
 }
@@ -61,6 +63,7 @@
 #pragma mark - Classes, categories and protocols handling
 
 - (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived {
+	LogStoInfo(@"Starting class %@ derived from %@...", name, derived);
 }
 
 - (void)beginExtensionForClassWithName:(NSString *)name {

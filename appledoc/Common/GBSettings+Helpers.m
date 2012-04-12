@@ -27,7 +27,10 @@
 
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
+	self.loggingFormat = 0;
+	self.loggingLevel = 2;
 	self.loggingCommonEnabled = YES;
+	self.loggingStoreEnabled = NO;
 	self.loggingParsingEnabled = NO;
 }
 
@@ -114,6 +117,7 @@
 }
 
 - (void)consolidateSettings {
+	// Add all input path cmd line switch values to arguments so we can handle them uniformly from here on (we need to support input switches so users can add paths from global and project settings).
 	[self enumerateSettings:^(GBSettings *settings, BOOL *stop) {
 		NSArray *inputPaths = [settings objectForLocalKey:GBOptions.inputPaths];
 		[inputPaths enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {

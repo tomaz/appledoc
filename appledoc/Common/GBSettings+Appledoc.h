@@ -44,6 +44,7 @@
 @property (nonatomic, assign) NSUInteger loggingLevel;
 @property (nonatomic, assign) NSUInteger loggingFormat;
 @property (nonatomic, assign) BOOL loggingCommonEnabled;
+@property (nonatomic, assign) BOOL loggingStoreEnabled;
 @property (nonatomic, assign) BOOL loggingParsingEnabled;
 
 @end
@@ -67,5 +68,6 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *loggingLevel;
 	__unsafe_unretained NSString *loggingFormat;
 	__unsafe_unretained NSString *loggingCommonEnabled;
+	__unsafe_unretained NSString *loggingStoreEnabled;
 	__unsafe_unretained NSString *loggingParsingEnabled;
 } GBOptions;
