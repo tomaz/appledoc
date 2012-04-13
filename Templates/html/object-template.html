@@ -230,9 +230,11 @@ Section Method
 		{{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}
 	</div>		
 	{{/hasShortDescription}}
-	
+    {{/comment}}
+
 	<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
-	
+
+    {{#comment}}
 	{{#hasMethodParameters}}
 	<div class="method-subsection arguments-section parameters">
 		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
