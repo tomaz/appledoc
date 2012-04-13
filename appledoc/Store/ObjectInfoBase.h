@@ -1,5 +1,5 @@
 //
-//  StoreObject.h
+//  ObjectInfoBase.h
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 4/11/12.
@@ -12,7 +12,7 @@
  
  This class serves as a base abstract class that implements common behavior and data storage for all Store objects.
  */
-@interface StoreObject : NSObject
+@interface ObjectInfoBase : NSObject
 
 @property (nonatomic, strong) PKToken *sourceToken;
 

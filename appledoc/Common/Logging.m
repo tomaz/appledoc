@@ -106,6 +106,7 @@ void initialize_logging_from_settings(GBSettings *settings) {
 		default: log_function = log_function_0; break;
 	}
 	if (settings.loggingCommonEnabled) log_level |= LOG_FLAG_COMMON;
+	if (settings.loggingStoreEnabled) log_level |= LOG_FLAG_STORE;
 	if (settings.loggingParsingEnabled) log_level |= LOG_FLAG_PARSING;
 }
 

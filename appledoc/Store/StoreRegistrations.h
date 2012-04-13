@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class PKToken;
+
 /** Store category declaring all API for registering data.
  
  @warning **Note:** We declare this category on NSObject to avoid compiler warnings. Note that not various store objects, including Store itself, only implement a subset of this API. Although Store accepts all these messages, it forwards them to the object that is being registered currently if it doesn't recognize them.
