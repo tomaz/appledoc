@@ -48,6 +48,11 @@
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
+		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
+		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
+		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */; };
+		735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
+		735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
 		737C82A3152307AE0064DC46 /* TestStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A2152307AE0064DC46 /* TestStrings.m */; };
 		737C82AA152310C80064DC46 /* ObjectiveCStateTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A9152310C80064DC46 /* ObjectiveCStateTestsBase.m */; };
 		7381A66E1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
@@ -172,6 +177,11 @@
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
 		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
+		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
+		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
+		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceInfoBaseTests.m; sourceTree = "<group>"; };
+		735CD2C4153817E400CADD4E /* MethodGroupData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupData.h; sourceTree = "<group>"; };
+		735CD2C5153817E500CADD4E /* MethodGroupData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupData.m; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
 		737C82A8152310C80064DC46 /* ObjectiveCStateTestsBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCStateTestsBase.h; sourceTree = "<group>"; };
@@ -394,6 +404,7 @@
 			isa = PBXGroup;
 			children = (
 				7381A67B1536D04E00BF9BDD /* StoreTests.m */,
+				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -401,6 +412,10 @@
 		7381A67D1536D60800BF9BDD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				735CD2BD1538109900CADD4E /* ObjectLinkData.h */,
+				735CD2BE1538109900CADD4E /* ObjectLinkData.m */,
+				735CD2C4153817E400CADD4E /* MethodGroupData.h */,
+				735CD2C5153817E500CADD4E /* MethodGroupData.m */,
 				7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */,
 				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
 				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
@@ -658,6 +673,9 @@
 				7381A67C1536D04E00BF9BDD /* StoreTests.m in Sources */,
 				7381A6811536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
+				735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */,
+				735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.m in Sources */,
+				735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,6 +714,8 @@
 				7381A6731536C35100BF9BDD /* ClassInfo.m in Sources */,
 				7381A6801536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6881536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
+				735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */,
+				735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

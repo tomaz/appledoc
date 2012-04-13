@@ -16,4 +16,10 @@
 
 @property (nonatomic, strong) PKToken *sourceToken;
 
+- (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector;
+- (void)pushRegistrationObject:(id)object;
+- (id)popRegistrationObject;
+@property (nonatomic, strong) NSMutableArray *registrationStack;
+@property (nonatomic, strong) id currentRegistrationObject;
+
 @end

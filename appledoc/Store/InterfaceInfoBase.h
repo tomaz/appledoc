@@ -12,4 +12,7 @@
  */
 @interface InterfaceInfoBase : ObjectInfoBase
 
+@property (nonatomic, strong) NSMutableArray *interfaceAdoptedProtocols;
+@property (nonatomic, strong) NSMutableArray *interfaceMethodGroups;
+
 @end
