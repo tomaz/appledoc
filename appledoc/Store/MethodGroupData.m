@@ -34,19 +34,11 @@
 @implementation NSArray (MethodGroupDataExtensions)
 
 - (BOOL)gb_containsMethodGroupDataWithName:(NSString *)name {
-	NSUInteger index = [self gb_indexOfMethodGroupDataWithName:name];
-	return (index != NSNotFound);
+	return [self gb_containsObjectWithValue:name forSelector:@selector(nameOfMethodGroup)];
 }
 
 - (NSUInteger)gb_indexOfMethodGroupDataWithName:(NSString *)name {
-	__block NSUInteger result = NSNotFound;
-	[self enumerateObjectsUsingBlock:^(MethodGroupData *data, NSUInteger idx, BOOL *stop) {
-		if ([data.nameOfMethodGroup isEqual:name]) {
-			result = idx;
-			*stop = YES;
-		}
-	}];
-	return result;
+	return [self gb_indexOfObjectWithValue:name forSelector:@selector(nameOfMethodGroup)];
 }
 
 @end

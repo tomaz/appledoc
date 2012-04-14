@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "ObjectLinkData.h"
 
 @implementation ObjectLinkData
@@ -26,19 +27,11 @@
 @implementation NSArray (ObjectLinkDataExtensions)
 
 - (BOOL)gb_containsObjectLinkDataWithName:(NSString *)name {
-	NSUInteger index = [self gb_indexOfObjectLinkDataWithName:name];
-	return (index != NSNotFound);
+	return [self gb_containsObjectWithValue:name forSelector:@selector(nameOfObject)];
 }
 
 - (NSUInteger)gb_indexOfObjectLinkDataWithName:(NSString *)name {
-	__block NSUInteger result = NSNotFound;
-	[self enumerateObjectsUsingBlock:^(ObjectLinkData *data, NSUInteger idx, BOOL *stop) {
-		if ([data.nameOfObject isEqual:name]) {
-			result = idx;
-			*stop = YES;
-		}
-	}];
-	return result;
+	return [self gb_indexOfObjectWithValue:name forSelector:@selector(nameOfObject)];
 }
 
 @end

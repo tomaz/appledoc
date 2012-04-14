@@ -34,6 +34,13 @@ enum {
 
 #pragma mark - 
 
+@interface NSArray (Appledoc)
+- (BOOL)gb_containsObjectWithValue:(id)value forSelector:(SEL)selector;
+- (NSUInteger)gb_indexOfObjectWithValue:(id)value forSelector:(SEL)selector;
+@end
+
+#pragma mark - 
+
 @interface PKToken (Appledoc)
 - (BOOL)matches:(id)expected;
 - (NSUInteger)matchResult:(id)expected;
