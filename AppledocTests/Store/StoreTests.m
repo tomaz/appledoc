@@ -9,15 +9,6 @@
 #import "Store.h"
 #import "TestCaseBase.h"
 
-@interface Store (TestingPrivateAPI)
-- (void)pushRegistrationObject:(id)object;
-- (id)popRegistrationObject;
-@property (nonatomic, readonly) NSArray *registrationStack;
-@property (nonatomic, readonly) id currentRegistrationObject;
-@end
-
-#pragma mark - 
-
 @interface StoreTests : TestCaseBase
 @end
 
