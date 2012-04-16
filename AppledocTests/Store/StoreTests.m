@@ -66,7 +66,7 @@
 - (void)testAppendAdoptedProtocolShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] appendAdoptedProtocolWithName:@"name"];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -81,7 +81,7 @@
 - (void)testBeginMethodGroupShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginMethodGroup];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -94,7 +94,7 @@
 - (void)testAppendMethodGroupDescriptionShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] appendMethodGroupDescription:@"description"];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -109,7 +109,7 @@
 - (void)testBeginPropertyDefinitionShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginPropertyDefinition];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -122,7 +122,7 @@
 - (void)testBeginPropertyAttributesShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginPropertyAttributes];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -135,7 +135,7 @@
 - (void)testAppendPropertyNameShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] appendPropertyName:@"name"];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -150,7 +150,7 @@
 - (void)testBeginMethodDefinitionWithTypeShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginMethodDefinitionWithType:@"type"];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -163,7 +163,7 @@
 - (void)testBeginMethodArgumentShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginMethodArgument];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -176,7 +176,7 @@
 - (void)testAppendMethodArgumentSelectorShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] appendMethodArgumentSelector:@"selector"];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -189,7 +189,7 @@
 - (void)testAppendMethodArgumentVariableShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] appendMethodArgumentVariable:@"variable"];
 		[store pushRegistrationObject:mock];
 		// execute
