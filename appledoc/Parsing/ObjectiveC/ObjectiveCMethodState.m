@@ -27,8 +27,7 @@
 	LogParDebug(@"Matched %@, testing for method.", stream.current);
 	BOOL isInstanceMethod = [stream.current matches:@"-"];
 	[store setCurrentSourceInfo:stream.current];
-	[store beginMethodDefinition];
-	[store appendMethodType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
+	[store beginMethodDefinitionWithType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
 	[stream consume:1];
 
 	NSMutableString *declaration = [NSMutableString stringWithString:stream.current.stringValue];

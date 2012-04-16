@@ -13,6 +13,8 @@
 #import "ClassInfo.h"
 #import "CategoryInfo.h"
 #import "ProtocolInfo.h"
+#import "PropertyInfo.h"
+#import "MethodInfo.h"
 
 @class PKToken;
 

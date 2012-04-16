@@ -35,8 +35,7 @@
 
 #pragma mark - Methods
 
-- (void)beginMethodDefinition;
-- (void)appendMethodType:(NSString *)type;
+- (void)beginMethodDefinitionWithType:(NSString *)type;
 - (void)beginMethodArgument;
 - (void)appendMethodArgumentSelector:(NSString *)name;
 - (void)appendMethodArgumentVariable:(NSString *)name;

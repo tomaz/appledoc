@@ -28,8 +28,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] endCurrentObject]; // method argument
@@ -50,8 +49,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
@@ -75,8 +73,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
@@ -104,8 +101,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] appendMethodArgumentVariable:@"var"];
@@ -127,8 +123,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] beginTypeDefinition];
@@ -153,8 +148,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] beginTypeDefinition];
@@ -181,8 +175,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] appendMethodArgumentVariable:@"var1"];
@@ -212,8 +205,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] beginTypeDefinition];
@@ -257,8 +249,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
 			[[store expect] appendType:@"method"];
@@ -280,8 +271,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] beginTypeDefinition];
@@ -309,8 +299,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.classMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.classMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
@@ -334,8 +323,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.classMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.classMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
@@ -359,8 +347,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodDefinition];
-			[[store expect] appendMethodType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginTypeDefinition];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types

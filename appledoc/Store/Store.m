@@ -94,14 +94,9 @@
 
 #pragma mark - Methods
 
-- (void)beginMethodDefinition {
+- (void)beginMethodDefinitionWithType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	[self.currentRegistrationObject beginMethodDefinition];
-}
-
-- (void)appendMethodType:(NSString *)type {
-	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	[self.currentRegistrationObject appendMethodType:type];
+	[self.currentRegistrationObject beginMethodDefinitionWithType:type];
 }
 
 - (void)beginMethodArgument {

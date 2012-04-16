@@ -147,27 +147,14 @@
 
 #pragma mark - Verify forwarding of method related messages
 
-- (void)testBeginMethodDefinitionShouldForwardToCurrentObject {
+- (void)testBeginMethodDefinitionWithTypeShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		[[mock expect] beginMethodDefinition];
+		[[mock expect] beginMethodDefinitionWithType:@"type"];
 		[store pushRegistrationObject:mock];
 		// execute
-		[store beginMethodDefinition];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendMethodTypeShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		[[mock expect] appendMethodType:@"type"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendMethodType:@"type"];
+		[store beginMethodDefinitionWithType:@"type"];
 		// verify
 		STAssertNoThrow([mock verify], nil);
 	}];

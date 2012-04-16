@@ -14,5 +14,8 @@
 
 @property (nonatomic, strong) NSMutableArray *interfaceAdoptedProtocols;
 @property (nonatomic, strong) NSMutableArray *interfaceMethodGroups;
+@property (nonatomic, strong) NSMutableArray *interfaceProperties;
+@property (nonatomic, strong) NSMutableArray *interfaceInstanceMethods;
+@property (nonatomic, strong) NSMutableArray *interfaceClassMethods;
 
 @end
