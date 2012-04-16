@@ -210,26 +210,26 @@
 - (void)testAppendEnumerationItemShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		// TODO!!! [[mock expect] appendEnumerationItem:@"value"];
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendEnumerationItem:@"value"];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store appendEnumerationItem:@"value"];
 		// verify
-		// TODO!!! STAssertNoThrow([mock verify], nil);
+		STAssertNoThrow([mock verify], nil);
 	}];
 }
 
 - (void)testAppendEnumerationValueShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		// TODO!!! [[mock expect] appendEnumerationValue:@"value"];
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendEnumerationValue:@"value"];
 		[store pushRegistrationObject:mock];
 		// execute
-		[store appendEnumerationValue:@"variable"];
+		[store appendEnumerationValue:@"value"];
 		// verify
-		// TODO!!! STAssertNoThrow([mock verify], nil);
+		STAssertNoThrow([mock verify], nil);
 	}];
 }
 
@@ -252,8 +252,8 @@
 - (void)testBeginConstantShouldForwardToCurrentObjectIfAvailable {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		// TODO!!! [[mock expect] beginConstant];
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] beginConstant];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store beginConstant];
@@ -265,26 +265,26 @@
 - (void)testAppendConstantTypeShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		// TODO!!! [[mock expect] appendConstantType:@"value"];
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendConstantType:@"value"];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store appendConstantType:@"value"];
 		// verify
-		// TODO!!! STAssertNoThrow([mock verify], nil);
+		STAssertNoThrow([mock verify], nil);
 	}];
 }
 
 - (void)testAppendConstantNameShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
-		// TODO!!! [[mock expect] appendConstantName:@"value"];
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendConstantName:@"value"];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store appendConstantName:@"value"];
 		// verify
-		// TODO!!! STAssertNoThrow([mock verify], nil);
+		STAssertNoThrow([mock verify], nil);
 	}];
 }
 
@@ -321,7 +321,7 @@
 - (void)testCancelCurrentObjectShouldForwardToCurrentObjectIfAvailable {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] cancelCurrentObject];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -334,7 +334,7 @@
 - (void)testCancelCurrentObjectShouldRemoveCurrentObjectFromStackIfAvailable {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject niceMockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject niceMockForClass:[Store class]];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store cancelCurrentObject];

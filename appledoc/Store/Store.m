@@ -122,10 +122,12 @@
 
 - (void)appendEnumerationItem:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject appendEnumerationItem:name];
 }
 
 - (void)appendEnumerationValue:(NSString *)value {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject appendEnumerationValue:value];
 }
 
 #pragma mark - Structs
@@ -142,20 +144,24 @@
 
 - (void)appendConstantType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject appendConstantType:type];
 }
 
 - (void)appendConstantName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject appendConstantName:name];
 }
 
 #pragma mark - General objects
 
 - (void)beginTypeDefinition {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject beginTypeDefinition];
 }
 
 - (void)appendType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	[self.currentRegistrationObject appendType:type];
 }
 
 #pragma mark - Finalizing registration for current object
