@@ -8,9 +8,23 @@
 
 @class PKToken;
 
+/** Defines the requirements for a Store registrar.
+ 
+ Store registrar is an object that knows how to handle nested registrations - it works on the principle of a stack: as new objects are being registered, the registrar should decide whether they need to be pushed to registration stack and it should do so. Similary, when child objects are finished, they should be popped from the stack. And while there is at least one child object on the stack, all registration methods should be forwarded to it.
+ */
+@protocol StoreRegistrar <NSObject>
+
+- (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector;
+- (BOOL)doesCurrentRegistrationObjectRespondTo:(SEL)selector;
+- (void)pushRegistrationObject:(id)object;
+- (id)popRegistrationObject;
+@property (nonatomic, readonly) id currentRegistrationObject;
+
+@end
+
 /** Store category declaring all API for registering data.
  
- @warning **Note:** We declare this category on NSObject to avoid compiler warnings. Note that not various store objects, including Store itself, only implement a subset of this API. Although Store accepts all these messages, it forwards them to the object that is being registered currently if it doesn't recognize them.
+ @warning **Note:** We declare this category on NSObject to avoid compiler warnings. Note that various store objects, including helper objects and abstract base classes, only implement a subset of this API. Although Store accepts all these messages, it forwards them to the object that is being registered currently if it doesn't recognize them. And if current object uses further children to register specific parts, it should also forward all possible messages to its current registration object. Take a look at ObjectInfoBase which implements forwarding API - it's used as a base class for Store and all info classes that use children for registrations.
  */
 @interface NSObject (StoreRegistrations)
 
@@ -24,8 +38,7 @@
 
 #pragma mark - Method groups
 
-- (void)beginMethodGroup;
-- (void)appendMethodGroupDescription:(NSString *)description;
+- (void)appendMethodGroupWithDescription:(NSString *)description;
 
 #pragma mark - Properties
 
@@ -36,6 +49,7 @@
 #pragma mark - Methods
 
 - (void)beginMethodDefinitionWithType:(NSString *)type;
+- (void)beginMethodResults;
 - (void)beginMethodArgument;
 - (void)appendMethodArgumentSelector:(NSString *)name;
 - (void)appendMethodArgumentVariable:(NSString *)name;
@@ -58,7 +72,7 @@
 
 #pragma mark - General objects
 
-- (void)beginTypeDefinition;
+- (void)beginTypeDefinition DEPRECATED_ATTRIBUTE;
 - (void)appendType:(NSString *)type;
 
 #pragma mark - Finalizing registrations

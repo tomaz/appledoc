@@ -50,9 +50,9 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type"];
-			[[store expect] endCurrentObject]; // result types
+			[[store expect] endCurrentObject]; // method result
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
 			[[store expect] endCurrentObject]; // method argument
@@ -74,7 +74,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];
@@ -250,7 +250,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type"];
 			[[store expect] appendType:@"method"];
 			[[store expect] cancelCurrentObject]; // result types
@@ -300,7 +300,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.classMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
 			[[store expect] beginMethodArgument];
@@ -324,7 +324,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.classMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
 			[[store expect] beginMethodArgument];
@@ -348,7 +348,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodResults];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject]; // result types
 			[[store expect] beginMethodArgument];

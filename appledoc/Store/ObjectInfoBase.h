@@ -6,20 +6,19 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "StoreRegistrations.h"
+
 @class PKToken;
 
 /** The base class for all Store objects.
  
  This class serves as a base abstract class that implements common behavior and data storage for all Store objects.
  */
-@interface ObjectInfoBase : NSObject
+@interface ObjectInfoBase : NSObject <StoreRegistrar>
+
+- (id)initWithRegistrar:(id<StoreRegistrar>)registrar;
 
 @property (nonatomic, strong) PKToken *sourceToken;
-
-- (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector;
-- (void)pushRegistrationObject:(id)object;
-- (id)popRegistrationObject;
-@property (nonatomic, strong) NSMutableArray *registrationStack;
-@property (nonatomic, strong) id currentRegistrationObject;
+@property (nonatomic, assign) id<StoreRegistrar> objectRegistrar;
 
 @end

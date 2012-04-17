@@ -20,102 +20,81 @@
 
 #pragma mark - pushRegistrationObject:
 
-- (void)testPushRegistrationObjectShouldAddGivenObjectToTheEndOfRegistrationStack {
+- (void)testPushRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
 	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
 		// setup
-		id mock = [OCMockObject mockForClass:[ObjectInfoBase class]];
+		id child = @"child";
+		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+		[[registrar expect] pushRegistrationObject:child];
+		info.objectRegistrar = registrar;
 		// execute
-		[info pushRegistrationObject:mock];
+		[info pushRegistrationObject:child];
 		// verify
-		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(1));
-		assertThat([info.registrationStack lastObject], equalTo(mock));
-	}];
-}
-
-- (void)testPushRegistrationObjectShouldAddAllObjectsToRegistrationStackInGivenOrder {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id mock1 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		id mock2 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		[info pushRegistrationObject:mock1];
-		// execute
-		[info pushRegistrationObject:mock2];
-		// verify
-		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(2));
-		assertThat([info.registrationStack objectAtIndex:0], equalTo(mock1));
-		assertThat([info.registrationStack objectAtIndex:1], equalTo(mock2));
+		STAssertNoThrow([registrar verify], nil);
 	}];
 }
 
 #pragma mark - popRegistrationStack
 
-- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackLeavingPreviousObjectsUntouched {
+- (void)testPopRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
 	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
 		// setup
-		id mock1 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		id mock2 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		[info pushRegistrationObject:mock1];
-		[info pushRegistrationObject:mock2];
+		id child = @"child";
+		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+		[[[registrar expect] andReturn:child] popRegistrationObject];
+		info.objectRegistrar = registrar;
 		// execute
 		id poppedObject = [info popRegistrationObject];
 		// verify
-		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(1));
-		assertThat([info.registrationStack lastObject], equalTo(mock1));
-		assertThat(poppedObject, equalTo(mock2));
-	}];
-}
-
-- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackEmptyingStack {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		[info pushRegistrationObject:mock];
-		// execute
-		id poppedObject = [info popRegistrationObject];
-		// verify
-		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(0));
-		assertThat(poppedObject, equalTo(mock));
-	}];
-}
-
-- (void)testPopRegistrationObjectShouldReturnNilIfStackIsEmpty {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// execute
-		id poppedObject = [info popRegistrationObject];
-		// verify
-		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(0));
-		assertThat(poppedObject, equalTo(nil));
+		STAssertNoThrow([registrar verify], nil);
+		assertThat(poppedObject, equalTo(child));
 	}];
 }
 
 #pragma mark - currentRegistrationObject
 
-- (void)testCurrentRegistrationObjectShouldBeNilIfStackIsEmpty {
+- (void)testCurrentRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
 	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// execute & verify
-		assertThat(info.currentRegistrationObject, equalTo(nil));
+		// setup
+		id child = @"child";
+		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+		[[[registrar expect] andReturn:child] currentRegistrationObject];
+		info.objectRegistrar = registrar;
+		// execute
+		id currentObject = [info currentRegistrationObject];
+		// verify
+		STAssertNoThrow([registrar verify], nil);
+		assertThat(currentObject, equalTo(child));
 	}];
 }
 
-- (void)testCurrentRegistrationObjectShouldPointToOneAndOnlyObjectIfStackContainsSingleObject {
+#pragma mark - expectCurrentRegistrationObjectRespondTo:
+
+- (void)testExpectCurrentRegistrationObjectRespondToShouldForwardRequestToAssignedStoreRegistrar {
 	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
 		// setup
-		id mock = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		[info pushRegistrationObject:mock];
-		// execute & verify
-		assertThat(info.currentRegistrationObject, equalTo(mock));
+		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+		[[registrar expect] expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+		info.objectRegistrar = registrar;
+		// execute
+		[info expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+		// verify
+		STAssertNoThrow([registrar verify], nil);
 	}];
 }
 
-- (void)testCurrentRegistrationObjectShouldPointToLastObjectIfStackContainsMultipleObjects {
+#pragma mark - doesCurrentRegistrationObjectRespondTo:
+
+- (void)testDoesCurrentRegistrationObjectRespondToShouldForwardRequestToAssignedStoreRegistrar {
 	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
 		// setup
-		id mock1 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		id mock2 = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		[info pushRegistrationObject:mock1];
-		[info pushRegistrationObject:mock2];
-		// execute & verify
-		assertThat(info.currentRegistrationObject, equalTo(mock2));
+		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+		[[registrar expect] doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+		info.objectRegistrar = registrar;
+		// execute
+		[info doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+		// verify
+		STAssertNoThrow([registrar verify], nil);
 	}];
 }
 

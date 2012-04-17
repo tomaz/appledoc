@@ -9,6 +9,12 @@
 #import "Store.h"
 #import "TestCaseBase.h"
 
+@interface Store (UnitTestingPrivateAPI)
+@property (nonatomic, strong) NSMutableArray *registrationStack;
+@end
+
+#pragma mark - 
+
 @interface StoreTests : TestCaseBase
 @end
 
@@ -17,6 +23,15 @@
 @end
 
 @implementation StoreTests
+
+#pragma mark - Verify lazy initialization
+
+- (void)testLazyInitializationWorks {
+	[self runWithStore:^(Store *store) {
+		// execute & verify
+		assertThat(store.registrationStack, instanceOf([NSMutableArray class]));
+	}];
+}
 
 #pragma mark - Verify handling of classes, categories and protocols
 
@@ -28,6 +43,7 @@
 		assertThat(store.currentRegistrationObject, instanceOf([ClassInfo class]));
 		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
 		assertThat([store.currentRegistrationObject nameOfSuperClass], equalTo(@"Derived"));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
@@ -39,6 +55,7 @@
 		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
 		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
 		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(nil));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
@@ -50,6 +67,7 @@
 		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
 		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
 		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(@"Category"));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
@@ -60,6 +78,7 @@
 		// verify		
 		assertThat(store.currentRegistrationObject, instanceOf([ProtocolInfo class]));
 		assertThat([store.currentRegistrationObject nameOfProtocol], equalTo(@"Name"));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
@@ -78,27 +97,14 @@
 
 #pragma mark - Verify forwarding of method group related messages
 
-- (void)testBeginMethodGroupShouldForwardToCurrentObject {
+- (void)testAppendMethodGroupWithDescriptionShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginMethodGroup];
+		[[mock expect] appendMethodGroupWithDescription:@"description"];
 		[store pushRegistrationObject:mock];
 		// execute
-		[store beginMethodGroup];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendMethodGroupDescriptionShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendMethodGroupDescription:@"description"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendMethodGroupDescription:@"description"];
+		[store appendMethodGroupWithDescription:@"description"];
 		// verify
 		STAssertNoThrow([mock verify], nil);
 	}];
@@ -155,6 +161,19 @@
 		[store pushRegistrationObject:mock];
 		// execute
 		[store beginMethodDefinitionWithType:@"type"];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
+- (void)testBeginMethodResultsShouldForwardToCurrentObject {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] beginMethodResults];
+		[store pushRegistrationObject:mock];
+		// execute
+		[store beginMethodResults];
 		// verify
 		STAssertNoThrow([mock verify], nil);
 	}];
@@ -256,7 +275,7 @@
 		[[mock expect] beginConstant];
 		[store pushRegistrationObject:mock];
 		// execute
-		[store beginConstant];
+		// TODO!!! [store beginConstant];
 		// verify
 		// TODO!!! STAssertNoThrow([mock verify], nil);
 	}];
@@ -290,35 +309,47 @@
 
 #pragma mark - endCurrentObject
 
-- (void)testEndCurrentObjectShouldForwardToCurrentObjectIfAvailable {
+- (void)testEndCurrentObjectShouldForwardToCurrentObjectIfItRespondsToEndMessageThenRemoveObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[InterfaceInfoBase class]];
+		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] endCurrentObject];
 		[store pushRegistrationObject:mock];
 		// execute
 		[store endCurrentObject];
 		// verify
 		STAssertNoThrow([mock verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }
 
-- (void)testEndCurrentObjectShouldRemoveCurrentObjectFromStackIfAvailable {
+- (void)testEndCurrentObjectShouldNotForwardToCurrentObjectIfItDoesntRespondToEndMessageThenRemoveObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject niceMockForClass:[InterfaceInfoBase class]];
+		id mock = @"object";
 		[store pushRegistrationObject:mock];
+		// execute - note that in case we send endCurrentObject, this should fail due to NSString not implementing the method!
+		[store endCurrentObject];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testEndCurrentObjectShouldIgnoreIfRegistrationStackIsEmpty {
+	[self runWithStore:^(Store *store) {
 		// execute
 		[store endCurrentObject];
-		// verify		
+		// verify - real code logs a warning, but we don't test that here
+		assertThatInt(store.registrationStack.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
-		assertThatUnsignedInteger(store.registrationStack.count, equalToUnsignedInteger(0));
 	}];
 }
 
 #pragma mark - cancelCurrentObject
 
-- (void)testCancelCurrentObjectShouldForwardToCurrentObjectIfAvailable {
+- (void)testCancelCurrentObjectShouldForwardToCurrentObjectIfItRespondsToEndMessageThenRemoveObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
@@ -328,19 +359,104 @@
 		[store cancelCurrentObject];
 		// verify
 		STAssertNoThrow([mock verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }
 
-- (void)testCancelCurrentObjectShouldRemoveCurrentObjectFromStackIfAvailable {
+- (void)testCancelCurrentObjectShouldNotForwardToCurrentObjectIfItDoesntRespondToEndMessageThenRemoveObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject niceMockForClass:[Store class]];
+		id mock = @"object";
 		[store pushRegistrationObject:mock];
+		// execute - note that in case we send endCurrentObject, this should fail due to NSString not implementing the method!
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldIgnoreIfRegistrationStackIsEmpty {
+	[self runWithStore:^(Store *store) {
 		// execute
 		[store cancelCurrentObject];
-		// verify		
+		// verify - real code logs a warning, but we don't test that here
+		assertThatInt(store.registrationStack.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
-		assertThatUnsignedInteger(store.registrationStack.count, equalToUnsignedInteger(0));
+	}];
+}
+
+#pragma mark - Verify registration stack handling
+
+- (void)testPushRegistrationObjectShouldAddObjectToRegistrationStack {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id child = @"child";
+		// execute
+		[store pushRegistrationObject:child];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat([store.registrationStack lastObject], equalTo(child));
+		assertThat(store.currentRegistrationObject, equalTo(child));
+	}];
+}
+
+- (void)testPushRegistrationObjectShouldMultipleObjectsToRegistrationStack {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id child1 = @"child1";
+		id child2 = @"child2";
+		// execute
+		[store pushRegistrationObject:child1];
+		[store pushRegistrationObject:child2];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(2));
+		assertThat([store.registrationStack objectAtIndex:0], equalTo(child1));
+		assertThat([store.registrationStack objectAtIndex:1], equalTo(child2));
+		assertThat(store.currentRegistrationObject, equalTo(child2));
+	}];
+}
+
+- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackWithMultipleObjects {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id child1 = @"child1";
+		id child2 = @"child2";
+		[store pushRegistrationObject:child1];
+		[store pushRegistrationObject:child2];
+		// execute
+		id poppedObject = [store popRegistrationObject];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat([store.registrationStack lastObject], equalTo(child1));
+		assertThat(store.currentRegistrationObject, equalTo(child1));
+		assertThat(poppedObject, equalTo(child2));
+	}];
+}
+
+- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackWithSingleObjects {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id child = @"child1";
+		[store pushRegistrationObject:child];
+		// execute
+		id poppedObject = [store popRegistrationObject];
+		// verify
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+		assertThat(poppedObject, equalTo(child));
+	}];
+}
+
+- (void)testPopRegistrationObjectShouldDoNothingIfRegistrationStackIsEmpty {
+	[self runWithStore:^(Store *store) {
+		// execute
+		id poppedObject = [store popRegistrationObject];
+		// verify - note that in this case we log a warning, but we don't test that...
+		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+		assertThat(poppedObject, equalTo(nil));
 	}];
 }
 

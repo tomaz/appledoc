@@ -12,46 +12,48 @@
 @implementation ObjectInfoBase
 
 @synthesize sourceToken = _sourceToken;
-@synthesize registrationStack = _registrationStack;
-@synthesize currentRegistrationObject = _currentRegistrationObject;
+@synthesize objectRegistrar = _objectRegistrar;
 
-#pragma mark - Registration helpers
+#pragma mark - Initialization & disposal
+
+- (id)initWithRegistrar:(id<StoreRegistrar>)registrar {
+	self = [super init];
+	if (self) {
+		self.objectRegistrar = registrar;
+	}
+	return self;
+}
+
+#pragma mark - StoreRegistrar and related stuff
 
 - (void)pushRegistrationObject:(id)object {
 	LogStoDebug(@"Pushing %@ to registration stack...", object);
-	[self.registrationStack addObject:object];
+	if (!self.objectRegistrar) {
+		LogStoWarn(@"No registrar is assigned, can't push %@!", object);
+		return;
+	}
+	[self.objectRegistrar pushRegistrationObject:object];
 }
 
 - (id)popRegistrationObject {
 	LogStoDebug(@"Popping registration stack...");
-	id result = self.currentRegistrationObject;
-	[self.registrationStack removeLastObject];
-	return result;
+	if (!self.objectRegistrar) {
+		LogStoWarn(@"No registrar is assigned, can't pop!");
+		return nil;
+	}
+	return [self.objectRegistrar popRegistrationObject];
 }
 
 - (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector {
-	if (self.registrationStack.count == 0) {
-		LogStoWarn(@"Expecting at least one object responding to %@ on registration stack!", NSStringFromSelector(selector));
-		return NO;
-	}
-	if (![self.currentRegistrationObject respondsToSelector:selector]) {
-		LogStoWarn(@"Current object %@ on registration stack doesn't respond to %@!", self.currentRegistrationObject, NSStringFromSelector(selector));
-		return NO;
-	}
-	return YES;
+	return [self.objectRegistrar expectCurrentRegistrationObjectRespondTo:selector];
 }
 
-#pragma mark - Properties
+- (BOOL)doesCurrentRegistrationObjectRespondTo:(SEL)selector {
+	return [self.objectRegistrar doesCurrentRegistrationObjectRespondTo:selector];
+}
 
 - (id)currentRegistrationObject {
-	return [self.registrationStack lastObject];
-}
-
-- (NSMutableArray *)registrationStack {
-	if (_registrationStack) return _registrationStack;
-	LogStoDebug(@"Initializing registration stack due to first access...");
-	_registrationStack = [[NSMutableArray alloc] init];
-	return _registrationStack;
+	return self.objectRegistrar.currentRegistrationObject;
 }
 
 @end

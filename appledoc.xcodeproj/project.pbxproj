@@ -12,6 +12,8 @@
 		730FB577153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		730FB578153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
+		731341FE153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
+		731341FF153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
 		7316285C15208124002B5FA9 /* ObjectiveCFileStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */; };
 		7316B9D715359DEE000F12F3 /* ObjectInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */; };
 		7316B9D815359DEE000F12F3 /* ObjectInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */; };
@@ -38,6 +40,7 @@
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		73343BFF15264062006EFF6F /* ObjectiveCStructStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */; };
+		733E445D153D516E0039010F /* MethodInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.m */; };
 		734425131517631F00B6EC33 /* ParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.m */; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
 		734425171517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
@@ -143,6 +146,8 @@
 		730FB576153C0889002DB54F /* MethodInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfo.m; sourceTree = "<group>"; };
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		731341FC153D5891002D5C54 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeInfo.h; sourceTree = "<group>"; };
+		731341FD153D5891002D5C54 /* TypeInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeInfo.m; sourceTree = "<group>"; };
 		7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileStateTests.m; sourceTree = "<group>"; };
 		7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectInfoBase.h; sourceTree = "<group>"; };
 		7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectInfoBase.m; sourceTree = "<group>"; };
@@ -172,6 +177,7 @@
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
 		7329791715189D1B00592A9D /* ObjectiveCFileState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileState.m; sourceTree = "<group>"; };
 		73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCStructStateTests.m; sourceTree = "<group>"; };
+		733E445C153D516E0039010F /* MethodInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfoTests.m; sourceTree = "<group>"; };
 		734425121517631F00B6EC33 /* ParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTests.m; sourceTree = "<group>"; };
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
 		734425151517645A00B6EC33 /* AppledocTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTask.m; sourceTree = "<group>"; };
@@ -420,6 +426,7 @@
 				7381A67B1536D04E00BF9BDD /* StoreTests.m */,
 				73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
+				733E445C153D516E0039010F /* MethodInfoTests.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -427,6 +434,8 @@
 		7381A67D1536D60800BF9BDD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				731341FC153D5891002D5C54 /* TypeInfo.h */,
+				731341FD153D5891002D5C54 /* TypeInfo.m */,
 				735CD2BD1538109900CADD4E /* ObjectLinkData.h */,
 				735CD2BE1538109900CADD4E /* ObjectLinkData.m */,
 				735CD2C4153817E400CADD4E /* MethodGroupData.h */,
@@ -694,6 +703,8 @@
 				73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */,
 				730FB573153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB578153C0889002DB54F /* MethodInfo.m in Sources */,
+				733E445D153D516E0039010F /* MethodInfoTests.m in Sources */,
+				731341FF153D5891002D5C54 /* TypeInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,6 +747,7 @@
 				735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */,
 				730FB572153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB577153C0889002DB54F /* MethodInfo.m in Sources */,
+				731341FE153D5891002D5C54 /* TypeInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

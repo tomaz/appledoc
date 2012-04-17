@@ -8,10 +8,13 @@
 
 #import "ObjectInfoBase.h"
 
+@class TypeInfo;
+
 /** Holds data for a class or interface Objective C method.
  */
 @interface MethodInfo : ObjectInfoBase
 
 @property (nonatomic, strong) NSString *methodType;
+@property (nonatomic, strong) TypeInfo *methodResult;
 
 @end

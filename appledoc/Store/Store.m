@@ -11,6 +11,7 @@
 
 @interface Store ()
 @property (nonatomic, strong) PKToken *currentSourceInfo;
+@property (nonatomic, strong) NSMutableArray *registrationStack;
 @end
 
 #pragma mark - 
@@ -18,6 +19,49 @@
 @implementation Store
 
 @synthesize currentSourceInfo = _currentSourceInfo;
+@synthesize registrationStack = _registrationStack;
+
+#pragma mark - StoreRegistrar and related stuff
+
+- (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector {
+	if (self.registrationStack.count == 0) {
+		LogStoWarn(@"Expecting at least one object responding to %@ on registration stack!", NSStringFromSelector(selector));
+		return NO;
+	}
+	if (![self.currentRegistrationObject respondsToSelector:selector]) {
+		LogStoWarn(@"Current object %@ on registration stack doesn't respond to %@!", self.currentRegistrationObject, NSStringFromSelector(selector));
+		return NO;
+	}
+	return YES;
+}
+
+- (BOOL)doesCurrentRegistrationObjectRespondTo:(SEL)selector {
+	if (self.registrationStack.count == 0) return NO;
+	if (![self.currentRegistrationObject respondsToSelector:selector]) return NO;
+	return YES;
+}
+
+- (void)pushRegistrationObject:(id)object {
+	LogStoDebug(@"Pushing object %@ to registration stack...", object);
+	[self.registrationStack addObject:object];
+}
+
+- (id)popRegistrationObject {
+	id result = self.currentRegistrationObject;
+	[self.registrationStack removeLastObject];
+	return result;
+}
+
+- (id)currentRegistrationObject {
+	return [self.registrationStack lastObject];
+}
+
+- (NSMutableArray *)registrationStack {
+	if (_registrationStack) return _registrationStack;
+	LogStoDebug(@"Initializing registration stack due to first access...");
+	_registrationStack = [[NSMutableArray alloc] init];
+	return _registrationStack;
+}
 
 @end
 
@@ -29,7 +73,7 @@
 
 - (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived {
 	LogStoInfo(@"Starting class %@ derived from %@...", name, derived);
-	ClassInfo *info = [[ClassInfo alloc] init];
+	ClassInfo *info = [[ClassInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfSuperClass = derived;
 	[self pushRegistrationObject:info];
@@ -37,7 +81,7 @@
 
 - (void)beginExtensionForClassWithName:(NSString *)name {
 	LogStoInfo(@"Starting class extenstion for class %@...", name);
-	CategoryInfo *info = [[CategoryInfo alloc] init];
+	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfCategory = nil;
 	[self pushRegistrationObject:info];
@@ -45,7 +89,7 @@
 
 - (void)beginCategoryWithName:(NSString *)category forClassWithName:(NSString *)name {
 	LogStoInfo(@"Starting category %@ for class %@...", category, name);
-	CategoryInfo *info = [[CategoryInfo alloc] init];
+	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfCategory = category;
 	[self pushRegistrationObject:info];
@@ -53,42 +97,42 @@
 
 - (void)beginProtocolWithName:(NSString *)name {
 	LogStoInfo(@"Starting protocol %@...", name);
-	ProtocolInfo *info = [[ProtocolInfo alloc] init];
+	ProtocolInfo *info = [[ProtocolInfo alloc] initWithRegistrar:self];
 	info.nameOfProtocol = name;
 	[self pushRegistrationObject:info];
 }
 
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding adopted protocol registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendAdoptedProtocolWithName:name];
 }
 
 #pragma mark - Method groups
 
-- (void)beginMethodGroup {
+- (void)appendMethodGroupWithDescription:(NSString *)description {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	[self.currentRegistrationObject beginMethodGroup];
-}
-
-- (void)appendMethodGroupDescription:(NSString *)description {
-	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	[self.currentRegistrationObject appendMethodGroupDescription:description];
+	LogStoDebug(@"Forwarding method group description registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject appendMethodGroupWithDescription:description];
 }
 
 #pragma mark - Properties
 
 - (void)beginPropertyDefinition {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding property definition registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginPropertyDefinition];
 }
 
 - (void)beginPropertyAttributes {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding property attributes registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginPropertyAttributes];
 }
 
 - (void)appendPropertyName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding property name registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendPropertyName:name];
 }
 
@@ -96,21 +140,31 @@
 
 - (void)beginMethodDefinitionWithType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method definition registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginMethodDefinitionWithType:type];
+}
+
+- (void)beginMethodResults {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method results registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginMethodResults];
 }
 
 - (void)beginMethodArgument {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method arguments registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginMethodArgument];
 }
 
 - (void)appendMethodArgumentSelector:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method argument selector registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendMethodArgumentSelector:name];
 }
 
 - (void)appendMethodArgumentVariable:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method argument variable registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendMethodArgumentVariable:name];
 }
 
@@ -118,15 +172,18 @@
 
 - (void)beginEnumeration {
 	LogStoInfo(@"Starting enumeration...");
+	NSAssert(NO, @"Not implemented yet!");
 }
 
 - (void)appendEnumerationItem:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding enumeration item registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendEnumerationItem:name];
 }
 
 - (void)appendEnumerationValue:(NSString *)value {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding enumeration value registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendEnumerationValue:value];
 }
 
@@ -134,21 +191,25 @@
 
 - (void)beginStruct {
 	LogStoInfo(@"Starting C struct...");
+	NSAssert(NO, @"Not implemented yet!");
 }
 
 #pragma mark - Constants
 
 - (void)beginConstant {
 	LogStoInfo(@"Starting constant...");
+	NSAssert(NO, @"Not implemented yet!");
 }
 
 - (void)appendConstantType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding constant type registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendConstantType:type];
 }
 
 - (void)appendConstantName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding constant name registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendConstantName:name];
 }
 
@@ -156,18 +217,20 @@
 
 - (void)beginTypeDefinition {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding type definition registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginTypeDefinition];
 }
 
 - (void)appendType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding  registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendType:type];
 }
 
 #pragma mark - Finalizing registration for current object
 
 - (void)endCurrentObject {
-	if (self.registrationStack.count > 0 && [self.currentRegistrationObject respondsToSelector:_cmd]) {
+	if ([self doesCurrentRegistrationObjectRespondTo:_cmd]) {
 		LogStoDebug(@"Forwarding end current object to %@...", self.currentRegistrationObject);
 		[self.currentRegistrationObject endCurrentObject];
 	}
@@ -176,7 +239,7 @@
 }
 
 - (void)cancelCurrentObject {
-	if (self.registrationStack.count > 0 && [self.currentRegistrationObject respondsToSelector:_cmd]) {
+	if ([self doesCurrentRegistrationObjectRespondTo:_cmd]) {
 		LogStoDebug(@"Forwarding cancel current object to %@...", self.currentRegistrationObject);
 		[self.currentRegistrationObject cancelCurrentObject];
 	}

@@ -36,7 +36,7 @@
 	// Parse return types.
 	if ([stream.current matches:@"("]) {
 		LogParDebug(@"Matching method result...");
-		[store beginTypeDefinition];
+		[store beginMethodResults];
 		NSUInteger resultEndTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];

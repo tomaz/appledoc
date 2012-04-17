@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "StoreConstants.h"
+#import "StoreRegistrations.h"
 #import "ObjectLinkData.h"
 #import "MethodGroupData.h"
 #import "PropertyInfo.h"
@@ -95,27 +96,17 @@
 
 #pragma mark - Method groups
 
-- (void)beginMethodGroup {
+- (void)appendMethodGroupWithDescription:(NSString *)description {
 	LogStoInfo(@"Starting method group...");
-	MethodGroupData *data = [MethodGroupData methodGroupDataWithName:nil];
+	MethodGroupData *data = [MethodGroupData methodGroupDataWithName:description];
 	[self.interfaceMethodGroups addObject:data];
-	[self pushRegistrationObject:data];
-}
-
-- (void)appendMethodGroupDescription:(NSString *)description {
-	LogStoVerbose(@"Appending method group description '%@'...", description);
-	if (![self.currentRegistrationObject isKindOfClass:[MethodGroupData class]]) {
-		LogWarn(@"Unknown context for method group description (%@)!", self.currentRegistrationObject);
-		return;
-	}
-	[self.currentRegistrationObject setNameOfMethodGroup:description];
 }
 
 #pragma mark - Properties
 
 - (void)beginPropertyDefinition {
 	LogStoInfo(@"Starting property definition...");
-	PropertyInfo *info = [[PropertyInfo alloc] init];
+	PropertyInfo *info = [[PropertyInfo alloc] initWithRegistrar:self.objectRegistrar];
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[self.interfaceProperties addObject:info];
 	[self pushRegistrationObject:info];
@@ -127,7 +118,7 @@
 	LogStoInfo(@"Starting %@ method definition...", type);
 	NSMutableArray *methodsArray = [self methodsArrayForType:type];
 	if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
-	MethodInfo *info = [[MethodInfo alloc] init];
+	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.methodType = type;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[[self methodsArrayForType:type] addObject:info];
@@ -136,23 +127,8 @@
 
 #pragma mark - Finalizing registration for current object
 
-- (void)endCurrentObject {
-	if ([self.currentRegistrationObject isKindOfClass:[MethodGroupData class]]) {
-		LogStoVerbose(@"Ending current method group data...");
-		MethodGroupData *data = (MethodGroupData *)self.currentRegistrationObject;
-		if (data.methodGroupMethods.count == 0) {
-			LogStoVerbose(@"Method group is empty, removing!");
-			[self.interfaceMethodGroups removeObject:data];
-		}
-	}
-	[self popRegistrationObject];
-}
-
 - (void)cancelCurrentObject {
-	if ([self.currentRegistrationObject isKindOfClass:[MethodGroupData class]]) {
-		LogStoInfo(@"Cancelling current method group data!");
-		[self.interfaceMethodGroups removeObject:self.currentRegistrationObject];
-	} else if ([self.currentRegistrationObject isKindOfClass:[PropertyInfo class]]) {
+	if ([self.currentRegistrationObject isKindOfClass:[PropertyInfo class]]) {
 		LogStoInfo(@"Cancelling current property info!");
 		MethodGroupData *lastMethodGroup = [self.interfaceMethodGroups lastObject];
 		if ([lastMethodGroup.methodGroupMethods lastObject] == self.currentRegistrationObject) {
@@ -174,7 +150,6 @@
 	} else {
 		LogStoVerbose(@"Unknown context for cancel current object (%@)!", self.currentRegistrationObject);
 	}
-	[self popRegistrationObject];
 }
 
 @end

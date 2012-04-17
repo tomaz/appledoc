@@ -7,6 +7,7 @@
 //
 
 #import "Objects.h"
+#import "StoreRegistrations.h"
 #import "MethodGroupData.h"
 
 @implementation MethodGroupData

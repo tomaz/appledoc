@@ -28,9 +28,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodGroup];
-			[[store expect] appendMethodGroupDescription:@"word"];
-			[[store expect] endCurrentObject];
+			[[store expect] appendMethodGroupWithDescription:@"word"];
 			[[parser expect] popState];
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
@@ -47,9 +45,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodGroup];
-			[[store expect] appendMethodGroupDescription:@"word1 word2 word3"];
-			[[store expect] endCurrentObject];
+			[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3"];
 			[[parser expect] popState];
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
@@ -68,9 +64,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodGroup];
-			[[store expect] appendMethodGroupDescription:@"word1 word2 word3"];
-			[[store expect] endCurrentObject];
+			[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3"];
 			[[parser expect] popState];
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
@@ -87,9 +81,7 @@
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-			[[store expect] beginMethodGroup];
-			[[store expect] appendMethodGroupDescription:@"word1 word2 word3 -"];
-			[[store expect] endCurrentObject];
+			[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3 -"];
 			[[parser expect] popState];
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
