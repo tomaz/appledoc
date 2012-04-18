@@ -44,6 +44,7 @@
 
 - (void)beginPropertyDefinition;
 - (void)beginPropertyAttributes;
+- (void)beginPropertyTypes;
 - (void)appendPropertyName:(NSString *)name;
 
 #pragma mark - Methods
@@ -51,6 +52,7 @@
 - (void)beginMethodDefinitionWithType:(NSString *)type;
 - (void)beginMethodResults;
 - (void)beginMethodArgument;
+- (void)beginMethodArgumentTypes;
 - (void)appendMethodArgumentSelector:(NSString *)name;
 - (void)appendMethodArgumentVariable:(NSString *)name;
 
@@ -72,7 +74,6 @@
 
 #pragma mark - General objects
 
-- (void)beginTypeDefinition DEPRECATED_ATTRIBUTE;
 - (void)appendType:(NSString *)type;
 
 #pragma mark - Finalizing registrations

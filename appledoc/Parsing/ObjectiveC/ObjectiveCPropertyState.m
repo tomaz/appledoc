@@ -53,7 +53,7 @@
 	
 	// Parse declaration.
 	LogParDebug(@"Matching types and name.");
-	[store beginTypeDefinition];
+	[store beginPropertyTypes];
 	NSUInteger found = [stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		LogParDebug(@"Matched %@.", token);
 		if ([token matches:@";"]) {

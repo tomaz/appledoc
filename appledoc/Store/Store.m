@@ -130,6 +130,12 @@
 	[self.currentRegistrationObject beginPropertyAttributes];
 }
 
+- (void)beginPropertyTypes {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding property types registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginPropertyTypes];
+}
+
 - (void)appendPropertyName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding property name registration to %@...", self.currentRegistrationObject);
@@ -154,6 +160,12 @@
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding method arguments registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject beginMethodArgument];
+}
+
+- (void)beginMethodArgumentTypes {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method argument types registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginMethodArgumentTypes];
 }
 
 - (void)appendMethodArgumentSelector:(NSString *)name {
@@ -214,12 +226,6 @@
 }
 
 #pragma mark - General objects
-
-- (void)beginTypeDefinition {
-	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	LogStoDebug(@"Forwarding type definition registration to %@...", self.currentRegistrationObject);
-	[self.currentRegistrationObject beginTypeDefinition];
-}
 
 - (void)appendType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;

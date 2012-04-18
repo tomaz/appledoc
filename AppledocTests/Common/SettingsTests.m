@@ -68,8 +68,8 @@
 		[settings setBool:YES forKey:GBOptions.loggingStoreEnabled];
 		[settings setBool:YES forKey:GBOptions.loggingParsingEnabled];
 		// verify
-		assertThatUnsignedInteger(settings.loggingFormat, equalToUnsignedInteger(2));
-		assertThatUnsignedInteger(settings.loggingLevel, equalToUnsignedInteger(3));
+		assertThatInt(settings.loggingFormat, equalToInt(2));
+		assertThatInt(settings.loggingLevel, equalToInt(3));
 		assertThatBool(settings.loggingCommonEnabled, equalToBool(YES));
 		assertThatBool(settings.loggingStoreEnabled, equalToBool(YES));
 		assertThatBool(settings.loggingParsingEnabled, equalToBool(YES));

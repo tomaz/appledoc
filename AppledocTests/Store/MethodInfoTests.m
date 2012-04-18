@@ -32,10 +32,13 @@
 - (void)testBeginMethodResultsShouldChangeCurrentRegistrationObjectToResults {
 	[self runWithMethodInfo:^(MethodInfo *info) {
 		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		info.objectRegistrar = mock;
+		// execute
 		[info beginMethodResults];
 		// verify
-//		assertThatUnsignedInteger(info.registrationStack.count, equalToUnsignedInteger(1));
-//		assertThat(info.currentRegistrationObject, instanceOf([TypeInfo class]));
+		STAssertNoThrow([mock verify], nil);
 	}];
 }
 

@@ -29,7 +29,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginPropertyDefinition];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject];
 			[[store expect] appendPropertyName:@"name"];
@@ -51,7 +51,7 @@
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginPropertyDefinition];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];
@@ -80,7 +80,7 @@
 			[[store expect] beginPropertyAttributes];
 			[[store expect] appendType:@"attr"];
 			[[store expect] endCurrentObject];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject];
 			[[store expect] appendPropertyName:@"name"];
@@ -107,7 +107,7 @@
 			[[store expect] appendType:@"attr2"];
 			[[store expect] appendType:@"attr3"];
 			[[store expect] endCurrentObject];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject];
 			[[store expect] appendPropertyName:@"name"];
@@ -134,7 +134,7 @@
 			[[store expect] appendType:@"attr2"];
 			[[store expect] appendType:@"attr3"];
 			[[store expect] endCurrentObject];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];

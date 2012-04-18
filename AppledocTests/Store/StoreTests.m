@@ -138,6 +138,19 @@
 	}];
 }
 
+- (void)testBeginPropertyTypesShouldForwardToCurrentObject {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] beginPropertyTypes];
+		[store pushRegistrationObject:mock];
+		// execute
+		[store beginPropertyTypes];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
 - (void)testAppendPropertyNameShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
@@ -187,6 +200,19 @@
 		[store pushRegistrationObject:mock];
 		// execute
 		[store beginMethodArgument];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
+- (void)testBeginMethodArgumentTypesShouldForwardToCurrentObject {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] beginMethodArgumentTypes];
+		[store pushRegistrationObject:mock];
+		// execute
+		[store beginMethodArgumentTypes];
 		// verify
 		STAssertNoThrow([mock verify], nil);
 	}];

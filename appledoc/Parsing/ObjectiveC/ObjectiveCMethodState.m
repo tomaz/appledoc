@@ -74,7 +74,7 @@
 			// Parse optional argument variable types.
 			if ([stream.current matches:@"("]) {
 				LogParDebug(@"Matching method argument variable types.");
-				[store beginTypeDefinition];
+				[store beginMethodArgumentTypes];
 				NSUInteger endTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 					LogParDebug(@"Matched %@.", token);
 					[declaration appendFormat:@"%@ ", token.stringValue];

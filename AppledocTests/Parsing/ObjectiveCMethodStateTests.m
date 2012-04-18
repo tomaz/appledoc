@@ -126,7 +126,7 @@
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] endCurrentObject]; // argument types
 			[[store expect] appendMethodArgumentVariable:@"var"];
@@ -151,7 +151,7 @@
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];
@@ -208,14 +208,14 @@
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] endCurrentObject]; // argument types
 			[[store expect] appendMethodArgumentVariable:@"var1"];
 			[[store expect] endCurrentObject]; // method argument
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"that"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];
 			[[store expect] endCurrentObject]; // argument types
@@ -223,7 +223,7 @@
 			[[store expect] endCurrentObject]; // method argument
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"rocks"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type4"];
 			[[store expect] appendType:@"type5"];
 			[[store expect] appendType:@"type6"];
@@ -274,7 +274,7 @@
 			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 			[[store expect] beginMethodArgument];
 			[[store expect] appendMethodArgumentSelector:@"method"];
-			[[store expect] beginTypeDefinition];
+			[[store expect] beginMethodArgumentTypes];
 			[[store expect] appendType:@"type"];
 			[[store expect] cancelCurrentObject]; // result types
 			[[store expect] cancelCurrentObject]; // method argument
