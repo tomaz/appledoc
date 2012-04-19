@@ -8,10 +8,16 @@
 
 #import "ObjectInfoBase.h"
 
+@class TypeInfo;
+
 /** Holds data for a signle argument for a MethodInfo.
  
  An argument is composed of a selector, optional types and optional variable name.
  */
 @interface MethodArgumentInfo : ObjectInfoBase
+
+@property (nonatomic, strong) TypeInfo *argumentType;
+@property (nonatomic, copy) NSString *argumentSelector;
+@property (nonatomic, copy) NSString *argumentVariable;
 
 @end

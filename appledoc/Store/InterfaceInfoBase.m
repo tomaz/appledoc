@@ -115,7 +115,7 @@
 #pragma mark - Methods
 
 - (void)beginMethodDefinitionWithType:(NSString *)type {
-	LogStoInfo(@"Starting %@ method definition...", type);
+	LogStoInfo(@"Starting %@ definition...", type);
 	NSMutableArray *methodsArray = [self methodsArrayForType:type];
 	if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
 	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];

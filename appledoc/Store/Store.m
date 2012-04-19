@@ -240,7 +240,7 @@
 		LogStoDebug(@"Forwarding end current object to %@...", self.currentRegistrationObject);
 		[self.currentRegistrationObject endCurrentObject];
 	}
-	LogStoInfo(@"Finalizing current object...");
+	LogStoInfo(@"Finalizing %@...", self.currentRegistrationObject);
 	[self popRegistrationObject];
 }
 
@@ -249,7 +249,7 @@
 		LogStoDebug(@"Forwarding cancel current object to %@...", self.currentRegistrationObject);
 		[self.currentRegistrationObject cancelCurrentObject];
 	}
-	LogStoInfo(@"Cancelling current object...");
+	LogStoInfo(@"Cancelling %@...", self.currentRegistrationObject);
 	[self popRegistrationObject];
 }
 

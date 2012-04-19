@@ -9,6 +9,6 @@
 #import "StoreConstants.h"
 
 const struct GBStoreTypes GBStoreTypes = {
-	.classMethod = @"class-method",
-	.instanceMethod = @"instance-method",
+	.classMethod = @"class method",
+	.instanceMethod = @"instance method",
 };
