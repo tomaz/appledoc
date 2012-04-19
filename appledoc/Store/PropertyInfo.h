@@ -8,8 +8,18 @@
 
 #import "ObjectInfoBase.h"
 
+@class AttributesInfo;
+@class TypeInfo;
+
 /** Holds data for an Objective C property.
  */
 @interface PropertyInfo : ObjectInfoBase
+
+- (NSString *)propertyGetterSelector;
+- (NSString *)propertySetterSelector;
+
+@property (nonatomic, strong) AttributesInfo *propertyAttributes;
+@property (nonatomic, strong) TypeInfo *propertyType;
+@property (nonatomic, copy) NSString *propertyName;
 
 @end

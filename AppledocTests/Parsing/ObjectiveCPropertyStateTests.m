@@ -78,7 +78,7 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginPropertyDefinition];
 			[[store expect] beginPropertyAttributes];
-			[[store expect] appendType:@"attr"];
+			[[store expect] appendAttribute:@"attr"];
 			[[store expect] endCurrentObject];
 			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type"];
@@ -103,9 +103,9 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginPropertyDefinition];
 			[[store expect] beginPropertyAttributes];
-			[[store expect] appendType:@"attr1"];
-			[[store expect] appendType:@"attr2"];
-			[[store expect] appendType:@"attr3"];
+			[[store expect] appendAttribute:@"attr1"];
+			[[store expect] appendAttribute:@"attr2"];
+			[[store expect] appendAttribute:@"attr3"];
 			[[store expect] endCurrentObject];
 			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type"];
@@ -130,14 +130,45 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginPropertyDefinition];
 			[[store expect] beginPropertyAttributes];
-			[[store expect] appendType:@"attr1"];
-			[[store expect] appendType:@"attr2"];
-			[[store expect] appendType:@"attr3"];
+			[[store expect] appendAttribute:@"attr1"];
+			[[store expect] appendAttribute:@"attr2"];
+			[[store expect] appendAttribute:@"attr3"];
 			[[store expect] endCurrentObject];
 			[[store expect] beginPropertyTypes];
 			[[store expect] appendType:@"type1"];
 			[[store expect] appendType:@"type2"];
 			[[store expect] appendType:@"type3"];
+			[[store expect] endCurrentObject];
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] endCurrentObject];
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyWithCustomGetterAndSetter {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property (getter=isName, setter=setName:) type name;" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendAttribute:@"getter"];
+			[[store expect] appendAttribute:@"="];
+			[[store expect] appendAttribute:@"isName"];
+			[[store expect] appendAttribute:@"setter"];
+			[[store expect] appendAttribute:@"="];
+			[[store expect] appendAttribute:@"setName"];
+			[[store expect] appendAttribute:@":"];
+			[[store expect] endCurrentObject];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"type"];
 			[[store expect] endCurrentObject];
 			[[store expect] appendPropertyName:@"name"];
 			[[store expect] endCurrentObject];

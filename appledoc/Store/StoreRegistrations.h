@@ -75,6 +75,7 @@
 #pragma mark - General objects
 
 - (void)appendType:(NSString *)type;
+- (void)appendAttribute:(NSString *)attribute;
 
 #pragma mark - Finalizing registrations
 

@@ -39,7 +39,7 @@
 			LogParDebug(@"Matched %@.", token);
 			[declaration appendFormat:@"%@ ", token.stringValue];
 			if ([token matches:delimiters]) return;
-			[store appendType:token.stringValue];
+			[store appendAttribute:token.stringValue];
 		}];
 		if (found == NSNotFound) {
 			LogParDebug(@"Failed matching attributes, bailing out.");

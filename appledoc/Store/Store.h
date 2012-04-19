@@ -11,6 +11,7 @@
 
 #import "TypeInfo.h"
 #import "ObjectLinkData.h"
+#import "AttributesInfo.h"
 #import "MethodGroupData.h"
 #import "MethodArgumentInfo.h"
 

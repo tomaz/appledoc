@@ -18,6 +18,15 @@
 
 @implementation TypeInfoTests
 
+#pragma mark - Verify lazy initialization
+
+- (void)testLazyInitializationShouldWork {
+	[self runWithTypeInfo:^(TypeInfo *info) {
+		// execute & verify
+		assertThat(info.typeItems, instanceOf([NSMutableArray class]));
+	}];
+}
+
 #pragma mark - appendType:
 
 - (void)testAppendTypeShouldAddAllStringsToTypeItemsArray {

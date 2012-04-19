@@ -333,6 +333,34 @@
 	}];
 }
 
+#pragma mark - Verify handling of common registrations
+
+- (void)testAppendTypeShouldForwardToCurrentObject {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendType:@"value"];
+		[store pushRegistrationObject:mock];
+		// execute
+		[store appendType:@"value"];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
+- (void)testAppendAttributeShouldForwardToCurrentObject {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] appendAttribute:@"value"];
+		[store pushRegistrationObject:mock];
+		// execute
+		[store appendAttribute:@"value"];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
 #pragma mark - endCurrentObject
 
 - (void)testEndCurrentObjectShouldForwardToCurrentObjectIfItRespondsToEndMessageThenRemoveObjectFromRegistrationStack {

@@ -229,8 +229,14 @@
 
 - (void)appendType:(NSString *)type {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	LogStoDebug(@"Forwarding  registration to %@...", self.currentRegistrationObject);
+	LogStoDebug(@"Forwarding type registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendType:type];
+}
+
+- (void)appendAttribute:(NSString *)attribute {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding attribute registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject appendAttribute:attribute];
 }
 
 #pragma mark - Finalizing registration for current object
