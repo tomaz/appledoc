@@ -476,6 +476,7 @@
 					return;
 				}
 				[self.tokenizer resetComments];
+				*consume = NO;
 				*stop = YES;
 				return;
 			}
