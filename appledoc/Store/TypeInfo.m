@@ -14,13 +14,6 @@
 
 @synthesize typeItems = _typeItems;
 
-#pragma mark - Registration handling
-
-- (void)appendType:(NSString *)type {
-	LogStoVerbose(@"Appending type '%@'...", type);
-	[self.typeItems addObject:type];
-}
-
 #pragma mark - Properties
 
 - (NSMutableArray *)typeItems {
@@ -28,6 +21,17 @@
 	LogStoDebug(@"Initializing type items array due to first access...");
 	_typeItems = [[NSMutableArray alloc] init];
 	return _typeItems;
+}
+
+@end
+
+#pragma mark - 
+
+@implementation TypeInfo (Registrations)
+
+- (void)appendType:(NSString *)type {
+	LogStoVerbose(@"Appending type '%@'...", type);
+	[self.typeItems addObject:type];
 }
 
 @end

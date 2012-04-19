@@ -16,5 +16,6 @@
 
 @property (nonatomic, strong) NSString *methodType;
 @property (nonatomic, strong) TypeInfo *methodResult;
+@property (nonatomic, strong) NSMutableArray *methodArguments;
 
 @end

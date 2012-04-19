@@ -148,7 +148,7 @@
 		if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
 		[methodsArray removeLastObject];
 	} else {
-		LogStoVerbose(@"Unknown context for cancel current object (%@)!", self.currentRegistrationObject);
+		LogWarn(@"Unknown context for cancel current object (%@)!", self.currentRegistrationObject);
 	}
 }
 

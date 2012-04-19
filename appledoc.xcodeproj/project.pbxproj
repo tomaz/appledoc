@@ -50,6 +50,9 @@
 		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
 		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
+		7349F658153ED21D004D7AC7 /* TypeInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F657153ED21D004D7AC7 /* TypeInfoTests.m */; };
+		7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
+		7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
 		73500D3015174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
@@ -187,6 +190,9 @@
 		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
 		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
 		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
+		7349F657153ED21D004D7AC7 /* TypeInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeInfoTests.m; sourceTree = "<group>"; };
+		7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodArgumentInfo.h; sourceTree = "<group>"; };
+		7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfo.m; sourceTree = "<group>"; };
 		73500D2E15174910000416E3 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Store.h; sourceTree = "<group>"; };
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
@@ -425,6 +431,7 @@
 			children = (
 				7381A67B1536D04E00BF9BDD /* StoreTests.m */,
 				73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */,
+				7349F657153ED21D004D7AC7 /* TypeInfoTests.m */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
 				733E445C153D516E0039010F /* MethodInfoTests.m */,
 			);
@@ -444,6 +451,8 @@
 				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
 				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
 				7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */,
+				7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */,
+				7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -705,6 +714,8 @@
 				730FB578153C0889002DB54F /* MethodInfo.m in Sources */,
 				733E445D153D516E0039010F /* MethodInfoTests.m in Sources */,
 				731341FF153D5891002D5C54 /* TypeInfo.m in Sources */,
+				7349F658153ED21D004D7AC7 /* TypeInfoTests.m in Sources */,
+				7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,6 +759,7 @@
 				730FB572153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB577153C0889002DB54F /* MethodInfo.m in Sources */,
 				731341FE153D5891002D5C54 /* TypeInfo.m in Sources */,
+				7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

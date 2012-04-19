@@ -24,6 +24,7 @@
 	[self runWithMethodInfo:^(MethodInfo *info) {
 		// execute & verify
 		assertThat(info.methodResult, instanceOf([TypeInfo class]));
+		assertThat(info.methodArguments, instanceOf([NSMutableArray class]));
 	}];
 }
 
@@ -39,6 +40,40 @@
 		[info beginMethodResults];
 		// verify
 		STAssertNoThrow([mock verify], nil);
+	}];
+}
+
+#pragma mark - beginMethodArgument
+
+- (void)testBeginMethodArgumentShouldCreateNewMethodArgument {
+	[self runWithMethodInfo:^(MethodInfo *info) {
+		// setup
+		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		info.objectRegistrar = mock;
+		// execute
+		[info beginMethodArgument];
+		// verify
+		STAssertNoThrow([mock verify], nil);
+		assertThatInt(info.methodArguments.count, equalToInt(1));
+		assertThat([info.methodArguments lastObject], instanceOf([MethodArgumentInfo class]));
+		assertThat([[info.methodArguments lastObject] objectRegistrar], equalTo(mock));
+	}];
+}
+
+#pragma mark - cancelCurrentObject
+
+- (void)testCancelCurrentObjectShouldRemoveMethodArgument {
+	[self runWithMethodInfo:^(MethodInfo *info) {
+		// setup
+		[info beginMethodArgument];
+		id mock = [OCMockObject niceMockForClass:[Store class]];
+		[[[mock stub] andReturn:info.methodArguments.lastObject] currentRegistrationObject];
+		info.objectRegistrar = mock;
+		// execute
+		[info cancelCurrentObject];
+		// verify
+		assertThatInt(info.methodArguments.count, equalToInt(0));
 	}];
 }
 
