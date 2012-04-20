@@ -34,6 +34,7 @@
 		assertThat(store.storeCategories, instanceOf([NSMutableArray class]));
 		assertThat(store.storeProtocols, instanceOf([NSMutableArray class]));
 		assertThat(store.storeEnumerations, instanceOf([NSMutableArray class]));
+		assertThat(store.storeStructs, instanceOf([NSMutableArray class]));
 		assertThat(store.registrationStack, instanceOf([NSMutableArray class]));
 	}];
 }
@@ -349,7 +350,21 @@
 
 - (void)testBeginStructShouldRegistrStructInfo {
 	[self runWithStore:^(Store *store) {
-		// TODO!!! STFail(@"not implemented!");
+		// execute
+		[store beginStruct];
+		// verify
+		assertThat(store.currentRegistrationObject, instanceOf([StructInfo class]));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
+	}];
+}
+
+- (void)testBeginStructShouldAddStructInfoToStructuresArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginStruct];
+		// verify
+		assertThatInt(store.storeStructs.count, equalToInt(1));
+		assertThat([store.storeStructs lastObject], equalTo(store.currentRegistrationObject));
 	}];
 }
 

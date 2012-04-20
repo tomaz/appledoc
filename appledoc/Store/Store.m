@@ -23,6 +23,7 @@
 @synthesize storeCategories = _storeCategories;
 @synthesize storeProtocols = _storeProtocols;
 @synthesize storeEnumerations = _storeEnumerations;
+@synthesize storeStructs = _storeStructs;
 @synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize registrationStack = _registrationStack;
 
@@ -103,6 +104,13 @@
 	LogStoDebug(@"Initializing store enumerations array due to first access...");
 	_storeEnumerations = [[NSMutableArray alloc] init];
 	return _storeEnumerations;
+}
+
+- (NSMutableArray *)storeStructs {
+	if (_storeStructs) return _storeStructs;
+	LogStoDebug(@"Initializing store structs array due to first access...");
+	_storeStructs = [[NSMutableArray alloc] init];
+	return _storeStructs;
 }
 
 @end
@@ -251,7 +259,9 @@
 
 - (void)beginStruct {
 	LogStoInfo(@"Starting C struct...");
-	NSAssert(NO, @"Not implemented yet!");
+	StructInfo *info = [[StructInfo alloc] initWithRegistrar:self];
+	[self.storeStructs addObject:info];
+	[self pushRegistrationObject:info];
 }
 
 #pragma mark - Constants

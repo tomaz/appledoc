@@ -107,6 +107,8 @@
 		73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DB1541A14700600606 /* EnumInfoTests.m */; };
 		73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
 		73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
+		73E416E41541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
+		73E416E51541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */; };
 		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */; };
@@ -265,6 +267,8 @@
 		73E416DB1541A14700600606 /* EnumInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumInfoTests.m; sourceTree = "<group>"; };
 		73E416DE1541A8B100600606 /* EnumItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumItemInfo.h; sourceTree = "<group>"; };
 		73E416DF1541A8B100600606 /* EnumItemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumItemInfo.m; sourceTree = "<group>"; };
+		73E416E21541BAE000600606 /* StructInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructInfo.h; sourceTree = "<group>"; };
+		73E416E31541BAE000600606 /* StructInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructInfo.m; sourceTree = "<group>"; };
 		73ED9444150E9FEC0032FD07 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
@@ -431,6 +435,8 @@
 				7381A6871536E2F000BF9BDD /* ProtocolInfo.m */,
 				731103BB15418B4B005F46E5 /* EnumInfo.h */,
 				731103BC15418B4B005F46E5 /* EnumInfo.m */,
+				73E416E21541BAE000600606 /* StructInfo.h */,
+				73E416E31541BAE000600606 /* StructInfo.m */,
 				730FB570153BFF2E002DB54F /* PropertyInfo.h */,
 				730FB571153BFF2E002DB54F /* PropertyInfo.m */,
 				730FB575153C0889002DB54F /* MethodInfo.h */,
@@ -773,6 +779,7 @@
 				731103BE15418B4B005F46E5 /* EnumInfo.m in Sources */,
 				73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */,
 				73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */,
+				73E416E51541BAE000600606 /* StructInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -820,6 +827,7 @@
 				730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */,
 				731103BD15418B4B005F46E5 /* EnumInfo.m in Sources */,
 				73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */,
+				73E416E41541BAE000600606 /* StructInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

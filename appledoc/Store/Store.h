@@ -20,6 +20,7 @@
 #import "CategoryInfo.h"
 #import "ProtocolInfo.h"
 #import "EnumInfo.h"
+#import "StructInfo.h"
 
 #import "PropertyInfo.h"
 #import "MethodInfo.h"
@@ -39,5 +40,6 @@
 @property (nonatomic, strong) NSMutableArray *storeCategories;
 @property (nonatomic, strong) NSMutableArray *storeProtocols;
 @property (nonatomic, strong) NSMutableArray *storeEnumerations;
+@property (nonatomic, strong) NSMutableArray *storeStructs;
 
 @end
