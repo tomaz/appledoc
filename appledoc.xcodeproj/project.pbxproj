@@ -16,6 +16,7 @@
 		730FB577153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		730FB578153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		731103401541554E005F46E5 /* MethodStateMultipleDeclarations.m in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */; };
+		731103BA1541850C005F46E5 /* PropertyStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */; };
 		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
 		731341FE153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
 		731341FF153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
@@ -143,6 +144,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				731103BA1541850C005F46E5 /* PropertyStateMultipleDefinitions.h in Copy resources to bundle */,
 				73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */,
 				731103401541554E005F46E5 /* MethodStateMultipleDeclarations.m in Copy resources to bundle */,
 			);
@@ -161,6 +163,7 @@
 		730FB575153C0889002DB54F /* MethodInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodInfo.h; sourceTree = "<group>"; };
 		730FB576153C0889002DB54F /* MethodInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfo.m; sourceTree = "<group>"; };
 		7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodStateMultipleDeclarations.m; sourceTree = "<group>"; };
+		731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyStateMultipleDefinitions.h; sourceTree = "<group>"; };
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		731341FC153D5891002D5C54 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeInfo.h; sourceTree = "<group>"; };
@@ -461,14 +464,14 @@
 		7381A67D1536D60800BF9BDD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				731341FC153D5891002D5C54 /* TypeInfo.h */,
-				731341FD153D5891002D5C54 /* TypeInfo.m */,
-				730BCC8A1540046F00B909FD /* AttributesInfo.h */,
-				730BCC8B1540046F00B909FD /* AttributesInfo.m */,
 				735CD2BD1538109900CADD4E /* ObjectLinkData.h */,
 				735CD2BE1538109900CADD4E /* ObjectLinkData.m */,
 				735CD2C4153817E400CADD4E /* MethodGroupData.h */,
 				735CD2C5153817E500CADD4E /* MethodGroupData.m */,
+				731341FC153D5891002D5C54 /* TypeInfo.h */,
+				731341FD153D5891002D5C54 /* TypeInfo.m */,
+				730BCC8A1540046F00B909FD /* AttributesInfo.h */,
+				730BCC8B1540046F00B909FD /* AttributesInfo.m */,
 				7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */,
 				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
 				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
@@ -586,6 +589,7 @@
 		73F59070154148850078DA60 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */,
 				73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */,
 				7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */,
 			);

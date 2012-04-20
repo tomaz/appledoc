@@ -182,6 +182,47 @@
 	}];
 }
 
+#pragma mark - Multiple properties
+
+- (void)testParseStreamForParserStoreShouldDetectMultipleProperties {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithFile:@"PropertyStateMultipleDefinitions.h" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendAttribute:@"nonatomic"];
+			[[store expect] appendAttribute:@"strong"];
+			[[store expect] endCurrentObject]; // attributes
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"property1"];
+			[[store expect] endCurrentObject]; // property
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyAttributes];
+			[[store expect] appendAttribute:@"nonatomic"];
+			[[store expect] appendAttribute:@"copy"];
+			[[store expect] appendAttribute:@"readonly"];
+			[[store expect] endCurrentObject]; // attributes
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSArray"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"property2"];
+			[[store expect] endCurrentObject]; // property
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+		}];
+	}];
+}
+
 @end
 
 #pragma mark - 
