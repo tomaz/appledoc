@@ -15,6 +15,7 @@
 		730FB573153BFF2E002DB54F /* PropertyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB571153BFF2E002DB54F /* PropertyInfo.m */; };
 		730FB577153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		730FB578153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
+		731103401541554E005F46E5 /* MethodStateMultipleDeclarations.m in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */; };
 		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
 		731341FE153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
 		731341FF153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
@@ -143,6 +144,7 @@
 			dstSubfolderSpec = 7;
 			files = (
 				73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */,
+				731103401541554E005F46E5 /* MethodStateMultipleDeclarations.m in Copy resources to bundle */,
 			);
 			name = "Copy resources to bundle";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -158,6 +160,7 @@
 		730FB571153BFF2E002DB54F /* PropertyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropertyInfo.m; sourceTree = "<group>"; };
 		730FB575153C0889002DB54F /* MethodInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodInfo.h; sourceTree = "<group>"; };
 		730FB576153C0889002DB54F /* MethodInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfo.m; sourceTree = "<group>"; };
+		7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodStateMultipleDeclarations.m; sourceTree = "<group>"; };
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		731341FC153D5891002D5C54 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeInfo.h; sourceTree = "<group>"; };
@@ -584,6 +587,7 @@
 			isa = PBXGroup;
 			children = (
 				73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */,
+				7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */,
 			);
 			path = Data;
 			sourceTree = "<group>";

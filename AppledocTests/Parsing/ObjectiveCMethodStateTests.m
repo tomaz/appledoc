@@ -302,6 +302,65 @@
 	}];
 }
 
+- (void)testParseStreamForParserStoreShouldDetectMultipleMethodDeclarationsIgnoringMethodBodies {
+	[self runWithState:^(ObjectiveCMethodState *state) {
+		[self runWithFile:@"MethodStateMultipleDeclarations.m" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodResults];
+			[[store expect] appendType:@"void"];
+			[[store expect] endCurrentObject]; // method result
+			[[store expect] beginMethodArgument];
+			[[store expect] appendMethodArgumentSelector:@"method1"];
+			[[store expect] endCurrentObject]; // method argument
+			[[store expect] endCurrentObject]; // method definition
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodResults];
+			[[store expect] appendType:@"void"];
+			[[store expect] endCurrentObject]; // method result
+			[[store expect] beginMethodArgument];
+			[[store expect] appendMethodArgumentSelector:@"method2"];
+			[[store expect] beginMethodArgumentTypes];
+			[[store expect] appendType:@"int"];
+			[[store expect] endCurrentObject]; // argument types
+			[[store expect] appendMethodArgumentVariable:@"arg"];
+			[[store expect] endCurrentObject]; // method argument
+			[[store expect] endCurrentObject]; // method definition
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+			[[store expect] beginMethodResults];
+			[[store expect] appendType:@"void"];
+			[[store expect] endCurrentObject]; // method result
+			[[store expect] beginMethodArgument];
+			[[store expect] appendMethodArgumentSelector:@"method3"];
+			[[store expect] beginMethodArgumentTypes];
+			[[store expect] appendType:@"int"];
+			[[store expect] endCurrentObject]; // argument types
+			[[store expect] appendMethodArgumentVariable:@"arg1"];
+			[[store expect] endCurrentObject]; // method argument
+			[[store expect] beginMethodArgument];
+			[[store expect] appendMethodArgumentSelector:@"second"];
+			[[store expect] beginMethodArgumentTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // argument types
+			[[store expect] appendMethodArgumentVariable:@"arg2"];
+			[[store expect] endCurrentObject]; // method argument
+			[[store expect] endCurrentObject]; // method definition
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			[state parseStream:tokens forParser:parser store:store];
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+		}];
+	}];
+}
+
 #pragma mark - Verify various fail cases
 
 - (void)testParseStreamForParserStoreShouldFailIfClosingResultsParenthesisIsNotFound {

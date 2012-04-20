@@ -117,12 +117,10 @@
 				LogParDebug(@"Matched open brace at block level %lu", blockLevel);
 				blockLevel++;
 			} else if ([token matches:@"}"]) {
-				if (blockLevel == 1) {
+				LogParDebug(@"Matched close brace at block level %lu", blockLevel);
+				if (--blockLevel == 1) {
 					LogParDebug(@"Matched method close brace");
 					*stop = YES;
-				} else {
-					LogParDebug(@"Matched close brace at block level %lu", blockLevel);
-					blockLevel--;
 				}
 			}
 		}];
