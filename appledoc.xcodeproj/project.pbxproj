@@ -104,6 +104,9 @@
 		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
 		73E289F51518E24D00D53484 /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
 		73E289F61518E24D00D53484 /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
+		73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DB1541A14700600606 /* EnumInfoTests.m */; };
+		73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
+		73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */; };
 		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */; };
@@ -259,6 +262,9 @@
 		73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPragmaMarkStateTests.m; sourceTree = "<group>"; };
 		73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCEnumStateTests.m; sourceTree = "<group>"; };
 		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfoTests.m; sourceTree = "<group>"; };
+		73E416DB1541A14700600606 /* EnumInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumInfoTests.m; sourceTree = "<group>"; };
+		73E416DE1541A8B100600606 /* EnumItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumItemInfo.h; sourceTree = "<group>"; };
+		73E416DF1541A8B100600606 /* EnumItemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumItemInfo.m; sourceTree = "<group>"; };
 		73ED9444150E9FEC0032FD07 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
@@ -460,6 +466,7 @@
 				7349F657153ED21D004D7AC7 /* TypeInfoTests.m */,
 				730BCC8E1540057000B909FD /* AttributesInfoTests.m */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
+				73E416DB1541A14700600606 /* EnumInfoTests.m */,
 				733E445C153D516E0039010F /* MethodInfoTests.m */,
 				73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */,
 				730BCC87153FF91C00B909FD /* PropertyInfoTests.m */,
@@ -484,6 +491,8 @@
 				7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */,
 				7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */,
 				7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */,
+				73E416DE1541A8B100600606 /* EnumItemInfo.h */,
+				73E416DF1541A8B100600606 /* EnumItemInfo.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -762,6 +771,8 @@
 				730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */,
 				730BCC8F1540057000B909FD /* AttributesInfoTests.m in Sources */,
 				731103BE15418B4B005F46E5 /* EnumInfo.m in Sources */,
+				73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */,
+				73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,6 +819,7 @@
 				7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */,
 				730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */,
 				731103BD15418B4B005F46E5 /* EnumInfo.m in Sources */,
+				73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
