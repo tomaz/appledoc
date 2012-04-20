@@ -314,6 +314,27 @@
 		[self.currentRegistrationObject cancelCurrentObject];
 	}
 	LogStoInfo(@"Cancelling %@...", self.currentRegistrationObject);
+	if ([self.currentRegistrationObject isKindOfClass:[ClassInfo class]]) {
+		LogStoDebug(@"Removing from classes array...");
+		[self.storeClasses removeLastObject];
+	} else if ([self.currentRegistrationObject isKindOfClass:[CategoryInfo class]]) {
+		if ([self.currentRegistrationObject isExtension]) {
+			LogStoDebug(@"Removing from extensions array...");
+			[self.storeExtensions removeLastObject];
+		} else {
+			LogStoDebug(@"Removing from categories array...");
+			[self.storeCategories removeLastObject];
+		}
+	} else if ([self.currentRegistrationObject isKindOfClass:[ProtocolInfo class]]) {
+		LogStoDebug(@"Removing from protocols array...");
+		[self.storeProtocols removeLastObject];
+	} else if ([self.currentRegistrationObject isKindOfClass:[EnumInfo class]]) {
+		LogStoDebug(@"Removing from enumerations array...");
+		[self.storeEnumerations removeLastObject];
+	} else if ([self.currentRegistrationObject isKindOfClass:[StructInfo class]]) {
+		LogStoDebug(@"Removing from structs array...");
+		[self.storeStructs removeLastObject];
+	}
 	[self popRegistrationObject];
 }
 

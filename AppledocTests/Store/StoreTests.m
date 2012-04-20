@@ -489,6 +489,7 @@
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
+		[[mock stub] isKindOfClass:OCMOCK_ANY]; // store checks if it's one of the top level objects and removes it from array if so
 		[[mock expect] cancelCurrentObject];
 		[store pushRegistrationObject:mock];
 		// execute
@@ -519,6 +520,78 @@
 		[store cancelCurrentObject];
 		// verify - real code logs a warning, but we don't test that here
 		assertThatInt(store.registrationStack.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastClass {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeClasses.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastExtension {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginExtensionForClassWithName:@"name"];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeExtensions.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastCategory {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeCategories.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastProtocol {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginProtocolWithName:@"name"];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeProtocols.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastEnumeration {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginEnumeration];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeEnumerations.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastStruct {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginStruct];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeStructs.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }
