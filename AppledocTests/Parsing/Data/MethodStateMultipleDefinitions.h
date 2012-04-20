@@ -1,0 +1,3 @@
+- (void)method1;
+- (void)method2:(int)arg;
+- (void)method3:(int)arg1 second:(NSString **)arg2;

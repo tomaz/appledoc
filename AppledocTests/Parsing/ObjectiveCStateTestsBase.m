@@ -21,8 +21,8 @@
 	handler(parserMock, tokens);
 }
 
-- (void)runWithFile:(NSString *)file key:(NSString *)key block:(GBStateMockBlock)handler {
-	NSString *string = [TestStrings stringFromFile:file key:key];
+- (void)runWithFile:(NSString *)file block:(GBStateMockBlock)handler {
+	NSString *string = [TestStrings stringFromResourceFile:file];
 	[self runWithString:string block:handler];
 }
 

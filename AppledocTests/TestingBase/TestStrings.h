@@ -8,6 +8,7 @@
 
 @interface TestStrings : NSObject
 
-+ (NSString *)stringFromFile:(NSString *)file key:(NSString *)key;
++ (NSDictionary *)dictionaryFromResourceFile:(NSString *)file;
++ (NSString *)stringFromResourceFile:(NSString *)file;
 
 @end

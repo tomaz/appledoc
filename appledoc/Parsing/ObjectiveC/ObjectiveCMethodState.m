@@ -67,7 +67,6 @@
 		if ([stream.current matches:@":"]) {
 			// If colon is found, try match variable types and name.
 			LogParDebug(@"Matched colon, expecting types and variable name.");
-			isMatchingMethodBody = YES;
 			[declaration appendFormat:@"%@ ", stream.current.stringValue];
 			[stream consume:1];
 		
@@ -129,6 +128,9 @@
 		}];
 		[stream consume:tokensCount];
 		[declaration appendString:@"}"];
+	} else {
+		LogParDebug(@"Skipping semicolon...");
+		[stream consume:1];
 	}
 	
 	LogParVerbose(@"%@", declaration);

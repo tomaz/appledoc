@@ -12,20 +12,29 @@ static NSMutableDictionary *GBCachedFiles = nil;
 
 @implementation TestStrings
 
-+ (NSDictionary *)dataFromFile:(NSString *)file {
++ (id)handleCachedFile:(NSString *)file block:(void(^)(NSString *path, id *contents))handler {
 	if (!GBCachedFiles) GBCachedFiles = [NSMutableDictionary dictionary];
-	NSDictionary *result = [GBCachedFiles objectForKey:file];
+	id result = [GBCachedFiles objectForKey:file];
 	if (result) return result;
 	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-	NSString *path = [bundle pathForResource:file ofType:@"plist"];
-	result = [NSDictionary dictionaryWithContentsOfFile:path];
+	NSString *filename = [file stringByDeletingPathExtension];
+	NSString *extension = [file pathExtension];
+	NSString *path = [bundle pathForResource:filename ofType:extension];
+	handler(path, &result);
 	if (result) [GBCachedFiles setObject:result forKey:file];
 	return result;
 }
 
-+ (NSString *)stringFromFile:(NSString *)file key:(NSString *)key {
-	NSDictionary *data = [self dataFromFile:file];
-	return [data objectForKey:key];
++ (NSDictionary *)dictionaryFromResourceFile:(NSString *)file {
+	return [self handleCachedFile:file block:^(NSString *path, id *contents) {
+		*contents = [NSDictionary dictionaryWithContentsOfFile:path];
+	}];
+}
+
++ (NSString *)stringFromResourceFile:(NSString *)file {
+	return [self handleCachedFile:file block:^(NSString *path, id *contents) {
+		*contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+	}];
 }
 
 @end

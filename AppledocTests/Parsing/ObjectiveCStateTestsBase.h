@@ -16,6 +16,6 @@ typedef void(^GBStateMockBlock)(id parser, id tokens);
 @interface ObjectiveCStateTestsBase : TestCaseBase
 
 - (void)runWithString:(NSString *)string block:(GBStateMockBlock)handler;
-- (void)runWithFile:(NSString *)file key:(NSString *)key block:(GBStateMockBlock)handler;
+- (void)runWithFile:(NSString *)file block:(GBStateMockBlock)handler;
 
 @end
