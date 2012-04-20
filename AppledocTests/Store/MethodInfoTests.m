@@ -34,7 +34,9 @@
 	[self runWithMethodInfo:^(MethodInfo *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[TypeInfo class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginMethodResults];
@@ -49,7 +51,9 @@
 	[self runWithMethodInfo:^(MethodInfo *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[MethodArgumentInfo class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginMethodArgument];

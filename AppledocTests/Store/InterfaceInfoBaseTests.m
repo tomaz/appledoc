@@ -62,7 +62,9 @@
 	[self runWithInterfaceInfoBase:^(InterfaceInfoBase *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[MethodGroupData class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info appendMethodGroupWithDescription:@"description"];
@@ -80,7 +82,9 @@
 	[self runWithInterfaceInfoBase:^(InterfaceInfoBase *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[PropertyInfo class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginPropertyDefinition];
@@ -112,7 +116,9 @@
 	[self runWithInterfaceInfoBase:^(InterfaceInfoBase *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return ([obj isKindOfClass:[MethodInfo class]] && [[obj methodType] isEqual:GBStoreTypes.classMethod]);
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginMethodDefinitionWithType:GBStoreTypes.classMethod];
@@ -131,7 +137,9 @@
 	[self runWithInterfaceInfoBase:^(InterfaceInfoBase *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return ([obj isKindOfClass:[MethodInfo class]] && [[obj methodType] isEqual:GBStoreTypes.instanceMethod]);
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];

@@ -79,7 +79,9 @@
 	[self runWithPropertyInfo:^(PropertyInfo *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[AttributesInfo class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginPropertyAttributes];
@@ -94,7 +96,9 @@
 	[self runWithPropertyInfo:^(PropertyInfo *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:OCMOCK_ANY];
+		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+			return [obj isKindOfClass:[TypeInfo class]];
+		}]];
 		info.objectRegistrar = mock;
 		// execute
 		[info beginPropertyTypes];
