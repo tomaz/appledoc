@@ -18,6 +18,8 @@
 #import "ClassInfo.h"
 #import "CategoryInfo.h"
 #import "ProtocolInfo.h"
+#import "EnumInfo.h"
+
 #import "PropertyInfo.h"
 #import "MethodInfo.h"
 

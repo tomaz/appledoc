@@ -17,6 +17,8 @@
 		730FB578153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
 		731103401541554E005F46E5 /* MethodStateMultipleDeclarations.m in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */; };
 		731103BA1541850C005F46E5 /* PropertyStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */; };
+		731103BD15418B4B005F46E5 /* EnumInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731103BC15418B4B005F46E5 /* EnumInfo.m */; };
+		731103BE15418B4B005F46E5 /* EnumInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731103BC15418B4B005F46E5 /* EnumInfo.m */; };
 		73118B12151906F100E9D7F1 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73118B11151906F100E9D7F1 /* Constants.m */; };
 		731341FE153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
 		731341FF153D5891002D5C54 /* TypeInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 731341FD153D5891002D5C54 /* TypeInfo.m */; };
@@ -164,6 +166,8 @@
 		730FB576153C0889002DB54F /* MethodInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfo.m; sourceTree = "<group>"; };
 		7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodStateMultipleDeclarations.m; sourceTree = "<group>"; };
 		731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyStateMultipleDefinitions.h; sourceTree = "<group>"; };
+		731103BB15418B4B005F46E5 /* EnumInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumInfo.h; sourceTree = "<group>"; };
+		731103BC15418B4B005F46E5 /* EnumInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumInfo.m; sourceTree = "<group>"; };
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		73118B11151906F100E9D7F1 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		731341FC153D5891002D5C54 /* TypeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeInfo.h; sourceTree = "<group>"; };
@@ -419,6 +423,8 @@
 				7381A67F1536D62400BF9BDD /* CategoryInfo.m */,
 				7381A6861536E2F000BF9BDD /* ProtocolInfo.h */,
 				7381A6871536E2F000BF9BDD /* ProtocolInfo.m */,
+				731103BB15418B4B005F46E5 /* EnumInfo.h */,
+				731103BC15418B4B005F46E5 /* EnumInfo.m */,
 				730FB570153BFF2E002DB54F /* PropertyInfo.h */,
 				730FB571153BFF2E002DB54F /* PropertyInfo.m */,
 				730FB575153C0889002DB54F /* MethodInfo.h */,
@@ -755,6 +761,7 @@
 				730BCC88153FF91C00B909FD /* PropertyInfoTests.m in Sources */,
 				730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */,
 				730BCC8F1540057000B909FD /* AttributesInfoTests.m in Sources */,
+				731103BE15418B4B005F46E5 /* EnumInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -800,6 +807,7 @@
 				731341FE153D5891002D5C54 /* TypeInfo.m in Sources */,
 				7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */,
 				730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */,
+				731103BD15418B4B005F46E5 /* EnumInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -184,7 +184,8 @@
 
 - (void)beginEnumeration {
 	LogStoInfo(@"Starting enumeration...");
-	NSAssert(NO, @"Not implemented yet!");
+	EnumInfo *info = [[EnumInfo alloc] initWithRegistrar:self];
+	[self pushRegistrationObject:info];
 }
 
 - (void)appendEnumerationItem:(NSString *)name {

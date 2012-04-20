@@ -248,7 +248,11 @@
 
 - (void)testBeginEnumerationShouldRegisterEnumInfo {
 	[self runWithStore:^(Store *store) {
-		// TODO!!! STFail(@"not implemented!");
+		// setup & execute
+		[store beginEnumeration];
+		// verify
+		assertThat(store.currentRegistrationObject, instanceOf([EnumInfo class]));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
