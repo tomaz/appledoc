@@ -29,6 +29,11 @@
 - (void)testLazyInitializationWorks {
 	[self runWithStore:^(Store *store) {
 		// execute & verify
+		assertThat(store.storeClasses, instanceOf([NSMutableArray class]));
+		assertThat(store.storeExtensions, instanceOf([NSMutableArray class]));
+		assertThat(store.storeCategories, instanceOf([NSMutableArray class]));
+		assertThat(store.storeProtocols, instanceOf([NSMutableArray class]));
+		assertThat(store.storeEnumerations, instanceOf([NSMutableArray class]));
 		assertThat(store.registrationStack, instanceOf([NSMutableArray class]));
 	}];
 }
@@ -37,50 +42,98 @@
 
 - (void)testBeginClassWithNameDerivedFromClassWithNameShouldRegisterClassInfo {
 	[self runWithStore:^(Store *store) {
-		// setup & execute
-		[store beginClassWithName:@"Name" derivedFromClassWithName:@"Derived"];
+		// execute
+		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
 		// verify
 		assertThat(store.currentRegistrationObject, instanceOf([ClassInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
-		assertThat([store.currentRegistrationObject nameOfSuperClass], equalTo(@"Derived"));
+		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
+		assertThat([store.currentRegistrationObject nameOfSuperClass], equalTo(@"derived"));
 		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
+- (void)testBeginClassWithNameDerivedFromClassWithNameShouldAddClassInfoToClassesArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+		// verify
+		assertThatInt(store.storeClasses.count, equalToInt(1));
+		assertThat([store.storeClasses lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+#pragma mark - Verify handling of extensions
+
 - (void)testBeginExtensionForClassWithNameShouldRegisterCategoryInfo {
 	[self runWithStore:^(Store *store) {
-		// setup & execute
-		[store beginExtensionForClassWithName:@"Name"];
+		// execute
+		[store beginExtensionForClassWithName:@"name"];
 		// verify
 		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
+		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
 		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(nil));
 		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
+- (void)testBeginExtensionForClassWithNameShouldAddCategoryInfoToCategoriesArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginExtensionForClassWithName:@"name"];
+		// verify
+		assertThatInt(store.storeExtensions.count, equalToInt(1));
+		assertThat([store.storeExtensions lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+#pragma mark - Verify handling of categories
+
 - (void)testBeginCategoryWithNameForClassWithNameShouldRegisterCategoryInfo {
 	[self runWithStore:^(Store *store) {
-		// setup & execute
-		[store beginCategoryWithName:@"Category" forClassWithName:@"Name"];
+		// execute
+		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
 		// verify
 		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"Name"));
-		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(@"Category"));
+		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
+		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(@"category"));
 		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
+- (void)testBeginCategoryWithNameForClassWithNameShouldAddCategoryInfoToCategoriesArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+		// verify
+		assertThatInt(store.storeCategories.count, equalToInt(1));
+		assertThat([store.storeCategories lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+#pragma mark - Verify handling of protocols
+
 - (void)testBeginProtocolWithNameShouldRegisterProtocolInfo {
 	[self runWithStore:^(Store *store) {
-		// setup & execute
-		[store beginProtocolWithName:@"Name"];
+		// execute
+		[store beginProtocolWithName:@"name"];
 		// verify		
 		assertThat(store.currentRegistrationObject, instanceOf([ProtocolInfo class]));
-		assertThat([store.currentRegistrationObject nameOfProtocol], equalTo(@"Name"));
+		assertThat([store.currentRegistrationObject nameOfProtocol], equalTo(@"name"));
 		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
+
+- (void)testBeginProtocolWithNameShouldAddProtocolInfoToProtocolsArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginProtocolWithName:@"name"];
+		// verify
+		assertThatInt(store.storeProtocols.count, equalToInt(1));
+		assertThat([store.storeProtocols lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+#pragma mark - Verify handling of interface related methods
 
 - (void)testAppendAdoptedProtocolShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
@@ -248,11 +301,21 @@
 
 - (void)testBeginEnumerationShouldRegisterEnumInfo {
 	[self runWithStore:^(Store *store) {
-		// setup & execute
+		// execute
 		[store beginEnumeration];
 		// verify
 		assertThat(store.currentRegistrationObject, instanceOf([EnumInfo class]));
 		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
+	}];
+}
+
+- (void)testBeginEnumerationShouldAddEnumInfoToEnumerationsArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginEnumeration];
+		// verify
+		assertThatInt(store.storeEnumerations.count, equalToInt(1));
+		assertThat([store.storeEnumerations lastObject], equalTo(store.currentRegistrationObject));
 	}];
 }
 

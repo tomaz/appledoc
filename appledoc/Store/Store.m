@@ -18,6 +18,11 @@
 
 @implementation Store
 
+@synthesize storeClasses = _storeClasses;
+@synthesize storeExtensions = _storeExtensions;
+@synthesize storeCategories = _storeCategories;
+@synthesize storeProtocols = _storeProtocols;
+@synthesize storeEnumerations = _storeEnumerations;
 @synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize registrationStack = _registrationStack;
 
@@ -63,6 +68,43 @@
 	return _registrationStack;
 }
 
+#pragma mark - Properties
+
+- (NSMutableArray *)storeClasses {
+	if (_storeClasses) return _storeClasses;
+	LogStoDebug(@"Initializing store classes array due to first access...");
+	_storeClasses = [[NSMutableArray alloc] init];
+	return _storeClasses;
+}
+
+- (NSMutableArray *)storeExtensions {
+	if (_storeExtensions) return _storeExtensions;
+	LogStoDebug(@"Initializing store extensions array due to first access...");
+	_storeExtensions = [[NSMutableArray alloc] init];
+	return _storeExtensions;
+}
+
+- (NSMutableArray *)storeCategories {
+	if (_storeCategories) return _storeCategories;
+	LogStoDebug(@"Initializing store categories array due to first access...");
+	_storeCategories = [[NSMutableArray alloc] init];
+	return _storeCategories;
+}
+
+- (NSMutableArray *)storeProtocols {
+	if (_storeProtocols) return _storeProtocols;
+	LogStoDebug(@"Initializing store protocols array due to first access...");
+	_storeProtocols = [[NSMutableArray alloc] init];
+	return _storeProtocols;
+}
+
+- (NSMutableArray *)storeEnumerations {
+	if (_storeEnumerations) return _storeEnumerations;
+	LogStoDebug(@"Initializing store enumerations array due to first access...");
+	_storeEnumerations = [[NSMutableArray alloc] init];
+	return _storeEnumerations;
+}
+
 @end
 
 #pragma mark - 
@@ -76,6 +118,7 @@
 	ClassInfo *info = [[ClassInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfSuperClass = derived;
+	[self.storeClasses addObject:info];
 	[self pushRegistrationObject:info];
 }
 
@@ -84,6 +127,7 @@
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfCategory = nil;
+	[self.storeExtensions addObject:info];
 	[self pushRegistrationObject:info];
 }
 
@@ -92,6 +136,7 @@
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.nameOfClass = name;
 	info.nameOfCategory = category;
+	[self.storeCategories addObject:info];
 	[self pushRegistrationObject:info];
 }
 
@@ -99,6 +144,7 @@
 	LogStoInfo(@"Starting protocol %@...", name);
 	ProtocolInfo *info = [[ProtocolInfo alloc] initWithRegistrar:self];
 	info.nameOfProtocol = name;
+	[self.storeProtocols addObject:info];
 	[self pushRegistrationObject:info];
 }
 
@@ -185,6 +231,7 @@
 - (void)beginEnumeration {
 	LogStoInfo(@"Starting enumeration...");
 	EnumInfo *info = [[EnumInfo alloc] initWithRegistrar:self];
+	[self.storeEnumerations addObject:info];
 	[self pushRegistrationObject:info];
 }
 
