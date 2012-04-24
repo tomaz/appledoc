@@ -54,15 +54,23 @@
 			LogParDebug(@"Matched %@.", token);
 			if ([token matches:delimiters]) {
 				if (itemTokens.count > 0) {
+					__block BOOL isTypeCommandNeeded = YES;
+					__block BOOL wasTypeCommandIssues = NO;
 					[store beginConstant];
 					[itemTokens enumerateObjectsUsingBlock:^(PKToken *token, NSUInteger idx, BOOL *stop) {
 						if (idx == itemTokens.count - 1) {
+							if (wasTypeCommandIssues) [store endCurrentObject]; // types
 							[store appendConstantName:token.stringValue];
 							return;
 						}
-						[store appendConstantType:token.stringValue];
+						if (isTypeCommandNeeded) {
+							[store beginConstantTypes];
+							wasTypeCommandIssues = YES;
+							isTypeCommandNeeded = NO;
+						}
+						[store appendType:token.stringValue];
 					}];
-					[store endCurrentObject];
+					[store endCurrentObject]; // constant
 					[itemTokens removeAllObjects];
 				}
 				return;

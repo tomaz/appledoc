@@ -25,6 +25,8 @@
 #import "PropertyInfo.h"
 #import "MethodInfo.h"
 
+#import "ConstantInfo.h"
+
 @class PKToken;
 
 /** The main data store for the application.
@@ -41,5 +43,6 @@
 @property (nonatomic, strong) NSMutableArray *storeProtocols;
 @property (nonatomic, strong) NSMutableArray *storeEnumerations;
 @property (nonatomic, strong) NSMutableArray *storeStructs;
+@property (nonatomic, strong) NSMutableArray *storeConstants;
 
 @end

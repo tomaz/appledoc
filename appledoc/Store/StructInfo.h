@@ -9,7 +9,11 @@
 #import "ObjectInfoBase.h"
 
 /** Holds data for a C struct.
+ 
+ A struct contains an array of all items which are in term other objects such as ConstantInfo etc.
  */
 @interface StructInfo : ObjectInfoBase
+
+@property (nonatomic, strong) NSMutableArray *structItems;
 
 @end

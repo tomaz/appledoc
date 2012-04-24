@@ -50,7 +50,9 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginStruct];
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"type"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"type"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"item"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] endCurrentObject]; // struct
@@ -72,9 +74,11 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginStruct];
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"type1"];
-			[[store expect] appendConstantType:@"type2"];
-			[[store expect] appendConstantType:@"type3"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"type1"];
+			[[store expect] appendType:@"type2"];
+			[[store expect] appendType:@"type3"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"item"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] endCurrentObject]; // struct
@@ -98,11 +102,15 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginStruct];
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"type1"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"type1"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"item1"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"type2"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"type2"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"item2"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] endCurrentObject]; // struct
@@ -124,15 +132,19 @@
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 			[[store expect] beginStruct];
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"typeA1"];
-			[[store expect] appendConstantType:@"typeA2"];
-			[[store expect] appendConstantType:@"typeA3"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"typeA1"];
+			[[store expect] appendType:@"typeA2"];
+			[[store expect] appendType:@"typeA3"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"itemA"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] beginConstant];
-			[[store expect] appendConstantType:@"typeB1"];
-			[[store expect] appendConstantType:@"typeB2"];
-			[[store expect] appendConstantType:@"typeB3"];
+			[[store expect] beginConstantTypes];
+			[[store expect] appendType:@"typeB1"];
+			[[store expect] appendType:@"typeB2"];
+			[[store expect] appendType:@"typeB3"];
+			[[store expect] endCurrentObject]; // types
 			[[store expect] appendConstantName:@"itemB"];
 			[[store expect] endCurrentObject]; // constant
 			[[store expect] endCurrentObject]; // struct

@@ -92,7 +92,7 @@
 
 #pragma mark - beginPropertyTypes
 
-- (void)testBeginPropertyTypesShouldChangeCurrentRegistrationObjectToResults {
+- (void)testBeginPropertyTypesShouldChangeCurrentRegistrationObjectToTypes {
 	[self runWithPropertyInfo:^(PropertyInfo *info) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];

@@ -48,6 +48,9 @@
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		73343BFF15264062006EFF6F /* ObjectiveCStructStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */; };
+		7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
+		7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
+		7336652915457BF7000F7AFF /* ConstantInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.m */; };
 		733E445D153D516E0039010F /* MethodInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.m */; };
 		734425131517631F00B6EC33 /* ParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.m */; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
@@ -109,6 +112,7 @@
 		73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
 		73E416E41541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
 		73E416E51541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
+		73E416E71541E12200600606 /* StructInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E61541E12200600606 /* StructInfoTests.m */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */; };
 		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */; };
@@ -206,6 +210,9 @@
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
 		7329791715189D1B00592A9D /* ObjectiveCFileState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileState.m; sourceTree = "<group>"; };
 		73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCStructStateTests.m; sourceTree = "<group>"; };
+		7336652315457A2E000F7AFF /* ConstantInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantInfo.h; sourceTree = "<group>"; };
+		7336652415457A2E000F7AFF /* ConstantInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantInfo.m; sourceTree = "<group>"; };
+		7336652815457BF7000F7AFF /* ConstantInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantInfoTests.m; sourceTree = "<group>"; };
 		733E445C153D516E0039010F /* MethodInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfoTests.m; sourceTree = "<group>"; };
 		734425121517631F00B6EC33 /* ParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTests.m; sourceTree = "<group>"; };
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
@@ -269,6 +276,7 @@
 		73E416DF1541A8B100600606 /* EnumItemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumItemInfo.m; sourceTree = "<group>"; };
 		73E416E21541BAE000600606 /* StructInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructInfo.h; sourceTree = "<group>"; };
 		73E416E31541BAE000600606 /* StructInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructInfo.m; sourceTree = "<group>"; };
+		73E416E61541E12200600606 /* StructInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructInfoTests.m; sourceTree = "<group>"; };
 		73ED9444150E9FEC0032FD07 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
@@ -441,6 +449,8 @@
 				730FB571153BFF2E002DB54F /* PropertyInfo.m */,
 				730FB575153C0889002DB54F /* MethodInfo.h */,
 				730FB576153C0889002DB54F /* MethodInfo.m */,
+				7336652315457A2E000F7AFF /* ConstantInfo.h */,
+				7336652415457A2E000F7AFF /* ConstantInfo.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -473,9 +483,11 @@
 				730BCC8E1540057000B909FD /* AttributesInfoTests.m */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
 				73E416DB1541A14700600606 /* EnumInfoTests.m */,
+				73E416E61541E12200600606 /* StructInfoTests.m */,
 				733E445C153D516E0039010F /* MethodInfoTests.m */,
 				73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */,
 				730BCC87153FF91C00B909FD /* PropertyInfoTests.m */,
+				7336652815457BF7000F7AFF /* ConstantInfoTests.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -780,6 +792,9 @@
 				73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */,
 				73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */,
 				73E416E51541BAE000600606 /* StructInfo.m in Sources */,
+				73E416E71541E12200600606 /* StructInfoTests.m in Sources */,
+				7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */,
+				7336652915457BF7000F7AFF /* ConstantInfoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -828,6 +843,7 @@
 				731103BD15418B4B005F46E5 /* EnumInfo.m in Sources */,
 				73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */,
 				73E416E41541BAE000600606 /* StructInfo.m in Sources */,
+				7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

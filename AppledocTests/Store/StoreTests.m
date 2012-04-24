@@ -35,6 +35,7 @@
 		assertThat(store.storeProtocols, instanceOf([NSMutableArray class]));
 		assertThat(store.storeEnumerations, instanceOf([NSMutableArray class]));
 		assertThat(store.storeStructs, instanceOf([NSMutableArray class]));
+		assertThat(store.storeConstants, instanceOf([NSMutableArray class]));
 		assertThat(store.registrationStack, instanceOf([NSMutableArray class]));
 	}];
 }
@@ -372,31 +373,58 @@
 
 - (void)testBeginConstantShouldRegisterConstantInfoIfRegistrationStackIsEmpty {
 	[self runWithStore:^(Store *store) {
-		// TODO!!! STFail(@"not implemented!");
+		// execute
+		[store beginConstant];
+		// verify
+		assertThat(store.currentRegistrationObject, instanceOf([ConstantInfo class]));
+		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
 	}];
 }
 
-- (void)testBeginConstantShouldForwardToCurrentObjectIfAvailable {
+- (void)testBeginConstantShouldAddConstantInfoToConstantsArray {
+	[self runWithStore:^(Store *store) {
+		// execute
+		[store beginConstant];
+		// verify
+		assertThatInt(store.storeConstants.count, equalToInt(1));
+		assertThat([store.storeConstants lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+- (void)testBeginConstantShouldRegisterConstantInfoIfCurrentObjectIsAvailableButDoesntRespondToSelector {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store pushRegistrationObject:[NSObject new]];
+		// execute
+		[store beginConstant];
+		// verify
+		assertThatInt(store.storeConstants.count, equalToInt(1));
+		assertThat([store.storeConstants lastObject], equalTo(store.currentRegistrationObject));
+	}];
+}
+
+- (void)testBeginConstantShouldForwardToCurrentObjectIfAvailableAndRespondsToSelector {
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
 		[[mock expect] beginConstant];
 		[store pushRegistrationObject:mock];
 		// execute
-		// TODO!!! [store beginConstant];
+		[store beginConstant];
 		// verify
-		// TODO!!! STAssertNoThrow([mock verify], nil);
+		STAssertNoThrow([mock verify], nil);
+		assertThatInt(store.storeConstants.count, equalToInt(0));
 	}];
 }
 
-- (void)testAppendConstantTypeShouldForwardToCurrentObject {
+- (void)testBeginConstantTypesShouldForwardToCurrentObject {
 	[self runWithStore:^(Store *store) {
 		// setup
 		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendConstantType:@"value"];
+		[[mock expect] beginConstantTypes];
 		[store pushRegistrationObject:mock];
 		// execute
-		[store appendConstantType:@"value"];
+		[store beginConstantTypes];
 		// verify
 		STAssertNoThrow([mock verify], nil);
 	}];
@@ -445,31 +473,53 @@
 
 #pragma mark - endCurrentObject
 
-- (void)testEndCurrentObjectShouldForwardToCurrentObjectIfItRespondsToEndMessageThenRemoveObjectFromRegistrationStack {
+- (void)testEndCurrentObjectShouldRemoveLastObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] endCurrentObject];
-		[store pushRegistrationObject:mock];
+		[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
 		// execute
 		[store endCurrentObject];
 		// verify
-		STAssertNoThrow([mock verify], nil);
 		assertThatInt(store.registrationStack.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }
 
-- (void)testEndCurrentObjectShouldNotForwardToCurrentObjectIfItDoesntRespondToEndMessageThenRemoveObjectFromRegistrationStack {
+- (void)testEndCurrentObjectShouldForwardToSemilastObjectIfItRespondsToEndMessageThenRemoveLastObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = @"object";
-		[store pushRegistrationObject:mock];
-		// execute - note that in case we send endCurrentObject, this should fail due to NSString not implementing the method!
+		id first = [OCMockObject mockForClass:[Store class]];
+		[[first expect] endCurrentObject];
+		[store pushRegistrationObject:first];
+		id second = [OCMockObject mockForClass:[Store class]];
+		[store pushRegistrationObject:second];
+		// execute
 		[store endCurrentObject];
 		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
+		STAssertNoThrow([first verify], nil);
+		STAssertNoThrow([second verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat(store.registrationStack.lastObject, equalTo(first));
+		assertThat(store.currentRegistrationObject, equalTo(first));
+	}];
+}
+
+- (void)testEndCurrentObjectShouldNotForwardToSemilastObjectIfItDoesntRespondToEndMessageButShouldRemoveLastObjectFromRegistrationStack {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id first = [OCMockObject mockForClass:[NSObject class]];
+		[store pushRegistrationObject:first];
+		id second = [OCMockObject mockForClass:[Store class]];
+		[[second stub] isKindOfClass:OCMOCK_ANY];
+		[store pushRegistrationObject:second];
+		// execute
+		[store endCurrentObject];
+		// verify
+		STAssertNoThrow([first verify], nil);
+		STAssertNoThrow([second verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat(store.registrationStack.lastObject, equalTo(first));
+		assertThat(store.currentRegistrationObject, equalTo(first));
 	}];
 }
 
@@ -485,32 +535,53 @@
 
 #pragma mark - cancelCurrentObject
 
-- (void)testCancelCurrentObjectShouldForwardToCurrentObjectIfItRespondsToEndMessageThenRemoveObjectFromRegistrationStack {
+- (void)testCancelCurrentObjectShouldRemoveLastObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock stub] isKindOfClass:OCMOCK_ANY]; // store checks if it's one of the top level objects and removes it from array if so
-		[[mock expect] cancelCurrentObject];
-		[store pushRegistrationObject:mock];
+		[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
 		// execute
 		[store cancelCurrentObject];
 		// verify
-		STAssertNoThrow([mock verify], nil);
 		assertThatInt(store.registrationStack.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }
 
-- (void)testCancelCurrentObjectShouldNotForwardToCurrentObjectIfItDoesntRespondToEndMessageThenRemoveObjectFromRegistrationStack {
+- (void)testCancelCurrentObjectShouldForwardToSemilastObjectIfItRespondsToCancelMessageThenRemoveLastObjectFromRegistrationStack {
 	[self runWithStore:^(Store *store) {
 		// setup
-		id mock = @"object";
-		[store pushRegistrationObject:mock];
-		// execute - note that in case we send endCurrentObject, this should fail due to NSString not implementing the method!
+		id first = [OCMockObject mockForClass:[Store class]];
+		[[first expect] cancelCurrentObject];
+		[store pushRegistrationObject:first];
+		id second = [OCMockObject mockForClass:[Store class]];
+		[store pushRegistrationObject:second];
+		// execute
 		[store cancelCurrentObject];
 		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
+		STAssertNoThrow([first verify], nil);
+		STAssertNoThrow([second verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat(store.registrationStack.lastObject, equalTo(first));
+		assertThat(store.currentRegistrationObject, equalTo(first));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldNotForwardToSemilastObjectIfItDoesntRespondToCancelMessageButShouldRemoveLastObjectFromRegistrationStack {
+	[self runWithStore:^(Store *store) {
+		// setup
+		id first = [OCMockObject mockForClass:[NSObject class]];
+		[store pushRegistrationObject:first];
+		id second = [OCMockObject mockForClass:[Store class]];
+		[[second stub] isKindOfClass:OCMOCK_ANY];
+		[store pushRegistrationObject:second];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		STAssertNoThrow([first verify], nil);
+		STAssertNoThrow([second verify], nil);
+		assertThatInt(store.registrationStack.count, equalToInt(1));
+		assertThat(store.registrationStack.lastObject, equalTo(first));
+		assertThat(store.currentRegistrationObject, equalTo(first));
 	}];
 }
 
@@ -518,7 +589,7 @@
 	[self runWithStore:^(Store *store) {
 		// execute
 		[store cancelCurrentObject];
-		// verify - real code logs a warning, but we don't test that here
+		// verify - real code logs a warning, but we don't test that here, just verify no exception is thrown
 		assertThatInt(store.registrationStack.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
@@ -592,6 +663,18 @@
 		[store cancelCurrentObject];
 		// verify
 		assertThatInt(store.storeStructs.count, equalToInt(0));
+		assertThat(store.currentRegistrationObject, equalTo(nil));
+	}];
+}
+
+- (void)testCancelCurrentObjectShouldRemoveLastConstant {
+	[self runWithStore:^(Store *store) {
+		// setup
+		[store beginConstant];
+		// execute
+		[store cancelCurrentObject];
+		// verify
+		assertThatInt(store.storeConstants.count, equalToInt(0));
 		assertThat(store.currentRegistrationObject, equalTo(nil));
 	}];
 }

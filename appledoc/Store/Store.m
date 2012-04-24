@@ -10,6 +10,8 @@
 #import "Store.h"
 
 @interface Store ()
+- (BOOL)doesPreviousRegistrationObjectRespondTo:(SEL)selector;
+@property (nonatomic, readonly) id previousRegistrationObject;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
 @end
@@ -24,6 +26,7 @@
 @synthesize storeProtocols = _storeProtocols;
 @synthesize storeEnumerations = _storeEnumerations;
 @synthesize storeStructs = _storeStructs;
+@synthesize storeConstants = _storeConstants;
 @synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize registrationStack = _registrationStack;
 
@@ -47,6 +50,13 @@
 	return YES;
 }
 
+- (BOOL)doesPreviousRegistrationObjectRespondTo:(SEL)selector {
+	id object = self.previousRegistrationObject;
+	if (!object) return NO;
+	if (![object respondsToSelector:selector]) return NO;
+	return YES;
+}
+
 - (void)pushRegistrationObject:(id)object {
 	LogStoDebug(@"Pushing object %@ to registration stack...", object);
 	[self.registrationStack addObject:object];
@@ -60,6 +70,12 @@
 
 - (id)currentRegistrationObject {
 	return [self.registrationStack lastObject];
+}
+
+- (id)previousRegistrationObject {
+	if (self.registrationStack.count < 2) return nil;
+	NSUInteger index = self.registrationStack.count - 2;
+	return [self.registrationStack objectAtIndex:index];
 }
 
 - (NSMutableArray *)registrationStack {
@@ -111,6 +127,13 @@
 	LogStoDebug(@"Initializing store structs array due to first access...");
 	_storeStructs = [[NSMutableArray alloc] init];
 	return _storeStructs;
+}
+
+- (NSMutableArray *)storeConstants {
+	if (_storeConstants) return _storeConstants;
+	LogStoDebug(@"Initializing store constants array due to first access...");
+	_storeConstants = [[NSMutableArray alloc] init];
+	return _storeConstants;
 }
 
 @end
@@ -267,14 +290,21 @@
 #pragma mark - Constants
 
 - (void)beginConstant {
+	if ([self doesCurrentRegistrationObjectRespondTo:_cmd]) {
+		LogStoDebug(@"Forwarding constant registration to %@...", self.currentRegistrationObject);
+		[self.currentRegistrationObject beginConstant];
+		return;
+	}
 	LogStoInfo(@"Starting constant...");
-	NSAssert(NO, @"Not implemented yet!");
+	ConstantInfo *info = [[ConstantInfo alloc] initWithRegistrar:self];
+	[self.storeConstants addObject:info];
+	[self pushRegistrationObject:info];
 }
 
-- (void)appendConstantType:(NSString *)type {
+- (void)beginConstantTypes {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
-	LogStoDebug(@"Forwarding constant type registration to %@...", self.currentRegistrationObject);
-	[self.currentRegistrationObject appendConstantType:type];
+	LogStoDebug(@"Forwarding constant types registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginConstantTypes];
 }
 
 - (void)appendConstantName:(NSString *)name {
@@ -300,41 +330,47 @@
 #pragma mark - Finalizing registration for current object
 
 - (void)endCurrentObject {
-	if ([self doesCurrentRegistrationObjectRespondTo:_cmd]) {
-		LogStoDebug(@"Forwarding end current object to %@...", self.currentRegistrationObject);
-		[self.currentRegistrationObject endCurrentObject];
+	if ([self doesPreviousRegistrationObjectRespondTo:_cmd]) {
+		LogStoDebug(@"Forwarding end current object to %@...", self.previousRegistrationObject);
+		[self.previousRegistrationObject endCurrentObject];
 	}
 	LogStoInfo(@"Finalizing %@...", self.currentRegistrationObject);
 	[self popRegistrationObject];
 }
 
 - (void)cancelCurrentObject {
-	if ([self doesCurrentRegistrationObjectRespondTo:_cmd]) {
-		LogStoDebug(@"Forwarding cancel current object to %@...", self.currentRegistrationObject);
-		[self.currentRegistrationObject cancelCurrentObject];
-	}
-	LogStoInfo(@"Cancelling %@...", self.currentRegistrationObject);
-	if ([self.currentRegistrationObject isKindOfClass:[ClassInfo class]]) {
-		LogStoDebug(@"Removing from classes array...");
-		[self.storeClasses removeLastObject];
-	} else if ([self.currentRegistrationObject isKindOfClass:[CategoryInfo class]]) {
-		if ([self.currentRegistrationObject isExtension]) {
-			LogStoDebug(@"Removing from extensions array...");
-			[self.storeExtensions removeLastObject];
-		} else {
-			LogStoDebug(@"Removing from categories array...");
-			[self.storeCategories removeLastObject];
+	// Note that we must forward to object that's currently handling a child, hence previous registration object! However if there's only single object available, it's one of the top-level objects, so we should remove it from our arrays.
+	if ([self doesPreviousRegistrationObjectRespondTo:_cmd]) {
+		LogStoDebug(@"Forwarding cancel current object to %@...", self.previousRegistrationObject);
+		[self.previousRegistrationObject cancelCurrentObject];
+	} else if (self.currentRegistrationObject) {
+		LogStoInfo(@"Cancelling %@...", self.currentRegistrationObject);
+		if ([self.currentRegistrationObject isKindOfClass:[ClassInfo class]]) {
+			LogStoDebug(@"Removing from classes array...");
+			[self.storeClasses removeLastObject];
+		} else if ([self.currentRegistrationObject isKindOfClass:[CategoryInfo class]]) {
+			if ([self.currentRegistrationObject isExtension]) {
+				LogStoDebug(@"Removing from extensions array...");
+				[self.storeExtensions removeLastObject];
+			} else {
+				LogStoDebug(@"Removing from categories array...");
+				[self.storeCategories removeLastObject];
+			}
+		} else if ([self.currentRegistrationObject isKindOfClass:[ProtocolInfo class]]) {
+			LogStoDebug(@"Removing from protocols array...");
+			[self.storeProtocols removeLastObject];
+		} else if ([self.currentRegistrationObject isKindOfClass:[EnumInfo class]]) {
+			LogStoDebug(@"Removing from enumerations array...");
+			[self.storeEnumerations removeLastObject];
+		} else if ([self.currentRegistrationObject isKindOfClass:[StructInfo class]]) {
+			LogStoDebug(@"Removing from structs array...");
+			[self.storeStructs removeLastObject];
+		} else if ([self.currentRegistrationObject isKindOfClass:[ConstantInfo class]]) {
+			LogStoDebug(@"Removing from constants array...");
+			[self.storeConstants removeLastObject];
 		}
-	} else if ([self.currentRegistrationObject isKindOfClass:[ProtocolInfo class]]) {
-		LogStoDebug(@"Removing from protocols array...");
-		[self.storeProtocols removeLastObject];
-	} else if ([self.currentRegistrationObject isKindOfClass:[EnumInfo class]]) {
-		LogStoDebug(@"Removing from enumerations array...");
-		[self.storeEnumerations removeLastObject];
-	} else if ([self.currentRegistrationObject isKindOfClass:[StructInfo class]]) {
-		LogStoDebug(@"Removing from structs array...");
-		[self.storeStructs removeLastObject];
 	}
+	LogStoDebug(@"Popping object from registration stack...");
 	[self popRegistrationObject];
 }
 
