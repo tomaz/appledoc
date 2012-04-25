@@ -13,3 +13,16 @@
 @synthesize nameOfProtocol;
 
 @end
+
+#pragma mark - 
+
+@implementation ProtocolInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendFormat:@"@protocol %@", self.nameOfProtocol];
+	[result appendString:[super description]];
+	return result;
+}
+
+@end

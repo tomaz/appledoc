@@ -42,8 +42,8 @@
 		[parser pushState:parser.propertyState];
 	} else if ([stream matches:@"@", @"end", nil]) {
 		// Match end of interface or implementation.
-		LogParVerbose(@"@end");
-		LogParVerbose(@"");
+		LogParDebug(@"Matched @end.");
+		LogParVerbose(@"\n%@", store.currentRegistrationObject);
 		[store setCurrentSourceInfo:stream.current];
 		[store endCurrentObject];
 		[stream consume:2];

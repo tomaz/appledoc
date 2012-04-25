@@ -86,6 +86,8 @@
 		}
 	}
 
+	LogParDebug(@"Ending struct.");
+	LogParVerbose(@"\n%@", store.currentRegistrationObject);
 	[store endCurrentObject];
 	[parser popState];
 	return GBResultOk;

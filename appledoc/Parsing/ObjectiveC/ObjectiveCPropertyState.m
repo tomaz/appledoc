@@ -28,8 +28,6 @@
 	[store beginPropertyDefinition];
 	[stream consume:2];
 
-	NSMutableString *declaration = [NSMutableString stringWithString:@"@property "];
-
 	// Parse attributes.
 	if ([stream matches:@"(", nil]) {
 		LogParDebug(@"Matching attributes...");
@@ -37,7 +35,6 @@
 		NSArray *delimiters = self.propertyAttributeDelimiters;
 		NSUInteger found = [stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
-			[declaration appendFormat:@"%@ ", token.stringValue];
 			if ([token matches:delimiters]) return;
 			[store appendAttribute:token.stringValue];
 		}];
@@ -57,16 +54,13 @@
 	NSUInteger found = [stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		LogParDebug(@"Matched %@.", token);
 		if ([token matches:@";"]) {
-			[declaration appendFormat:@"%@ ", token.stringValue];
 			return;
 		} else if ([[stream la:lookahead+1] matches:@";"]) {
 			[store endCurrentObject];
 			[store appendPropertyName:token.stringValue];
-			[declaration appendFormat:@"%@ ", token.stringValue];
 			return;
 		}
 		[store appendType:token.stringValue];
-		[declaration appendFormat:@"%@ ", token.stringValue];
 	}];
 	if (found == NSNotFound) {
 		LogParDebug(@"Failed matching type and name, bailing out.");
@@ -75,8 +69,8 @@
 		return GBResultFailedMatch;
 	}
 	[store endCurrentObject];
-	
-	LogParVerbose(@"%@", declaration);
+
+	LogParDebug(@"Ending property.");
 	[parser popState];
 	return GBResultOk;
 }

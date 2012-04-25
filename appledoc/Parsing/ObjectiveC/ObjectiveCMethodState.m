@@ -30,7 +30,6 @@
 	[store beginMethodDefinitionWithType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
 	[stream consume:1];
 
-	NSMutableString *declaration = [NSMutableString stringWithString:stream.current.stringValue];
 	NSArray *delimiters = self.methodTypeDelimiters;
 	
 	// Parse return types.
@@ -39,7 +38,6 @@
 		[store beginMethodResults];
 		NSUInteger resultEndTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
-			[declaration appendFormat:@"%@ ", token.stringValue];
 			if ([token matches:delimiters]) return;
 			[store appendType:token.stringValue];
 		}];
@@ -62,12 +60,10 @@
 		// Parse selector name for the argument and skip colon.
 		[store beginMethodArgument];
 		[store appendMethodArgumentSelector:stream.current.stringValue];
-		[declaration appendFormat:@"%@ ", stream.current.stringValue];
 		[stream consume:1];
 		if ([stream.current matches:@":"]) {
 			// If colon is found, try match variable types and name.
 			LogParDebug(@"Matched colon, expecting types and variable name.");
-			[declaration appendFormat:@"%@ ", stream.current.stringValue];
 			[stream consume:1];
 		
 			// Parse optional argument variable types.
@@ -76,7 +72,6 @@
 				[store beginMethodArgumentTypes];
 				NSUInteger endTokenIndex = [stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 					LogParDebug(@"Matched %@.", token);
-					[declaration appendFormat:@"%@ ", token.stringValue];
 					if ([token matches:delimiters]) return;
 					[store appendType:token.stringValue];
 				}];
@@ -93,7 +88,6 @@
 			
 			// Parse argument variable name.
 			LogParDebug(@"Matching method argument variable name.");
-			[declaration appendFormat:@"%@ ", stream.current.stringValue];
 			[store appendMethodArgumentVariable:stream.current.stringValue];
 			[stream consume:1];
 		}
@@ -104,7 +98,6 @@
 		NSUInteger endTokenIndex = [stream.current matchResult:end];
 		if (endTokenIndex == NSNotFound) continue;
 		if (endTokenIndex == 1) isMatchingMethodBody = YES;			
-		[declaration appendFormat:@"%@ ", stream.current.stringValue];
 		break;
 	}
 	
@@ -125,13 +118,12 @@
 			}
 		}];
 		[stream consume:tokensCount];
-		[declaration appendString:@"}"];
 	} else {
 		LogParDebug(@"Skipping semicolon...");
 		[stream consume:1];
 	}
 	
-	LogParVerbose(@"%@", declaration);
+	LogParDebug(@"Ending method.");
 	[store endCurrentObject]; // method definition
 	[parser popState];
 	return GBResultOk;

@@ -49,3 +49,20 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation MethodArgumentInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:self.argumentSelector];
+	if (_argumentType || _argumentVariable) {
+		[result appendString:@":"];
+		if (_argumentType) [result appendFormat:@"(%@)", self.argumentType];
+		if (_argumentVariable) [result appendString:self.argumentVariable];
+	}
+	return result;
+}
+
+@end

@@ -24,7 +24,6 @@
 	[store setCurrentSourceInfo:stream.current];
 	[store beginEnumeration];
 	
-	NSMutableString *declaration = [NSMutableString stringWithString:@"enum {\n"];
 	NSArray *delimiters = self.enumItemDelimiters;
 	
 	// Skip stream until '{', exit if not found.
@@ -72,7 +71,6 @@
 			valueEndToken = token;
 		} else {
 			LogParDebug(@"Matched enum constant %@", token);
-			[declaration appendFormat:@"%@,\n", token.stringValue];
 			[store appendEnumerationItem:token.stringValue];
 		}
 	}];
@@ -85,9 +83,8 @@
 	}
 	
 	// Finish off.
-	[declaration appendString:@"};"];
-	LogParVerbose(@"%@", declaration);
-	LogParVerbose(@"");
+	LogParDebug(@"Ending enum.");
+	LogParVerbose(@"\n%@", store.currentRegistrationObject);
 	[store endCurrentObject];
 	[parser popState];
 	return GBResultOk;

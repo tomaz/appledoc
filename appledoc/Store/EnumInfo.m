@@ -47,3 +47,23 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation EnumInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:@"enum {\n"];
+	if (_enumItems) {
+		[self.enumItems enumerateObjectsUsingBlock:^(EnumItemInfo *item, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendFormat:@",\n"];
+			[result appendFormat:@"    %@", item];
+		}];
+		[result appendString:@"\n"];
+	}
+	[result appendString:@"}"];
+	return result;
+}
+
+@end

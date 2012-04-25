@@ -13,43 +13,43 @@
 - (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
 	if ([stream matches:@"@", @"interface", GBTokens.any, @"(", @")", nil]) {
 		// Match class extension.
+		LogParDebug(@"Matched class extension interface.");
 		PKToken *name = [stream la:2];
-		LogParVerbose(@"@interface %@ ()", name.stringValue);
-		[store setCurrentSourceInfo:name];
+		[store setCurrentSourceInfo:stream.current];
 		[store beginExtensionForClassWithName:name.stringValue];
 		[stream consume:5];
 		[parser pushState:parser.interfaceState];
 	} else if ([stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, @"(", GBTokens.any, @")", nil]) {
 		// Match category interface or implementation.
+		LogParDebug(@"Matched category interface or implementation.");
 		PKToken *name = [stream la:2];
 		PKToken *category = [stream la:4];
-		LogParVerbose(@"@%@ %@ (%@)", [stream la:1].stringValue, name.stringValue, category.stringValue);
-		[store setCurrentSourceInfo:name];
+		[store setCurrentSourceInfo:stream.current];
 		[store beginCategoryWithName:category.stringValue forClassWithName:name.stringValue];
 		[stream consume:6];
 		[parser pushState:parser.interfaceState];
 	} else if ([stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, @":", GBTokens.any, nil]) {
 		// Match class interface or implementation.
+		LogParDebug(@"Matched class interface or implementation.");
 		PKToken *name = [stream la:2];
 		PKToken *derived = [stream la:4];
-		LogParVerbose(@"@%@ %@ : %@", [stream la:1].stringValue, name.stringValue, derived.stringValue);
-		[store setCurrentSourceInfo:name];
+		[store setCurrentSourceInfo:stream.current];
 		[store beginClassWithName:name.stringValue derivedFromClassWithName:derived.stringValue];
 		[stream consume:3];
 		[parser pushState:parser.interfaceState];
 	} else if ([stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, nil]) {
 		// Match root class interface or implementation.
+		LogParDebug(@"Matched root class interface or implementation.");
 		PKToken *name = [stream la:2];
-		LogParVerbose(@"@%@ %@", [stream la:1].stringValue, name.stringValue);
-		[store setCurrentSourceInfo:name];
+		[store setCurrentSourceInfo:stream.current];
 		[store beginClassWithName:name.stringValue derivedFromClassWithName:nil];
 		[stream consume:3];
 		[parser pushState:parser.interfaceState];
 	} else if ([stream matches:@"@", @"protocol", GBTokens.any, nil]) {
 		// Match protocol interface.
+		LogParDebug(@"Matched protocol definition.");
 		PKToken *name = [stream la:2];
-		LogParVerbose(@"@protocol %@", name.stringValue);
-		[store setCurrentSourceInfo:name];
+		[store setCurrentSourceInfo:stream.current];
 		[store beginProtocolWithName:name.stringValue];
 		[stream consume:3];
 		[parser pushState:parser.interfaceState];

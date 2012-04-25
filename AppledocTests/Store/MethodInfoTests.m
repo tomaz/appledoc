@@ -28,6 +28,28 @@
 	}];
 }
 
+#pragma mark - isClassMethod & isInterfaceMethod
+
+- (void)testIsClassMethodShouldReturnYesAndIsInterfaceMethodShouldReturnNoIfMethodTypeIsClass {
+	[self runWithMethodInfo:^(MethodInfo *info) {
+		// setup
+		info.methodType = GBStoreTypes.classMethod;
+		// execute & verify
+		assertThatBool(info.isClassMethod, equalToBool(YES));
+		assertThatBool(info.isInstanceMethod, equalToBool(NO));
+	}];
+}
+
+- (void)testIsClassMethodShouldReturnNoAndIsInterfaceMethodShouldReturnYesIfMethodTypeIsInstance {
+	[self runWithMethodInfo:^(MethodInfo *info) {
+		// setup
+		info.methodType = GBStoreTypes.instanceMethod;
+		// execute & verify
+		assertThatBool(info.isClassMethod, equalToBool(NO));
+		assertThatBool(info.isInstanceMethod, equalToBool(YES));
+	}];
+}
+
 #pragma mark - beginMethodResults
 
 - (void)testBeginMethodResultsShouldChangeCurrentRegistrationObjectToResults {

@@ -43,3 +43,21 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation StructInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:@"struct {\n"];
+	if (_structItems) {
+		[self.structItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			[result appendFormat:@"    %@;\n", obj];
+		}];
+	}
+	[result appendString:@"}"];
+	return result;
+}
+
+@end

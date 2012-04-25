@@ -115,6 +115,7 @@
 		73E416E71541E12200600606 /* StructInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E61541E12200600606 /* StructInfoTests.m */; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */; };
+		73F5C87115480DFF005BE2D6 /* CategoryInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */; };
 		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */; };
 		73F989AD1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
 		73F989AE1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
@@ -281,6 +282,7 @@
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
 		73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodStateMultipleDefinitions.h; sourceTree = "<group>"; };
+		73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryInfoTests.m; sourceTree = "<group>"; };
 		73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectInfoBaseTests.m; sourceTree = "<group>"; };
 		73F989AB1518A9BC0068697C /* ObjectiveCInterfaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCInterfaceState.h; sourceTree = "<group>"; };
 		73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCInterfaceState.m; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				7349F657153ED21D004D7AC7 /* TypeInfoTests.m */,
 				730BCC8E1540057000B909FD /* AttributesInfoTests.m */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
+				73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */,
 				73E416DB1541A14700600606 /* EnumInfoTests.m */,
 				73E416E61541E12200600606 /* StructInfoTests.m */,
 				733E445C153D516E0039010F /* MethodInfoTests.m */,
@@ -795,6 +798,7 @@
 				73E416E71541E12200600606 /* StructInfoTests.m in Sources */,
 				7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */,
 				7336652915457BF7000F7AFF /* ConstantInfoTests.m in Sources */,
+				73F5C87115480DFF005BE2D6 /* CategoryInfoTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -17,6 +17,7 @@
 
 @interface InterfaceInfoBase ()
 - (NSMutableArray *)methodsArrayForType:(NSString *)type;
+@property (nonatomic, strong) NSMutableArray *interfaceMethodsAndPropertiesInRegistrationOrder; // only used for nicer debug output!
 @end
 
 #pragma mark - 
@@ -28,6 +29,7 @@
 @synthesize interfaceProperties = _interfaceProperties;
 @synthesize interfaceInstanceMethods = _interfaceInstanceMethods;
 @synthesize interfaceClassMethods = _interfaceClassMethods;
+@synthesize interfaceMethodsAndPropertiesInRegistrationOrder = _interfaceMethodsAndPropertiesInRegistrationOrder;
 
 #pragma mark - Helper methods
 
@@ -76,6 +78,13 @@
 	return _interfaceClassMethods;
 }
 
+- (NSMutableArray *)interfaceMethodsAndPropertiesInRegistrationOrder {
+	if (_interfaceMethodsAndPropertiesInRegistrationOrder) return _interfaceMethodsAndPropertiesInRegistrationOrder;
+	LogStoDebug(@"Initializing methods and properties array due to first access...");
+	_interfaceMethodsAndPropertiesInRegistrationOrder = [[NSMutableArray alloc] init];
+	return _interfaceMethodsAndPropertiesInRegistrationOrder;
+}
+
 @end
 
 #pragma mark - 
@@ -108,6 +117,7 @@
 	LogStoInfo(@"Starting property definition...");
 	PropertyInfo *info = [[PropertyInfo alloc] initWithRegistrar:self.objectRegistrar];
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
+	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];
 	[self.interfaceProperties addObject:info];
 	[self pushRegistrationObject:info];
 }
@@ -121,6 +131,7 @@
 	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.methodType = type;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
+	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];
 	[[self methodsArrayForType:type] addObject:info];
 	[self pushRegistrationObject:info];
 }
@@ -135,7 +146,8 @@
 			LogStoDebug(@"Removing property info from last method group!");
 			[lastMethodGroup.methodGroupMethods removeLastObject];
 		}
-		[self.interfaceProperties removeObject:self.currentRegistrationObject];
+		[self.interfaceProperties removeLastObject];
+		[self.interfaceMethodsAndPropertiesInRegistrationOrder removeLastObject];
 	} else if ([self.currentRegistrationObject isKindOfClass:[MethodInfo class]]) {
 		LogStoInfo(@"Cancelling current method info!");
 		MethodGroupData *lastMethodGroup = [self.interfaceMethodGroups lastObject];
@@ -147,9 +159,36 @@
 		NSMutableArray *methodsArray = [self methodsArrayForType:type];
 		if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
 		[methodsArray removeLastObject];
+		[self.interfaceMethodsAndPropertiesInRegistrationOrder removeLastObject];
 	} else {
 		LogWarn(@"Unknown context for cancel current object (%@)!", self.currentRegistrationObject);
 	}
+}
+
+@end
+
+#pragma mark - 
+
+@implementation InterfaceInfoBase (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	if (_interfaceAdoptedProtocols && self.interfaceAdoptedProtocols.count > 0) {
+		[result appendString:@" <"];
+		[self.interfaceAdoptedProtocols enumerateObjectsUsingBlock:^(ObjectLinkData *data, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendString:@","];
+			[result appendString:data.nameOfObject];
+		}];
+		[result appendString:@">"];
+	}
+	if (_interfaceMethodsAndPropertiesInRegistrationOrder && self.interfaceMethodsAndPropertiesInRegistrationOrder.count > 0) {
+		[result appendString:@"\n"];
+		[self.interfaceMethodsAndPropertiesInRegistrationOrder enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+			[result appendFormat:@"%@\n", obj];
+		}];
+	}
+	[result appendString:@"@end"];
+	return result;
 }
 
 @end

@@ -79,3 +79,18 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation PropertyInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:@"@property "];
+	if (_propertyAttributes) [result appendFormat:@"(%@) ", self.propertyAttributes];
+	if (_propertyType) [result appendFormat:@"%@", self.propertyType];
+	[result appendFormat:@"%@;", self.propertyName];
+	return result;
+}
+
+@end

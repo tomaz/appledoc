@@ -45,3 +45,20 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation AttributesInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	if (_attributeItems && self.attributeItems.count > 0) {
+		[self.attributeItems enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendString:@", "];
+			[result appendString:attribute];
+		}];
+	}
+	return result;
+}
+
+@end

@@ -7,6 +7,7 @@
 //
 
 #import "Objects.h"
+#import "StoreConstants.h"
 #import "StoreRegistrations.h"
 #import "TypeInfo.h"
 #import "MethodArgumentInfo.h"
@@ -32,6 +33,14 @@
 	LogStoDebug(@"Initializing method arguments array due to first access...");
 	_methodArguments = [[NSMutableArray alloc] init];
 	return _methodArguments;
+}
+
+- (BOOL)isClassMethod {
+	return (self.methodType == GBStoreTypes.classMethod);
+}
+
+- (BOOL)isInstanceMethod {
+	return !self.isClassMethod;
 }
 
 @end
@@ -60,6 +69,26 @@
 	} else {
 		LogWarn(@"Unknown context for cancel current object (%@)!", self.currentRegistrationObject);
 	}
+}
+
+@end
+
+#pragma mark - 
+
+@implementation MethodInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:self.isClassMethod ? @"+ " : @"- "];
+	if (_methodResult) [result appendFormat:@"(%@)", self.methodResult];
+	if (_methodArguments) {
+		[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argument, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendString:@" "];
+			[result appendFormat:@"%@", argument];
+		}];
+	}
+	[result appendString:@";"];
+	return result;
 }
 
 @end

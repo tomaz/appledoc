@@ -24,3 +24,18 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation CategoryInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	[result appendFormat:@"@interface %@ (", self.nameOfClass];
+	if (self.isCategory) [result appendString:self.nameOfCategory];
+	[result appendString:@")"];
+	[result appendString:[super description]];
+	return result;
+}
+
+@end

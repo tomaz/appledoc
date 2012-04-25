@@ -14,3 +14,16 @@
 @synthesize itemValue;
 
 @end
+
+#pragma mark - 
+
+@implementation EnumItemInfo (Logging)
+
+- (NSString *)description {
+	NSMutableString *result = [NSMutableString string];
+	if (self.itemName) [result appendString:self.itemName];
+	if (self.itemValue) [result appendFormat:@" = %@", self.itemValue];
+	return result;
+}
+
+@end

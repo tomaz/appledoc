@@ -18,4 +18,7 @@
 @property (nonatomic, strong) TypeInfo *methodResult;
 @property (nonatomic, strong) NSMutableArray *methodArguments;
 
+@property (nonatomic, readonly) BOOL isClassMethod;
+@property (nonatomic, readonly) BOOL isInstanceMethod;
+
 @end

@@ -56,9 +56,7 @@
 	}
 	
 	// Found description, so register.
-	LogParVerbose(@"");
-	LogParVerbose(@"#pragma mark %@", trimmed);
-	LogParVerbose(@"");
+	LogParDebug(@"Ending #pragma mark.");
 	[store appendMethodGroupWithDescription:trimmed];
 	[parser popState];
 	return GBResultOk;
