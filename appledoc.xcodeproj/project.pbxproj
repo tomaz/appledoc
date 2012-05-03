@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		730BCC88153FF91C00B909FD /* PropertyInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC87153FF91C00B909FD /* PropertyInfoTests.m */; };
+		730BCC88153FF91C00B909FD /* PropertyInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
 		730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
-		730BCC8F1540057000B909FD /* AttributesInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8E1540057000B909FD /* AttributesInfoTests.m */; };
+		730BCC8F1540057000B909FD /* AttributesInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8E1540057000B909FD /* AttributesInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		730FB572153BFF2E002DB54F /* PropertyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB571153BFF2E002DB54F /* PropertyInfo.m */; };
 		730FB573153BFF2E002DB54F /* PropertyInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB571153BFF2E002DB54F /* PropertyInfo.m */; };
 		730FB577153C0889002DB54F /* MethodInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730FB576153C0889002DB54F /* MethodInfo.m */; };
@@ -30,13 +30,13 @@
 		7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC2150F556800B39CFD /* TestCaseBase.m */; };
 		7317FAC4150F56A500B39CFD /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
-		7317FACE150F633900B39CFD /* SettingsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.m */; };
+		7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */; };
 		7320AB6115232471006BAB51 /* ObjectiveCInterfaceStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.m */; };
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
-		73280F321510989600D1E6E8 /* AppledocTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.m */; };
+		73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		732978F415187F3E00592A9D /* ParserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F315187F3E00592A9D /* ParserTask.m */; };
 		732978F515187F3E00592A9D /* ParserTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 732978F315187F3E00592A9D /* ParserTask.m */; };
 		7329790215188A4C00592A9D /* ObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329790115188A4C00592A9D /* ObjectiveCParser.m */; };
@@ -47,11 +47,13 @@
 		73297915151899CA00592A9D /* ObjectiveCParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73297913151899CA00592A9D /* ObjectiveCParserState.m */; };
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
+		732B67A7155260890014C392 /* Cedar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732B67A6155260890014C392 /* Cedar.framework */; };
+		732B67F415526EE00014C392 /* Cedar.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 732B67A6155260890014C392 /* Cedar.framework */; };
 		73343BFF15264062006EFF6F /* ObjectiveCStructStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */; };
 		7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
 		7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
-		7336652915457BF7000F7AFF /* ConstantInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.m */; };
-		733E445D153D516E0039010F /* MethodInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.m */; };
+		7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.mm */; };
+		733E445D153D516E0039010F /* MethodInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		734425131517631F00B6EC33 /* ParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.m */; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
 		734425171517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
@@ -61,7 +63,7 @@
 		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
 		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
-		7349F658153ED21D004D7AC7 /* TypeInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F657153ED21D004D7AC7 /* TypeInfoTests.m */; };
+		7349F658153ED21D004D7AC7 /* TypeInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
 		7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
 		73500D3015174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
@@ -71,7 +73,7 @@
 		73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
-		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */; };
+		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
 		735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
 		737C82A3152307AE0064DC46 /* TestStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A2152307AE0064DC46 /* TestStrings.m */; };
@@ -80,7 +82,7 @@
 		7381A66F1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
 		7381A6731536C35100BF9BDD /* ClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6721536C35000BF9BDD /* ClassInfo.m */; };
 		7381A6741536C35100BF9BDD /* ClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6721536C35000BF9BDD /* ClassInfo.m */; };
-		7381A67C1536D04E00BF9BDD /* StoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A67B1536D04E00BF9BDD /* StoreTests.m */; };
+		7381A67C1536D04E00BF9BDD /* StoreTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7381A67B1536D04E00BF9BDD /* StoreTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7381A6801536D62400BF9BDD /* CategoryInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A67F1536D62400BF9BDD /* CategoryInfo.m */; };
 		7381A6811536D62400BF9BDD /* CategoryInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A67F1536D62400BF9BDD /* CategoryInfo.m */; };
 		7381A6881536E2F000BF9BDD /* ProtocolInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6871536E2F000BF9BDD /* ProtocolInfo.m */; };
@@ -90,6 +92,9 @@
 		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
+		73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
+		73A589FE15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
+		73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -101,22 +106,22 @@
 		73D540281525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
 		73D5402A1525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.m */; };
 		73D5402C1525D59600C57E1B /* ObjectiveCEnumStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.m */; };
-		73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */; };
+		73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
 		73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
 		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
 		73E289F51518E24D00D53484 /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
 		73E289F61518E24D00D53484 /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
-		73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DB1541A14700600606 /* EnumInfoTests.m */; };
+		73E416DC1541A14700600606 /* EnumInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DB1541A14700600606 /* EnumInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
 		73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416DF1541A8B100600606 /* EnumItemInfo.m */; };
 		73E416E41541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
 		73E416E51541BAE000600606 /* StructInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E31541BAE000600606 /* StructInfo.m */; };
-		73E416E71541E12200600606 /* StructInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E61541E12200600606 /* StructInfoTests.m */; };
+		73E416E71541E12200600606 /* StructInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73E416E61541E12200600606 /* StructInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73ED9446150E9FEC0032FD07 /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		73F59073154148CD0078DA60 /* MethodStateMultipleDefinitions.h in Copy resources to bundle */ = {isa = PBXBuildFile; fileRef = 73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */; };
-		73F5C87115480DFF005BE2D6 /* CategoryInfoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */; };
-		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */; };
+		73F5C87115480DFF005BE2D6 /* CategoryInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73F5C87015480DFF005BE2D6 /* CategoryInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73F989AD1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
 		73F989AE1518A9BC0068697C /* ObjectiveCInterfaceState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */; };
 		73F989B81518C63E0068697C /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
@@ -137,6 +142,7 @@
 			files = (
 				7317FADB150F67E500B39CFD /* OCHamcrest.framework in Copy frameworks to products directory */,
 				73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */,
+				732B67F415526EE00014C392 /* Cedar.framework in Copy frameworks to products directory */,
 			);
 			name = "Copy frameworks to products directory";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -166,10 +172,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		730BCC87153FF91C00B909FD /* PropertyInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropertyInfoTests.m; sourceTree = "<group>"; };
+		730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PropertyInfoTests.mm; sourceTree = "<group>"; };
 		730BCC8A1540046F00B909FD /* AttributesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributesInfo.h; sourceTree = "<group>"; };
 		730BCC8B1540046F00B909FD /* AttributesInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributesInfo.m; sourceTree = "<group>"; };
-		730BCC8E1540057000B909FD /* AttributesInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributesInfoTests.m; sourceTree = "<group>"; };
+		730BCC8E1540057000B909FD /* AttributesInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AttributesInfoTests.mm; sourceTree = "<group>"; };
 		730FB570153BFF2E002DB54F /* PropertyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyInfo.h; sourceTree = "<group>"; };
 		730FB571153BFF2E002DB54F /* PropertyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropertyInfo.m; sourceTree = "<group>"; };
 		730FB575153C0889002DB54F /* MethodInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodInfo.h; sourceTree = "<group>"; };
@@ -193,13 +199,13 @@
 		7317FABC150F544400B39CFD /* AppledocTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppledocTests-Prefix.pch"; sourceTree = "<group>"; };
 		7317FAC1150F556800B39CFD /* TestCaseBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseBase.h; sourceTree = "<group>"; };
 		7317FAC2150F556800B39CFD /* TestCaseBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCaseBase.m; sourceTree = "<group>"; };
-		7317FACD150F633900B39CFD /* SettingsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTests.m; sourceTree = "<group>"; };
+		7317FACD150F633900B39CFD /* SettingsTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsTests.mm; sourceTree = "<group>"; };
 		7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = AppledocTests/Libraries/OCHamcrest.framework; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
 		7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCInterfaceStateTests.m; sourceTree = "<group>"; };
 		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
-		73280F311510989600D1E6E8 /* AppledocTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTests.m; sourceTree = "<group>"; };
+		73280F311510989600D1E6E8 /* AppledocTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppledocTests.mm; sourceTree = "<group>"; };
 		732978F215187F3E00592A9D /* ParserTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParserTask.h; sourceTree = "<group>"; };
 		732978F315187F3E00592A9D /* ParserTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTask.m; sourceTree = "<group>"; };
 		7329790015188A4C00592A9D /* ObjectiveCParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParser.h; sourceTree = "<group>"; };
@@ -210,11 +216,12 @@
 		73297913151899CA00592A9D /* ObjectiveCParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParserState.m; sourceTree = "<group>"; };
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
 		7329791715189D1B00592A9D /* ObjectiveCFileState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileState.m; sourceTree = "<group>"; };
+		732B67A6155260890014C392 /* Cedar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cedar.framework; path = AppledocTests/Libraries/Cedar.framework; sourceTree = "<group>"; };
 		73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCStructStateTests.m; sourceTree = "<group>"; };
 		7336652315457A2E000F7AFF /* ConstantInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantInfo.h; sourceTree = "<group>"; };
 		7336652415457A2E000F7AFF /* ConstantInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantInfo.m; sourceTree = "<group>"; };
-		7336652815457BF7000F7AFF /* ConstantInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantInfoTests.m; sourceTree = "<group>"; };
-		733E445C153D516E0039010F /* MethodInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfoTests.m; sourceTree = "<group>"; };
+		7336652815457BF7000F7AFF /* ConstantInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ConstantInfoTests.mm; sourceTree = "<group>"; };
+		733E445C153D516E0039010F /* MethodInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodInfoTests.mm; sourceTree = "<group>"; };
 		734425121517631F00B6EC33 /* ParserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParserTests.m; sourceTree = "<group>"; };
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
 		734425151517645A00B6EC33 /* AppledocTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTask.m; sourceTree = "<group>"; };
@@ -224,7 +231,7 @@
 		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
 		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
 		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
-		7349F657153ED21D004D7AC7 /* TypeInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeInfoTests.m; sourceTree = "<group>"; };
+		7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TypeInfoTests.mm; sourceTree = "<group>"; };
 		7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodArgumentInfo.h; sourceTree = "<group>"; };
 		7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfo.m; sourceTree = "<group>"; };
 		73500D2E15174910000416E3 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Store.h; sourceTree = "<group>"; };
@@ -234,7 +241,7 @@
 		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
 		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
-		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceInfoBaseTests.m; sourceTree = "<group>"; };
+		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
 		735CD2C4153817E400CADD4E /* MethodGroupData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupData.h; sourceTree = "<group>"; };
 		735CD2C5153817E500CADD4E /* MethodGroupData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupData.m; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
@@ -245,7 +252,7 @@
 		7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceInfoBase.m; sourceTree = "<group>"; };
 		7381A6711536C35000BF9BDD /* ClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassInfo.h; sourceTree = "<group>"; };
 		7381A6721536C35000BF9BDD /* ClassInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassInfo.m; sourceTree = "<group>"; };
-		7381A67B1536D04E00BF9BDD /* StoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreTests.m; sourceTree = "<group>"; };
+		7381A67B1536D04E00BF9BDD /* StoreTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StoreTests.mm; sourceTree = "<group>"; };
 		7381A67E1536D62400BF9BDD /* CategoryInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryInfo.h; sourceTree = "<group>"; };
 		7381A67F1536D62400BF9BDD /* CategoryInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryInfo.m; sourceTree = "<group>"; };
 		7381A6861536E2F000BF9BDD /* ProtocolInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProtocolInfo.h; sourceTree = "<group>"; };
@@ -256,6 +263,9 @@
 		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
 		739C11AE1515320C004D139B /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
 		739C11AF1515320C004D139B /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extensions.m; sourceTree = "<group>"; };
+		73A589FB15493F5B003838E0 /* DescriptorsInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptorsInfo.h; sourceTree = "<group>"; };
+		73A589FC15493F5B003838E0 /* DescriptorsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DescriptorsInfo.m; sourceTree = "<group>"; };
+		73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DescriptorsInfoTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -271,19 +281,20 @@
 		73D540261525A8BA00C57E1B /* StoreConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreConstants.m; sourceTree = "<group>"; };
 		73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCPragmaMarkStateTests.m; sourceTree = "<group>"; };
 		73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCEnumStateTests.m; sourceTree = "<group>"; };
-		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfoTests.m; sourceTree = "<group>"; };
-		73E416DB1541A14700600606 /* EnumInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumInfoTests.m; sourceTree = "<group>"; };
+		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodArgumentInfoTests.mm; sourceTree = "<group>"; };
+		73DFDD4115527F2D007746D4 /* TestCaseBase.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestCaseBase.hh; sourceTree = "<group>"; };
+		73E416DB1541A14700600606 /* EnumInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EnumInfoTests.mm; sourceTree = "<group>"; };
 		73E416DE1541A8B100600606 /* EnumItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumItemInfo.h; sourceTree = "<group>"; };
 		73E416DF1541A8B100600606 /* EnumItemInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumItemInfo.m; sourceTree = "<group>"; };
 		73E416E21541BAE000600606 /* StructInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StructInfo.h; sourceTree = "<group>"; };
 		73E416E31541BAE000600606 /* StructInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructInfo.m; sourceTree = "<group>"; };
-		73E416E61541E12200600606 /* StructInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StructInfoTests.m; sourceTree = "<group>"; };
+		73E416E61541E12200600606 /* StructInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = StructInfoTests.mm; sourceTree = "<group>"; };
 		73ED9444150E9FEC0032FD07 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		73ED9445150E9FEC0032FD07 /* Logging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Logging.m; sourceTree = "<group>"; };
 		73ED944C150F3CF40032FD07 /* Objects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Objects.h; sourceTree = "<group>"; };
 		73F59072154148C10078DA60 /* MethodStateMultipleDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodStateMultipleDefinitions.h; sourceTree = "<group>"; };
-		73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryInfoTests.m; sourceTree = "<group>"; };
-		73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectInfoBaseTests.m; sourceTree = "<group>"; };
+		73F5C87015480DFF005BE2D6 /* CategoryInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CategoryInfoTests.mm; sourceTree = "<group>"; };
+		73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectInfoBaseTests.mm; sourceTree = "<group>"; };
 		73F989AB1518A9BC0068697C /* ObjectiveCInterfaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCInterfaceState.h; sourceTree = "<group>"; };
 		73F989AC1518A9BC0068697C /* ObjectiveCInterfaceState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCInterfaceState.m; sourceTree = "<group>"; };
 		73F989B61518C63D0068697C /* ObjectiveCPropertyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCPropertyState.h; sourceTree = "<group>"; };
@@ -309,6 +320,7 @@
 				7317FAD9150F65EE00B39CFD /* OCHamcrest.framework in Frameworks */,
 				73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */,
 				73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
+				732B67A7155260890014C392 /* Cedar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +361,7 @@
 		7317FAC0150F551600B39CFD /* Testing Base */ = {
 			isa = PBXGroup;
 			children = (
+				73DFDD4115527F2D007746D4 /* TestCaseBase.hh */,
 				7317FAC1150F556800B39CFD /* TestCaseBase.h */,
 				7317FAC2150F556800B39CFD /* TestCaseBase.m */,
 				737C82A1152307AE0064DC46 /* TestStrings.h */,
@@ -362,7 +375,7 @@
 		7317FACB150F630F00B39CFD /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				7317FACD150F633900B39CFD /* SettingsTests.m */,
+				7317FACD150F633900B39CFD /* SettingsTests.mm */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -370,7 +383,7 @@
 		73280F2F1510987200D1E6E8 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				73280F311510989600D1E6E8 /* AppledocTests.m */,
+				73280F311510989600D1E6E8 /* AppledocTests.mm */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -479,18 +492,19 @@
 		7381A6791536CF2900BF9BDD /* Store */ = {
 			isa = PBXGroup;
 			children = (
-				7381A67B1536D04E00BF9BDD /* StoreTests.m */,
-				73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.m */,
-				7349F657153ED21D004D7AC7 /* TypeInfoTests.m */,
-				730BCC8E1540057000B909FD /* AttributesInfoTests.m */,
-				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.m */,
-				73F5C87015480DFF005BE2D6 /* CategoryInfoTests.m */,
-				73E416DB1541A14700600606 /* EnumInfoTests.m */,
-				73E416E61541E12200600606 /* StructInfoTests.m */,
-				733E445C153D516E0039010F /* MethodInfoTests.m */,
-				73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.m */,
-				730BCC87153FF91C00B909FD /* PropertyInfoTests.m */,
-				7336652815457BF7000F7AFF /* ConstantInfoTests.m */,
+				7381A67B1536D04E00BF9BDD /* StoreTests.mm */,
+				73F600EE1539E8BB00C4F668 /* ObjectInfoBaseTests.mm */,
+				7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */,
+				730BCC8E1540057000B909FD /* AttributesInfoTests.mm */,
+				73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */,
+				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */,
+				73F5C87015480DFF005BE2D6 /* CategoryInfoTests.mm */,
+				73E416DB1541A14700600606 /* EnumInfoTests.mm */,
+				73E416E61541E12200600606 /* StructInfoTests.mm */,
+				733E445C153D516E0039010F /* MethodInfoTests.mm */,
+				73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */,
+				730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */,
+				7336652815457BF7000F7AFF /* ConstantInfoTests.mm */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -506,6 +520,8 @@
 				731341FD153D5891002D5C54 /* TypeInfo.m */,
 				730BCC8A1540046F00B909FD /* AttributesInfo.h */,
 				730BCC8B1540046F00B909FD /* AttributesInfo.m */,
+				73A589FB15493F5B003838E0 /* DescriptorsInfo.h */,
+				73A589FC15493F5B003838E0 /* DescriptorsInfo.m */,
 				7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */,
 				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
 				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
@@ -545,6 +561,7 @@
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
+				732B67A6155260890014C392 /* Cedar.framework */,
 				7317FAD8150F65EE00B39CFD /* OCHamcrest.framework */,
 				73500D3C1517625E000416E3 /* OCMock.framework */,
 				73D540221525A5FF00C57E1B /* parsekit */,
@@ -738,9 +755,9 @@
 				7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */,
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
-				7317FACE150F633900B39CFD /* SettingsTests.m in Sources */,
+				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
 				73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
-				73280F321510989600D1E6E8 /* AppledocTests.m in Sources */,
+				73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */,
 				734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */,
 				734849EC1511F7870031EF85 /* GBSettings.m in Sources */,
 				734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
@@ -774,31 +791,33 @@
 				7316B9D815359DEE000F12F3 /* ObjectInfoBase.m in Sources */,
 				7381A66F1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */,
 				7381A6741536C35100BF9BDD /* ClassInfo.m in Sources */,
-				7381A67C1536D04E00BF9BDD /* StoreTests.m in Sources */,
+				7381A67C1536D04E00BF9BDD /* StoreTests.mm in Sources */,
 				7381A6811536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
 				735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */,
-				735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.m in Sources */,
+				735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */,
 				735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */,
-				73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.m in Sources */,
+				73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.mm in Sources */,
 				730FB573153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB578153C0889002DB54F /* MethodInfo.m in Sources */,
-				733E445D153D516E0039010F /* MethodInfoTests.m in Sources */,
+				733E445D153D516E0039010F /* MethodInfoTests.mm in Sources */,
 				731341FF153D5891002D5C54 /* TypeInfo.m in Sources */,
-				7349F658153ED21D004D7AC7 /* TypeInfoTests.m in Sources */,
+				7349F658153ED21D004D7AC7 /* TypeInfoTests.mm in Sources */,
 				7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */,
-				73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.m in Sources */,
-				730BCC88153FF91C00B909FD /* PropertyInfoTests.m in Sources */,
+				73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.mm in Sources */,
+				730BCC88153FF91C00B909FD /* PropertyInfoTests.mm in Sources */,
 				730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */,
-				730BCC8F1540057000B909FD /* AttributesInfoTests.m in Sources */,
+				730BCC8F1540057000B909FD /* AttributesInfoTests.mm in Sources */,
 				731103BE15418B4B005F46E5 /* EnumInfo.m in Sources */,
-				73E416DC1541A14700600606 /* EnumInfoTests.m in Sources */,
+				73E416DC1541A14700600606 /* EnumInfoTests.mm in Sources */,
 				73E416E11541A8B100600606 /* EnumItemInfo.m in Sources */,
 				73E416E51541BAE000600606 /* StructInfo.m in Sources */,
-				73E416E71541E12200600606 /* StructInfoTests.m in Sources */,
+				73E416E71541E12200600606 /* StructInfoTests.mm in Sources */,
 				7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */,
-				7336652915457BF7000F7AFF /* ConstantInfoTests.m in Sources */,
-				73F5C87115480DFF005BE2D6 /* CategoryInfoTests.m in Sources */,
+				7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */,
+				73F5C87115480DFF005BE2D6 /* CategoryInfoTests.mm in Sources */,
+				73A589FE15493F5B003838E0 /* DescriptorsInfo.m in Sources */,
+				73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -848,6 +867,7 @@
 				73E416E01541A8B100600606 /* EnumItemInfo.m in Sources */,
 				73E416E41541BAE000600606 /* StructInfo.m in Sources */,
 				7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */,
+				73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,11 +888,22 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/ThirdParty/Libraries/**",
+					"${SRCROOT}/AppledocTests/Libraries/**",
+				);
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+					"\"$(SRCROOT)/AppledocTests/Libraries\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-lstdc++",
+					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
@@ -893,11 +924,22 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppledocTests/AppledocTests-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"${SRCROOT}/ThirdParty/Libraries/**",
+					"${SRCROOT}/AppledocTests/Libraries/**",
+				);
 				INFOPLIST_FILE = "AppledocTests/AppledocTests-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
+					"\"$(SRCROOT)/AppledocTests/Libraries\"",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-lstdc++",
+					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;

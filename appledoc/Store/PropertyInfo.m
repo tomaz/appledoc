@@ -10,12 +10,14 @@
 #import "StoreRegistrations.h"
 #import "TypeInfo.h"
 #import "AttributesInfo.h"
+#import "DescriptorsInfo.h"
 #import "PropertyInfo.h"
 
 @implementation PropertyInfo
 
-@synthesize propertyAttributes = _propertyAttributes;
 @synthesize propertyType = _propertyType;
+@synthesize propertyAttributes = _propertyAttributes;
+@synthesize propertyDescriptors = _propertyDescriptors;
 @synthesize propertyName = _propertyName;
 
 #pragma mark - Helper methods
@@ -41,6 +43,13 @@
 
 #pragma mark - Properties
 
+- (TypeInfo *)propertyType {
+	if (_propertyType) return _propertyType;
+	LogStoDebug(@"Initializing property type due to first access...");
+	_propertyType = [[TypeInfo alloc] init];
+	return _propertyType;
+}
+
 - (AttributesInfo *)propertyAttributes {
 	if (_propertyAttributes) return _propertyAttributes;
 	LogStoDebug(@"Initializing property attributes due to first access...");
@@ -48,11 +57,11 @@
 	return _propertyAttributes;
 }
 
-- (TypeInfo *)propertyType {
-	if (_propertyType) return _propertyType;
-	LogStoDebug(@"Initializing property type due to first access...");
-	_propertyType = [[TypeInfo alloc] init];
-	return _propertyType;
+- (DescriptorsInfo *)propertyDescriptors {
+	if (_propertyDescriptors) return _propertyDescriptors;
+	LogStoDebug(@"Initializing property descriptors due to first access....");
+	_propertyDescriptors = [[DescriptorsInfo alloc] init];
+	return _propertyDescriptors;
 }
 
 @end
@@ -61,16 +70,22 @@
 
 @implementation PropertyInfo (Registrations)
 
+- (void)beginPropertyTypes {
+	// Note that we don't have to respond to endCurrentObject or cancelCurrentObject to pop propertyType - Store will automatically pop it from its stack whenever either of these messages are sent to it.
+	LogStoVerbose(@"Starting property types...");
+	[self pushRegistrationObject:self.propertyType];
+}
+
 - (void)beginPropertyAttributes {
 	// Note that we don't have to respond to endCurrentObject or cancelCurrentObject to pop propertyAttributes - Store will automatically pop it from its stack whenever either of these messages are sent to it.
 	LogStoVerbose(@"Starting property types...");
 	[self pushRegistrationObject:self.propertyAttributes];
 }
 
-- (void)beginPropertyTypes {
-	// Note that we don't have to respond to endCurrentObject or cancelCurrentObject to pop propertyType - Store will automatically pop it from its stack whenever either of these messages are sent to it.
-	LogStoVerbose(@"Starting property types...");
-	[self pushRegistrationObject:self.propertyType];
+- (void)beginPropertyDescriptors {
+	// Note that we don't have to respond to endCurrentObject or cancelCurrentObject to pop propertyDescriptors - Store will automatically pop it from its stack whenever either of these messages are sent to it.
+	LogStoVerbose(@"Starting property descriptors...");
+	[self pushRegistrationObject:self.propertyDescriptors];
 }
 
 - (void)appendPropertyName:(NSString *)name {

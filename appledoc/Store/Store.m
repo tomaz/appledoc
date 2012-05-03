@@ -213,6 +213,12 @@
 	[self.currentRegistrationObject beginPropertyTypes];
 }
 
+- (void)beginPropertyDescriptors {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding property descriptors registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginPropertyDescriptors];
+}
+
 - (void)appendPropertyName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding property name registration to %@...", self.currentRegistrationObject);
@@ -325,6 +331,12 @@
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding attribute registration to %@...", self.currentRegistrationObject);
 	[self.currentRegistrationObject appendAttribute:attribute];
+}
+
+- (void)appendDescriptor:(NSString *)descriptor {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding descriptor registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject appendDescriptor:descriptor];
 }
 
 #pragma mark - Finalizing registration for current object

@@ -45,6 +45,7 @@
 - (void)beginPropertyDefinition;
 - (void)beginPropertyAttributes;
 - (void)beginPropertyTypes;
+- (void)beginPropertyDescriptors;
 - (void)appendPropertyName:(NSString *)name;
 
 #pragma mark - Methods
@@ -76,6 +77,7 @@
 
 - (void)appendType:(NSString *)type;
 - (void)appendAttribute:(NSString *)attribute;
+- (void)appendDescriptor:(NSString *)descriptor;
 
 #pragma mark - Finalizing registrations
 
