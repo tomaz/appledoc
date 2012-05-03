@@ -7,111 +7,129 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface MethodInfoTests : TestCaseBase
-@end
-
-@interface MethodInfoTests (CreationMethods)
-- (void)runWithMethodInfo:(void(^)(MethodInfo *info))handler;
-@end
-
-@implementation MethodInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializersWork {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// execute & verify
-		assertThat(info.methodResult, instanceOf([TypeInfo class]));
-		assertThat(info.methodArguments, instanceOf([NSMutableArray class]));
-	}];
+static void runWithMethodInfo(void(^handler)(MethodInfo *info)) {
+	MethodInfo *info = [[MethodInfo alloc] init];
+	handler(info);
+	[info release];
 }
 
-#pragma mark - isClassMethod & isInterfaceMethod
-
-- (void)testIsClassMethodShouldReturnYesAndIsInterfaceMethodShouldReturnNoIfMethodTypeIsClass {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// setup
-		info.methodType = GBStoreTypes.classMethod;
-		// execute & verify
-		assertThatBool(info.isClassMethod, equalToBool(YES));
-		assertThatBool(info.isInstanceMethod, equalToBool(NO));
-	}];
+static void runWithMethodInfoWithRegistrar(void(^handler)(MethodInfo *info, Store *store)) {
+	runWithMethodInfo(^(MethodInfo *info) {
+		Store *store = [[Store alloc] init];
+		info.objectRegistrar = store;
+		handler(info, store);
+		[store release];
+	});
 }
-
-- (void)testIsClassMethodShouldReturnNoAndIsInterfaceMethodShouldReturnYesIfMethodTypeIsInstance {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// setup
-		info.methodType = GBStoreTypes.instanceMethod;
-		// execute & verify
-		assertThatBool(info.isClassMethod, equalToBool(NO));
-		assertThatBool(info.isInstanceMethod, equalToBool(YES));
-	}];
-}
-
-#pragma mark - beginMethodResults
-
-- (void)testBeginMethodResultsShouldChangeCurrentRegistrationObjectToResults {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[TypeInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginMethodResults];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - beginMethodArgument
-
-- (void)testBeginMethodArgumentShouldCreateNewMethodArgument {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[MethodArgumentInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginMethodArgument];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-		assertThatInt(info.methodArguments.count, equalToInt(1));
-		assertThat([info.methodArguments lastObject], instanceOf([MethodArgumentInfo class]));
-		assertThat([[info.methodArguments lastObject] objectRegistrar], equalTo(mock));
-	}];
-}
-
-#pragma mark - cancelCurrentObject
-
-- (void)testCancelCurrentObjectShouldRemoveMethodArgument {
-	[self runWithMethodInfo:^(MethodInfo *info) {
-		// setup
-		[info beginMethodArgument];
-		id mock = [OCMockObject niceMockForClass:[Store class]];
-		[[[mock stub] andReturn:info.methodArguments.lastObject] currentRegistrationObject];
-		info.objectRegistrar = mock;
-		// execute
-		[info cancelCurrentObject];
-		// verify
-		assertThatInt(info.methodArguments.count, equalToInt(0));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation MethodInfoTests (CreationMethods)
+SPEC_BEGIN(MethodInfoTests)
 
-- (void)runWithMethodInfo:(void(^)(MethodInfo *info))handler {
-	MethodInfo *info = [MethodInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// execute & verify
+			info.methodResult should be_instance_of([TypeInfo class]);
+			info.methodArguments should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"class or interface method helpers", ^{
+	it(@"should work for class method", ^{
+		runWithMethodInfo(^(MethodInfo *info) {			
+			// setup
+			info.methodType = GBStoreTypes.classMethod;
+			// execute & verify
+			info.isClassMethod should equal(YES);
+			info.isInstanceMethod should equal(NO);
+		});
+	});
+
+	it(@"should work for instance method", ^{
+		runWithMethodInfo(^(MethodInfo *info) {			
+			// setup
+			info.methodType = GBStoreTypes.instanceMethod;
+			// execute & verify
+			info.isClassMethod should equal(NO);
+			info.isInstanceMethod should equal(YES);
+		});
+	});
+});
+
+describe(@"method results registration", ^{
+	it(@"should change current registration object to results", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+				return [obj isKindOfClass:[TypeInfo class]];
+			}]];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginMethodResults];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"method argument registration", ^{
+	it(@"should create new method argument", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+			// execute
+			[info beginMethodArgument];
+			// verify
+			info.methodArguments.count should equal(1);
+			info.methodArguments.lastObject should be_instance_of([MethodArgumentInfo class]);
+			[info.methodArguments.lastObject objectRegistrar] should equal(info.objectRegistrar);
+		});
+	});
+
+	it(@"should push argument to registration stack", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+				return [obj isKindOfClass:[MethodArgumentInfo class]];
+			}]];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginMethodArgument];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"object cancellation", ^{
+	it(@"should remove method argument if current registration object", ^{
+		runWithMethodInfoWithRegistrar(^(MethodInfo *info, Store *store) {
+			// setup
+			[info beginMethodArgument];
+			// execute
+			[info cancelCurrentObject];
+			// verify
+			info.methodArguments.count should equal(0);
+		});
+	});
+
+	it(@"should not remove method argument if current registration object is different", ^{
+		runWithMethodInfoWithRegistrar(^(MethodInfo *info, Store *store) {
+			// setup
+			[info beginMethodArgument];
+			[info beginMethodResults];
+			// execute
+			[info cancelCurrentObject];
+			// verify
+			info.methodArguments.count should equal(1);
+		});
+	});
+});
+
+SPEC_END

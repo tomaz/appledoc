@@ -7,58 +7,48 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface CategoryInfoTests : TestCaseBase
-@end
-
-@interface CategoryInfoTests (CreationMethods)
-- (void)runWithCategoryInfo:(void(^)(CategoryInfo *info))handler;
-@end
-
-@implementation CategoryInfoTests
-
-#pragma mark - isExtension & isCategory
-
-- (void)testIsExtensionShouldReturnYesAndIsCategoryShouldReturnNoIfNameOfCategoryIsNil {
-	[self runWithCategoryInfo:^(CategoryInfo *info) {
-		// setup
-		info.nameOfCategory = nil;
-		// execute & verify
-		assertThatBool(info.isExtension, equalToBool(YES));
-		assertThatBool(info.isCategory, equalToBool(NO));
-	}];
+static void runWithCategoryInfo(void(^handler)(CategoryInfo *info)) {
+	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:nil];
+	handler(info);
+	[info release];
 }
-
-- (void)testIsExtensionShouldReturnYesAndIsCategoryShouldReturnNoIfNameOfCategoryIsEmptyString {
-	[self runWithCategoryInfo:^(CategoryInfo *info) {
-		// setup
-		info.nameOfCategory = @"";
-		// execute & verify
-		assertThatBool(info.isExtension, equalToBool(YES));
-		assertThatBool(info.isCategory, equalToBool(NO));
-	}];
-}
-
-- (void)testIsExtensionShouldReturnNoAndIsCategoryShouldReturnYesIfNameOfCategoryIsProvided {
-	[self runWithCategoryInfo:^(CategoryInfo *info) {
-		// setup
-		info.nameOfCategory = @"a";
-		// execute & verify
-		assertThatBool(info.isExtension, equalToBool(NO));
-		assertThatBool(info.isCategory, equalToBool(YES));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation CategoryInfoTests (CreationMethods)
+SPEC_BEGIN(CategoryInfoTests)
 
-- (void)runWithCategoryInfo:(void(^)(CategoryInfo *info))handler {
-	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:nil];
-	handler(info);
-}
+describe(@"category or extension helpers", ^{
+	it(@"should work if name of category is nil", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.nameOfCategory = nil;
+			// execute & verify
+			info.isExtension should equal(YES);
+			info.isCategory should equal(NO);
+		});
+	});
+	
+	it(@"should work if name of category is empty string", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.nameOfCategory = @"";
+			// execute & verify
+			info.isExtension should equal(YES);
+			info.isCategory should equal(NO);
+		});
+	});
+	
+	it(@"should woirk if name of category is not nil and not empty string", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.nameOfCategory = @"a";
+			// execute & verify
+			info.isExtension should equal(NO);
+			info.isCategory should equal(YES);
+		});
+	});
+});
 
-@end
+SPEC_END

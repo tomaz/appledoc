@@ -7,137 +7,138 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface PropertyInfoTests : TestCaseBase
-@end
-
-@interface PropertyInfoTests (CreationMethods)
-- (void)runWithPropertyInfo:(void(^)(PropertyInfo *info))handler;
-@end
-
-@implementation PropertyInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializersWork {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// execute & verify
-		assertThat(info.propertyAttributes, instanceOf([AttributesInfo class]));
-		assertThat(info.propertyType, instanceOf([TypeInfo class]));
-	}];
+static void runWithPropertyInfo(void(^handler)(PropertyInfo *info)) {
+	PropertyInfo *info = [[PropertyInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - Verify getter and setter selectors
-
-- (void)testPropertyGetterAndSetterSelectorShouldReturnDefaultName {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		info.propertyName = @"name";
-		// execute & verify
-		assertThat(info.propertyGetterSelector, equalTo(@"name"));
-		assertThat(info.propertySetterSelector, equalTo(@"setName:"));
-	}];
-}
-
-- (void)testPropertyGetterAndSetterSelectorShouldReturnValueFromAttributes {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		info.propertyName = @"name";
-		info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"getter", @"=", @"isName", @"setter", @"=", @"setNewName", nil];
-		// execute & verify
-		assertThat(info.propertyGetterSelector, equalTo(@"isName"));
-		assertThat(info.propertySetterSelector, equalTo(@"setNewName:"));
-	}];
-}
-
-- (void)testPropertyGetterSelectorShouldReturnValueFromAttributesWhileCustomSetterIsNotGiven {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		info.propertyName = @"name";
-		info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"getter", @"=", @"isName", nil];
-		// execute & verify
-		assertThat(info.propertyGetterSelector, equalTo(@"isName"));
-		assertThat(info.propertySetterSelector, equalTo(@"setName:"));
-	}];
-}
-
-- (void)testPropertySetterSelectorShouldReturnValueFromAttributesWhileCustomGetterIsNotGiven {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		info.propertyName = @"name";
-		info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"setter", @"=", @"setNewName", nil];
-		// execute & verify
-		assertThat(info.propertyGetterSelector, equalTo(@"name"));
-		assertThat(info.propertySetterSelector, equalTo(@"setNewName:"));
-	}];
-}
-
-#pragma mark - beginPropertyAttributes
-
-- (void)testBeginPropertyAttributesShouldChangeCurrentRegistrationObjectToAttributes {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[AttributesInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginPropertyAttributes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - beginPropertyTypes
-
-- (void)testBeginPropertyTypesShouldChangeCurrentRegistrationObjectToTypes {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[TypeInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginPropertyTypes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - appendPropertyName:
-
-- (void)testAppendPropertyNameShouldAssignGivenString {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// execute
-		[info appendPropertyName:@"value"];
-		// verify
-		assertThat(info.propertyName, equalTo(@"value"));
-	}];
-}
-
-- (void)testAppendPropertyNameSelectorShouldUseLastValueIfSentMultipleTimes {
-	[self runWithPropertyInfo:^(PropertyInfo *info) {
-		// execute
-		[info appendPropertyName:@"value1"];
-		[info appendPropertyName:@"value2"];
-		// verify
-		assertThat(info.propertyName, equalTo(@"value2"));
-	}];
-}
-
-
-@end
 
 #pragma mark - 
 
-@implementation PropertyInfoTests (CreationMethods)
+SPEC_BEGIN(PropertyInfoTests)
 
-- (void)runWithPropertyInfo:(void(^)(PropertyInfo *info))handler {
-	PropertyInfo *info = [PropertyInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// execute & verify
+			info.propertyType should be_instance_of([TypeInfo class]);
+			info.propertyAttributes should be_instance_of([AttributesInfo class]);
+			info.propertyDescriptors should be_instance_of([DescriptorsInfo class]);
+		});
+	});
+});
 
-@end
+describe(@"getter and setter selectors", ^{
+	it(@"should return default name if no attribute is given", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			info.propertyName = @"name";
+			// execute & verify
+			info.propertyGetterSelector should equal(@"name");
+			info.propertySetterSelector should equal(@"setName:");
+		});
+	});
+	
+	it(@"should return value from attributes if both are given", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			info.propertyName = @"name";
+			info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"getter", @"=", @"isName", @"setter", @"=", @"setNewName", nil];
+			// execute & verify
+			info.propertyGetterSelector should equal(@"isName");
+			info.propertySetterSelector should equal(@"setNewName:");
+		});
+	});
+	
+	it(@"should return custom getter value and revert to default setter if only getter is specified", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			info.propertyName = @"name";
+			info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"getter", @"=", @"isName", nil];
+			// execute & verify
+			info.propertyGetterSelector should equal(@"isName");
+			info.propertySetterSelector should equal(@"setName:");
+		});
+	});
+	
+	it(@"should return custom setter value and revert to default getter if only setter is specified", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			info.propertyName = @"name";
+			info.propertyAttributes.attributeItems = [NSMutableArray arrayWithObjects:@"setter", @"=", @"setNewName", nil];
+			// execute & verify
+			info.propertyGetterSelector should equal(@"name");
+			info.propertySetterSelector should equal(@"setNewName:");
+		});
+	});
+});
+
+describe(@"property descriptors registration", ^{
+	it(@"should push descriptors info to registration stack", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:info.propertyDescriptors];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginPropertyDescriptors];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"property attributes registration", ^{
+	it(@"should push attributes info to registration stack", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:info.propertyAttributes];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginPropertyAttributes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"property types registration", ^{
+	it(@"should push property type info to registration stack", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:info.propertyType];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginPropertyTypes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"property name registration", ^{
+	it(@"should assign given string", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// execute
+			[info appendPropertyName:@"value"];
+			// verify
+			info.propertyName should equal(@"value");
+		});
+	});
+	
+	it(@"should use last value if sent multiple times", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// execute
+			[info appendPropertyName:@"value1"];
+			[info appendPropertyName:@"value2"];
+			// verify
+			info.propertyName should equal(@"value2");
+		});
+	});
+});
+
+SPEC_END

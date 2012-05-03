@@ -7,93 +7,83 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface AttributesInfoTests : TestCaseBase
-@end
-
-@interface AttributesInfoTests (CreationMethods)
-- (void)runWithPropertyAttributesInfo:(void(^)(AttributesInfo *info))handler;
-@end
-
-@implementation AttributesInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializationShouldWork {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// execute & verify
-		assertThat(info.attributeItems, instanceOf([NSMutableArray class]));
-	}];
+static void runWithPropertyAttributesInfo(void(^handler)(AttributesInfo *info)) {
+	AttributesInfo *info = [[AttributesInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - valueForAttribute:
-
-- (void)testValueForAttributeShouldReturnValue {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// setup
-		info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value", @"suffix", nil];
-		// execute & verify
-		assertThat([info valueForAttribute:@"attribute"], equalTo(@"value"));
-	}];
-}
-
-- (void)testValueForAttributeShouldReturnCorrectValue {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// setup
-		info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute1", @"=", @"value1", @"attribute2", @"=", @"value2", @"suffix", nil];
-		// execute & verify
-		assertThat([info valueForAttribute:@"attribute1"], equalTo(@"value1"));
-		assertThat([info valueForAttribute:@"attribute2"], equalTo(@"value2"));
-	}];
-}
-
-- (void)testValueForAttributeShouldReturnFirstAttributeValueIfMultipleAttributesWithSameNameArePresent {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// setup
-		info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value1", @"attribute", @"=", @"value2", @"suffix", nil];
-		// execute & verify
-		assertThat([info valueForAttribute:@"attribute"], equalTo(@"value1"));
-	}];
-}
-
-- (void)testValueForAttributeShouldReturnNilIfAttributeNotFound {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// setup
-		info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value", @"suffix", nil];
-		// execute & verify
-		assertThat([info valueForAttribute:@"prefix"], equalTo(nil));
-		assertThat([info valueForAttribute:@"suffix"], equalTo(nil));
-		assertThat([info valueForAttribute:@"attr"], equalTo(nil));
-		assertThat([info valueForAttribute:@"attribute1"], equalTo(nil));
-		assertThat([info valueForAttribute:@"="], equalTo(nil));
-		assertThat([info valueForAttribute:@"value"], equalTo(nil));
-	}];
-}
-
-#pragma mark - appendAttribute:
-
-- (void)testAppendAttributeShouldAddAllStringsToTypeItemsArray {
-	[self runWithPropertyAttributesInfo:^(AttributesInfo *info) {
-		// execute
-		[info appendAttribute:@"type1"];
-		[info appendAttribute:@"type2"];
-		// verify
-		assertThatInt(info.attributeItems.count, equalToInt(2));
-		assertThat([info.attributeItems objectAtIndex:0], equalTo(@"type1"));
-		assertThat([info.attributeItems objectAtIndex:1], equalTo(@"type2"));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation AttributesInfoTests (CreationMethods)
+SPEC_BEGIN(AttributesInfoTests)
 
-- (void)runWithPropertyAttributesInfo:(void(^)(AttributesInfo *info))handler {
-	AttributesInfo *info = [AttributesInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
+			// execute & verify
+			info.attributeItems should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"attribute value", ^{
+	it(@"should return value based on = token", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
+			// setup
+			info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value", @"suffix", nil];
+			// execute & verify
+			[info valueForAttribute:@"attribute"] should equal(@"value");			
+		});
+	});
+	
+	it(@"should return correct value if multiple attributes are present", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
+			// setup
+			info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute1", @"=", @"value1", @"attribute2", @"=", @"value2", @"suffix", nil];
+			// execute & verify
+			[info valueForAttribute:@"attribute1"] should equal(@"value1");
+			[info valueForAttribute:@"attribute2"] should equal(@"value2");
+		});
+	});
+	
+	it(@"should return first attribute value if multiple attributes with the same name are present", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
+			// setup
+			info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value1", @"attribute", @"=", @"value2", @"suffix", nil];
+			// execute & verify
+			[info valueForAttribute:@"attribute"] should equal(@"value1");
+		});
+	});
+	
+	it(@"should return nil if attribute name is not present", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
+			// setup
+			info.attributeItems = [NSMutableArray arrayWithObjects:@"prefix", @"attribute", @"=", @"value", @"suffix", nil];
+			// execute & verify
+			[info valueForAttribute:@"prefix"] should be_nil();
+			[info valueForAttribute:@"suffix"] should be_nil();
+			[info valueForAttribute:@"attr"] should be_nil();
+			[info valueForAttribute:@"attribute1"] should be_nil();
+			[info valueForAttribute:@"="] should be_nil();
+			[info valueForAttribute:@"value"] should be_nil();
+		});
+	});
+});
+
+describe(@"appending attributes", ^{
+	it(@"should add all strings to type items array", ^{
+		runWithPropertyAttributesInfo(^(AttributesInfo *info) {			
+			// execute
+			[info appendAttribute:@"type1"];
+			[info appendAttribute:@"type2"];
+			// verify
+			info.attributeItems.count should equal(2);
+			[info.attributeItems objectAtIndex:0] should equal(@"type1");
+			[info.attributeItems objectAtIndex:1] should equal(@"type2");
+		});
+	});
+});
+
+SPEC_END

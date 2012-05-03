@@ -7,91 +7,81 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface EnumInfoTests : TestCaseBase
-@end
-
-@interface EnumInfoTests (CreationMethods)
-- (void)runWithEnumInfo:(void(^)(EnumInfo *info))handler;
-@end
-
-@implementation EnumInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializersWork {
-	[self runWithEnumInfo:^(EnumInfo *info) {
-		// execute & verify
-		assertThat(info.enumItems, instanceOf([NSMutableArray class]));
-	}];
+static void runWithEnumInfo(void(^handler)(EnumInfo *info)) {
+	EnumInfo *info = [[EnumInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - appendEnumerationItem:
-
-- (void)testAppendEnumerationItemShouldAddAllItems {
-	[self runWithEnumInfo:^(EnumInfo *info) {
-		// execute
-		[info appendEnumerationItem:@"item1"];
-		[info appendEnumerationItem:@"item2"];
-		// verify
-		assertThatInt(info.enumItems.count, equalToInt(2));
-		assertThat([info.enumItems objectAtIndex:0], instanceOf([EnumItemInfo class]));
-		assertThat([info.enumItems objectAtIndex:1], instanceOf([EnumItemInfo class]));
-		assertThat([[info.enumItems objectAtIndex:0] itemName], equalTo(@"item1"));
-		assertThat([[info.enumItems objectAtIndex:1] itemName], equalTo(@"item2"));
-	}];
-}
-
-#pragma mark - appendEnumerationValue:
-
-- (void)testAppendEnumerationValueShouldAppendValueToOneAndOnlyItem {
-	[self runWithEnumInfo:^(EnumInfo *info) {
-		// setup
-		[info appendEnumerationItem:@"item"];
-		// execute
-		[info appendEnumerationValue:@"value"];
-		// verify
-		assertThatInt(info.enumItems.count, equalToInt(1));
-		assertThat([[info.enumItems objectAtIndex:0] itemName], equalTo(@"item"));
-		assertThat([[info.enumItems objectAtIndex:0] itemValue], equalTo(@"value"));
-	}];
-}
-
-- (void)testAppendEnumerationValueShouldAppendValueToLastItem {
-	[self runWithEnumInfo:^(EnumInfo *info) {
-		// setup
-		[info appendEnumerationItem:@"item1"];
-		[info appendEnumerationItem:@"item2"];
-		// execute
-		[info appendEnumerationValue:@"value"];
-		// verify
-		assertThatInt(info.enumItems.count, equalToInt(2));
-		assertThat([[info.enumItems objectAtIndex:0] itemName], equalTo(@"item1"));
-		assertThat([[info.enumItems objectAtIndex:0] itemValue], equalTo(nil));
-		assertThat([[info.enumItems objectAtIndex:1] itemName], equalTo(@"item2"));
-		assertThat([[info.enumItems objectAtIndex:1] itemValue], equalTo(@"value"));
-	}];
-}
-
-- (void)testAppendEnumerationValueShouldIgnoreIfNoItemIsRegistered {
-	[self runWithEnumInfo:^(EnumInfo *info) {
-		// execute
-		[info appendEnumerationValue:@"value"];
-		// verify - we log a warning in such case, but we don't test it here!
-		assertThatInt(info.enumItems.count, equalToInt(0));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation EnumInfoTests (CreationMethods)
+SPEC_BEGIN(EnumInfoTests)
 
-- (void)runWithEnumInfo:(void(^)(EnumInfo *info))handler {
-	EnumInfo *info = [EnumInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// execute & verify
+			info.enumItems should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"enumeration item registration", ^{
+	it(@"should add all items to items array", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// execute
+			[info appendEnumerationItem:@"item1"];
+			[info appendEnumerationItem:@"item2"];
+			// verify
+			info.enumItems.count should equal(2);
+			[info.enumItems objectAtIndex:0] should be_instance_of([EnumItemInfo class]);
+			[info.enumItems objectAtIndex:1] should be_instance_of([EnumItemInfo class]);
+			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item1");
+			[[info.enumItems objectAtIndex:1] itemName] should equal(@"item2");
+		});
+	});
+});
+
+describe(@"enumeration value registration", ^{
+	it(@"should set value if single item is registered", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// setup
+			[info appendEnumerationItem:@"item"];
+			// execute
+			[info appendEnumerationValue:@"value"];
+			// verify
+			info.enumItems.count should equal(1);
+			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item");
+			[[info.enumItems objectAtIndex:0] itemValue] should equal(@"value");
+		});
+	});
+	
+	it(@"should set value to last item is multiple items are registered", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// setup
+			[info appendEnumerationItem:@"item1"];
+			[info appendEnumerationItem:@"item2"];
+			// execute
+			[info appendEnumerationValue:@"value"];
+			// verify
+			info.enumItems.count should equal(2);
+			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item1");
+			[[info.enumItems objectAtIndex:0] itemValue] should be_nil();
+			[[info.enumItems objectAtIndex:1] itemName] should equal(@"item2");
+			[[info.enumItems objectAtIndex:1] itemValue] should equal(@"value");
+		});
+	});
+	
+	it(@"should ignore if no item is registered", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// execute
+			[info appendEnumerationValue:@"value"];
+			// verify - we log a warning in such case, but we don't test it here!
+			info.enumItems.count should equal(0);
+		});
+	});
+});
+
+SPEC_END

@@ -21,7 +21,7 @@
 @implementation ObjectiveCPropertyStateTests
 
 #pragma mark - Properties without attributes
-
+/*
 - (void)testParseStreamForParserStoreShouldDetectPropertyWithNoAttributes {
 	[self runWithState:^(ObjectiveCPropertyState *state) {
 		[self runWithString:@"@property type name;" block:^(id parser, id tokens) {
@@ -182,6 +182,259 @@
 	}];
 }
 
+#pragma mark - Properties with descriptors
+
+- (void)testParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordStartsWithDoubleUnderscore {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL name __something" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"__something"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectAllDescriptorsAfterDoubleUnderscore {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL name __attribute__((deprecated))" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"__attribute__"];
+			[[store expect] appendDescriptor:@"("];
+			[[store expect] appendDescriptor:@"("];
+			[[store expect] appendDescriptor:@"deprecated"];
+			[[store expect] appendDescriptor:@")"];
+			[[store expect] appendDescriptor:@")"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordIsUppercase {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL name THIS_IS_DESCRIPTOR" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"THIS_IS_DESCRIPTOR"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectAllDescriptorsAfterUppercaseWord {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL name THIS_IS_DESCRIPTOR and another" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"THIS_IS_DESCRIPTOR"];
+			[[store expect] appendDescriptor:@"and"];
+			[[store expect] appendDescriptor:@"another"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+#pragma mark - Handling edge cases / limitations for supporting descriptors
+
+- (void)testParseStreamForParserStoreShouldAllowPropertyNameWithDoubleUnderscore {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property NSString *__name" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"__name"];
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldAllowPropertyNameWithUppercase {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property NSString *NAME" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"NAME"];
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyNameWithDoubleUnderscoreFollowedByAttributes {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL __name __something" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"__name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"__something"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+		[self runWithString:@"@property NSString ***__name __something" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] appendType:@"*"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"__name"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"__something"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
+- (void)testParseStreamForParserStoreShouldDetectPropertyNameWithUppercaseFollowedByAttributes {
+	[self runWithState:^(ObjectiveCPropertyState *state) {
+		[self runWithString:@"@property BOOL NAME SOMETHING" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"BOOL"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"NAME"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"SOMETHING"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+		[self runWithString:@"@property NSString ***NAME SOMETHING" block:^(id parser, id tokens) {
+			// setup
+			id store = [OCMockObject mockForClass:[Store class]];
+			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+			[[store expect] beginPropertyDefinition];
+			[[store expect] beginPropertyTypes];
+			[[store expect] appendType:@"NSString"];
+			[[store expect] appendType:@"*"];
+			[[store expect] appendType:@"*"];
+			[[store expect] appendType:@"*"];
+			[[store expect] endCurrentObject]; // types
+			[[store expect] appendPropertyName:@"NAME"];
+			[[store expect] beginPropertyDescriptors];
+			[[store expect] appendDescriptor:@"SOMETHING"];
+			[[store expect] endCurrentObject]; // descriptors
+			[[store expect] endCurrentObject]; // property
+			[[parser expect] popState];
+			// execute
+			[state parseStream:tokens forParser:parser store:store];
+			// verify
+			STAssertNoThrow([store verify], nil);
+			STAssertNoThrow([parser verify], nil);
+		}];
+	}];
+}
+
 #pragma mark - Multiple properties
 
 - (void)testParseStreamForParserStoreShouldDetectMultipleProperties {
@@ -222,7 +475,7 @@
 		}];
 	}];
 }
-
+*/
 @end
 
 #pragma mark - 

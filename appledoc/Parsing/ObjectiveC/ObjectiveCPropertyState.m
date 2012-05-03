@@ -48,7 +48,7 @@
 		[store endCurrentObject];
 	}
 	
-	// Parse declaration.
+	// Parse types.
 	LogParDebug(@"Matching types and name.");
 	[store beginPropertyTypes];
 	NSUInteger found = [stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {

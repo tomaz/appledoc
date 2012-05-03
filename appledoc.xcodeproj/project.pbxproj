@@ -52,7 +52,7 @@
 		73343BFF15264062006EFF6F /* ObjectiveCStructStateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 73343BFE15264062006EFF6F /* ObjectiveCStructStateTests.m */; };
 		7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
 		7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
-		7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.mm */; };
+		7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		733E445D153D516E0039010F /* MethodInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		734425131517631F00B6EC33 /* ParserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.m */; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };

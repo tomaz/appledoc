@@ -7,106 +7,94 @@
 //
 
 #import "ObjectInfoBase.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface ObjectInfoBaseTests : TestCaseBase
-@end
-
-@interface ObjectInfoBaseTests (CreationMethods)
-- (void)runWithObjectInfoBase:(void(^)(ObjectInfoBase *info))handler;
-@end
-
-@implementation ObjectInfoBaseTests
-
-#pragma mark - pushRegistrationObject:
-
-- (void)testPushRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id child = @"child";
-		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-		[[registrar expect] pushRegistrationObject:child];
-		info.objectRegistrar = registrar;
-		// execute
-		[info pushRegistrationObject:child];
-		// verify
-		STAssertNoThrow([registrar verify], nil);
-	}];
-}
-
-#pragma mark - popRegistrationStack
-
-- (void)testPopRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id child = @"child";
-		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-		[[[registrar expect] andReturn:child] popRegistrationObject];
-		info.objectRegistrar = registrar;
-		// execute
-		id poppedObject = [info popRegistrationObject];
-		// verify
-		STAssertNoThrow([registrar verify], nil);
-		assertThat(poppedObject, equalTo(child));
-	}];
-}
-
-#pragma mark - currentRegistrationObject
-
-- (void)testCurrentRegistrationObjectShouldForwardRequestToAssignedStoreRegistrar {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id child = @"child";
-		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-		[[[registrar expect] andReturn:child] currentRegistrationObject];
-		info.objectRegistrar = registrar;
-		// execute
-		id currentObject = [info currentRegistrationObject];
-		// verify
-		STAssertNoThrow([registrar verify], nil);
-		assertThat(currentObject, equalTo(child));
-	}];
-}
-
-#pragma mark - expectCurrentRegistrationObjectRespondTo:
-
-- (void)testExpectCurrentRegistrationObjectRespondToShouldForwardRequestToAssignedStoreRegistrar {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-		[[registrar expect] expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
-		info.objectRegistrar = registrar;
-		// execute
-		[info expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
-		// verify
-		STAssertNoThrow([registrar verify], nil);
-	}];
-}
-
-#pragma mark - doesCurrentRegistrationObjectRespondTo:
-
-- (void)testDoesCurrentRegistrationObjectRespondToShouldForwardRequestToAssignedStoreRegistrar {
-	[self runWithObjectInfoBase:^(ObjectInfoBase *info) {
-		// setup
-		id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-		[[registrar expect] doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
-		info.objectRegistrar = registrar;
-		// execute
-		[info doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
-		// verify
-		STAssertNoThrow([registrar verify], nil);
-	}];
-}
-
-@end
-
-#pragma mark - 
-
-@implementation ObjectInfoBaseTests (CreationMethods)
-
-- (void)runWithObjectInfoBase:(void(^)(ObjectInfoBase *info))handler {
-	ObjectInfoBase *info = [ObjectInfoBase new];
+static void runWithObjectInfoBase(void(^handler)(ObjectInfoBase *info)) {
+	ObjectInfoBase *info = [[ObjectInfoBase alloc] init];
 	handler(info);
+	[info release];
 }
 
-@end
+SPEC_BEGIN(ObjectInfoBaseTests)
+
+describe(@"push object to registration stack", ^{
+	it(@"should forward request to assigned store registrar", ^{
+		runWithObjectInfoBase(^(ObjectInfoBase *info) {
+			// setup
+			id child = @"child";
+			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+			[[registrar expect] pushRegistrationObject:child];
+			info.objectRegistrar = registrar;
+			// execute
+			[info pushRegistrationObject:child];
+			// verify
+			^{ [registrar verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"pop object from registration stack", ^{
+	it(@"should forward request to assigned store registrar", ^{
+		runWithObjectInfoBase(^(ObjectInfoBase *info) {
+			// setup
+			id child = @"child";
+			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+			[[[registrar expect] andReturn:child] popRegistrationObject];
+			info.objectRegistrar = registrar;
+			// execute
+			id poppedObject = [info popRegistrationObject];
+			// verify
+			^{ [registrar verify]; } should_not raise_exception();
+			poppedObject should equal(child);
+		});
+	});
+});
+
+describe(@"pop object from registration stack", ^{
+	it(@"should forward request to assigned store registrar", ^{
+		runWithObjectInfoBase(^(ObjectInfoBase *info) {
+			// setup
+			id child = @"child";
+			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+			[[[registrar expect] andReturn:child] currentRegistrationObject];
+			info.objectRegistrar = registrar;
+			// execute
+			id currentObject = [info currentRegistrationObject];
+			// verify
+			^{ [registrar verify]; } should_not raise_exception();
+			currentObject should equal(child);
+		});
+	});
+});
+
+describe(@"pop object from registration stack", ^{
+	it(@"should forward request to assigned store registrar", ^{
+		runWithObjectInfoBase(^(ObjectInfoBase *info) {
+			// setup
+			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+			[[registrar expect] expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			info.objectRegistrar = registrar;
+			// execute
+			[info expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			// verify
+			^{ [registrar verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"pop object from registration stack", ^{
+	it(@"should forward request to assigned store registrar", ^{
+		runWithObjectInfoBase(^(ObjectInfoBase *info) {
+			// setup
+			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
+			[[registrar expect] doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			info.objectRegistrar = registrar;
+			// execute
+			[info doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			// verify
+			^{ [registrar verify]; } should_not raise_exception();
+		});
+	});
+});
+
+SPEC_END
