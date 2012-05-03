@@ -6,11 +6,10 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "Objects+TestingPrivateAPI.h"
 #import "Store.h"
 #import "Parser.h"
 #import "Appledoc.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
 @interface Appledoc (TestingPrivateAPI)
 @property (nonatomic, strong) GBSettings *settings;
@@ -18,52 +17,42 @@
 
 #pragma mark - 
 
-@interface AppledocTests : TestCaseBase
-@end
-
-@interface AppledocTests (CreationMethods)
-- (void)runWithAppledoc:(void(^)(Appledoc *appledoc))handler;
-@end
-
-@implementation AppledocTests
-
-#pragma mark - Properties
-
-- (void)testLazyAccessorsShouldInitializeObjects {
-	[self runWithAppledoc:^(Appledoc *appledoc) {
-		// execute & verify
-		assertThat(appledoc.store, instanceOf([Store class]));
-		assertThat(appledoc.parser, instanceOf([Parser class]));
-	}];
-}
-
-#pragma mark - runWithSettings:
-
-- (void)testRunWithSettingsShouldInvokeAllSubcomponents {
-	[self runWithAppledoc:^(Appledoc *appledoc) {
-		// setup
-		id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-		id store = [OCMockObject niceMockForClass:[Store class]];
-		id parser = [OCMockObject mockForClass:[Parser class]];
-		[[parser expect] runWithSettings:settings store:store];
-		appledoc.store = store;
-		appledoc.parser = parser;
-		// execute
-		[appledoc runWithSettings:settings];
-		// verify
-		STAssertNoThrow([parser verify], nil);
-	}];
-}
-
-@end
-
-#pragma mark -
-
-@implementation AppledocTests (CreationMethods)
-
-- (void)runWithAppledoc:(void(^)(Appledoc *appledoc))handler {
+static void runWithAppledoc(void(^handler)(Appledoc *appledoc)) {
 	Appledoc *appledoc = [[Appledoc alloc] init];
 	handler(appledoc);
+	[appledoc release];
 }
 
-@end
+#pragma mark - 
+
+SPEC_BEGIN(AppledocTests)
+
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithAppledoc(^(Appledoc *appledoc) {
+			// execute & verify
+			appledoc.store should be_instance_of([Store class]);
+			appledoc.parser should be_instance_of([Parser class]);
+		});
+	});
+});
+
+describe(@"run", ^{
+	it(@"should invoke parser", ^{
+		runWithAppledoc(^(Appledoc *appledoc) {
+			// setup
+			id settings = [OCMockObject niceMockForClass:[GBSettings class]];
+			id store = [OCMockObject niceMockForClass:[Store class]];
+			id parser = [OCMockObject mockForClass:[Parser class]];
+			[[parser expect] runWithSettings:settings store:store];
+			appledoc.store = store;
+			appledoc.parser = parser;
+			// execute
+			[appledoc runWithSettings:settings];
+			// verify
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+
+SPEC_END
