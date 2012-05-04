@@ -21,6 +21,5 @@
 @interface ObjectiveCParserState : NSObject
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data;
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store DEPRECATED_ATTRIBUTE;
 
 @end
