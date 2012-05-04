@@ -21,57 +21,57 @@
 
 #pragma mark - Parsing
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
-	// Match property, then return to previous stream. If current stream position doesn't start a property, consume one token and return.
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
+	// Consume @ and property tokens.
 	LogParDebug(@"Matched property definition.");
-	[store setCurrentSourceInfo:stream.current];
-	[store beginPropertyDefinition];
-	[stream consume:2];
+	[data.store setCurrentSourceInfo:data.stream.current];
+	[data.store beginPropertyDefinition];
+	[data.stream consume:2];
 
 	// Parse attributes.
-	if ([stream matches:@"(", nil]) {
+	if ([data.stream matches:@"(", nil]) {
 		LogParDebug(@"Matching attributes...");
-		[store beginPropertyAttributes];
+		[data.store beginPropertyAttributes];
 		NSArray *delimiters = self.propertyAttributeDelimiters;
-		NSUInteger found = [stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		NSUInteger found = [data.stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
 			if ([token matches:delimiters]) return;
-			[store appendAttribute:token.stringValue];
+			[data.store appendAttribute:token.stringValue];
 		}];
 		if (found == NSNotFound) {
 			LogParDebug(@"Failed matching attributes, bailing out.");
-			[store cancelCurrentObject]; // attribute types
-			[store cancelCurrentObject]; // property definition
-			[parser popState];
+			[data.store cancelCurrentObject]; // attribute types
+			[data.store cancelCurrentObject]; // property definition
+			[data.parser popState];
 			return GBResultFailedMatch;
 		}
-		[store endCurrentObject];
+		[data.store endCurrentObject];
 	}
 	
-	// Parse types.
+	// Parse types, name and descriptors.
 	LogParDebug(@"Matching types and name.");
-	[store beginPropertyTypes];
-	NSUInteger found = [stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+	[data.store beginPropertyTypes];
+	NSUInteger found = [data.stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		LogParDebug(@"Matched %@.", token);
 		if ([token matches:@";"]) {
 			return;
-		} else if ([[stream la:lookahead+1] matches:@";"]) {
-			[store endCurrentObject];
-			[store appendPropertyName:token.stringValue];
+		} else if ([[data.stream la:lookahead+1] matches:@";"]) {
+			[data.store endCurrentObject];
+			[data.store appendPropertyName:token.stringValue];
 			return;
 		}
-		[store appendType:token.stringValue];
+		[data.store appendType:token.stringValue];
 	}];
 	if (found == NSNotFound) {
 		LogParDebug(@"Failed matching type and name, bailing out.");
-		[store cancelCurrentObject];
-		[parser popState]; 
+		[data.store cancelCurrentObject];
+		[data.parser popState]; 
 		return GBResultFailedMatch;
 	}
-	[store endCurrentObject];
+	[data.store endCurrentObject];
 
 	LogParDebug(@"Ending property.");
-	[parser popState];
+	[data.parser popState];
 	return GBResultOk;
 }
 

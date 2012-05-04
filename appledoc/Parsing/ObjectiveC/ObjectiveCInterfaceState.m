@@ -20,40 +20,40 @@
 
 #pragma mark - Stream parsing
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
-	if ([stream matches:@"<", nil]) {
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
+	if ([data.stream matches:@"<", nil]) {
 		// Match adopted protocol(s).
 		LogParDebug(@"Matching adopted protocols.");
 		NSArray *delimiters = self.interfaceAdoptedProtocolDelimiters;
-		NSUInteger result = [stream matchUntil:@">" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		NSUInteger result = [data.stream matchUntil:@">" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			if ([token matches:delimiters]) return;
 			LogParDebug(@"Matched adopted protocol %@", token);
-			[store setCurrentSourceInfo:token];
-			[store appendAdoptedProtocolWithName:token.stringValue];
+			[data.store setCurrentSourceInfo:token];
+			[data.store appendAdoptedProtocolWithName:token.stringValue];
 		}];
-		if (result == GBResultFailedMatch) [stream consume:1];
-	} else if ([stream matches:@"-", nil] || [stream matches:@"+", nil]) {
+		if (result == GBResultFailedMatch) [data.stream consume:1];
+	} else if ([data.stream matches:@"-", nil] || [data.stream matches:@"+", nil]) {
 		// Match method declaration or implementation. Must not consume otherwise we can't distinguish between instance and class method!
-		LogParDebug(@"Matched %@, testing for method.", stream.current);
-		[parser pushState:parser.methodState];
-	} else if ([stream matches:@"@", @"property", nil]) {
+		LogParDebug(@"Matched %@, testing for method.", data.stream.current);
+		[data.parser pushState:data.parser.methodState];
+	} else if ([data.stream matches:@"@", @"property", nil]) {
 		// Match property declaration. Although we could consume, we don't to keep compatible with methods above...
 		LogParDebug(@"Matched property definition.");
-		[parser pushState:parser.propertyState];
-	} else if ([stream matches:@"@", @"end", nil]) {
+		[data.parser pushState:data.parser.propertyState];
+	} else if ([data.stream matches:@"@", @"end", nil]) {
 		// Match end of interface or implementation.
 		LogParDebug(@"Matched @end.");
-		LogParVerbose(@"\n%@", store.currentRegistrationObject);
-		[store setCurrentSourceInfo:stream.current];
-		[store endCurrentObject];
-		[stream consume:2];
-		[parser popState];
-	} else if ([stream matches:@"#", @"pragma", @"mark", nil]) {
+		LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+		[data.store setCurrentSourceInfo:data.stream.current];
+		[data.store endCurrentObject];
+		[data.stream consume:2];
+		[data.parser popState];
+	} else if ([data.stream matches:@"#", @"pragma", @"mark", nil]) {
 		// Match #pragma mark. Must not consume here otherwise it makes it very hard to determine whether '-' following #pragma mark is part of #pragma or start of instance method!
 		LogParDebug(@"Matched #pragma mark.");
-		[parser pushState:parser.pragmaMarkState];
+		[data.parser pushState:data.parser.pragmaMarkState];
 	} else {
-		[stream consume:1];
+		[data.stream consume:1];
 	}
 	return GBResultOk;
 }

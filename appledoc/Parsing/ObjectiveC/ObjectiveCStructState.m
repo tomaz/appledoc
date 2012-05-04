@@ -20,27 +20,27 @@
 
 #pragma mark - Parsing
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	// Name is required, but skip everything else until '{'. Then match all definitions of type `type(s) <def>=value,` or `type(s) <def>;`.
 	LogParDebug(@"Matched struct.");
-	[store setCurrentSourceInfo:stream.current];
-	[store beginStruct];
+	[data.store setCurrentSourceInfo:data.stream.current];
+	[data.store beginStruct];
 	
 	__block PKToken *nameToken = nil;
 	
 	// Skip stream until '{', exit if not found. Take the last token before { as struct name.
 	LogParDebug(@"Matching struct body start."); {
 		NSArray *delimiters = self.structBodyStartDelimiters;
-		NSUInteger result = [stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@", token);
 			if ([token matches:delimiters]) return;
 			nameToken = token;
 		}];
 		if (result == NSNotFound) {
 			LogParDebug(@"Failed matching struct body start, bailing out.");
-			[stream consume:1];
-			[store cancelCurrentObject];
-			[parser popState];
+			[data.stream consume:1];
+			[data.store cancelCurrentObject];
+			[data.parser popState];
 			return GBResultFailedMatch;
 		}
 		if (nameToken) LogParDebug(@"Matched %@ for struct name.", nameToken);
@@ -50,27 +50,27 @@
 	LogParDebug(@"Matching struct body."); {
 		NSArray *delimiters = self.structItemDelimiters;
 		NSMutableArray *itemTokens = [NSMutableArray array];
-		NSUInteger result = [stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		NSUInteger result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 			LogParDebug(@"Matched %@.", token);
 			if ([token matches:delimiters]) {
 				if (itemTokens.count > 0) {
 					__block BOOL isTypeCommandNeeded = YES;
 					__block BOOL wasTypeCommandIssues = NO;
-					[store beginConstant];
+					[data.store beginConstant];
 					[itemTokens enumerateObjectsUsingBlock:^(PKToken *token, NSUInteger idx, BOOL *stop) {
 						if (idx == itemTokens.count - 1) {
-							if (wasTypeCommandIssues) [store endCurrentObject]; // types
-							[store appendConstantName:token.stringValue];
+							if (wasTypeCommandIssues) [data.store endCurrentObject]; // types
+							[data.store appendConstantName:token.stringValue];
 							return;
 						}
 						if (isTypeCommandNeeded) {
-							[store beginConstantTypes];
+							[data.store beginConstantTypes];
 							wasTypeCommandIssues = YES;
 							isTypeCommandNeeded = NO;
 						}
-						[store appendType:token.stringValue];
+						[data.store appendType:token.stringValue];
 					}];
-					[store endCurrentObject]; // constant
+					[data.store endCurrentObject]; // constant
 					[itemTokens removeAllObjects];
 				}
 				return;
@@ -79,17 +79,17 @@
 		}];
 		if (result == NSNotFound) {
 			LogParDebug(@"Failed matching end of enum body, bailing out.");
-			[stream consume:1];
-			[store cancelCurrentObject]; // struct
-			[parser popState];
+			[data.stream consume:1];
+			[data.store cancelCurrentObject]; // struct
+			[data.parser popState];
 			return GBResultFailedMatch;
 		}
 	}
 
 	LogParDebug(@"Ending struct.");
-	LogParVerbose(@"\n%@", store.currentRegistrationObject);
-	[store endCurrentObject];
-	[parser popState];
+	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	[data.store endCurrentObject];
+	[data.parser popState];
 	return GBResultOk;
 }
 
