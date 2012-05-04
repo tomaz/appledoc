@@ -7,24 +7,25 @@
 //
 
 #import "ObjectiveCPropertyState.h"
-#import "ObjectiveCStateTestsBase.h"
+#import "ObjectiveCStateTestsHelpers.h"
+#import "TestCaseBase.hh"
 
-@interface ObjectiveCPropertyStateTests : ObjectiveCStateTestsBase
-@end
-
-@interface ObjectiveCPropertyStateTests (CreationMethods)
-- (void)runWithState:(void(^)(ObjectiveCPropertyState *state))handler;
-@end
+static void runWithState(void(^handler)(ObjectiveCPropertyState *state)) {
+	ObjectiveCPropertyState* state = [[ObjectiveCPropertyState alloc] init];
+	handler(state);
+	[state release];
+}
 
 #pragma mark - 
 
-@implementation ObjectiveCPropertyStateTests
+SPEC_BEGIN(ObjectiveCPropertyStateTests)
 
 #pragma mark - Properties without attributes
 /*
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithNoAttributes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property type name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithNoAttributes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property type name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -38,15 +39,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+});
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithNoAttributesWithMultipleTypes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property type1 type2 type3 name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithNoAttributesWithMultipleTypes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property type1 type2 type3 name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -62,17 +65,19 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
 #pragma mark - Properties with attributes
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithSingleAttribute {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property (attr) type name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithSingleAttribute", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property (attr) type name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -89,15 +94,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property (attr1, attr2, attr3) type name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property (attr1, attr2, attr3) type name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -116,15 +123,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributesAndTypes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property (attr1, attr2, attr3) type1 type2 type3 name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithMultipleAttributesAndTypes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property (attr1, attr2, attr3) type1 type2 type3 name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -145,15 +154,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyWithCustomGetterAndSetter {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property (getter=isName, setter=setName:) type name;" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyWithCustomGetterAndSetter", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property (getter=isName, setter=setName:) type name;", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -176,17 +187,19 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
 #pragma mark - Properties with descriptors
 
-- (void)testParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordStartsWithDoubleUnderscore {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL name __something" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordStartsWithDoubleUnderscore", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL name __something", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -203,15 +216,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectAllDescriptorsAfterDoubleUnderscore {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL name __attribute__((deprecated))" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectAllDescriptorsAfterDoubleUnderscore", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL name __attribute__((deprecated))", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -233,15 +248,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordIsUppercase {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL name THIS_IS_DESCRIPTOR" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectDescriptorsIfFirstWordIsUppercase", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL name THIS_IS_DESCRIPTOR", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -258,15 +275,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectAllDescriptorsAfterUppercaseWord {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL name THIS_IS_DESCRIPTOR and another" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectAllDescriptorsAfterUppercaseWord", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL name THIS_IS_DESCRIPTOR and another", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -285,17 +304,19 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
 #pragma mark - Handling edge cases / limitations for supporting descriptors
 
-- (void)testParseStreamForParserStoreShouldAllowPropertyNameWithDoubleUnderscore {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property NSString *__name" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldAllowPropertyNameWithDoubleUnderscore", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property NSString *__name", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -310,15 +331,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldAllowPropertyNameWithUppercase {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property NSString *NAME" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldAllowPropertyNameWithUppercase", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property NSString *NAME", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -333,15 +356,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyNameWithDoubleUnderscoreFollowedByAttributes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL __name __something" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyNameWithDoubleUnderscoreFollowedByAttributes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL __name __something", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -358,10 +383,10 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-		[self runWithString:@"@property NSString ***__name __something" block:^(id parser, id tokens) {
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+		runWithString(@"@property NSString ***__name __something", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -381,15 +406,17 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
-- (void)testParseStreamForParserStoreShouldDetectPropertyNameWithUppercaseFollowedByAttributes {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
-		[self runWithString:@"@property BOOL NAME SOMETHING" block:^(id parser, id tokens) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectPropertyNameWithUppercaseFollowedByAttributes", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
+		runWithString(@"@property BOOL NAME SOMETHING", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -406,10 +433,10 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-		[self runWithString:@"@property NSString ***NAME SOMETHING" block:^(id parser, id tokens) {
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+		runWithString(@"@property NSString ***NAME SOMETHING", ^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
 			[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
@@ -429,16 +456,18 @@
 			// execute
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-			STAssertNoThrow([parser verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 
 #pragma mark - Multiple properties
 
-- (void)testParseStreamForParserStoreShouldDetectMultipleProperties {
-	[self runWithState:^(ObjectiveCPropertyState *state) {
+describe(@"", ^{
+	it(@"ParseStreamForParserStoreShouldDetectMultipleProperties", ^{
+	runWithState(^(ObjectiveCPropertyState *state) {
 		[self runWithFile:@"PropertyStateMultipleDefinitions.h" block:^(id parser, id tokens) {
 			// setup
 			id store = [OCMockObject mockForClass:[Store class]];
@@ -471,20 +500,11 @@
 			[state parseStream:tokens forParser:parser store:store];
 			[state parseStream:tokens forParser:parser store:store];
 			// verify
-			STAssertNoThrow([store verify], nil);
-		}];
-	}];
-}
+			^{ [store verify]; } should_not raise_exception();
+		});
+	});
+});
+ });
 */
-@end
 
-#pragma mark - 
-
-@implementation ObjectiveCPropertyStateTests (CreationMethods)
-
-- (void)runWithState:(void(^)(ObjectiveCPropertyState *state))handler {
-	ObjectiveCPropertyState* state = [ObjectiveCPropertyState new];
-	handler(state);
-}
-
-@end
+SPEC_END

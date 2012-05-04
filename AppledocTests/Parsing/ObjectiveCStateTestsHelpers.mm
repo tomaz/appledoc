@@ -1,5 +1,5 @@
 //
-//  ObjectiveCStateTestsBase.m
+//  ObjectiveCStateTestsHelpers.m
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 3/28/12.
@@ -7,12 +7,11 @@
 //
 
 #import <ParseKit/ParseKit.h>
+#import <OCMock/OCMock.h>
 #import "TestStrings.h"
-#import "ObjectiveCStateTestsBase.h"
+#import "ObjectiveCStateTestsHelpers.h"
 
-@implementation ObjectiveCStateTestsBase
-
-- (void)runWithString:(NSString *)string block:(GBStateMockBlock)handler {
+void runWithString(NSString *string, GBStateMockBlock handler) {
 	// Note that we can't use partial mock for TokensStream - get EXC_BAD_ACCESS...
 	ObjectiveCParser *parser = [ObjectiveCParser new];
 	parser.tokenizer.string = string;
@@ -21,9 +20,7 @@
 	handler(parserMock, tokens);
 }
 
-- (void)runWithFile:(NSString *)file block:(GBStateMockBlock)handler {
+void runWithFile(NSString *file, GBStateMockBlock handler) {
 	NSString *string = [TestStrings stringFromResourceFile:file];
-	[self runWithString:string block:handler];
+	runWithString(string, handler);
 }
-
-@end
