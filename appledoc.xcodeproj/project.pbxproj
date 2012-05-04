@@ -27,7 +27,6 @@
 		7316B9D815359DEE000F12F3 /* ObjectInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */; };
 		7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB5150F52D500B39CFD /* SenTestingKit.framework */; };
 		7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7317FAB7150F534100B39CFD /* Cocoa.framework */; };
-		7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317FAC2150F556800B39CFD /* TestCaseBase.m */; };
 		7317FAC4150F56A500B39CFD /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 73ED9445150E9FEC0032FD07 /* Logging.m */; };
 		7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
 		7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -196,8 +195,6 @@
 		7317FAB7150F534100B39CFD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		7317FABB150F544400B39CFD /* AppledocTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AppledocTests-Info.plist"; sourceTree = "<group>"; };
 		7317FABC150F544400B39CFD /* AppledocTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AppledocTests-Prefix.pch"; sourceTree = "<group>"; };
-		7317FAC1150F556800B39CFD /* TestCaseBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCaseBase.h; sourceTree = "<group>"; };
-		7317FAC2150F556800B39CFD /* TestCaseBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCaseBase.m; sourceTree = "<group>"; };
 		7317FACD150F633900B39CFD /* SettingsTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsTests.mm; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
 		7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCInterfaceStateTests.mm; sourceTree = "<group>"; };
@@ -361,8 +358,6 @@
 			isa = PBXGroup;
 			children = (
 				73DFDD4115527F2D007746D4 /* TestCaseBase.hh */,
-				7317FAC1150F556800B39CFD /* TestCaseBase.h */,
-				7317FAC2150F556800B39CFD /* TestCaseBase.m */,
 				737C82A1152307AE0064DC46 /* TestStrings.h */,
 				737C82A2152307AE0064DC46 /* TestStrings.m */,
 				731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */,
@@ -752,7 +747,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				739704641510CEFD00486507 /* DDCliUtil.m in Sources */,
-				7317FAC3150F556800B39CFD /* TestCaseBase.m in Sources */,
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
 				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
