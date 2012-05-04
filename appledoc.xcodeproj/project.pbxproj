@@ -56,6 +56,8 @@
 		734425171517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
 		7345ED8F1553B2E40092FA57 /* ObjectiveCStructStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED8E1553B2E40092FA57 /* ObjectiveCStructStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A9152310C80064DC46 /* ObjectiveCStateTestsHelpers.mm */; };
+		7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
+		7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
 		734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
 		734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
 		734849EB1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
@@ -221,6 +223,8 @@
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
 		734425151517645A00B6EC33 /* AppledocTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppledocTask.m; sourceTree = "<group>"; };
 		7345ED8E1553B2E40092FA57 /* ObjectiveCStructStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCStructStateTests.mm; sourceTree = "<group>"; };
+		7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParseData.h; sourceTree = "<group>"; };
+		7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParseData.m; sourceTree = "<group>"; };
 		734849E51511F7870031EF85 /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
 		734849E61511F7870031EF85 /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
 		734849E71511F7870031EF85 /* GBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSettings.h; sourceTree = "<group>"; };
@@ -386,6 +390,8 @@
 		732978FF15188A1300592A9D /* Objective C */ = {
 			isa = PBXGroup;
 			children = (
+				7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */,
+				7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */,
 				7329790015188A4C00592A9D /* ObjectiveCParser.h */,
 				7329790115188A4C00592A9D /* ObjectiveCParser.m */,
 				73297912151899CA00592A9D /* ObjectiveCParserState.h */,
@@ -812,6 +818,7 @@
 				73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */,
 				7345ED8F1553B2E40092FA57 /* ObjectiveCStructStateTests.mm in Sources */,
 				7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */,
+				7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,6 +869,7 @@
 				73E416E41541BAE000600606 /* StructInfo.m in Sources */,
 				7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */,
 				73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */,
+				7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

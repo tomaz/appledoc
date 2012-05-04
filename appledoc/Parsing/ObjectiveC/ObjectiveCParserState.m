@@ -12,7 +12,7 @@
 
 #pragma mark - Parsing entry point
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	return GBResultOk;
 }
 

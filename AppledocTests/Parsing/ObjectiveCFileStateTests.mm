@@ -27,8 +27,9 @@ describe(@"classes parsing", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginClassWithName:@"MyClass" derivedFromClassWithName:nil];
 				[[parser expect] pushState:[parser interfaceState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -44,8 +45,9 @@ describe(@"classes parsing", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginClassWithName:@"MyClass" derivedFromClassWithName:@"SuperClass"];
 				[[parser expect] pushState:[parser interfaceState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -63,8 +65,9 @@ describe(@"categories parsing", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginExtensionForClassWithName:@"MyClass"];
 				[[parser expect] pushState:[parser interfaceState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -80,8 +83,9 @@ describe(@"categories parsing", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginCategoryWithName:@"CategoryName" forClassWithName:@"MyClass"];
 				[[parser expect] pushState:[parser interfaceState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -99,8 +103,9 @@ describe(@"protocols parsing", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginProtocolWithName:@"MyProtocol"];
 				[[parser expect] pushState:[parser interfaceState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -116,8 +121,9 @@ describe(@"enums parsing", ^{
 				// setup
 				id store = [OCMockObject mockForClass:[Store class]];
 				[[parser expect] pushState:[parser enumState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [parser verify]; } should_not raise_exception();
 			});
@@ -134,8 +140,9 @@ describe(@"structs parsing", ^{
 				// setup
 				id store = [OCMockObject mockForClass:[Store class]];
 				[[parser expect] pushState:[parser structState]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [parser verify]; } should_not raise_exception();
 			});

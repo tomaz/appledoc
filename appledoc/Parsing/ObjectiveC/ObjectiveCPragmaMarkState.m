@@ -10,36 +10,36 @@
 
 @implementation ObjectiveCPragmaMarkState
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matched #pragma mark.");
-	NSUInteger line = stream.current.location.y;
-	[store setCurrentSourceInfo:stream.current];
+	NSUInteger line = data.stream.current.location.y;
+	[data.store setCurrentSourceInfo:data.stream.current];
 	
 	// Consume #pragma mark [-], exit if nothing else is found afterwards.
-	[stream consume:3];
-	if ([stream matches:@"-", nil]) {
+	[data.stream consume:3];
+	if ([data.stream matches:@"-", nil]) {
 		LogParDebug(@"Matched - (part of #pragma mark -)");
-		[stream consume:1];
+		[data.stream consume:1];
 	}
-	if (stream.eof) {
+	if (data.stream.eof) {
 		LogParDebug(@"End of line reached, bailing out.");
-		[parser popState];
+		[data.parser popState];
 		return GBResultOk;
 	}
 	
 	// Get all words until the end of line. Note that last description token will only be non-nil if at least one word is found on the same line!
-	PKToken *firstDescriptionToken = stream.current;
+	PKToken *firstDescriptionToken = data.stream.current;
 	PKToken *lastDescriptionToken = nil;
-	while (!stream.eof && stream.current.location.y == line) {
-		LogParDebug(@"Matched %@.", stream.current);
-		lastDescriptionToken = stream.current;
-		[stream consume:1];
+	while (!data.stream.eof && data.stream.current.location.y == line) {
+		LogParDebug(@"Matched %@.", data.stream.current);
+		lastDescriptionToken = data.stream.current;
+		[data.stream consume:1];
 	}
 	
 	// If we didn't find a description, exit.
 	if (!lastDescriptionToken) {
 		LogParDebug(@"No pragma mark description, bailing out!");
-		[parser popState];
+		[data.parser popState];
 		return GBResultOk;
 	}
 	
@@ -47,18 +47,18 @@
 	NSUInteger startIndex = firstDescriptionToken.offset;
 	NSUInteger endIndex = lastDescriptionToken.offset + lastDescriptionToken.stringValue.length;
 	NSRange range = NSMakeRange(startIndex, endIndex - startIndex);
-	NSString *description = [stream.string substringWithRange:range];
+	NSString *description = [data.stream.string substringWithRange:range];
 	NSString *trimmed = [description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 	if (trimmed.length == 0) {
 		LogParDebug(@"Empty pragma mark description, bailing out!");
-		[parser popState];
+		[data.parser popState];
 		return GBResultOk;
 	}
 	
 	// Found description, so register.
 	LogParDebug(@"Ending #pragma mark.");
-	[store appendMethodGroupWithDescription:trimmed];
-	[parser popState];
+	[data.store appendMethodGroupWithDescription:trimmed];
+	[data.parser popState];
 	return GBResultOk;
 }
 

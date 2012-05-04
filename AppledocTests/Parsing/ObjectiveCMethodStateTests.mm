@@ -33,8 +33,9 @@ describe(@"no arguments methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -57,8 +58,9 @@ describe(@"no arguments methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -83,8 +85,9 @@ describe(@"no arguments methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -107,8 +110,9 @@ describe(@"single argument methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -132,8 +136,9 @@ describe(@"single argument methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -159,8 +164,9 @@ describe(@"single argument methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -191,8 +197,9 @@ describe(@"multiple arguments methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -233,8 +240,9 @@ describe(@"multiple arguments methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -293,10 +301,11 @@ describe(@"multiple methods", ^{
 				[[store expect] appendMethodArgumentVariable:@"arg2"];
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
-												   // execute
-				[state parseStream:tokens forParser:parser store:store];
-				[state parseStream:tokens forParser:parser store:store];
-				[state parseStream:tokens forParser:parser store:store];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				[state parseWithData:data];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
@@ -352,10 +361,11 @@ describe(@"multiple methods", ^{
 				[[store expect] appendMethodArgumentVariable:@"arg2"];
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
-												   // execute
-				[state parseStream:tokens forParser:parser store:store];
-				[state parseStream:tokens forParser:parser store:store];
-				[state parseStream:tokens forParser:parser store:store];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				[state parseWithData:data];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
@@ -377,8 +387,9 @@ describe(@"various fail cases", ^{
 				[[store expect] cancelCurrentObject]; // result types
 				[[store expect] cancelCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -401,8 +412,9 @@ describe(@"various fail cases", ^{
 				[[store expect] cancelCurrentObject]; // method argument
 				[[store expect] cancelCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -431,8 +443,9 @@ describe(@"class methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -455,8 +468,9 @@ describe(@"class methods", ^{
 				[[store expect] endCurrentObject]; // method argument
 				[[store expect] endCurrentObject]; // method definition
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();

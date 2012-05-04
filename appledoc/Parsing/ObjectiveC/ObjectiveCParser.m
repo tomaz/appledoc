@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "TokensStream.h"
+#import "ObjectiveCParseData.h"
 #import "ObjectiveCFileState.h"
 #import "ObjectiveCInterfaceState.h"
 #import "ObjectiveCPropertyState.h"
@@ -74,12 +75,13 @@
 	
 	// Parse all tokens.
 	GBResult result = GBResultOk;
+	ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:self.tokensStream parser:self store:self.store];
 	while (!self.tokensStream.eof) {
 		LogParDebug(@"Parsing token '%@'...", self.tokensStream.current.stringValue);
-		GBResult pr = [self.currentState parseStream:self.tokensStream forParser:self store:self.store];
+		GBResult stateResult = [self.currentState parseWithData:data];
 		if ([self isParseResultFailure:result]) {
-			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, pr);
-			result = pr;
+			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
+			result = stateResult;
 			break;
 		}
 	}

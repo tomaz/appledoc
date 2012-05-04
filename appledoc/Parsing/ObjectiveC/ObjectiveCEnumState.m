@@ -18,22 +18,22 @@
 
 #pragma mark - Parsing
 
-- (NSUInteger)parseStream:(TokensStream *)stream forParser:(ObjectiveCParser *)parser store:(Store *)store {
+- (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	// Enumeration can optionally have a name, we're only interested in values, so skip everything until {
 	LogParDebug(@"Matched enum.");
-	[store setCurrentSourceInfo:stream.current];
-	[store beginEnumeration];
+	[data.store setCurrentSourceInfo:data.stream.current];
+	[data.store beginEnumeration];
 	
 	NSArray *delimiters = self.enumItemDelimiters;
 	
 	// Skip stream until '{', exit if not found.
 	LogParDebug(@"Matching enum body start.");
-	NSUInteger result = [stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { }];
+	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { }];
 	if (result == NSNotFound) {
 		LogParDebug(@"Failed matching enum body start, bailing out.");
-		[stream consume:1];
-		[store cancelCurrentObject];
-		[parser popState];
+		[data.stream consume:1];
+		[data.store cancelCurrentObject];
+		[data.parser popState];
 		return GBResultFailedMatch;
 	}
 	
@@ -42,15 +42,15 @@
 	__block BOOL isMatchingValue = NO;
 	__block PKToken *valueStartToken = nil;
 	__block PKToken *valueEndToken = nil;
-	result = [stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+	result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		// When we match end of item or body, we should stop matching for value and continue with next item.
 		if ([token matches:delimiters]) {
 			if (isMatchingValue) {
 				NSUInteger valueStartIndex = valueStartToken.offset;
 				NSUInteger valueEndIndex = valueEndToken.offset + valueEndToken.stringValue.length;
 				NSRange range = NSMakeRange(valueStartIndex, valueEndIndex - valueStartIndex);
-				NSString *value = [stream.string substringWithRange:range];
-				[store appendEnumerationValue:value];
+				NSString *value = [data.stream.string substringWithRange:range];
+				[data.store appendEnumerationValue:value];
 				valueStartToken = nil;
 				isMatchingValue = NO;
 			}
@@ -71,22 +71,22 @@
 			valueEndToken = token;
 		} else {
 			LogParDebug(@"Matched enum constant %@", token);
-			[store appendEnumerationItem:token.stringValue];
+			[data.store appendEnumerationItem:token.stringValue];
 		}
 	}];
 	if (result == NSNotFound) {
 		LogParDebug(@"Failed matching end of enum body, bailing out.");
-		[stream consume:1];
-		[store cancelCurrentObject];
-		[parser popState];
+		[data.stream consume:1];
+		[data.store cancelCurrentObject];
+		[data.parser popState];
 		return GBResultFailedMatch;
 	}
 	
 	// Finish off.
 	LogParDebug(@"Ending enum.");
-	LogParVerbose(@"\n%@", store.currentRegistrationObject);
-	[store endCurrentObject];
-	[parser popState];
+	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	[data.store endCurrentObject];
+	[data.parser popState];
 	return GBResultOk;
 }
 
