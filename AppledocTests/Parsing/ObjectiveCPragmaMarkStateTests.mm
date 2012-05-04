@@ -29,8 +29,9 @@ describe(@"simple cases", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendMethodGroupWithDescription:@"word"];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -46,8 +47,9 @@ describe(@"simple cases", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3"];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -65,8 +67,9 @@ describe(@"using minus", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3"];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -82,8 +85,9 @@ describe(@"using minus", ^{
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendMethodGroupWithDescription:@"word1 word2 word3 -"];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -100,8 +104,9 @@ describe(@"various edge cases", ^{
 				id store = [OCMockObject mockForClass:[Store class]];
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();

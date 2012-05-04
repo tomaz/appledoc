@@ -30,8 +30,9 @@ describe(@"empty struct", ^{
 				[[store expect] beginStruct];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -56,8 +57,9 @@ describe(@"single item and value", ^{
 				[[store expect] endCurrentObject]; // constant
 				[[store expect] endCurrentObject]; // struct
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -82,8 +84,9 @@ describe(@"single item and value", ^{
 				[[store expect] endCurrentObject]; // constant
 				[[store expect] endCurrentObject]; // struct
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -114,8 +117,9 @@ describe(@"multiple items", ^{
 				[[store expect] endCurrentObject]; // constant
 				[[store expect] endCurrentObject]; // struct
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -148,8 +152,9 @@ describe(@"multiple items", ^{
 				[[store expect] endCurrentObject]; // constant
 				[[store expect] endCurrentObject]; // struct
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -168,8 +173,9 @@ describe(@"fail cases", ^{
 				[[store expect] beginStruct];
 				[[store expect] cancelCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -189,8 +195,9 @@ describe(@"fail cases", ^{
 				[[store expect] endCurrentObject]; // succesfull constant "item" parsed!
 				[[store expect] cancelCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();

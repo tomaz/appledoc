@@ -30,8 +30,9 @@ describe(@"simple cases", ^{
 				[[store expect] beginEnumeration];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -48,8 +49,9 @@ describe(@"simple cases", ^{
 				[[store expect] beginEnumeration];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -69,8 +71,9 @@ describe(@"single item enums", ^{
 				[[store expect] appendEnumerationItem:@"item"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -88,8 +91,9 @@ describe(@"single item enums", ^{
 				[[store expect] appendEnumerationItem:@"item"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -108,8 +112,9 @@ describe(@"single item enums", ^{
 				[[store expect] appendEnumerationValue:@"value"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -128,8 +133,9 @@ describe(@"single item enums", ^{
 				[[store expect] appendEnumerationValue:@"value"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -151,8 +157,9 @@ describe(@"enums with multiple items", ^{
 				[[store expect] appendEnumerationItem:@"item3"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -175,8 +182,9 @@ describe(@"enums with multiple items", ^{
 				[[store expect] appendEnumerationValue:@"value3"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -198,8 +206,9 @@ describe(@"enums with multiple items", ^{
 				[[store expect] appendEnumerationValue:@"value3"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -222,8 +231,9 @@ describe(@"few more complex cases", ^{
 				[[store expect] appendEnumerationValue:@"(item2 + 30 * (1 << 4))"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -242,8 +252,9 @@ describe(@"fail cases", ^{
 				[[store expect] beginEnumeration];
 				[[store expect] cancelCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -261,8 +272,9 @@ describe(@"fail cases", ^{
 				[[store expect] appendEnumerationItem:@"item"];
 				[[store expect] cancelCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();

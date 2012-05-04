@@ -36,8 +36,9 @@ describe(@"simple properties", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -60,8 +61,9 @@ describe(@"simple properties", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -87,8 +89,9 @@ describe(@"properties with attributes", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -114,8 +117,9 @@ describe(@"properties with attributes", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -143,8 +147,9 @@ describe(@"properties with attributes", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -174,8 +179,9 @@ describe(@"properties with attributes", ^{
 				[[store expect] appendPropertyName:@"name"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
-				[state parseStream:tokens forParser:parser store:store];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 				^{ [parser verify]; } should_not raise_exception();
@@ -202,8 +208,9 @@ describe(@"properties with descriptors", ^{
 					[[store expect] endCurrentObject]; // descriptors
 					[[store expect] endCurrentObject]; // property
 					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 					// execute
-					[state parseStream:tokens forParser:parser store:store];
+					[state parseWithData:data];
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
@@ -232,8 +239,9 @@ describe(@"properties with descriptors", ^{
 					[[store expect] endCurrentObject]; // descriptors
 					[[store expect] endCurrentObject]; // property
 					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 					// execute
-					[state parseStream:tokens forParser:parser store:store];
+					[state parseWithData:data];
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
@@ -259,8 +267,9 @@ describe(@"properties with descriptors", ^{
 					[[store expect] endCurrentObject]; // descriptors
 					[[store expect] endCurrentObject]; // property
 					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 					// execute
-					[state parseStream:tokens forParser:parser store:store];
+					[state parseWithData:data];
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
@@ -286,8 +295,9 @@ describe(@"properties with descriptors", ^{
 					[[store expect] endCurrentObject]; // descriptors
 					[[store expect] endCurrentObject]; // property
 					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 					// execute
-					[state parseStream:tokens forParser:parser store:store];
+					[state parseWithData:data];
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
@@ -312,8 +322,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] appendPropertyName:@"__name"];
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -335,8 +346,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] appendPropertyName:@"NAME"];
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -362,8 +374,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] endCurrentObject]; // descriptors
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -390,8 +403,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] endCurrentObject]; // descriptors
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -417,8 +431,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] endCurrentObject]; // descriptors
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -445,8 +460,9 @@ describe(@"properties with descriptors", ^{
 						[[store expect] endCurrentObject]; // descriptors
 						[[store expect] endCurrentObject]; // property
 						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 						// execute
-						[state parseStream:tokens forParser:parser store:store];
+						[state parseWithData:data];
 						// verify
 						^{ [store verify]; } should_not raise_exception();
 						^{ [parser verify]; } should_not raise_exception();
@@ -488,9 +504,10 @@ describe(@"multiple properties", ^{
 				[[store expect] endCurrentObject]; // types
 				[[store expect] appendPropertyName:@"property2"];
 				[[store expect] endCurrentObject]; // property
-												   // execute
-				[state parseStream:tokens forParser:parser store:store];
-				[state parseStream:tokens forParser:parser store:store];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				[state parseWithData:data];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
