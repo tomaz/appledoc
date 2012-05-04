@@ -7,71 +7,71 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface StructInfoTests : TestCaseBase
-@end
-
-@interface StructInfoTests (CreationMethods)
-- (void)runWithStructInfo:(void(^)(StructInfo *info))handler;
-@end
-
-@implementation StructInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializersWork {
-	[self runWithStructInfo:^(StructInfo *info) {
-		// execute & verify
-		assertThat(info.structItems, instanceOf([NSMutableArray class]));
-	}];
+static void runWithStructInfo(void(^handler)(StructInfo *info)) {
+	StructInfo *info = [[StructInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - beginConstant
-
-- (void)testBeginConstantShouldCreateNewConstantInfoAndPushItToRegistrationStack {
-	[self runWithStructInfo:^(StructInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[ConstantInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginConstant];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-		assertThatInt(info.structItems.count, equalToInt(1));
-		assertThat(info.structItems.lastObject, instanceOf([ConstantInfo class]));
-		assertThat([info.structItems.lastObject objectRegistrar], equalTo(mock));
-	}];
-}
-
-#pragma mark - cancelCurrentObject
-
-- (void)testCancelCurrentObjectShouldRemoveConstantInfo {
-	[self runWithStructInfo:^(StructInfo *info) {
-		// setup
-		[info beginConstant];
-		id mock = [OCMockObject niceMockForClass:[Store class]];
-		[[[mock stub] andReturn:info.structItems.lastObject] currentRegistrationObject];
-		info.objectRegistrar = mock;
-		// execute
-		[info cancelCurrentObject];
-		// verify
-		assertThatInt(info.structItems.count, equalToInt(0));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation StructInfoTests (CreationMethods)
+SPEC_BEGIN(StructInfoTests)
 
-- (void)runWithStructInfo:(void(^)(StructInfo *info))handler {
-	StructInfo *info = [StructInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithStructInfo(^(StructInfo *info) {
+			// execute & verify
+			info.structItems should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"constant registration", ^{
+	it(@"should create new constant info and add it to struct items", ^{
+		runWithStructInfo(^(StructInfo *info) {
+			// setup
+			info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+			// execute
+			[info beginConstant];
+			// verify
+			info.structItems.count should equal(1);
+			info.structItems.lastObject should be_instance_of([ConstantInfo class]);
+			[info.structItems.lastObject objectRegistrar] should equal(info.objectRegistrar);
+		});
+	});
+
+	it(@"should push constant info to registration stack", ^{
+		runWithStructInfo(^(StructInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+				return [obj isKindOfClass:[ConstantInfo class]];
+			}]];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginConstant];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"object cancellation", ^{
+	it(@"should remove constant info", ^{
+		runWithStructInfo(^(StructInfo *info) {
+			// setup
+			[info beginConstant];
+			id mock = [OCMockObject niceMockForClass:[Store class]];
+			[[[mock stub] andReturn:info.structItems.lastObject] currentRegistrationObject];
+			info.objectRegistrar = mock;
+			// execute
+			[info cancelCurrentObject];
+			// verify
+			info.structItems.count should equal(0);
+		});
+	});
+});
+
+SPEC_END

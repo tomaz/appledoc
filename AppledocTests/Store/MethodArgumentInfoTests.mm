@@ -7,94 +7,82 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface MethodArgumentInfoTests : TestCaseBase
-@end
-
-@interface MethodArgumentInfoTests (CreationMethods)
-- (void)runWithMethodArgumentInfo:(void(^)(MethodArgumentInfo *info))handler;
-@end
-
-@implementation MethodArgumentInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializersWork {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// execute & verify
-		assertThat(info.argumentType, instanceOf([TypeInfo class]));
-	}];
+static void runWithMethodArgumentInfo(void(^handler)(MethodArgumentInfo *info)) {
+	MethodArgumentInfo *info = [[MethodArgumentInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - beginMethodArgumentTypes
-
-- (void)testBeginMethodArgumentTypesShouldCreateNewTypeInfo {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-			return [obj isKindOfClass:[TypeInfo class]];
-		}]];
-		info.objectRegistrar = mock;
-		// execute
-		[info beginMethodArgumentTypes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - appendMethodArgumentSelector:
-
-- (void)testAppendMethodArgumentSelectorShouldAssignGivenString {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// execute
-		[info appendMethodArgumentSelector:@"value"];
-		// verify
-		assertThat(info.argumentSelector, equalTo(@"value"));
-	}];
-}
-
-- (void)testAppendMethodArgumentSelectorShouldUseLastValueIfSentMultipleTimes {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// execute
-		[info appendMethodArgumentSelector:@"value1"];
-		[info appendMethodArgumentSelector:@"value2"];
-		// verify
-		assertThat(info.argumentSelector, equalTo(@"value2"));
-	}];
-}
-
-#pragma mark - appendMethodArgumentVariable:
-
-- (void)testAppendMethodArgumentVariableShouldAssignGivenString {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// execute
-		[info appendMethodArgumentVariable:@"value"];
-		// verify
-		assertThat(info.argumentVariable, equalTo(@"value"));
-	}];
-}
-
-- (void)testAppendMethodArgumentVariableShouldUseLastValueIfSentMultipleTimes {
-	[self runWithMethodArgumentInfo:^(MethodArgumentInfo *info) {
-		// execute
-		[info appendMethodArgumentVariable:@"value1"];
-		[info appendMethodArgumentVariable:@"value2"];
-		// verify
-		assertThat(info.argumentVariable, equalTo(@"value2"));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation MethodArgumentInfoTests (CreationMethods)
+SPEC_BEGIN(MethodArgumentInfoTests)
 
-- (void)runWithMethodArgumentInfo:(void(^)(MethodArgumentInfo *info))handler {
-	MethodArgumentInfo *info = [MethodArgumentInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// execute & verify
+			info.argumentType should be_instance_of([TypeInfo class]);
+		});
+	});
+});
 
-@end
+describe(@"method argument types registration", ^{
+	it(@"should push argument type to registration stack", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:info.argumentType];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginMethodArgumentTypes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"method argument selector registration", ^{
+	it(@"should assign given string", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// execute
+			[info appendMethodArgumentSelector:@"value"];
+			// verify
+			info.argumentSelector should equal(@"value");
+		});
+	});
+	
+	it(@"should use last value if sent multiple times", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// execute
+			[info appendMethodArgumentSelector:@"value1"];
+			[info appendMethodArgumentSelector:@"value2"];
+			// verify
+			info.argumentSelector should equal(@"value2");
+		});
+	});
+});
+
+describe(@"method argument variable registration", ^{
+	it(@"should assign given string", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// execute
+			[info appendMethodArgumentVariable:@"value"];
+			// verify
+			info.argumentVariable should equal(@"value");
+		});
+	});
+	
+	it(@"should use last value if sent multiple times", ^{
+		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+			// execute
+			[info appendMethodArgumentVariable:@"value1"];
+			[info appendMethodArgumentVariable:@"value2"];
+			// verify
+			info.argumentVariable should equal(@"value2");
+		});
+	});
+});
+
+SPEC_END

@@ -7,49 +7,39 @@
 //
 
 #import "Store.h"
+#import "TestCaseBase.hh"
 #import "TestCaseBase.h"
 
-@interface TypeInfoTests : TestCaseBase
-@end
-
-@interface TypeInfoTests (CreationMethods)
-- (void)runWithTypeInfo:(void(^)(TypeInfo *info))handler;
-@end
-
-@implementation TypeInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializationShouldWork {
-	[self runWithTypeInfo:^(TypeInfo *info) {
-		// execute & verify
-		assertThat(info.typeItems, instanceOf([NSMutableArray class]));
-	}];
+static void runWithTypeInfo(void(^handler)(TypeInfo *info)) {
+	TypeInfo *info = [[TypeInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - appendType:
-
-- (void)testAppendTypeShouldAddAllStringsToTypeItemsArray {
-	[self runWithTypeInfo:^(TypeInfo *info) {
-		// execute
-		[info appendType:@"type1"];
-		[info appendType:@"type2"];
-		// verify
-		assertThatInt(info.typeItems.count, equalToInt(2));
-		assertThat([info.typeItems objectAtIndex:0], equalTo(@"type1"));
-		assertThat([info.typeItems objectAtIndex:1], equalTo(@"type2"));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation TypeInfoTests (CreationMethods)
+SPEC_BEGIN(TypeInfoTests)
 
-- (void)runWithTypeInfo:(void(^)(TypeInfo *info))handler {
-	TypeInfo *info = [TypeInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithTypeInfo(^(TypeInfo *info) {
+			info.typeItems should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"append type", ^{
+	it(@"should add all strings to type items array", ^{
+		runWithTypeInfo(^(TypeInfo *info) {
+			// execute
+			[info appendType:@"type1"];
+			[info appendType:@"type2"];
+			// verify
+			info.typeItems.count should equal(2);
+			[info.typeItems objectAtIndex:0] should equal(@"type1");
+			[info.typeItems objectAtIndex:1] should equal(@"type2");
+		});
+	});
+});
+
+SPEC_END

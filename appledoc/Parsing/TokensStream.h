@@ -59,6 +59,6 @@ typedef void(^GBMatchBlock)(PKToken *token, NSUInteger lookahead, BOOL *stop);
 
 /** Definitions of special tokens.
  */
-const struct GBTokens {
+extern const struct GBTokens {
 	__unsafe_unretained NSString *any; ///< Match any token.
 } GBTokens;

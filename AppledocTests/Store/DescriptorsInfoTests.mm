@@ -7,49 +7,39 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
-@interface DescriptorsInfoTests : TestCaseBase
-@end
-
-@interface DescriptorsInfoTests (CreationMethods)
-- (void)runWithPropertyDescriptorsInfo:(void(^)(DescriptorsInfo *info))handler;
-@end
-
-@implementation DescriptorsInfoTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializationShouldWork {
-	[self runWithPropertyDescriptorsInfo:^(DescriptorsInfo *info) {
-		// execute & verify
-		assertThat(info.descriptorItems, instanceOf([NSMutableArray class]));
-	}];
+static void runWithPropertyDescriptorsInfo(void(^handler)(DescriptorsInfo *info)) {
+	DescriptorsInfo *info = [[DescriptorsInfo alloc] init];
+	handler(info);
+	[info release];
 }
-
-#pragma mark - appendDescriptor:
-
-- (void)testAppendDescriptorShouldAddAllStringsToTypeItemsArray {
-	[self runWithPropertyDescriptorsInfo:^(DescriptorsInfo *info) {
-		// execute
-		[info appendDescriptor:@"type1"];
-		[info appendDescriptor:@"type2"];
-		// verify
-		assertThatInt(info.descriptorItems.count, equalToInt(2));
-		assertThat([info.descriptorItems objectAtIndex:0], equalTo(@"type1"));
-		assertThat([info.descriptorItems objectAtIndex:1], equalTo(@"type2"));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation DescriptorsInfoTests (CreationMethods)
+SPEC_BEGIN(DescriptorsInfoTests)
 
-- (void)runWithPropertyDescriptorsInfo:(void(^)(DescriptorsInfo *info))handler {
-	DescriptorsInfo *info = [DescriptorsInfo new];
-	handler(info);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithPropertyDescriptorsInfo(^(DescriptorsInfo *info) {			
+			// execute & verify
+			info.descriptorItems should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"appending descriptors", ^{
+	it(@"should add all strings to desciptor items array", ^{
+		runWithPropertyDescriptorsInfo(^(DescriptorsInfo *info) {
+			// execute
+			[info appendDescriptor:@"type1"];
+			[info appendDescriptor:@"type2"];
+			// verify
+			info.descriptorItems.count should equal(2);
+			[info.descriptorItems objectAtIndex:0] should equal(@"type1");
+			[info.descriptorItems objectAtIndex:1] should equal(@"type2");
+		});
+	});
+});
+
+SPEC_END

@@ -7,7 +7,7 @@
 //
 
 #import "Store.h"
-#import "TestCaseBase.h"
+#import "TestCaseBase.hh"
 
 @interface Store (UnitTestingPrivateAPI)
 @property (nonatomic, strong) NSMutableArray *registrationStack;
@@ -15,752 +15,797 @@
 
 #pragma mark - 
 
-@interface StoreTests : TestCaseBase
-@end
-
-@interface StoreTests (CreationMethods)
-- (void)runWithStore:(void(^)(Store *store))handler;
-@end
-
-@implementation StoreTests
-
-#pragma mark - Verify lazy initialization
-
-- (void)testLazyInitializationWorks {
-	[self runWithStore:^(Store *store) {
-		// execute & verify
-		assertThat(store.storeClasses, instanceOf([NSMutableArray class]));
-		assertThat(store.storeExtensions, instanceOf([NSMutableArray class]));
-		assertThat(store.storeCategories, instanceOf([NSMutableArray class]));
-		assertThat(store.storeProtocols, instanceOf([NSMutableArray class]));
-		assertThat(store.storeEnumerations, instanceOf([NSMutableArray class]));
-		assertThat(store.storeStructs, instanceOf([NSMutableArray class]));
-		assertThat(store.storeConstants, instanceOf([NSMutableArray class]));
-		assertThat(store.registrationStack, instanceOf([NSMutableArray class]));
-	}];
+static void runWithStore(void(^handler)(Store *store)) {
+	Store *store = [[Store alloc] init];
+	handler(store);
+	[store release];
 }
-
-#pragma mark - Verify handling of classes, categories and protocols
-
-- (void)testBeginClassWithNameDerivedFromClassWithNameShouldRegisterClassInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([ClassInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
-		assertThat([store.currentRegistrationObject nameOfSuperClass], equalTo(@"derived"));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginClassWithNameDerivedFromClassWithNameShouldAddClassInfoToClassesArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
-		// verify
-		assertThatInt(store.storeClasses.count, equalToInt(1));
-		assertThat([store.storeClasses lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-#pragma mark - Verify handling of extensions
-
-- (void)testBeginExtensionForClassWithNameShouldRegisterCategoryInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginExtensionForClassWithName:@"name"];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
-		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(nil));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginExtensionForClassWithNameShouldAddCategoryInfoToCategoriesArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginExtensionForClassWithName:@"name"];
-		// verify
-		assertThatInt(store.storeExtensions.count, equalToInt(1));
-		assertThat([store.storeExtensions lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-#pragma mark - Verify handling of categories
-
-- (void)testBeginCategoryWithNameForClassWithNameShouldRegisterCategoryInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([CategoryInfo class]));
-		assertThat([store.currentRegistrationObject nameOfClass], equalTo(@"name"));
-		assertThat([store.currentRegistrationObject nameOfCategory], equalTo(@"category"));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginCategoryWithNameForClassWithNameShouldAddCategoryInfoToCategoriesArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
-		// verify
-		assertThatInt(store.storeCategories.count, equalToInt(1));
-		assertThat([store.storeCategories lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-#pragma mark - Verify handling of protocols
-
-- (void)testBeginProtocolWithNameShouldRegisterProtocolInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginProtocolWithName:@"name"];
-		// verify		
-		assertThat(store.currentRegistrationObject, instanceOf([ProtocolInfo class]));
-		assertThat([store.currentRegistrationObject nameOfProtocol], equalTo(@"name"));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginProtocolWithNameShouldAddProtocolInfoToProtocolsArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginProtocolWithName:@"name"];
-		// verify
-		assertThatInt(store.storeProtocols.count, equalToInt(1));
-		assertThat([store.storeProtocols lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-#pragma mark - Verify handling of interface related methods
-
-- (void)testAppendAdoptedProtocolShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendAdoptedProtocolWithName:@"name"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendAdoptedProtocolWithName:@"name"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify forwarding of method group related messages
-
-- (void)testAppendMethodGroupWithDescriptionShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendMethodGroupWithDescription:@"description"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendMethodGroupWithDescription:@"description"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify forwarding of property related messages
-
-- (void)testBeginPropertyDefinitionShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginPropertyDefinition];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginPropertyDefinition];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testBeginPropertyAttributesShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginPropertyAttributes];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginPropertyAttributes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testBeginPropertyTypesShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginPropertyTypes];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginPropertyTypes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendPropertyNameShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendPropertyName:@"name"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendPropertyName:@"name"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify forwarding of method related messages
-
-- (void)testBeginMethodDefinitionWithTypeShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginMethodDefinitionWithType:@"type"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginMethodDefinitionWithType:@"type"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testBeginMethodResultsShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginMethodResults];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginMethodResults];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testBeginMethodArgumentShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginMethodArgument];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginMethodArgument];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testBeginMethodArgumentTypesShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginMethodArgumentTypes];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginMethodArgumentTypes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendMethodArgumentSelectorShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendMethodArgumentSelector:@"selector"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendMethodArgumentSelector:@"selector"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendMethodArgumentVariableShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendMethodArgumentVariable:@"variable"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendMethodArgumentVariable:@"variable"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify handling of enumeration related messages
-
-- (void)testBeginEnumerationShouldRegisterEnumInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginEnumeration];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([EnumInfo class]));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginEnumerationShouldAddEnumInfoToEnumerationsArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginEnumeration];
-		// verify
-		assertThatInt(store.storeEnumerations.count, equalToInt(1));
-		assertThat([store.storeEnumerations lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-- (void)testAppendEnumerationItemShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendEnumerationItem:@"value"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendEnumerationItem:@"value"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendEnumerationValueShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendEnumerationValue:@"value"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendEnumerationValue:@"value"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify handling of struct related messages
-
-- (void)testBeginStructShouldRegistrStructInfo {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginStruct];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([StructInfo class]));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginStructShouldAddStructInfoToStructuresArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginStruct];
-		// verify
-		assertThatInt(store.storeStructs.count, equalToInt(1));
-		assertThat([store.storeStructs lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-#pragma mark - Verify handling of constant related messages
-
-- (void)testBeginConstantShouldRegisterConstantInfoIfRegistrationStackIsEmpty {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginConstant];
-		// verify
-		assertThat(store.currentRegistrationObject, instanceOf([ConstantInfo class]));
-		assertThat([store.currentRegistrationObject objectRegistrar], equalTo(store));
-	}];
-}
-
-- (void)testBeginConstantShouldAddConstantInfoToConstantsArray {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store beginConstant];
-		// verify
-		assertThatInt(store.storeConstants.count, equalToInt(1));
-		assertThat([store.storeConstants lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-- (void)testBeginConstantShouldRegisterConstantInfoIfCurrentObjectIsAvailableButDoesntRespondToSelector {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store pushRegistrationObject:[NSObject new]];
-		// execute
-		[store beginConstant];
-		// verify
-		assertThatInt(store.storeConstants.count, equalToInt(1));
-		assertThat([store.storeConstants lastObject], equalTo(store.currentRegistrationObject));
-	}];
-}
-
-- (void)testBeginConstantShouldForwardToCurrentObjectIfAvailableAndRespondsToSelector {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginConstant];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginConstant];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-		assertThatInt(store.storeConstants.count, equalToInt(0));
-	}];
-}
-
-- (void)testBeginConstantTypesShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] beginConstantTypes];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store beginConstantTypes];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendConstantNameShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendConstantName:@"value"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendConstantName:@"value"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - Verify handling of common registrations
-
-- (void)testAppendTypeShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendType:@"value"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendType:@"value"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-- (void)testAppendAttributeShouldForwardToCurrentObject {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id mock = [OCMockObject mockForClass:[Store class]];
-		[[mock expect] appendAttribute:@"value"];
-		[store pushRegistrationObject:mock];
-		// execute
-		[store appendAttribute:@"value"];
-		// verify
-		STAssertNoThrow([mock verify], nil);
-	}];
-}
-
-#pragma mark - endCurrentObject
-
-- (void)testEndCurrentObjectShouldRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
-		// execute
-		[store endCurrentObject];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testEndCurrentObjectShouldForwardToSemilastObjectIfItRespondsToEndMessageThenRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id first = [OCMockObject mockForClass:[Store class]];
-		[[first expect] endCurrentObject];
-		[store pushRegistrationObject:first];
-		id second = [OCMockObject mockForClass:[Store class]];
-		[store pushRegistrationObject:second];
-		// execute
-		[store endCurrentObject];
-		// verify
-		STAssertNoThrow([first verify], nil);
-		STAssertNoThrow([second verify], nil);
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat(store.registrationStack.lastObject, equalTo(first));
-		assertThat(store.currentRegistrationObject, equalTo(first));
-	}];
-}
-
-- (void)testEndCurrentObjectShouldNotForwardToSemilastObjectIfItDoesntRespondToEndMessageButShouldRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id first = [OCMockObject mockForClass:[NSObject class]];
-		[store pushRegistrationObject:first];
-		id second = [OCMockObject mockForClass:[Store class]];
-		[[second stub] isKindOfClass:OCMOCK_ANY];
-		[store pushRegistrationObject:second];
-		// execute
-		[store endCurrentObject];
-		// verify
-		STAssertNoThrow([first verify], nil);
-		STAssertNoThrow([second verify], nil);
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat(store.registrationStack.lastObject, equalTo(first));
-		assertThat(store.currentRegistrationObject, equalTo(first));
-	}];
-}
-
-- (void)testEndCurrentObjectShouldIgnoreIfRegistrationStackIsEmpty {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store endCurrentObject];
-		// verify - real code logs a warning, but we don't test that here
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-#pragma mark - cancelCurrentObject
-
-- (void)testCancelCurrentObjectShouldRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldForwardToSemilastObjectIfItRespondsToCancelMessageThenRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id first = [OCMockObject mockForClass:[Store class]];
-		[[first expect] cancelCurrentObject];
-		[store pushRegistrationObject:first];
-		id second = [OCMockObject mockForClass:[Store class]];
-		[store pushRegistrationObject:second];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		STAssertNoThrow([first verify], nil);
-		STAssertNoThrow([second verify], nil);
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat(store.registrationStack.lastObject, equalTo(first));
-		assertThat(store.currentRegistrationObject, equalTo(first));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldNotForwardToSemilastObjectIfItDoesntRespondToCancelMessageButShouldRemoveLastObjectFromRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id first = [OCMockObject mockForClass:[NSObject class]];
-		[store pushRegistrationObject:first];
-		id second = [OCMockObject mockForClass:[Store class]];
-		[[second stub] isKindOfClass:OCMOCK_ANY];
-		[store pushRegistrationObject:second];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		STAssertNoThrow([first verify], nil);
-		STAssertNoThrow([second verify], nil);
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat(store.registrationStack.lastObject, equalTo(first));
-		assertThat(store.currentRegistrationObject, equalTo(first));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldIgnoreIfRegistrationStackIsEmpty {
-	[self runWithStore:^(Store *store) {
-		// execute
-		[store cancelCurrentObject];
-		// verify - real code logs a warning, but we don't test that here, just verify no exception is thrown
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastClass {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeClasses.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastExtension {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginExtensionForClassWithName:@"name"];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeExtensions.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastCategory {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginCategoryWithName:@"category" forClassWithName:@"name"];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeCategories.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastProtocol {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginProtocolWithName:@"name"];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeProtocols.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastEnumeration {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginEnumeration];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeEnumerations.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastStruct {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginStruct];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeStructs.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-- (void)testCancelCurrentObjectShouldRemoveLastConstant {
-	[self runWithStore:^(Store *store) {
-		// setup
-		[store beginConstant];
-		// execute
-		[store cancelCurrentObject];
-		// verify
-		assertThatInt(store.storeConstants.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-	}];
-}
-
-#pragma mark - Verify registration stack handling
-
-- (void)testPushRegistrationObjectShouldAddObjectToRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id child = @"child";
-		// execute
-		[store pushRegistrationObject:child];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat([store.registrationStack lastObject], equalTo(child));
-		assertThat(store.currentRegistrationObject, equalTo(child));
-	}];
-}
-
-- (void)testPushRegistrationObjectShouldMultipleObjectsToRegistrationStack {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id child1 = @"child1";
-		id child2 = @"child2";
-		// execute
-		[store pushRegistrationObject:child1];
-		[store pushRegistrationObject:child2];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(2));
-		assertThat([store.registrationStack objectAtIndex:0], equalTo(child1));
-		assertThat([store.registrationStack objectAtIndex:1], equalTo(child2));
-		assertThat(store.currentRegistrationObject, equalTo(child2));
-	}];
-}
-
-- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackWithMultipleObjects {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id child1 = @"child1";
-		id child2 = @"child2";
-		[store pushRegistrationObject:child1];
-		[store pushRegistrationObject:child2];
-		// execute
-		id poppedObject = [store popRegistrationObject];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(1));
-		assertThat([store.registrationStack lastObject], equalTo(child1));
-		assertThat(store.currentRegistrationObject, equalTo(child1));
-		assertThat(poppedObject, equalTo(child2));
-	}];
-}
-
-- (void)testPopRegistrationObjectShouldRemoveLastObjectFromRegistrationStackWithSingleObjects {
-	[self runWithStore:^(Store *store) {
-		// setup
-		id child = @"child1";
-		[store pushRegistrationObject:child];
-		// execute
-		id poppedObject = [store popRegistrationObject];
-		// verify
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-		assertThat(poppedObject, equalTo(child));
-	}];
-}
-
-- (void)testPopRegistrationObjectShouldDoNothingIfRegistrationStackIsEmpty {
-	[self runWithStore:^(Store *store) {
-		// execute
-		id poppedObject = [store popRegistrationObject];
-		// verify - note that in this case we log a warning, but we don't test that...
-		assertThatInt(store.registrationStack.count, equalToInt(0));
-		assertThat(store.currentRegistrationObject, equalTo(nil));
-		assertThat(poppedObject, equalTo(nil));
-	}];
-}
-
-@end
 
 #pragma mark - 
 
-@implementation StoreTests (CreationMethods)
+SPEC_BEGIN(StoreTests)
 
-- (void)runWithStore:(void(^)(Store *store))handler {
-	Store *store = [Store new];
-	handler(store);
-}
+describe(@"lazy accessors", ^{
+	it(@"should initialize objects", ^{
+		runWithStore(^(Store *store) {
+			// execute & verify
+			store.storeClasses should_not be_nil();
+			store.storeExtensions should_not be_nil();
+			store.storeCategories should_not be_nil();
+			store.storeProtocols should_not be_nil();
+			store.storeEnumerations should_not be_nil();
+			store.storeStructs should_not be_nil();
+			store.storeConstants should_not be_nil();
+			store.registrationStack should_not be_nil();
+		});
+	});
+});
 
-@end
+describe(@"class registration", ^{
+	it(@"should add class info to registration stack", ^{
+	   runWithStore(^(Store *store) {
+		   // execute
+		   [store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+		   // verify
+		   store.currentRegistrationObject should be_instance_of([ClassInfo class]);
+		   [store.currentRegistrationObject nameOfSuperClass] should equal(@"derived");
+		   [store.currentRegistrationObject objectRegistrar] should equal(store);
+	   });
+	});
+	
+	it(@"should add class info to classes array", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+			// verify
+			store.storeClasses.count should equal(1);
+			store.storeClasses should contain(store.currentRegistrationObject);
+		});
+	});
+});
+
+describe(@"class extension registration", ^{
+	it(@"should add category info to registration stack", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginExtensionForClassWithName:@"name"];
+			// verify
+			store.currentRegistrationObject should be_instance_of([CategoryInfo class]);
+			[store.currentRegistrationObject nameOfClass] should equal(@"name");
+			[store.currentRegistrationObject nameOfCategory] should be_nil();
+			[store.currentRegistrationObject objectRegistrar] should equal(store);
+		});
+	});
+	
+	it(@"should add category info to extensions array", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginExtensionForClassWithName:@"name"];
+			// verify
+			store.storeExtensions.count should equal(1);
+			store.storeExtensions should contain(store.currentRegistrationObject);
+		});
+	});
+});
+
+describe(@"class category registration", ^{
+	it(@"should add category info to registration stack", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+			// verify
+			store.currentRegistrationObject should be_instance_of([CategoryInfo class]);
+			[store.currentRegistrationObject nameOfClass] should equal(@"name");
+			[store.currentRegistrationObject nameOfCategory] should equal(@"category");
+			[store.currentRegistrationObject objectRegistrar] should equal(store);
+		});
+	});
+	
+	it(@"should add category info to categories array", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+			// verify
+			store.storeCategories.count should equal(1);
+			store.storeCategories should contain(store.currentRegistrationObject);
+		});
+	});
+});
+
+describe(@"protocol registration", ^{
+	it(@"should add protocol info to registration stack", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginProtocolWithName:@"name"];
+			// verify		
+			store.currentRegistrationObject should be_instance_of([ProtocolInfo class]);
+			[store.currentRegistrationObject nameOfProtocol] should equal(@"name");
+			[store.currentRegistrationObject objectRegistrar] should equal(store);
+		});
+	});
+	
+	it(@"should add protocol info to protocols array", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginProtocolWithName:@"name"];
+			// verify
+			store.storeProtocols.count should equal(1);
+			store.storeProtocols should contain(store.currentRegistrationObject);
+		});
+	});
+});
+
+describe(@"interface related methods", ^{
+	it(@"should forward apend adopted protocol to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendAdoptedProtocolWithName:@"name"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendAdoptedProtocolWithName:@"name"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"method group related methods", ^{
+	it(@"should forward append method group description to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendMethodGroupWithDescription:@"description"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendMethodGroupWithDescription:@"description"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"property related methods", ^{
+	it(@"should forward begin property definition to current registration object", ^{
+		runWithStore(^(Store *store) {			
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginPropertyDefinition];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginPropertyDefinition];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin property attributes to current registration object", ^{
+		runWithStore(^(Store *store) {			
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginPropertyAttributes];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginPropertyAttributes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin property types to current registration object", ^{
+		runWithStore(^(Store *store) {			
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginPropertyTypes];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginPropertyTypes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin property descriptors to current registration object", ^{
+		runWithStore(^(Store *store) {			
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginPropertyDescriptors];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginPropertyDescriptors];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward append property name to current registration object", ^{
+		runWithStore(^(Store *store) {			
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendPropertyName:@"name"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendPropertyName:@"name"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"method related registration", ^{
+	it(@"should forward begin method definition to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginMethodDefinitionWithType:@"type"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginMethodDefinitionWithType:@"type"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin method results to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginMethodResults];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginMethodResults];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin method argument to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginMethodArgument];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginMethodArgument];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin method argument types to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginMethodArgumentTypes];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginMethodArgumentTypes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin method argument selector to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendMethodArgumentSelector:@"selector"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendMethodArgumentSelector:@"selector"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward begin method argument variable to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendMethodArgumentVariable:@"variable"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendMethodArgumentVariable:@"variable"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"enum related registration", ^{
+	it(@"should add enumeration info to registration stack", ^{
+		runWithStore(^(Store *store) {			
+			// execute
+			[store beginEnumeration];
+			// verify
+			store.currentRegistrationObject should be_instance_of([EnumInfo class]);
+			[store.currentRegistrationObject objectRegistrar] should equal(store);
+		});
+	});
+
+	it(@"should add enumeration info to enumerations array", ^{
+		runWithStore(^(Store *store) {			
+			// execute
+			[store beginEnumeration];
+			// verify
+			store.storeEnumerations.count should equal(1);
+			store.storeEnumerations should contain(store.currentRegistrationObject);
+		});
+	});
+	
+	it(@"should forward append enumeration item to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendEnumerationItem:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendEnumerationItem:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should forward append enumeration value to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendEnumerationValue:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendEnumerationValue:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"struct related registration", ^{
+	it(@"should add struct info to registration stack", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store beginStruct];
+			// verify
+			store.currentRegistrationObject should be_instance_of([StructInfo class]);
+			[store.currentRegistrationObject objectRegistrar] should equal(store);
+		});
+	});
+
+	it(@"should add struct info to structs array", ^{
+		runWithStore(^(Store *store) {			
+			// execute
+			[store beginStruct];
+			// verify
+			store.storeStructs.count should equal(1);
+			store.storeStructs should contain(store.currentRegistrationObject);
+		});
+	});
+});
+
+describe(@"constant related registration", ^{
+	describe(@"if registration stack is empty", ^{
+		it(@"should add constant info to registration stack", ^{
+			runWithStore(^(Store *store) {
+				// execute
+				[store beginConstant];
+				// verify
+				store.currentRegistrationObject should be_instance_of([ConstantInfo class]);
+				[store.currentRegistrationObject objectRegistrar] should equal(store);
+			});
+		});
+
+		it(@"should add constant info to constants array", ^{
+			runWithStore(^(Store *store) {
+				// execute
+				[store beginConstant];
+				// verify
+				store.storeConstants.count should equal(1);
+				store.storeConstants should contain(store.currentRegistrationObject);
+			});
+		});
+	});
+	
+	describe(@"if registration stack is not empty, but current object doesn't handle constants", ^{
+		it(@"should add constant info to registration stack", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store pushRegistrationObject:[[NSObject new] autorelease]];
+				// execute
+				[store beginConstant];
+				// verify
+				store.currentRegistrationObject should be_instance_of([ConstantInfo class]);
+				[store.currentRegistrationObject objectRegistrar] should equal(store);
+			});
+		});
+		
+		it(@"should add constant info to constants array", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store pushRegistrationObject:[[NSObject new] autorelease]];
+				// execute
+				[store beginConstant];
+				// verify
+				store.storeConstants.count should equal(1);
+				store.storeConstants should contain(store.currentRegistrationObject);
+			});
+		});
+	});
+	
+	describe(@"if current registration object handles constants", ^{
+		it(@"should forward begin constant to curent registration object", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id mock = [OCMockObject mockForClass:[Store class]];
+				[[mock expect] beginConstant];
+				[store pushRegistrationObject:mock];
+				// execute
+				[store beginConstant];
+				// verify
+				^{ [mock verify]; } should_not raise_exception();
+				store.storeConstants.count should equal(0);
+			});
+		});
+	});
+
+	it(@"should forward begin constant types to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginConstantTypes];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginConstantTypes];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward append constant name to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendConstantName:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendConstantName:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"common registrations", ^{
+	it(@"should forward append type to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendType:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendType:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward append attribute to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendAttribute:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendAttribute:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should forward append description to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendDescriptor:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendDescriptor:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"end current object", ^{
+	it(@"should remove last object from registration stack", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
+			// execute
+			[store endCurrentObject];
+			// verify
+			store.registrationStack.count should equal(0);
+			store.currentRegistrationObject should be_nil();
+		});
+	});
+
+	it(@"should forward to semilast object on registration stack if it handles end message, then remove last object from registration stack", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id first = [OCMockObject mockForClass:[Store class]];
+			[[first expect] endCurrentObject];
+			[store pushRegistrationObject:first];
+			id second = [OCMockObject mockForClass:[Store class]];
+			[store pushRegistrationObject:second];
+			// execute
+			[store endCurrentObject];
+			// verify
+			^{ [first verify]; } should_not raise_exception();
+			^{ [second verify]; } should_not raise_exception();
+			store.registrationStack.count should equal(1);
+			store.registrationStack should contain(first);
+			store.currentRegistrationObject should equal(first);
+		});
+	});
+	
+	it(@"should not forward to semilast object on registration stack if it doesn't respond to end message, but should remove last object from registration stack", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id first = [OCMockObject mockForClass:[NSObject class]];
+			[store pushRegistrationObject:first];
+			id second = [OCMockObject mockForClass:[Store class]];
+			[[second stub] isKindOfClass:OCMOCK_ANY];
+			[store pushRegistrationObject:second];
+			// execute
+			[store endCurrentObject];
+			// verify
+			^{ [first verify]; } should_not raise_exception();
+			^{ [second verify]; } should_not raise_exception();
+			store.registrationStack.count should equal(1);
+			store.registrationStack should contain(first);
+			store.currentRegistrationObject should equal(first);
+		});
+	});
+	
+	it(@"should ignore if registration stack is empty", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			[store endCurrentObject];
+			// verify - real code logs a warning, but we don't test that here
+			store.registrationStack.count should equal(0);
+			store.currentRegistrationObject should be_nil();
+		});
+	});
+});
+
+describe(@"cancel current object", ^{
+	describe(@"if registration stack contains at least two objects", ^{
+		it(@"should forward to semilast object if it responds to message, then remove last object from registration stack", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id first = [OCMockObject mockForClass:[Store class]];
+				[[first expect] cancelCurrentObject];
+				[store pushRegistrationObject:first];
+				id second = [OCMockObject mockForClass:[Store class]];
+				[store pushRegistrationObject:second];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				^{ [first verify]; } should_not raise_exception();
+				^{ [second verify]; } should_not raise_exception();
+				store.registrationStack.count should equal(1);
+				store.registrationStack should contain(first);
+				store.currentRegistrationObject should equal(first);
+			});
+		});
+
+		it(@"should not forward to semilast object if it responds to message, but should remove last object from registration stack", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id first = [OCMockObject mockForClass:[NSObject class]];
+				[store pushRegistrationObject:first];
+				id second = [OCMockObject mockForClass:[Store class]];
+				[[second stub] isKindOfClass:OCMOCK_ANY];
+				[store pushRegistrationObject:second];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				^{ [first verify]; } should_not raise_exception();
+				^{ [second verify]; } should_not raise_exception();
+				store.registrationStack.count should equal(1);
+				store.registrationStack should contain(first);
+				store.currentRegistrationObject should equal(first);
+			});
+		});
+	});
+	
+	describe(@"if registration stack contains one object", ^{
+		it(@"should remove last object from registration stack", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store pushRegistrationObject:[OCMockObject niceMockForClass:[Store class]]];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.registrationStack.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+	});
+	
+	describe(@"if registration stack is emtpy", ^{
+		it(@"should ignore", ^{
+			runWithStore(^(Store *store) {
+				// execute
+				[store cancelCurrentObject];
+				// verify - real code logs a warning, but we don't test that here, just verify no exception is thrown
+				store.registrationStack.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+	});
+	
+	describe(@"registered data handling", ^{
+		it(@"should remove last class", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeClasses.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last class extension", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginExtensionForClassWithName:@"name"];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeExtensions.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last class category", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeCategories.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last protocol", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginProtocolWithName:@"name"];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeProtocols.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last enum", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginEnumeration];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeEnumerations.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last struct", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginStruct];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeStructs.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+		
+		it(@"should remove last constant", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginConstant];
+				// execute
+				[store cancelCurrentObject];
+				// verify
+				store.storeConstants.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+			});
+		});
+	});
+});
+
+describe(@"registration stack handling", ^{
+	describe(@"pushing objects", ^{
+		it(@"should push registration object and update current registration object", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id child = @"child";
+				// execute
+				[store pushRegistrationObject:child];
+				// verify
+				store.registrationStack.count should equal(1);
+				store.registrationStack should contain(child);
+				store.currentRegistrationObject should equal(child);
+			});
+		});
+		
+		it(@"should push multiple objects and update current registration object", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id child1 = @"child1";
+				id child2 = @"child2";
+				// execute
+				[store pushRegistrationObject:child1];
+				[store pushRegistrationObject:child2];
+				// verify
+				store.registrationStack.count should equal(2);
+				[store.registrationStack objectAtIndex:0] should equal(child1);
+				[store.registrationStack objectAtIndex:1] should equal(child2);
+				store.currentRegistrationObject should equal(child2);
+			});
+		});
+	});
+	
+	describe(@"popping objects", ^{
+		it(@"should remove last object from stack with multiple objects", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id child1 = @"child1";
+				id child2 = @"child2";
+				[store pushRegistrationObject:child1];
+				[store pushRegistrationObject:child2];
+				// execute
+				id poppedObject = [store popRegistrationObject];
+				// verify
+				store.registrationStack.count should equal(1);
+				[store.registrationStack objectAtIndex:0] should equal(child1);
+				store.currentRegistrationObject should equal(child1);
+				poppedObject should equal(child2);
+			});
+		});
+		
+		it(@"should remove last object from stack", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id child = @"child1";
+				[store pushRegistrationObject:child];
+				// execute
+				id poppedObject = [store popRegistrationObject];
+				// verify
+				store.registrationStack.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+				poppedObject should equal(child);
+			});
+		});
+		
+		it(@"should ignore if stack is empty", ^{
+			runWithStore(^(Store *store) {
+				// execute
+				id poppedObject = [store popRegistrationObject];
+				// verify - note that in this case we log a warning, but we don't test that...
+				store.registrationStack.count should equal(0);
+				store.currentRegistrationObject should be_nil();
+				poppedObject should be_nil();
+			});
+		});
+	});
+});
+
+SPEC_END
