@@ -165,9 +165,8 @@
 }
 
 - (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data {
-	NSUInteger endTokenIndex = [data.stream.current matchResult:self.methodEndDelimiters];
-	if (endTokenIndex == NSNotFound) return NO;
-	return YES;
+	if ([data.stream.current matchResult:self.methodEndDelimiters] != NSNotFound) return YES;
+	return NO;
 }
 
 #pragma mark - Properties

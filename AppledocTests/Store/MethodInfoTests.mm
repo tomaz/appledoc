@@ -33,6 +33,7 @@ describe(@"lazy accessors", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// execute & verify
 			info.methodResult should be_instance_of([TypeInfo class]);
+			info.methodDescriptors should_not be_nil();
 			info.methodArguments should_not be_nil();
 		});
 	});
@@ -101,6 +102,23 @@ describe(@"method argument registration", ^{
 			info.objectRegistrar = mock;
 			// execute
 			[info beginMethodArgument];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"method descriptors registration", ^{
+	it(@"should change current registration object to descriptors info", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
+				return [obj isKindOfClass:[DescriptorsInfo class]];
+			}]];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginMethodDescriptors];
 			// verify
 			^{ [mock verify]; } should_not raise_exception();
 		});

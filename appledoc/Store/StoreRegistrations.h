@@ -54,6 +54,7 @@
 - (void)beginMethodResults;
 - (void)beginMethodArgument;
 - (void)beginMethodArgumentTypes;
+- (void)beginMethodDescriptors;
 - (void)appendMethodArgumentSelector:(NSString *)name;
 - (void)appendMethodArgumentVariable:(NSString *)name;
 

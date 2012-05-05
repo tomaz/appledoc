@@ -10,6 +10,7 @@
 #import "StoreConstants.h"
 #import "StoreRegistrations.h"
 #import "TypeInfo.h"
+#import "DescriptorsInfo.h"
 #import "MethodArgumentInfo.h"
 #import "MethodInfo.h"
 
@@ -18,6 +19,7 @@
 @synthesize methodType = _methodType;
 @synthesize methodResult = _methodResult;
 @synthesize methodArguments = _methodArguments;
+@synthesize methodDescriptors = _methodDescriptors;
 
 #pragma mark - Properties
 
@@ -26,6 +28,13 @@
 	LogStoDebug(@"Initializing method result due to first access...");
 	_methodResult = [[TypeInfo alloc] init];
 	return _methodResult;
+}
+
+- (DescriptorsInfo *)methodDescriptors {
+	if (_methodDescriptors) return _methodDescriptors;
+	LogStoDebug(@"Initializing method descriptors due to first access...");
+	_methodDescriptors = [[DescriptorsInfo alloc] init];
+	return _methodDescriptors;
 }
 
 - (NSMutableArray *)methodArguments {
@@ -60,6 +69,11 @@
 	MethodArgumentInfo *argumentInfo = [[MethodArgumentInfo alloc] initWithRegistrar:self.objectRegistrar];
 	[self.methodArguments addObject:argumentInfo];
 	[self pushRegistrationObject:argumentInfo];
+}
+
+- (void)beginMethodDescriptors {
+	LogStoVerbose(@"Starting method descriptors...");
+	[self pushRegistrationObject:self.methodDescriptors];
 }
 
 - (void)cancelCurrentObject {

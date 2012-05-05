@@ -285,7 +285,20 @@ describe(@"method related registration", ^{
 		});
 	});
 
-	it(@"should forward begin method argument selector to current registration object", ^{
+	it(@"should forward begin method descriptors to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginMethodDescriptors];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginMethodDescriptors];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should forward append method argument selector to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
 			id mock = [OCMockObject mockForClass:[Store class]];
@@ -297,8 +310,8 @@ describe(@"method related registration", ^{
 			^{ [mock verify]; } should_not raise_exception();
 		});
 	});
-
-	it(@"should forward begin method argument variable to current registration object", ^{
+	
+	it(@"should forward append method argument variable to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
 			id mock = [OCMockObject mockForClass:[Store class]];

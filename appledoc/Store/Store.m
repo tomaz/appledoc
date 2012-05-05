@@ -251,6 +251,12 @@
 	[self.currentRegistrationObject beginMethodArgumentTypes];
 }
 
+- (void)beginMethodDescriptors {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding method descriptors registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginMethodDescriptors];
+}
+
 - (void)appendMethodArgumentSelector:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding method argument selector registration to %@...", self.currentRegistrationObject);
