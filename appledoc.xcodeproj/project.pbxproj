@@ -94,6 +94,7 @@
 		73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
 		73A589FE15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
 		73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -263,6 +264,7 @@
 		73A589FB15493F5B003838E0 /* DescriptorsInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptorsInfo.h; sourceTree = "<group>"; };
 		73A589FC15493F5B003838E0 /* DescriptorsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DescriptorsInfo.m; sourceTree = "<group>"; };
 		73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DescriptorsInfoTests.mm; sourceTree = "<group>"; };
+		73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCParseDataTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -471,6 +473,7 @@
 			children = (
 				73F59070154148850078DA60 /* Data */,
 				734425121517631F00B6EC33 /* ParserTests.mm */,
+				73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */,
 				73F989CB1518C9000068697C /* ObjectiveCParserTests.mm */,
 				7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.mm */,
 				7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */,
@@ -813,6 +816,7 @@
 				7345ED8F1553B2E40092FA57 /* ObjectiveCStructStateTests.mm in Sources */,
 				7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */,
 				7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
+				73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

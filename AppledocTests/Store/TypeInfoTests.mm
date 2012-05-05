@@ -8,7 +8,6 @@
 
 #import "Store.h"
 #import "TestCaseBase.hh"
-#import "TestCaseBase.h"
 
 static void runWithTypeInfo(void(^handler)(TypeInfo *info)) {
 	TypeInfo *info = [[TypeInfo alloc] init];

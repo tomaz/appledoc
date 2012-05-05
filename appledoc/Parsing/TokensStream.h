@@ -7,6 +7,7 @@
 //
 
 @class PKTokenizer;
+@class PKToken;
 
 typedef void(^GBMatchBlock)(PKToken *token, NSUInteger lookahead, BOOL *stop);
 

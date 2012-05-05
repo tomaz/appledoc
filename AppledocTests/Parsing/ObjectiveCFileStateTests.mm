@@ -131,8 +131,6 @@ describe(@"enums parsing", ^{
 	});
 });
 
-#pragma mark - Parsing structs
-
 describe(@"structs parsing", ^{
 	it(@"should detect possible struct", ^{
 		runWithState(^(ObjectiveCFileState *state) {

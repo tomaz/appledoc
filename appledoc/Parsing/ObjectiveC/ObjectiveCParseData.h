@@ -18,6 +18,8 @@
 
 + (id)dataWithStream:(TokensStream *)stream parser:(ObjectiveCParser *)parser store:(Store *)store;
 
+- (BOOL)doesStringLookLikeDescriptor:(NSString *)string;
+
 @property (nonatomic, readonly, strong) Store *store;
 @property (nonatomic, readonly, strong) TokensStream *stream;
 @property (nonatomic, readonly, strong) ObjectiveCParser *parser;
