@@ -421,6 +421,29 @@ describe(@"various fail cases", ^{
 			});
 		});
 	});
+
+	it(@"should cancel if method requires argument but doesn't provide variable name", ^{
+		// this is otherwise valid Objective C syntax, but appledoc doesn't accept it at this point...
+		runWithState(^(ObjectiveCMethodState *state) {
+			runWithString(@"- method:;", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+				[[store expect] beginMethodArgument];
+				[[store expect] appendMethodArgumentSelector:@"method"];
+				[[store expect] cancelCurrentObject]; // method argument
+				[[store expect] cancelCurrentObject]; // method definition
+				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
 });
 
 #pragma mark - 

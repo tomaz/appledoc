@@ -78,12 +78,20 @@
 				if (endTokenIndex != 0) {
 					LogParDebug(@"Failed matching method argument variable types, bailing out!");
 					[data.store cancelCurrentObject]; // type definitions
-					[data.store cancelCurrentObject]; // method argument.
+					[data.store cancelCurrentObject]; // method argument
 					[data.store cancelCurrentObject]; // method definition
 					[data.parser popState];
 					return GBResultFailedMatch;
 				}
 				[data.store endCurrentObject]; // type definitions
+			}
+			
+			// We require argument variable name!
+			if ([data.stream.current matches:self.methodTypeDelimiters]) {
+				[data.store cancelCurrentObject]; // method argument
+				[data.store cancelCurrentObject]; // method definition
+				[data.parser popState];
+				return GBResultFailedMatch;
 			}
 			
 			// Parse argument variable name.
