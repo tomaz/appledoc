@@ -9,6 +9,15 @@
 #import "ObjectiveCMethodState.h"
 
 @interface ObjectiveCMethodState ()
+- (BOOL)consumeMethodStartTokens:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodReturnTypes:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodArguments:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodArgumentSelector:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodArgumentTypes:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodArgumentVariable:(ObjectiveCParseData *)data;
+- (BOOL)skipMethodBody:(ObjectiveCParseData *)data;
+- (BOOL)finalizeMethod:(ObjectiveCParseData *)data;
+- (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) NSArray *methodTypeDelimiters;
 @property (nonatomic, strong) NSArray *methodEndDelimiters;
 @end
@@ -23,16 +32,25 @@
 #pragma mark - Parsing
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
-	// Match method definition or declaration (skipping body in later case), then return to previous stream. If current stream position doesn't start a method, consume one token and return.
+	if (![self consumeMethodStartTokens:data]) return GBResultFailedMatch;
+	if (![self parseMethodReturnTypes:data]) return GBResultFailedMatch;
+	if (![self parseMethodArguments:data]) return GBResultFailedMatch;
+	if (![self skipMethodBody:data]) return GBResultFailedMatch;
+	if (![self finalizeMethod:data]) return GBResultFailedMatch;
+	return GBResultOk;
+}
+
+- (BOOL)consumeMethodStartTokens:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matched %@, testing for method.", data.stream.current);
 	BOOL isInstanceMethod = [data.stream.current matches:@"-"];
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginMethodDefinitionWithType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
 	[data.stream consume:1];
+	return YES;
+}
 
+- (BOOL)parseMethodReturnTypes:(ObjectiveCParseData *)data {
 	NSArray *delimiters = self.methodTypeDelimiters;
-	
-	// Parse return types.
 	if ([data.stream.current matches:@"("]) {
 		LogParDebug(@"Matching method result...");
 		[data.store beginMethodResults];
@@ -46,71 +64,77 @@
 			[data.store cancelCurrentObject]; // result types
 			[data.store cancelCurrentObject]; // method definition
 			[data.parser popState];
-			return GBResultFailedMatch;
+			return NO;
 		}
 		[data.store endCurrentObject];
 	}
-	
-	// Parse all arguments.
+	return YES;
+}
+
+- (BOOL)parseMethodArguments:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matching method arguments.");
-	BOOL isMatchingMethodBody = NO;
 	while (!data.stream.eof) {
 		LogParDebug(@"Matching method argument %@.", data.stream.current);
-		
-		// Parse selector name for the argument and skip colon.
 		[data.store beginMethodArgument];
-		[data.store appendMethodArgumentSelector:data.stream.current.stringValue];
-		[data.stream consume:1];
+		if (![self parseMethodArgumentSelector:data]) return NO;
 		if ([data.stream.current matches:@":"]) {
-			// If colon is found, try match variable types and name.
 			LogParDebug(@"Matched colon, expecting types and variable name.");
 			[data.stream consume:1];
-		
-			// Parse optional argument variable types.
-			if ([data.stream.current matches:@"("]) {
-				LogParDebug(@"Matching method argument variable types.");
-				[data.store beginMethodArgumentTypes];
-				NSUInteger endTokenIndex = [data.stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-					LogParDebug(@"Matched %@.", token);
-					if ([token matches:delimiters]) return;
-					[data.store appendType:token.stringValue];
-				}];
-				if (endTokenIndex != 0) {
-					LogParDebug(@"Failed matching method argument variable types, bailing out!");
-					[data.store cancelCurrentObject]; // type definitions
-					[data.store cancelCurrentObject]; // method argument
-					[data.store cancelCurrentObject]; // method definition
-					[data.parser popState];
-					return GBResultFailedMatch;
-				}
-				[data.store endCurrentObject]; // type definitions
-			}
-			
-			// We require argument variable name!
-			if ([data.stream.current matches:self.methodTypeDelimiters]) {
-				[data.store cancelCurrentObject]; // method argument
-				[data.store cancelCurrentObject]; // method definition
-				[data.parser popState];
-				return GBResultFailedMatch;
-			}
-			
-			// Parse argument variable name.
-			LogParDebug(@"Matching method argument variable name.");
-			[data.store appendMethodArgumentVariable:data.stream.current.stringValue];
-			[data.stream consume:1];
+			if (![self parseMethodArgumentTypes:data]) return NO;
+			if (![self parseMethodArgumentVariable:data]) return NO;
 		}
 		[data.store endCurrentObject]; // method argument;
-		
-		// Continue with next argument unless we reached end of definition.
-		NSArray *end = self.methodEndDelimiters;
-		NSUInteger endTokenIndex = [data.stream.current matchResult:end];
-		if (endTokenIndex == NSNotFound) continue;
-		if (endTokenIndex == 1) isMatchingMethodBody = YES;			
-		break;
+		if ([self isMethodDefinitionFinished:data]) break;
 	}
-	
-	// Skip method code block.
-	if (isMatchingMethodBody) {
+	return YES;
+}
+
+- (BOOL)parseMethodArgumentSelector:(ObjectiveCParseData *)data {
+	[data.store appendMethodArgumentSelector:data.stream.current.stringValue];
+	[data.stream consume:1];
+	return YES;
+}
+
+- (BOOL)parseMethodArgumentTypes:(ObjectiveCParseData *)data {
+	if ([data.stream.current matches:@"("]) {
+		LogParDebug(@"Matching method argument variable types.");
+		NSArray *delimiters = self.methodTypeDelimiters;
+		[data.store beginMethodArgumentTypes];
+		NSUInteger endTokenIndex = [data.stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+			LogParDebug(@"Matched %@.", token);
+			if ([token matches:delimiters]) return;
+			[data.store appendType:token.stringValue];
+		}];
+		if (endTokenIndex != 0) {
+			LogParDebug(@"Failed matching method argument variable types, bailing out!");
+			[data.store cancelCurrentObject]; // type definitions
+			[data.store cancelCurrentObject]; // method argument
+			[data.store cancelCurrentObject]; // method definition
+			[data.parser popState];
+			return NO;
+		}
+		[data.store endCurrentObject]; // type definitions
+	}
+	return YES;
+}
+
+- (BOOL)parseMethodArgumentVariable:(ObjectiveCParseData *)data {
+	// Argument variable is required!
+	if ([data.stream.current matches:self.methodTypeDelimiters]) {
+		LogParDebug(@"Failed matching method argument variable name, bailing out!");
+		[data.store cancelCurrentObject]; // method argument
+		[data.store cancelCurrentObject]; // method definition
+		[data.parser popState];
+		return NO;
+	}
+	LogParDebug(@"Matching method argument variable name.");
+	[data.store appendMethodArgumentVariable:data.stream.current.stringValue];
+	[data.stream consume:1];
+	return YES;
+}
+
+- (BOOL)skipMethodBody:(ObjectiveCParseData *)data {
+	if ([data.stream.current matches:@"{"]) {
 		LogParDebug(@"Skipping method code block...");
 		__block NSUInteger blockLevel = 1;
 		NSUInteger tokensCount = [data.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
@@ -130,11 +154,20 @@
 		LogParDebug(@"Skipping semicolon...");
 		[data.stream consume:1];
 	}
-	
+	return YES;
+}
+
+- (BOOL)finalizeMethod:(ObjectiveCParseData *)data {	
 	LogParDebug(@"Ending method.");
 	[data.store endCurrentObject]; // method definition
 	[data.parser popState];
-	return GBResultOk;
+	return YES;
+}
+
+- (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data {
+	NSUInteger endTokenIndex = [data.stream.current matchResult:self.methodEndDelimiters];
+	if (endTokenIndex == NSNotFound) return NO;
+	return YES;
 }
 
 #pragma mark - Properties
