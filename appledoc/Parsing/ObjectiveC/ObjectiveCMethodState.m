@@ -146,6 +146,9 @@
 		[data.store appendDescriptor:token.stringValue];
 	}];
 	if (result == NSNotFound) {
+		[data.store cancelCurrentObject]; // method descriptors
+		[data.store cancelCurrentObject]; // method definition
+		[data.parser popState];
 		return NO;
 	}
 	[data.store endCurrentObject]; // method descriptors

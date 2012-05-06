@@ -947,6 +947,33 @@ describe(@"various fail cases", ^{
 			});
 		});
 	});
+	
+	it(@"should cancel if method starts descriptors but doesn't end", ^{
+		// this is otherwise valid Objective C syntax, but appledoc doesn't accept it at this point...
+		runWithState(^(ObjectiveCMethodState *state) {
+			runWithString(@"- method:var __a", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+				[[store expect] beginMethodArgument];
+				[[store expect] appendMethodArgumentSelector:@"method"];
+				[[store expect] appendMethodArgumentVariable:@"var"];
+				[[store expect] endCurrentObject]; // method argument
+				[[store expect] beginMethodDescriptors];
+				[[store expect] appendDescriptor:@"__a"];
+				[[store expect] cancelCurrentObject]; // method descriptors
+				[[store expect] cancelCurrentObject]; // method definition
+				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
 });
 
 #pragma mark - 
