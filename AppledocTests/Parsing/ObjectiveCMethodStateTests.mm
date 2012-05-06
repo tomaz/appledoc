@@ -251,7 +251,510 @@ describe(@"multiple arguments methods", ^{
 	});
 });
 
-describe(@"multiple methods", ^{
+describe(@"methods with descriptors", ^{
+	describe(@"if methods have no arguments", ^{
+		it(@"should take double underscore prefixed word after selector as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method __a;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should take all words after double underscore prefixed word after selector as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method __a1 a2 a3;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a1"];
+					[[store expect] appendDescriptor:@"a2"];
+					[[store expect] appendDescriptor:@"a3"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should allow double underscore prefixed word as argument selector", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- __a __b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"__a"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take uppercase word after selector as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method A;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take all words after uppercase word after selector as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method A1 a2 a3;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A1"];
+					[[store expect] appendDescriptor:@"a2"];
+					[[store expect] appendDescriptor:@"a3"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});		
+		
+		it(@"should allow uppercase word as argument selector", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- A B;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"A"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"B"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
+	describe(@"if methods have single argument", ^{
+		it(@"should take double underscored word after variable name as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:var __a;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"var"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take all words after double underscore prefixed word after variable name as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:var __a b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"var"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a"];
+					[[store expect] appendDescriptor:@"b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should allow double underscored variable name", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:__a __b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"__a"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take uppercase word after variable name as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:var A;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"var"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take all words after uppercase word after variable name as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:var A b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"var"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A"];
+					[[store expect] appendDescriptor:@"b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should take uppercase word after variable name as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- method:A B;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"method"];
+					[[store expect] appendMethodArgumentVariable:@"A"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"B"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
+	describe(@"if methods have multiple arguments", ^{
+		it(@"should take double underscore prefixed word after last selector as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:var2 __a;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"var2"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should take all words after double underscore prefixed word after last selector as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:var2 __a b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"var2"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__a"];
+					[[store expect] appendDescriptor:@"b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+
+		it(@"should allow double underscore prefixed word as argument variable name", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:__a __b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"__a"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"__b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take uppercase word after last selector as descriptor", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:var2 A;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"var2"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should take all words after uppercase word after last selector as descriptors", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:var2 A b;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"var2"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"A"];
+					[[store expect] appendDescriptor:@"b"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should allow uppercase word as argument variable name", ^{
+			runWithState(^(ObjectiveCMethodState *state) {
+				runWithString(@"- sel1:var1 sel2:A B;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel1"];
+					[[store expect] appendMethodArgumentVariable:@"var1"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodArgument];
+					[[store expect] appendMethodArgumentSelector:@"sel2"];
+					[[store expect] appendMethodArgumentVariable:@"A"];
+					[[store expect] endCurrentObject]; // method argument
+					[[store expect] beginMethodDescriptors];
+					[[store expect] appendDescriptor:@"B"];
+					[[store expect] endCurrentObject]; // method descriptors
+					[[store expect] endCurrentObject]; // method definition
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+	});
+});
+
+describe(@"multiple successive methods", ^{
 	it(@"shuold detect all definitions", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithFile(@"MethodStateMultipleDefinitions.h", ^(id parser, id tokens) {

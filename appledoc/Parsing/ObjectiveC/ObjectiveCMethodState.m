@@ -15,6 +15,7 @@
 - (BOOL)parseMethodArgumentSelector:(ObjectiveCParseData *)data;
 - (BOOL)parseMethodArgumentTypes:(ObjectiveCParseData *)data;
 - (BOOL)parseMethodArgumentVariable:(ObjectiveCParseData *)data;
+- (BOOL)parseMethodDescriptors:(ObjectiveCParseData *)data;
 - (BOOL)skipMethodBody:(ObjectiveCParseData *)data;
 - (BOOL)finalizeMethod:(ObjectiveCParseData *)data;
 - (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data;
@@ -35,6 +36,7 @@
 	if (![self consumeMethodStartTokens:data]) return GBResultFailedMatch;
 	if (![self parseMethodReturnTypes:data]) return GBResultFailedMatch;
 	if (![self parseMethodArguments:data]) return GBResultFailedMatch;
+	if (![self parseMethodDescriptors:data]) return GBResultFailedMatch;
 	if (![self skipMethodBody:data]) return GBResultFailedMatch;
 	if (![self finalizeMethod:data]) return GBResultFailedMatch;
 	return GBResultOk;
@@ -133,6 +135,24 @@
 	return YES;
 }
 
+- (BOOL)parseMethodDescriptors:(ObjectiveCParseData *)data {
+	if ([data.stream.current matches:self.methodEndDelimiters]) return YES;
+	if (![data doesStringLookLikeDescriptor:data.stream.current.stringValue]) return YES;
+	LogParDebug(@"Parsing method descriptors.");
+	[data.store beginMethodDescriptors];
+	GBResult result = [data.stream matchUntil:self.methodEndDelimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		LogParDebug(@"Matched %@.", token);
+		if ([token matches:self.methodEndDelimiters]) return;
+		[data.store appendDescriptor:token.stringValue];
+	}];
+	if (result == NSNotFound) {
+		return NO;
+	}
+	[data.store endCurrentObject]; // method descriptors
+	[data.stream rewind:1]; // we need to keep ; or { for further parsing!
+	return YES;
+}
+
 - (BOOL)skipMethodBody:(ObjectiveCParseData *)data {
 	if ([data.stream.current matches:@"{"]) {
 		LogParDebug(@"Skipping method code block...");
@@ -166,6 +186,7 @@
 
 - (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data {
 	if ([data.stream.current matchResult:self.methodEndDelimiters] != NSNotFound) return YES;
+	if ([data doesStringLookLikeDescriptor:data.stream.current.stringValue]) return YES;
 	return NO;
 }
 
