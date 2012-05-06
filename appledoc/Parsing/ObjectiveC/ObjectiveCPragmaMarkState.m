@@ -8,58 +8,95 @@
 
 #import "ObjectiveCPragmaMarkState.h"
 
+@interface ObjectiveCPragmaMarkState ()
+- (BOOL)consumePragmaStartTokens:(ObjectiveCParseData *)data;
+- (BOOL)parsePragmaDescription:(ObjectiveCParseData *)data;
+- (BOOL)isCurrentTokenOnStartingLine:(ObjectiveCParseData *)data;
+- (PKToken *)consumeUntilLastPragmaDescriptionToken:(ObjectiveCParseData *)data;
+- (NSString *)pragmaDescriptionFromStartToken:(PKToken *)start endToken:(PKToken *)end data:(ObjectiveCParseData *)data;
+@property (nonatomic, assign) NSUInteger startingLine;
+@end
+
 @implementation ObjectiveCPragmaMarkState
 
+@synthesize startingLine = _startingLine;
+
+#pragma mark - Parsing
+
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
+	self.startingLine = data.stream.current.location.y;
+	if (![self consumePragmaStartTokens:data]) return GBResultFailedMatch;
+	if (![self parsePragmaDescription:data]) return GBResultOk; // we can
+	return GBResultOk;
+}
+
+- (BOOL)consumePragmaStartTokens:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matched #pragma mark.");
-	NSUInteger line = data.stream.current.location.y;
 	[data.store setCurrentSourceInfo:data.stream.current];
-	
-	// Consume #pragma mark [-], exit if nothing else is found afterwards.
-	[data.stream consume:3];
+	[data.stream consume:3]; // # pragma mark
 	if ([data.stream matches:@"-", nil]) {
 		LogParDebug(@"Matched - (part of #pragma mark -)");
 		[data.stream consume:1];
 	}
-	if (data.stream.eof) {
-		LogParDebug(@"End of line reached, bailing out.");
-		[data.parser popState];
-		return GBResultOk;
-	}
-	
-	// Get all words until the end of line. Note that last description token will only be non-nil if at least one word is found on the same line!
+	return YES;
+}
+
+- (BOOL)parsePragmaDescription:(ObjectiveCParseData *)data {
+	if (![self isCurrentTokenOnStartingLine:data]) return GBResultOk;
+
 	PKToken *firstDescriptionToken = data.stream.current;
-	PKToken *lastDescriptionToken = nil;
-	while (!data.stream.eof && data.stream.current.location.y == line) {
-		LogParDebug(@"Matched %@.", data.stream.current);
-		lastDescriptionToken = data.stream.current;
-		[data.stream consume:1];
-	}
-	
-	// If we didn't find a description, exit.
+	PKToken *lastDescriptionToken = [self consumeUntilLastPragmaDescriptionToken:data];
 	if (!lastDescriptionToken) {
 		LogParDebug(@"No pragma mark description, bailing out!");
 		[data.parser popState];
-		return GBResultOk;
+		return NO;
 	}
 	
-	// Get the description and trim it. Exit if trimmed text is empty.
-	NSUInteger startIndex = firstDescriptionToken.offset;
-	NSUInteger endIndex = lastDescriptionToken.offset + lastDescriptionToken.stringValue.length;
+	NSString *description = [self pragmaDescriptionFromStartToken:firstDescriptionToken endToken:lastDescriptionToken data:data];
+	if (description.length == 0) {
+		LogParDebug(@"Empty pragma mark description, bailing out!");
+		[data.parser popState];
+		return NO;
+	}
+	
+	LogParDebug(@"Ending #pragma mark.");
+	[data.store appendMethodGroupWithDescription:description];
+	[data.parser popState];
+	return YES;
+}
+
+#pragma mark - Helper methods
+
+- (PKToken *)consumeUntilLastPragmaDescriptionToken:(ObjectiveCParseData *)data {
+	PKToken *result = nil;
+	while (!data.stream.eof && [self isCurrentTokenOnStartingLine:data]) {
+		LogParDebug(@"Matched %@.", data.stream.current);
+		result = data.stream.current;
+		[data.stream consume:1];
+	}
+	return result;
+}
+
+- (NSString *)pragmaDescriptionFromStartToken:(PKToken *)start endToken:(PKToken *)end data:(ObjectiveCParseData *)data {
+	NSUInteger startIndex = start.offset;
+	NSUInteger endIndex = end.offset + end.stringValue.length;
 	NSRange range = NSMakeRange(startIndex, endIndex - startIndex);
 	NSString *description = [data.stream.string substringWithRange:range];
 	NSString *trimmed = [description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-	if (trimmed.length == 0) {
-		LogParDebug(@"Empty pragma mark description, bailing out!");
+	return trimmed;
+}
+
+- (BOOL)isCurrentTokenOnStartingLine:(ObjectiveCParseData *)data {
+	if (data.stream.eof) {
+		LogParDebug(@"End of tokens reached, bailing out.");
 		[data.parser popState];
-		return GBResultOk;
+		return NO;
+	} else if (data.stream.current.location.y != self.startingLine) {
+		LogParDebug(@"End of line reached, bailing out.");
+		[data.parser popState];
+		return NO;
 	}
-	
-	// Found description, so register.
-	LogParDebug(@"Ending #pragma mark.");
-	[data.store appendMethodGroupWithDescription:trimmed];
-	[data.parser popState];
-	return GBResultOk;
+	return YES;
 }
 
 @end

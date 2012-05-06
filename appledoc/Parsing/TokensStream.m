@@ -180,6 +180,15 @@
 	return [self matchUntil:end block:handler];
 }
 
+#pragma mark - Helper methods
+
+- (NSString *)stringStartingWith:(PKToken *)start endingWith:(PKToken *)end {
+	NSUInteger startOffset = start.offset;
+	NSUInteger endOffset = end.offset + end.stringValue.length;
+	NSRange range = NSMakeRange(startOffset, endOffset - startOffset);
+	return [self.string substringWithRange:range];
+}
+
 @end
 
 #pragma mark - 

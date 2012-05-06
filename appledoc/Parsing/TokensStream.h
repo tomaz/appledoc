@@ -50,6 +50,8 @@ typedef void(^GBMatchBlock)(PKToken *token, NSUInteger lookahead, BOOL *stop);
 - (NSUInteger)matchUntil:(id)end block:(GBMatchBlock)handler;
 - (NSUInteger)matchStart:(id)start end:(id)end block:(GBMatchBlock)handler;
 
+- (NSString *)stringStartingWith:(PKToken *)start endingWith:(PKToken *)end;
+
 @property (nonatomic, strong, readonly) NSString *string;
 @property (nonatomic, strong, readonly) NSArray *tokens;
 @property (nonatomic, assign, readonly) NSUInteger position;
