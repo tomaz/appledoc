@@ -6,20 +6,14 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "StateBase.h"
 #import "ObjectiveCEnumState.h"
 
-@interface ObjectiveCEnumItemState : NSObject
-- (void)parseToken:(PKToken *)token withData:(ObjectiveCParseData *)data;
-- (void)initializeWithData:(ObjectiveCParseData *)data;
-- (void)finalizeWithData:(ObjectiveCParseData *)data;
+@interface ObjectiveCEnumItemState : BlockStateBase
+- (void)parseToken:(PKToken *)token;
 @property (nonatomic, strong) PKToken *startToken;
 @property (nonatomic, strong) PKToken *endToken;
-@end
-
-@interface ObjectiveCEnumItemItemState : ObjectiveCEnumItemState
-@end
-
-@interface ObjectiveCEnumValueItemState : ObjectiveCEnumItemState
+@property (nonatomic, strong) ObjectiveCParseData *data;
 @end
 
 #pragma mark - 
@@ -28,10 +22,9 @@
 - (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data;
 - (BOOL)parseEnumBody:(ObjectiveCParseData *)data;
 - (BOOL)finalizeEnum:(ObjectiveCParseData *)data;
-- (void)changeItemStateTo:(ObjectiveCEnumItemState *)state withData:(ObjectiveCParseData *)data;
-@property (nonatomic, strong) ObjectiveCEnumItemState *enumState;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumItemState;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumValueState;
+@property (nonatomic, strong) ContextBase *enumItemContext;
 @property (nonatomic, strong) NSArray *enumItemDelimiters;
 @end
 
@@ -39,9 +32,9 @@
 
 @implementation ObjectiveCEnumState
 
-@synthesize enumState = _enumState;
 @synthesize enumItemState = _enumItemState;
 @synthesize enumValueState = _enumValueState;
+@synthesize enumItemContext = _enumItemContext;
 @synthesize enumItemDelimiters = _enumItemDelimiters;
 
 #pragma mark - Parsing
@@ -72,19 +65,19 @@
 
 - (BOOL)parseEnumBody:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matching enum body.");
-	self.enumState = self.enumItemState;
-	[self.enumItemState initializeWithData:data];
-	[self.enumValueState initializeWithData:data];
+	self.enumItemContext.currentState = self.enumItemState;
+	self.enumItemState.data = data;
+	self.enumValueState.data = data;
 	NSUInteger result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:self.enumItemDelimiters]) {
 			LogParDebug(@"Matched %@, ending item.", token);
-			[self changeItemStateTo:self.enumItemState withData:data];
+			[self.enumItemContext changeStateTo:self.enumItemState];
 		} else if ([token matches:@"="]) {
 			LogParDebug(@"Matched %@, registering value.", token);
-			[self changeItemStateTo:self.enumValueState withData:data];
+			[self.enumItemContext changeStateTo:self.enumValueState];
 		} else {
 			LogParDebug(@"Matching %@.", token);
-			[self.enumState parseToken:token withData:data];
+			[self.enumItemContext.currentState parseToken:token];
 		}		
 	}];
 	if (result == NSNotFound) {
@@ -107,24 +100,34 @@
 
 #pragma mark - Item state handling
 
-- (void)changeItemStateTo:(ObjectiveCEnumItemState *)state withData:(ObjectiveCParseData *)data {
-	LogParDebug(@"Changing enum state to %@...", state);
-	[self.enumState finalizeWithData:data];
-	self.enumState = state;
-	[self.enumState initializeWithData:data];
+- (ContextBase *)enumItemContext {
+	if (_enumItemContext) return _enumItemContext;
+	LogParDebug(@"Initializing enum item context due to first access...");
+	_enumItemContext = [[ContextBase alloc] init];
+	return _enumItemContext;
 }
 
 - (ObjectiveCEnumItemState *)enumItemState {
 	if (_enumItemState) return _enumItemState;
 	LogParDebug(@"Initializing enum item state due to first access...");
-	_enumItemState = [[ObjectiveCEnumItemItemState alloc] init];
+	_enumItemState = [[ObjectiveCEnumItemState alloc] init];
+	_enumItemState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
+		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
+		if (value.length == 0) return;
+		[state.data.store appendEnumerationItem:value];
+	};
 	return _enumItemState;
 }
 
 - (ObjectiveCEnumItemState *)enumValueState {
 	if (_enumValueState) return _enumValueState;
 	LogParDebug(@"Initializing enum value state due to first access...");
-	_enumValueState = [[ObjectiveCEnumValueItemState alloc] init];
+	_enumValueState = [[ObjectiveCEnumItemState alloc] init];
+	_enumValueState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
+		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
+		if (value.length == 0) return;
+		[state.data.store appendEnumerationValue:value];
+	};
 	return _enumValueState;
 }
 
@@ -145,39 +148,18 @@
 
 @synthesize startToken;
 @synthesize endToken;
+@synthesize data;
 
-- (void)initializeWithData:(ObjectiveCParseData *)data {
+- (void)didBecomeCurrentStateForContext:(id)context {
+	[super didBecomeCurrentStateForContext:context];
 	self.startToken = nil;
 	self.endToken = nil;
 }
 
-- (void)finalizeWithData:(ObjectiveCParseData *)data {
-}
-
-- (void)parseToken:(PKToken *)token withData:(ObjectiveCParseData *)data {
+- (void)parseToken:(PKToken *)token {
 	LogParDebug(@"Matched %@.", token);
 	if (!self.startToken) self.startToken = token;
 	self.endToken = token;
-}
-
-@end
-
-@implementation ObjectiveCEnumItemItemState
-
-- (void)finalizeWithData:(ObjectiveCParseData *)data {
-	NSString *value = [data.stream stringStartingWith:self.startToken endingWith:self.endToken];
-	if (value.length == 0) return;
-	[data.store appendEnumerationItem:value];
-}
-
-@end
-
-@implementation ObjectiveCEnumValueItemState
-
-- (void)finalizeWithData:(ObjectiveCParseData *)data {
-	NSString *value = [data.stream stringStartingWith:self.startToken endingWith:self.endToken];
-	if (value.length == 0) return;
-	[data.store appendEnumerationValue:value];
 }
 
 @end

@@ -31,6 +31,8 @@
 		7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
 		7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7317FACD150F633900B39CFD /* SettingsTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7320AB6115232471006BAB51 /* ObjectiveCInterfaceStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73239A11155706380077AB8A /* StateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A10155706380077AB8A /* StateBase.m */; };
+		73239A12155706380077AB8A /* StateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A10155706380077AB8A /* StateBase.m */; };
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -199,6 +201,8 @@
 		7317FACD150F633900B39CFD /* SettingsTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsTests.mm; sourceTree = "<group>"; };
 		731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Objects+TestingPrivateAPI.h"; sourceTree = "<group>"; };
 		7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCInterfaceStateTests.mm; sourceTree = "<group>"; };
+		73239A0F155706380077AB8A /* StateBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateBase.h; sourceTree = "<group>"; };
+		73239A10155706380077AB8A /* StateBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StateBase.m; sourceTree = "<group>"; };
 		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppledocTests.mm; sourceTree = "<group>"; };
@@ -387,10 +391,10 @@
 		732978FF15188A1300592A9D /* Objective C */ = {
 			isa = PBXGroup;
 			children = (
-				7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */,
-				7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */,
 				7329790015188A4C00592A9D /* ObjectiveCParser.h */,
 				7329790115188A4C00592A9D /* ObjectiveCParser.m */,
+				7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */,
+				7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */,
 				73297912151899CA00592A9D /* ObjectiveCParserState.h */,
 				73297913151899CA00592A9D /* ObjectiveCParserState.m */,
 				7329791615189D1B00592A9D /* ObjectiveCFileState.h */,
@@ -629,6 +633,8 @@
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
 				739C11AE1515320C004D139B /* Extensions.h */,
 				739C11AF1515320C004D139B /* Extensions.m */,
+				73239A0F155706380077AB8A /* StateBase.h */,
+				73239A10155706380077AB8A /* StateBase.m */,
 				73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */,
 				73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */,
 				738BE17215172D8D009079C8 /* GBSettings+Helpers.h */,
@@ -817,6 +823,7 @@
 				7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */,
 				7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 				73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */,
+				73239A12155706380077AB8A /* StateBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,6 +875,7 @@
 				7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */,
 				73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */,
 				7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
+				73239A11155706380077AB8A /* StateBase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
