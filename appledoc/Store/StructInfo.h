@@ -14,6 +14,7 @@
  */
 @interface StructInfo : ObjectInfoBase
 
+@property (nonatomic, copy) NSString *nameOfStruct;
 @property (nonatomic, strong) NSMutableArray *structItems;
 
 @end

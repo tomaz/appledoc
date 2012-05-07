@@ -300,6 +300,9 @@
 }
 
 - (void)appendStructName:(NSString *)name {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoVerbose(@"Forwarding struct name registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject appendStructName:name];
 }
 
 #pragma mark - Constants

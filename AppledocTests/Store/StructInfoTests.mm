@@ -28,6 +28,17 @@ describe(@"lazy accessors", ^{
 	});
 });
 
+describe(@"struct data registration", ^{
+	it(@"should assign struct name", ^{
+		runWithStructInfo(^(StructInfo *info) {
+			// execute
+			[info appendStructName:@"name"];
+			// verify
+			info.nameOfStruct should equal(@"name");
+		});
+	});
+});
+
 describe(@"constant registration", ^{
 	it(@"should create new constant info and add it to struct items", ^{
 		runWithStructInfo(^(StructInfo *info) {

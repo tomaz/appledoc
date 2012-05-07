@@ -393,6 +393,19 @@ describe(@"struct related registration", ^{
 			store.storeStructs should contain(store.currentRegistrationObject);
 		});
 	});
+	
+	it(@"should forward append struct name to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendStructName:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendStructName:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
 });
 
 describe(@"constant related registration", ^{
