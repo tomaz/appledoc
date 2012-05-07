@@ -299,6 +299,9 @@
 	[self pushRegistrationObject:info];
 }
 
+- (void)appendStructName:(NSString *)name {
+}
+
 #pragma mark - Constants
 
 - (void)beginConstant {

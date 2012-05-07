@@ -75,7 +75,7 @@
 }
 
 - (BOOL)parseStructName:(ObjectiveCParseData *)data {
-	__block PKToken *nameToken = data.stream.current;
+	__block PKToken *nameToken = nil;
 	LogParDebug(@"Matching struct body start.");
 	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		LogParDebug(@"Matched %@", token);
@@ -88,22 +88,11 @@
 		[data.parser popState];
 		return NO;
 	}
-	if (nameToken) LogParDebug(@"Matched %@ for struct name.", nameToken);
-	// TODO register struct name - must add registration method and its handling in Store hierarchy!
+	if (nameToken) {
+		LogParDebug(@"Matched %@ for struct name.", nameToken);
+		[data.store appendStructName:nameToken.stringValue];
+	}
 	return YES;
 }
-
-//
-//- (NSArray *)structBodyStartDelimiters {
-//	if (_structBodyStartDelimiters) return _structBodyStartDelimiters;
-//	_structBodyStartDelimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
-//	return _structBodyStartDelimiters;
-//}
-//
-//- (NSArray *)structItemDelimiters {
-//	if (_structItemDelimiters) return _structItemDelimiters;
-//	_structItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
-//	return _structItemDelimiters;
-//}
 
 @end
