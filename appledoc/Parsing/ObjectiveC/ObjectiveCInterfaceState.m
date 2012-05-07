@@ -78,7 +78,6 @@
 	if (![data.stream matches:@"@", @"end", nil]) return NO;
 	LogParDebug(@"Matched @end.");
 	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
-	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store endCurrentObject];
 	[data.stream consume:2];
 	[data.parser popState];

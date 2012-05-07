@@ -77,7 +77,6 @@ describe(@"@end parsing", ^{
 			runWithString(@"@end", ^(id parser, id tokens) {
 				// setup
 				id store = [OCMockObject mockForClass:[Store class]];
-				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
 				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];

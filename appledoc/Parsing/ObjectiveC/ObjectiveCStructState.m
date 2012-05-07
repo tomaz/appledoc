@@ -8,48 +8,82 @@
 
 #import "ObjectiveCStructState.h"
 
-@interface ObjectiveCStructState ()
+@interface ObjectiveCStructState (TopLevelParsing)
+- (BOOL)parseConstant:(ObjectiveCParseData *)data;
+- (BOOL)parseStartOfStruct:(ObjectiveCParseData *)data;
+- (BOOL)parseEndOfStruct:(ObjectiveCParseData *)data;
+@end
+
+@interface ObjectiveCParserState (StructDataParsing)
 - (BOOL)consumeStructStartTokens:(ObjectiveCParseData *)data;
 - (BOOL)parseStructName:(ObjectiveCParseData *)data;
-- (BOOL)parseStructBody:(ObjectiveCParseData *)data;
-- (BOOL)finalizeStruct:(ObjectiveCParseData *)data;
-@property (nonatomic, strong) NSArray *structBodyStartDelimiters;
-@property (nonatomic, strong) NSArray *structItemDelimiters;
 @end
+
+#pragma mark - 
 
 @implementation ObjectiveCStructState
 
-@synthesize structBodyStartDelimiters = _structBodyStartDelimiters;
-@synthesize structItemDelimiters = _structItemDelimiters;
-
-#pragma mark - Parsing
-
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
-	if (![self consumeStructStartTokens:data]) return GBResultFailedMatch;
-	if (![self parseStructName:data]) return GBResultFailedMatch;
-	if (![self parseStructBody:data]) return GBResultFailedMatch;
-	if (![self finalizeStruct:data]) return GBResultFailedMatch;
-	return GBResultOk;
+	// Note that order is important - for proper handling constant must be last.
+	if ([self parseStartOfStruct:data]) return GBResultOk;
+	if ([self parseEndOfStruct:data]) return GBResultOk;
+	if ([self parseConstant:data]) return GBResultOk;
+	return GBResultFailedMatch;
 }
 
+@end
+
+#pragma mark - 
+
+@implementation ObjectiveCParserState (TopLevelParsing)
+
+- (BOOL)parseConstant:(ObjectiveCParseData *)data {
+	LogParDebug(@"Matching constant definition.");
+	[data.parser pushState:data.parser.constantState];
+	return YES;
+}
+
+- (BOOL)parseStartOfStruct:(ObjectiveCParseData *)data {
+	if (![data.stream matches:@"struct", nil]) return NO;
+	if (![self consumeStructStartTokens:data]) return NO;
+	if (![self parseStructName:data]) return NO;
+	return YES;
+}
+
+- (BOOL)parseEndOfStruct:(ObjectiveCParseData *)data {	
+	if (![data.stream matches:@"}", nil]) return NO;
+	LogParDebug(@"Matched struct end.");
+	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	[data.store endCurrentObject];
+	[data.stream consume:1];
+	[data.parser popState];
+	return YES;
+}
+
+@end
+
+#pragma mark - 
+
+@implementation ObjectiveCParserState (StructDataParsing)
+
 - (BOOL)consumeStructStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matched struct.");
+	LogParDebug(@"Matched struct definition.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginStruct];
+	[data.stream consume:1];
 	return YES;
 }
 
 - (BOOL)parseStructName:(ObjectiveCParseData *)data {
-	__block PKToken *nameToken = nil;
+	__block PKToken *nameToken = data.stream.current;
 	LogParDebug(@"Matching struct body start.");
 	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		LogParDebug(@"Matched %@", token);
-		if ([token matches:self.structBodyStartDelimiters]) return;
+		if ([token matches:@"{"]) return;
 		nameToken = token;
 	}];
 	if (result == NSNotFound) {
 		LogParDebug(@"Failed matching struct body start, bailing out.");
-		[data.stream consume:1];
 		[data.store cancelCurrentObject];
 		[data.parser popState];
 		return NO;
@@ -59,65 +93,17 @@
 	return YES;
 }
 
-- (BOOL)parseStructBody:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching struct body.");
-	NSMutableArray *itemTokens = [NSMutableArray array];
-	NSUInteger result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched %@.", token);
-		if ([token matches:self.structItemDelimiters]) {
-			if (itemTokens.count == 0) return;
-			__block BOOL isTypeCommandNeeded = YES;
-			__block BOOL wasTypeCommandIssues = NO;
-			[data.store beginConstant];
-			[itemTokens enumerateObjectsUsingBlock:^(PKToken *token, NSUInteger idx, BOOL *stop) {
-				if (idx == itemTokens.count - 1) {
-					if (wasTypeCommandIssues) [data.store endCurrentObject]; // types
-					[data.store appendConstantName:token.stringValue];
-					return;
-				}
-				if (isTypeCommandNeeded) {
-					[data.store beginConstantTypes];
-					wasTypeCommandIssues = YES;
-					isTypeCommandNeeded = NO;
-				}
-				[data.store appendType:token.stringValue];
-			}];
-			[data.store endCurrentObject]; // constant
-			[itemTokens removeAllObjects];
-		} else {
-			[itemTokens addObject:token];
-		}
-	}];
-	if (result == NSNotFound) {
-		LogParDebug(@"Failed matching end of enum body, bailing out.");
-		[data.stream consume:1];
-		[data.store cancelCurrentObject]; // struct
-		[data.parser popState];
-		return NO;
-	}
-	return YES;
-}
-
-- (BOOL)finalizeStruct:(ObjectiveCParseData *)data {	
-	LogParDebug(@"Ending struct.");
-	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
-	[data.store endCurrentObject];
-	[data.parser popState];
-	return YES;
-}
-
-#pragma mark - Properties
-
-- (NSArray *)structBodyStartDelimiters {
-	if (_structBodyStartDelimiters) return _structBodyStartDelimiters;
-	_structBodyStartDelimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
-	return _structBodyStartDelimiters;
-}
-
-- (NSArray *)structItemDelimiters {
-	if (_structItemDelimiters) return _structItemDelimiters;
-	_structItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
-	return _structItemDelimiters;
-}
+//
+//- (NSArray *)structBodyStartDelimiters {
+//	if (_structBodyStartDelimiters) return _structBodyStartDelimiters;
+//	_structBodyStartDelimiters = [NSArray arrayWithObjects:@"{", @"struct", nil];
+//	return _structBodyStartDelimiters;
+//}
+//
+//- (NSArray *)structItemDelimiters {
+//	if (_structItemDelimiters) return _structItemDelimiters;
+//	_structItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+//	return _structItemDelimiters;
+//}
 
 @end
