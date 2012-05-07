@@ -319,6 +319,12 @@
 	[self.currentRegistrationObject beginConstantTypes];
 }
 
+- (void)beginConstantDescriptors {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding constant descriptors registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject beginConstantDescriptors];
+}
+
 - (void)appendConstantName:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding constant name registration to %@...", self.currentRegistrationObject);

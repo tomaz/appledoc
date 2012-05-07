@@ -473,6 +473,19 @@ describe(@"constant related registration", ^{
 		});
 	});
 
+	it(@"should forward begin constant descriptors to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] beginConstantDescriptors];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store beginConstantDescriptors];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+	
 	it(@"should forward append constant name to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup

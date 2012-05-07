@@ -33,6 +33,9 @@
 		7320AB6115232471006BAB51 /* ObjectiveCInterfaceStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73239A11155706380077AB8A /* StateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A10155706380077AB8A /* StateBase.m */; };
 		73239A12155706380077AB8A /* StateBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A10155706380077AB8A /* StateBase.m */; };
+		73239A1A1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A191557BE9F0077AB8A /* ObjectiveCConstantState.m */; };
+		73239A1B1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73239A191557BE9F0077AB8A /* ObjectiveCConstantState.m */; };
+		73239A1D1557BF150077AB8A /* ObjectiveCConstantStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73239A1C1557BF150077AB8A /* ObjectiveCConstantStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */; };
 		73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73280F311510989600D1E6E8 /* AppledocTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -203,6 +206,9 @@
 		7320AB6015232471006BAB51 /* ObjectiveCInterfaceStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCInterfaceStateTests.mm; sourceTree = "<group>"; };
 		73239A0F155706380077AB8A /* StateBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateBase.h; sourceTree = "<group>"; };
 		73239A10155706380077AB8A /* StateBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StateBase.m; sourceTree = "<group>"; };
+		73239A181557BE9F0077AB8A /* ObjectiveCConstantState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCConstantState.h; sourceTree = "<group>"; };
+		73239A191557BE9F0077AB8A /* ObjectiveCConstantState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCConstantState.m; sourceTree = "<group>"; };
+		73239A1C1557BF150077AB8A /* ObjectiveCConstantStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCConstantStateTests.mm; sourceTree = "<group>"; };
 		73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Appledoc.h"; sourceTree = "<group>"; };
 		73280F27150FE48700D1E6E8 /* GBSettings+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Appledoc.m"; sourceTree = "<group>"; };
 		73280F311510989600D1E6E8 /* AppledocTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppledocTests.mm; sourceTree = "<group>"; };
@@ -411,6 +417,8 @@
 				73F989C31518C6C10068697C /* ObjectiveCEnumState.m */,
 				73F989C61518C6D40068697C /* ObjectiveCStructState.h */,
 				73F989C71518C6D40068697C /* ObjectiveCStructState.m */,
+				73239A181557BE9F0077AB8A /* ObjectiveCConstantState.h */,
+				73239A191557BE9F0077AB8A /* ObjectiveCConstantState.m */,
 			);
 			name = "Objective C";
 			path = ObjectiveC;
@@ -486,6 +494,7 @@
 				73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */,
 				73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */,
 				7345ED8E1553B2E40092FA57 /* ObjectiveCStructStateTests.mm */,
+				73239A1C1557BF150077AB8A /* ObjectiveCConstantStateTests.mm */,
 				737C82A8152310C80064DC46 /* ObjectiveCStateTestsHelpers.h */,
 				737C82A9152310C80064DC46 /* ObjectiveCStateTestsHelpers.mm */,
 			);
@@ -824,6 +833,8 @@
 				7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 				73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */,
 				73239A12155706380077AB8A /* StateBase.m in Sources */,
+				73239A1B1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */,
+				73239A1D1557BF150077AB8A /* ObjectiveCConstantStateTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,6 +887,7 @@
 				73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */,
 				7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 				73239A11155706380077AB8A /* StateBase.m in Sources */,
+				73239A1A1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

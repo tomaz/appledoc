@@ -35,4 +35,5 @@
 @property (nonatomic, strong) ObjectiveCParserState *pragmaMarkState;
 @property (nonatomic, strong) ObjectiveCParserState *enumState;
 @property (nonatomic, strong) ObjectiveCParserState *structState;
+@property (nonatomic, strong) ObjectiveCParserState *constantState;
 @end

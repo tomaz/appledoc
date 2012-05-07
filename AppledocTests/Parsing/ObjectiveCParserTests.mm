@@ -13,6 +13,7 @@
 #import "ObjectiveCPragmaMarkState.h"
 #import "ObjectiveCEnumState.h"
 #import "ObjectiveCStructState.h"
+#import "ObjectiveCConstantState.h"
 #import "ObjectiveCParser.h"
 #import "TestCaseBase.hh"
 
@@ -37,6 +38,7 @@ describe(@"lazy accessors", ^{
 			parser.pragmaMarkState should be_instance_of([ObjectiveCPragmaMarkState class]);
 			parser.enumState should be_instance_of([ObjectiveCEnumState class]);
 			parser.structState should be_instance_of([ObjectiveCStructState class]);
+			parser.constantState should be_instance_of([ObjectiveCConstantState class]);
 			parser.tokenizer should be_instance_of([PKTokenizer class]);
 		});
 	});

@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Extensions.h"
 #import "Store.h"
 #import "TokensStream.h"
 #import "ObjectiveCParser.h"
@@ -41,6 +42,41 @@
 }
 
 #pragma mark - Helper methods
+
+- (NSUInteger)lookaheadIndexOfFirstEndDelimiter:(id)end {
+	__block NSUInteger result = NSNotFound;
+	[self.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		if ([token matches:end]) {
+			*stop = YES;
+			result = lookahead;
+			return;
+		}
+	}];
+	return result;
+}
+
+- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:(id)end block:(void(^)(PKToken *token, BOOL *allowDescriptor))handler {
+	__block NSUInteger result = NSNotFound;
+	[self.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		if ([token matches:end]) {
+			*stop = YES;
+			return;
+		}
+		
+		// Give client a chance to skip tokens prior to start testing for descriptors.
+		BOOL canTokenBeTestedForDescriptor = YES;
+		handler(token, &canTokenBeTestedForDescriptor);
+		if (!canTokenBeTestedForDescriptor) return;
+		
+		// If we encounter possible descriptor, use this index.
+		if ([self doesStringLookLikeDescriptor:token.stringValue]) {
+			result = lookahead;
+			*stop = YES;
+			return;
+		}
+	}];
+	return result;
+}
 
 - (BOOL)doesStringLookLikeDescriptor:(NSString *)string {
 	if ([self isStringPrefixedWithDoubleUnderscore:string]) return YES;

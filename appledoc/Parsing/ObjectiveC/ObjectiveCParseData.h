@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class PKToken;
 @class Store;
 @class TokensStream;
 @class ObjectiveCParser;
@@ -18,6 +19,8 @@
 
 + (id)dataWithStream:(TokensStream *)stream parser:(ObjectiveCParser *)parser store:(Store *)store;
 
+- (NSUInteger)lookaheadIndexOfFirstEndDelimiter:(id)end;
+- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:(id)end block:(void(^)(PKToken *token, BOOL *allowDescriptor))handler;
 - (BOOL)doesStringLookLikeDescriptor:(NSString *)string;
 
 @property (nonatomic, readonly, strong) Store *store;

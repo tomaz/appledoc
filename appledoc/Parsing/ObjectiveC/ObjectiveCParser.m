@@ -16,6 +16,7 @@
 #import "ObjectiveCPragmaMarkState.h"
 #import "ObjectiveCEnumState.h"
 #import "ObjectiveCStructState.h"
+#import "ObjectiveCConstantState.h"
 #import "ObjectiveCParser.h"
 
 #pragma mark - 
@@ -32,6 +33,7 @@
 @property (nonatomic, strong) ObjectiveCParserState *pragmaMarkState;
 @property (nonatomic, strong) ObjectiveCParserState *enumState;
 @property (nonatomic, strong) ObjectiveCParserState *structState;
+@property (nonatomic, strong) ObjectiveCParserState *constantState;
 @end
 
 #pragma mark - 
@@ -49,6 +51,7 @@
 @synthesize pragmaMarkState = _pragmaMarkState;
 @synthesize enumState = _enumState;
 @synthesize structState = _structState;
+@synthesize constantState = _constantState;
 
 #pragma mark - Initialization & disposal
 
@@ -159,6 +162,13 @@
 	LogParDebug(@"Initializing struct state due to first access...");
 	_structState = [[ObjectiveCStructState alloc] init];
 	return _structState;
+}
+
+- (ObjectiveCParserState *)constantState {
+	if (_constantState) return _constantState;
+	LogParDebug(@"Initializing constant state due to first access...");
+	_constantState = [[ObjectiveCConstantState alloc] init];
+	return _constantState;
 }
 
 #pragma mark - Properties

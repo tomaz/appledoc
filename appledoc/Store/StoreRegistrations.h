@@ -72,6 +72,7 @@
 
 - (void)beginConstant;
 - (void)beginConstantTypes;
+- (void)beginConstantDescriptors;
 - (void)appendConstantName:(NSString *)name;
 
 #pragma mark - General objects

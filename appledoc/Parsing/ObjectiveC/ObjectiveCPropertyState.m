@@ -106,26 +106,14 @@
 }
 
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptor:(ObjectiveCParseData *)data {
-    LogParDebug(@"Scanning tokens for descriptors.");
-	__block NSUInteger remainingTypeAndNameTokens = 2; // require at least 2 tokens, one for type and one for name!
-	__block NSUInteger result = NSNotFound;
-	[data.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {        
-		// If we encounter end of property definition, use this index.
-		if ([token matches:@";"]) {
-			*stop = YES;
-			return;
-		}
-		
+    LogParDebug(@"Scanning tokens for property descriptors.");
+	__block NSInteger remainingTypeAndNameTokens = 2;
+	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, BOOL *allowDescriptor) {
 		// Require at least one token for type and one for name. Note that we should take all asterisks as types while here!
-		if (remainingTypeAndNameTokens > 0) {
-			if (![token matches:@"*"]) remainingTypeAndNameTokens--;
-			return;
-		}
-		
-		// If we encounter possible descriptor, use this index.
-		if ([data doesStringLookLikeDescriptor:token.stringValue]) {
-			result = lookahead;
-			*stop = YES;
+		if (remainingTypeAndNameTokens >= 0) {
+			*allowDescriptor = NO;
+			if ([token matches:@"*"]) return;
+			if (--remainingTypeAndNameTokens < 0) *allowDescriptor = YES;
 			return;
 		}
 	}];
@@ -134,15 +122,7 @@
 
 - (NSUInteger)lookaheadIndexOfPropertyEndToken:(ObjectiveCParseData *)data {
 	LogParDebug(@"Scanning tokens for property end.");
-	__block NSUInteger result = NSNotFound;
-	[data.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		if ([token matches:@";"]) {
-			result = lookahead;
-			*stop = YES;
-			return;
-		}
-	}];
-	return result;
+	return [data lookaheadIndexOfFirstEndDelimiter:@";"];
 }
 
 #pragma mark - Properties
