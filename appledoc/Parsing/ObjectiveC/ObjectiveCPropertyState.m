@@ -106,16 +106,17 @@
 }
 
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptor:(ObjectiveCParseData *)data {
+	// Require at least one token for type and one for name. Note that we should take all asterisks as types while here!
     LogParDebug(@"Scanning tokens for property descriptors.");
-	__block NSInteger remainingTypeAndNameTokens = 2;
-	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, BOOL *allowDescriptor) {
-		// Require at least one token for type and one for name. Note that we should take all asterisks as types while here!
-		if (remainingTypeAndNameTokens >= 0) {
-			*allowDescriptor = NO;
-			if ([token matches:@"*"]) return;
-			if (--remainingTypeAndNameTokens < 0) *allowDescriptor = YES;
+	__block BOOL wasPreviousTokenPossiblePropertyName = YES;
+	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *isDescriptor) {
+		if ([token matches:@"*"]) {
+			wasPreviousTokenPossiblePropertyName = NO;
 			return;
 		}
+		if (lookahead < 2) return;
+		if (wasPreviousTokenPossiblePropertyName && [data doesStringLookLikeDescriptor:token.stringValue]) *isDescriptor = YES;
+		wasPreviousTokenPossiblePropertyName = YES;
 	}];
 	return result;
 }

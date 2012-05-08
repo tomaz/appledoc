@@ -9,11 +9,13 @@
 #import "Objects.h"
 #import "StoreRegistrations.h"
 #import "TypeInfo.h"
+#import "DescriptorsInfo.h"
 #import "ConstantInfo.h"
 
 @implementation ConstantInfo
 
 @synthesize constantTypes = _constantTypes;
+@synthesize constantDescriptors = _constantDescriptors;
 @synthesize constantName = _constantName;
 
 #pragma mark - Properties
@@ -25,6 +27,13 @@
 	return _constantTypes;
 }
 
+- (DescriptorsInfo *)constantDescriptors {
+	if (_constantDescriptors) return _constantDescriptors;
+	LogStoDebug(@"Initializing constant descriptors due to first access...");
+	_constantDescriptors = [[DescriptorsInfo alloc] init];
+	return _constantDescriptors;
+}
+
 @end
 
 #pragma mark - 
@@ -34,6 +43,11 @@
 - (void)beginConstantTypes {
 	LogStoVerbose(@"Starting constant types...");
 	[self pushRegistrationObject:self.constantTypes];
+}
+
+- (void)beginConstantDescriptors {
+	LogStoVerbose(@"Starting constant descriptors...");
+	[self pushRegistrationObject:self.constantDescriptors];
 }
 
 - (void)appendConstantName:(NSString *)name {

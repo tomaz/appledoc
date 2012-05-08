@@ -109,7 +109,8 @@
 }
 
 - (PKToken *)la:(NSUInteger)count {
-	// Look ahead for next token in stream.
+	// Look ahead for next token(s) in stream.
+	if (self.position + count >= self.tokens.count) return nil;
 	return [self.tokens objectAtIndex:self.position + count];
 }
 

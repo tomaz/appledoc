@@ -28,7 +28,7 @@ static void runWithParser(void(^handler)(ObjectiveCParser *parser)) {
 SPEC_BEGIN(ObjectiveCParserTests)
 
 describe(@"lazy accessors", ^{
-	it(@"shoul initialize objects", ^{
+	it(@"should initialize objects", ^{
 		runWithParser(^(ObjectiveCParser *parser) {
 			// execute & verify
 			parser.fileState should be_instance_of([ObjectiveCFileState class]);

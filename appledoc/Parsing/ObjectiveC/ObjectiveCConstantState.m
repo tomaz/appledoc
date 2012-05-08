@@ -49,12 +49,10 @@
 			[data.store endCurrentObject]; // types
 			[data.store appendConstantName:token.stringValue];
 			if (hasDescriptors) [data.store beginConstantDescriptors];
-			return;
 		} else if (lookahead < indexOfEndToken) {
 			[data.store appendDescriptor:token.stringValue];
-		} else if ([token matches:@";"]) {
+		} else {
 			if (hasDescriptors) [data.store endCurrentObject]; // descriptors
-			return;
 		}
 	}];
 	if (found == NSNotFound) {
@@ -76,11 +74,17 @@
 #pragma mark - Helper methods
 
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorToken:(ObjectiveCParseData *)data {
+	// This one is a bit tricky: we want to leave at least 2 tokens before accepting descriptors: one for type and one for name. But if all tokens look like descriptor from start on, we should take them to be types - this would cover cases like (__unsafe_unretained etc). If all tokens look like descriptors, then just take the last as constant name and all prior as types.
     LogParDebug(@"Scanning tokens for constant descriptors.");
-	__block NSInteger remainingTypeAndNameTokens = 2;
-	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, BOOL *allowDescriptor) {
-		// require at least 2 tokens, one for type and one for name!
-		if (--remainingTypeAndNameTokens >= 0) *allowDescriptor = NO;
+	__block NSUInteger numberOfSuccessiveDescriptorLikeTokens = 0;
+	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *isDescriptor) {
+		BOOL looksLikeDescriptor = [data doesStringLookLikeDescriptor:token.stringValue];
+		if (looksLikeDescriptor)
+			numberOfSuccessiveDescriptorLikeTokens++;
+		else
+			numberOfSuccessiveDescriptorLikeTokens = 0;
+		if (lookahead < 2) return; // require at least 2 tokens from the start
+		if (looksLikeDescriptor && numberOfSuccessiveDescriptorLikeTokens <= lookahead) *isDescriptor = YES;
 	}];
 	return result;
 }

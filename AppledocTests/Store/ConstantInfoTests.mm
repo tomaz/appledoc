@@ -22,6 +22,7 @@ describe(@"lazy accessors", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// execute & verify
 			info.constantTypes should be_instance_of([TypeInfo class]);
+			info.constantDescriptors should be_instance_of([DescriptorsInfo class]);
 		});
 	});
 });
@@ -58,6 +59,21 @@ describe(@"constant name registration", ^{
 			[info appendConstantName:@"value2"];
 			// verify
 			info.constantName should equal(@"value2");
+		});
+	});
+});
+
+describe(@"constant descriptors registration", ^{
+	it(@"should push descriptors info to registration stack", ^{
+		runWithConstantInfo(^(ConstantInfo *info) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] pushRegistrationObject:info.constantDescriptors];
+			info.objectRegistrar = mock;
+			// execute
+			[info beginConstantDescriptors];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
 		});
 	});
 });

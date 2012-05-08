@@ -22,6 +22,8 @@
 #pragma mark - 
 
 @interface ObjectiveCParser ()
+- (GBResult)parseTokens;
+- (void)prepareParserForParsingString:(NSString *)string;
 - (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
 @property (nonatomic, strong) NSMutableArray *statesStack;
@@ -67,16 +69,18 @@
 
 - (NSInteger)parseString:(NSString *)string {
 	LogParDebug(@"Parsing '%@' for Objective C data...", [self.filename lastPathComponent]);
-	
-	// Prepare tokenizer and tokens stream for this session.
+	[self prepareParserForParsingString:string];
+	return [self parseTokens];
+}
+
+- (void)prepareParserForParsingString:(NSString *)string {
 	self.tokenizer.string = string;
 	self.tokensStream = [TokensStream tokensStreamWithTokenizer:self.tokenizer];
-	
-	// Start parsing on the "file" level.
 	[self.statesStack removeAllObjects];
 	[self pushState:self.fileState];
-	
-	// Parse all tokens.
+}
+
+- (GBResult)parseTokens {
 	GBResult result = GBResultOk;
 	ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:self.tokensStream parser:self store:self.store];
 	while (!self.tokensStream.eof) {
@@ -88,10 +92,10 @@
 			break;
 		}
 	}
-	
-	LogParDebug(@"Finished parsing '%@'.", [self.filename lastPathComponent]);
 	return result;
 }
+
+#pragma mark - Helper methods
 
 - (BOOL)isParseResultFailure:(GBResult)result {
 	if (result == GBResultOk) return NO;

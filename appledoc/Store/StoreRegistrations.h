@@ -67,6 +67,7 @@
 #pragma mark - Structs
 
 - (void)beginStruct;
+- (void)appendStructName:(NSString *)name;
 
 #pragma mark - Constants
 

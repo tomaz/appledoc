@@ -13,6 +13,7 @@
 
 @implementation StructInfo
 
+@synthesize nameOfStruct = _nameOfStruct;
 @synthesize structItems = _structItems;
 
 #pragma mark - Properties
@@ -29,6 +30,11 @@
 #pragma mark - 
 
 @implementation StructInfo (Registrations)
+
+- (void)appendStructName:(NSString *)name {
+	LogStoInfo(@"Appending struct name %@...", name);
+	self.nameOfStruct = name;
+}
 
 - (void)beginConstant {
 	LogStoVerbose(@"Starting constant...");
