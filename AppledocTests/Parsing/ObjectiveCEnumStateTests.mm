@@ -281,6 +281,25 @@ describe(@"fail cases:", ^{
 			});
 		});
 	});
+
+	it(@"should cancel if ending semicolon is missing", ^{
+		runWithState(^(ObjectiveCEnumState *state) {
+			runWithString(@"enum {}", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginEnumeration];
+				[[store expect] cancelCurrentObject];
+				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
 });
 
 TEST_END

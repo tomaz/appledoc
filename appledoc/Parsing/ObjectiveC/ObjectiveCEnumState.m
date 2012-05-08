@@ -92,6 +92,12 @@
 
 - (BOOL)finalizeEnum:(ObjectiveCParseData *)data {
 	LogParDebug(@"Ending enum.");
+	if (![data.stream.current matches:@";"]) {
+		LogParDebug(@"Failed matching ending enum semicolon, bailing out.");
+		[data.store cancelCurrentObject];
+		[data.parser popState];
+		return NO;
+	}
 	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // enum
 	[data.parser popState];
