@@ -17,7 +17,7 @@ static void runWithPropertyDescriptorsInfo(void(^handler)(DescriptorsInfo *info)
 
 #pragma mark - 
 
-SPEC_BEGIN(DescriptorsInfoTests)
+TEST_BEGIN(DescriptorsInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -42,4 +42,4 @@ describe(@"appending descriptors", ^{
 	});
 });
 
-SPEC_END
+TEST_END

@@ -17,7 +17,7 @@ static void runWithStructInfo(void(^handler)(StructInfo *info)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(StructInfoTests)
+TEST_BEGIN(StructInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -85,4 +85,4 @@ describe(@"object cancellation", ^{
 	});
 });
 
-SPEC_END
+TEST_END

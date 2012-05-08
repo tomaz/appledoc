@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCEnumState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCEnumStateTests)
+TEST_BEGIN(ObjectiveCEnumStateTests)
 
 describe(@"simple cases", ^{
 	it(@"should detect", ^{
@@ -283,4 +283,4 @@ describe(@"fail cases", ^{
 	});
 });
 
-SPEC_END
+TEST_END

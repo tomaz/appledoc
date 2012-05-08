@@ -17,7 +17,7 @@ static void runWithState(void(^handler)(ObjectiveCInterfaceState *state)) {
 	[state release];
 }
 
-SPEC_BEGIN(ObjectiveCInterfaceStateTests)
+TEST_BEGIN(ObjectiveCInterfaceStateTests)
 
 describe(@"adopted protocols parsing", ^{
 	it(@"should register single adopted protocol to store", ^{
@@ -154,4 +154,4 @@ describe(@"#pragma mark parsing", ^{
 	});
 });
 
-SPEC_END
+TEST_END

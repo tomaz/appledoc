@@ -17,7 +17,7 @@ static void runWithPropertyInfo(void(^handler)(PropertyInfo *info)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(PropertyInfoTests)
+TEST_BEGIN(PropertyInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -141,4 +141,4 @@ describe(@"property name registration", ^{
 	});
 });
 
-SPEC_END
+TEST_END

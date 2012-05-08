@@ -17,7 +17,7 @@ static void runWithCategoryInfo(void(^handler)(CategoryInfo *info)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(CategoryInfoTests)
+TEST_BEGIN(CategoryInfoTests)
 
 describe(@"category or extension helpers", ^{
 	it(@"should work if name of category is nil", ^{
@@ -51,4 +51,4 @@ describe(@"category or extension helpers", ^{
 	});
 });
 
-SPEC_END
+TEST_END

@@ -15,7 +15,7 @@ static void runWithObjectInfoBase(void(^handler)(ObjectInfoBase *info)) {
 	[info release];
 }
 
-SPEC_BEGIN(ObjectInfoBaseTests)
+TEST_BEGIN(ObjectInfoBaseTests)
 
 describe(@"push object to registration stack", ^{
 	it(@"should forward request to assigned store registrar", ^{
@@ -97,4 +97,4 @@ describe(@"pop object from registration stack", ^{
 	});
 });
 
-SPEC_END
+TEST_END

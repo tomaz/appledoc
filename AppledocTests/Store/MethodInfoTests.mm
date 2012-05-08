@@ -26,7 +26,7 @@ static void runWithMethodInfoWithRegistrar(void(^handler)(MethodInfo *info, Stor
 
 #pragma mark - 
 
-SPEC_BEGIN(MethodInfoTests)
+TEST_BEGIN(MethodInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -150,4 +150,4 @@ describe(@"object cancellation", ^{
 	});
 });
 
-SPEC_END
+TEST_END

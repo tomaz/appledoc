@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCStructState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCStructStateTests)
+TEST_BEGIN(ObjectiveCStructStateTests)
 
 describe(@"partial parsing", ^{
 	describe(@"struct start", ^{
@@ -117,4 +117,4 @@ describe(@"fail cases", ^{
 	});
 });
 
-SPEC_END
+TEST_END

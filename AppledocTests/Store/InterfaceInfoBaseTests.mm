@@ -26,7 +26,7 @@ static void runWithInterfaceInfoBaseWithRegistrar(void(^handler)(InterfaceInfoBa
 
 #pragma mark - 
 
-SPEC_BEGIN(InterfaceInfoBaseTests)
+TEST_BEGIN(InterfaceInfoBaseTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -334,4 +334,4 @@ describe(@"object cancellation", ^{
 	});
 });
 
-SPEC_END
+TEST_END

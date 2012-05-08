@@ -17,7 +17,7 @@ static void runWithPropertyAttributesInfo(void(^handler)(AttributesInfo *info)) 
 
 #pragma mark - 
 
-SPEC_BEGIN(AttributesInfoTests)
+TEST_BEGIN(AttributesInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -86,4 +86,4 @@ describe(@"appending attributes", ^{
 	});
 });
 
-SPEC_END
+TEST_END

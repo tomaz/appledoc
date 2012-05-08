@@ -20,7 +20,7 @@ static void runWithParser(void(^handler)(Parser *parser)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ParserTests)
+TEST_BEGIN(ParserTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -68,4 +68,4 @@ describe(@"running", ^{
 	});
 });
 
-SPEC_END
+TEST_END

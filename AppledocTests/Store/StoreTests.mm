@@ -23,7 +23,7 @@ static void runWithStore(void(^handler)(Store *store)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(StoreTests)
+TEST_BEGIN(StoreTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -847,4 +847,4 @@ describe(@"registration stack handling", ^{
 	});
 });
 
-SPEC_END
+TEST_END

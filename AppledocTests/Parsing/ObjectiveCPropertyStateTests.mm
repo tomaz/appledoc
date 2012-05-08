@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCPropertyState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCPropertyStateTests)
+TEST_BEGIN(ObjectiveCPropertyStateTests)
 
 #pragma mark - Properties without attributes
 
@@ -563,4 +563,4 @@ describe(@"fail cases", ^{
 	});
 });
 
-SPEC_END
+TEST_END

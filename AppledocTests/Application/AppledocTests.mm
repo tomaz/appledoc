@@ -25,7 +25,7 @@ static void runWithAppledoc(void(^handler)(Appledoc *appledoc)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(AppledocTests)
+TEST_BEGIN(AppledocTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -55,4 +55,4 @@ describe(@"run", ^{
 	});
 });
 
-SPEC_END
+TEST_END

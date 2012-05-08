@@ -15,7 +15,7 @@ static void runWithConstantInfo(void(^handler)(ConstantInfo *info)) {
 	[info release];
 }
 
-SPEC_BEGIN(ConstantInfoTests)
+TEST_BEGIN(ConstantInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -78,4 +78,4 @@ describe(@"constant descriptors registration", ^{
 	});
 });
 
-SPEC_END
+TEST_END

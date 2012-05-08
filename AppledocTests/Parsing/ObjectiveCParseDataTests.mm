@@ -20,7 +20,7 @@ static void runWithData(void(^handler)(ObjectiveCParseData *data)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCParseDataTests)
+TEST_BEGIN(ObjectiveCParseDataTests)
 
 describe(@"descriptors handling", ^{
 	it(@"should match double underscore tokens", ^{
@@ -79,4 +79,4 @@ describe(@"descriptors handling", ^{
 	});
 });
 
-SPEC_END
+TEST_END

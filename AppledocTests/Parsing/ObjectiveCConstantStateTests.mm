@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCConstantState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCConstantStateTests)
+TEST_BEGIN(ObjectiveCConstantStateTests)
 
 describe(@"simple cases", ^{
 	it(@"should detect single type", ^{
@@ -537,4 +537,4 @@ describe(@"fail cases", ^{
 	});
 });
 
-SPEC_END
+TEST_END

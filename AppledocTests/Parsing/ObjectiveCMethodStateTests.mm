@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCMethodState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCMethodStateTests)
+TEST_BEGIN(ObjectiveCMethodStateTests)
 
 describe(@"no arguments methods", ^{
 	it(@"should detect definition with no return type", ^{
@@ -1032,4 +1032,4 @@ describe(@"class methods", ^{
 	});
 });
 
-SPEC_END
+TEST_END

@@ -17,7 +17,7 @@ static void runWithEnumInfo(void(^handler)(EnumInfo *info)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(EnumInfoTests)
+TEST_BEGIN(EnumInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -84,4 +84,4 @@ describe(@"enumeration value registration", ^{
 	});
 });
 
-SPEC_END
+TEST_END

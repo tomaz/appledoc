@@ -16,7 +16,7 @@ static void runWithSettings(void(^handler)(GBSettings *settings)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(SettingsTests)
+TEST_BEGIN(SettingsTests)
 
 describe(@"initializer", ^{
 	it(@"should initialize all array keys", ^{		
@@ -90,4 +90,4 @@ context(@"cmd line switches", ^{
 	});
 });
 
-SPEC_END
+TEST_END

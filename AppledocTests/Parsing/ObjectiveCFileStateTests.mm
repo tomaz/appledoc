@@ -16,7 +16,7 @@ static void runWithState(void(^handler)(ObjectiveCFileState *state)) {
 	[state release];
 }
 
-SPEC_BEGIN(ObjectiveCFileStateTests)
+TEST_BEGIN(ObjectiveCFileStateTests)
 
 describe(@"classes parsing", ^{
 	it(@"should register root class to store", ^{		
@@ -148,4 +148,4 @@ describe(@"structs parsing", ^{
 	});
 });
 
-SPEC_END
+TEST_END

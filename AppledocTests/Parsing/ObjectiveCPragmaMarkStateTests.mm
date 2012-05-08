@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCPragmaMarkState *state)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCPragmaMarkStateTests)
+TEST_BEGIN(ObjectiveCPragmaMarkStateTests)
 
 describe(@"simple cases", ^{
 	it(@"should detect single word", ^{
@@ -115,4 +115,4 @@ describe(@"various edge cases", ^{
 	});
 });
 
-SPEC_END
+TEST_END

@@ -17,7 +17,7 @@ static void runWithMethodArgumentInfo(void(^handler)(MethodArgumentInfo *info)) 
 
 #pragma mark - 
 
-SPEC_BEGIN(MethodArgumentInfoTests)
+TEST_BEGIN(MethodArgumentInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -85,4 +85,4 @@ describe(@"method argument variable registration", ^{
 	});
 });
 
-SPEC_END
+TEST_END

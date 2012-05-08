@@ -12,3 +12,11 @@
 using namespace Cedar::Matchers;
 
 #import "Objects+TestingPrivateAPI.h"
+
+#define TEST_BEGIN(name) \
+	SPEC_BEGIN(name) \
+		describe([NSString stringWithFormat:@"%s:", #name], ^{
+
+#define TEST_END \
+		}); \
+	SPEC_END

@@ -17,7 +17,7 @@ static void runWithTypeInfo(void(^handler)(TypeInfo *info)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(TypeInfoTests)
+TEST_BEGIN(TypeInfoTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -41,4 +41,4 @@ describe(@"append type", ^{
 	});
 });
 
-SPEC_END
+TEST_END

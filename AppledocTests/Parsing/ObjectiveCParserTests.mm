@@ -25,7 +25,7 @@ static void runWithParser(void(^handler)(ObjectiveCParser *parser)) {
 
 #pragma mark - 
 
-SPEC_BEGIN(ObjectiveCParserTests)
+TEST_BEGIN(ObjectiveCParserTests)
 
 describe(@"lazy accessors", ^{
 	it(@"should initialize objects", ^{
@@ -44,4 +44,4 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-SPEC_END
+TEST_END
