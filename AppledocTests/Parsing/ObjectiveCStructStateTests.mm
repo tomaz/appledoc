@@ -38,28 +38,10 @@ describe(@"struct data parsing:", ^{
 				});
 			});
 		});
-		
-		it(@"should detect struct name", ^{
-			runWithState(^(ObjectiveCStructState *state) {
-				runWithString(@"struct name {", ^(id parser, id tokens) {
-					// setup
-					id store = [OCMockObject mockForClass:[Store class]];
-					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
-					[[store expect] beginStruct];
-					[[store expect] appendStructName:@"name"];
-					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
-					// execute
-					[state parseWithData:data];
-					// verify
-					^{ [store verify]; } should_not raise_exception();
-					^{ [parser verify]; } should_not raise_exception();
-				});
-			});
-		});
 	});
 
 	describe(@"struct end:", ^{
-		it(@"should detect end", ^{
+		it(@"should end struct", ^{
 			runWithState(^(ObjectiveCStructState *state) {
 				runWithString(@"}", ^(id parser, id tokens) {
 					// setup
@@ -72,6 +54,117 @@ describe(@"struct data parsing:", ^{
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
+	describe(@"struct name:", ^{
+		describe(@"if name is before body:", ^{
+			it(@"should detect name", ^{
+				runWithState(^(ObjectiveCStructState *state) {
+					runWithString(@"struct name {", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginStruct];
+						[[store expect] appendStructName:@"name"];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+
+			it(@"should detect name for struct variable definition", ^{
+				runWithState(^(ObjectiveCStructState *state) {
+					runWithString(@"struct type name = {", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginStruct];
+						[[store expect] appendStructName:@"type"];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});	
+		});
+
+		describe(@"if name is after body:", ^{
+			it(@"should detect name", ^{
+				runWithState(^(ObjectiveCStructState *state) {
+					runWithString(@"} name;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] appendStructName:@"name"];
+						[[store expect] endCurrentObject];
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+		});
+			
+		describe(@"if name is before and after body:", ^{
+			it(@"should use name before body is both are given", ^{
+				runWithState(^(ObjectiveCStructState *state) {
+					runWithString(@"struct name1 {} name2;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginStruct];
+						[[store expect] appendStructName:@"name1"];
+						[[store expect] endCurrentObject];
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute - need to do it twice to have state parse all components
+						[state parseWithData:data];
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+			
+			it(@"should detect subsequent struct name", ^{
+				runWithState(^(ObjectiveCStructState *state) {
+					runWithString(@"struct name1 {}; struct name2 {};", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginStruct];
+						[[store expect] appendStructName:@"name1"];
+						[[store expect] endCurrentObject];
+						[[parser expect] popState];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginStruct];
+						[[store expect] appendStructName:@"name2"];
+						[[store expect] endCurrentObject];
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute - need to do it repeatedly to have state parse all components
+						[state parseWithData:data];
+						[state parseWithData:data];
+						[state parseWithData:data];
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
 				});
 			});
 		});
