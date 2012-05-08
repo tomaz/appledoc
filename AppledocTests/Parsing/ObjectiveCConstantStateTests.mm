@@ -435,6 +435,58 @@ describe(@"descriptors", ^{
 				});
 			});
 		});
+		
+		describe(@"if types include double underscore prefixed word", ^{
+			it(@"should detect types starting with double underscore prefixed word and ending with asterisk", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"__type1 type2 *name;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"__type1"];
+						[[store expect] appendType:@"type2"];
+						[[store expect] appendType:@"*"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"name"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+
+			it(@"should detect types starting with uppercase word and ending with asterisk", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"TYPE1 type2 *name;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"TYPE1"];
+						[[store expect] appendType:@"type2"];
+						[[store expect] appendType:@"*"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"name"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+		});
 	});
 });
 

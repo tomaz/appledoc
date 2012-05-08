@@ -30,6 +30,7 @@ enum {
 @interface NSString (Appledoc)
 - (NSString *)gb_stringByStandardizingCurrentDir;
 - (NSString *)gb_stringByStandardizingCurrentDirAndPath;
+- (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set;
 @end
 
 #pragma mark - 

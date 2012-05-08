@@ -44,10 +44,13 @@ describe(@"descriptors handling", ^{
 		});
 	});
 	
-	it(@"should match uppercase words and digits", ^{
+	it(@"should match uppercase words, digits and underscores", ^{
 		runWithData(^(ObjectiveCParseData *data) {
 			// execute & verify
 			[data doesStringLookLikeDescriptor:@"A1234567890"] should equal(YES);
+			[data doesStringLookLikeDescriptor:@"A_1"] should equal(YES);
+			[data doesStringLookLikeDescriptor:@"A_B_"] should equal(YES);
+			[data doesStringLookLikeDescriptor:@"A__"] should equal(YES);
 		});
 	});
 	
@@ -71,6 +74,7 @@ describe(@"descriptors handling", ^{
 			[data doesStringLookLikeDescriptor:@"_A_AND_b__"] should equal(NO);
 			[data doesStringLookLikeDescriptor:@"1234567890"] should equal(NO);
 			[data doesStringLookLikeDescriptor:@"1_A"] should equal(NO);
+			[data doesStringLookLikeDescriptor:@"*"] should equal(NO);
 		});
 	});
 });

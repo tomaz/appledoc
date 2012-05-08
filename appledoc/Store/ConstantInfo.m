@@ -65,6 +65,7 @@
 	NSMutableString *result = [NSMutableString string];
 	if (_constantTypes) [result appendFormat:@"%@ ", self.constantTypes];
 	if (_constantName) [result appendString:self.constantName];
+	if (_constantDescriptors) [result appendFormat:@" %@", self.constantDescriptors];
 	return result;
 }
 

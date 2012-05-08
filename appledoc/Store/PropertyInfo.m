@@ -104,7 +104,9 @@
 	[result appendString:@"@property "];
 	if (_propertyAttributes) [result appendFormat:@"(%@) ", self.propertyAttributes];
 	if (_propertyType) [result appendFormat:@"%@", self.propertyType];
-	[result appendFormat:@"%@;", self.propertyName];
+	[result appendString:self.propertyName];
+	if (_propertyDescriptors) [result appendFormat:@" %@", self.propertyDescriptors];
+	[result appendString:@";"];
 	return result;
 }
 

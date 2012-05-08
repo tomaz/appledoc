@@ -60,6 +60,14 @@
 	return result;
 }
 
+- (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set {
+	for (NSUInteger i=0; i<self.length; i++) {
+		unichar ch = [self characterAtIndex:i];
+		if (![set characterIsMember:ch]) return NO;
+	}
+	return YES;
+}
+
 @end
 
 #pragma mark - 

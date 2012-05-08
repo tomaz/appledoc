@@ -14,11 +14,13 @@
 
 @interface ObjectiveCParseData ()
 - (BOOL)isStringPrefixedWithDoubleUnderscore:(NSString *)string;
+- (BOOL)isStringPrefixedWithUnderscore:(NSString *)string;
 - (BOOL)isStringPrefixedWithDigit:(NSString *)string;
-- (BOOL)isStringUppercase:(NSString *)string;
+- (BOOL)isStringComposedOfUppercaseLetters:(NSString *)string;
 @property (nonatomic, readwrite, strong) Store *store;
 @property (nonatomic, readwrite, strong) TokensStream *stream;
 @property (nonatomic, readwrite, strong) ObjectiveCParser *parser;
+@property (nonatomic, strong) NSCharacterSet *uppercaseLettersSet;
 @end
 
 #pragma mark - 
@@ -28,6 +30,7 @@
 @synthesize store = _store;
 @synthesize stream = _stream;
 @synthesize parser = _parser;
+@synthesize uppercaseLettersSet = _uppercaseLettersSet;
 
 #pragma mark - Initialization & disposal
 
@@ -76,13 +79,19 @@
 
 - (BOOL)doesStringLookLikeDescriptor:(NSString *)string {
 	if ([self isStringPrefixedWithDoubleUnderscore:string]) return YES;
+	if ([self isStringPrefixedWithUnderscore:string]) return NO;
 	if ([self isStringPrefixedWithDigit:string]) return NO;
-	if ([self isStringUppercase:string]) return YES;
+	if ([self isStringComposedOfUppercaseLetters:string]) return YES;
 	return NO;
 }
 
 - (BOOL)isStringPrefixedWithDoubleUnderscore:(NSString *)string {
 	if ([string hasPrefix:@"__"]) return YES;
+	return NO;
+}
+
+- (BOOL)isStringPrefixedWithUnderscore:(NSString *)string {
+	if ([string hasPrefix:@"_"]) return YES;
 	return NO;
 }
 
@@ -93,11 +102,17 @@
 	return NO;
 }
 
-- (BOOL)isStringUppercase:(NSString *)string {
-	// Not very efficient and possibly wrong if used for localized strings, but seems to work for our purpose...
-	NSString *uppercase = [string uppercaseString];
-	if ([uppercase isEqualToString:string]) return YES;
-	return NO;
+- (BOOL)isStringComposedOfUppercaseLetters:(NSString *)string {
+	NSCharacterSet *allowedCharacters = self.uppercaseLettersSet;
+	return [string gb_stringContainsOnlyCharactersFromSet:allowedCharacters];
+}
+
+#pragma mark - Properties
+
+- (NSCharacterSet *)uppercaseLettersSet {
+	if (_uppercaseLettersSet) return _uppercaseLettersSet;
+	_uppercaseLettersSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
+	return _uppercaseLettersSet;
 }
 
 @end
