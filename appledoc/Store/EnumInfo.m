@@ -12,6 +12,7 @@
 
 @implementation EnumInfo
 
+@synthesize nameOfEnum = _nameOfEnum;
 @synthesize enumItems = _enumItems;
 
 #pragma mark - Properties
@@ -28,6 +29,11 @@
 #pragma mark - 
 
 @implementation EnumInfo (Registrations)
+
+- (void)appendEnumerationName:(NSString *)name {
+	LogStoInfo(@"Appending enumeration name %@...", name);
+	self.nameOfEnum = name;
+}
 
 - (void)appendEnumerationItem:(NSString *)name {
 	LogStoInfo(@"Creating enumeration item %@...", name);
@@ -54,7 +60,9 @@
 
 - (NSString *)description {
 	NSMutableString *result = [NSMutableString string];
-	[result appendString:@"enum {\n"];
+	[result appendString:@"enum"];
+	if (self.nameOfEnum) [result appendFormat:@" %@", self.nameOfEnum];
+	[result appendString:@" {\n"];
 	if (_enumItems) {
 		[self.enumItems enumerateObjectsUsingBlock:^(EnumItemInfo *item, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendFormat:@",\n"];

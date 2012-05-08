@@ -346,6 +346,19 @@ describe(@"enum related registration:", ^{
 		});
 	});
 	
+	it(@"should forward append enumeration name to current registration object", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id mock = [OCMockObject mockForClass:[Store class]];
+			[[mock expect] appendEnumerationName:@"value"];
+			[store pushRegistrationObject:mock];
+			// execute
+			[store appendEnumerationName:@"value"];
+			// verify
+			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+	
 	it(@"should forward append enumeration item to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup

@@ -28,6 +28,28 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
+describe(@"enumeration name registration:", ^{
+	it(@"should set name", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// execute
+			[info appendEnumerationName:@"name"];
+			// verify
+			info.nameOfEnum should equal(@"name");
+		});
+	});
+
+	it(@"should use last value if invoked multiple times", ^{
+		runWithEnumInfo(^(EnumInfo *info) {
+			// setup
+			[info appendEnumerationName:@"first"];
+			// execute
+			[info appendEnumerationName:@"name"];
+			// verify
+			info.nameOfEnum should equal(@"name");
+		});
+	});
+});
+
 describe(@"enumeration item registration:", ^{
 	it(@"should add all items to items array", ^{
 		runWithEnumInfo(^(EnumInfo *info) {

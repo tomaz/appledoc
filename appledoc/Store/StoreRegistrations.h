@@ -61,6 +61,7 @@
 #pragma mark - Enumerations
 
 - (void)beginEnumeration;
+- (void)appendEnumerationName:(NSString *)name;
 - (void)appendEnumerationItem:(NSString *)name;
 - (void)appendEnumerationValue:(NSString *)value;
 

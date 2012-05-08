@@ -278,6 +278,12 @@
 	[self pushRegistrationObject:info];
 }
 
+- (void)appendEnumerationName:(NSString *)name {
+	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
+	LogStoDebug(@"Forwarding enumeration name registration to %@...", self.currentRegistrationObject);
+	[self.currentRegistrationObject appendEnumerationName:name];
+}
+
 - (void)appendEnumerationItem:(NSString *)name {
 	if (![self expectCurrentRegistrationObjectRespondTo:_cmd]) return;
 	LogStoDebug(@"Forwarding enumeration item registration to %@...", self.currentRegistrationObject);
