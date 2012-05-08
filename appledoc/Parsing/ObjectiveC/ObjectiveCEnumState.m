@@ -20,6 +20,7 @@
 
 @interface ObjectiveCEnumState ()
 - (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data;
+- (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data;
 - (BOOL)parseEnumBody:(ObjectiveCParseData *)data;
 - (BOOL)finalizeEnum:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumItemState;
@@ -41,24 +42,36 @@
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	if (![self consumeEnumStartTokens:data]) return GBResultFailedMatch;
+	if (![self parseEnumNameBeforeBody:data]) return GBResultFailedMatch;
 	if (![self parseEnumBody:data]) return GBResultFailedMatch;
 	if (![self finalizeEnum:data]) return GBResultFailedMatch;
 	return GBResultOk;
 }
 
 - (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data {
-	// Enumeration can optionally have a name, we're only interested in values, so skip everything until {
 	LogParDebug(@"Matched enum.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginEnumeration];
+	[data.stream consume:1];
+	return YES;
+}
+
+- (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matching enum body start.");
-	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { }];
+	__block PKToken *nameToken = nil;
+	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { 
+		if ([token matches:@"{"]) return;
+		nameToken = token;
+	}];
 	if (result == NSNotFound) {
 		LogParDebug(@"Failed matching enum body start, bailing out.");
-		[data.stream consume:1];
 		[data.store cancelCurrentObject]; // enum
 		[data.parser popState];
 		return NO;
+	}
+	if (nameToken) {
+		LogParDebug(@"Matched enum name %@.", nameToken);
+		[data.store appendEnumerationName:nameToken.stringValue];
 	}
 	return YES;
 }

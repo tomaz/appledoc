@@ -39,14 +39,35 @@ describe(@"simple cases:", ^{
 			});
 		});
 	});
+	
+	it(@"should detect name", ^{
+		runWithState(^(ObjectiveCEnumState *state) {
+			runWithString(@"enum name {};", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginEnumeration];
+				[[store expect] appendEnumerationName:@"name"];
+				[[store expect] endCurrentObject];
+				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
 
-	it(@"should skip anything between enum keyword and start of enum body", ^{
+	it(@"should use last token before enum body as name", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum word1 word2 word3 {};", ^(id parser, id tokens) {
 				// setup
 				id store = [OCMockObject mockForClass:[Store class]];
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginEnumeration];
+				[[store expect] appendEnumerationName:@"word3"];
 				[[store expect] endCurrentObject];
 				[[parser expect] popState];
 				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
@@ -242,6 +263,29 @@ describe(@"few more complex cases:", ^{
 	});
 });
 
+describe(@"enums with names:", ^{
+	describe(@"if name is part of enum:", ^{
+		it(@"should detect single item", ^{
+			runWithState(^(ObjectiveCEnumState *state) {
+				runWithString(@"enum name {};", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginEnumeration];
+					[[store expect] appendEnumerationName:@"name"];
+					[[store expect] endCurrentObject];
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
 describe(@"fail cases:", ^{
 	it(@"should cancel if start of enum body is missing", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
