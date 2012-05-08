@@ -28,7 +28,7 @@ static void runWithMethodInfoWithRegistrar(void(^handler)(MethodInfo *info, Stor
 
 TEST_BEGIN(MethodInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// execute & verify
@@ -39,7 +39,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"class or interface method helpers", ^{
+describe(@"class or interface method helpers:", ^{
 	it(@"should work for class method", ^{
 		runWithMethodInfo(^(MethodInfo *info) {			
 			// setup
@@ -61,7 +61,7 @@ describe(@"class or interface method helpers", ^{
 	});
 });
 
-describe(@"method results registration", ^{
+describe(@"method results registration:", ^{
 	it(@"should change current registration object to results", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
@@ -78,7 +78,7 @@ describe(@"method results registration", ^{
 	});
 });
 
-describe(@"method argument registration", ^{
+describe(@"method argument registration:", ^{
 	it(@"should create new method argument", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
@@ -108,7 +108,7 @@ describe(@"method argument registration", ^{
 	});
 });
 
-describe(@"method descriptors registration", ^{
+describe(@"method descriptors registration:", ^{
 	it(@"should change current registration object to descriptors info", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
@@ -125,7 +125,7 @@ describe(@"method descriptors registration", ^{
 	});
 });
 
-describe(@"object cancellation", ^{
+describe(@"object cancellation:", ^{
 	it(@"should remove method argument if current registration object", ^{
 		runWithMethodInfoWithRegistrar(^(MethodInfo *info, Store *store) {
 			// setup

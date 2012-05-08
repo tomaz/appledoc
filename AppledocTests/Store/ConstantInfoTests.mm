@@ -17,7 +17,7 @@ static void runWithConstantInfo(void(^handler)(ConstantInfo *info)) {
 
 TEST_BEGIN(ConstantInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// execute & verify
@@ -27,7 +27,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"constant types registration", ^{
+describe(@"constant types registration:", ^{
 	it(@"should change current registration object to constant types info", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// setup
@@ -42,7 +42,7 @@ describe(@"constant types registration", ^{
 	});
 });
 
-describe(@"constant name registration", ^{
+describe(@"constant name registration:", ^{
 	it(@"should assign given string", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// execute
@@ -63,7 +63,7 @@ describe(@"constant name registration", ^{
 	});
 });
 
-describe(@"constant descriptors registration", ^{
+describe(@"constant descriptors registration:", ^{
 	it(@"should push descriptors info to registration stack", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// setup

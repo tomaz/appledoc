@@ -19,7 +19,7 @@ static void runWithCategoryInfo(void(^handler)(CategoryInfo *info)) {
 
 TEST_BEGIN(CategoryInfoTests)
 
-describe(@"category or extension helpers", ^{
+describe(@"category or extension helpers:", ^{
 	it(@"should work if name of category is nil", ^{
 		runWithCategoryInfo(^(CategoryInfo *info) {
 			// setup

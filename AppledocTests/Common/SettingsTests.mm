@@ -18,7 +18,7 @@ static void runWithSettings(void(^handler)(GBSettings *settings)) {
 
 TEST_BEGIN(SettingsTests)
 
-describe(@"initializer", ^{
+describe(@"initializer:", ^{
 	it(@"should initialize all array keys", ^{		
 		// setup & execute
 		GBSettings *settings = [GBSettings appledocSettingsWithName:@"name" parent:nil];

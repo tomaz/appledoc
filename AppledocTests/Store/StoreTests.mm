@@ -25,7 +25,7 @@ static void runWithStore(void(^handler)(Store *store)) {
 
 TEST_BEGIN(StoreTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithStore(^(Store *store) {
 			// execute & verify
@@ -41,7 +41,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"class registration", ^{
+describe(@"class registration:", ^{
 	it(@"should add class info to registration stack", ^{
 	   runWithStore(^(Store *store) {
 		   // execute
@@ -64,7 +64,7 @@ describe(@"class registration", ^{
 	});
 });
 
-describe(@"class extension registration", ^{
+describe(@"class extension registration:", ^{
 	it(@"should add category info to registration stack", ^{
 		runWithStore(^(Store *store) {
 			// execute
@@ -88,7 +88,7 @@ describe(@"class extension registration", ^{
 	});
 });
 
-describe(@"class category registration", ^{
+describe(@"class category registration:", ^{
 	it(@"should add category info to registration stack", ^{
 		runWithStore(^(Store *store) {
 			// execute
@@ -112,7 +112,7 @@ describe(@"class category registration", ^{
 	});
 });
 
-describe(@"protocol registration", ^{
+describe(@"protocol registration:", ^{
 	it(@"should add protocol info to registration stack", ^{
 		runWithStore(^(Store *store) {
 			// execute
@@ -135,7 +135,7 @@ describe(@"protocol registration", ^{
 	});
 });
 
-describe(@"interface related methods", ^{
+describe(@"interface related methods:", ^{
 	it(@"should forward apend adopted protocol to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -150,7 +150,7 @@ describe(@"interface related methods", ^{
 	});
 });
 
-describe(@"method group related methods", ^{
+describe(@"method group related methods:", ^{
 	it(@"should forward append method group description to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -165,7 +165,7 @@ describe(@"method group related methods", ^{
 	});
 });
 
-describe(@"property related methods", ^{
+describe(@"property related methods:", ^{
 	it(@"should forward begin property definition to current registration object", ^{
 		runWithStore(^(Store *store) {			
 			// setup
@@ -232,7 +232,7 @@ describe(@"property related methods", ^{
 	});
 });
 
-describe(@"method related registration", ^{
+describe(@"method related registration:", ^{
 	it(@"should forward begin method definition to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -325,7 +325,7 @@ describe(@"method related registration", ^{
 	});
 });
 
-describe(@"enum related registration", ^{
+describe(@"enum related registration:", ^{
 	it(@"should add enumeration info to registration stack", ^{
 		runWithStore(^(Store *store) {			
 			// execute
@@ -373,7 +373,7 @@ describe(@"enum related registration", ^{
 	});
 });
 
-describe(@"struct related registration", ^{
+describe(@"struct related registration:", ^{
 	it(@"should add struct info to registration stack", ^{
 		runWithStore(^(Store *store) {
 			// execute
@@ -408,8 +408,8 @@ describe(@"struct related registration", ^{
 	});
 });
 
-describe(@"constant related registration", ^{
-	describe(@"if registration stack is empty", ^{
+describe(@"constant related registration:", ^{
+	describe(@"if registration stack is empty:", ^{
 		it(@"should add constant info to registration stack", ^{
 			runWithStore(^(Store *store) {
 				// execute
@@ -431,7 +431,7 @@ describe(@"constant related registration", ^{
 		});
 	});
 	
-	describe(@"if registration stack is not empty, but current object doesn't handle constants", ^{
+	describe(@"if registration stack is not empty, but current object doesn't handle constants:", ^{
 		it(@"should add constant info to registration stack", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -457,7 +457,7 @@ describe(@"constant related registration", ^{
 		});
 	});
 	
-	describe(@"if current registration object handles constants", ^{
+	describe(@"if current registration object handles constants:", ^{
 		it(@"should forward begin constant to curent registration object", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -513,7 +513,7 @@ describe(@"constant related registration", ^{
 	});
 });
 
-describe(@"common registrations", ^{
+describe(@"common registrations:", ^{
 	it(@"should forward append type to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -554,7 +554,7 @@ describe(@"common registrations", ^{
 	});
 });
 
-describe(@"end current object", ^{
+describe(@"end current object:", ^{
 	it(@"should remove last object from registration stack", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -616,8 +616,8 @@ describe(@"end current object", ^{
 	});
 });
 
-describe(@"cancel current object", ^{
-	describe(@"if registration stack contains at least two objects", ^{
+describe(@"cancel current object:", ^{
+	describe(@"if registration stack contains at least two objects:", ^{
 		it(@"should forward to semilast object if it responds to message, then remove last object from registration stack", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -657,7 +657,7 @@ describe(@"cancel current object", ^{
 		});
 	});
 	
-	describe(@"if registration stack contains one object", ^{
+	describe(@"if registration stack contains one object:", ^{
 		it(@"should remove last object from registration stack", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -671,7 +671,7 @@ describe(@"cancel current object", ^{
 		});
 	});
 	
-	describe(@"if registration stack is emtpy", ^{
+	describe(@"if registration stack is emtpy:", ^{
 		it(@"should ignore", ^{
 			runWithStore(^(Store *store) {
 				// execute
@@ -683,7 +683,7 @@ describe(@"cancel current object", ^{
 		});
 	});
 	
-	describe(@"registered data handling", ^{
+	describe(@"registered data handling:", ^{
 		it(@"should remove last class", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -770,8 +770,8 @@ describe(@"cancel current object", ^{
 	});
 });
 
-describe(@"registration stack handling", ^{
-	describe(@"pushing objects", ^{
+describe(@"registration stack handling:", ^{
+	describe(@"pushing objects:", ^{
 		it(@"should push registration object and update current registration object", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -802,7 +802,7 @@ describe(@"registration stack handling", ^{
 		});
 	});
 	
-	describe(@"popping objects", ^{
+	describe(@"popping objects:", ^{
 		it(@"should remove last object from stack with multiple objects", ^{
 			runWithStore(^(Store *store) {
 				// setup

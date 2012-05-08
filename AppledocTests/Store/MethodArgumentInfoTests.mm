@@ -19,7 +19,7 @@ static void runWithMethodArgumentInfo(void(^handler)(MethodArgumentInfo *info)) 
 
 TEST_BEGIN(MethodArgumentInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
 			// execute & verify
@@ -28,7 +28,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"method argument types registration", ^{
+describe(@"method argument types registration:", ^{
 	it(@"should push argument type to registration stack", ^{
 		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
 			// setup
@@ -43,7 +43,7 @@ describe(@"method argument types registration", ^{
 	});
 });
 
-describe(@"method argument selector registration", ^{
+describe(@"method argument selector registration:", ^{
 	it(@"should assign given string", ^{
 		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
 			// execute
@@ -64,7 +64,7 @@ describe(@"method argument selector registration", ^{
 	});
 });
 
-describe(@"method argument variable registration", ^{
+describe(@"method argument variable registration:", ^{
 	it(@"should assign given string", ^{
 		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
 			// execute

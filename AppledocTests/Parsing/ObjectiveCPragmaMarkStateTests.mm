@@ -20,7 +20,7 @@ static void runWithState(void(^handler)(ObjectiveCPragmaMarkState *state)) {
 
 TEST_BEGIN(ObjectiveCPragmaMarkStateTests)
 
-describe(@"simple cases", ^{
+describe(@"simple cases:", ^{
 	it(@"should detect single word", ^{
 		runWithState(^(ObjectiveCPragmaMarkState *state) {
 			runWithString(@"#pragma mark word", ^(id parser, id tokens) {
@@ -58,7 +58,7 @@ describe(@"simple cases", ^{
 	});
 });
 
-describe(@"using minus", ^{
+describe(@"using minus:", ^{
 	it(@"should ignore minus prefix", ^{
 		runWithState(^(ObjectiveCPragmaMarkState *state) {
 			runWithString(@"#pragma mark - word1 word2 word3", ^(id parser, id tokens) {
@@ -96,7 +96,7 @@ describe(@"using minus", ^{
 	});
 });
 
-describe(@"various edge cases", ^{
+describe(@"various edge cases:", ^{
 	it(@"should ignore if description only contains whitespace", ^{
 		runWithState(^(ObjectiveCPragmaMarkState *state) {
 			runWithString(@"#pragma mark - \t  \t \n", ^(id parser, id tokens) {

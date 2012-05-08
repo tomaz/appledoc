@@ -20,7 +20,7 @@ static void runWithState(void(^handler)(ObjectiveCMethodState *state)) {
 
 TEST_BEGIN(ObjectiveCMethodStateTests)
 
-describe(@"no arguments methods", ^{
+describe(@"no arguments methods:", ^{
 	it(@"should detect definition with no return type", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithString(@"- method;", ^(id parser, id tokens) {
@@ -96,7 +96,7 @@ describe(@"no arguments methods", ^{
 	});
 });
 
-describe(@"single argument methods", ^{
+describe(@"single argument methods:", ^{
 	it(@"should detect definition with no type", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithString(@"- method:var;", ^(id parser, id tokens) {
@@ -175,7 +175,7 @@ describe(@"single argument methods", ^{
 	});
 });
 
-describe(@"multiple arguments methods", ^{
+describe(@"multiple arguments methods:", ^{
 	it(@"should detect definition with no types", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithString(@"- method:var1 that:var2 rocks:var3;", ^(id parser, id tokens) {
@@ -251,8 +251,8 @@ describe(@"multiple arguments methods", ^{
 	});
 });
 
-describe(@"methods with descriptors", ^{
-	describe(@"if methods have no arguments", ^{
+describe(@"methods with descriptors:", ^{
+	describe(@"if methods have no arguments:", ^{
 		it(@"should take double underscore prefixed word after selector as descriptor", ^{
 			runWithState(^(ObjectiveCMethodState *state) {
 				runWithString(@"- method __a;", ^(id parser, id tokens) {
@@ -408,7 +408,7 @@ describe(@"methods with descriptors", ^{
 		});
 	});
 	
-	describe(@"if methods have single argument", ^{
+	describe(@"if methods have single argument:", ^{
 		it(@"should take double underscored word after variable name as descriptor", ^{
 			runWithState(^(ObjectiveCMethodState *state) {
 				runWithString(@"- method:var __a;", ^(id parser, id tokens) {
@@ -568,7 +568,7 @@ describe(@"methods with descriptors", ^{
 		});
 	});
 	
-	describe(@"if methods have multiple arguments", ^{
+	describe(@"if methods have multiple arguments:", ^{
 		it(@"should take double underscore prefixed word after last selector as descriptor", ^{
 			runWithState(^(ObjectiveCMethodState *state) {
 				runWithString(@"- sel1:var1 sel2:var2 __a;", ^(id parser, id tokens) {
@@ -754,7 +754,7 @@ describe(@"methods with descriptors", ^{
 	});
 });
 
-describe(@"multiple successive methods", ^{
+describe(@"multiple successive methods:", ^{
 	it(@"shuold detect all definitions", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithFile(@"MethodStateMultipleDefinitions.h", ^(id parser, id tokens) {
@@ -876,7 +876,7 @@ describe(@"multiple successive methods", ^{
 	});
 });
 
-describe(@"various fail cases", ^{
+describe(@"various fail cases:", ^{
 	it(@"should cancel if closing results parenthesis is not found", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithString(@"- (type method;", ^(id parser, id tokens) {
@@ -980,7 +980,7 @@ describe(@"various fail cases", ^{
 #pragma mark Just few quick cases for verifying class methods and declaration parsing support
 #pragma mark As we use exactly the same code for all these, we just verify simple cases here
 
-describe(@"class methods", ^{
+describe(@"class methods:", ^{
 	it(@"should detect definition", ^{
 		runWithState(^(ObjectiveCMethodState *state) {
 			runWithString(@"+ (type)method;", ^(id parser, id tokens) {

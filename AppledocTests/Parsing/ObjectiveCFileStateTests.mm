@@ -18,7 +18,7 @@ static void runWithState(void(^handler)(ObjectiveCFileState *state)) {
 
 TEST_BEGIN(ObjectiveCFileStateTests)
 
-describe(@"classes parsing", ^{
+describe(@"classes parsing:", ^{
 	it(@"should register root class to store", ^{		
 		runWithState(^(ObjectiveCFileState *state) {
 			runWithString(@"@interface MyClass", ^(id parser, id tokens) {
@@ -56,7 +56,7 @@ describe(@"classes parsing", ^{
 	});
 });
 
-describe(@"categories parsing", ^{
+describe(@"categories parsing:", ^{
 	it(@"should register class extension to store", ^{
 		runWithState(^(ObjectiveCFileState *state) {
 			runWithString(@"@interface MyClass ()", ^(id parser, id tokens) {
@@ -94,7 +94,7 @@ describe(@"categories parsing", ^{
 	});
 });
 
-describe(@"protocols parsing", ^{
+describe(@"protocols parsing:", ^{
 	it(@"should register protocol to store", ^{
 		runWithState(^(ObjectiveCFileState *state) {
 			runWithString(@"@protocol MyProtocol", ^(id parser, id tokens) {
@@ -114,7 +114,7 @@ describe(@"protocols parsing", ^{
 	});
 });
 
-describe(@"enums parsing", ^{
+describe(@"enums parsing:", ^{
 	it(@"should detect possible enum", ^{
 		runWithState(^(ObjectiveCFileState *state) {
 			runWithString(@"enum", ^(id parser, id tokens) {
@@ -131,7 +131,7 @@ describe(@"enums parsing", ^{
 	});
 });
 
-describe(@"structs parsing", ^{
+describe(@"structs parsing:", ^{
 	it(@"should detect possible struct", ^{
 		runWithState(^(ObjectiveCFileState *state) {
 			runWithString(@"struct", ^(id parser, id tokens) {

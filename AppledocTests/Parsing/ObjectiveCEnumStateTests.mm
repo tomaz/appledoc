@@ -20,7 +20,7 @@ static void runWithState(void(^handler)(ObjectiveCEnumState *state)) {
 
 TEST_BEGIN(ObjectiveCEnumStateTests)
 
-describe(@"simple cases", ^{
+describe(@"simple cases:", ^{
 	it(@"should detect", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum {};", ^(id parser, id tokens) {
@@ -60,7 +60,7 @@ describe(@"simple cases", ^{
 	});
 });
 
-describe(@"single item enums", ^{
+describe(@"single item enums:", ^{
 	it(@"should detect item", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum { item };", ^(id parser, id tokens) {
@@ -144,7 +144,7 @@ describe(@"single item enums", ^{
 	});
 });
 
-describe(@"enums with multiple items", ^{
+describe(@"enums with multiple items:", ^{
 	it(@"shuold detect all items", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum { item1, item2, item3 };", ^(id parser, id tokens) {
@@ -217,7 +217,7 @@ describe(@"enums with multiple items", ^{
 	});
 });
 
-describe(@"few more complex cases", ^{
+describe(@"few more complex cases:", ^{
 	it(@"should detect enum with complex values", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum { item1 = (1 << 0), item2 = (item2 + 30 * (1 << 4)) };", ^(id parser, id tokens) {
@@ -242,7 +242,7 @@ describe(@"few more complex cases", ^{
 	});
 });
 
-describe(@"fail cases", ^{
+describe(@"fail cases:", ^{
 	it(@"should cancel if start of enum body is missing", ^{
 		runWithState(^(ObjectiveCEnumState *state) {
 			runWithString(@"enum word1 word2 word3 };", ^(id parser, id tokens) {

@@ -20,7 +20,7 @@ static void runWithState(void(^handler)(ObjectiveCConstantState *state)) {
 
 TEST_BEGIN(ObjectiveCConstantStateTests)
 
-describe(@"simple cases", ^{
+describe(@"simple cases:", ^{
 	it(@"should detect single type", ^{
 		runWithState(^(ObjectiveCConstantState *state) {
 			runWithString(@"type item;", ^(id parser, id tokens) {
@@ -70,8 +70,8 @@ describe(@"simple cases", ^{
 	});
 });
 
-describe(@"descriptors", ^{
-	describe(@"if descriptors start with double underscore prefixed word", ^{
+describe(@"descriptors:", ^{
+	describe(@"if descriptors start with double underscore prefixed word:", ^{
 		it(@"should detect single descriptor", ^{
 			runWithState(^(ObjectiveCConstantState *state) {
 				runWithString(@"type name __a;", ^(id parser, id tokens) {
@@ -127,7 +127,7 @@ describe(@"descriptors", ^{
 		});		
 	});
 
-	describe(@"if descriptors start with uppercase word", ^{
+	describe(@"if descriptors start with uppercase word:", ^{
 		it(@"should detect single descriptor", ^{
 			runWithState(^(ObjectiveCConstantState *state) {
 				runWithString(@"type name A;", ^(id parser, id tokens) {
@@ -183,7 +183,7 @@ describe(@"descriptors", ^{
 		});		
 	});
 	
-	describe(@"if constant name starts with double underscore", ^{
+	describe(@"if constant name starts with double underscore:", ^{
 		it(@"should detect name", ^{
 			runWithState(^(ObjectiveCConstantState *state) {
 				runWithString(@"type __a;", ^(id parser, id tokens) {
@@ -260,7 +260,7 @@ describe(@"descriptors", ^{
 		});
 	});
 
-	describe(@"if constant name is uppercase word", ^{
+	describe(@"if constant name is uppercase word:", ^{
 		it(@"should detect name", ^{
 			runWithState(^(ObjectiveCConstantState *state) {
 				runWithString(@"type A;", ^(id parser, id tokens) {
@@ -337,8 +337,8 @@ describe(@"descriptors", ^{
 		});
 	});
 	
-	describe(@"edge cases / limitations for supporting descriptors", ^{
-		describe(@"requires at least one non-descriptor looking token before starting accepting destriptors", ^{
+	describe(@"edge cases / limitations for supporting descriptors:", ^{
+		describe(@"requires at least one non-descriptor looking token before starting accepting destriptors:", ^{
 			it(@"should detect types with double underscore prefix", ^{
 				runWithState(^(ObjectiveCConstantState *state) {
 					runWithString(@"__type1 __type2 __name;", ^(id parser, id tokens) {
@@ -436,7 +436,7 @@ describe(@"descriptors", ^{
 			});
 		});
 		
-		describe(@"if types include double underscore prefixed word", ^{
+		describe(@"if types include double underscore prefixed word:", ^{
 			it(@"should detect types starting with double underscore prefixed word and ending with asterisk", ^{
 				runWithState(^(ObjectiveCConstantState *state) {
 					runWithString(@"__type1 type2 *name;", ^(id parser, id tokens) {
@@ -490,7 +490,7 @@ describe(@"descriptors", ^{
 	});
 });
 
-describe(@"fail cases", ^{
+describe(@"fail cases:", ^{
 	it(@"should cancel if only single token is given", ^{
 		runWithState(^(ObjectiveCConstantState *state) {
 			runWithString(@"value", ^(id parser, id tokens) {

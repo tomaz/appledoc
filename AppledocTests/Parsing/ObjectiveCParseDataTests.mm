@@ -22,7 +22,7 @@ static void runWithData(void(^handler)(ObjectiveCParseData *data)) {
 
 TEST_BEGIN(ObjectiveCParseDataTests)
 
-describe(@"descriptors handling", ^{
+describe(@"descriptors handling:", ^{
 	it(@"should match double underscore tokens", ^{
 		runWithData(^(ObjectiveCParseData *data) {
 			// execute & verify

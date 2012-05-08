@@ -19,7 +19,7 @@ static void runWithTypeInfo(void(^handler)(TypeInfo *info)) {
 
 TEST_BEGIN(TypeInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithTypeInfo(^(TypeInfo *info) {
 			info.typeItems should_not be_nil();
@@ -27,7 +27,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"append type", ^{
+describe(@"append type:", ^{
 	it(@"should add all strings to type items array", ^{
 		runWithTypeInfo(^(TypeInfo *info) {
 			// execute

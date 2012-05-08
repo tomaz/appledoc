@@ -22,7 +22,7 @@ static void runWithParser(void(^handler)(Parser *parser)) {
 
 TEST_BEGIN(ParserTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithParser(^(Parser *parser) {
 			// execute & verify
@@ -31,7 +31,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"running", ^{
+describe(@"running:", ^{
 	it(@"should enumerate arguments on the given settings", ^{
 		runWithParser(^(Parser *parser) {
 			// setup

@@ -19,7 +19,7 @@ static void runWithState(void(^handler)(ObjectiveCInterfaceState *state)) {
 
 TEST_BEGIN(ObjectiveCInterfaceStateTests)
 
-describe(@"adopted protocols parsing", ^{
+describe(@"adopted protocols parsing:", ^{
 	it(@"should register single adopted protocol to store", ^{
 		runWithState(^(ObjectiveCInterfaceState *state) {
 			runWithString(@"<MyProtocol>", ^(id parser, id tokens) {
@@ -71,7 +71,7 @@ describe(@"adopted protocols parsing", ^{
 	});
 });
 
-describe(@"@end parsing", ^{
+describe(@"@end parsing:", ^{
 	it(@"should register interface end to store", ^{
 		runWithState(^(ObjectiveCInterfaceState *state) {
 			runWithString(@"@end", ^(id parser, id tokens) {
@@ -90,7 +90,7 @@ describe(@"@end parsing", ^{
 	});
 });
 
-describe(@"methods and properties parsing", ^{
+describe(@"methods and properties parsing:", ^{
 	it(@"should detect possible instance method", ^{
 		runWithState(^(ObjectiveCInterfaceState *state) {
 			runWithString(@"-", ^(id parser, id tokens) {
@@ -137,7 +137,7 @@ describe(@"methods and properties parsing", ^{
 	});
 });
 
-describe(@"#pragma mark parsing", ^{
+describe(@"#pragma mark parsing:", ^{
 	it(@"should detect possible pragma mark", ^{
 		runWithState(^(ObjectiveCInterfaceState *state) {
 			runWithString(@"#pragma mark", ^(id parser, id tokens) {

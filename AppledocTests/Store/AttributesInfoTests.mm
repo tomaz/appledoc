@@ -19,7 +19,7 @@ static void runWithPropertyAttributesInfo(void(^handler)(AttributesInfo *info)) 
 
 TEST_BEGIN(AttributesInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
 			// execute & verify
@@ -28,7 +28,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"attribute value", ^{
+describe(@"attribute value:", ^{
 	it(@"should return value based on = token", ^{
 		runWithPropertyAttributesInfo(^(AttributesInfo *info) {
 			// setup
@@ -72,7 +72,7 @@ describe(@"attribute value", ^{
 	});
 });
 
-describe(@"appending attributes", ^{
+describe(@"appending attributes:", ^{
 	it(@"should add all strings to type items array", ^{
 		runWithPropertyAttributesInfo(^(AttributesInfo *info) {			
 			// execute

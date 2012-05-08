@@ -17,7 +17,7 @@ static void runWithObjectInfoBase(void(^handler)(ObjectInfoBase *info)) {
 
 TEST_BEGIN(ObjectInfoBaseTests)
 
-describe(@"push object to registration stack", ^{
+describe(@"push object to registration stack:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
@@ -33,7 +33,7 @@ describe(@"push object to registration stack", ^{
 	});
 });
 
-describe(@"pop object from registration stack", ^{
+describe(@"pop object from registration stack:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
@@ -50,7 +50,7 @@ describe(@"pop object from registration stack", ^{
 	});
 });
 
-describe(@"pop object from registration stack", ^{
+describe(@"pop object from registration stack:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
@@ -67,7 +67,7 @@ describe(@"pop object from registration stack", ^{
 	});
 });
 
-describe(@"pop object from registration stack", ^{
+describe(@"pop object from registration stack:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
@@ -82,7 +82,7 @@ describe(@"pop object from registration stack", ^{
 	});
 });
 
-describe(@"pop object from registration stack", ^{
+describe(@"pop object from registration stack:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup

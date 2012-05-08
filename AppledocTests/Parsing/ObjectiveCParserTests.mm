@@ -27,7 +27,7 @@ static void runWithParser(void(^handler)(ObjectiveCParser *parser)) {
 
 TEST_BEGIN(ObjectiveCParserTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithParser(^(ObjectiveCParser *parser) {
 			// execute & verify

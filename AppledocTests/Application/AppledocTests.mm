@@ -27,7 +27,7 @@ static void runWithAppledoc(void(^handler)(Appledoc *appledoc)) {
 
 TEST_BEGIN(AppledocTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithAppledoc(^(Appledoc *appledoc) {
 			// execute & verify
@@ -37,7 +37,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"run", ^{
+describe(@"run:", ^{
 	it(@"should invoke parser", ^{
 		runWithAppledoc(^(Appledoc *appledoc) {
 			// setup

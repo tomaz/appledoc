@@ -19,7 +19,7 @@ static void runWithPropertyDescriptorsInfo(void(^handler)(DescriptorsInfo *info)
 
 TEST_BEGIN(DescriptorsInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithPropertyDescriptorsInfo(^(DescriptorsInfo *info) {			
 			// execute & verify
@@ -28,7 +28,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"appending descriptors", ^{
+describe(@"appending descriptors:", ^{
 	it(@"should add all strings to desciptor items array", ^{
 		runWithPropertyDescriptorsInfo(^(DescriptorsInfo *info) {
 			// execute

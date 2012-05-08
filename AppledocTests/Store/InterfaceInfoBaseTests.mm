@@ -28,7 +28,7 @@ static void runWithInterfaceInfoBaseWithRegistrar(void(^handler)(InterfaceInfoBa
 
 TEST_BEGIN(InterfaceInfoBaseTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// execute & verify
@@ -41,7 +41,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"adopted protocols registration", ^{
+describe(@"adopted protocols registration:", ^{
 	it(@"should add all protocols to array", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// execute
@@ -66,7 +66,7 @@ describe(@"adopted protocols registration", ^{
 	});
 });
 
-describe(@"method groups registration", ^{
+describe(@"method groups registration:", ^{
 	it(@"should create new method group info", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// execute
@@ -94,7 +94,7 @@ describe(@"method groups registration", ^{
 	});
 });
 
-describe(@"properties registration", ^{
+describe(@"properties registration:", ^{
 	 it(@"should create new property info", ^{
 		 runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// setup
@@ -146,8 +146,8 @@ describe(@"properties registration", ^{
 	});
 });
 
-describe(@"methods registration", ^{
-	describe(@"class methods", ^{
+describe(@"methods registration:", ^{
+	describe(@"class methods:", ^{
 		it(@"should create new method info and add it to class methods array", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
@@ -200,7 +200,7 @@ describe(@"methods registration", ^{
 		});
 	});
 
-	describe(@"instance methods", ^{
+	describe(@"instance methods:", ^{
 		it(@"should create new method info and add it to instance methods array", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
@@ -254,8 +254,8 @@ describe(@"methods registration", ^{
 	});
 });
 
-describe(@"object cancellation", ^{
-	describe(@"properties", ^{
+describe(@"object cancellation:", ^{
+	describe(@"properties:", ^{
 		it(@"should remove property info from properties array", ^{
 			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
 				// setup
@@ -281,7 +281,7 @@ describe(@"object cancellation", ^{
 		});
 	});
 	
-	describe(@"class methods", ^{
+	describe(@"class methods:", ^{
 		it(@"should remove method info from methods array", ^{
 			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
 				// setup
@@ -307,7 +307,7 @@ describe(@"object cancellation", ^{
 		});
 	});
 	
-	describe(@"instance methods", ^{
+	describe(@"instance methods:", ^{
 		it(@"should remove method info from methods array", ^{
 			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
 				// setup

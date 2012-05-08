@@ -19,7 +19,7 @@ static void runWithEnumInfo(void(^handler)(EnumInfo *info)) {
 
 TEST_BEGIN(EnumInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithEnumInfo(^(EnumInfo *info) {
 			// execute & verify
@@ -28,7 +28,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"enumeration item registration", ^{
+describe(@"enumeration item registration:", ^{
 	it(@"should add all items to items array", ^{
 		runWithEnumInfo(^(EnumInfo *info) {
 			// execute
@@ -44,7 +44,7 @@ describe(@"enumeration item registration", ^{
 	});
 });
 
-describe(@"enumeration value registration", ^{
+describe(@"enumeration value registration:", ^{
 	it(@"should set value if single item is registered", ^{
 		runWithEnumInfo(^(EnumInfo *info) {
 			// setup

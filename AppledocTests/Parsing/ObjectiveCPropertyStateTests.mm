@@ -22,7 +22,7 @@ TEST_BEGIN(ObjectiveCPropertyStateTests)
 
 #pragma mark - Properties without attributes
 
-describe(@"simple properties", ^{
+describe(@"simple properties:", ^{
 	it(@"should detect single type", ^{
 		runWithState(^(ObjectiveCPropertyState *state) {
 			runWithString(@"@property type name;", ^(id parser, id tokens) {
@@ -72,7 +72,7 @@ describe(@"simple properties", ^{
 	});
 });
 
-describe(@"properties with attributes", ^{
+describe(@"properties with attributes:", ^{
 	it(@"should detect single attribute", ^{
 		runWithState(^(ObjectiveCPropertyState *state) {
 			runWithString(@"@property (attr) type name;", ^(id parser, id tokens) {
@@ -190,8 +190,8 @@ describe(@"properties with attributes", ^{
 	});
 });
 
-describe(@"properties with descriptors", ^{	
-	describe(@"if descriptors start with double underscore word", ^{
+describe(@"properties with descriptors:", ^{	
+	describe(@"if descriptors start with double underscore word:", ^{
 		it(@"should detect descriptor after property name", ^{
 			runWithState(^(ObjectiveCPropertyState *state) {
 				runWithString(@"@property BOOL name __something;", ^(id parser, id tokens) {
@@ -250,7 +250,7 @@ describe(@"properties with descriptors", ^{
 		});
 	});
 
-	describe(@"if descriptors start with all uppercase word", ^{
+	describe(@"if descriptors start with all uppercase word:", ^{
 		it(@"should detect descriptor after property name", ^{
 			runWithState(^(ObjectiveCPropertyState *state) {
 				runWithString(@"@property BOOL name THIS_IS_DESCRIPTOR;", ^(id parser, id tokens) {
@@ -306,8 +306,8 @@ describe(@"properties with descriptors", ^{
 		});
 	});
 
-	describe(@"edge cases / limitations for supporting descriptors", ^{
-		describe(@"if property name has the form of descriptor but not followed by one", ^{
+	describe(@"edge cases / limitations for supporting descriptors:", ^{
+		describe(@"if property name has the form of descriptor but not followed by one:", ^{
 			it(@"should allow property name with double underscore prefix", ^{
 				runWithState(^(ObjectiveCPropertyState *state) {
 					runWithString(@"@property NSString *__name;", ^(id parser, id tokens) {
@@ -357,7 +357,7 @@ describe(@"properties with descriptors", ^{
 			});
 		});
 		
-		describe(@"if property name is prefixed with double underscore followed by descriptors", ^{
+		describe(@"if property name is prefixed with double underscore followed by descriptors:", ^{
 			it(@"should detect if followed by double underscore descriptor", ^{
 				runWithState(^(ObjectiveCPropertyState *state) {
 					runWithString(@"@property BOOL __name __something;", ^(id parser, id tokens) {
@@ -414,7 +414,7 @@ describe(@"properties with descriptors", ^{
 			});
 		});
 
-		describe(@"if property name is all uppercase letters followed by descriptors", ^{
+		describe(@"if property name is all uppercase letters followed by descriptors:", ^{
 			it(@"should allow if followed by all uppercase descriptor", ^{
 				runWithState(^(ObjectiveCPropertyState *state) {
 					runWithString(@"@property BOOL NAME SOMETHING;", ^(id parser, id tokens) {
@@ -473,7 +473,7 @@ describe(@"properties with descriptors", ^{
 	});
 });
 
-describe(@"multiple successive properties", ^{
+describe(@"multiple successive properties:", ^{
 	it(@"should detect successive properties if invoked multiple times", ^{
 		runWithState(^(ObjectiveCPropertyState *state) {
 			runWithFile(@"PropertyStateMultipleDefinitions.h", ^(id parser, id tokens) {
@@ -515,7 +515,7 @@ describe(@"multiple successive properties", ^{
 	});
 });
 
-describe(@"fail cases", ^{
+describe(@"fail cases:", ^{
 	it(@"should cancel if property semicolon is missing", ^{
 		runWithState(^(ObjectiveCPropertyState *state) {
 			runWithString(@"@property type name", ^(id parser, id tokens) {

@@ -19,7 +19,7 @@ static void runWithPropertyInfo(void(^handler)(PropertyInfo *info)) {
 
 TEST_BEGIN(PropertyInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// execute & verify
@@ -30,7 +30,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"getter and setter selectors", ^{
+describe(@"getter and setter selectors:", ^{
 	it(@"should return default name if no attribute is given", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// setup
@@ -75,7 +75,7 @@ describe(@"getter and setter selectors", ^{
 	});
 });
 
-describe(@"property descriptors registration", ^{
+describe(@"property descriptors registration:", ^{
 	it(@"should push descriptors info to registration stack", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// setup
@@ -90,7 +90,7 @@ describe(@"property descriptors registration", ^{
 	});
 });
 
-describe(@"property attributes registration", ^{
+describe(@"property attributes registration:", ^{
 	it(@"should push attributes info to registration stack", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// setup
@@ -105,7 +105,7 @@ describe(@"property attributes registration", ^{
 	});
 });
 
-describe(@"property types registration", ^{
+describe(@"property types registration:", ^{
 	it(@"should push property type info to registration stack", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// setup
@@ -120,7 +120,7 @@ describe(@"property types registration", ^{
 	});
 });
 
-describe(@"property name registration", ^{
+describe(@"property name registration:", ^{
 	it(@"should assign given string", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// execute

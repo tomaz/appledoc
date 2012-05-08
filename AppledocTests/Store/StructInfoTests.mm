@@ -19,7 +19,7 @@ static void runWithStructInfo(void(^handler)(StructInfo *info)) {
 
 TEST_BEGIN(StructInfoTests)
 
-describe(@"lazy accessors", ^{
+describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithStructInfo(^(StructInfo *info) {
 			// execute & verify
@@ -28,7 +28,7 @@ describe(@"lazy accessors", ^{
 	});
 });
 
-describe(@"struct data registration", ^{
+describe(@"struct data registration:", ^{
 	it(@"should assign struct name", ^{
 		runWithStructInfo(^(StructInfo *info) {
 			// execute
@@ -39,7 +39,7 @@ describe(@"struct data registration", ^{
 	});
 });
 
-describe(@"constant registration", ^{
+describe(@"constant registration:", ^{
 	it(@"should create new constant info and add it to struct items", ^{
 		runWithStructInfo(^(StructInfo *info) {
 			// setup
@@ -69,7 +69,7 @@ describe(@"constant registration", ^{
 	});
 });
 
-describe(@"object cancellation", ^{
+describe(@"object cancellation:", ^{
 	it(@"should remove constant info", ^{
 		runWithStructInfo(^(StructInfo *info) {
 			// setup

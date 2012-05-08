@@ -20,8 +20,8 @@ static void runWithState(void(^handler)(ObjectiveCStructState *state)) {
 
 TEST_BEGIN(ObjectiveCStructStateTests)
 
-describe(@"partial parsing", ^{
-	describe(@"struct start", ^{
+describe(@"partial parsing:", ^{
+	describe(@"struct start:", ^{
 		it(@"should detect struct", ^{
 			runWithState(^(ObjectiveCStructState *state) {
 				runWithString(@"struct {", ^(id parser, id tokens) {
@@ -58,7 +58,7 @@ describe(@"partial parsing", ^{
 		});
 	});
 
-	describe(@"constants", ^{
+	describe(@"constants:", ^{
 		it(@"should detect constant", ^{
 			runWithState(^(ObjectiveCStructState *state) {
 				runWithString(@"type name", ^(id parser, id tokens) {
@@ -76,7 +76,7 @@ describe(@"partial parsing", ^{
 		});
 	});
 
-	describe(@"struct end", ^{
+	describe(@"struct end:", ^{
 		it(@"should detect end", ^{
 			runWithState(^(ObjectiveCStructState *state) {
 				runWithString(@"}", ^(id parser, id tokens) {
@@ -96,7 +96,7 @@ describe(@"partial parsing", ^{
 	});
 });
 
-describe(@"fail cases", ^{
+describe(@"fail cases:", ^{
 	it(@"should fail if opening brace is missing", ^{
 		runWithState(^(ObjectiveCStructState *state) {
 			runWithString(@"struct name", ^(id parser, id tokens) {
