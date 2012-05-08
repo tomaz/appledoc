@@ -153,6 +153,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 - (ParserTask *)objectiveCParser {
 	if (_objectiveCParser) return _objectiveCParser;
+	LogIntDebug(@"Initializing objective c parser due to first access...");
 	_objectiveCParser = [[ObjectiveCParser alloc] init];
 	return _objectiveCParser;
 }

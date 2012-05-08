@@ -17,16 +17,17 @@ extern NSUInteger log_level;
 
 #pragma mark - Low level logging flags
 
-#define LOG_FLAG_ERROR		(1 << 0)	// 0b000000001
-#define LOG_FLAG_WARN		(1 << 1)	// 0b000000010
-#define LOG_FLAG_NORMAL		(1 << 2)	// 0b000000100
-#define LOG_FLAG_INFO		(1 << 3)	// 0b000001000
-#define LOG_FLAG_VERBOSE	(1 << 4)	// 0b000010000
-#define LOG_FLAG_DEBUG		(1 << 5)	// 0b000100000
+#define LOG_FLAG_ERROR		(1 << 0)	// 0b0000000001
+#define LOG_FLAG_WARN		(1 << 1)	// 0b0000000010
+#define LOG_FLAG_NORMAL		(1 << 2)	// 0b0000000100
+#define LOG_FLAG_INFO		(1 << 3)	// 0b0000001000
+#define LOG_FLAG_VERBOSE	(1 << 4)	// 0b0000010000
+#define LOG_FLAG_DEBUG		(1 << 5)	// 0b0000100000
 
-#define LOG_FLAG_COMMON		(1 << 6)	// 0b001000000
-#define LOG_FLAG_STORE		(1 << 7)	// 0b010000000
-#define LOG_FLAG_PARSING	(1 << 8)	// 0b100000000
+#define LOG_FLAG_INTERNAL	(1 << 6)	// 0x0001000000
+#define LOG_FLAG_COMMON		(1 << 7)	// 0b0010000000
+#define LOG_FLAG_STORE		(1 << 8)	// 0b0100000000
+#define LOG_FLAG_PARSING	(1 << 9)	// 0b1000000000
 
 #define LOG_LEVEL_ERROR		(LOG_FLAG_ERROR)						// 0b000001
 #define LOG_LEVEL_WARN		(LOG_FLAG_WARN    | LOG_LEVEL_ERROR)	// 0b000011
@@ -70,6 +71,10 @@ extern NSUInteger log_level;
 #define LogVerbose(frmt, ...)	LOG_MAYBE(log_level, LOG_FLAG_VERBOSE | LOG_FLAG_COMMON, frmt, ##__VA_ARGS__)
 #define LogDebug(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_DEBUG | LOG_FLAG_COMMON, frmt, ##__VA_ARGS__)
 #define LogNSError(error, frmt, ...)	LOG_NS_ERROR(log_level, LOG_FLAG_ERROR | LOG_FLAG_COMMON, error, frmt, ##__VA_ARGS__)
+
+// Internal logging macros - for logging low level stuff like init/dealloc
+
+#define LogIntDebug(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_INTERNAL, frmt, ##__VA_ARGS__)
 
 // Store logging macros - for logging store specific cases (excluded by default)
 

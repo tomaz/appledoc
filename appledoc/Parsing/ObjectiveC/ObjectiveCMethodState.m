@@ -197,12 +197,14 @@
 
 - (NSArray *)methodTypeDelimiters {
 	if (_methodTypeDelimiters) return _methodTypeDelimiters;
+	LogIntDebug(@"Initializing type delimiters due to first access...");
 	_methodTypeDelimiters = [NSArray arrayWithObjects:@")", @"(", @";", @"{", nil];
 	return _methodTypeDelimiters;
 }
 
 - (NSArray *)methodEndDelimiters {
 	if (_methodEndDelimiters) return _methodEndDelimiters;
+	LogIntDebug(@"Initializing end delimiters due to first access...");
 	_methodEndDelimiters = [NSArray arrayWithObjects:@";", @"{", nil];
 	return _methodEndDelimiters;
 }

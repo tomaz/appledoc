@@ -20,7 +20,7 @@
 
 - (NSMutableArray *)structItems {
 	if (_structItems) return _structItems;
-	LogStoDebug(@"Initializing struct items array due to first access...");
+	LogIntDebug(@"Initializing struct items array due to first access...");
 	_structItems = [[NSMutableArray alloc] init];
 	return _structItems;
 }

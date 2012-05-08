@@ -18,7 +18,7 @@
 
 - (NSMutableArray *)typeItems {
 	if (_typeItems) return _typeItems;
-	LogStoDebug(@"Initializing type items array due to first access...");
+	LogIntDebug(@"Initializing type items array due to first access...");
 	_typeItems = [[NSMutableArray alloc] init];
 	return _typeItems;
 }

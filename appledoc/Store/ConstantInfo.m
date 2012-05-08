@@ -22,14 +22,14 @@
 
 - (TypeInfo *)constantTypes {
 	if (_constantTypes) return _constantTypes;
-	LogStoDebug(@"Initializing constant types due to first access...");
+	LogIntDebug(@"Initializing constant types due to first access...");
 	_constantTypes = [[TypeInfo alloc] init];
 	return _constantTypes;
 }
 
 - (DescriptorsInfo *)constantDescriptors {
 	if (_constantDescriptors) return _constantDescriptors;
-	LogStoDebug(@"Initializing constant descriptors due to first access...");
+	LogIntDebug(@"Initializing constant descriptors due to first access...");
 	_constantDescriptors = [[DescriptorsInfo alloc] init];
 	return _constantDescriptors;
 }

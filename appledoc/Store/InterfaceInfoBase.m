@@ -45,42 +45,42 @@
 
 - (NSMutableArray *)interfaceAdoptedProtocols {
 	if (_interfaceAdoptedProtocols) return _interfaceAdoptedProtocols;
-	LogStoDebug(@"Initializing adopted protocols array due to first access...");
+	LogIntDebug(@"Initializing adopted protocols array due to first access...");
 	_interfaceAdoptedProtocols = [[NSMutableArray alloc] init];
 	return _interfaceAdoptedProtocols;
 }
 
 - (NSMutableArray *)interfaceMethodGroups {
 	if (_interfaceMethodGroups) return _interfaceMethodGroups;
-	LogStoDebug(@"Initializing method groups array due to first access...");
+	LogIntDebug(@"Initializing method groups array due to first access...");
 	_interfaceMethodGroups = [[NSMutableArray alloc] init];
 	return _interfaceMethodGroups;
 }
 
 - (NSMutableArray *)interfaceProperties {
 	if (_interfaceProperties) return _interfaceProperties;
-	LogStoDebug(@"Initializing properties array due to first access...");
+	LogIntDebug(@"Initializing properties array due to first access...");
 	_interfaceProperties = [[NSMutableArray alloc] init];
 	return _interfaceProperties;
 }
 
 - (NSMutableArray *)interfaceInstanceMethods {
 	if (_interfaceInstanceMethods) return _interfaceInstanceMethods;
-	LogStoDebug(@"Initializing instance methods array due to first access...");
+	LogIntDebug(@"Initializing instance methods array due to first access...");
 	_interfaceInstanceMethods = [[NSMutableArray alloc] init];
 	return _interfaceInstanceMethods;
 }
 
 - (NSMutableArray *)interfaceClassMethods {
 	if (_interfaceClassMethods) return _interfaceClassMethods;
-	LogStoDebug(@"Initializing class methods array due to first access...");
+	LogIntDebug(@"Initializing class methods array due to first access...");
 	_interfaceClassMethods = [[NSMutableArray alloc] init];
 	return _interfaceClassMethods;
 }
 
 - (NSMutableArray *)interfaceMethodsAndPropertiesInRegistrationOrder {
 	if (_interfaceMethodsAndPropertiesInRegistrationOrder) return _interfaceMethodsAndPropertiesInRegistrationOrder;
-	LogStoDebug(@"Initializing methods and properties array due to first access...");
+	LogIntDebug(@"Initializing methods and properties array due to first access...");
 	_interfaceMethodsAndPropertiesInRegistrationOrder = [[NSMutableArray alloc] init];
 	return _interfaceMethodsAndPropertiesInRegistrationOrder;
 }

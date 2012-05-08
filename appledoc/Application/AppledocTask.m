@@ -36,6 +36,7 @@
 
 - (NSFileManager *)fileManager {
 	if (_fileManager) return _fileManager;
+	LogIntDebug(@"Initializing file manager due to first access...");
 	_fileManager = [NSFileManager defaultManager];
 	return _fileManager;
 }

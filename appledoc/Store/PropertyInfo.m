@@ -45,21 +45,21 @@
 
 - (TypeInfo *)propertyType {
 	if (_propertyType) return _propertyType;
-	LogStoDebug(@"Initializing property type due to first access...");
+	LogIntDebug(@"Initializing property type due to first access...");
 	_propertyType = [[TypeInfo alloc] init];
 	return _propertyType;
 }
 
 - (AttributesInfo *)propertyAttributes {
 	if (_propertyAttributes) return _propertyAttributes;
-	LogStoDebug(@"Initializing property attributes due to first access...");
+	LogIntDebug(@"Initializing property attributes due to first access...");
 	_propertyAttributes = [[AttributesInfo alloc] init];
 	return _propertyAttributes;
 }
 
 - (DescriptorsInfo *)propertyDescriptors {
 	if (_propertyDescriptors) return _propertyDescriptors;
-	LogStoDebug(@"Initializing property descriptors due to first access....");
+	LogIntDebug(@"Initializing property descriptors due to first access....");
 	_propertyDescriptors = [[DescriptorsInfo alloc] init];
 	return _propertyDescriptors;
 }

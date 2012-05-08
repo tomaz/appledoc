@@ -7,6 +7,7 @@
 //
 
 #import "Extensions.h"
+#import "Objects.h"
 #import "Store.h"
 #import "TokensStream.h"
 #import "ObjectiveCParser.h"
@@ -111,6 +112,7 @@
 
 - (NSCharacterSet *)uppercaseLettersSet {
 	if (_uppercaseLettersSet) return _uppercaseLettersSet;
+	LogIntDebug(@"Initializing uppercase letters set due to first access...");
 	_uppercaseLettersSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789_ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 	return _uppercaseLettersSet;
 }

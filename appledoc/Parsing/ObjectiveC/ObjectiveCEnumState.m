@@ -102,14 +102,14 @@
 
 - (ContextBase *)enumItemContext {
 	if (_enumItemContext) return _enumItemContext;
-	LogParDebug(@"Initializing enum item context due to first access...");
+	LogIntDebug(@"Initializing enum item context due to first access...");
 	_enumItemContext = [[ContextBase alloc] init];
 	return _enumItemContext;
 }
 
 - (ObjectiveCEnumItemState *)enumItemState {
 	if (_enumItemState) return _enumItemState;
-	LogParDebug(@"Initializing enum item state due to first access...");
+	LogIntDebug(@"Initializing enum item state due to first access...");
 	_enumItemState = [[ObjectiveCEnumItemState alloc] init];
 	_enumItemState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
 		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
@@ -121,7 +121,7 @@
 
 - (ObjectiveCEnumItemState *)enumValueState {
 	if (_enumValueState) return _enumValueState;
-	LogParDebug(@"Initializing enum value state due to first access...");
+	LogIntDebug(@"Initializing enum value state due to first access...");
 	_enumValueState = [[ObjectiveCEnumItemState alloc] init];
 	_enumValueState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
 		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
@@ -135,7 +135,7 @@
 
 - (NSArray *)enumItemDelimiters {
 	if (_enumItemDelimiters) return _enumItemDelimiters;
-	LogParDebug(@"Initializing enum item delimiters due to first access...");
+	LogIntDebug(@"Initializing enum item delimiters due to first access...");
 	_enumItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
 	return _enumItemDelimiters;
 }

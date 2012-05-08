@@ -121,56 +121,56 @@
 
 - (ObjectiveCParserState *)fileState {
 	if (_fileState) return _fileState;
-	LogParDebug(@"Initializing file state due to first access...");
+	LogIntDebug(@"Initializing file state due to first access...");
 	_fileState = [[ObjectiveCFileState alloc] init];
 	return _fileState;
 }
 
 - (ObjectiveCParserState *)interfaceState {
 	if (_interfaceState) return _interfaceState;
-	LogParDebug(@"Initializing interface state due to first access...");
+	LogIntDebug(@"Initializing interface state due to first access...");
 	_interfaceState = [[ObjectiveCInterfaceState alloc] init];
 	return _interfaceState;
 }
 
 - (ObjectiveCParserState *)propertyState {
 	if (_propertyState) return _propertyState;
-	LogParDebug(@"Initializing property state due to first access...");
+	LogIntDebug(@"Initializing property state due to first access...");
 	_propertyState = [[ObjectiveCPropertyState alloc] init];
 	return _propertyState;
 }
 
 - (ObjectiveCParserState *)methodState {
 	if (_methodState) return _methodState;
-	LogParDebug(@"Initializing method state due to first access...");
+	LogIntDebug(@"Initializing method state due to first access...");
 	_methodState = [[ObjectiveCMethodState alloc] init];
 	return _methodState;
 }
 
 - (ObjectiveCParserState *)pragmaMarkState {
 	if (_pragmaMarkState) return _pragmaMarkState;
-	LogParDebug(@"Initializing pragma mark state due to first access...");
+	LogIntDebug(@"Initializing pragma mark state due to first access...");
 	_pragmaMarkState = [[ObjectiveCPragmaMarkState alloc] init];
 	return _pragmaMarkState;
 }
 
 - (ObjectiveCParserState *)enumState {
 	if (_enumState) return _enumState;
-	LogParDebug(@"Initializing enum state due to first access...");
+	LogIntDebug(@"Initializing enum state due to first access...");
 	_enumState = [[ObjectiveCEnumState alloc] init];
 	return _enumState;
 }
 
 - (ObjectiveCParserState *)structState {
 	if (_structState) return _structState;
-	LogParDebug(@"Initializing struct state due to first access...");
+	LogIntDebug(@"Initializing struct state due to first access...");
 	_structState = [[ObjectiveCStructState alloc] init];
 	return _structState;
 }
 
 - (ObjectiveCParserState *)constantState {
 	if (_constantState) return _constantState;
-	LogParDebug(@"Initializing constant state due to first access...");
+	LogIntDebug(@"Initializing constant state due to first access...");
 	_constantState = [[ObjectiveCConstantState alloc] init];
 	return _constantState;
 }
@@ -179,7 +179,7 @@
 
 - (PKTokenizer *)tokenizer {
 	if (_tokenizer) return _tokenizer;
-	LogParDebug(@"Initializing tokenizer due to first access...");
+	LogIntDebug(@"Initializing tokenizer due to first access...");
 	_tokenizer = [PKTokenizer tokenizer];
 	[_tokenizer setTokenizerState:_tokenizer.wordState from:'_' to:'_'];	// Allow words to start with _
 	[_tokenizer.symbolState add:@"..."];	// Allow ... as single token

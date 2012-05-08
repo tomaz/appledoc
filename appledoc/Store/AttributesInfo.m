@@ -28,7 +28,7 @@
 
 - (NSMutableArray *)attributeItems {
 	if (_attributeItems) return _attributeItems;
-	LogStoDebug(@"Initializing attribute items array due to first access...");
+	LogIntDebug(@"Initializing attribute items array due to first access...");
 	_attributeItems = [[NSMutableArray alloc] init];
 	return _attributeItems;
 }

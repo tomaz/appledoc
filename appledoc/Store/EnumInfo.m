@@ -18,7 +18,7 @@
 
 - (NSMutableArray *)enumItems {
 	if (_enumItems) return _enumItems;
-	LogStoDebug(@"Initializing enumeration items array due to first access...");
+	LogIntDebug(@"Initializing enumeration items array due to first access...");
 	_enumItems = [[NSMutableArray alloc] init];
 	return _enumItems;
 }

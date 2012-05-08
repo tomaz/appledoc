@@ -18,7 +18,7 @@
 
 - (NSMutableArray *)descriptorItems {
 	if (_descriptorItems) return _descriptorItems;
-	LogStoDebug(@"Initializing descriptor items array due to first access...");
+	LogIntDebug(@"Initializing descriptor items array due to first access...");
 	_descriptorItems = [[NSMutableArray alloc] init];
 	return _descriptorItems;
 }

@@ -80,7 +80,7 @@
 
 - (NSMutableArray *)registrationStack {
 	if (_registrationStack) return _registrationStack;
-	LogStoDebug(@"Initializing registration stack due to first access...");
+	LogIntDebug(@"Initializing registration stack due to first access...");
 	_registrationStack = [[NSMutableArray alloc] init];
 	return _registrationStack;
 }
@@ -89,49 +89,49 @@
 
 - (NSMutableArray *)storeClasses {
 	if (_storeClasses) return _storeClasses;
-	LogStoDebug(@"Initializing store classes array due to first access...");
+	LogIntDebug(@"Initializing store classes array due to first access...");
 	_storeClasses = [[NSMutableArray alloc] init];
 	return _storeClasses;
 }
 
 - (NSMutableArray *)storeExtensions {
 	if (_storeExtensions) return _storeExtensions;
-	LogStoDebug(@"Initializing store extensions array due to first access...");
+	LogIntDebug(@"Initializing store extensions array due to first access...");
 	_storeExtensions = [[NSMutableArray alloc] init];
 	return _storeExtensions;
 }
 
 - (NSMutableArray *)storeCategories {
 	if (_storeCategories) return _storeCategories;
-	LogStoDebug(@"Initializing store categories array due to first access...");
+	LogIntDebug(@"Initializing store categories array due to first access...");
 	_storeCategories = [[NSMutableArray alloc] init];
 	return _storeCategories;
 }
 
 - (NSMutableArray *)storeProtocols {
 	if (_storeProtocols) return _storeProtocols;
-	LogStoDebug(@"Initializing store protocols array due to first access...");
+	LogIntDebug(@"Initializing store protocols array due to first access...");
 	_storeProtocols = [[NSMutableArray alloc] init];
 	return _storeProtocols;
 }
 
 - (NSMutableArray *)storeEnumerations {
 	if (_storeEnumerations) return _storeEnumerations;
-	LogStoDebug(@"Initializing store enumerations array due to first access...");
+	LogIntDebug(@"Initializing store enumerations array due to first access...");
 	_storeEnumerations = [[NSMutableArray alloc] init];
 	return _storeEnumerations;
 }
 
 - (NSMutableArray *)storeStructs {
 	if (_storeStructs) return _storeStructs;
-	LogStoDebug(@"Initializing store structs array due to first access...");
+	LogIntDebug(@"Initializing store structs array due to first access...");
 	_storeStructs = [[NSMutableArray alloc] init];
 	return _storeStructs;
 }
 
 - (NSMutableArray *)storeConstants {
 	if (_storeConstants) return _storeConstants;
-	LogStoDebug(@"Initializing store constants array due to first access...");
+	LogIntDebug(@"Initializing store constants array due to first access...");
 	_storeConstants = [[NSMutableArray alloc] init];
 	return _storeConstants;
 }

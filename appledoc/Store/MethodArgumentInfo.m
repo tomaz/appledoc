@@ -21,7 +21,7 @@
 
 - (TypeInfo *)argumentType {
 	if (_argumentType) return _argumentType;
-	LogStoDebug(@"Initializing method argument type due to first access...");
+	LogIntDebug(@"Initializing method argument type due to first access...");
 	_argumentType = [[TypeInfo alloc] init];
 	return _argumentType;
 }

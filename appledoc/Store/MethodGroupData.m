@@ -23,7 +23,7 @@
 
 - (NSMutableArray *)methodGroupMethods {
 	if (_methodGroupMethods) return _methodGroupMethods;
-	LogStoDebug(@"Initializing methods array due to first access...");
+	LogIntDebug(@"Initializing methods array due to first access...");
 	_methodGroupMethods = [[NSMutableArray alloc] init];
 	return _methodGroupMethods;
 }
