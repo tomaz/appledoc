@@ -101,6 +101,7 @@
 			[result appendFormat:@"%@", argument];
 		}];
 	}
+	if (_methodDescriptors) [result appendFormat:@" %@", self.methodDescriptors];
 	[result appendString:@";"];
 	return result;
 }
