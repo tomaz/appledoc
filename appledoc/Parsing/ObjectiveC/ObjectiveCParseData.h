@@ -21,7 +21,7 @@ typedef void(^GBDescriptorsLookaheadBlock)(PKToken *token, NSUInteger lookahead,
 
 + (id)dataWithStream:(TokensStream *)stream parser:(ObjectiveCParser *)parser store:(Store *)store;
 
-- (NSUInteger)lookaheadIndexOfFirstEndDelimiter:(id)end;
+- (NSUInteger)lookaheadIndexOfFirstToken:(id)end;
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:(id)end block:(GBDescriptorsLookaheadBlock)handler;
 - (BOOL)doesStringLookLikeDescriptor:(NSString *)string;
 

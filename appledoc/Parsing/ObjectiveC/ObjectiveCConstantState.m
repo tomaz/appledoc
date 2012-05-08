@@ -91,7 +91,7 @@
 
 - (NSUInteger)lookaheadIndexOfConstantEndToken:(ObjectiveCParseData *)data {
 	LogParDebug(@"Scanning tokens for property end.");
-	return [data lookaheadIndexOfFirstEndDelimiter:@";"];
+	return [data lookaheadIndexOfFirstToken:@";"];
 }
 
 

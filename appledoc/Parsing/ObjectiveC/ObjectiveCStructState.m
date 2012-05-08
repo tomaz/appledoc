@@ -8,7 +8,12 @@
 
 #import "ObjectiveCStructState.h"
 
+@interface ObjectiveCStructState ()
+@property (nonatomic, strong) NSArray *structItemDelimiters;
+@end
+
 @interface ObjectiveCStructState (TopLevelParsing)
+- (BOOL)consumeItemDeclaration:(ObjectiveCParseData *)data;
 - (BOOL)parseConstant:(ObjectiveCParseData *)data;
 - (BOOL)parseStartOfStruct:(ObjectiveCParseData *)data;
 - (BOOL)parseEndOfStruct:(ObjectiveCParseData *)data;
@@ -23,19 +28,47 @@
 
 @implementation ObjectiveCStructState
 
+@synthesize structItemDelimiters = _structItemDelimiters;
+
+#pragma mark - Parsing
+
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	// Note that order is important - for proper handling constant must be last.
 	if ([self parseStartOfStruct:data]) return GBResultOk;
 	if ([self parseEndOfStruct:data]) return GBResultOk;
+	if ([self consumeItemDeclaration:data]) return GBResultOk;
 	if ([self parseConstant:data]) return GBResultOk;
 	return GBResultFailedMatch;
+}
+
+#pragma mark - Properties
+
+- (NSArray *)structItemDelimiters {
+	if (_structItemDelimiters) return _structItemDelimiters;
+	LogParDebug(@"Initializing struct item delimiters array due to first access...");
+	_structItemDelimiters = [NSArray arrayWithObjects:@",", @";", @"}", nil];
+	return _structItemDelimiters;
 }
 
 @end
 
 #pragma mark - 
 
-@implementation ObjectiveCParserState (TopLevelParsing)
+@implementation ObjectiveCStructState (TopLevelParsing)
+
+- (BOOL)consumeItemDeclaration:(ObjectiveCParseData *)data {
+	__block BOOL foundComma = NO;
+	NSUInteger numberOfLookaheadTokens = [data.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		NSUInteger matchIndex = [token matchResult:self.structItemDelimiters];
+		if (matchIndex == NSNotFound) return;
+		if (matchIndex == 0) foundComma = YES;
+		*stop = YES;
+	}];
+	if (!foundComma) return NO;
+	LogParDebug(@"Ignoring item as it looks like it's delimited with comma!");
+	[data.stream consume:numberOfLookaheadTokens];
+	return YES;
+}
 
 - (BOOL)parseConstant:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matching constant definition.");
@@ -64,7 +97,7 @@
 
 #pragma mark - 
 
-@implementation ObjectiveCParserState (StructDataParsing)
+@implementation ObjectiveCStructState (StructDataParsing)
 
 - (BOOL)consumeStructStartTokens:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matched struct definition.");

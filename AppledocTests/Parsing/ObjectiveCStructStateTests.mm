@@ -20,7 +20,7 @@ static void runWithState(void(^handler)(ObjectiveCStructState *state)) {
 
 TEST_BEGIN(ObjectiveCStructStateTests)
 
-describe(@"partial parsing:", ^{
+describe(@"struct data parsing:", ^{
 	describe(@"struct start:", ^{
 		it(@"should detect struct", ^{
 			runWithState(^(ObjectiveCStructState *state) {
@@ -58,24 +58,6 @@ describe(@"partial parsing:", ^{
 		});
 	});
 
-	describe(@"constants:", ^{
-		it(@"should detect constant", ^{
-			runWithState(^(ObjectiveCStructState *state) {
-				runWithString(@"type name", ^(id parser, id tokens) {
-					// setup
-					id store = [OCMockObject mockForClass:OCMOCK_ANY];
-					[[parser expect] pushState:[parser constantState]];
-					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
-					// execute
-					[state parseWithData:data];
-					// verify
-					^{ [store verify]; } should_not raise_exception();
-					^{ [parser verify]; } should_not raise_exception();
-				});
-			});
-		});
-	});
-
 	describe(@"struct end:", ^{
 		it(@"should detect end", ^{
 			runWithState(^(ObjectiveCStructState *state) {
@@ -90,6 +72,60 @@ describe(@"partial parsing:", ^{
 					// verify
 					^{ [store verify]; } should_not raise_exception();
 					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+});
+
+describe(@"struct items parsing:", ^{	
+	describe(@"items definitions", ^{
+		it(@"should detect constant if delimited by semicolon", ^{
+			runWithState(^(ObjectiveCStructState *state) {
+				runWithString(@"type name;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:OCMOCK_ANY];
+					[[parser expect] pushState:[parser constantState]];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+		
+	describe(@"item declarations:", ^{
+		it(@"should ignore constant if delimited by comma", ^{
+			runWithState(^(ObjectiveCStructState *state) {
+				runWithString(@"type name,", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:OCMOCK_ANY];
+					[[parser expect] pushState:OCMOCK_ANY];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should raise_exception();
+				});
+			});
+		});
+
+		it(@"should ignore value assignment if delimited by comma", ^{
+			runWithState(^(ObjectiveCStructState *state) {
+				runWithString(@".type = name,", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:OCMOCK_ANY];
+					[[parser expect] pushState:OCMOCK_ANY];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should raise_exception();
 				});
 			});
 		});

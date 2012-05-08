@@ -46,7 +46,7 @@
 
 #pragma mark - Helper methods
 
-- (NSUInteger)lookaheadIndexOfFirstEndDelimiter:(id)end {
+- (NSUInteger)lookaheadIndexOfFirstToken:(id)end {
 	__block NSUInteger result = NSNotFound;
 	[self.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:end]) {
