@@ -9,12 +9,14 @@
 #import "ObjectInfoBase.h"
 
 @class TypeInfo;
+@class DescriptorsInfo;
 
 /** Provides data about a constant.
  */
 @interface ConstantInfo : ObjectInfoBase
 
 @property (nonatomic, strong) TypeInfo *constantTypes;
+@property (nonatomic, strong) DescriptorsInfo *constantDescriptors;
 @property (nonatomic, copy) NSString *constantName;
 
 @end
