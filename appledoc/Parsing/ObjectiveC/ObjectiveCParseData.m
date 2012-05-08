@@ -55,7 +55,7 @@
 	return result;
 }
 
-- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:(id)end block:(void(^)(PKToken *token, BOOL *allowDescriptor))handler {
+- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:(id)end block:(GBDescriptorsLookaheadBlock)handler {
 	__block NSUInteger result = NSNotFound;
 	[self.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:end]) {
@@ -63,13 +63,9 @@
 			return;
 		}
 		
-		// Give client a chance to skip tokens prior to start testing for descriptors.
-		BOOL canTokenBeTestedForDescriptor = YES;
-		handler(token, &canTokenBeTestedForDescriptor);
-		if (!canTokenBeTestedForDescriptor) return;
-		
-		// If we encounter possible descriptor, use this index.
-		if ([self doesStringLookLikeDescriptor:token.stringValue]) {
+		BOOL isDescriptor = NO;
+		handler(token, lookahead, &isDescriptor);
+		if (isDescriptor) {
 			result = lookahead;
 			*stop = YES;
 			return;

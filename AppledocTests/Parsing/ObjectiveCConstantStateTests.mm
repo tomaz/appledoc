@@ -336,6 +336,106 @@ describe(@"descriptors", ^{
 			});
 		});
 	});
+	
+	describe(@"edge cases / limitations for supporting descriptors", ^{
+		describe(@"requires at least one non-descriptor looking token before starting accepting destriptors", ^{
+			it(@"should detect types with double underscore prefix", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"__type1 __type2 __name;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"__type1"];
+						[[store expect] appendType:@"__type2"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"__name"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+
+			it(@"should detect types with uppercase letters", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"TYPE1 TYPE2 NAME;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"TYPE1"];
+						[[store expect] appendType:@"TYPE2"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"NAME"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+
+			it(@"should detect types with double and name with uppercase letters", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"__type1 __type2 NAME;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"__type1"];
+						[[store expect] appendType:@"__type2"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"NAME"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+
+			it(@"should detect types with uppercase letters and name with double underscore prefix", ^{
+				runWithState(^(ObjectiveCConstantState *state) {
+					runWithString(@"TYPE1 TYPE2 __name;", ^(id parser, id tokens) {
+						// setup
+						id store = [OCMockObject mockForClass:[Store class]];
+						[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+						[[store expect] beginConstant];
+						[[store expect] beginConstantTypes];
+						[[store expect] appendType:@"TYPE1"];
+						[[store expect] appendType:@"TYPE2"];
+						[[store expect] endCurrentObject]; // types
+						[[store expect] appendConstantName:@"__name"];
+						[[store expect] endCurrentObject]; // constant
+						[[parser expect] popState];
+						ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+						// execute
+						[state parseWithData:data];
+						// verify
+						^{ [store verify]; } should_not raise_exception();
+						^{ [parser verify]; } should_not raise_exception();
+					});
+				});
+			});
+		});
+	});
 });
 
 describe(@"fail cases", ^{
