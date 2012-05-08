@@ -286,6 +286,74 @@ describe(@"enums with names:", ^{
 		});
 	});
 	
+	it(@"should detect succesive enums", ^{
+		runWithState(^(ObjectiveCEnumState *state) {
+			runWithString(@"enum name1 {}; enum name2 {};", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginEnumeration];
+				[[store expect] appendEnumerationName:@"name1"];
+				[[store expect] endCurrentObject];
+				[[parser expect] popState];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+				[[store expect] beginEnumeration];
+				[[store expect] appendEnumerationName:@"name2"];
+				[[store expect] endCurrentObject];
+				[[parser expect] popState];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				// execute
+				[state parseWithData:data];
+				[state parseWithData:data];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
+
+	describe(@"if name is part of following typedef", ^{
+		it(@"should detect if typedef is composed of single type and name", ^{
+			runWithState(^(ObjectiveCEnumState *state) {
+				runWithString(@"enum {}; typedef type name;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginEnumeration];
+					[[store expect] appendEnumerationName:@"name"];
+					[[store expect] endCurrentObject];
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		it(@"should ignore if typedef uses multiple tokens", ^{
+			runWithState(^(ObjectiveCEnumState *state) {
+				runWithString(@"enum {}; typedef word1 word2 word3;", ^(id parser, id tokens) {
+					// setup
+					id store = [OCMockObject mockForClass:[Store class]];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
+					[[store expect] beginEnumeration];
+					[[store expect] endCurrentObject];
+					[[parser expect] popState];
+					ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+					// execute
+					[state parseWithData:data];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+					^{ [parser verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+});
+
 describe(@"fail cases:", ^{
 	it(@"should cancel if start of enum body is missing", ^{
 		runWithState(^(ObjectiveCEnumState *state) {

@@ -22,11 +22,14 @@
 - (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data;
 - (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data;
 - (BOOL)parseEnumBody:(ObjectiveCParseData *)data;
+- (BOOL)parseEnumBodyEnd:(ObjectiveCParseData *)data;
+- (BOOL)parseEnumNameAfterBody:(ObjectiveCParseData *)data;
 - (BOOL)finalizeEnum:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumItemState;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumValueState;
 @property (nonatomic, strong) ContextBase *enumItemContext;
 @property (nonatomic, strong) NSArray *enumItemDelimiters;
+@property (nonatomic, assign) BOOL wasEnumNameParsed;
 @end
 
 #pragma mark - 
@@ -37,6 +40,7 @@
 @synthesize enumValueState = _enumValueState;
 @synthesize enumItemContext = _enumItemContext;
 @synthesize enumItemDelimiters = _enumItemDelimiters;
+@synthesize wasEnumNameParsed = _wasEnumNameParsed;
 
 #pragma mark - Parsing
 
@@ -44,6 +48,8 @@
 	if (![self consumeEnumStartTokens:data]) return GBResultFailedMatch;
 	if (![self parseEnumNameBeforeBody:data]) return GBResultFailedMatch;
 	if (![self parseEnumBody:data]) return GBResultFailedMatch;
+	if (![self parseEnumBodyEnd:data]) return GBResultFailedMatch;
+	if (![self parseEnumNameAfterBody:data]) return GBResultFailedMatch;
 	if (![self finalizeEnum:data]) return GBResultFailedMatch;
 	return GBResultOk;
 }
@@ -58,6 +64,7 @@
 
 - (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data {
 	LogParDebug(@"Matching enum body start.");
+	
 	__block PKToken *nameToken = nil;
 	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { 
 		if ([token matches:@"{"]) return;
@@ -69,10 +76,12 @@
 		[data.parser popState];
 		return NO;
 	}
+	
 	if (nameToken) {
 		LogParDebug(@"Matched enum name %@.", nameToken);
 		[data.store appendEnumerationName:nameToken.stringValue];
 	}
+	self.wasEnumNameParsed = (nameToken != nil);
 	return YES;
 }
 
@@ -103,14 +112,33 @@
 	return YES;
 }
 
-- (BOOL)finalizeEnum:(ObjectiveCParseData *)data {
-	LogParDebug(@"Ending enum.");
+- (BOOL)parseEnumBodyEnd:(ObjectiveCParseData *)data {
+	LogParDebug(@"Matching enum ending semicolon.");
 	if (![data.stream.current matches:@";"]) {
 		LogParDebug(@"Failed matching ending enum semicolon, bailing out.");
 		[data.store cancelCurrentObject];
 		[data.parser popState];
 		return NO;
 	}
+	[data.stream consume:1];
+	return YES;
+}
+
+- (BOOL)parseEnumNameAfterBody:(ObjectiveCParseData *)data {
+	if (self.wasEnumNameParsed) {
+		self.wasEnumNameParsed = NO;
+		return YES;
+	}
+	
+	if (![data.stream matches:@"typedef", GBTokens.any, GBTokens.any, @";", nil]) return YES;
+	PKToken *nameToken = [data.stream la:2];
+	[data.store appendEnumerationName:nameToken.stringValue];
+	[data.stream consume:4];
+	return YES;
+}
+
+- (BOOL)finalizeEnum:(ObjectiveCParseData *)data {
+	LogParDebug(@"Ending enum.");
 	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // enum
 	[data.parser popState];

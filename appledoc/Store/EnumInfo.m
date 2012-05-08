@@ -60,7 +60,9 @@
 
 - (NSString *)description {
 	NSMutableString *result = [NSMutableString string];
-	[result appendString:@"enum {\n"];
+	[result appendString:@"enum"];
+	if (self.nameOfEnum) [result appendFormat:@" %@", self.nameOfEnum];
+	[result appendString:@" {\n"];
 	if (_enumItems) {
 		[self.enumItems enumerateObjectsUsingBlock:^(EnumItemInfo *item, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendFormat:@",\n"];
