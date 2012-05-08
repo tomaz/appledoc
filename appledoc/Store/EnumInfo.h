@@ -12,6 +12,7 @@
  */
 @interface EnumInfo : ObjectInfoBase
 
+@property (nonatomic, copy) NSString *nameOfEnum;
 @property (nonatomic, strong) NSMutableArray *enumItems;
 
 @end

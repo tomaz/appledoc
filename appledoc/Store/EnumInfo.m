@@ -12,6 +12,7 @@
 
 @implementation EnumInfo
 
+@synthesize nameOfEnum = _nameOfEnum;
 @synthesize enumItems = _enumItems;
 
 #pragma mark - Properties
@@ -28,6 +29,11 @@
 #pragma mark - 
 
 @implementation EnumInfo (Registrations)
+
+- (void)appendEnumerationName:(NSString *)name {
+	LogStoInfo(@"Appending enumeration name %@...", name);
+	self.nameOfEnum = name;
+}
 
 - (void)appendEnumerationItem:(NSString *)name {
 	LogStoInfo(@"Creating enumeration item %@...", name);
