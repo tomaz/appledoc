@@ -511,7 +511,7 @@ describe(@"edge cases:", ^{
 				^{ [parser verify]; } should_not raise_exception();
 			});
 		});
-	});	
+	});
 });
 
 describe(@"fail cases:", ^{

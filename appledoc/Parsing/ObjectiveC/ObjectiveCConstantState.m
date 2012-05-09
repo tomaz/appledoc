@@ -20,6 +20,8 @@
 
 @implementation ObjectiveCConstantState
 
+#pragma mark - Parsing constant
+
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	if (![self consumeConstantStartTokens:data]) return GBResultFailedMatch;
 	if (![self parseConstantDefinition:data]) return GBResultFailedMatch;
@@ -69,6 +71,12 @@
 	[data.store endCurrentObject]; // constant definition
 	[data.parser popState];
 	return YES;
+}
+
+#pragma mark - Testing for constant
+
+- (BOOL)doesDataContainConstant:(ObjectiveCParseData *)data {
+	return NO;
 }
 
 #pragma mark - Helper methods

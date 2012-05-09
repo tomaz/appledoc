@@ -14,4 +14,6 @@
  */
 @interface ObjectiveCConstantState : ObjectiveCParserState
 
+- (BOOL)doesDataContainConstant:(ObjectiveCParseData *)data;
+
 @end

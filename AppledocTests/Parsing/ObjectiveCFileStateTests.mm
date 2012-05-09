@@ -7,6 +7,7 @@
 //
 
 #import "ObjectiveCFileState.h"
+#import "ObjectiveCConstantState.h"
 #import "ObjectiveCStateTestsHelpers.h"
 #import "TestCaseBase.hh"
 
@@ -143,6 +144,64 @@ describe(@"structs parsing:", ^{
 				[state parseWithData:data];
 				// verify
 				^{ [parser verify]; } should_not raise_exception();
+			});
+		});
+	});
+});
+
+describe(@"constants parsing:", ^{
+	it(@"should ask constant state for possible constant definition", ^{
+		runWithState(^(ObjectiveCFileState *state) {
+			runWithString(@"some unknown tokens", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				id constantState = [OCMockObject mockForClass:[ObjectiveCConstantState class]];
+				[[constantState expect] doesDataContainConstant:data];
+				[[[parser expect] andReturn:constantState] constantState];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [parser verify]; } should_not raise_exception();
+				^{ [constantState verify]; } should_not raise_exception();
+			});
+		});
+	});
+
+	it(@"should parse constant if detected", ^{
+		runWithState(^(ObjectiveCFileState *state) {
+			runWithString(@"some unknown tokens", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				id constantState = [OCMockObject mockForClass:[ObjectiveCConstantState class]];
+				[[[constantState expect] andReturnValue:[NSNumber numberWithBool:YES]] doesDataContainConstant:data];
+				[[[parser expect] andReturn:constantState] constantState]; // first called when testing for constant
+				[[[parser expect] andReturn:constantState] constantState]; // second called when parsing constant
+				[[parser expect] pushState:constantState];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [parser verify]; } should_not raise_exception();
+				^{ [constantState verify]; } should_not raise_exception();
+			});
+		});
+	});
+	
+	it(@"should not parse constant if not detected", ^{
+		runWithState(^(ObjectiveCFileState *state) {
+			runWithString(@"some unknown tokens", ^(id parser, id tokens) {
+				// setup
+				id store = [OCMockObject mockForClass:[Store class]];
+				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
+				id constantState = [OCMockObject mockForClass:[ObjectiveCConstantState class]];
+				[[[constantState expect] andReturnValue:[NSNumber numberWithBool:NO]] doesDataContainConstant:data];
+				[[[parser expect] andReturn:constantState] constantState];
+				// execute
+				[state parseWithData:data];
+				// verify
+				^{ [parser verify]; } should_not raise_exception();
+				^{ [constantState verify]; } should_not raise_exception();
 			});
 		});
 	});
