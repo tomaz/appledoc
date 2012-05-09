@@ -71,6 +71,8 @@
 }
 
 - (BOOL)finalizeConstant:(ObjectiveCParseData *)data {
+	LogParDebug(@"Finalizing constant.");
+	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // constant definition
 	[data.parser popState];
 	return YES;
