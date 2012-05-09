@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "ObjectiveCConstantState.h"
 #import "ObjectiveCFileState.h"
 
 @interface ObjectiveCFileState ()
@@ -16,6 +17,7 @@
 - (BOOL)parseProtocol:(ObjectiveCParseData *)data;
 - (BOOL)parseEnum:(ObjectiveCParseData *)data;
 - (BOOL)parseStruct:(ObjectiveCParseData *)data;
+- (BOOL)parseConstant:(ObjectiveCParseData *)data;
 @end
 
 #pragma mark - 
@@ -32,6 +34,7 @@
 	if ([self parseProtocol:data]) return GBResultOk;
 	if ([self parseEnum:data]) return GBResultOk;
 	if ([self parseStruct:data]) return GBResultOk;
+	if ([self parseConstant:data]) return GBResultOk;
 	[data.stream consume:1];
 	return GBResultOk;
 }
@@ -104,6 +107,13 @@
 	if (![data.stream matches:@"struct", nil]) return NO;
 	LogParDebug(@"Matched %@, testing for struct.", data.stream.current);
 	[data.parser pushState:data.parser.structState];
+	return YES;
+}
+
+- (BOOL)parseConstant:(ObjectiveCParseData *)data {
+	if (![(id)data.parser.constantState doesDataContainConstant:data]) return NO;
+	LogParDebug(@"Matched %@, testing for constant.", data.stream.current);
+	[data.parser pushState:data.parser.constantState];
 	return YES;
 }
 

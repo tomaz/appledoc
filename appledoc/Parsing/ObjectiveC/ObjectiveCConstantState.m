@@ -14,11 +14,16 @@
 - (BOOL)finalizeConstant:(ObjectiveCParseData *)data;
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorToken:(ObjectiveCParseData *)data;
 - (NSUInteger)lookaheadIndexOfConstantEndToken:(ObjectiveCParseData *)data;
+@property (nonatomic, strong) NSArray *constantInvalidTokens;
 @end
 
 #pragma mark - 
 
 @implementation ObjectiveCConstantState
+
+@synthesize constantInvalidTokens = _constantInvalidTokens;
+
+#pragma mark - Parsing constant
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {
 	if (![self consumeConstantStartTokens:data]) return GBResultFailedMatch;
@@ -66,9 +71,33 @@
 }
 
 - (BOOL)finalizeConstant:(ObjectiveCParseData *)data {
+	LogParDebug(@"Finalizing constant.");
+	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // constant definition
 	[data.parser popState];
 	return YES;
+}
+
+#pragma mark - Testing for constant
+
+- (BOOL)doesDataContainConstant:(ObjectiveCParseData *)data {
+	NSUInteger indexOfEnd = [self lookaheadIndexOfConstantEndToken:data];
+	if (indexOfEnd == NSNotFound) return NO;
+	NSUInteger indexOfDescriptor = [self lookaheadIndexOfFirstPotentialDescriptorToken:data];
+	NSUInteger indexOfLastTokenToCheck = MIN(indexOfDescriptor, indexOfEnd);
+	__block BOOL result = YES;
+	[data.stream lookAheadWithBlock:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
+		if (lookahead >= indexOfLastTokenToCheck) {
+			*stop = YES;
+			return;
+		}
+		if ([token matches:self.constantInvalidTokens]) {
+			result = NO;
+			*stop = YES;
+			return;
+		}
+	}];
+	return result;
 }
 
 #pragma mark - Helper methods
@@ -94,5 +123,13 @@
 	return [data lookaheadIndexOfFirstToken:@";"];
 }
 
+#pragma mark - Properties
+
+- (NSArray *)constantInvalidTokens {
+	if (_constantInvalidTokens) return _constantInvalidTokens;
+	LogIntDebug(@"Initializing invalid tokens array for constant due to first access...");
+	_constantInvalidTokens = [NSArray arrayWithObjects:@"(", @")", @"[", @"]", @"{", @"}", @"^", @"#", nil];
+	return _constantInvalidTokens;
+}
 
 @end
