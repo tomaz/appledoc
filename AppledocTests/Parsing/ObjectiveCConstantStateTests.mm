@@ -490,18 +490,18 @@ describe(@"descriptors:", ^{
 	});
 });
 
-describe(@"fail cases:", ^{
-	it(@"should cancel if only single token is given", ^{
+describe(@"edge cases:", ^{
+	it(@"should take single token for name", ^{
 		runWithState(^(ObjectiveCConstantState *state) {
-			runWithString(@"value", ^(id parser, id tokens) {
+			runWithString(@"name;", ^(id parser, id tokens) {
 				// setup
 				id store = [OCMockObject mockForClass:[Store class]];
 				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] beginConstant];
 				[[store expect] beginConstantTypes];
-				[[store expect] appendType:@"value"];
-				[[store expect] cancelCurrentObject]; // types
-				[[store expect] cancelCurrentObject]; // constant
+				[[store expect] endCurrentObject]; // types
+				[[store expect] appendConstantName:@"name"];
+				[[store expect] endCurrentObject]; // constant
 				[[parser expect] popState];
 				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				// execute
@@ -511,8 +511,10 @@ describe(@"fail cases:", ^{
 				^{ [parser verify]; } should_not raise_exception();
 			});
 		});
-	});
+	});	
+});
 
+describe(@"fail cases:", ^{
 	it(@"should cancel if semicolon is missing", ^{
 		runWithState(^(ObjectiveCConstantState *state) {
 			runWithString(@"type item", ^(id parser, id tokens) {
