@@ -708,7 +708,7 @@
 		73D274A4150E05DA004D27F4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 				ORGANIZATIONNAME = "Tomaz Kragelj";
 			};
 			buildConfigurationList = 73D274A7150E05DA004D27F4 /* Build configuration list for PBXProject "appledoc" */;
@@ -755,7 +755,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "git=`sh /etc/profile; which git`\nversion=`$git describe --abbrev=0 --tags`\ncount=`$git rev-list --all |wc -l`\necho -e \"#define GB_APPLEDOC_VERSION @\\\"$version\\\"\\n#define GB_APPLEDOC_BUILD [NSString stringWithFormat:@\\\"%lu\\\", $count]\" > AppledocInfo.h";
+			shellScript = "git=`sh /etc/profile; which git`\nversion=`$git describe --abbrev=0 --tags`\ncount=`$git rev-list --all |wc -l`\necho -e \"#define GB_APPLEDOC_VERSION @\\\"$version\\\"\\n#define GB_APPLEDOC_BUILD [NSString stringWithFormat:@\\\"%d\\\", $count]\" > AppledocInfo.h";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -972,6 +972,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1000,6 +1001,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
