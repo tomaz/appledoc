@@ -10,7 +10,7 @@
 #import "StoreConstants.h"
 #import "StoreRegistrations.h"
 #import "ObjectLinkData.h"
-#import "MethodGroupData.h"
+#import "MethodGroupInfo.h"
 #import "PropertyInfo.h"
 #import "MethodInfo.h"
 #import "InterfaceInfoBase.h"
@@ -107,7 +107,7 @@
 
 - (void)appendMethodGroupWithDescription:(NSString *)description {
 	LogStoInfo(@"Starting method group...");
-	MethodGroupData *data = [MethodGroupData methodGroupDataWithName:description];
+	MethodGroupInfo *data = [MethodGroupInfo MethodGroupInfoWithName:description];
 	[self.interfaceMethodGroups addObject:data];
 }
 
@@ -141,7 +141,7 @@
 - (void)cancelCurrentObject {
 	if ([self.currentRegistrationObject isKindOfClass:[PropertyInfo class]]) {
 		LogStoInfo(@"Cancelling current property info!");
-		MethodGroupData *lastMethodGroup = [self.interfaceMethodGroups lastObject];
+		MethodGroupInfo *lastMethodGroup = [self.interfaceMethodGroups lastObject];
 		if ([lastMethodGroup.methodGroupMethods lastObject] == self.currentRegistrationObject) {
 			LogStoDebug(@"Removing property info from last method group!");
 			[lastMethodGroup.methodGroupMethods removeLastObject];
@@ -150,7 +150,7 @@
 		[self.interfaceMethodsAndPropertiesInRegistrationOrder removeLastObject];
 	} else if ([self.currentRegistrationObject isKindOfClass:[MethodInfo class]]) {
 		LogStoInfo(@"Cancelling current method info!");
-		MethodGroupData *lastMethodGroup = [self.interfaceMethodGroups lastObject];
+		MethodGroupInfo *lastMethodGroup = [self.interfaceMethodGroups lastObject];
 		if ([lastMethodGroup.methodGroupMethods lastObject] == self.currentRegistrationObject) {
 			LogStoDebug(@"Removing method info from last method group!");
 			[lastMethodGroup.methodGroupMethods removeLastObject];

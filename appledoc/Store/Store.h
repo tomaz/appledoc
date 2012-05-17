@@ -14,7 +14,7 @@
 #import "AttributesInfo.h"
 #import "DescriptorsInfo.h"
 #import "EnumItemInfo.h"
-#import "MethodGroupData.h"
+#import "MethodGroupInfo.h"
 #import "MethodArgumentInfo.h"
 
 #import "ClassInfo.h"

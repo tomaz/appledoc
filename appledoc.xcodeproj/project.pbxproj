@@ -79,8 +79,8 @@
 		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
-		735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupData.m */; };
+		735CD2C6153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
+		735CD2C7153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
 		737C82A3152307AE0064DC46 /* TestStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A2152307AE0064DC46 /* TestStrings.m */; };
 		7381A66E1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
 		7381A66F1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
@@ -250,8 +250,8 @@
 		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
-		735CD2C4153817E400CADD4E /* MethodGroupData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupData.h; sourceTree = "<group>"; };
-		735CD2C5153817E500CADD4E /* MethodGroupData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupData.m; sourceTree = "<group>"; };
+		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; path = MethodGroupInfo.h; sourceTree = "<group>"; };
+		735CD2C5153817E500CADD4E /* MethodGroupInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupInfo.m; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
 		737C82A8152310C80064DC46 /* ObjectiveCStateTestsHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCStateTestsHelpers.h; sourceTree = "<group>"; };
@@ -526,8 +526,8 @@
 			children = (
 				735CD2BD1538109900CADD4E /* ObjectLinkData.h */,
 				735CD2BE1538109900CADD4E /* ObjectLinkData.m */,
-				735CD2C4153817E400CADD4E /* MethodGroupData.h */,
-				735CD2C5153817E500CADD4E /* MethodGroupData.m */,
+				735CD2C4153817E400CADD4E /* MethodGroupInfo.h */,
+				735CD2C5153817E500CADD4E /* MethodGroupInfo.m */,
 				731341FC153D5891002D5C54 /* TypeInfo.h */,
 				731341FD153D5891002D5C54 /* TypeInfo.m */,
 				730BCC8A1540046F00B909FD /* AttributesInfo.h */,
@@ -806,7 +806,7 @@
 				7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
 				735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */,
 				735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */,
-				735CD2C7153817E500CADD4E /* MethodGroupData.m in Sources */,
+				735CD2C7153817E500CADD4E /* MethodGroupInfo.m in Sources */,
 				73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.mm in Sources */,
 				730FB573153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB578153C0889002DB54F /* MethodInfo.m in Sources */,
@@ -874,7 +874,7 @@
 				7381A6801536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6881536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
 				735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */,
-				735CD2C6153817E500CADD4E /* MethodGroupData.m in Sources */,
+				735CD2C6153817E500CADD4E /* MethodGroupInfo.m in Sources */,
 				730FB572153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB577153C0889002DB54F /* MethodInfo.m in Sources */,
 				731341FE153D5891002D5C54 /* TypeInfo.m in Sources */,

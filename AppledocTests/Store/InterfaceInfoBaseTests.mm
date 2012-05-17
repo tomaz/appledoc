@@ -73,7 +73,7 @@ describe(@"method groups registration:", ^{
 			[info appendMethodGroupWithDescription:@"description"];
 			// verify
 			info.interfaceMethodGroups.count should equal(1);
-			info.interfaceMethodGroups.lastObject should be_instance_of([MethodGroupData class]);
+			info.interfaceMethodGroups.lastObject should be_instance_of([MethodGroupInfo class]);
 			[info.interfaceMethodGroups.lastObject nameOfMethodGroup] should equal(@"description");
 		});
 	});
@@ -83,7 +83,7 @@ describe(@"method groups registration:", ^{
 			// setup
 			id mock = [OCMockObject mockForClass:[Store class]];
 			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[MethodGroupData class]];
+				return [obj isKindOfClass:[MethodGroupInfo class]];
 			}]];
 			info.objectRegistrar = mock;
 			// execute

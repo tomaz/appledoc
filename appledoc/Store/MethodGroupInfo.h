@@ -1,5 +1,5 @@
 //
-//  MethodGroupData.h
+//  MethodGroupInfo.h
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 4/13/12.
@@ -10,9 +10,9 @@
  
  This is helper object that provides information about the name of the group and an array of all methods or properties of the group. Methods listed in methodGroupMethods are instances of either PropertyInfo or MethodInfo.
  */
-@interface MethodGroupData : NSObject
+@interface MethodGroupInfo : NSObject
 
-+ (id)methodGroupDataWithName:(NSString *)name;
++ (id)MethodGroupInfoWithName:(NSString *)name;
 
 @property (nonatomic, copy) NSString *nameOfMethodGroup;
 @property (nonatomic, strong) NSMutableArray *methodGroupMethods;
@@ -21,11 +21,11 @@
 
 #pragma mark - 
 
-/** Provides convenience methods for finding MethodGroupData in an array by its name.
+/** Provides convenience methods for finding MethodGroupInfo in an array by its name.
  */
-@interface NSArray (MethodGroupDataExtensions)
+@interface NSArray (MethodGroupInfoExtensions)
 
-- (BOOL)gb_containsMethodGroupDataWithName:(NSString *)name;
-- (NSUInteger)gb_indexOfMethodGroupDataWithName:(NSString *)name;
+- (BOOL)gb_containsMethodGroupInfoWithName:(NSString *)name;
+- (NSUInteger)gb_indexOfMethodGroupInfoWithName:(NSString *)name;
 
 @end
