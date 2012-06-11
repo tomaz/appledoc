@@ -123,7 +123,8 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.docsetFeedURL = @"";
 		self.docsetPackageURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
-		self.docsetPlatformFamily = @"appledoc"; // this makes docset TOC usable from within Dash - http://kapeli.com/dash/
+		self.dashDocsetPlatformFamily = @"appledoc"; // this makes docset TOC usable from within Dash - http://kapeli.com/dash/
+		self.docsetPlatformFamily = @"";
 		self.docsetPublisherIdentifier = [NSString stringWithFormat:@"%@.documentation", kGBTemplatePlaceholderCompanyID];
 		self.docsetPublisherName = [NSString stringWithFormat:@"%@", kGBTemplatePlaceholderCompany];
 		self.docsetCopyrightMessage = [NSString stringWithFormat:@"Copyright © %@ %@. All rights reserved.", kGBTemplatePlaceholderYear, kGBTemplatePlaceholderCompany];
@@ -591,6 +592,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize docsetFeedURL;
 @synthesize docsetPackageURL;
 @synthesize docsetMinimumXcodeVersion;
+@synthesize dashDocsetPlatformFamily;
 @synthesize docsetPlatformFamily;
 @synthesize docsetPublisherIdentifier;
 @synthesize docsetPublisherName;

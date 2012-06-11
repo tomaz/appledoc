@@ -109,6 +109,7 @@
 	addVarUnlessEmpty(self.settings.docsetPublisherIdentifier, @"publisherIdentifier");
 	addVarUnlessEmpty(self.settings.docsetPublisherName, @"publisherName");
 	addVarUnlessEmpty(self.settings.docsetCopyrightMessage, @"copyrightMessage");
+	addVarUnlessEmpty(self.settings.dashDocsetPlatformFamily, @"dashPlatformFamily");
 	
 	// Run the template and save the results as Info.plist.
 	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];

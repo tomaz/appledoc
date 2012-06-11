@@ -74,6 +74,7 @@ static NSString *kGBArgDocSetFallbackURL = @"docset-fallback-url";
 static NSString *kGBArgDocSetPublisherIdentifier = @"docset-publisher-id";
 static NSString *kGBArgDocSetPublisherName = @"docset-publisher-name";
 static NSString *kGBArgDocSetMinimumXcodeVersion = @"docset-min-xcode-version";
+static NSString *kGBArgDashPlatformFamily = @"dash-platform-family";
 static NSString *kGBArgDocSetPlatformFamily = @"docset-platform-family";
 static NSString *kGBArgDocSetCertificateIssuer = @"docset-cert-issuer";
 static NSString *kGBArgDocSetCertificateSigner = @"docset-cert-signer";
@@ -250,6 +251,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgDocSetPublisherIdentifier,									0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetPublisherName,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetCopyrightMessage,										0,		DDGetoptRequiredArgument },
+		{ kGBArgDashPlatformFamily,											0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgDocSetBundleFilename,										0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetAtomFilename,											0,		DDGetoptRequiredArgument },
@@ -728,6 +730,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setDocsetPlatformFamily:(NSString *)value { self.settings.docsetPlatformFamily = value; }
 - (void)setDocsetCertIssuer:(NSString *)value { self.settings.docsetCertificateIssuer = value; }
 - (void)setDocsetCertSigner:(NSString *)value { self.settings.docsetCertificateSigner = value; }
+- (void)setDashPlatformFamily:(NSString *)value { self.settings.dashDocsetPlatformFamily = value; }
 
 - (void)setDocsetBundleFilename:(NSString *)value { self.settings.docsetBundleFilename = value; }
 - (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }

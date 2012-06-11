@@ -28,6 +28,8 @@
 	<string>{{minimumXcodeVersion}}</string>{{/minimumXcodeVersion}}
 	{{#platformFamily}}<key>DocSetPlatformFamily</key>
 	<string>{{platformFamily}}</string>{{/platformFamily}}
+	{{#dashPlatformFamily}}<key>DashDocSetFamily</key>
+	<string>{{dashPlatformFamily}}</string>{{/dashPlatformFamily}}
 	{{#publisherIdentifier}}<key>DocSetPublisherIdentifier</key>
 	<string>{{publisherIdentifier}}</string>{{/publisherIdentifier}}
 	{{#publisherName}}<key>DocSetPublisherName</key>

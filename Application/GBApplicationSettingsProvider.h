@@ -101,6 +101,9 @@ extern id kGBCustomDocumentIndexDescKey;
 /** Documentation set minimum Xcode version. */
 @property (copy) NSString *docsetMinimumXcodeVersion;
 
+/** Documentation set platform family for using within Dash. */
+@property (copy) NSString *dashDocsetPlatformFamily;
+
 /** Documentation set platform family. */
 @property (copy) NSString *docsetPlatformFamily;
 
