@@ -27,6 +27,30 @@ dependency do |s|
 end
 
 target :AppledocTests do
-	dependency 'Cedar'
-	dependency 'OCMock'
+	dependency do |s|
+		s.name     = 'Cedar'
+		s.version  = '0.0.2'
+		s.license  = 'MIT'
+		s.summary  = 'BDD-style testing using Objective-C.'
+		s.homepage = 'https://github.com/pivotal/cedar'
+		s.author   = { 'Pivotal Labs' => 'http://pivotallabs.com' }
+		s.source   = { :git => 'git://github.com/pivotal/cedar.git' }
+		files = FileList['Source/**/*.{h,m}']
+		files.exclude(/iPhone/)
+		s.source_files = files 
+		s.clean_paths = FileList['*'].exclude(/(Source|README.markdown|MIT.LICENSE)$/)
+		s.library = 'stdc++'
+	end
+	
+	dependency do |s|
+		s.name = 'OCMock'
+		s.version = '2.0.2'
+		s.homepage = 'http://ocmock.org'
+		s.author = { 'Erik Doernenburg' => 'erik@doernenburg.com' }
+		s.source = { :git => 'https://github.com/erikdoe/ocmock.git' }
+		s.summary = 'OCMock is an Objective-C implementation of mock objects.'
+		s.description = 'Mock objects for Objective-C'
+		s.source_files = 'Source/OCMock/*.[mh]'
+		s.license = 'https://github.com/erikdoe/ocmock/blob/master/Source/License.txt'
+	end
 end
