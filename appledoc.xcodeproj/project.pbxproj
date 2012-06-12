@@ -86,7 +86,6 @@
 		7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6871536E2F000BF9BDD /* ProtocolInfo.m */; };
 		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
 		738F419015232E6B008CB370 /* ObjectiveCPropertyStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
@@ -95,7 +94,6 @@
 		73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
-		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
 		73D540241525A72D00C57E1B /* ObjectiveCMethodStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D540271525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
@@ -261,8 +259,6 @@
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		73D274B7150E05DA004D27F4 /* appledoc-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "appledoc-Prefix.pch"; sourceTree = "<group>"; };
-		73D274D3150E08FE004D27F4 /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
-		73D274D4150E08FE004D27F4 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
 		73D274DC150E0D60004D27F4 /* Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appledoc.h; sourceTree = "<group>"; };
 		73D274DD150E0D60004D27F4 /* Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appledoc.m; sourceTree = "<group>"; };
 		73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCMethodStateTests.mm; sourceTree = "<group>"; };
@@ -516,7 +512,6 @@
 			children = (
 				73D274B3150E05DA004D27F4 /* appledoc */,
 				7317FAA3150F51FD00B39CFD /* AppledocTests */,
-				73D274CD150E08C4004D27F4 /* Third Party */,
 				73D274B0150E05DA004D27F4 /* Frameworks & Libraries */,
 				73D274AE150E05DA004D27F4 /* Products */,
 				3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */,
@@ -572,24 +567,6 @@
 				734425151517645A00B6EC33 /* AppledocTask.m */,
 			);
 			path = Application;
-			sourceTree = "<group>";
-		};
-		73D274CD150E08C4004D27F4 /* Third Party */ = {
-			isa = PBXGroup;
-			children = (
-				73D274CE150E08E4004D27F4 /* DDCli */,
-			);
-			name = "Third Party";
-			path = ThirdParty;
-			sourceTree = "<group>";
-		};
-		73D274CE150E08E4004D27F4 /* DDCli */ = {
-			isa = PBXGroup;
-			children = (
-				73D274D3150E08FE004D27F4 /* DDCliUtil.h */,
-				73D274D4150E08FE004D27F4 /* DDCliUtil.m */,
-			);
-			path = DDCli;
 			sourceTree = "<group>";
 		};
 		73ED9443150E9FD00032FD07 /* Common */ = {
@@ -741,7 +718,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				739704641510CEFD00486507 /* DDCliUtil.m in Sources */,
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
 				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
@@ -817,7 +793,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B5150E05DA004D27F4 /* main.m in Sources */,
-				73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */,
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
 				73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
