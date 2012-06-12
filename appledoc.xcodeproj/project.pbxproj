@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22666186A9EC4B1CB9DC0FFD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F6A178D4C94F04905A1F42 /* libPods.a */; };
+		26387923B15840028F1CB7DD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F6A178D4C94F04905A1F42 /* libPods.a */; };
 		730BCC88153FF91C00B909FD /* PropertyInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
 		730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
@@ -104,8 +106,6 @@
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
-		73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
-		73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
 		73D540241525A72D00C57E1B /* ObjectiveCMethodStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D540271525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
 		73D540281525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
@@ -176,6 +176,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		37F6A178D4C94F04905A1F42 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PropertyInfoTests.mm; sourceTree = "<group>"; };
 		730BCC8A1540046F00B909FD /* AttributesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributesInfo.h; sourceTree = "<group>"; };
 		730BCC8B1540046F00B909FD /* AttributesInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributesInfo.m; sourceTree = "<group>"; };
@@ -250,7 +252,7 @@
 		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
-		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; path = MethodGroupInfo.h; sourceTree = "<group>"; };
+		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupInfo.h; sourceTree = "<group>"; };
 		735CD2C5153817E500CADD4E /* MethodGroupInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupInfo.m; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
@@ -283,8 +285,6 @@
 		73D274D4150E08FE004D27F4 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
 		73D274DC150E0D60004D27F4 /* Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appledoc.h; sourceTree = "<group>"; };
 		73D274DD150E0D60004D27F4 /* Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appledoc.m; sourceTree = "<group>"; };
-		73D5401F1525A5D100C57E1B /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libParseKitLib.a; path = ThirdParty/Libraries/libParseKitLib.a; sourceTree = "<group>"; };
-		73D540221525A5FF00C57E1B /* parsekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = parsekit; path = ThirdParty/Libraries/parsekit; sourceTree = "<group>"; };
 		73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCMethodStateTests.mm; sourceTree = "<group>"; };
 		73D540251525A8BA00C57E1B /* StoreConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreConstants.h; sourceTree = "<group>"; };
 		73D540261525A8BA00C57E1B /* StoreConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreConstants.m; sourceTree = "<group>"; };
@@ -327,8 +327,8 @@
 				7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */,
 				7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */,
 				73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */,
-				73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
 				732B67A7155260890014C392 /* Cedar.framework in Frameworks */,
+				22666186A9EC4B1CB9DC0FFD /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,7 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */,
-				73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
+				26387923B15840028F1CB7DD /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,6 +554,7 @@
 				73D274CD150E08C4004D27F4 /* Third Party */,
 				73D274B0150E05DA004D27F4 /* Frameworks & Libraries */,
 				73D274AE150E05DA004D27F4 /* Products */,
+				3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -569,13 +570,11 @@
 		73D274B0150E05DA004D27F4 /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				73D5401F1525A5D100C57E1B /* libParseKitLib.a */,
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
 				732B67A6155260890014C392 /* Cedar.framework */,
 				73500D3C1517625E000416E3 /* OCMock.framework */,
-				73D540221525A5FF00C57E1B /* parsekit */,
 			);
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
@@ -674,6 +673,7 @@
 				7317FADA150F67D900B39CFD /* Copy frameworks to products directory */,
 				73F989B11518C00D0068697C /* Copy resources to bundle */,
 				7317FA98150F51FD00B39CFD /* ShellScript */,
+				E6692A93064B4BA68A001A46 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -692,6 +692,7 @@
 				73D274A9150E05DA004D27F4 /* Sources */,
 				73D274AA150E05DA004D27F4 /* Frameworks */,
 				73D274AB150E05DA004D27F4 /* CopyFiles */,
+				E6692A93064B4BA68A001A46 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -756,6 +757,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "git=`sh /etc/profile; which git`\nversion=`$git describe --abbrev=0 --tags`\ncount=`$git rev-list --all |wc -l`\necho -e \"#define GB_APPLEDOC_VERSION @\\\"$version\\\"\\n#define GB_APPLEDOC_BUILD [NSString stringWithFormat:@\\\"%d\\\", $count]\" > AppledocInfo.h";
+		};
+		E6692A93064B4BA68A001A46 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -896,8 +911,10 @@
 /* Begin XCBuildConfiguration section */
 		7317FAAD150F51FE00B39CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "";
+				DSTROOT = /tmp/xcodeproj.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/AppledocTests/Libraries\"",
@@ -926,14 +943,17 @@
 					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
 		7317FAAE150F51FE00B39CFD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "";
+				DSTROOT = /tmp/xcodeproj.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/AppledocTests/Libraries\"",
@@ -962,6 +982,7 @@
 					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -1019,37 +1040,37 @@
 		};
 		73D274BD150E05DA004D27F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ThirdParty/Libraries\"",
-				);
+				DSTROOT = /tmp/xcodeproj.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		73D274BE150E05DA004D27F4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ThirdParty/Libraries\"",
-				);
+				DSTROOT = /tmp/xcodeproj.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
