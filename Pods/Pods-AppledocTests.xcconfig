@@ -1,0 +1,4 @@
+PODS_ROOT = $(SRCROOT)/Pods
+HEADER_SEARCH_PATHS = "$(PODS_ROOT)/Headers" "$(PODS_ROOT)/Headers/Cedar" "$(PODS_ROOT)/Headers/ParseKit"
+ALWAYS_SEARCH_USER_PATHS = YES
+OTHER_LDFLAGS = -ObjC -all_load -lstdc++ -framework Foundation -licucore

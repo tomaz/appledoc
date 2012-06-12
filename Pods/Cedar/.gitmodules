@@ -1,0 +1,12 @@
+[submodule "Externals/OCMock"]
+	path = Externals/OCMock
+	url = git://github.com/pivotal/OCMock.git
+[submodule "Externals/OCHamcrest"]
+	path = Externals/OCHamcrest
+	url = git://github.com/pivotal/OCHamcrest.git
+[submodule "Spec/UIAutomation"]
+	path = Spec/UIAutomation
+	url = git://github.com/pivotal/jasmine-iphone.git
+[submodule "Spec/UIAutomation/jasmine-iphone"]
+	path = Spec/UIAutomation/jasmine-iphone
+	url = git://github.com/pivotal/jasmine-iphone.git
