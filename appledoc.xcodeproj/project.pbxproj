@@ -62,12 +62,6 @@
 		7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A9152310C80064DC46 /* ObjectiveCStateTestsHelpers.mm */; };
 		7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
 		7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
-		734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
-		734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
-		734849EB1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
-		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
-		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
-		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		7349F658153ED21D004D7AC7 /* TypeInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
 		7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
@@ -228,12 +222,6 @@
 		7345ED8E1553B2E40092FA57 /* ObjectiveCStructStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCStructStateTests.mm; sourceTree = "<group>"; };
 		7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParseData.h; sourceTree = "<group>"; };
 		7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParseData.m; sourceTree = "<group>"; };
-		734849E51511F7870031EF85 /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
-		734849E61511F7870031EF85 /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
-		734849E71511F7870031EF85 /* GBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSettings.h; sourceTree = "<group>"; };
-		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
-		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
-		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
 		7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TypeInfoTests.mm; sourceTree = "<group>"; };
 		7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodArgumentInfo.h; sourceTree = "<group>"; };
 		7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfo.m; sourceTree = "<group>"; };
@@ -414,19 +402,6 @@
 			path = ObjectiveC;
 			sourceTree = "<group>";
 		};
-		734849E41511F7230031EF85 /* GBCli */ = {
-			isa = PBXGroup;
-			children = (
-				734849ED1511F79F0031EF85 /* GBCommandLineParser.h */,
-				734849EE1511F79F0031EF85 /* GBCommandLineParser.m */,
-				734849E71511F7870031EF85 /* GBSettings.h */,
-				734849E81511F7870031EF85 /* GBSettings.m */,
-				734849E51511F7870031EF85 /* GBOptionsHelper.h */,
-				734849E61511F7870031EF85 /* GBOptionsHelper.m */,
-			);
-			path = GBCli;
-			sourceTree = "<group>";
-		};
 		73500D2B151748C8000416E3 /* Parsing */ = {
 			isa = PBXGroup;
 			children = (
@@ -602,7 +577,6 @@
 		73D274CD150E08C4004D27F4 /* Third Party */ = {
 			isa = PBXGroup;
 			children = (
-				734849E41511F7230031EF85 /* GBCli */,
 				73D274CE150E08E4004D27F4 /* DDCli */,
 			);
 			name = "Third Party";
@@ -773,9 +747,6 @@
 				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
 				73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
 				73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */,
-				734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */,
-				734849EC1511F7870031EF85 /* GBSettings.m in Sources */,
-				734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B11515320C004D139B /* Extensions.m in Sources */,
 				73500D3115174910000416E3 /* Store.m in Sources */,
 				73500D351517581A000416E3 /* Parser.m in Sources */,
@@ -850,9 +821,6 @@
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
 				73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
-				734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */,
-				734849EB1511F7870031EF85 /* GBSettings.m in Sources */,
-				734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B01515320C004D139B /* Extensions.m in Sources */,
 				738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */,
 				73500D3015174910000416E3 /* Store.m in Sources */,

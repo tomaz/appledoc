@@ -1,9 +1,11 @@
 PODS:
   - Cedar (0.0.1)
+  - GBCli (1.0)
   - OCMock (2.0.1)
   - ParseKit (0.0.2)
 
 DEPENDENCIES:
   - Cedar
+  - GBCli (defined in Podfile)
   - OCMock
   - ParseKit
