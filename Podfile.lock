@@ -1,7 +1,9 @@
 PODS:
   - Cedar (0.0.1)
+  - OCMock (2.0.1)
   - ParseKit (0.0.2)
 
 DEPENDENCIES:
   - Cedar
+  - OCMock
   - ParseKit

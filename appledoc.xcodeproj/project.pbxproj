@@ -75,7 +75,6 @@
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
-		73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -133,7 +132,6 @@
 		73F989C41518C6C10068697C /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
 		73F989C81518C6D50068697C /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
 		73F989CC1518C9000068697C /* ObjectiveCParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73F989CB1518C9000068697C /* ObjectiveCParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -143,7 +141,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */,
 			);
 			name = "Copy frameworks to products directory";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,7 +241,6 @@
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
-		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
 		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
@@ -322,7 +318,6 @@
 			files = (
 				7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */,
 				7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */,
-				73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */,
 				22666186A9EC4B1CB9DC0FFD /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +563,6 @@
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
-				73500D3C1517625E000416E3 /* OCMock.framework */,
 			);
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
