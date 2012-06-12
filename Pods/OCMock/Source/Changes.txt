@@ -1,0 +1,255 @@
+Chronological listing of changes. More detail is usually found in the Git commit messages
+and/or the pull requests.
+
+
+2012-01-23
+
+* Avoiding deprecated method to convert to a C string (thanks to Kushal Pisavadia)
+
+
+2011-11-03
+
+* Recreated project from scratch with new conventions in Xcode 4.2 (thanks to Matt Di Pasquale)
+
+
+2011-09-26 
+
+* Arguments only need to be equal, don't have to have same class
+
+
+
+Chronological listing of changes in the original Subversion code repository. If a particular 
+SVN revision has no entry, that check-in did not involve any code or feature changes.
+            
+2011-02-15 (r74)
+
+* Added feature to explicitly disable a partial mock
+			
+			
+2011-01-28 (r71)
+
+* Updated example to work with iOS 4.2.
+
+
+2010-08-21 (r69)
+
+* Added feature to explicitly reject methods on nice mocks (thanks to Heath Borders)
+ 
+
+2010-08-20 (r68)
+
+* Added feature to forward method to real object from partial mock (thanks to Marco Sandrini)
+
+
+2010-08-02 (r67)
+
+* Fix to allow block arguments (thanks to Justin DeWind)
+
+
+2010-07-28 (r62-r65)
+
+* Now building OCMock library for simulator (i386) and device (armv7)
+* Updated example to run tests on device                    
+* Changed OCMOCK_VALUE macro to be iOS compatible (thanks to Derek Clarkson)
+
+
+2010-07-21 (r61)
+
+* Added a new target to build a static library for iOS use
+* Created an example showing how to use OCMock in an iOS project
+
+
+2010-05-19 (r57)
+
+* Various small clean-ups; no change in functionality (thanks to Jonah Williams)
+
+
+2010-04-18 (r56)
+
+* Added block constraints and invocation handler (thanks to Justin DeWind)
+
+
+2009-10-16 (r55)
+
+* Fixed broken test for array argument descciptions (Craig Beck)
+* Disambiguated mock table method name to avoid compiler warning
+* Renamed some variables to avoid warnings when using -Wshadow
+* Partial mocks are now deallocated as they should
+* Fixed problems that occured when using mocks as arguments
+
+
+2009-08-18 (r54)
+
+* OnCall methods now have same signature as replaced ones.
+
+
+2009-08-14 (r53)
+
+* Fixed possible retain bug (Daniel Eggert)
+
+
+2009-08-14 (r52)
+
+* Added feature that allows to verify expectations are called in sequence.
+* Improved detection of unqualified method return type.
+
+
+2009-08-13 (r51)
+
+* Fixed bug that caused crash when using method swizzling with void return type.
+
+
+2009-07-14 (r49)
+
+* Added support for calling arbitrary methods when stubbed methods are invoked.
+
+
+2009-07-14 (r48)
+
+* Added support for posting notifications (based on Jean-Francois Dontigny's code)
+
+
+2009-07-14 (r46)
+
+* Fixed bug around complex type encodings (Jean-Francois Dontigny)
+
+
+2009-05-26 (r45)
+
+* Partial mocks now work on object reference and self (thanks to Mike Mangino)
+
+
+2009-04-24 (r43)
+
+* Added partial mocks (calls to the original object reference cannot be mocked)
+
+
+2009-04-17 (r42)
+
+* Mock observers now handle user infos on notifications.
+
+
+2009-04-09 (r39)
+
+* Added inital support for mock observers (loosely based on Dave Dribbin's idea)
+
+
+2009-04-08 (r38)
+
+* Moved factory methods from OCMConstraint to OCMArg
+
+
+2009-03-13 (r37)
+
+* Added pass by ref argument setters
+
+
+2009-03-11 (r34)
+
+* Linked install name now uses @rpath (Dave Dribbin)
+
+
+2009-02-22 (r32)
+
+* Added support for respondsToSelector (Dave Dribin)
+* Added constraint for any pointer 
+* Now comparing selectors as strings (Dado Colussi)
+
+
+2008-07-07 (r28)
+
+* Resetting invocation target in recorder to avoid retain cycles.
+
+
+2008-06-19 (r27)
+
+* Added optional integration with hamcrest for constraints
+
+
+2008-05-08 (r24)
+
+* Now building quad-fat; the 64-bit versions are somewhat experimental though
+
+
+2008-02-28 (r22)
+
+* Using new functions to deal with protocols (Evan Doll)
+
+
+2007-11-22 (r20)
+
+* Added support for void* parameters (Tuukka Norri)
+* Fixed a bug that could caused crashes when non-char const pointers were described
+ 
+
+2007-11-22 (r19)
+
+* Fixed bug to allow mocking of methods with type qualifieres (Nikita Zhuk)
+
+
+2007-10-22 (r18)
+
+* Added a simple constraint implementation.
+
+
+2007-06-04 (r15)
+
+* Now re-throwing fail-fast exceptions, for unexpected invocations for example, when
+  verify is called; in case the first throw is ignored by a framework.
+
+
+2007-04-23 (r14)
+
+* Added nice mocks, i.e. mocks that don't raise on unknown methods (Mark Thomas)
+
+* Fixed bug that prevented expectations after invocations (M. Scott Ford)
+
+
+2006-06-11 (r12)
+
+* Added possibility to throw an exception, based on code by Justin DeWind
+
+* Added Evan Doll's bugfix, which forwards conformsToProtocol: methods when necessary
+
+* Added the ability to match struct arguments, based on code contributed by Daniel Eggert
+
+* Better description of arguments, based on code contributed by Jeremy Higgs
+
+* Added the ability to create multiple identical expectations on the mock object (Jeremy Higgs)
+
+* Added the ability to mock out nil arguments (Jeremy Higgs)
+
+
+2005-12-11 (r11)
+
+* Added slightly modified version of Jon Reid's contribution, which adds the possibility to stub 
+  primitive return values.
+
+* Added Jon Reid's bugfix that prevents a crash when trying to stub an unknown method on a 
+  protocol.
+
+
+2005-10-03 (r10)
+
+* Upgraded to build and run tests using the OCUnit that is now part of XCode.
+
+
+2005-10-03 (r9)
+
+* Added XCdoe 2.1 project
+
+
+2005-02-16 (r8)
+
+* Added Richard Clark's contribution, which provides support for scalar arguments.
+
+
+2005-02-13 (r7)
+
+* Added support for mocking formal protocols
+
+
+2004-08-26 (r6)
+
+* MockObject and Recorder now inherit from NSProxy.
+

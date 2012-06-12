@@ -44,4 +44,11 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
+describe(@"comments parsing:", ^{
+	it(@"should register comments to store", ^{
+		runWithParser(^(ObjectiveCParser *parser) {
+		});
+	});
+});
+
 TEST_END

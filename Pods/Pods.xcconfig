@@ -1,0 +1,4 @@
+OTHER_LDFLAGS = -ObjC -all_load -framework Foundation -licucore
+HEADER_SEARCH_PATHS = "$(PODS_ROOT)/Headers" "$(PODS_ROOT)/Headers/DDCli" "$(PODS_ROOT)/Headers/GBCli" "$(PODS_ROOT)/Headers/ParseKit"
+ALWAYS_SEARCH_USER_PATHS = YES
+PODS_ROOT = $(SRCROOT)/Pods

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22666186A9EC4B1CB9DC0FFD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F6A178D4C94F04905A1F42 /* libPods.a */; };
+		26387923B15840028F1CB7DD /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F6A178D4C94F04905A1F42 /* libPods.a */; };
 		730BCC88153FF91C00B909FD /* PropertyInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		730BCC8C1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
 		730BCC8D1540046F00B909FD /* AttributesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 730BCC8B1540046F00B909FD /* AttributesInfo.m */; };
@@ -49,8 +51,6 @@
 		73297915151899CA00592A9D /* ObjectiveCParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73297913151899CA00592A9D /* ObjectiveCParserState.m */; };
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
-		732B67A7155260890014C392 /* Cedar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 732B67A6155260890014C392 /* Cedar.framework */; };
-		732B67F415526EE00014C392 /* Cedar.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 732B67A6155260890014C392 /* Cedar.framework */; };
 		7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
 		7336652615457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
 		7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -62,12 +62,6 @@
 		7345ED901553B4690092FA57 /* ObjectiveCStateTestsHelpers.mm in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A9152310C80064DC46 /* ObjectiveCStateTestsHelpers.mm */; };
 		7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
 		7345ED981553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */; };
-		734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
-		734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E61511F7870031EF85 /* GBOptionsHelper.m */; };
-		734849EB1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
-		734849EC1511F7870031EF85 /* GBSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849E81511F7870031EF85 /* GBSettings.m */; };
-		734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
-		734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 734849EE1511F79F0031EF85 /* GBCommandLineParser.m */; };
 		7349F658153ED21D004D7AC7 /* TypeInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7349F65C153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
 		7349F65D153EDA5C004D7AC7 /* MethodArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */; };
@@ -75,7 +69,6 @@
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
-		73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -93,7 +86,6 @@
 		7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6871536E2F000BF9BDD /* ProtocolInfo.m */; };
 		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
 		738F419015232E6B008CB370 /* ObjectiveCPropertyStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		739704641510CEFD00486507 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
@@ -102,10 +94,7 @@
 		73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
-		73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274D4150E08FE004D27F4 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
-		73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
-		73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D5401F1525A5D100C57E1B /* libParseKitLib.a */; };
 		73D540241525A72D00C57E1B /* ObjectiveCMethodStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D540271525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
 		73D540281525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
@@ -135,7 +124,6 @@
 		73F989C41518C6C10068697C /* ObjectiveCEnumState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C31518C6C10068697C /* ObjectiveCEnumState.m */; };
 		73F989C81518C6D50068697C /* ObjectiveCStructState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989C71518C6D40068697C /* ObjectiveCStructState.m */; };
 		73F989CC1518C9000068697C /* ObjectiveCParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73F989CB1518C9000068697C /* ObjectiveCParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */ = {isa = PBXBuildFile; fileRef = 73500D3C1517625E000416E3 /* OCMock.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -145,8 +133,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				73F989CE1518CA5B0068697C /* OCMock.framework in Copy frameworks to products directory */,
-				732B67F415526EE00014C392 /* Cedar.framework in Copy frameworks to products directory */,
 			);
 			name = "Copy frameworks to products directory";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -176,6 +162,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		37F6A178D4C94F04905A1F42 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PropertyInfoTests.mm; sourceTree = "<group>"; };
 		730BCC8A1540046F00B909FD /* AttributesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AttributesInfo.h; sourceTree = "<group>"; };
 		730BCC8B1540046F00B909FD /* AttributesInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AttributesInfo.m; sourceTree = "<group>"; };
@@ -222,7 +210,6 @@
 		73297913151899CA00592A9D /* ObjectiveCParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParserState.m; sourceTree = "<group>"; };
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
 		7329791715189D1B00592A9D /* ObjectiveCFileState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileState.m; sourceTree = "<group>"; };
-		732B67A6155260890014C392 /* Cedar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cedar.framework; path = AppledocTests/Libraries/Cedar.framework; sourceTree = "<group>"; };
 		7336652315457A2E000F7AFF /* ConstantInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantInfo.h; sourceTree = "<group>"; };
 		7336652415457A2E000F7AFF /* ConstantInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstantInfo.m; sourceTree = "<group>"; };
 		7336652815457BF7000F7AFF /* ConstantInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ConstantInfoTests.mm; sourceTree = "<group>"; };
@@ -233,12 +220,6 @@
 		7345ED8E1553B2E40092FA57 /* ObjectiveCStructStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCStructStateTests.mm; sourceTree = "<group>"; };
 		7345ED951553C9AD0092FA57 /* ObjectiveCParseData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCParseData.h; sourceTree = "<group>"; };
 		7345ED961553C9AD0092FA57 /* ObjectiveCParseData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParseData.m; sourceTree = "<group>"; };
-		734849E51511F7870031EF85 /* GBOptionsHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOptionsHelper.h; sourceTree = "<group>"; };
-		734849E61511F7870031EF85 /* GBOptionsHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOptionsHelper.m; sourceTree = "<group>"; };
-		734849E71511F7870031EF85 /* GBSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBSettings.h; sourceTree = "<group>"; };
-		734849E81511F7870031EF85 /* GBSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBSettings.m; sourceTree = "<group>"; };
-		734849ED1511F79F0031EF85 /* GBCommandLineParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBCommandLineParser.h; sourceTree = "<group>"; };
-		734849EE1511F79F0031EF85 /* GBCommandLineParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommandLineParser.m; sourceTree = "<group>"; };
 		7349F657153ED21D004D7AC7 /* TypeInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TypeInfoTests.mm; sourceTree = "<group>"; };
 		7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodArgumentInfo.h; sourceTree = "<group>"; };
 		7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfo.m; sourceTree = "<group>"; };
@@ -246,11 +227,10 @@
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
-		73500D3C1517625E000416E3 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = AppledocTests/Libraries/OCMock.framework; sourceTree = "<group>"; };
 		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
-		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; path = MethodGroupInfo.h; sourceTree = "<group>"; };
+		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupInfo.h; sourceTree = "<group>"; };
 		735CD2C5153817E500CADD4E /* MethodGroupInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupInfo.m; sourceTree = "<group>"; };
 		737C82A1152307AE0064DC46 /* TestStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestStrings.h; sourceTree = "<group>"; };
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
@@ -279,12 +259,8 @@
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		73D274B7150E05DA004D27F4 /* appledoc-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "appledoc-Prefix.pch"; sourceTree = "<group>"; };
-		73D274D3150E08FE004D27F4 /* DDCliUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDCliUtil.h; sourceTree = "<group>"; };
-		73D274D4150E08FE004D27F4 /* DDCliUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDCliUtil.m; sourceTree = "<group>"; };
 		73D274DC150E0D60004D27F4 /* Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Appledoc.h; sourceTree = "<group>"; };
 		73D274DD150E0D60004D27F4 /* Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Appledoc.m; sourceTree = "<group>"; };
-		73D5401F1525A5D100C57E1B /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libParseKitLib.a; path = ThirdParty/Libraries/libParseKitLib.a; sourceTree = "<group>"; };
-		73D540221525A5FF00C57E1B /* parsekit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = parsekit; path = ThirdParty/Libraries/parsekit; sourceTree = "<group>"; };
 		73D540231525A72D00C57E1B /* ObjectiveCMethodStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCMethodStateTests.mm; sourceTree = "<group>"; };
 		73D540251525A8BA00C57E1B /* StoreConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreConstants.h; sourceTree = "<group>"; };
 		73D540261525A8BA00C57E1B /* StoreConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreConstants.m; sourceTree = "<group>"; };
@@ -326,9 +302,7 @@
 			files = (
 				7317FAB8150F534100B39CFD /* Cocoa.framework in Frameworks */,
 				7317FAB6150F52D500B39CFD /* SenTestingKit.framework in Frameworks */,
-				73500D3D1517625E000416E3 /* OCMock.framework in Frameworks */,
-				73D540211525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
-				732B67A7155260890014C392 /* Cedar.framework in Frameworks */,
+				22666186A9EC4B1CB9DC0FFD /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,7 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */,
-				73D540201525A5D100C57E1B /* libParseKitLib.a in Frameworks */,
+				26387923B15840028F1CB7DD /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,19 +396,6 @@
 			);
 			name = "Objective C";
 			path = ObjectiveC;
-			sourceTree = "<group>";
-		};
-		734849E41511F7230031EF85 /* GBCli */ = {
-			isa = PBXGroup;
-			children = (
-				734849ED1511F79F0031EF85 /* GBCommandLineParser.h */,
-				734849EE1511F79F0031EF85 /* GBCommandLineParser.m */,
-				734849E71511F7870031EF85 /* GBSettings.h */,
-				734849E81511F7870031EF85 /* GBSettings.m */,
-				734849E51511F7870031EF85 /* GBOptionsHelper.h */,
-				734849E61511F7870031EF85 /* GBOptionsHelper.m */,
-			);
-			path = GBCli;
 			sourceTree = "<group>";
 		};
 		73500D2B151748C8000416E3 /* Parsing */ = {
@@ -551,9 +512,9 @@
 			children = (
 				73D274B3150E05DA004D27F4 /* appledoc */,
 				7317FAA3150F51FD00B39CFD /* AppledocTests */,
-				73D274CD150E08C4004D27F4 /* Third Party */,
 				73D274B0150E05DA004D27F4 /* Frameworks & Libraries */,
 				73D274AE150E05DA004D27F4 /* Products */,
+				3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -569,13 +530,9 @@
 		73D274B0150E05DA004D27F4 /* Frameworks & Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				73D5401F1525A5D100C57E1B /* libParseKitLib.a */,
 				73D274B1150E05DA004D27F4 /* Foundation.framework */,
 				7317FAB7150F534100B39CFD /* Cocoa.framework */,
 				7317FAB5150F52D500B39CFD /* SenTestingKit.framework */,
-				732B67A6155260890014C392 /* Cedar.framework */,
-				73500D3C1517625E000416E3 /* OCMock.framework */,
-				73D540221525A5FF00C57E1B /* parsekit */,
 			);
 			name = "Frameworks & Libraries";
 			sourceTree = "<group>";
@@ -610,25 +567,6 @@
 				734425151517645A00B6EC33 /* AppledocTask.m */,
 			);
 			path = Application;
-			sourceTree = "<group>";
-		};
-		73D274CD150E08C4004D27F4 /* Third Party */ = {
-			isa = PBXGroup;
-			children = (
-				734849E41511F7230031EF85 /* GBCli */,
-				73D274CE150E08E4004D27F4 /* DDCli */,
-			);
-			name = "Third Party";
-			path = ThirdParty;
-			sourceTree = "<group>";
-		};
-		73D274CE150E08E4004D27F4 /* DDCli */ = {
-			isa = PBXGroup;
-			children = (
-				73D274D3150E08FE004D27F4 /* DDCliUtil.h */,
-				73D274D4150E08FE004D27F4 /* DDCliUtil.m */,
-			);
-			path = DDCli;
 			sourceTree = "<group>";
 		};
 		73ED9443150E9FD00032FD07 /* Common */ = {
@@ -674,6 +612,7 @@
 				7317FADA150F67D900B39CFD /* Copy frameworks to products directory */,
 				73F989B11518C00D0068697C /* Copy resources to bundle */,
 				7317FA98150F51FD00B39CFD /* ShellScript */,
+				E6692A93064B4BA68A001A46 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -692,6 +631,7 @@
 				73D274A9150E05DA004D27F4 /* Sources */,
 				73D274AA150E05DA004D27F4 /* Frameworks */,
 				73D274AB150E05DA004D27F4 /* CopyFiles */,
+				E6692A93064B4BA68A001A46 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -757,6 +697,20 @@
 			shellPath = /bin/sh;
 			shellScript = "git=`sh /etc/profile; which git`\nversion=`$git describe --abbrev=0 --tags`\ncount=`$git rev-list --all |wc -l`\necho -e \"#define GB_APPLEDOC_VERSION @\\\"$version\\\"\\n#define GB_APPLEDOC_BUILD [NSString stringWithFormat:@\\\"%d\\\", $count]\" > AppledocInfo.h";
 		};
+		E6692A93064B4BA68A001A46 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -764,15 +718,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				739704641510CEFD00486507 /* DDCliUtil.m in Sources */,
 				7317FAC4150F56A500B39CFD /* Logging.m in Sources */,
 				7317FAC5150F56A800B39CFD /* Appledoc.m in Sources */,
 				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
 				73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
 				73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */,
-				734849EA1511F7870031EF85 /* GBOptionsHelper.m in Sources */,
-				734849EC1511F7870031EF85 /* GBSettings.m in Sources */,
-				734849F01511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B11515320C004D139B /* Extensions.m in Sources */,
 				73500D3115174910000416E3 /* Store.m in Sources */,
 				73500D351517581A000416E3 /* Parser.m in Sources */,
@@ -843,13 +793,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				73D274B5150E05DA004D27F4 /* main.m in Sources */,
-				73D274DA150E08FE004D27F4 /* DDCliUtil.m in Sources */,
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
 				73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
-				734849E91511F7870031EF85 /* GBOptionsHelper.m in Sources */,
-				734849EB1511F7870031EF85 /* GBSettings.m in Sources */,
-				734849EF1511F79F0031EF85 /* GBCommandLineParser.m in Sources */,
 				739C11B01515320C004D139B /* Extensions.m in Sources */,
 				738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */,
 				73500D3015174910000416E3 /* Store.m in Sources */,
@@ -896,8 +842,10 @@
 /* Begin XCBuildConfiguration section */
 		7317FAAD150F51FE00B39CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "";
+				DSTROOT = /tmp/xcodeproj.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/AppledocTests/Libraries\"",
@@ -926,14 +874,17 @@
 					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
 		7317FAAE150F51FE00B39CFD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "";
+				DSTROOT = /tmp/xcodeproj.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
 					"\"$(SRCROOT)/AppledocTests/Libraries\"",
@@ -962,6 +913,7 @@
 					"-licucore",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -1019,37 +971,37 @@
 		};
 		73D274BD150E05DA004D27F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ThirdParty/Libraries\"",
-				);
+				DSTROOT = /tmp/xcodeproj.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
 		73D274BE150E05DA004D27F4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AF70AE5881A4C199E0B81E9 /* Pods.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/ThirdParty/Libraries\"",
-				);
+				DSTROOT = /tmp/xcodeproj.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "appledoc/appledoc-Prefix.pch";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
 					"\"$(SRCROOT)/ThirdParty/Libraries\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};

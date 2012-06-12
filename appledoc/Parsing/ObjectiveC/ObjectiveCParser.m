@@ -183,7 +183,7 @@
 	_tokenizer = [PKTokenizer tokenizer];
 	[_tokenizer setTokenizerState:_tokenizer.wordState from:'_' to:'_'];	// Allow words to start with _
 	[_tokenizer.symbolState add:@"..."];	// Allow ... as single token
-	//_tokenizer.commentState.reportsCommentTokens = YES;
+	_tokenizer.commentState.reportsCommentTokens = YES;
 	return _tokenizer;
 }
 
