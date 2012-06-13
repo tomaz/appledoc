@@ -10,7 +10,7 @@ dependency do |s|
 	s.source   = { :git => 'https://github.com/itod/parsekit.git'}
 	s.source_files = 'include/**/*.{h,m}', 'src/**/*.{h,m}'
 	s.clean_paths = "debugapp", "demoapp", "docs", "English.lproj", "frameworks", "info.plist", "jsdemoapp", "JSParseKit-Info.plist", "jssrc", "ParseKit_Prefix.pch", "ParseKitMobile_Prefix.pch", "res", "test", "*.xcodeproj"
-	s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'TARGET_OS_SNOW_LEOPARD', 'WARNING_CFLAGS' => '-Wno-format -Wno-shorten-64-to-32' }
+	s.xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'TARGET_OS_SNOW_LEOPARD', 'WARNING_CFLAGS' => '-w' }
 	s.framework = 'Foundation'
 	s.library = 'icucore'
 	s.requires_arc = false
