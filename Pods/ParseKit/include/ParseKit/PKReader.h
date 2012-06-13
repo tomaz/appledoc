@@ -21,7 +21,6 @@
 */
 @interface PKReader : NSObject {
     NSString *string;
-    //unichar *buff;
     NSUInteger offset;
     NSUInteger length;
 }

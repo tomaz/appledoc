@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#define TARGET_OS_SNOW_LEOPARD
 #import <ParseKit/ParseKit.h>
 
 @interface NSError (Appledoc)

@@ -62,7 +62,7 @@ static NSMutableDictionary *mockTable;
 - (void)dealloc
 {
 	if(realObject != nil)
-		[self stop];
+		[self stopMocking];
 	[super dealloc];
 }
 
@@ -76,7 +76,7 @@ static NSMutableDictionary *mockTable;
 	return realObject;
 }
 
-- (void)stop
+- (void)stopMocking
 {
 	object_setClass(realObject, [self mockedClass]);
 	[realObject release];
@@ -96,10 +96,10 @@ static NSMutableDictionary *mockTable;
 	objc_registerClassPair(subclass);
 	object_setClass(anObject, subclass);
 	
-	Method forwardInvocationMethod = class_getInstanceMethod([self class], @selector(forwardInvocationForRealObject:));
-	IMP forwardInvocationImp = method_getImplementation(forwardInvocationMethod);
-	const char *forwardInvocationTypes = method_getTypeEncoding(forwardInvocationMethod);
-	class_addMethod(subclass, @selector(forwardInvocation:), forwardInvocationImp, forwardInvocationTypes);
+	Method myForwardInvocationMethod = class_getInstanceMethod([self class], @selector(forwardInvocationForRealObject:));
+	IMP myForwardInvocationImp = method_getImplementation(myForwardInvocationMethod);
+	const char *forwardInvocationTypes = method_getTypeEncoding(myForwardInvocationMethod);
+	class_addMethod(subclass, @selector(forwardInvocation:), myForwardInvocationImp, forwardInvocationTypes);
 }
 
 - (void)setupForwarderForSelector:(SEL)selector

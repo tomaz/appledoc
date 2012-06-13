@@ -43,45 +43,29 @@
 
 @implementation PKNumberState
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.allowsFloatingPoint = YES;
-        self.positivePrefix = '+';
-        self.negativePrefix = '-';
-        self.groupingSeparator = ',';
-        self.decimalSeparator = '.';
-    }
-    return self;
-}
-
-
 - (PKToken *)nextTokenFromReader:(PKReader *)r startingWith:(PKUniChar)cin tokenizer:(PKTokenizer *)t {
     NSParameterAssert(r);
     NSParameterAssert(t);
-    NSAssert1(!(allowsGroupingSeparator && (decimalSeparator == groupingSeparator)), @"You have configured your tokenizer's numberState with the same decimal and grouping separator: `%C`. You don't want to do that.", decimalSeparator);
 
     [self resetWithReader:r];
     isNegative = NO;
     originalCin = cin;
     
-    if (negativePrefix == cin) {
+    if ('-' == cin) {
         isNegative = YES;
         cin = [r read];
-        [self append:negativePrefix];
-    } else if (positivePrefix == cin) {
+        [self append:'-'];
+    } else if ('+' == cin) {
         cin = [r read];
-        [self append:positivePrefix];
+        [self append:'+'];
     }
     
     [self reset:cin];
-    if (decimalSeparator == c) {
-        if (allowsFloatingPoint) {
-            [self parseRightSideFromReader:r];
-        }
+    if ('.' == c) {
+        [self parseRightSideFromReader:r];
     } else {
         [self parseLeftSideFromReader:r];
-        if (isDecimal && allowsFloatingPoint) {
+        if (isDecimal) {
             [self parseRightSideFromReader:r];
         }
     }
@@ -92,10 +76,10 @@
             [r unread];
             return [PKToken tokenWithTokenType:PKTokenTypeNumber stringValue:@"0" floatValue:0.0];
         } else {
-            if ((originalCin == positivePrefix || originalCin == negativePrefix) && PKEOF != c) { // ??
+            if (isNegative && PKEOF != c) { // ??
                 [r unread];
             }
-            return [[self nextTokenizerStateFor:originalCin tokenizer:t] nextTokenFromReader:r startingWith:originalCin tokenizer:t];
+            return [t.symbolState nextTokenFromReader:r startingWith:originalCin tokenizer:t];
         }
     }
     
@@ -163,10 +147,6 @@
             if (isFraction) {
                 divideBy *= base;
             }
-        } else if (allowsGroupingSeparator && groupingSeparator == c) {
-            [self append:c];
-            len++;
-            c = [r read];
         } else {
             break;
         }
@@ -187,15 +167,15 @@
 
 
 - (void)parseRightSideFromReader:(PKReader *)r {
-    if (decimalSeparator == c) {
+    if ('.' == c) {
         PKUniChar n = [r read];
         BOOL nextIsDigit = isdigit(n);
         if (PKEOF != n) {
             [r unread];
         }
 
-        if (nextIsDigit || allowsTrailingDecimalSeparator) {
-            [self append:decimalSeparator];
+        if (nextIsDigit || allowsTrailingDot) {
+            [self append:'.'];
             if (nextIsDigit) {
                 c = [r read];
                 isFraction = YES;
@@ -217,8 +197,8 @@
         c = [r read];
         
         BOOL hasExp = isdigit(c);
-        isNegativeExp = (negativePrefix == c);
-        BOOL positiveExp = (positivePrefix == c);
+        isNegativeExp = ('-' == c);
+        BOOL positiveExp = ('+' == c);
         
         if (!hasExp && (isNegativeExp || positiveExp)) {
             c = [r read];
@@ -230,9 +210,9 @@
         if (hasExp) {
             [self append:e];
             if (isNegativeExp) {
-                [self append:negativePrefix];
+                [self append:'-'];
             } else if (positiveExp) {
-                [self append:positivePrefix];
+                [self append:'+'];
             }
             c = [r read];
             isFraction = NO;
@@ -277,14 +257,8 @@
     }
 }
 
-@synthesize allowsTrailingDecimalSeparator;
+@synthesize allowsTrailingDot;
 @synthesize allowsScientificNotation;
 @synthesize allowsOctalNotation;
 @synthesize allowsHexadecimalNotation;
-@synthesize allowsFloatingPoint;
-@synthesize allowsGroupingSeparator;
-@synthesize positivePrefix;
-@synthesize negativePrefix;
-@synthesize groupingSeparator;
-@synthesize decimalSeparator;
 @end

@@ -12,8 +12,6 @@
 #import "NSString+ParseKitAdditions.h"
 #import "NSArray+ParseKitAdditions.h"
 
-#define USE_TRACK 0
-
 @interface PKParser (PKParserFactoryAdditionsFriend)
 - (void)setTokenizer:(PKTokenizer *)t;
 @end
@@ -310,11 +308,10 @@ void PKReleaseSubparserTree(PKParser *p) {
 	t.commentState.balancesEOFTerminatedComments = [self boolForTokenForKey:@"balancesEOFTerminatedComments"];
 	t.quoteState.balancesEOFTerminatedQuotes = [self boolForTokenForKey:@"@balancesEOFTerminatedQuotes"];
 	t.delimitState.balancesEOFTerminatedStrings = [self boolForTokenForKey:@"@balancesEOFTerminatedStrings"];
-	t.numberState.allowsTrailingDecimalSeparator = [self boolForTokenForKey:@"@allowsTrailingDecimalSeparator"];
+	t.numberState.allowsTrailingDot = [self boolForTokenForKey:@"@allowsTrailingDot"];
     t.numberState.allowsScientificNotation  = [self boolForTokenForKey:@"@allowsScientificNotation"];
     t.numberState.allowsOctalNotation  = [self boolForTokenForKey:@"@allowsOctalNotation"];
     t.numberState.allowsHexadecimalNotation  = [self boolForTokenForKey:@"@allowsHexadecimalNotation"];
-    t.numberState.allowsFloatingPoint  = [self boolForTokenForKey:@"allowsFloatingPoint"];
     
     [self setTokenizerState:t.wordState onTokenizer:t forTokensForKey:@"@wordState"];
     [self setTokenizerState:t.numberState onTokenizer:t forTokensForKey:@"@numberState"];
@@ -349,7 +346,7 @@ void PKReleaseSubparserTree(PKParser *p) {
         if (tok.isQuotedString) {
 			NSString *s = [tok.stringValue stringByTrimmingQuotes];
 			if ([s length]) {
-				PKUniChar c = [s characterAtIndex:0];
+				NSInteger c = [s characterAtIndex:0];
 				[t.wordState setWordChars:YES from:c to:c];
 			}
         }
@@ -364,9 +361,9 @@ void PKReleaseSubparserTree(PKParser *p) {
         if (tok.isQuotedString) {
 			NSString *s = [tok.stringValue stringByTrimmingQuotes];
 			if ([s length]) {
-                PKUniChar c = 0;
+                NSInteger c = 0;
                 if ([s hasPrefix:@"#x"]) {
-                    c = (PKUniChar)[s integerValue];
+                    c = [s integerValue];
                 } else {
                     c = [s characterAtIndex:0];
                 }
@@ -454,7 +451,7 @@ void PKReleaseSubparserTree(PKParser *p) {
         if (tok.isQuotedString) {
             NSString *s = [tok.stringValue stringByTrimmingQuotes];
             if (1 == [s length]) {
-                PKUniChar c = [s characterAtIndex:0];
+                NSInteger c = [s characterAtIndex:0];
                 [t setTokenizerState:state from:c to:c];
             }
         }
@@ -675,12 +672,7 @@ void PKReleaseSubparserTree(PKParser *p) {
     [a pop]; // pop '('
     
     if ([objs count] > 1) {
-        PKSequence *seq = nil;
-#if USE_TRACK
-        seq = [PKTrack track];
-#else
-        seq = [PKSequence sequence];
-#endif
+        PKSequence *seq = [PKSequence sequence];
         for (id obj in [objs reverseObjectEnumerator]) {
             [seq add:obj];
         }
@@ -962,12 +954,7 @@ void PKReleaseSubparserTree(PKParser *p) {
     }
     
     if ([parsers count] > 1) {
-        PKSequence *seq = nil;
-#if USE_TRACK
-        seq = [PKTrack track];
-#else
-        seq = [PKSequence sequence];
-#endif
+        PKSequence *seq = [PKSequence sequence];
         for (PKParser *p in [parsers reverseObjectEnumerator]) {
             [seq add:p];
         }

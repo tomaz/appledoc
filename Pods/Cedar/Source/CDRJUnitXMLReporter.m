@@ -49,21 +49,23 @@
 
 #pragma mark - Overriden Methods
 
+- (NSString *)failureMessageForExample:(CDRExample *)example {
+    return [NSString stringWithFormat:@"%@\n%@\n",[example fullText], example.failure];
+}
+
 - (void)reportOnExample:(CDRExample *)example {
     NSMutableArray *messages = nil;
     switch (example.state) {
         case CDRExampleStatePassed:
-            messages = successMessages_;
+            [successMessages_ addObject:[example fullText]];
             break;
         case CDRExampleStateFailed:
         case CDRExampleStateError:
-            messages = failureMessages_;
+            [failureMessages_ addObject:[self failureMessageForExample:example]];
             break;
         default:
             break;
     }
-
-    [messages addObject:[example fullText]];
 }
 
 - (void)runDidComplete {

@@ -114,15 +114,7 @@
         }
     }
     
-    // get current input string offset
-    
-    // lookup offset in -memo ivar and return assemblies if present.
-    
-    // else…
-    
     NSSet *outAssemblies = [self allMatchesFor:inAssemblies];
-
-    // memoize outAssemblies in -memo ivar {offset=>outAssemblies}
 
 #ifdef TARGET_OS_SNOW_LEOPARD
     if (assemblerBlock) {

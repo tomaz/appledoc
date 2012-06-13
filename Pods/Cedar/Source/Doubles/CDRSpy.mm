@@ -49,6 +49,7 @@
 
 - (BOOL)respondsToSelector:(SEL)selector {
     __block BOOL respondsToSelector = sel_isEqual(selector, @selector(sent_messages));
+    respondsToSelector = respondsToSelector || sel_isEqual(selector, @selector(is_cedar_spy));
 
     [self asOriginalObject:^{
         respondsToSelector = respondsToSelector || [self respondsToSelector:selector];
@@ -59,6 +60,11 @@
 
 - (NSArray *)sent_messages {
     return objc_getAssociatedObject(self, @"sent-messages");
+}
+
+-(BOOL)is_cedar_spy
+{
+    return YES;
 }
 
 #pragma mark Private interface
