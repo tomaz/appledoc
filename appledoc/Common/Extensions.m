@@ -9,6 +9,16 @@
 #import <objc/runtime.h>
 #import "Extensions.h"
 
+@implementation NSObject (Appledoc)
+
+- (NSString *)gb_description {
+	return [self description];
+}
+
+@end
+
+#pragma mark -
+
 @implementation NSError (GBError)
 
 + (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason {
@@ -45,6 +55,29 @@
 
 @implementation NSString (Appledoc)
 
++ (NSUInteger)gb_defaultDescriptionLength {
+	return 35;
+}
+
+- (NSString *)gb_description {
+	return [self gb_descriptionWithLength:[[self class] gb_defaultDescriptionLength]];
+}
+
+- (NSString *)gb_descriptionWithLength:(NSUInteger)length {
+	static NSRegularExpression *regex = nil;
+	if (!regex) regex = [NSRegularExpression regularExpressionWithPattern:@"\\s+" options:0 error:nil];
+
+	NSRange range = NSMakeRange(0, self.length);
+	NSString *result = [regex stringByReplacingMatchesInString:self options:0 range:range withTemplate:@" "];
+	result = [result gb_stringByTrimmingWhitespaceAndNewLine];
+	if (result.length <= length) return result;
+	
+	NSUInteger extractLength = length / 2;
+	NSString *prefix = [result substringToIndex:extractLength];
+	NSString *suffix = [result substringFromIndex:result.length - extractLength];
+	return [NSString stringWithFormat:@"%@…%@", prefix, suffix];
+}
+
 - (NSString *)gb_stringByStandardizingCurrentDir {
 	// Converts . to actual working directory.
 	if (![self hasPrefix:@"."] || [self hasPrefix:@".."]) return self;
@@ -58,6 +91,23 @@
 	NSString *result = [self gb_stringByStandardizingCurrentDir];
 	result = [result stringByStandardizingPath];
 	return result;
+}
+
+- (NSString *)gb_stringByReplacingWhitespaceWithSpaces {
+	return [self gb_descriptionWithLength:self.length];
+}
+
+- (NSString *)gb_stringByTrimmingWhitespaceAndNewLine {
+	return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
+- (NSUInteger)gb_indexOfString:(NSString *)string {
+	NSRange range = [self rangeOfString:string];
+	return range.location;
+}
+
+- (NSRange)gb_range {
+	return NSMakeRange(0, self.length);
 }
 
 - (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set {

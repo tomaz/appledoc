@@ -92,6 +92,9 @@
 		73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73B62BE61588A1E2003FC025 /* libPods-AppledocTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B62BE51588A1E2003FC025 /* libPods-AppledocTests.a */; };
 		73B62BE91588A207003FC025 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B62BE81588A207003FC025 /* libPods.a */; };
+		73B6595A1588AFDF00AE2314 /* CommentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B659591588AFDF00AE2314 /* CommentParser.m */; };
+		73B6595B1588AFDF00AE2314 /* CommentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B659591588AFDF00AE2314 /* CommentParser.m */; };
+		73B6595F1588B7A900AE2314 /* CommentParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73B6595D1588B7A900AE2314 /* CommentParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
@@ -256,6 +259,9 @@
 		73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCParseDataTests.mm; sourceTree = "<group>"; };
 		73B62BE51588A1E2003FC025 /* libPods-AppledocTests.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AppledocTests.a"; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods-AppledocTests.a"; sourceTree = "<group>"; };
 		73B62BE81588A207003FC025 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods.a"; sourceTree = "<group>"; };
+		73B659581588AFDF00AE2314 /* CommentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentParser.h; sourceTree = "<group>"; };
+		73B659591588AFDF00AE2314 /* CommentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentParser.m; sourceTree = "<group>"; };
+		73B6595D1588B7A900AE2314 /* CommentParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentParserTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -408,6 +414,8 @@
 				732978F315187F3E00592A9D /* ParserTask.m */,
 				7329790415188B0800592A9D /* TokensStream.h */,
 				7329790515188B0800592A9D /* TokensStream.m */,
+				73B659581588AFDF00AE2314 /* CommentParser.h */,
+				73B659591588AFDF00AE2314 /* CommentParser.m */,
 				732978FF15188A1300592A9D /* Objective C */,
 			);
 			path = Parsing;
@@ -447,6 +455,7 @@
 			children = (
 				73F59070154148850078DA60 /* Data */,
 				734425121517631F00B6EC33 /* ParserTests.mm */,
+				73B6595D1588B7A900AE2314 /* CommentParserTests.mm */,
 				73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */,
 				73F989CB1518C9000068697C /* ObjectiveCParserTests.mm */,
 				7316285B15208124002B5FA9 /* ObjectiveCFileStateTests.mm */,
@@ -788,6 +797,8 @@
 				73239A12155706380077AB8A /* StateBase.m in Sources */,
 				73239A1B1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */,
 				73239A1D1557BF150077AB8A /* ObjectiveCConstantStateTests.mm in Sources */,
+				73B6595B1588AFDF00AE2314 /* CommentParser.m in Sources */,
+				73B6595F1588B7A900AE2314 /* CommentParserTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +848,7 @@
 				7345ED971553C9AD0092FA57 /* ObjectiveCParseData.m in Sources */,
 				73239A11155706380077AB8A /* StateBase.m in Sources */,
 				73239A1A1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */,
+				73B6595A1588AFDF00AE2314 /* CommentParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

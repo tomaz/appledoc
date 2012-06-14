@@ -19,6 +19,12 @@ enum {
 
 #pragma mark - 
 
+@interface NSObject (Appledoc)
+- (NSString *)gb_description;
+@end
+
+#pragma mark -
+
 @interface NSFileManager (Appledoc)
 - (BOOL)gb_fileExistsAndIsFileAtPath:(NSString *)path;
 - (BOOL)gb_fileExistsAndIsDirectoryAtPath:(NSString *)path;
@@ -27,8 +33,14 @@ enum {
 #pragma mark - 
 
 @interface NSString (Appledoc)
++ (NSUInteger)gb_defaultDescriptionLength;
+- (NSString *)gb_descriptionWithLength:(NSUInteger)length;
 - (NSString *)gb_stringByStandardizingCurrentDir;
 - (NSString *)gb_stringByStandardizingCurrentDirAndPath;
+- (NSString *)gb_stringByReplacingWhitespaceWithSpaces;
+- (NSString *)gb_stringByTrimmingWhitespaceAndNewLine;
+- (NSUInteger)gb_indexOfString:(NSString *)string;
+- (NSRange)gb_range;
 - (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set;
 @end
 
