@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "TokensStream.h"
+#import "CommentParser.h"
 #import "ObjectiveCParseData.h"
 #import "ObjectiveCFileState.h"
 #import "ObjectiveCInterfaceState.h"
@@ -24,8 +25,11 @@
 @interface ObjectiveCParser ()
 - (GBResult)parseTokens;
 - (void)prepareParserForParsingString:(NSString *)string;
+- (BOOL)parseCommentToken:(PKToken *)token;
+- (BOOL)registerAndResetCommentIfNeeded;
 - (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
+@property (nonatomic, strong) CommentParser *commentParser;
 @property (nonatomic, strong) NSMutableArray *statesStack;
 @property (nonatomic, strong) ObjectiveCParserState *currentState;
 @property (nonatomic, strong) ObjectiveCParserState *fileState;
@@ -84,7 +88,10 @@
 	GBResult result = GBResultOk;
 	ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:self.tokensStream parser:self store:self.store];
 	while (!self.tokensStream.eof) {
-		LogParDebug(@"Parsing token '%@'...", self.tokensStream.current.stringValue);
+		PKToken *token = self.tokensStream.current;
+		LogParDebug(@"Parsing token '%@'...", token.stringValue);
+		if ([self parseCommentToken:token]) continue;
+		[self registerAndResetCommentIfNeeded];
 		GBResult stateResult = [self.currentState parseWithData:data];
 		if ([self isParseResultFailure:result]) {
 			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
@@ -92,7 +99,35 @@
 			break;
 		}
 	}
+	[self registerAndResetCommentIfNeeded];
 	return result;
+}
+
+- (BOOL)parseCommentToken:(PKToken *)token {
+	if (!token.isComment) return NO;
+	LogParDebug(@"Token is comment, testing for appledoc comments...");
+	if ([self.commentParser isAppledocComment:token.stringValue]) {
+		LogParDebug(@"Token is appledoc comment, parsing...");
+		[self.commentParser parseComment:token.stringValue line:token.location.y];
+	}
+	LogParDebug(@"Consuming comment...");
+	[self.tokensStream consume:1];
+	return YES;
+}
+
+- (BOOL)registerAndResetCommentIfNeeded {
+	NSString *comment = self.commentParser.comment;
+	if (!comment) return NO;
+	if (self.commentParser.isCommentInline) {
+		LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
+		[self.store appendCommentToPreviousObject:comment];
+	} else {
+		LogParDebug(@"Registering comment %@...", [comment gb_description]);
+		[self.store appendCommentToCurrentObject:comment];
+	}
+	LogParDebug(@"Resetting comment parser...");
+	[self.commentParser reset];
+	return YES;
 }
 
 #pragma mark - Helper methods
@@ -185,6 +220,13 @@
 	[_tokenizer.symbolState add:@"..."];	// Allow ... as single token
 	_tokenizer.commentState.reportsCommentTokens = YES;
 	return _tokenizer;
+}
+
+- (CommentParser *)commentParser {
+	if (_commentParser) return _commentParser;
+	LogIntDebug(@"Initializing comment parser due to first access...");
+	_commentParser = [[CommentParser alloc] init];
+	return _commentParser;
 }
 
 @end

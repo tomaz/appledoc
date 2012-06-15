@@ -15,7 +15,17 @@
 #import "ObjectiveCStructState.h"
 #import "ObjectiveCConstantState.h"
 #import "ObjectiveCParser.h"
+#import "CommentParser.h"
 #import "TestCaseBase.hh"
+
+@interface ObjectiveCParser (UnitTestingPrivateAPI)
+@property (nonatomic, strong, readwrite) Store *store;
+@property (nonatomic, strong, readwrite) GBSettings *settings;
+@property (nonatomic, strong, readwrite) NSString *filename;
+@property (nonatomic, strong) CommentParser *commentParser;
+@end
+
+#pragma mark -
 
 static void runWithParser(void(^handler)(ObjectiveCParser *parser)) {
 	ObjectiveCParser *parser = [[ObjectiveCParser alloc] init];
@@ -23,7 +33,16 @@ static void runWithParser(void(^handler)(ObjectiveCParser *parser)) {
 	[parser release];
 }
 
-#pragma mark - 
+static void runWithStrictParser(void(^handler)(ObjectiveCParser *parser, id store, id settings)) {
+	runWithParser(^(ObjectiveCParser *parser) {
+		parser.filename = @"file.h";
+		parser.store = [OCMockObject mockForClass:[Store class]];
+		parser.settings = [OCMockObject mockForClass:[GBSettings class]];
+		handler(parser, parser.store, parser.settings);
+	});
+}
+
+#pragma mark -
 
 TEST_BEGIN(ObjectiveCParserTests)
 
@@ -40,13 +59,52 @@ describe(@"lazy accessors:", ^{
 			parser.structState should be_instance_of([ObjectiveCStructState class]);
 			parser.constantState should be_instance_of([ObjectiveCConstantState class]);
 			parser.tokenizer should be_instance_of([PKTokenizer class]);
+			parser.commentParser should be_instance_of([CommentParser class]);
 		});
 	});
 });
 
 describe(@"comments parsing:", ^{
-	it(@"should register comments to store", ^{
-		runWithParser(^(ObjectiveCParser *parser) {
+	describe(@"single line comments:", ^{
+		it(@"should ignore standard comments", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// execute - this will raise exception if anything gets registered to store!
+				[parser parseString:@"// comment"];
+			});
+		});
+		
+		it(@"should register one line comment to store", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// setup
+				[[store expect] appendCommentToCurrentObject:@"comment"];
+				// execute
+				[parser parseString:@"/// comment"];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+			});
+		});
+
+		it(@"should group successive lines together", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// setup
+				[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
+				// execute
+				[parser parseString:@"/// line1\n/// line2\n/// line3"];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should handle separate comments", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// setup
+				[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
+				// execute
+				[parser parseString:@"/// line1\n/// line2\n\n/// line3\n/// line4"];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+			});
 		});
 	});
 });

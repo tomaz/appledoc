@@ -90,6 +90,8 @@
 
 #pragma mark - General information
 
+- (void)appendCommentToCurrentObject:(NSString *)comment;
+- (void)appendCommentToPreviousObject:(NSString *)comment;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
 
 @end

@@ -363,6 +363,14 @@
 	[self.currentRegistrationObject appendDescriptor:descriptor];
 }
 
+#pragma mark - Comments
+
+- (void)appendCommentToCurrentObject:(NSString *)comment {
+}
+
+- (void)appendCommentToPreviousObject:(NSString *)comment {
+}
+
 #pragma mark - Finalizing registration for current object
 
 - (void)endCurrentObject {

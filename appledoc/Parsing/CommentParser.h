@@ -16,7 +16,6 @@
  
  ```
  CommentParser *parser = [[CommentParser alloc] init];
- parser.filename = <filename with full path>;
  while (!<eof>) {
      PKToken *token = <get current token>;
      if (token.isComment) {
@@ -43,8 +42,7 @@
 @interface CommentParser : NSObject
 
 - (BOOL)isAppledocComment:(NSString *)comment;
-- (void)parseComment:(NSString *)comment line:(NSUInteger)line
-;
+- (void)parseComment:(NSString *)comment line:(NSUInteger)line;
 - (void)reset;
 
 @property (nonatomic, strong, readonly) NSString *groupComment;
