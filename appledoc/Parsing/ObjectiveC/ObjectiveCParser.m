@@ -25,7 +25,9 @@
 @interface ObjectiveCParser ()
 - (GBResult)parseTokens;
 - (void)prepareParserForParsingString:(NSString *)string;
+- (BOOL)parseTokensWithData:(ObjectiveCParseData *)data result:(GBResult *)result;
 - (BOOL)parseCommentToken:(PKToken *)token;
+- (BOOL)registerComments;
 - (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
 @property (nonatomic, strong) CommentParser *commentParser;
@@ -90,16 +92,21 @@
 		PKToken *token = self.tokensStream.current;
 		LogParDebug(@"Parsing token '%@'...", token.stringValue);
 		if ([self parseCommentToken:token]) continue;
-		[self.commentParser notifyAndReset];
-		GBResult stateResult = [self.currentState parseWithData:data];
-		if ([self isParseResultFailure:result]) {
-			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
-			result = stateResult;
-			break;
-		}
+		if (![self registerComments]) break;
+		if (![self parseTokensWithData:data result:&result]) break;
 	}
-	[self.commentParser notifyAndReset];
+	[self registerComments];
 	return result;
+}
+
+- (BOOL)parseTokensWithData:(ObjectiveCParseData *)data result:(GBResult *)result {
+	GBResult stateResult = [self.currentState parseWithData:data];
+	if ([self isParseResultFailure:stateResult]) {
+		LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
+		if (result) *result = stateResult;
+		return NO;
+	}
+	return YES;
 }
 
 - (BOOL)parseCommentToken:(PKToken *)token {
@@ -111,6 +118,12 @@
 	}
 	LogParDebug(@"Consuming comment...");
 	[self.tokensStream consume:1];
+	return YES;
+}
+
+- (BOOL)registerComments {
+	// We're always returning YES; in fact, the only reason for introducing result is to have all lines of main loop code looking the same (kind of nerdy, I know, but that's how I am :)
+	[self.commentParser notifyAndReset];
 	return YES;
 }
 
