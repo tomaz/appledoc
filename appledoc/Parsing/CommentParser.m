@@ -109,6 +109,8 @@
 		return;
 	}
 	
+	[self notifyAboutCommentIfNecessaryAndReset:YES];
+
 	__weak CommentParser *blockSelf = self;
 	__block NSUInteger commentLine = 1;
 	__block BOOL isInline = NO;

@@ -65,43 +65,192 @@ describe(@"lazy accessors:", ^{
 });
 
 describe(@"comments parsing:", ^{
-	describe(@"single line comments:", ^{
-		it(@"should ignore standard comments", ^{
-			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
-				// execute - this will raise exception if anything gets registered to store!
-				[parser parseString:@"// comment"];
+	describe(@"commends before objects:", ^{
+		describe(@"single line comments:", ^{
+			it(@"should ignore standard comments", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// execute - this will raise exception if anything gets registered to store due to using strict mock!
+					[parser parseString:@"// comment"];
+				});
+			});
+			
+			it(@"should register one line comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"comment"];
+					// execute
+					[parser parseString:@"/// comment"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+
+			it(@"should group successive lines together", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
+					// execute
+					[parser parseString:@"/// line1\n/// line2\n/// line3"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+			
+			it(@"should register successive comments", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+					[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
+					// execute
+					[parser parseString:@"/// line1\n/// line2\n\n/// line3\n/// line4"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
 			});
 		});
 		
-		it(@"should register one line comment to store", ^{
+		describe(@"multi line comments:", ^{
+			it(@"should ignore standard comments", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// execute - this will raise exception if anything is registered to store due to using strict mock!
+					[parser parseString:@"/* comment */"];
+				});
+			});
+			
+			it(@"should register single comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"comment"];
+					// execute
+					[parser parseString:@"/** comment*/"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+			
+			it(@"should register successive comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+					[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
+					// execute
+					[parser parseString:@"/** line1\n line2*/\n/** line3\n line4*/"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
+	describe(@"inline comments:", ^{
+		describe(@"single line comments:", ^{
+			it(@"should ignore standard comment", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// execute - this will raise exception if anything is registered to store due to using strict mock!
+					[parser parseString:@"//< comment"];
+				});
+			});
+			
+			it(@"should register one line comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToPreviousObject:@"comment"];
+					// execute
+					[parser parseString:@"///< comment"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+			
+			it(@"should group successive lines together", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
+					// execute
+					[parser parseString:@"/// line1\n/// line2\n/// line3"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+			
+			it(@"should register successive comments", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+					[[store expect] appendCommentToPreviousObject:@"line3\nline4"];
+					// execute
+					[parser parseString:@"///< line1\n/// line2\n\n///< line3\n/// line4"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+		});
+		
+		describe(@"multi line comments:", ^{
+			it(@"should ignore standard comments", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// execute - this will raise exception if anything is registered to store due to using strict mock!
+					[parser parseString:@"/*< comment */"];
+				});
+			});
+			
+			it(@"should register single comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToPreviousObject:@"comment"];
+					// execute
+					[parser parseString:@"/**< comment*/"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+			
+			it(@"should register successive comment to store", ^{
+				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+					// setup
+					[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+					[[store expect] appendCommentToPreviousObject:@"line3\nline4"];
+					// execute
+					[parser parseString:@"/**< line1\n line2*/\n/**< line3\n line4*/"];
+					// verify
+					^{ [store verify]; } should_not raise_exception();
+				});
+			});
+		});
+	});
+	
+	describe(@"mixed cases", ^{
+		it(@"should register previous and next single line comment", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
-				[[store expect] appendCommentToCurrentObject:@"comment"];
+				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
-				[parser parseString:@"/// comment"];
+				[parser parseString:@"///< line1\n/// line2\n\n/// line3\n/// line4"];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
 		});
 
-		it(@"should group successive lines together", ^{
+		it(@"should register previous and next multi line comment", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
-				[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
+				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
-				[parser parseString:@"/// line1\n/// line2\n/// line3"];
+				[parser parseString:@"/**< line1\nline2*/\n/** line3\nline4*/"];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
 		});
 		
-		it(@"should handle separate comments", ^{
+		it(@"should handle probably the most common case", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
-				[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
 				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
-				[parser parseString:@"/// line1\n/// line2\n\n/// line3\n/// line4"];
+				[parser parseString:@"///< line1\n/// line2\n\n/** line3\n line4*/"];
 				// verify
 				^{ [store verify]; } should_not raise_exception();
 			});
