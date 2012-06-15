@@ -10,23 +10,41 @@
 #import "CommentParser.h"
 
 @interface CommentParser ()
+@property (nonatomic, strong) NSString *groupComment;
+@property (nonatomic, strong) NSString *comment;
+@property (nonatomic, assign) BOOL isCommentInline;
+@property (nonatomic, assign) NSUInteger lastSingleLinerLine;
+@end
+
+@interface CommentParser (ParsingHelpers)
 - (void)parseSingleLinerFromString:(NSString *)string line:(NSUInteger)line;
 - (void)parseMultiLinerFromString:(NSString *)string line:(NSUInteger)line;
+- (void)startGroupWithText:(NSString *)text;
+- (void)startCommentWithText:(NSString *)text isInline:(BOOL)isInline;
+- (void)continueCommentWithText:(NSString *)text isInline:(BOOL)isInline;
+- (void)notifyAboutGroupIfNecessaryAndReset:(BOOL)reset;
+- (void)notifyAboutCommentIfNecessaryAndReset:(BOOL)reset;
+@end
+
+@interface CommentParser (CommentTextHandling)
+- (NSString *)trimmedGroupName:(NSString *)line;
+- (NSString *)trimmedInlineLine:(NSString *)line;
+- (NSString *)trimmedCommentLine:(NSString *)line;
+@end
+
+@interface CommentParser (DeterminingCommentKind)
 - (BOOL)isSingleLiner:(NSString *)string;
 - (BOOL)isMultiLiner:(NSString *)string;
 - (BOOL)isInliner:(NSString *)string;
 - (BOOL)isMethodGroup:(NSString *)string;
-- (NSString *)trimmedGroupName:(NSString *)line;
-- (NSString *)trimmedInlineLine:(NSString *)line;
-- (NSString *)trimmedCommentLine:(NSString *)line;
-@property (nonatomic, strong, readwrite) NSString *groupComment;
-@property (nonatomic, strong, readwrite) NSString *comment;
-@property (nonatomic, assign, readwrite) BOOL isCommentInline;
-@property (nonatomic, assign) NSUInteger lastSingleLinerLine;
 @end
+
+#pragma mark -
 
 @implementation CommentParser
 
+@synthesize groupRegistrator = _groupRegistrator;
+@synthesize commentRegistrator = _commentRegistrator;
 @synthesize groupComment = _groupComment;
 @synthesize comment = _comment;
 @synthesize isCommentInline = _isCommentInline;
@@ -52,31 +70,33 @@
 	}
 }
 
-- (void)reset {
-	self.groupComment = nil;
-	self.comment = nil;
-	self.isCommentInline = NO;
+- (void)notifyAndReset {
+	LogParDebug(@"Resetting internal comment data...");
+	[self notifyAboutGroupIfNecessaryAndReset:YES];
+	[self notifyAboutCommentIfNecessaryAndReset:YES];
 }
 
-#pragma mark - Helper methods
+@end
+
+#pragma mark - 
+
+@implementation CommentParser (ParsingHelpers)
 
 - (void)parseSingleLinerFromString:(NSString *)string line:(NSUInteger)line {
 	BOOL isContinuation = (self.comment != nil) && (line == self.lastSingleLinerLine + 1);
 	NSString *text = [string substringFromIndex:3];
 	text = [self trimmedCommentLine:text];
 	if (isContinuation) {
-		if (self.isCommentInline && [self isInliner:text]) {
-			text = [self trimmedInlineLine:text];
-		}
-		self.comment = [self.comment stringByAppendingFormat:@"\n%@", text];
+		BOOL isInline = (self.isCommentInline && [self isInliner:text]);
+		[self continueCommentWithText:text isInline:isInline];
 	} else {
+		[self notifyAboutCommentIfNecessaryAndReset:YES];
 		if ([self isMethodGroup:text]) {
-			self.groupComment = [self trimmedGroupName:text];
-		} else if ([self isInliner:text]) {
-			self.comment = [self trimmedInlineLine:text];
-			self.isCommentInline = YES;
+			[self startGroupWithText:text];
+			[self notifyAboutGroupIfNecessaryAndReset:YES];
 		} else {
-			self.comment = text;
+			BOOL isInline = [self isInliner:text];
+			[self startCommentWithText:text isInline:isInline];
 		}
 	}
 	self.lastSingleLinerLine = line;
@@ -91,26 +111,89 @@
 	
 	__weak CommentParser *blockSelf = self;
 	__block NSUInteger commentLine = 1;
+	__block BOOL isInline = NO;
 	NSRange range = NSMakeRange(3, location - 3);
 	NSString *text = [string substringWithRange:range];
-	NSMutableString *result = [NSMutableString stringWithCapacity:text.length];
 	[text enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-		NSString *clean = [self trimmedCommentLine:line];
+		NSString *clean = [blockSelf trimmedCommentLine:line];
 		if (commentLine == 1) {
 			if ([self isMethodGroup:clean]) {
-				blockSelf.groupComment = [blockSelf trimmedGroupName:clean];
-				return;
+				[blockSelf startGroupWithText:clean];
+				[blockSelf notifyAboutGroupIfNecessaryAndReset:YES];
+			} else if (clean.length > 0) {
+				if ([blockSelf isInliner:clean]) isInline = YES;
+				[blockSelf startCommentWithText:clean isInline:isInline];
+				commentLine++;
 			}
-			if ([self isInliner:clean]) self.isCommentInline = YES;
+			return;
 		}
-		if (self.isCommentInline && [self isInliner:clean]) clean = [self trimmedInlineLine:clean];
-		if (result.length > 0) [result appendString:@"\n"];
-		[result appendString:clean];
+		BOOL isLineInline = (isInline && [blockSelf isInliner:clean]);
+		[blockSelf continueCommentWithText:clean isInline:isLineInline];
 		commentLine++;
 	}];
-	
-	self.comment = (result.length > 0) ? result : nil;
+
+	if (self.comment.length == 0) self.comment = nil;
+	[self notifyAboutCommentIfNecessaryAndReset:YES];
 }
+
+- (void)startGroupWithText:(NSString *)text {
+	self.groupComment = [self trimmedGroupName:text];
+}
+
+- (void)startCommentWithText:(NSString *)text isInline:(BOOL)isInline {
+	if (isInline) text = [self trimmedInlineLine:text];
+	self.comment = text;
+	self.isCommentInline = isInline;
+}
+
+- (void)continueCommentWithText:(NSString *)text isInline:(BOOL)isInline {
+	if (isInline) text = [self trimmedInlineLine:text];
+	self.comment = [self.comment stringByAppendingFormat:@"\n%@", text];
+}
+
+- (void)notifyAboutGroupIfNecessaryAndReset:(BOOL)reset {
+	if (!self.groupComment) return;
+	if (self.groupRegistrator) {
+		LogParDebug(@"Notifying about group comment '%@'...", [self.groupComment gb_description]);
+		self.groupRegistrator(self, self.groupComment);
+	}
+	if (reset) self.groupComment = nil;
+}
+
+- (void)notifyAboutCommentIfNecessaryAndReset:(BOOL)reset {
+	if (!self.comment) return;
+	if (self.commentRegistrator) {
+		LogParDebug(@"Notifying about %@comment '%@'...", self.isCommentInline ? @"inline " : @"", [self.comment gb_description]);
+		self.commentRegistrator(self, self.comment, self.isCommentInline);
+	}
+	if (reset) self.comment = nil;
+}
+
+@end
+
+@implementation CommentParser (CommentTextHandling)
+
+- (NSString *)trimmedGroupName:(NSString *)line {
+	line = [line gb_stringByTrimmingWhitespaceAndNewLine];
+	line = [line gb_stringByReplacingWhitespaceWithSpaces];
+	line = [line substringFromIndex:6];
+	return line;
+}
+
+- (NSString *)trimmedInlineLine:(NSString *)line {
+	line = [line substringFromIndex:1];
+	line = [self trimmedCommentLine:line];
+	return line;
+}
+
+- (NSString *)trimmedCommentLine:(NSString *)line {
+	if ([line hasPrefix:@" "]) return [line substringFromIndex:1];
+	return line;
+}
+
+@end
+
+@implementation CommentParser (DeterminingCommentKind)
 
 - (BOOL)isSingleLiner:(NSString *)string {
 	if ([string hasPrefix:@"///"]) return YES;
@@ -131,24 +214,6 @@
 	string = [string gb_stringByTrimmingWhitespaceAndNewLine];
 	if ([string hasPrefix:@"@name"] && string.length > 6) return YES;
 	return NO;
-}
-
-- (NSString *)trimmedGroupName:(NSString *)line {
-	line = [line gb_stringByTrimmingWhitespaceAndNewLine];
-	line = [line gb_stringByReplacingWhitespaceWithSpaces];
-	line = [line substringFromIndex:6];
-	return line;
-}
-
-- (NSString *)trimmedInlineLine:(NSString *)line {
-	line = [line substringFromIndex:1];
-	line = [self trimmedCommentLine:line];
-	return line;
-}
-
-- (NSString *)trimmedCommentLine:(NSString *)line {
-	if ([line hasPrefix:@" "]) return [line substringFromIndex:1];
-	return line;
 }
 
 @end

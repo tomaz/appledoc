@@ -6,6 +6,11 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class CommentParser;
+
+typedef void(^CommentParserGroupRegistrationBlock)(CommentParser *parser, NSString *group);
+typedef void(^CommentParserCommentRegistrationBlock)(CommentParser *parser, NSString *comment, BOOL isInline);
+
 /** Helper class for simplifying parsing of comments.
  
  In essence this class handles appledoc comments and grouping of single line comments spread over multiple lines. Additionally it also strips any leading and trailing whitespace from individual lines. It also takes care of successive comments for detecting @name groups.
@@ -16,6 +21,12 @@
  
  ```
  CommentParser *parser = [[CommentParser alloc] init];
+ parser.groupRegistrator = ^(CommentParser *parser, NSString *group) {
+     // register group
+ };
+ parser.commentRegistrator = ^(CommentParser *parser, NSString *comment, BOOL isInline) {
+     // register comment
+ };
  while (!<eof>) {
      PKToken *token = <get current token>;
      if (token.isComment) {
@@ -24,29 +35,27 @@
          }
          continue;
      }
-     
-     // register parsed comment(s) and clear parser - note that both group comment and comment may be nil!
-     NSString *groupComment = parser.groupComment;
-     NSString *comment = parser.comment;
-     BOOL isInline = parser.isCommentInline;
+
+     // reset parser (this will also register remaining data)
      [parser reset];
-     ...
  
      // parse non comment token
      ...
  }
+ 
+ // make sure you reset after parsing is finished - this will catch cases where comment is the last token in source string!
+ [parser reset];
  ```
  
- Above example relies on fact that you're using ParseKit for parsing (as it detects the comment automatically for us).
+ Above example relies on fact that you're using ParseKit for parsing (as it detects the comment automatically for us). Note how CommentParser will automatically report back all encountered objects through BLOCK callbacks, as long as you call it's `parseComment:line:` and `reset` methods.
  */
 @interface CommentParser : NSObject
 
 - (BOOL)isAppledocComment:(NSString *)comment;
 - (void)parseComment:(NSString *)comment line:(NSUInteger)line;
-- (void)reset;
+- (void)notifyAndReset;
 
-@property (nonatomic, strong, readonly) NSString *groupComment;
-@property (nonatomic, strong, readonly) NSString *comment;
-@property (nonatomic, assign, readonly) BOOL isCommentInline;
+@property (nonatomic, copy) CommentParserGroupRegistrationBlock groupRegistrator;
+@property (nonatomic, copy) CommentParserCommentRegistrationBlock commentRegistrator;
 
 @end

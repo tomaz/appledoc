@@ -26,7 +26,6 @@
 - (GBResult)parseTokens;
 - (void)prepareParserForParsingString:(NSString *)string;
 - (BOOL)parseCommentToken:(PKToken *)token;
-- (BOOL)registerAndResetCommentIfNeeded;
 - (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
 @property (nonatomic, strong) CommentParser *commentParser;
@@ -91,7 +90,7 @@
 		PKToken *token = self.tokensStream.current;
 		LogParDebug(@"Parsing token '%@'...", token.stringValue);
 		if ([self parseCommentToken:token]) continue;
-		[self registerAndResetCommentIfNeeded];
+		[self.commentParser notifyAndReset];
 		GBResult stateResult = [self.currentState parseWithData:data];
 		if ([self isParseResultFailure:result]) {
 			LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
@@ -99,7 +98,7 @@
 			break;
 		}
 	}
-	[self registerAndResetCommentIfNeeded];
+	[self.commentParser notifyAndReset];
 	return result;
 }
 
@@ -112,21 +111,6 @@
 	}
 	LogParDebug(@"Consuming comment...");
 	[self.tokensStream consume:1];
-	return YES;
-}
-
-- (BOOL)registerAndResetCommentIfNeeded {
-	NSString *comment = self.commentParser.comment;
-	if (!comment) return NO;
-	if (self.commentParser.isCommentInline) {
-		LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
-		[self.store appendCommentToPreviousObject:comment];
-	} else {
-		LogParDebug(@"Registering comment %@...", [comment gb_description]);
-		[self.store appendCommentToCurrentObject:comment];
-	}
-	LogParDebug(@"Resetting comment parser...");
-	[self.commentParser reset];
 	return YES;
 }
 
@@ -225,7 +209,19 @@
 - (CommentParser *)commentParser {
 	if (_commentParser) return _commentParser;
 	LogIntDebug(@"Initializing comment parser due to first access...");
+	__weak ObjectiveCParser *blockSelf = self;
 	_commentParser = [[CommentParser alloc] init];
+	_commentParser.groupRegistrator = ^(CommentParser *parser, NSString *group) {
+	};
+	_commentParser.commentRegistrator = ^(CommentParser *parser, NSString *comment, BOOL isInline) {
+		if (isInline) {
+			LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
+			[blockSelf.store appendCommentToPreviousObject:comment];
+		} else {
+			LogParDebug(@"Registering comment %@...", [comment gb_description]);
+			[blockSelf.store appendCommentToCurrentObject:comment];
+		}
+	};
 	return _commentParser;
 }
 
