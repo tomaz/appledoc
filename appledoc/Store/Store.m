@@ -147,6 +147,7 @@
 - (void)beginClassWithName:(NSString *)name derivedFromClassWithName:(NSString *)derived {
 	LogStoInfo(@"Starting class %@ derived from %@...", name, derived);
 	ClassInfo *info = [[ClassInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	info.nameOfClass = name;
 	info.nameOfSuperClass = derived;
 	[self.storeClasses addObject:info];
@@ -156,6 +157,7 @@
 - (void)beginExtensionForClassWithName:(NSString *)name {
 	LogStoInfo(@"Starting class extenstion for class %@...", name);
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	info.nameOfClass = name;
 	info.nameOfCategory = nil;
 	[self.storeExtensions addObject:info];
@@ -165,6 +167,7 @@
 - (void)beginCategoryWithName:(NSString *)category forClassWithName:(NSString *)name {
 	LogStoInfo(@"Starting category %@ for class %@...", category, name);
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	info.nameOfClass = name;
 	info.nameOfCategory = category;
 	[self.storeCategories addObject:info];
@@ -174,6 +177,7 @@
 - (void)beginProtocolWithName:(NSString *)name {
 	LogStoInfo(@"Starting protocol %@...", name);
 	ProtocolInfo *info = [[ProtocolInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	info.nameOfProtocol = name;
 	[self.storeProtocols addObject:info];
 	[self pushRegistrationObject:info];
@@ -274,6 +278,7 @@
 - (void)beginEnumeration {
 	LogStoInfo(@"Starting enumeration...");
 	EnumInfo *info = [[EnumInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	[self.storeEnumerations addObject:info];
 	[self pushRegistrationObject:info];
 }
@@ -301,6 +306,7 @@
 - (void)beginStruct {
 	LogStoInfo(@"Starting C struct...");
 	StructInfo *info = [[StructInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	[self.storeStructs addObject:info];
 	[self pushRegistrationObject:info];
 }
@@ -321,6 +327,7 @@
 	}
 	LogStoInfo(@"Starting constant...");
 	ConstantInfo *info = [[ConstantInfo alloc] initWithRegistrar:self];
+	info.sourceToken = self.currentSourceInfo;
 	[self.storeConstants addObject:info];
 	[self pushRegistrationObject:info];
 }

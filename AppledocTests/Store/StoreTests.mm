@@ -62,6 +62,17 @@ describe(@"class registration:", ^{
 			store.storeClasses should contain(store.currentRegistrationObject);
 		});
 	});
+	
+	it(@"should set current source info to class", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
+		});
+	});
 });
 
 describe(@"class extension registration:", ^{
@@ -84,6 +95,17 @@ describe(@"class extension registration:", ^{
 			// verify
 			store.storeExtensions.count should equal(1);
 			store.storeExtensions should contain(store.currentRegistrationObject);
+		});
+	});
+	
+	it(@"should set current source info to category", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginExtensionForClassWithName:@"name"];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
 		});
 	});
 });
@@ -110,6 +132,17 @@ describe(@"class category registration:", ^{
 			store.storeCategories should contain(store.currentRegistrationObject);
 		});
 	});
+	
+	it(@"should set current source info to class", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginCategoryWithName:@"category" forClassWithName:@"class"];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
+		});
+	});
 });
 
 describe(@"protocol registration:", ^{
@@ -131,6 +164,17 @@ describe(@"protocol registration:", ^{
 			// verify
 			store.storeProtocols.count should equal(1);
 			store.storeProtocols should contain(store.currentRegistrationObject);
+		});
+	});
+	
+	it(@"should set current source info to class", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginProtocolWithName:@"name"];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
 		});
 	});
 });
@@ -346,6 +390,17 @@ describe(@"enum related registration:", ^{
 		});
 	});
 	
+	it(@"should set current source info to class", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginEnumeration];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
+		});
+	});
+
 	it(@"should forward append enumeration name to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -407,6 +462,17 @@ describe(@"struct related registration:", ^{
 		});
 	});
 	
+	it(@"should set current source info to class", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[store beginStruct];
+			// verify
+			[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
+		});
+	});
+	
 	it(@"should forward append struct name to current registration object", ^{
 		runWithStore(^(Store *store) {
 			// setup
@@ -442,6 +508,17 @@ describe(@"constant related registration:", ^{
 				store.storeConstants should contain(store.currentRegistrationObject);
 			});
 		});
+		
+		it(@"should set current source info to class", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				store.currentSourceInfo = (PKToken *)@"dummy-source-info";
+				// execute
+				[store beginConstant];
+				// verify
+				[store.currentRegistrationObject sourceToken] should equal(store.currentSourceInfo);
+			});
+		});		
 	});
 	
 	describe(@"if registration stack is not empty, but current object doesn't handle constants:", ^{
