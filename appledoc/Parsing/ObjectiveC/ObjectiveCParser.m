@@ -30,6 +30,7 @@
 - (BOOL)registerComments;
 - (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
+@property (nonatomic, strong) PKToken *commentStartToken;
 @property (nonatomic, strong) CommentParser *commentParser;
 @property (nonatomic, strong) NSMutableArray *statesStack;
 @property (nonatomic, strong) ObjectiveCParserState *currentState;
@@ -49,6 +50,7 @@
 
 @synthesize tokenizer = _tokenizer;
 @synthesize tokensStream = _tokensStream;
+@synthesize commentStartToken = _commentStartToken;
 @synthesize statesStack = _statesStack;
 @synthesize currentState = _currentState;
 @synthesize fileState = _fileState;
@@ -114,6 +116,7 @@
 	LogParDebug(@"Token is comment, testing for appledoc comments...");
 	if ([self.commentParser isAppledocComment:token.stringValue]) {
 		LogParDebug(@"Token is appledoc comment, parsing...");
+		if (!self.commentStartToken) self.commentStartToken = token;
 		[self.commentParser parseComment:token.stringValue line:token.location.y];
 	}
 	LogParDebug(@"Consuming comment...");
@@ -223,19 +226,24 @@
 	if (_commentParser) return _commentParser;
 	LogIntDebug(@"Initializing comment parser due to first access...");
 	Store *store = self.store;
+	__weak ObjectiveCParser *blockSelf = self;
 	_commentParser = [[CommentParser alloc] init];
 	_commentParser.groupRegistrator = ^(CommentParser *parser, NSString *group) {
 		LogParDebug(@"Registering method group %@...", group);
 		[store appendMethodGroupWithDescription:group];
+		blockSelf.commentStartToken = nil;
 	};
 	_commentParser.commentRegistrator = ^(CommentParser *parser, NSString *comment, BOOL isInline) {
 		if (isInline) {
 			LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
+			[store setCurrentSourceInfo:blockSelf.commentStartToken];
 			[store appendCommentToPreviousObject:comment];
 		} else {
 			LogParDebug(@"Registering comment %@...", [comment gb_description]);
+			[store setCurrentSourceInfo:blockSelf.commentStartToken];
 			[store appendCommentToCurrentObject:comment];
 		}
+		blockSelf.commentStartToken = nil;
 	};
 	return _commentParser;
 }

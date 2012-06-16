@@ -89,7 +89,7 @@ describe(@"comments parsing:", ^{
 		});
 	});
 	
-	describe(@"commend before objects:", ^{
+	describe(@"comment before objects:", ^{
 		describe(@"single line comments:", ^{
 			it(@"should ignore standard comments", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
@@ -101,6 +101,7 @@ describe(@"comments parsing:", ^{
 			it(@"should register one line comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"comment"];
 					// execute
 					[parser parseString:@"/// comment"];
@@ -112,6 +113,7 @@ describe(@"comments parsing:", ^{
 			it(@"should group successive lines together", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
 					// execute
 					[parser parseString:@"/// line1\n/// line2\n/// line3"];
@@ -123,7 +125,9 @@ describe(@"comments parsing:", ^{
 			it(@"should register successive comments", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 					// execute
 					[parser parseString:@"/// line1\n/// line2\n\n/// line3\n/// line4"];
@@ -144,6 +148,7 @@ describe(@"comments parsing:", ^{
 			it(@"should register single comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"comment"];
 					// execute
 					[parser parseString:@"/** comment*/"];
@@ -155,7 +160,9 @@ describe(@"comments parsing:", ^{
 			it(@"should register successive comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line1\nline2"];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 					// execute
 					[parser parseString:@"/** line1\n line2*/\n/** line3\n line4*/"];
@@ -178,6 +185,7 @@ describe(@"comments parsing:", ^{
 			it(@"should register one line comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"comment"];
 					// execute
 					[parser parseString:@"///< comment"];
@@ -189,6 +197,7 @@ describe(@"comments parsing:", ^{
 			it(@"should group successive lines together", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToCurrentObject:@"line1\nline2\nline3"];
 					// execute
 					[parser parseString:@"/// line1\n/// line2\n/// line3"];
@@ -200,7 +209,9 @@ describe(@"comments parsing:", ^{
 			it(@"should register successive comments", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"line3\nline4"];
 					// execute
 					[parser parseString:@"///< line1\n/// line2\n\n///< line3\n/// line4"];
@@ -221,6 +232,7 @@ describe(@"comments parsing:", ^{
 			it(@"should register single comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"comment"];
 					// execute
 					[parser parseString:@"/**< comment*/"];
@@ -232,7 +244,9 @@ describe(@"comments parsing:", ^{
 			it(@"should register successive comment to store", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 					// setup
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+					[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 					[[store expect] appendCommentToPreviousObject:@"line3\nline4"];
 					// execute
 					[parser parseString:@"/**< line1\n line2*/\n/**< line3\n line4*/"];
@@ -247,7 +261,9 @@ describe(@"comments parsing:", ^{
 		it(@"should register previous and next single line comment", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
 				[parser parseString:@"///< line1\n/// line2\n\n/// line3\n/// line4"];
@@ -259,7 +275,9 @@ describe(@"comments parsing:", ^{
 		it(@"should register previous and next multi line comment", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
 				[parser parseString:@"/**< line1\nline2*/\n/** line3\nline4*/"];
@@ -271,7 +289,9 @@ describe(@"comments parsing:", ^{
 		it(@"should handle probably the most common case", ^{
 			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
 				// setup
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToPreviousObject:@"line1\nline2"];
+				[[store expect] setCurrentSourceInfo:OCMOCK_ANY];
 				[[store expect] appendCommentToCurrentObject:@"line3\nline4"];
 				// execute
 				[parser parseString:@"///< line1\n/// line2\n\n/** line3\n line4*/"];
