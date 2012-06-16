@@ -41,6 +41,52 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
+describe(@"current source info:", ^{
+	it(@"should store info to property", ^{
+		runWithStore(^(Store *store) {
+			// execute
+			store.currentSourceInfo = (PKToken *)@"dummy-source-token";
+			// verify
+			store.currentSourceInfo should equal(@"dummy-source-token");
+		});
+	});
+	
+	it(@"should pass info to current object on registration stack if it supports it", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+			[[object expect] setCurrentSourceInfo:(PKToken *)@"dummy-source-token"];
+			[store pushRegistrationObject:object];
+			// execute
+			[store setCurrentSourceInfo:(PKToken *)@"dummy-source-token"];
+			// verify
+			^{ [object verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should remember object even if passed to current object on registration stack", ^{
+		runWithStore(^(Store *store) {
+			// setup
+			id object = [OCMockObject niceMockForClass:[ObjectInfoBase class]];
+			[store pushRegistrationObject:object];
+			// execute
+			[store setCurrentSourceInfo:(PKToken *)@"dummy-source-token"];
+			// verify
+			store.currentSourceInfo should equal(@"dummy-source-token");
+		});
+	});
+	
+	it(@"should not pass into to current object on registration stack if it doesn't support it", ^{
+		runWithStore(^(Store *store) {
+			// setup - note that this will raise exception if any message is sent to object.
+			id object = [OCMockObject mockForClass:[NSObject class]];
+			[store pushRegistrationObject:object];
+			// execute
+			[store setCurrentSourceInfo:(PKToken *)@"dummy-source-token"];
+		});
+	});
+});
+
 describe(@"class registration:", ^{
 	it(@"should add class info to registration stack", ^{
 	   runWithStore(^(Store *store) {

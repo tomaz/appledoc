@@ -9,9 +9,16 @@
 #import "Objects.h"
 #import "ObjectInfoBase.h"
 
+@interface ObjectInfoBase ()
+@property (nonatomic, strong) PKToken *currentSourceInfo;
+@end
+
+#pragma mark - 
+
 @implementation ObjectInfoBase
 
 @synthesize sourceToken = _sourceToken;
+@synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize objectRegistrar = _objectRegistrar;
 
 #pragma mark - Initialization & disposal

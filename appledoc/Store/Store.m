@@ -85,6 +85,17 @@
 	return _registrationStack;
 }
 
+#pragma mark - Customized modifiers
+
+- (void)setCurrentSourceInfo:(PKToken *)value {
+	LogIntDebug(@"Changing current source info to line %lu...", value.location.y);
+	_currentSourceInfo = value;
+	if ([self doesCurrentRegistrationObjectRespondTo:@selector(setCurrentSourceInfo:)]) {
+		LogIntDebug(@"Passing source info to current registration object...");
+		[self.currentRegistrationObject setCurrentSourceInfo:value];
+	}
+}
+
 #pragma mark - Properties
 
 - (NSMutableArray *)storeClasses {
