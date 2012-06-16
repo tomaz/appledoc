@@ -116,6 +116,7 @@
 - (void)beginPropertyDefinition {
 	LogStoInfo(@"Starting property definition...");
 	PropertyInfo *info = [[PropertyInfo alloc] initWithRegistrar:self.objectRegistrar];
+	info.sourceToken = self.currentSourceInfo;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];
 	[self.interfaceProperties addObject:info];
@@ -129,6 +130,7 @@
 	NSMutableArray *methodsArray = [self methodsArrayForType:type];
 	if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
 	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];
+	info.sourceToken = self.currentSourceInfo;
 	info.methodType = type;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];

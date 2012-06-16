@@ -123,6 +123,17 @@ describe(@"properties registration:", ^{
 		});
 	});
 	
+	it(@"should set current source info to class", ^{
+		runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+			// setup
+			info.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[info beginPropertyDefinition];
+			// verify
+			[info.currentRegistrationObject sourceToken] should equal(info.currentSourceInfo);
+		});
+	});
+
 	it(@"should add property info to last method group if one exists", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// setup
@@ -177,6 +188,17 @@ describe(@"methods registration:", ^{
 			});
 		});
 		
+		it(@"should set current source info to class", ^{
+			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+				// setup
+				info.currentSourceInfo = (PKToken *)@"dummy-source-info";
+				// execute
+				[info beginMethodDefinitionWithType:GBStoreTypes.classMethod];
+				// verify
+				[info.currentRegistrationObject sourceToken] should equal(info.currentSourceInfo);
+			});
+		});
+		
 		it(@"should add method info to last method group if one exists", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
@@ -227,6 +249,17 @@ describe(@"methods registration:", ^{
 				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 				// verify
 				^{ [mock verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should set current source info to class", ^{
+			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+				// setup
+				info.currentSourceInfo = (PKToken *)@"dummy-source-info";
+				// execute
+				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+				// verify
+				[info.currentRegistrationObject sourceToken] should equal(info.currentSourceInfo);
 			});
 		});
 		

@@ -15,7 +15,16 @@ static void runWithStructInfo(void(^handler)(StructInfo *info)) {
 	[info release];
 }
 
-#pragma mark - 
+static void runWithStructInfoWithRegistrar(void(^handler)(StructInfo *info, Store *store)) {
+	runWithStructInfo(^(StructInfo *info) {
+		Store *store = [[Store alloc] init];
+		info.objectRegistrar = store;
+		handler(info, store);
+		[store release];
+	});
+}
+
+#pragma mark -
 
 TEST_BEGIN(StructInfoTests)
 
@@ -65,6 +74,17 @@ describe(@"constant registration:", ^{
 			[info beginConstant];
 			// verify
 			^{ [mock verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should set current source info to class", ^{
+		runWithStructInfoWithRegistrar(^(StructInfo *info, Store *store) {
+			// setup
+			info.currentSourceInfo = (PKToken *)@"dummy-source-info";
+			// execute
+			[info beginConstant];
+			// verify
+			[info.currentRegistrationObject sourceToken] should equal(info.currentSourceInfo);
 		});
 	});
 });

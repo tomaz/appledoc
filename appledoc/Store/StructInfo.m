@@ -39,6 +39,7 @@
 - (void)beginConstant {
 	LogStoVerbose(@"Starting constant...");
 	ConstantInfo *info = [[ConstantInfo alloc] initWithRegistrar:self.objectRegistrar];
+	info.sourceToken = self.currentSourceInfo;
 	[self.structItems addObject:info];
 	[self pushRegistrationObject:info];
 }
