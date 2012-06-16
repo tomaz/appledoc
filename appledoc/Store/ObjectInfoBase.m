@@ -7,6 +7,7 @@
 //
 
 #import "Objects.h"
+#import "CommentInfo.h"
 #import "ObjectInfoBase.h"
 
 @interface ObjectInfoBase ()
@@ -17,6 +18,7 @@
 
 @implementation ObjectInfoBase
 
+@synthesize comment = _comment;
 @synthesize sourceToken = _sourceToken;
 @synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize objectRegistrar = _objectRegistrar;

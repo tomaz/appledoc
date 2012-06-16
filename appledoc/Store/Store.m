@@ -10,8 +10,10 @@
 #import "Store.h"
 
 @interface Store ()
+- (void)createCommentFromText:(NSString *)text registerTo:(id)object;
 - (BOOL)doesPreviousRegistrationObjectRespondTo:(SEL)selector;
 @property (nonatomic, readonly) id previousRegistrationObject;
+@property (nonatomic, strong) id lastPoppedRegistrationObject;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
 @end
@@ -29,6 +31,7 @@
 @synthesize storeConstants = _storeConstants;
 @synthesize currentSourceInfo = _currentSourceInfo;
 @synthesize registrationStack = _registrationStack;
+@synthesize lastPoppedRegistrationObject = _lastPoppedRegistrationObject;
 
 #pragma mark - StoreRegistrar and related stuff
 
@@ -64,6 +67,7 @@
 
 - (id)popRegistrationObject {
 	id result = self.currentRegistrationObject;
+	self.lastPoppedRegistrationObject = result;
 	[self.registrationStack removeLastObject];
 	return result;
 }
@@ -83,6 +87,16 @@
 	LogIntDebug(@"Initializing registration stack due to first access...");
 	_registrationStack = [[NSMutableArray alloc] init];
 	return _registrationStack;
+}
+
+#pragma mark - Common functionality
+
+- (void)createCommentFromText:(NSString *)text registerTo:(id)object {
+	LogStoVerbose(@"Creating comment from %@ for %@...", [text gb_description], object);
+	CommentInfo *info = [[CommentInfo alloc] init];
+	info.sourceToken = self.currentSourceInfo;
+	info.sourceString = text;
+	[object setComment:info];
 }
 
 #pragma mark - Customized modifiers
@@ -384,9 +398,21 @@
 #pragma mark - Comments
 
 - (void)appendCommentToCurrentObject:(NSString *)comment {
+	if (![self expectCurrentRegistrationObjectRespondTo:@selector(setComment:)]) return;
+	[self createCommentFromText:comment registerTo:self.currentRegistrationObject];
 }
 
 - (void)appendCommentToPreviousObject:(NSString *)comment {
+	id object = self.lastPoppedRegistrationObject;
+	if (!object) {
+		LogStoWarn(@"No previous object, can't register comment!");
+		return;
+	}
+	if (![object respondsToSelector:@selector(setComment:)]) {
+		LogStoWarn(@"%@ doesn't respond to setComment:, can't register comment!", object);
+		return;
+	}
+	[self createCommentFromText:comment registerTo:object];
 }
 
 #pragma mark - Finalizing registration for current object

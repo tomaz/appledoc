@@ -690,6 +690,83 @@ describe(@"common registrations:", ^{
 	});
 });
 
+describe(@"comments registrations:", ^{
+	describe(@"current object:", ^{
+		it(@"should create comment and add it to current registration object", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
+					if (![obj isKindOfClass:[CommentInfo class]]) return NO;
+					if (![[obj sourceString] isEqualToString:@"text"]) return NO;
+					return YES;
+				}]];
+				[store pushRegistrationObject:object];
+				// execute
+				[store appendCommentToCurrentObject:@"text"];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should append current source info to token", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				PKToken *token = [PKToken tokenWithTokenType:PKTokenTypeComment stringValue:@"text" floatValue:0.0];
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[[object expect] setCurrentSourceInfo:token];
+				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
+					return ([obj sourceToken] == token);
+				}]];
+				[store pushRegistrationObject:object];
+				// execute
+				[store setCurrentSourceInfo:token];
+				[store appendCommentToCurrentObject:@"text"];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+	});
+
+	describe(@"previous object:", ^{
+		it(@"should create comment and add it to last popped object", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
+					if (![obj isKindOfClass:[CommentInfo class]]) return NO;
+					if (![[obj sourceString] isEqualToString:@"text"]) return NO;
+					return YES;
+				}]];
+				[store pushRegistrationObject:object];
+				[store popRegistrationObject];
+				// execute
+				[store appendCommentToPreviousObject:@"text"];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should append current source info to token", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				PKToken *token = [PKToken tokenWithTokenType:PKTokenTypeComment stringValue:@"text" floatValue:0.0];
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
+					return ([obj sourceToken] == token);
+				}]];
+				[store pushRegistrationObject:object];
+				[store popRegistrationObject];
+				// execute
+				[store setCurrentSourceInfo:token];
+				[store appendCommentToPreviousObject:@"text"];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+	});
+});
+
 describe(@"end current object:", ^{
 	it(@"should remove last object from registration stack", ^{
 		runWithStore(^(Store *store) {

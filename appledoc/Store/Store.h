@@ -28,6 +28,8 @@
 
 #import "ConstantInfo.h"
 
+#import "CommentInfo.h"
+
 @class PKToken;
 
 /** The main data store for the application.

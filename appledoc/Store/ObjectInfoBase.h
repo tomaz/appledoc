@@ -9,6 +9,7 @@
 #import "StoreRegistrations.h"
 
 @class PKToken;
+@class CommentInfo;
 
 /** The base class for all Store objects.
  
@@ -20,6 +21,7 @@
 
 - (id)initWithRegistrar:(id<StoreRegistrar>)registrar;
 
+@property (nonatomic, strong) CommentInfo *comment;
 @property (nonatomic, strong) PKToken *sourceToken;
 @property (nonatomic, assign) id<StoreRegistrar> objectRegistrar;
 
