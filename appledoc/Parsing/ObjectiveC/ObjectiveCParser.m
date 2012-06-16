@@ -222,17 +222,19 @@
 - (CommentParser *)commentParser {
 	if (_commentParser) return _commentParser;
 	LogIntDebug(@"Initializing comment parser due to first access...");
-	__weak ObjectiveCParser *blockSelf = self;
+	Store *store = self.store;
 	_commentParser = [[CommentParser alloc] init];
 	_commentParser.groupRegistrator = ^(CommentParser *parser, NSString *group) {
+		LogParDebug(@"Registering method group %@...", group);
+		[store appendMethodGroupWithDescription:group];
 	};
 	_commentParser.commentRegistrator = ^(CommentParser *parser, NSString *comment, BOOL isInline) {
 		if (isInline) {
 			LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
-			[blockSelf.store appendCommentToPreviousObject:comment];
+			[store appendCommentToPreviousObject:comment];
 		} else {
 			LogParDebug(@"Registering comment %@...", [comment gb_description]);
-			[blockSelf.store appendCommentToCurrentObject:comment];
+			[store appendCommentToCurrentObject:comment];
 		}
 	};
 	return _commentParser;

@@ -65,7 +65,31 @@ describe(@"lazy accessors:", ^{
 });
 
 describe(@"comments parsing:", ^{
-	describe(@"commends before objects:", ^{
+	describe(@"method groups:", ^{
+		it(@"should append method group from single line comment", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// setup
+				[[store expect] appendMethodGroupWithDescription:@"name of group"];
+				// execute
+				[parser parseString:@"/// @name name of group"];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+			});
+		});
+
+		it(@"should append method group from multi line comment", ^{
+			runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
+				// setup
+				[[store expect] appendMethodGroupWithDescription:@"name of group"];
+				// execute
+				[parser parseString:@"/** @name name of group */"];
+				// verify
+				^{ [store verify]; } should_not raise_exception();
+			});
+		});
+	});
+	
+	describe(@"commend before objects:", ^{
 		describe(@"single line comments:", ^{
 			it(@"should ignore standard comments", ^{
 				runWithStrictParser(^(ObjectiveCParser *parser, id store, id settings) {
