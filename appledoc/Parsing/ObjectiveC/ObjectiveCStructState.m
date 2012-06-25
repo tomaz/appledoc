@@ -31,9 +31,6 @@
 
 @implementation ObjectiveCStructState
 
-@synthesize wasStructNameParsed = _wasStructNameParsed;
-@synthesize structItemDelimiters = _structItemDelimiters;
-
 #pragma mark - Parsing
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {

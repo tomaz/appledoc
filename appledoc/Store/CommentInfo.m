@@ -10,8 +10,4 @@
 #import "CommentInfo.h"
 
 @implementation CommentInfo
-
-@synthesize sourceToken = _sourceToken;
-@synthesize sourceString = _sourceString;
-
 @end

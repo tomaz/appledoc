@@ -11,9 +11,6 @@
 
 @implementation ObjectLinkData
 
-@synthesize nameOfObject;
-@synthesize linkToObject;
-
 + (id)objectLinkDataWithName:(NSString *)name {
 	ObjectLinkData *result = [[self alloc] init];
 	result.nameOfObject = name;

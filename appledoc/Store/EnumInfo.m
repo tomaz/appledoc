@@ -12,9 +12,6 @@
 
 @implementation EnumInfo
 
-@synthesize nameOfEnum = _nameOfEnum;
-@synthesize enumItems = _enumItems;
-
 #pragma mark - Properties
 
 - (NSMutableArray *)enumItems {

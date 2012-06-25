@@ -9,19 +9,12 @@
 #import "ObjectiveCConstantState.h"
 
 @interface ObjectiveCConstantState ()
-- (BOOL)consumeConstantStartTokens:(ObjectiveCParseData *)data;
-- (BOOL)parseConstantDefinition:(ObjectiveCParseData *)data;
-- (BOOL)finalizeConstant:(ObjectiveCParseData *)data;
-- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorToken:(ObjectiveCParseData *)data;
-- (NSUInteger)lookaheadIndexOfConstantEndToken:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) NSArray *constantInvalidTokens;
 @end
 
 #pragma mark - 
 
 @implementation ObjectiveCConstantState
-
-@synthesize constantInvalidTokens = _constantInvalidTokens;
 
 #pragma mark - Parsing constant
 

@@ -9,17 +9,10 @@
 #import "ObjectiveCPragmaMarkState.h"
 
 @interface ObjectiveCPragmaMarkState ()
-- (BOOL)consumePragmaStartTokens:(ObjectiveCParseData *)data;
-- (BOOL)parsePragmaDescription:(ObjectiveCParseData *)data;
-- (BOOL)isCurrentTokenOnStartingLine:(ObjectiveCParseData *)data;
-- (PKToken *)consumeUntilLastPragmaDescriptionToken:(ObjectiveCParseData *)data;
-- (NSString *)pragmaDescriptionFromStartToken:(PKToken *)start endToken:(PKToken *)end data:(ObjectiveCParseData *)data;
 @property (nonatomic, assign) NSUInteger startingLine;
 @end
 
 @implementation ObjectiveCPragmaMarkState
-
-@synthesize startingLine = _startingLine;
 
 #pragma mark - Parsing
 

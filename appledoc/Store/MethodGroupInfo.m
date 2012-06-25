@@ -12,9 +12,6 @@
 
 @implementation MethodGroupInfo
 
-@synthesize nameOfMethodGroup = _nameOfMethodGroup;
-@synthesize methodGroupMethods = _methodGroupMethods;
-
 + (id)MethodGroupInfoWithName:(NSString *)name {
 	MethodGroupInfo *result = [[self alloc] init];
 	result.nameOfMethodGroup = name;

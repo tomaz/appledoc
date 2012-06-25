@@ -19,10 +19,6 @@
 
 @implementation ParserTask
 
-@synthesize store = _store;
-@synthesize settings = _settings;
-@synthesize filename = _filename;
-
 #pragma mark - Running the task
 
 - (NSInteger)parseFile:(NSString *)filename withSettings:(GBSettings *)settings store:(Store *)store {

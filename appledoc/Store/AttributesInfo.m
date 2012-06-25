@@ -12,8 +12,6 @@
 
 @implementation AttributesInfo
 
-@synthesize attributeItems = _attributeItems;
-
 #pragma mark - Helper methods
 
 - (NSString *)valueForAttribute:(NSString *)attribute {

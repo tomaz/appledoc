@@ -14,10 +14,6 @@
 
 @implementation ConstantInfo
 
-@synthesize constantTypes = _constantTypes;
-@synthesize constantDescriptors = _constantDescriptors;
-@synthesize constantName = _constantName;
-
 #pragma mark - Properties
 
 - (TypeInfo *)constantTypes {

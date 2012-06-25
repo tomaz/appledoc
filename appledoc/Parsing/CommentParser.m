@@ -43,13 +43,6 @@
 
 @implementation CommentParser
 
-@synthesize groupRegistrator = _groupRegistrator;
-@synthesize commentRegistrator = _commentRegistrator;
-@synthesize groupComment = _groupComment;
-@synthesize comment = _comment;
-@synthesize isCommentInline = _isCommentInline;
-@synthesize lastSingleLinerLine = _lastSingleLinerLine;
-
 #pragma mark - Parsing
 
 - (BOOL)isAppledocComment:(NSString *)comment {

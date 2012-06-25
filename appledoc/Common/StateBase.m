@@ -26,9 +26,6 @@
 
 @implementation BlockStateBase
 
-@synthesize didBecomeCurrentStateBlock;
-@synthesize willResignCurrentStateBlock;
-
 - (void)didBecomeCurrentStateForContext:(id)context {
 	[super didBecomeCurrentStateForContext:context];
 	if (self.didBecomeCurrentStateBlock) self.didBecomeCurrentStateBlock(self, context);

@@ -9,16 +9,6 @@
 #import "ObjectiveCMethodState.h"
 
 @interface ObjectiveCMethodState ()
-- (BOOL)consumeMethodStartTokens:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodReturnTypes:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodArguments:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodArgumentSelector:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodArgumentTypes:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodArgumentVariable:(ObjectiveCParseData *)data;
-- (BOOL)parseMethodDescriptors:(ObjectiveCParseData *)data;
-- (BOOL)skipMethodBody:(ObjectiveCParseData *)data;
-- (BOOL)finalizeMethod:(ObjectiveCParseData *)data;
-- (BOOL)isMethodDefinitionFinished:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) NSArray *methodTypeDelimiters;
 @property (nonatomic, strong) NSArray *methodEndDelimiters;
 @end
@@ -26,9 +16,6 @@
 #pragma mark - 
 
 @implementation ObjectiveCMethodState
-
-@synthesize methodTypeDelimiters = _methodTypeDelimiters;
-@synthesize methodEndDelimiters = _methodEndDelimiters;
 
 #pragma mark - Parsing
 

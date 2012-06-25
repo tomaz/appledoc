@@ -13,16 +13,6 @@
 
 @implementation Appledoc
 
-@synthesize store = _store;
-@synthesize parser = _parser;
-
-#pragma mark - Initialization & disposal
-
-- (id)init {
-	self = [super init];
-	return self;
-}
-
 #pragma mark - Running
 
 - (NSInteger)runWithSettings:(GBSettings *)settings {

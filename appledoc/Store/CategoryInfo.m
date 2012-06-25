@@ -10,9 +10,6 @@
 
 @implementation CategoryInfo
 
-@synthesize nameOfClass;
-@synthesize nameOfCategory;
-
 #pragma mark - Properties
 
 - (BOOL)isCategory {

@@ -10,7 +10,6 @@
 #import "TokensStream.h"
 
 @interface TokensStream ()
-- (void)assignLocationInformationToTokens:(NSArray *)tokens fromString:(NSString *)string;
 @property (nonatomic, strong, readwrite) NSString *string;
 @property (nonatomic, strong, readwrite) NSArray *tokens;
 @property (nonatomic, assign, readwrite) NSUInteger position;
@@ -19,10 +18,6 @@
 #pragma mark - 
 
 @implementation TokensStream
-
-@synthesize string = _string;
-@synthesize tokens = _tokens;
-@synthesize position = _position;
 
 #pragma mark - Initialization & disposal
 

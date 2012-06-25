@@ -15,11 +15,6 @@
 
 @implementation PropertyInfo
 
-@synthesize propertyType = _propertyType;
-@synthesize propertyAttributes = _propertyAttributes;
-@synthesize propertyDescriptors = _propertyDescriptors;
-@synthesize propertyName = _propertyName;
-
 #pragma mark - Helper methods
 
 - (NSString *)propertyGetterSelector {

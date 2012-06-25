@@ -16,20 +16,12 @@
 #import "InterfaceInfoBase.h"
 
 @interface InterfaceInfoBase ()
-- (NSMutableArray *)methodsArrayForType:(NSString *)type;
 @property (nonatomic, strong) NSMutableArray *interfaceMethodsAndPropertiesInRegistrationOrder; // only used for nicer debug output!
 @end
 
 #pragma mark - 
 
 @implementation InterfaceInfoBase
-
-@synthesize interfaceAdoptedProtocols = _interfaceAdoptedProtocols;
-@synthesize interfaceMethodGroups = _interfaceMethodGroups;
-@synthesize interfaceProperties = _interfaceProperties;
-@synthesize interfaceInstanceMethods = _interfaceInstanceMethods;
-@synthesize interfaceClassMethods = _interfaceClassMethods;
-@synthesize interfaceMethodsAndPropertiesInRegistrationOrder = _interfaceMethodsAndPropertiesInRegistrationOrder;
 
 #pragma mark - Helper methods
 

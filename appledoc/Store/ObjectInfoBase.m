@@ -18,11 +18,6 @@
 
 @implementation ObjectInfoBase
 
-@synthesize comment = _comment;
-@synthesize sourceToken = _sourceToken;
-@synthesize currentSourceInfo = _currentSourceInfo;
-@synthesize objectRegistrar = _objectRegistrar;
-
 #pragma mark - Initialization & disposal
 
 - (id)initWithRegistrar:(id<StoreRegistrar>)registrar {

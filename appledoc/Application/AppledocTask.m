@@ -20,10 +20,6 @@
 
 @implementation AppledocTask
 
-@synthesize store = _store;
-@synthesize settings = _settings;
-@synthesize fileManager = _fileManager;
-
 #pragma mark - Running the task
 
 - (GBResult)runWithSettings:(GBSettings *)settings store:(Store *)store {

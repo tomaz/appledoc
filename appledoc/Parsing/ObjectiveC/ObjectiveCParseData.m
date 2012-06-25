@@ -14,10 +14,6 @@
 #import "ObjectiveCParseData.h"
 
 @interface ObjectiveCParseData ()
-- (BOOL)isStringPrefixedWithDoubleUnderscore:(NSString *)string;
-- (BOOL)isStringPrefixedWithUnderscore:(NSString *)string;
-- (BOOL)isStringPrefixedWithDigit:(NSString *)string;
-- (BOOL)isStringComposedOfUppercaseLetters:(NSString *)string;
 @property (nonatomic, readwrite, strong) Store *store;
 @property (nonatomic, readwrite, strong) TokensStream *stream;
 @property (nonatomic, readwrite, strong) ObjectiveCParser *parser;
@@ -27,11 +23,6 @@
 #pragma mark - 
 
 @implementation ObjectiveCParseData
-
-@synthesize store = _store;
-@synthesize stream = _stream;
-@synthesize parser = _parser;
-@synthesize uppercaseLettersSet = _uppercaseLettersSet;
 
 #pragma mark - Initialization & disposal
 

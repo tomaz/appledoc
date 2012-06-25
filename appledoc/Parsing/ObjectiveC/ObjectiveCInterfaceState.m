@@ -9,19 +9,12 @@
 #import "ObjectiveCInterfaceState.h"
 
 @interface ObjectiveCInterfaceState ()
-- (BOOL)parseAdoptedProtocols:(ObjectiveCParseData *)data;
-- (BOOL)parseMethod:(ObjectiveCParseData *)data;
-- (BOOL)parseProperty:(ObjectiveCParseData *)data;
-- (BOOL)parsePragmaMark:(ObjectiveCParseData *)data;
-- (BOOL)parseEndOfInterface:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) NSArray *interfaceAdoptedProtocolDelimiters;
 @end
 
 #pragma mark - 
 
 @implementation ObjectiveCInterfaceState
-
-@synthesize interfaceAdoptedProtocolDelimiters = _interfaceAdoptedProtocolDelimiters;
 
 #pragma mark - Stream parsing
 

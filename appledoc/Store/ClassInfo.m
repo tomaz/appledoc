@@ -9,10 +9,6 @@
 #import "ClassInfo.h"
 
 @implementation ClassInfo
-
-@synthesize nameOfClass;
-@synthesize nameOfSuperClass;
-
 @end
 
 #pragma mark - 

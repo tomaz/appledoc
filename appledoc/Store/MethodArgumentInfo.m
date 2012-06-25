@@ -13,10 +13,6 @@
 
 @implementation MethodArgumentInfo
 
-@synthesize argumentType = _argumentType;
-@synthesize argumentSelector = _argumentSelector;
-@synthesize argumentVariable = _argumentVariable;
-
 #pragma mark - Properties
 
 - (TypeInfo *)argumentType {

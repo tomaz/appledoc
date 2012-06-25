@@ -12,8 +12,6 @@
 
 @implementation DescriptorsInfo
 
-@synthesize descriptorItems = _descriptorItems;
-
 #pragma mark - Properties
 
 - (NSMutableArray *)descriptorItems {

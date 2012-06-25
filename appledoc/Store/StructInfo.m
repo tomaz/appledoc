@@ -13,9 +13,6 @@
 
 @implementation StructInfo
 
-@synthesize nameOfStruct = _nameOfStruct;
-@synthesize structItems = _structItems;
-
 #pragma mark - Properties
 
 - (NSMutableArray *)structItems {

@@ -9,19 +9,6 @@
 #import "ObjectiveCConstantState.h"
 #import "ObjectiveCFileState.h"
 
-@interface ObjectiveCFileState ()
-- (BOOL)parseClassExtension:(ObjectiveCParseData *)data;
-- (BOOL)parseClassCategory:(ObjectiveCParseData *)data;
-- (BOOL)parseDerivedClass:(ObjectiveCParseData *)data;
-- (BOOL)parseRootClass:(ObjectiveCParseData *)data;
-- (BOOL)parseProtocol:(ObjectiveCParseData *)data;
-- (BOOL)parseEnum:(ObjectiveCParseData *)data;
-- (BOOL)parseStruct:(ObjectiveCParseData *)data;
-- (BOOL)parseConstant:(ObjectiveCParseData *)data;
-@end
-
-#pragma mark - 
-
 @implementation ObjectiveCFileState
 
 - (NSUInteger)parseWithData:(ObjectiveCParseData *)data {

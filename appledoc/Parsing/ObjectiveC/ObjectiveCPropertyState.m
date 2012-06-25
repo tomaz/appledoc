@@ -10,20 +10,12 @@
 #import "ObjectiveCPropertyState.h"
 
 @interface ObjectiveCPropertyState ()
-- (BOOL)consumePropertyStartTokens:(ObjectiveCParseData *)data;
-- (BOOL)parsePropertyAttributes:(ObjectiveCParseData *)data;
-- (BOOL)parsePropertyTypesNameAndDescriptors:(ObjectiveCParseData *)data;
-- (BOOL)finalizeProperty:(ObjectiveCParseData *)data;
-- (NSUInteger)lookaheadIndexOfFirstPotentialDescriptor:(ObjectiveCParseData *)data;
-- (NSUInteger)lookaheadIndexOfPropertyEndToken:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) NSArray *propertyAttributeDelimiters;
 @end
 
 #pragma mark - 
 
 @implementation ObjectiveCPropertyState
-
-@synthesize propertyAttributeDelimiters = _propertyAttributeDelimiters;
 
 #pragma mark - Parsing
 

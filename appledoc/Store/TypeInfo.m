@@ -12,8 +12,6 @@
 
 @implementation TypeInfo
 
-@synthesize typeItems = _typeItems;
-
 #pragma mark - Properties
 
 - (NSMutableArray *)typeItems {

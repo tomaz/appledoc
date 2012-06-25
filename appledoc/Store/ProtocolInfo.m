@@ -9,9 +9,6 @@
 #import "ProtocolInfo.h"
 
 @implementation ProtocolInfo
-
-@synthesize nameOfProtocol;
-
 @end
 
 #pragma mark - 

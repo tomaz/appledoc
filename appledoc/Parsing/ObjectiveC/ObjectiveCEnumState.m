@@ -19,12 +19,6 @@
 #pragma mark - 
 
 @interface ObjectiveCEnumState ()
-- (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data;
-- (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data;
-- (BOOL)parseEnumBody:(ObjectiveCParseData *)data;
-- (BOOL)parseEnumBodyEnd:(ObjectiveCParseData *)data;
-- (BOOL)parseEnumNameAfterBody:(ObjectiveCParseData *)data;
-- (BOOL)finalizeEnum:(ObjectiveCParseData *)data;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumItemState;
 @property (nonatomic, strong) ObjectiveCEnumItemState *enumValueState;
 @property (nonatomic, strong) ContextBase *enumItemContext;
@@ -35,12 +29,6 @@
 #pragma mark - 
 
 @implementation ObjectiveCEnumState
-
-@synthesize enumItemState = _enumItemState;
-@synthesize enumValueState = _enumValueState;
-@synthesize enumItemContext = _enumItemContext;
-@synthesize enumItemDelimiters = _enumItemDelimiters;
-@synthesize wasEnumNameParsed = _wasEnumNameParsed;
 
 #pragma mark - Parsing
 

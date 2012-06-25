@@ -16,11 +16,6 @@
 
 @implementation MethodInfo
 
-@synthesize methodType = _methodType;
-@synthesize methodResult = _methodResult;
-@synthesize methodArguments = _methodArguments;
-@synthesize methodDescriptors = _methodDescriptors;
-
 #pragma mark - Properties
 
 - (TypeInfo *)methodResult {

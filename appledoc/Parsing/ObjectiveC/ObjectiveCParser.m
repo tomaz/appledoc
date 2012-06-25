@@ -23,12 +23,6 @@
 #pragma mark - 
 
 @interface ObjectiveCParser ()
-- (GBResult)parseTokens;
-- (void)prepareParserForParsingString:(NSString *)string;
-- (BOOL)parseTokensWithData:(ObjectiveCParseData *)data result:(GBResult *)result;
-- (BOOL)parseCommentToken:(PKToken *)token;
-- (BOOL)registerComments;
-- (BOOL)isParseResultFailure:(GBResult)result;
 @property (nonatomic, strong) TokensStream *tokensStream;
 @property (nonatomic, strong) PKToken *commentStartToken;
 @property (nonatomic, strong) CommentParser *commentParser;
@@ -47,20 +41,6 @@
 #pragma mark - 
 
 @implementation ObjectiveCParser
-
-@synthesize tokenizer = _tokenizer;
-@synthesize tokensStream = _tokensStream;
-@synthesize commentStartToken = _commentStartToken;
-@synthesize statesStack = _statesStack;
-@synthesize currentState = _currentState;
-@synthesize fileState = _fileState;
-@synthesize interfaceState = _interfaceState;
-@synthesize propertyState = _propertyState;
-@synthesize methodState = _methodState;
-@synthesize pragmaMarkState = _pragmaMarkState;
-@synthesize enumState = _enumState;
-@synthesize structState = _structState;
-@synthesize constantState = _constantState;
 
 #pragma mark - Initialization & disposal
 

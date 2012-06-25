@@ -10,8 +10,6 @@
 #import "Store.h"
 
 @interface Store ()
-- (void)createCommentFromText:(NSString *)text registerTo:(id)object;
-- (BOOL)doesPreviousRegistrationObjectRespondTo:(SEL)selector;
 @property (nonatomic, readonly) id previousRegistrationObject;
 @property (nonatomic, strong) id lastPoppedRegistrationObject;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
@@ -21,17 +19,6 @@
 #pragma mark - 
 
 @implementation Store
-
-@synthesize storeClasses = _storeClasses;
-@synthesize storeExtensions = _storeExtensions;
-@synthesize storeCategories = _storeCategories;
-@synthesize storeProtocols = _storeProtocols;
-@synthesize storeEnumerations = _storeEnumerations;
-@synthesize storeStructs = _storeStructs;
-@synthesize storeConstants = _storeConstants;
-@synthesize currentSourceInfo = _currentSourceInfo;
-@synthesize registrationStack = _registrationStack;
-@synthesize lastPoppedRegistrationObject = _lastPoppedRegistrationObject;
 
 #pragma mark - StoreRegistrar and related stuff
 

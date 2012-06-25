@@ -9,10 +9,6 @@
 #import "EnumItemInfo.h"
 
 @implementation EnumItemInfo
-
-@synthesize itemName;
-@synthesize itemValue;
-
 @end
 
 #pragma mark - 

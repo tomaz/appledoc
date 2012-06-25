@@ -15,21 +15,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 #pragma mark - 
 
-@interface Parser ()
-- (NSInteger)parsePath:(NSString *)path withBlock:(ParserPathBlock)handler;
-- (NSInteger)parseDirectory:(NSString *)path withBlock:(ParserPathBlock)handler;
-- (NSInteger)parseFile:(NSString *)path withBlock:(ParserPathBlock)handler;
-- (BOOL)isPathIgnored:(NSString *)path;
-- (BOOL)isFileIgnored:(NSString *)filename;
-- (BOOL)isDirectoryIgnored:(NSString *)filename;
-- (BOOL)isSourceCodeFile:(NSString *)path;
-@end
-
-#pragma mark -
-
 @implementation Parser
-
-@synthesize objectiveCParser = _objectiveCParser;
 
 #pragma mark - Task invocation
 
