@@ -51,7 +51,7 @@ describe(@"running:", ^{
 		runWithParser(^(Parser *parser) {
 			// setup
 			id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-			[[[settings stub] andReturn:[NSArray arrayWithObject:@"file.m"]] arguments];
+			[[[settings stub] andReturn:@[@"file.m"]] arguments];
 			id objcParser = [OCMockObject niceMockForClass:[ObjectiveCParser class]];
 			[[objcParser expect] parseFile:@"file.m" withSettings:settings store:OCMOCK_ANY];
 			BOOL yes = YES, no = NO;

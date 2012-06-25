@@ -79,7 +79,7 @@
 - (id)previousRegistrationObject {
 	if (self.registrationStack.count < 2) return nil;
 	NSUInteger index = self.registrationStack.count - 2;
-	return [self.registrationStack objectAtIndex:index];
+	return (self.registrationStack)[index];
 }
 
 - (NSMutableArray *)registrationStack {

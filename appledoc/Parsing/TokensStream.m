@@ -53,7 +53,7 @@
 	[string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
 		// Prepare location for all tokens on this line.
 		while (tokenIndex < tokens.count) {
-			PKToken *token = [tokens objectAtIndex:tokenIndex];
+			PKToken *token = tokens[tokenIndex];
 			if (token.offset >= offset + line.length) break;
 			token.location = NSMakePoint(token.offset - offset, lineNumber);
 			tokenIndex++;
@@ -93,7 +93,7 @@
 		if (i >= self.tokens.count) return NO;
 		
 		// Matching any token, assume match and continue with next? Note that we're using pointer comparison for speed and collision prevention.
-		id expected = [expectedMatches objectAtIndex:i];
+		id expected = expectedMatches[i];
 		if (expected == GBTokens.any) continue;
 		
 		// Matching concrete token or one of possible tokens. For array match one of the given tokens. For single token, match that token exactly.
@@ -111,13 +111,13 @@
 - (PKToken *)la:(NSUInteger)count {
 	// Look ahead for next token(s) in stream.
 	if (self.position + count >= self.tokens.count) return nil;
-	return [self.tokens objectAtIndex:self.position + count];
+	return (self.tokens)[self.position + count];
 }
 
 - (PKToken *)la:(PKToken *)token offset:(NSInteger)offset {
 	// Look ahead for given number of tokens, starting at the given one.
 	NSUInteger index = [self.tokens indexOfObjectIdenticalTo:token];
-	return [self.tokens objectAtIndex:index + offset];
+	return (self.tokens)[index + offset];
 }
 
 - (PKToken *)current {

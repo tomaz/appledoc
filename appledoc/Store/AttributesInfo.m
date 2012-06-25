@@ -20,8 +20,8 @@
 	NSUInteger index = [self.attributeItems indexOfObject:attribute];
 	if (index == NSNotFound) return nil;
 	if (index >= self.attributeItems.count - 2) return nil;
-	if (![[self.attributeItems objectAtIndex:index + 1] isEqual:@"="]) return nil;
-	return [self.attributeItems objectAtIndex:index + 2];
+	if (![(self.attributeItems)[index + 1] isEqual:@"="]) return nil;
+	return (self.attributeItems)[index + 2];
 }
 
 #pragma mark - Properties

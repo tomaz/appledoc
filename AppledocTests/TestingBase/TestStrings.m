@@ -14,14 +14,14 @@ static NSMutableDictionary *GBCachedFiles = nil;
 
 + (id)handleCachedFile:(NSString *)file block:(void(^)(NSString *path, id *contents))handler {
 	if (!GBCachedFiles) GBCachedFiles = [NSMutableDictionary dictionary];
-	id result = [GBCachedFiles objectForKey:file];
+	id result = GBCachedFiles[file];
 	if (result) return result;
 	NSBundle *bundle = [NSBundle bundleForClass:[self class]];
 	NSString *filename = [file stringByDeletingPathExtension];
 	NSString *extension = [file pathExtension];
 	NSString *path = [bundle pathForResource:filename ofType:extension];
 	handler(path, &result);
-	if (result) [GBCachedFiles setObject:result forKey:file];
+	if (result) GBCachedFiles[file] = result;
 	return result;
 }
 

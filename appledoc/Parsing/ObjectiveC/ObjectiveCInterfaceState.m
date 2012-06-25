@@ -89,7 +89,7 @@
 - (NSArray *)interfaceAdoptedProtocolDelimiters {
 	if (_interfaceAdoptedProtocolDelimiters) return _interfaceAdoptedProtocolDelimiters;
 	LogIntDebug(@"Initializing adopted protocols delimiters due to first access...");
-	_interfaceAdoptedProtocolDelimiters = [NSArray arrayWithObjects:@"<", @",", @">", nil];
+	_interfaceAdoptedProtocolDelimiters = @[@"<", @",", @">"];
 	return _interfaceAdoptedProtocolDelimiters;
 }
 

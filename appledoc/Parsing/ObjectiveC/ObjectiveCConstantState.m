@@ -128,7 +128,7 @@
 - (NSArray *)constantInvalidTokens {
 	if (_constantInvalidTokens) return _constantInvalidTokens;
 	LogIntDebug(@"Initializing invalid tokens array for constant due to first access...");
-	_constantInvalidTokens = [NSArray arrayWithObjects:@"(", @")", @"[", @"]", @"{", @"}", @"^", @"#", nil];
+	_constantInvalidTokens = @[@"(", @")", @"[", @"]", @"{", @"}", @"^", @"#"];
 	return _constantInvalidTokens;
 }
 

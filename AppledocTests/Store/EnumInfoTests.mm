@@ -58,10 +58,10 @@ describe(@"enumeration item registration:", ^{
 			[info appendEnumerationItem:@"item2"];
 			// verify
 			info.enumItems.count should equal(2);
-			[info.enumItems objectAtIndex:0] should be_instance_of([EnumItemInfo class]);
-			[info.enumItems objectAtIndex:1] should be_instance_of([EnumItemInfo class]);
-			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item1");
-			[[info.enumItems objectAtIndex:1] itemName] should equal(@"item2");
+			(info.enumItems)[0] should be_instance_of([EnumItemInfo class]);
+			(info.enumItems)[1] should be_instance_of([EnumItemInfo class]);
+			[(info.enumItems)[0] itemName] should equal(@"item1");
+			[(info.enumItems)[1] itemName] should equal(@"item2");
 		});
 	});
 });
@@ -75,8 +75,8 @@ describe(@"enumeration value registration:", ^{
 			[info appendEnumerationValue:@"value"];
 			// verify
 			info.enumItems.count should equal(1);
-			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item");
-			[[info.enumItems objectAtIndex:0] itemValue] should equal(@"value");
+			[(info.enumItems)[0] itemName] should equal(@"item");
+			[(info.enumItems)[0] itemValue] should equal(@"value");
 		});
 	});
 	
@@ -89,10 +89,10 @@ describe(@"enumeration value registration:", ^{
 			[info appendEnumerationValue:@"value"];
 			// verify
 			info.enumItems.count should equal(2);
-			[[info.enumItems objectAtIndex:0] itemName] should equal(@"item1");
-			[[info.enumItems objectAtIndex:0] itemValue] should be_nil();
-			[[info.enumItems objectAtIndex:1] itemName] should equal(@"item2");
-			[[info.enumItems objectAtIndex:1] itemValue] should equal(@"value");
+			[(info.enumItems)[0] itemName] should equal(@"item1");
+			[(info.enumItems)[0] itemValue] should be_nil();
+			[(info.enumItems)[1] itemName] should equal(@"item2");
+			[(info.enumItems)[1] itemValue] should equal(@"value");
 		});
 	});
 	

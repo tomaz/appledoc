@@ -131,7 +131,7 @@
 - (NSArray *)propertyAttributeDelimiters {
 	if (_propertyAttributeDelimiters) return _propertyAttributeDelimiters;
 	LogIntDebug(@"Initializing attribute delimiters due to first access...");
-	_propertyAttributeDelimiters = [NSArray arrayWithObjects:@"(", @",", @")", @";", nil];
+	_propertyAttributeDelimiters = @[@"(", @",", @")", @";"];
 	return _propertyAttributeDelimiters;
 }
 

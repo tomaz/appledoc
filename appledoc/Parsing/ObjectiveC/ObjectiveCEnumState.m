@@ -183,7 +183,7 @@
 - (NSArray *)enumItemDelimiters {
 	if (_enumItemDelimiters) return _enumItemDelimiters;
 	LogIntDebug(@"Initializing enum item delimiters due to first access...");
-	_enumItemDelimiters = [NSArray arrayWithObjects:@",", @"}", @";", nil];
+	_enumItemDelimiters = @[@",", @"}", @";"];
 	return _enumItemDelimiters;
 }
 

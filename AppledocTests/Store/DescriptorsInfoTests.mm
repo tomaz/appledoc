@@ -36,8 +36,8 @@ describe(@"appending descriptors:", ^{
 			[info appendDescriptor:@"type2"];
 			// verify
 			info.descriptorItems.count should equal(2);
-			[info.descriptorItems objectAtIndex:0] should equal(@"type1");
-			[info.descriptorItems objectAtIndex:1] should equal(@"type2");
+			(info.descriptorItems)[0] should equal(@"type1");
+			(info.descriptorItems)[1] should equal(@"type2");
 		});
 	});
 });

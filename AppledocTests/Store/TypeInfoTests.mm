@@ -35,8 +35,8 @@ describe(@"append type:", ^{
 			[info appendType:@"type2"];
 			// verify
 			info.typeItems.count should equal(2);
-			[info.typeItems objectAtIndex:0] should equal(@"type1");
-			[info.typeItems objectAtIndex:1] should equal(@"type2");
+			(info.typeItems)[0] should equal(@"type1");
+			(info.typeItems)[1] should equal(@"type2");
 		});
 	});
 });

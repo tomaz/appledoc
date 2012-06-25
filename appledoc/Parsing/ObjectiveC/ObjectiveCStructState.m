@@ -50,7 +50,7 @@
 - (NSArray *)structItemDelimiters {
 	if (_structItemDelimiters) return _structItemDelimiters;
 	LogIntDebug(@"Initializing struct item delimiters array due to first access...");
-	_structItemDelimiters = [NSArray arrayWithObjects:@",", @";", @"}", nil];
+	_structItemDelimiters = @[@",", @";", @"}"];
 	return _structItemDelimiters;
 }
 

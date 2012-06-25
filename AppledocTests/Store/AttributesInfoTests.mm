@@ -80,8 +80,8 @@ describe(@"appending attributes:", ^{
 			[info appendAttribute:@"type2"];
 			// verify
 			info.attributeItems.count should equal(2);
-			[info.attributeItems objectAtIndex:0] should equal(@"type1");
-			[info.attributeItems objectAtIndex:1] should equal(@"type2");
+			(info.attributeItems)[0] should equal(@"type1");
+			(info.attributeItems)[1] should equal(@"type2");
 		});
 	});
 });

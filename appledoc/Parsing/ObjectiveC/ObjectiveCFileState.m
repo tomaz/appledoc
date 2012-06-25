@@ -51,7 +51,7 @@
 }
 
 - (BOOL)parseClassCategory:(ObjectiveCParseData *)data {
-	if (![data.stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, @"(", GBTokens.any, @")", nil]) return NO;
+	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, @"(", GBTokens.any, @")", nil]) return NO;
 	LogParDebug(@"Matched category interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	PKToken *category = [data.stream la:4];
@@ -63,7 +63,7 @@
 }
 
 - (BOOL)parseDerivedClass:(ObjectiveCParseData *)data {
-	if (![data.stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, @":", GBTokens.any, nil]) return NO;
+	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, @":", GBTokens.any, nil]) return NO;
 	LogParDebug(@"Matched class interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	PKToken *derived = [data.stream la:4];
@@ -75,7 +75,7 @@
 }
 
 - (BOOL)parseRootClass:(ObjectiveCParseData *)data {
-	if (![data.stream matches:@"@", [NSArray arrayWithObjects:@"interface", @"implementation", nil], GBTokens.any, nil]) return NO;
+	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, nil]) return NO;
 	LogParDebug(@"Matched root class interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	[data.store setCurrentSourceInfo:data.stream.current];

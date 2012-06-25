@@ -49,8 +49,8 @@ describe(@"adopted protocols registration:", ^{
 			[info appendAdoptedProtocolWithName:@"name2"];
 			// verify
 			info.interfaceAdoptedProtocols.count should equal(2);
-			[[info.interfaceAdoptedProtocols objectAtIndex:0] nameOfObject] should equal(@"name1");
-			[[info.interfaceAdoptedProtocols objectAtIndex:1] nameOfObject] should equal(@"name2");
+			[(info.interfaceAdoptedProtocols)[0] nameOfObject] should equal(@"name1");
+			[(info.interfaceAdoptedProtocols)[1] nameOfObject] should equal(@"name2");
 		});
 	});
 	
@@ -61,7 +61,7 @@ describe(@"adopted protocols registration:", ^{
 			[info appendAdoptedProtocolWithName:@"name"];
 			// verify
 			info.interfaceAdoptedProtocols.count should equal(1);
-			[[info.interfaceAdoptedProtocols objectAtIndex:0] nameOfObject] should equal(@"name");
+			[(info.interfaceAdoptedProtocols)[0] nameOfObject] should equal(@"name");
 		});
 	});
 });

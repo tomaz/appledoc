@@ -1008,8 +1008,8 @@ describe(@"registration stack handling:", ^{
 				[store pushRegistrationObject:child2];
 				// verify
 				store.registrationStack.count should equal(2);
-				[store.registrationStack objectAtIndex:0] should equal(child1);
-				[store.registrationStack objectAtIndex:1] should equal(child2);
+				(store.registrationStack)[0] should equal(child1);
+				(store.registrationStack)[1] should equal(child2);
 				store.currentRegistrationObject should equal(child2);
 			});
 		});
@@ -1027,7 +1027,7 @@ describe(@"registration stack handling:", ^{
 				id poppedObject = [store popRegistrationObject];
 				// verify
 				store.registrationStack.count should equal(1);
-				[store.registrationStack objectAtIndex:0] should equal(child1);
+				(store.registrationStack)[0] should equal(child1);
 				store.currentRegistrationObject should equal(child1);
 				poppedObject should equal(child2);
 			});

@@ -175,7 +175,7 @@ describe(@"constants parsing:", ^{
 				id store = [OCMockObject mockForClass:[Store class]];
 				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				id constantState = [OCMockObject mockForClass:[ObjectiveCConstantState class]];
-				[[[constantState expect] andReturnValue:[NSNumber numberWithBool:YES]] doesDataContainConstant:data];
+				[[[constantState expect] andReturnValue:@YES] doesDataContainConstant:data];
 				[[[parser expect] andReturn:constantState] constantState]; // first called when testing for constant
 				[[[parser expect] andReturn:constantState] constantState]; // second called when parsing constant
 				[[parser expect] pushState:constantState];
@@ -195,7 +195,7 @@ describe(@"constants parsing:", ^{
 				id store = [OCMockObject mockForClass:[Store class]];
 				ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 				id constantState = [OCMockObject mockForClass:[ObjectiveCConstantState class]];
-				[[[constantState expect] andReturnValue:[NSNumber numberWithBool:NO]] doesDataContainConstant:data];
+				[[[constantState expect] andReturnValue:@NO] doesDataContainConstant:data];
 				[[[parser expect] andReturn:constantState] constantState];
 				// execute
 				[state parseWithData:data];
