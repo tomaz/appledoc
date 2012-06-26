@@ -651,8 +651,8 @@ static NSString *kGBArgHelp = @"help";
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
 		
-	} else {
-		self.settings.publishDocSet = NO;
+    //	} else {
+    //		self.settings.publishDocSet = NO;
 	}
 }
 - (void)setPublishDocset:(BOOL)value { 
@@ -660,7 +660,7 @@ static NSString *kGBArgHelp = @"help";
 	if (value) {
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
-		self.settings.installDocSet = YES;
+	//	self.settings.installDocSet = YES;
 	}
 }
 - (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
