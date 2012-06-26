@@ -651,8 +651,8 @@ static NSString *kGBArgHelp = @"help";
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
 		
-	} else {
-		self.settings.publishDocSet = NO;
+    //	} else {
+    //		self.settings.publishDocSet = NO;
 	}
 }
 - (void)setPublishDocset:(BOOL)value { 
