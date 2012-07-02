@@ -283,12 +283,12 @@
 	GBObjectiveCParser *parser = [GBObjectiveCParser parserWithSettingsProvider:[GBTestObjectsRegistry mockSettingsProvider]];
 	GBStore *store = [[GBStore alloc] init];
 	// execute
-	[parser parseObjectsFromString:@"@interface MyClass @property (weak) IBOutlet id delegate; @end" sourceFile:@"filename.h" toStore:store];
+	[parser parseObjectsFromString:@"@interface MyClass @property (weak) IBOutlet id<Protocol> delegate; @end" sourceFile:@"filename.h" toStore:store];
 	// verify
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [[class methods] methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"weak", @"IBOutlet", @"id", @"delegate", nil];
+	[self assertMethod:[methods objectAtIndex:0] matchesPropertyComponents:@"weak", @"IBOutlet", @"id", @"<", @"Protocol", @">", @"delegate", nil];
 }
 
 - (void)testParseObjectsFromString_shouldRegisterBlockPropertyDefinition {
