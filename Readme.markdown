@@ -41,6 +41,12 @@ You can also use install-appledoc.sh script to perform quick installation. Open 
 It compiles appledoc and installs its binary to /usr/local/bin and templatest to - ~/.appledoc by default. You can override this directories with -b and -t options respectively. For example:
 
 	sudo sh install-appledoc.sh -b /usr/bin -t ~/Library/Application\ Support/appledoc
+	
+**Alternatively with Homebrew:**
+
+    brew install appledoc
+
+Homebrew puts your templates in `~/Libarary/Application Support/appledoc`.
 
 Using appledoc
 ==============
