@@ -496,6 +496,16 @@ static NSString *kGBArgHelp = @"help";
 			self.templatesFound = YES;
 			return;
 		}
+
+        #ifdef COMPILE_TIME_DEFAULT_TEMPLATE_PATH
+		path = COMPILE_TIME_DEFAULT_TEMPLATE_PATH;
+		if ([self validateTemplatesPath:path error:nil]) {
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
+			self.templatesFound = YES;
+			return;
+		}
+        #endif
 	}
 }
 
@@ -651,8 +661,8 @@ static NSString *kGBArgHelp = @"help";
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
 		
-	} else {
-		self.settings.publishDocSet = NO;
+    //	} else {
+    //		self.settings.publishDocSet = NO;
 	}
 }
 - (void)setPublishDocset:(BOOL)value { 
@@ -660,7 +670,7 @@ static NSString *kGBArgHelp = @"help";
 	if (value) {
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
-		self.settings.installDocSet = YES;
+	//	self.settings.installDocSet = YES;
 	}
 }
 - (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
