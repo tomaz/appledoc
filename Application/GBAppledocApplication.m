@@ -496,6 +496,16 @@ static NSString *kGBArgHelp = @"help";
 			self.templatesFound = YES;
 			return;
 		}
+
+        #ifdef COMPILE_TIME_DEFAULT_TEMPLATE_PATH
+		path = COMPILE_TIME_DEFAULT_TEMPLATE_PATH;
+		if ([self validateTemplatesPath:path error:nil]) {
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
+			self.templatesFound = YES;
+			return;
+		}
+        #endif
 	}
 }
 
