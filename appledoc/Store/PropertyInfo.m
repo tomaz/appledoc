@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "StoreRegistrations.h"
+#import "CommentInfo.h"
 #import "TypeInfo.h"
 #import "AttributesInfo.h"
 #import "DescriptorsInfo.h"
@@ -102,6 +103,7 @@
 	[result appendString:self.propertyName];
 	if (_propertyDescriptors) [result appendFormat:@" %@", self.propertyDescriptors];
 	[result appendString:@";"];
+	if (self.comment.sourceString.length > 0) [result appendString:@"\n"];
 	return result;
 }
 

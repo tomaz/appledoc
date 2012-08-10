@@ -9,6 +9,7 @@
 #import "Objects.h"
 #import "StoreConstants.h"
 #import "StoreRegistrations.h"
+#import "CommentInfo.h"
 #import "TypeInfo.h"
 #import "DescriptorsInfo.h"
 #import "MethodArgumentInfo.h"
@@ -98,6 +99,7 @@
 	}
 	if (_methodDescriptors) [result appendFormat:@" %@", self.methodDescriptors];
 	[result appendString:@";"];
+	if (self.comment.sourceString.length > 0) [result appendString:@"\n"];
 	return result;
 }
 

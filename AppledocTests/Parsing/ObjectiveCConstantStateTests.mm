@@ -566,7 +566,7 @@ describe(@"detecting:", ^{
 	});
 	
 	describe(@"denies:", ^{
-		it(@"should prevent closing semicolon is missing", ^{
+		it(@"should prevent if closing semicolon is missing", ^{
 			SHOULD_EVALUATE(@"item name", NO);
 		});
 
