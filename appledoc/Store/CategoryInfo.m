@@ -27,7 +27,7 @@
 @implementation CategoryInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@interface %@ (", self.nameOfClass];
 	if (self.isCategory) [result appendString:self.nameOfCategory];
 	[result appendString:@")"];

@@ -10,4 +10,15 @@
 #import "CommentInfo.h"
 
 @implementation CommentInfo
+
+@end
+
+#pragma mark - 
+
+@implementation CommentInfo (Logging)
+
+- (NSString *)description {
+	return self.sourceString;
+}
+
 @end

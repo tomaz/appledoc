@@ -691,43 +691,6 @@ describe(@"common registrations:", ^{
 });
 
 describe(@"comments registrations:", ^{
-	describe(@"current object:", ^{
-		it(@"should create comment and add it to current registration object", ^{
-			runWithStore(^(Store *store) {
-				// setup
-				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
-				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
-					if (![obj isKindOfClass:[CommentInfo class]]) return NO;
-					if (![[obj sourceString] isEqualToString:@"text"]) return NO;
-					return YES;
-				}]];
-				[store pushRegistrationObject:object];
-				// execute
-				[store appendCommentToCurrentObject:@"text"];
-				// verify
-				^{ [object verify]; } should_not raise_exception();
-			});
-		});
-		
-		it(@"should append current source info to token", ^{
-			runWithStore(^(Store *store) {
-				// setup
-				PKToken *token = [PKToken tokenWithTokenType:PKTokenTypeComment stringValue:@"text" floatValue:0.0];
-				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
-				[[object expect] setCurrentSourceInfo:token];
-				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
-					return ([obj sourceToken] == token);
-				}]];
-				[store pushRegistrationObject:object];
-				// execute
-				[store setCurrentSourceInfo:token];
-				[store appendCommentToCurrentObject:@"text"];
-				// verify
-				^{ [object verify]; } should_not raise_exception();
-			});
-		});
-	});
-
 	describe(@"previous object:", ^{
 		it(@"should create comment and add it to last popped object", ^{
 			runWithStore(^(Store *store) {
@@ -746,7 +709,7 @@ describe(@"comments registrations:", ^{
 				^{ [object verify]; } should_not raise_exception();
 			});
 		});
-		
+
 		it(@"should append current source info to token", ^{
 			runWithStore(^(Store *store) {
 				// setup
@@ -762,6 +725,52 @@ describe(@"comments registrations:", ^{
 				[store appendCommentToPreviousObject:@"text"];
 				// verify
 				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+	});
+	
+	describe(@"next object", ^{
+		it(@"should not add comment to current object", ^{
+			runWithStore(^(Store *store) {
+				// setup - no expectations needed; strong mock will fail if any unexpected message is received
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[store pushRegistrationObject:object];
+				// execute
+				[store appendCommentToNextObject:@"text"];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+
+		it(@"should add comment to first object registered after appending comment", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				id object = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[[object expect] setComment:[OCMArg checkWithBlock:^BOOL(id obj) {
+					if (![obj isKindOfClass:[CommentInfo class]]) return NO;
+					if (![[obj sourceString] isEqualToString:@"text"]) return NO;
+					return YES;
+				}]];
+				// execute
+				[store appendCommentToNextObject:@"text"];
+				[store pushRegistrationObject:object];
+				// verify
+				^{ [object verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should clear comment after appending to new object", ^{
+			runWithStore(^(Store *store) {
+				// setup - no expectations required for second mock; strong mocks fail if any unexpected message is received
+				id object1 = [OCMockObject niceMockForClass:[ObjectInfoBase class]];
+				id object2 = [OCMockObject mockForClass:[ObjectInfoBase class]];
+				[store appendCommentToNextObject:@"text"];
+				[store pushRegistrationObject:object1];
+				// execute
+				[store pushRegistrationObject:object2];
+				// verify
+				^{ [object1 verify]; } should_not raise_exception();
+				^{ [object2 verify]; } should_not raise_exception();
 			});
 		});
 	});

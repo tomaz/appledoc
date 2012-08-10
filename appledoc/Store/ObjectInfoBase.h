@@ -26,3 +26,11 @@
 @property (nonatomic, assign) id<StoreRegistrar> objectRegistrar;
 
 @end
+
+#pragma mark - 
+
+@interface ObjectInfoBase (Logging)
+
+- (NSMutableString *)descriptionStringWithComment;
+
+@end

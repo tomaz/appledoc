@@ -13,6 +13,7 @@
 @property (nonatomic, readonly) id previousRegistrationObject;
 @property (nonatomic, strong) id lastPoppedRegistrationObject;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
+@property (nonatomic, strong) NSString *commentTextForNextObject;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
 @end
 
@@ -49,6 +50,15 @@
 
 - (void)pushRegistrationObject:(id)object {
 	LogStoDebug(@"Pushing object %@ to registration stack...", object);
+	if (self.commentTextForNextObject) {
+		if (![object respondsToSelector:@selector(setComment:)]) {
+			LogStoWarn(@"%@ doesn't respond to setComment:, can't register comment!", object);
+		} else {
+			LogStoDebug(@"Registering comment %@...", [self.commentTextForNextObject gb_description]);
+			[self createCommentFromText:self.commentTextForNextObject registerTo:object];
+		}
+		self.commentTextForNextObject = nil;
+	}
 	[self.registrationStack addObject:object];
 }
 
@@ -384,11 +394,6 @@
 
 #pragma mark - Comments
 
-- (void)appendCommentToCurrentObject:(NSString *)comment {
-	if (![self expectCurrentRegistrationObjectRespondTo:@selector(setComment:)]) return;
-	[self createCommentFromText:comment registerTo:self.currentRegistrationObject];
-}
-
 - (void)appendCommentToPreviousObject:(NSString *)comment {
 	id object = self.lastPoppedRegistrationObject;
 	if (!object) {
@@ -400,6 +405,11 @@
 		return;
 	}
 	[self createCommentFromText:comment registerTo:object];
+}
+
+- (void)appendCommentToNextObject:(NSString *)comment {
+	LogStoDebug(@"Storing comment %@ for next object...", [comment gb_description]);
+	self.commentTextForNextObject = comment;
 }
 
 #pragma mark - Finalizing registration for current object

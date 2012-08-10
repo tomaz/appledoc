@@ -58,7 +58,7 @@
 @implementation ConstantInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	if (_constantTypes) [result appendFormat:@"%@ ", self.constantTypes];
 	if (_constantName) [result appendString:self.constantName];
 	if (_constantDescriptors) [result appendFormat:@" %@", self.constantDescriptors];

@@ -61,3 +61,17 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation ObjectInfoBase (Logging)
+
+- (NSMutableString *)descriptionStringWithComment {
+	NSMutableString *result = [NSMutableString string];
+	if (self.comment.sourceString.length > 0) {
+		[result appendFormat:@"/** %@*/\n", self.comment.sourceString];
+	}
+	return result;
+}
+
+@end

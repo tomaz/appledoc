@@ -221,7 +221,7 @@
 		} else {
 			LogParDebug(@"Registering comment %@...", [comment gb_description]);
 			[store setCurrentSourceInfo:blockSelf.commentStartToken];
-			[store appendCommentToCurrentObject:comment];
+			[store appendCommentToNextObject:comment];
 		}
 		blockSelf.commentStartToken = nil;
 	};

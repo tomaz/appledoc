@@ -56,7 +56,7 @@
 @implementation EnumInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"enum"];
 	if (self.nameOfEnum) [result appendFormat:@" %@", self.nameOfEnum];
 	[result appendString:@" {\n"];

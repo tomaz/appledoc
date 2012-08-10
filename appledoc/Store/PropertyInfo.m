@@ -95,7 +95,7 @@
 @implementation PropertyInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"@property "];
 	if (_propertyAttributes) [result appendFormat:@"(%@) ", self.propertyAttributes];
 	if (_propertyType) [result appendFormat:@"%@", self.propertyType];

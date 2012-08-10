@@ -16,7 +16,7 @@
 @implementation ClassInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@interface %@", self.nameOfClass];
 	if (self.nameOfSuperClass) [result appendFormat:@" : %@", self.nameOfSuperClass];
 	[result appendString:[super description]];

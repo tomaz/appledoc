@@ -53,7 +53,7 @@
 @implementation StructInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"struct"];
 	if (self.nameOfStruct) [result appendFormat:@" %@", self.nameOfStruct];
 	[result appendString:@" {\n"];

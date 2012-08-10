@@ -87,7 +87,7 @@
 @implementation MethodInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:self.isClassMethod ? @"+ " : @"- "];
 	if (_methodResult) [result appendFormat:@"(%@)", self.methodResult];
 	if (_methodArguments) {
