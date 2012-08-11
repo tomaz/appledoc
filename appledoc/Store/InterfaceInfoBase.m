@@ -9,7 +9,7 @@
 #import "Objects.h"
 #import "StoreConstants.h"
 #import "StoreRegistrations.h"
-#import "ObjectLinkData.h"
+#import "ObjectLinkInfo.h"
 #import "MethodGroupInfo.h"
 #import "PropertyInfo.h"
 #import "MethodInfo.h"
@@ -87,11 +87,11 @@
 
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
 	LogStoVerbose(@"Appending adopted protocol %@...", name);
-	if ([self.interfaceAdoptedProtocols gb_containsObjectLinkDataWithName:name]) {
+	if ([self.interfaceAdoptedProtocols gb_containsObjectLinkInfoWithName:name]) {
 		LogStoDebug(@"%@ is already in the adopted protocols list, ignoring...", name);
 		return;
 	}
-	ObjectLinkData *data = [ObjectLinkData objectLinkDataWithName:name];
+	ObjectLinkInfo *data = [ObjectLinkInfo ObjectLinkInfoWithName:name];
 	[self.interfaceAdoptedProtocols addObject:data];
 }
 
@@ -169,7 +169,7 @@
 	NSMutableString *result = [NSMutableString string];
 	if (_interfaceAdoptedProtocols && self.interfaceAdoptedProtocols.count > 0) {
 		[result appendString:@" <"];
-		[self.interfaceAdoptedProtocols enumerateObjectsUsingBlock:^(ObjectLinkData *data, NSUInteger idx, BOOL *stop) {
+		[self.interfaceAdoptedProtocols enumerateObjectsUsingBlock:^(ObjectLinkInfo *data, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendString:@","];
 			[result appendString:data.nameOfObject];
 		}];

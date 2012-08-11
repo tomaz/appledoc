@@ -10,7 +10,7 @@
 #import "StoreRegistrations.h"
 
 #import "TypeInfo.h"
-#import "ObjectLinkData.h"
+#import "ObjectLinkInfo.h"
 #import "AttributesInfo.h"
 #import "DescriptorsInfo.h"
 #import "EnumItemInfo.h"

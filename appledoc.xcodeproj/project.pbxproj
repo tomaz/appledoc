@@ -67,8 +67,8 @@
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
-		735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
-		735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkData.m */; };
+		735CD2BF1538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
+		735CD2C01538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		735CD2C6153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
 		735CD2C7153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
@@ -231,8 +231,8 @@
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
-		735CD2BD1538109900CADD4E /* ObjectLinkData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkData.h; sourceTree = "<group>"; };
-		735CD2BE1538109900CADD4E /* ObjectLinkData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkData.m; sourceTree = "<group>"; };
+		735CD2BD1538109900CADD4E /* ObjectLinkInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkInfo.h; sourceTree = "<group>"; };
+		735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkInfo.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
 		735CD2C4153817E400CADD4E /* MethodGroupInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodGroupInfo.h; sourceTree = "<group>"; };
 		735CD2C5153817E500CADD4E /* MethodGroupInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodGroupInfo.m; sourceTree = "<group>"; };
@@ -429,29 +429,13 @@
 			isa = PBXGroup;
 			children = (
 				7381A67D1536D60800BF9BDD /* Helpers */,
+				73A0267815D68E2E0077D204 /* Objects */,
+				73A0267915D68E3D0077D204 /* Comments */,
 				73D540251525A8BA00C57E1B /* StoreConstants.h */,
 				73D540261525A8BA00C57E1B /* StoreConstants.m */,
 				7316B9DA1535A048000F12F3 /* StoreRegistrations.h */,
 				73500D2E15174910000416E3 /* Store.h */,
 				73500D2F15174910000416E3 /* Store.m */,
-				7381A6711536C35000BF9BDD /* ClassInfo.h */,
-				7381A6721536C35000BF9BDD /* ClassInfo.m */,
-				7381A67E1536D62400BF9BDD /* CategoryInfo.h */,
-				7381A67F1536D62400BF9BDD /* CategoryInfo.m */,
-				7381A6861536E2F000BF9BDD /* ProtocolInfo.h */,
-				7381A6871536E2F000BF9BDD /* ProtocolInfo.m */,
-				731103BB15418B4B005F46E5 /* EnumInfo.h */,
-				731103BC15418B4B005F46E5 /* EnumInfo.m */,
-				73E416E21541BAE000600606 /* StructInfo.h */,
-				73E416E31541BAE000600606 /* StructInfo.m */,
-				730FB570153BFF2E002DB54F /* PropertyInfo.h */,
-				730FB571153BFF2E002DB54F /* PropertyInfo.m */,
-				730FB575153C0889002DB54F /* MethodInfo.h */,
-				730FB576153C0889002DB54F /* MethodInfo.m */,
-				7336652315457A2E000F7AFF /* ConstantInfo.h */,
-				7336652415457A2E000F7AFF /* ConstantInfo.m */,
-				739B4211158D134D0044B904 /* CommentInfo.h */,
-				739B4212158D134D0044B904 /* CommentInfo.m */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -501,26 +485,58 @@
 		7381A67D1536D60800BF9BDD /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				735CD2BD1538109900CADD4E /* ObjectLinkData.h */,
-				735CD2BE1538109900CADD4E /* ObjectLinkData.m */,
-				735CD2C4153817E400CADD4E /* MethodGroupInfo.h */,
-				735CD2C5153817E500CADD4E /* MethodGroupInfo.m */,
+				7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */,
+				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
+				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
+				7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */,
+				735CD2BD1538109900CADD4E /* ObjectLinkInfo.h */,
+				735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */,
 				731341FC153D5891002D5C54 /* TypeInfo.h */,
 				731341FD153D5891002D5C54 /* TypeInfo.m */,
 				730BCC8A1540046F00B909FD /* AttributesInfo.h */,
 				730BCC8B1540046F00B909FD /* AttributesInfo.m */,
 				73A589FB15493F5B003838E0 /* DescriptorsInfo.h */,
 				73A589FC15493F5B003838E0 /* DescriptorsInfo.m */,
-				7316B9D515359DEE000F12F3 /* ObjectInfoBase.h */,
-				7316B9D615359DEE000F12F3 /* ObjectInfoBase.m */,
-				7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */,
-				7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */,
+				735CD2C4153817E400CADD4E /* MethodGroupInfo.h */,
+				735CD2C5153817E500CADD4E /* MethodGroupInfo.m */,
 				7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */,
 				7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */,
 				73E416DE1541A8B100600606 /* EnumItemInfo.h */,
 				73E416DF1541A8B100600606 /* EnumItemInfo.m */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		73A0267815D68E2E0077D204 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				7381A6711536C35000BF9BDD /* ClassInfo.h */,
+				7381A6721536C35000BF9BDD /* ClassInfo.m */,
+				7381A67E1536D62400BF9BDD /* CategoryInfo.h */,
+				7381A67F1536D62400BF9BDD /* CategoryInfo.m */,
+				7381A6861536E2F000BF9BDD /* ProtocolInfo.h */,
+				7381A6871536E2F000BF9BDD /* ProtocolInfo.m */,
+				731103BB15418B4B005F46E5 /* EnumInfo.h */,
+				731103BC15418B4B005F46E5 /* EnumInfo.m */,
+				73E416E21541BAE000600606 /* StructInfo.h */,
+				73E416E31541BAE000600606 /* StructInfo.m */,
+				730FB570153BFF2E002DB54F /* PropertyInfo.h */,
+				730FB571153BFF2E002DB54F /* PropertyInfo.m */,
+				730FB575153C0889002DB54F /* MethodInfo.h */,
+				730FB576153C0889002DB54F /* MethodInfo.m */,
+				7336652315457A2E000F7AFF /* ConstantInfo.h */,
+				7336652415457A2E000F7AFF /* ConstantInfo.m */,
+			);
+			name = Objects;
+			sourceTree = "<group>";
+		};
+		73A0267915D68E3D0077D204 /* Comments */ = {
+			isa = PBXGroup;
+			children = (
+				739B4211158D134D0044B904 /* CommentInfo.h */,
+				739B4212158D134D0044B904 /* CommentInfo.m */,
+			);
+			name = Comments;
 			sourceTree = "<group>";
 		};
 		73D274A2150E05DA004D27F4 = {
@@ -772,7 +788,7 @@
 				7381A67C1536D04E00BF9BDD /* StoreTests.mm in Sources */,
 				7381A6811536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
-				735CD2C01538109900CADD4E /* ObjectLinkData.m in Sources */,
+				735CD2C01538109900CADD4E /* ObjectLinkInfo.m in Sources */,
 				735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */,
 				735CD2C7153817E500CADD4E /* MethodGroupInfo.m in Sources */,
 				73F600EF1539E8BB00C4F668 /* ObjectInfoBaseTests.mm in Sources */,
@@ -840,7 +856,7 @@
 				7381A6731536C35100BF9BDD /* ClassInfo.m in Sources */,
 				7381A6801536D62400BF9BDD /* CategoryInfo.m in Sources */,
 				7381A6881536E2F000BF9BDD /* ProtocolInfo.m in Sources */,
-				735CD2BF1538109900CADD4E /* ObjectLinkData.m in Sources */,
+				735CD2BF1538109900CADD4E /* ObjectLinkInfo.m in Sources */,
 				735CD2C6153817E500CADD4E /* MethodGroupInfo.m in Sources */,
 				730FB572153BFF2E002DB54F /* PropertyInfo.m in Sources */,
 				730FB577153C0889002DB54F /* MethodInfo.m in Sources */,

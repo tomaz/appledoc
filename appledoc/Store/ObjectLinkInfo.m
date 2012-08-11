@@ -1,5 +1,5 @@
 //
-//  ObjectLinkData.m
+//  ObjectLinkInfo.m
 //  appledoc
 //
 //  Created by Tomaž Kragelj on 4/13/12.
@@ -7,12 +7,12 @@
 //
 
 #import "Objects.h"
-#import "ObjectLinkData.h"
+#import "ObjectLinkInfo.h"
 
-@implementation ObjectLinkData
+@implementation ObjectLinkInfo
 
-+ (id)objectLinkDataWithName:(NSString *)name {
-	ObjectLinkData *result = [[self alloc] init];
++ (id)ObjectLinkInfoWithName:(NSString *)name {
+	ObjectLinkInfo *result = [[self alloc] init];
 	result.nameOfObject = name;
 	return result;
 }
@@ -21,13 +21,13 @@
 
 #pragma mark - 
 
-@implementation NSArray (ObjectLinkDataExtensions)
+@implementation NSArray (ObjectLinkInfoExtensions)
 
-- (BOOL)gb_containsObjectLinkDataWithName:(NSString *)name {
+- (BOOL)gb_containsObjectLinkInfoWithName:(NSString *)name {
 	return [self gb_containsObjectWithValue:name forSelector:@selector(nameOfObject)];
 }
 
-- (NSUInteger)gb_indexOfObjectLinkDataWithName:(NSString *)name {
+- (NSUInteger)gb_indexOfObjectLinkInfoWithName:(NSString *)name {
 	return [self gb_indexOfObjectWithValue:name forSelector:@selector(nameOfObject)];
 }
 
