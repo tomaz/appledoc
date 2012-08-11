@@ -11,6 +11,15 @@
 
 @implementation CommentInfo
 
+#pragma mark - Properties
+
+- (NSMutableArray *)commentDiscussion {
+	if (_commentDiscussion) return _commentDiscussion;
+	LogIntDebug(@"Initializing comment discussion items array due to first access...");
+	_commentDiscussion = [[NSMutableArray alloc] init];
+	return _commentDiscussion;
+}
+
 @end
 
 #pragma mark - 

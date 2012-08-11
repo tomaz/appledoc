@@ -7,11 +7,14 @@
 //
 
 @class PKToken;
+@class CommentComponentInfo;
 
 /** Holds data about a source code comment.
  */
 @interface CommentInfo : NSObject
 
+@property (nonatomic, strong) CommentComponentInfo *commentAbstract;
+@property (nonatomic, strong) NSMutableArray *commentDiscussion;
 @property (nonatomic, strong) PKToken *sourceToken;
 @property (nonatomic, strong) NSString *sourceString;
 

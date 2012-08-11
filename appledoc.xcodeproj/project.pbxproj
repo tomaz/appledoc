@@ -88,6 +88,9 @@
 		739B4214158D134D0044B904 /* CommentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B4212158D134D0044B904 /* CommentInfo.m */; };
 		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
+		73A0267C15D6D36A0077D204 /* CommentComponentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */; };
+		73A0267D15D6D36A0077D204 /* CommentComponentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */; };
+		73A0267F15D6D4870077D204 /* CommentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267E15D6D4870077D204 /* CommentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73A589FD15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
 		73A589FE15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
 		73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -257,6 +260,9 @@
 		739B4212158D134D0044B904 /* CommentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentInfo.m; sourceTree = "<group>"; };
 		739C11AE1515320C004D139B /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
 		739C11AF1515320C004D139B /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extensions.m; sourceTree = "<group>"; };
+		73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentComponentInfo.h; sourceTree = "<group>"; };
+		73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentComponentInfo.m; sourceTree = "<group>"; };
+		73A0267E15D6D4870077D204 /* CommentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentInfoTests.mm; sourceTree = "<group>"; };
 		73A589FB15493F5B003838E0 /* DescriptorsInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DescriptorsInfo.h; sourceTree = "<group>"; };
 		73A589FC15493F5B003838E0 /* DescriptorsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DescriptorsInfo.m; sourceTree = "<group>"; };
 		73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DescriptorsInfoTests.mm; sourceTree = "<group>"; };
@@ -478,6 +484,7 @@
 				73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */,
 				730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */,
 				7336652815457BF7000F7AFF /* ConstantInfoTests.mm */,
+				73A0267E15D6D4870077D204 /* CommentInfoTests.mm */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -535,6 +542,8 @@
 			children = (
 				739B4211158D134D0044B904 /* CommentInfo.h */,
 				739B4212158D134D0044B904 /* CommentInfo.m */,
+				73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */,
+				73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -822,6 +831,8 @@
 				73B6595B1588AFDF00AE2314 /* CommentParser.m in Sources */,
 				73B6595F1588B7A900AE2314 /* CommentParserTests.mm in Sources */,
 				739B4214158D134D0044B904 /* CommentInfo.m in Sources */,
+				73A0267D15D6D36A0077D204 /* CommentComponentInfo.m in Sources */,
+				73A0267F15D6D4870077D204 /* CommentInfoTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -873,6 +884,7 @@
 				73239A1A1557BEA00077AB8A /* ObjectiveCConstantState.m in Sources */,
 				73B6595A1588AFDF00AE2314 /* CommentParser.m in Sources */,
 				739B4213158D134D0044B904 /* CommentInfo.m in Sources */,
+				73A0267C15D6D36A0077D204 /* CommentComponentInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
