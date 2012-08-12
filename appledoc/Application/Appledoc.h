@@ -9,6 +9,7 @@
 @class GBSettings;
 @class Store;
 @class Parser;
+@class Processor;
 
 /** Main appledoc class.
  
@@ -20,5 +21,6 @@
 
 @property (nonatomic, strong) Store *store;
 @property (nonatomic, strong) Parser *parser;
+@property (nonatomic, strong) Processor *processor;
 
 @end

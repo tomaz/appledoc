@@ -68,6 +68,7 @@ context(@"cmd line switches", ^{
 			[settings setBool:YES forKey:GBOptions.loggingCommonEnabled];
 			[settings setBool:YES forKey:GBOptions.loggingStoreEnabled];
 			[settings setBool:YES forKey:GBOptions.loggingParsingEnabled];
+			[settings setBool:YES forKey:GBOptions.loggingProcessingEnabled];
 			// verify
 			settings.loggingFormat should equal(2);
 			settings.loggingLevel should equal(3);
@@ -75,6 +76,7 @@ context(@"cmd line switches", ^{
 			settings.loggingCommonEnabled should equal(YES);
 			settings.loggingStoreEnabled should equal(YES);
 			settings.loggingParsingEnabled should equal(YES);
+			settings.loggingProcessingEnabled should equal(YES);
 		});
 	});
 	

@@ -9,6 +9,7 @@
 #import "Objects.h"
 #import "Store.h"
 #import "Parser.h"
+#import "Processor.h"
 #import "Appledoc.h"
 
 @implementation Appledoc
@@ -25,7 +26,13 @@
 		return result;
 	}
 	
-	LogInfo(@"Appledoc finished.");
+	result = [self.processor runWithSettings:settings store:self.store];
+	if (result != GBResultOk) {
+		LogError(@"Processing finished with error code %ld, exiting!", result);
+		return result;
+	}
+	
+	LogInfo(@"appledoc finished!");
 	return result;
 }
 
@@ -43,6 +50,13 @@
 	LogIntDebug(@"Initializing parser due to first access...");
 	_parser = [[Parser alloc] init];
 	return _parser;
+}
+
+- (Processor *)processor {
+	if (_processor) return _processor;
+	LogIntDebug(@"Initializing processor due to first access...");
+	_processor = [[Processor alloc] init];
+	return _processor;
 }
 
 @end

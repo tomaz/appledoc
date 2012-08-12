@@ -8,6 +8,7 @@
 
 #import "Store.h"
 #import "Parser.h"
+#import "Processor.h"
 #import "Appledoc.h"
 #import "TestCaseBase.hh"
 
@@ -33,6 +34,7 @@ describe(@"lazy accessors:", ^{
 			// execute & verify
 			appledoc.store should be_instance_of([Store class]);
 			appledoc.parser should be_instance_of([Parser class]);
+			appledoc.processor should be_instance_of([Processor class]);
 		});
 	});
 });
@@ -45,12 +47,30 @@ describe(@"run:", ^{
 			id store = [OCMockObject niceMockForClass:[Store class]];
 			id parser = [OCMockObject mockForClass:[Parser class]];
 			[[parser expect] runWithSettings:settings store:store];
+			appledoc.processor = [OCMockObject niceMockForClass:[Processor class]];;
 			appledoc.store = store;
 			appledoc.parser = parser;
 			// execute
 			[appledoc runWithSettings:settings];
 			// verify
 			^{ [parser verify]; } should_not raise_exception();
+		});
+	});
+
+	it(@"should invoke processor", ^{
+		runWithAppledoc(^(Appledoc *appledoc) {
+			// setup
+			id settings = [OCMockObject niceMockForClass:[GBSettings class]];
+			id store = [OCMockObject niceMockForClass:[Store class]];
+			id processor = [OCMockObject mockForClass:[Processor class]];
+			[[processor expect] runWithSettings:settings store:store];
+			appledoc.parser = [OCMockObject niceMockForClass:[Parser class]];
+			appledoc.store = store;
+			appledoc.processor = processor;
+			// execute
+			[appledoc runWithSettings:settings];
+			// verify
+			^{ [processor verify]; } should_not raise_exception();
 		});
 	});
 });

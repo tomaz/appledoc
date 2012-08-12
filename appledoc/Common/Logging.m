@@ -108,6 +108,7 @@ void initialize_logging_from_settings(GBSettings *settings) {
 	if (settings.loggingCommonEnabled) log_level |= LOG_FLAG_COMMON;
 	if (settings.loggingStoreEnabled) log_level |= LOG_FLAG_STORE;
 	if (settings.loggingParsingEnabled) log_level |= LOG_FLAG_PARSING;
+	if (settings.loggingProcessingEnabled) log_level |= LOG_FLAG_PROCESSING;
 	if (settings.loggingInternalEnabled) log_level |= LOG_FLAG_INTERNAL;
 }
 

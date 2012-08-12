@@ -45,6 +45,7 @@ GB_SYNTHESIZE_BOOL(loggingInternalEnabled, setLoggingInternalEnabled, GBOptions.
 GB_SYNTHESIZE_BOOL(loggingCommonEnabled, setLoggingCommonEnabled, GBOptions.loggingCommonEnabled)
 GB_SYNTHESIZE_BOOL(loggingStoreEnabled, setLoggingStoreEnabled, GBOptions.loggingStoreEnabled)
 GB_SYNTHESIZE_BOOL(loggingParsingEnabled, setLoggingParsingEnabled, GBOptions.loggingParsingEnabled)
+GB_SYNTHESIZE_BOOL(loggingProcessingEnabled, setLoggingProcessingEnabled, GBOptions.loggingProcessingEnabled)
 
 @end
 
@@ -70,4 +71,5 @@ const struct GBOptions GBOptions = {
 	.loggingCommonEnabled = @"log-common",
 	.loggingStoreEnabled = @"log-store",
 	.loggingParsingEnabled = @"log-parsing",
+	.loggingProcessingEnabled = @"log-processing",
 };

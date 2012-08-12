@@ -17,17 +17,18 @@ extern NSUInteger log_level;
 
 #pragma mark - Low level logging flags
 
-#define LOG_FLAG_ERROR		(1 << 0)	// 0b0000000001
-#define LOG_FLAG_WARN		(1 << 1)	// 0b0000000010
-#define LOG_FLAG_NORMAL		(1 << 2)	// 0b0000000100
-#define LOG_FLAG_INFO		(1 << 3)	// 0b0000001000
-#define LOG_FLAG_VERBOSE	(1 << 4)	// 0b0000010000
-#define LOG_FLAG_DEBUG		(1 << 5)	// 0b0000100000
+#define LOG_FLAG_ERROR		(1 << 0)	// 0b00000000001
+#define LOG_FLAG_WARN		(1 << 1)	// 0b00000000010
+#define LOG_FLAG_NORMAL		(1 << 2)	// 0b00000000100
+#define LOG_FLAG_INFO		(1 << 3)	// 0b00000001000
+#define LOG_FLAG_VERBOSE	(1 << 4)	// 0b00000010000
+#define LOG_FLAG_DEBUG		(1 << 5)	// 0b00000100000
 
-#define LOG_FLAG_INTERNAL	(1 << 6)	// 0x0001000000
-#define LOG_FLAG_COMMON		(1 << 7)	// 0b0010000000
-#define LOG_FLAG_STORE		(1 << 8)	// 0b0100000000
-#define LOG_FLAG_PARSING	(1 << 9)	// 0b1000000000
+#define LOG_FLAG_INTERNAL	(1 << 6)	// 0x00001000000
+#define LOG_FLAG_COMMON		(1 << 7)	// 0b00010000000
+#define LOG_FLAG_STORE		(1 << 8)	// 0b00100000000
+#define LOG_FLAG_PARSING	(1 << 9)	// 0b01000000000
+#define LOG_FLAG_PROCESSING	(1 << 10)	// 0b10000000000
 
 #define LOG_LEVEL_ERROR		(LOG_FLAG_ERROR)						// 0b000001
 #define LOG_LEVEL_WARN		(LOG_FLAG_WARN    | LOG_LEVEL_ERROR)	// 0b000011
@@ -95,6 +96,16 @@ extern NSUInteger log_level;
 #define LogParVerbose(frmt, ...)	LOG_MAYBE(log_level, LOG_FLAG_VERBOSE | LOG_FLAG_PARSING, frmt, ##__VA_ARGS__)
 #define LogParDebug(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_DEBUG | LOG_FLAG_PARSING, frmt, ##__VA_ARGS__)
 #define LogParNSError(error, frmt, ...)	LOG_NS_ERROR(log_level, LOG_FLAG_ERROR | LOG_FLAG_PARSING, error, frmt, ##__VA_ARGS__)
+
+// Processor logging macros - for logging processor specific cases (excluded by default)
+
+#define LogProError(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_ERROR | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProWarn(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_WARN | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProNormal(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_NORMAL | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProInfo(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_INFO | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProVerbose(frmt, ...)	LOG_MAYBE(log_level, LOG_FLAG_VERBOSE | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProDebug(frmt, ...)		LOG_MAYBE(log_level, LOG_FLAG_DEBUG | LOG_FLAG_PROCESSING, frmt, ##__VA_ARGS__)
+#define LogProNSError(error, frmt, ...)	LOG_NS_ERROR(log_level, LOG_FLAG_ERROR | LOG_FLAG_PROCESSING, error, frmt, ##__VA_ARGS__)
 
 #pragma mark - Main logging classes & functions
 

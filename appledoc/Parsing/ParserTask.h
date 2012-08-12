@@ -21,7 +21,6 @@
 
 #pragma mark - 
 
-
 /** Private API for ParserTask subclasses.
  
  This is sent internally by ParserTask and should not be used otherwise.
