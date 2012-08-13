@@ -589,6 +589,36 @@
 	assertThat(result4, is(@"[text](docs/document.html)"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepManualObjectMethodLinksAndUpdateAddress {
+ 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"document.ext"];
+    
+    GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:@"method"];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithArguments:argument, nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"doSomething", @"withVars", nil];
+	GBMethodData *property = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
+	[class.methods registerMethod:method1];
+	[class.methods registerMethod:method2];
+	[class.methods registerMethod:property];
+    
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, document, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+
+    NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](+[Class method])" withFlags:0];
+    NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text]([Class doSomething:withVars:])" withFlags:0];
+    NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](-[Class value])" withFlags:0];
+    NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text with space](+[Class method])" withFlags:0];
+    NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:])" withFlags:0];
+
+	assertThat(result1, is(@"[text](Classes/Class.html#//api/name/method)"));
+    assertThat(result2, is(@"[text](Classes/Class.html#//api/name/doSomething:withVars:)"));
+    assertThat(result3, is(@"[text](Classes/Class.html#//api/name/value)"));
+	assertThat(result4, is(@"[text with space](Classes/Class.html#//api/name/method)"));
+	assertThat(result5, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:)"));
+}
+
 - (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {
 	// setup
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];

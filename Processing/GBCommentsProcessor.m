@@ -661,7 +661,7 @@ typedef NSUInteger GBProcessingFlag;
 			if (searchRange.length == 0) break;
 			continue;
 		}
-		
+        
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
 		while ([links count] > 0) {
 			// Find the lowest index.
@@ -679,6 +679,7 @@ typedef NSUInteger GBProcessingFlag;
 			if (linkData->range.location > lastUsedLocation) {
 				NSRange skippedRange = NSMakeRange(lastUsedLocation, linkData->range.location - lastUsedLocation);
 				NSString *skippedText = [string substringWithRange:skippedRange];
+                //NSLog(@"adding skipped text to result : %@", skippedText);
 				[result appendString:skippedText];
 			}
 			
@@ -697,13 +698,14 @@ typedef NSUInteger GBProcessingFlag;
 		// Exit if there's nothing more to process.
 		if (searchRange.location >= searchEndLocation) break;
 	}
-	
+
 	// If there's some text remaining after all links, append it.
 	if (!isInsideMarkdown && lastUsedLocation < searchEndLocation) {
 		NSRange remainingRange = NSMakeRange(lastUsedLocation, searchEndLocation - lastUsedLocation);
 		NSString *remainingText = [string substringWithRange:remainingRange];
 		[result appendString:remainingText];
 	}
+    NSLog(@"result : %@", result);
 	return result;
 }
 
@@ -859,6 +861,7 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 object name, index 3 selector.
 	NSString *linkText = [components objectAtIndex:0];
+    NSString *linkDisplayText = [components objectAtIndex:1];
 	NSString *objectName = [components objectAtIndex:2];
 	NSString *selector = [components objectAtIndex:3];
 	
@@ -869,7 +872,7 @@ typedef NSUInteger GBProcessingFlag;
 		if (!referencedObject) {
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
-				if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown object!", linkText, self.currentSourceInfo);
+				if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
 				result.range = [string rangeOfString:linkText options:0 range:searchRange];
 				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 				return result;
@@ -890,7 +893,14 @@ typedef NSUInteger GBProcessingFlag;
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
-	result.description = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
+    if( [linkDisplayText length] > 0 )
+    {
+        result.description = linkDisplayText;
+    }
+    else
+    {
+        result.description = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
+    }
 	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
 	return result;
 }
