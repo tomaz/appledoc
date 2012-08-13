@@ -610,11 +610,13 @@
     NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text]([Class doSomething:withVars:])" withFlags:0];
     NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](-[Class value])" withFlags:0];
     NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text with space](+[Class method])" withFlags:0];
+    NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:])" withFlags:0];
 
 	assertThat(result1, is(@"[text](Classes/Class.html#//api/name/method)"));
     assertThat(result2, is(@"[text](Classes/Class.html#//api/name/doSomething:withVars:)"));
     assertThat(result3, is(@"[text](Classes/Class.html#//api/name/value)"));
 	assertThat(result4, is(@"[text with space](Classes/Class.html#//api/name/method)"));
+	assertThat(result5, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {
