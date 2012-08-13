@@ -99,7 +99,8 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self remoteMemberCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"([+-]?)\\[(\\S+)\\s+(\\S+)\\]");
+		//GBRETURN_ON_DEMAND(@"([+-]?)\\[([^]\\s]+)\\s+(\\S+)\\]");
+		GBRETURN_ON_DEMAND(@"\\[?(\\w*)\\]?\\(?[+-]?\\[([^]\\s]+)\\s+(\\S+)\\]\\)?");
 	}
 }
 
