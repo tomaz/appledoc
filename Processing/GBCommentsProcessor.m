@@ -705,7 +705,6 @@ typedef NSUInteger GBProcessingFlag;
 		NSString *remainingText = [string substringWithRange:remainingRange];
 		[result appendString:remainingText];
 	}
-    NSLog(@"result : %@", result);
 	return result;
 }
 
@@ -864,6 +863,17 @@ typedef NSUInteger GBProcessingFlag;
     NSString *linkDisplayText = [components objectAtIndex:1];
 	NSString *objectName = [components objectAtIndex:2];
 	NSString *selector = [components objectAtIndex:3];
+    if( [components count] > 5 ) {
+        if( [linkDisplayText length] < 2 ) {
+            linkDisplayText = [components objectAtIndex:4];
+        }
+        if( [objectName length] == 0 ) {
+            objectName = [components objectAtIndex:5];
+        }
+        if( [selector length] == 0 ) {
+            selector = [components objectAtIndex:6];
+        }
+    }
 	
 	// Match object name with one of the known objects. Warn if not found. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedObject = [self.store classWithName:objectName];
@@ -893,7 +903,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Create link data and return.
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = [self.settings htmlReferenceForObject:referencedMember fromSource:self.currentContext];
-    if( [linkDisplayText length] > 0 )
+    if( [linkDisplayText length] > 1 )
     {
         result.description = linkDisplayText;
     }
