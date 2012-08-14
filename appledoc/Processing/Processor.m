@@ -11,10 +11,6 @@
 #import "ProcessCommentComponentsTask.h"
 #import "Processor.h"
 
-#define GB_PROCESS(code) { NSInteger intermediateResult = code; if (intermediateResult > result) result = intermediateResult; }
-
-#pragma mark -
-
 @implementation Processor
 
 #pragma mark - Task invocation

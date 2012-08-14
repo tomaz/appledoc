@@ -15,4 +15,9 @@ enum {
 };
 typedef NSInteger GBResult;
 
+/** Helper macro for simplifying processing of multiple subsequent methods that all return GBResult.
+ */
+#define GB_PROCESS(code) { NSInteger intermediateResult = code; if (intermediateResult > result) result = intermediateResult; }
+
+
 

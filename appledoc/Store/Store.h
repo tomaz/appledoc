@@ -29,6 +29,7 @@
 #import "ConstantInfo.h"
 
 #import "CommentInfo.h"
+#import "CommentComponentInfo.h"
 
 @class PKToken;
 
