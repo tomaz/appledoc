@@ -3,6 +3,10 @@
 
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct stack {
 	void **item;
 	size_t size;
@@ -17,5 +21,9 @@ int stack_push(struct stack *, void *);
 
 void *stack_pop(struct stack *);
 void *stack_top(struct stack *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -22,6 +22,10 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #if defined(_MSC_VER)
 #define __attribute__(x)
 #define inline
@@ -84,5 +88,9 @@ void bufslurp(struct buf *, size_t);
 
 /* bufprintf: formatted printing to a buffer */
 void bufprintf(struct buf *, const char *, ...) __attribute__ ((format (printf, 2, 3)));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

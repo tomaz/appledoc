@@ -47,9 +47,9 @@ dependency do |s|
 	s.summary  = 'Standards compliant, fast, secure markdown processing library in C.'
 	s.homepage = 'https://github.com/vmg/sundown'
 	s.author   = { 'Vicent Martí' => 'vicent@github.com' }
-	s.source   = { :git => 'git://github.com/tomaz/sundown.git', :commit => '44a32de' }
+	s.source   = { :git => 'git://github.com/vmg/sundown.git', :commit => 'b6b58da' }
 	s.source_files = 'src/*.[hc]', 'html/*.[hc]'
-	s.clean_paths = 'examples', 'html_block_names.txt', 'Makefile'
+	s.clean_paths = 'examples', 'html_block_names.txt', 'Makefile', 'Makefile.*', '*.def'
 end
 	
 target :AppledocTests do

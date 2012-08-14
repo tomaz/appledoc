@@ -22,10 +22,14 @@
 #include "buffer.h"
 #include "autolink.h"
 
-#define UPSKIRT_VERSION "1.15.2"
-#define UPSKIRT_VER_MAJOR 1
-#define UPSKIRT_VER_MINOR 15
-#define UPSKIRT_VER_REVISION 2
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define SUNDOWN_VERSION "1.16.0"
+#define SUNDOWN_VER_MAJOR 1
+#define SUNDOWN_VER_MINOR 16
+#define SUNDOWN_VER_REVISION 0
 
 /********************
  * TYPE DEFINITIONS *
@@ -52,9 +56,9 @@ enum mkd_extensions {
 	MKDEXT_FENCED_CODE = (1 << 2),
 	MKDEXT_AUTOLINK = (1 << 3),
 	MKDEXT_STRIKETHROUGH = (1 << 4),
-	MKDEXT_LAX_HTML_BLOCKS = (1 << 5),
 	MKDEXT_SPACE_HEADERS = (1 << 6),
 	MKDEXT_SUPERSCRIPT = (1 << 7),
+	MKDEXT_LAX_SPACING = (1 << 8),
 };
 
 /* sd_callbacks - functions for rendering parsed data */
@@ -95,9 +99,7 @@ struct sd_callbacks {
 	void (*doc_footer)(struct buf *ob, void *opaque);
 };
 
-struct sd_markdown {
-	int in_link_body;
-};
+struct sd_markdown;
 
 /*********
  * FLAGS *
@@ -112,20 +114,24 @@ struct sd_markdown {
  **********************/
 
 extern struct sd_markdown *
-sd_markdown_parser_new(
+sd_markdown_new(
 	unsigned int extensions,
 	size_t max_nesting,
 	const struct sd_callbacks *callbacks,
 	void *opaque);
 
 extern void
-sd_markdown_parser_render(struct buf *ob, const uint8_t *document, size_t doc_size, struct sd_markdown *md);
+sd_markdown_render(struct buf *ob, const uint8_t *document, size_t doc_size, struct sd_markdown *md);
 
 extern void
-sd_markdown_parser_free(struct sd_markdown *md);
+sd_markdown_free(struct sd_markdown *md);
 
 extern void
 sd_version(int *major, int *minor, int *revision);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 
