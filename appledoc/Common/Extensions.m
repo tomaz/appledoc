@@ -12,7 +12,7 @@
 @implementation NSObject (Appledoc)
 
 - (NSString *)gb_description {
-	return [self debugDescription];
+	return [self description];
 }
 
 @end

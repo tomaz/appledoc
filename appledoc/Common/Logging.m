@@ -45,7 +45,7 @@ static char *log_file_name(const char *path) {
 }
 
 static char *log_flag_description(int flag) {
-	switch (flag) {
+	switch (flag & LOG_LEVEL_DEBUG) {
 		case LOG_FLAG_ERROR: return "ERROR";
 		case LOG_FLAG_WARN: return "WARN";
 		case LOG_FLAG_NORMAL: return "NORMAL";
