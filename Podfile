@@ -40,6 +40,18 @@ dependency do |s|
 	s.clean_paths  = 'GBCli.xcodeproj', 'GBCli/GBCli-Prefix.pch', 'GBCli/GBSettings+Application.*', 'GBCli/main.*'
 end
 
+dependency do |s|
+	s.name     = 'sundown'
+	s.version  = '1.0'
+	s.license  = 'MIT'
+	s.summary  = 'Standards compliant, fast, secure markdown processing library in C.'
+	s.homepage = 'https://github.com/vmg/sundown'
+	s.author   = { 'Vicent Martí' => 'vicent@github.com' }
+	s.source   = { :git => 'git://github.com/tomaz/sundown.git', :commit => '44a32de' }
+	s.source_files = 'src/*.[hc]', 'html/*.[hc]'
+	s.clean_paths = 'examples', 'html_block_names.txt', 'Makefile'
+end
+	
 target :AppledocTests do
 
 	dependency do |s|

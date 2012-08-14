@@ -4,6 +4,7 @@ PODS:
   - GBCli (1.0)
   - OCMock (2.0.2)
   - ParseKit (0.0.2)
+  - sundown (1.0)
 
 DEPENDENCIES:
   - Cedar (defined in Podfile)
@@ -11,3 +12,4 @@ DEPENDENCIES:
   - GBCli (defined in Podfile)
   - OCMock (defined in Podfile)
   - ParseKit (defined in Podfile)
+  - sundown (defined in Podfile)

@@ -1,6 +1,6 @@
 WARNING_CFLAGS = -w
 GCC_PREPROCESSOR_DEFINITIONS = TARGET_OS_SNOW_LEOPARD
-ALWAYS_SEARCH_USER_PATHS = YES
+HEADER_SEARCH_PATHS = "$(PODS_ROOT)/Headers" "$(PODS_ROOT)/Headers/Cedar" "$(PODS_ROOT)/Headers/DDCli" "$(PODS_ROOT)/Headers/GBCli" "$(PODS_ROOT)/Headers/OCMock" "$(PODS_ROOT)/Headers/ParseKit" "$(PODS_ROOT)/Headers/sundown"
 OTHER_LDFLAGS = -ObjC -all_load -lstdc++ -framework Foundation -licucore
-HEADER_SEARCH_PATHS = "$(PODS_ROOT)/Headers" "$(PODS_ROOT)/Headers/Cedar" "$(PODS_ROOT)/Headers/DDCli" "$(PODS_ROOT)/Headers/GBCli" "$(PODS_ROOT)/Headers/OCMock" "$(PODS_ROOT)/Headers/ParseKit"
 PODS_ROOT = $(SRCROOT)/Pods
+ALWAYS_SEARCH_USER_PATHS = YES
