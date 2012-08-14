@@ -110,6 +110,10 @@
 	return NSMakeRange(0, self.length);
 }
 
+- (BOOL)gb_stringContainsOnlyWhitespace {
+	return [self gb_stringContainsOnlyCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+}
+
 - (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set {
 	for (NSUInteger i=0; i<self.length; i++) {
 		unichar ch = [self characterAtIndex:i];
