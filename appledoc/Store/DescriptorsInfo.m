@@ -39,14 +39,18 @@
 @implementation DescriptorsInfo (Logging)
 
 - (NSString *)description {
+	if (!_descriptorItems) return @"descriptors";
 	NSMutableString *result = [NSMutableString string];
-	if (_descriptorItems && self.descriptorItems.count > 0) {
-		[self.descriptorItems enumerateObjectsUsingBlock:^(NSString *descriptor, NSUInteger idx, BOOL *stop) {
-			if (idx > 0) [result appendString:@" "];
-			[result appendString:descriptor];
-		}];
-	}
+	[self.descriptorItems enumerateObjectsUsingBlock:^(NSString *descriptor, NSUInteger idx, BOOL *stop) {
+		if (idx > 0) [result appendString:@" "];
+		[result appendString:descriptor];
+	}];
 	return result;
+}
+
+- (NSString *)debugDescription {
+	if (!_descriptorItems) return @"";
+	return [self description];
 }
 
 @end

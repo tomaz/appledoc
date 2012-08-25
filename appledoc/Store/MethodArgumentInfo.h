@@ -20,4 +20,6 @@
 @property (nonatomic, copy) NSString *argumentSelector;
 @property (nonatomic, copy) NSString *argumentVariable;
 
+@property (nonatomic, readonly) BOOL isUsingVariable;
+
 @end

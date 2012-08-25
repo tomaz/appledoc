@@ -80,13 +80,13 @@
 	self.enumValueState.data = data;
 	NSUInteger result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:self.enumItemDelimiters]) {
-			LogParDebug(@"Matched %@, ending item.", token);
+			LogParDebug(@"Matched '%@', ending item.", token);
 			[self.enumItemContext changeStateTo:self.enumItemState];
 		} else if ([token matches:@"="]) {
-			LogParDebug(@"Matched %@, registering value.", token);
+			LogParDebug(@"Matched '%@', registering value.", token);
 			[self.enumItemContext changeStateTo:self.enumValueState];
 		} else {
-			LogParDebug(@"Matching %@.", token);
+			LogParDebug(@"Matching '%@'.", token);
 			[self.enumItemContext.currentState parseToken:token];
 		}		
 	}];

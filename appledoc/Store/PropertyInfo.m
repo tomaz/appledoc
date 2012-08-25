@@ -96,12 +96,17 @@
 @implementation PropertyInfo (Logging)
 
 - (NSString *)description {
+	if (!self.propertyName) return @"property";
+	return [NSString stringWithFormat:@"@property %@", self.propertyName];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"@property "];
-	if (_propertyAttributes) [result appendFormat:@"(%@) ", self.propertyAttributes];
-	if (_propertyType) [result appendFormat:@"%@", self.propertyType];
+	if (_propertyAttributes) [result appendFormat:@"(%@) ", [self.propertyAttributes debugDescription]];
+	if (_propertyType) [result appendFormat:@"%@", [self.propertyType debugDescription]];
 	[result appendString:self.propertyName];
-	if (_propertyDescriptors) [result appendFormat:@" %@", self.propertyDescriptors];
+	if (_propertyDescriptors) [result appendFormat:@" %@", [self.propertyDescriptors debugDescription]];
 	[result appendString:@";"];
 	if (self.comment.sourceString.length > 0) [result appendString:@"\n"];
 	return result;

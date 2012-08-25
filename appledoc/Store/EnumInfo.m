@@ -56,6 +56,11 @@
 @implementation EnumInfo (Logging)
 
 - (NSString *)description {
+	if (!self.nameOfEnum) return @"enum";
+	return [NSString stringWithFormat:@"enum %@ w/ %lu items", self.nameOfEnum, 0];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"enum"];
 	if (self.nameOfEnum) [result appendFormat:@" %@", self.nameOfEnum];
@@ -63,7 +68,7 @@
 	if (_enumItems) {
 		[self.enumItems enumerateObjectsUsingBlock:^(EnumItemInfo *item, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendFormat:@",\n"];
-			[result appendFormat:@"    %@", item];
+			[result appendFormat:@"    %@", [item debugDescription]];
 		}];
 		[result appendString:@"\n"];
 	}

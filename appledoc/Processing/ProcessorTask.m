@@ -38,7 +38,6 @@
 #pragma mark - Processing
 
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)context {
-	LogProDebug(@"Processing comment for %@...", object);
 	self.processingObject = object;
 	self.processingContext = context;
 	return [self processComment:object.comment];

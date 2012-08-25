@@ -121,7 +121,7 @@
 	__block PKToken *nameToken = nil;
 	LogParDebug(@"Matching struct body start.");
 	NSUInteger matchResult = [data.stream matchUntil:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched %@", token);
+		LogParDebug(@"Matched '%@'", token);
 		if ([token matches:delimiters]) return;
 		if ([token matches:@"}"]) return;
 		if (!nameToken) nameToken = token;
@@ -141,7 +141,7 @@
 		return YES;
 	}
 	
-	LogParDebug(@"Matched %@ for struct name.", nameToken);
+	LogParDebug(@"Matched '%@' for struct name.", nameToken);
 	if (!self.wasStructNameParsed) {
 		[data.store appendStructName:nameToken.stringValue];
 		self.wasStructNameParsed = YES;

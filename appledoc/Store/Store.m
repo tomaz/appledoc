@@ -49,7 +49,7 @@
 }
 
 - (void)pushRegistrationObject:(id)object {
-	LogStoDebug(@"Pushing object %@ to registration stack...", object);
+	LogStoDebug(@"Pushing %@ to registration stack...", object);
 	if (self.commentTextForNextObject) {
 		if (![object respondsToSelector:@selector(setComment:)]) {
 			LogStoWarn(@"%@ doesn't respond to setComment:, can't register comment!", object);
@@ -64,6 +64,7 @@
 
 - (id)popRegistrationObject {
 	id result = self.currentRegistrationObject;
+	LogStoDebug(@"Popping %@ from registration stack...", result);
 	self.lastPoppedRegistrationObject = result;
 	[self.registrationStack removeLastObject];
 	return result;

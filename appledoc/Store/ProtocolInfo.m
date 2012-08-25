@@ -16,9 +16,14 @@
 @implementation ProtocolInfo (Logging)
 
 - (NSString *)description {
+	if (!self.nameOfProtocol) return @"protocol";
+	return [NSString stringWithFormat:@"@protocol %@ w/ %@", self.nameOfProtocol, [super description]];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@protocol %@", self.nameOfProtocol];
-	[result appendString:[super description]];
+	[result appendString:[super debugDescription]];
 	return result;
 }
 

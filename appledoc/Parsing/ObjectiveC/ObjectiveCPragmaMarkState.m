@@ -63,7 +63,7 @@
 - (PKToken *)consumeUntilLastPragmaDescriptionToken:(ObjectiveCParseData *)data {
 	PKToken *result = nil;
 	while (!data.stream.eof && [self isCurrentTokenOnStartingLine:data]) {
-		LogParDebug(@"Matched %@.", data.stream.current);
+		LogParDebug(@"Matched '%@'.", data.stream.current);
 		result = data.stream.current;
 		[data.stream consume:1];
 	}

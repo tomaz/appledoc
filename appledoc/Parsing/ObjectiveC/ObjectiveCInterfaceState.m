@@ -46,7 +46,7 @@
 - (BOOL)parseMethod:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"-", nil] && ![data.stream matches:@"+", nil]) return NO;
 	// Must not consume otherwise we can't distinguish between instance and class method!
-	LogParDebug(@"Matched %@, testing for method.", data.stream.current);
+	LogParDebug(@"Matched '%@', testing for method.", data.stream.current);
 	[data.parser pushState:data.parser.methodState];
 	return YES;
 }

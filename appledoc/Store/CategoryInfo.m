@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "CategoryInfo.h"
 
 @implementation CategoryInfo
@@ -27,11 +28,16 @@
 @implementation CategoryInfo (Logging)
 
 - (NSString *)description {
+	if (!self.nameOfClass) return @"category";
+	return [NSString stringWithFormat:@"@interface %@(%@) w/ %@", self.nameOfClass, self.isCategory ? self.nameOfCategory : @"", [super description]];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@interface %@ (", self.nameOfClass];
 	if (self.isCategory) [result appendString:self.nameOfCategory];
 	[result appendString:@")"];
-	[result appendString:[super description]];
+	[result appendString:[super debugDescription]];
 	return result;
 }
 

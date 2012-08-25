@@ -49,14 +49,18 @@
 @implementation AttributesInfo (Logging)
 
 - (NSString *)description {
+	if (!_attributeItems) return @"";
 	NSMutableString *result = [NSMutableString string];
-	if (_attributeItems && self.attributeItems.count > 0) {
-		[self.attributeItems enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
-			if (idx > 0) [result appendString:@", "];
-			[result appendString:attribute];
-		}];
-	}
+	[self.attributeItems enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
+		if (idx > 0) [result appendString:@", "];
+		[result appendString:attribute];
+	}];
 	return result;
+}
+
+- (NSString *)debugDescription {
+	if (!_attributeItems) return @"";
+	return [self description];
 }
 
 @end

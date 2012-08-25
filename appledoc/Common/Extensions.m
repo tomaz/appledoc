@@ -9,16 +9,6 @@
 #import <objc/runtime.h>
 #import "Extensions.h"
 
-@implementation NSObject (Appledoc)
-
-- (NSString *)gb_description {
-	return [self description];
-}
-
-@end
-
-#pragma mark -
-
 @implementation NSError (GBError)
 
 + (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason {

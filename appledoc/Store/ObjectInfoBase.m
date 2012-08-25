@@ -31,7 +31,6 @@
 #pragma mark - StoreRegistrar and related stuff
 
 - (void)pushRegistrationObject:(id)object {
-	LogStoDebug(@"Pushing %@ to registration stack...", object);
 	if (!self.objectRegistrar) {
 		LogStoWarn(@"No registrar is assigned, can't push %@!", object);
 		return;
@@ -40,7 +39,6 @@
 }
 
 - (id)popRegistrationObject {
-	LogStoDebug(@"Popping registration stack...");
 	if (!self.objectRegistrar) {
 		LogStoWarn(@"No registrar is assigned, can't pop!");
 		return nil;

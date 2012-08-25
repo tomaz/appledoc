@@ -85,4 +85,33 @@ describe(@"method argument variable registration:", ^{
 	});
 });
 
+describe(@"helper methods:", ^{
+	describe(@"is using variable:", ^{
+		it(@"should return yes if type is registered", ^{
+			runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+				// setup
+				[info beginMethodArgumentTypes];
+				// execute & verify
+				info.isUsingVariable should be_truthy();
+			});
+		});
+
+		it(@"should return yes if variable", ^{
+			runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+				// setup
+				[info appendMethodArgumentVariable:@"var"];
+				// execute & verify
+				info.isUsingVariable should be_truthy();
+			});
+		});
+
+		it(@"should return no if type and variable are missing", ^{
+			runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
+				// execute & verify
+				info.isUsingVariable should_not be_truthy();;
+			});
+		});
+	});
+});
+
 TEST_END

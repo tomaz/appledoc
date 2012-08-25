@@ -41,7 +41,7 @@
 		[data.store beginPropertyAttributes];
 		NSArray *delimiters = self.propertyAttributeDelimiters;
 		NSUInteger found = [data.stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-			LogParDebug(@"Matched %@.", token);
+			LogParDebug(@"Matched '%@'.", token);
 			if ([token matches:delimiters]) return;
 			[data.store appendAttribute:token.stringValue];
 		}];
@@ -65,7 +65,7 @@
 	LogParDebug(@"Matching types and name.");
 	[data.store beginPropertyTypes];
 	NSUInteger found = [data.stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched %@.", token);
+		LogParDebug(@"Matched '%@'.", token);
 		if (lookahead < indexOfNameToken) {
 			[data.store appendType:token.stringValue];
 		} else if (lookahead == indexOfNameToken) {

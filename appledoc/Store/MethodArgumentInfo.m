@@ -22,6 +22,10 @@
 	return _argumentType;
 }
 
+- (BOOL)isUsingVariable {
+	return (_argumentType || _argumentVariable);
+}
+
 @end
 
 #pragma mark - 
@@ -51,9 +55,17 @@
 @implementation MethodArgumentInfo (Logging)
 
 - (NSString *)description {
+	if (!self.argumentSelector) return @"method argument ";
 	NSMutableString *result = [NSMutableString string];
 	[result appendString:self.argumentSelector];
-	if (_argumentType || _argumentVariable) {
+	if (self.isUsingVariable) [result appendString:@":"];
+	return result;
+}
+
+- (NSString *)debugDescription {
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:self.argumentSelector];
+	if (self.isUsingVariable) {
 		[result appendString:@":"];
 		if (_argumentType) [result appendFormat:@"(%@)", self.argumentType];
 		if (_argumentVariable) [result appendString:self.argumentVariable];

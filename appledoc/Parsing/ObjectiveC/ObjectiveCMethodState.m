@@ -30,7 +30,7 @@
 }
 
 - (BOOL)consumeMethodStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matched %@, testing for method.", data.stream.current);
+	LogParDebug(@"Matched '%@', testing for method.", data.stream.current);
 	BOOL isInstanceMethod = [data.stream.current matches:@"-"];
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginMethodDefinitionWithType:isInstanceMethod ? GBStoreTypes.instanceMethod : GBStoreTypes.classMethod];
@@ -44,7 +44,7 @@
 		LogParDebug(@"Matching method result...");
 		[data.store beginMethodResults];
 		NSUInteger resultEndTokenIndex = [data.stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-			LogParDebug(@"Matched %@.", token);
+			LogParDebug(@"Matched '%@'.", token);
 			if ([token matches:delimiters]) return;
 			[data.store appendType:token.stringValue];
 		}];
@@ -90,7 +90,7 @@
 		NSArray *delimiters = self.methodTypeDelimiters;
 		[data.store beginMethodArgumentTypes];
 		NSUInteger endTokenIndex = [data.stream matchStart:@"(" end:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-			LogParDebug(@"Matched %@.", token);
+			LogParDebug(@"Matched '%@'.", token);
 			if ([token matches:delimiters]) return;
 			[data.store appendType:token.stringValue];
 		}];
@@ -128,7 +128,7 @@
 	LogParDebug(@"Parsing method descriptors.");
 	[data.store beginMethodDescriptors];
 	GBResult result = [data.stream matchUntil:self.methodEndDelimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched %@.", token);
+		LogParDebug(@"Matched '%@'.", token);
 		if ([token matches:self.methodEndDelimiters]) return;
 		[data.store appendDescriptor:token.stringValue];
 	}];

@@ -72,7 +72,7 @@
 	ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:self.tokensStream parser:self store:self.store];
 	while (!self.tokensStream.eof) {
 		PKToken *token = self.tokensStream.current;
-		LogParDebug(@"Parsing token '%@'...", token.stringValue);
+		LogParDebug(@"Parsing token '%@'...", [token.stringValue gb_description]);
 		if ([self parseCommentToken:token]) continue;
 		if (![self registerComments]) break;
 		if (![self parseTokensWithData:data result:&result]) break;

@@ -53,13 +53,18 @@
 @implementation StructInfo (Logging)
 
 - (NSString *)description {
+	if (!self.nameOfStruct) return @"struct";
+	return [NSString stringWithFormat:@"struct %@", self.nameOfStruct];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendString:@"struct"];
 	if (self.nameOfStruct) [result appendFormat:@" %@", self.nameOfStruct];
 	[result appendString:@" {\n"];
 	if (_structItems) {
 		[self.structItems enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendFormat:@"    %@;\n", obj];
+			[result appendFormat:@"    %@;\n", [obj debugDescription]];
 		}];
 	}
 	[result appendString:@"}"];

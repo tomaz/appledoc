@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "ClassInfo.h"
 
 @implementation ClassInfo
@@ -16,10 +17,15 @@
 @implementation ClassInfo (Logging)
 
 - (NSString *)description {
+	if (!self.nameOfClass) return @"class";
+	return [NSString stringWithFormat:@"@interface %@ w/ %@", self.nameOfClass, [super description]];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@interface %@", self.nameOfClass];
 	if (self.nameOfSuperClass) [result appendFormat:@" : %@", self.nameOfSuperClass];
-	[result appendString:[super description]];
+	[result appendString:[super debugDescription]];
 	return result;
 }
 

@@ -39,14 +39,18 @@
 @implementation TypeInfo (Logging)
 
 - (NSString *)description {
+	if (!_typeItems) return @"type";
 	NSMutableString *result = [NSMutableString string];
-	if (_typeItems && self.typeItems.count > 0) {
-		[self.typeItems enumerateObjectsUsingBlock:^(NSString *type, NSUInteger idx, BOOL *stop) {
-			if (idx > 0) [result appendString:@" "];
-			[result appendString:type];
-		}];
-	}
+	[self.typeItems enumerateObjectsUsingBlock:^(NSString *type, NSUInteger idx, BOOL *stop) {
+		if (idx > 0) [result appendString:@" "];
+		[result appendString:type];
+	}];
 	return result;
+}
+
+- (NSString *)debugDescription {
+	if (!_typeItems) return @"";
+	return [self description];
 }
 
 @end

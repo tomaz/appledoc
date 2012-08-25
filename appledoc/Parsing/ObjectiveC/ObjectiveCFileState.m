@@ -85,21 +85,21 @@
 
 - (BOOL)parseEnum:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"enum", nil]) return NO;
-	LogParDebug(@"Matched %@, testing for enumeration.", data.stream.current);
+	LogParDebug(@"Matched '%@', testing for enumeration.", data.stream.current);
 	[data.parser pushState:data.parser.enumState];
 	return YES;
 }
 
 - (BOOL)parseStruct:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"struct", nil]) return NO;
-	LogParDebug(@"Matched %@, testing for struct.", data.stream.current);
+	LogParDebug(@"Matched '%@', testing for struct.", data.stream.current);
 	[data.parser pushState:data.parser.structState];
 	return YES;
 }
 
 - (BOOL)parseConstant:(ObjectiveCParseData *)data {
 	if (![(id)data.parser.constantState doesDataContainConstant:data]) return NO;
-	LogParDebug(@"Matched %@, testing for constant.", data.stream.current);
+	LogParDebug(@"Matched '%@', testing for constant.", data.stream.current);
 	[data.parser pushState:data.parser.constantState];
 	return YES;
 }

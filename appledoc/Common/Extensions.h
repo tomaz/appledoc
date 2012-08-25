@@ -8,19 +8,13 @@
 
 #import <ParseKit/ParseKit.h>
 
-@interface NSError (Appledoc)
-+ (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
-@end
-
 enum {
 	GBErrorCodeTemplatePathNotFound,
 	GBErrorCodeTemplatePathNotDirectory,
 };
 
-#pragma mark - 
-
-@interface NSObject (Appledoc)
-- (NSString *)gb_description;
+@interface NSError (Appledoc)
++ (NSError *)gb_errorWithCode:(NSInteger)code description:(NSString *)description reason:(NSString *)reason;
 @end
 
 #pragma mark -
@@ -34,6 +28,7 @@ enum {
 
 @interface NSString (Appledoc)
 + (NSUInteger)gb_defaultDescriptionLength;
+- (NSString *)gb_description;
 - (NSString *)gb_descriptionWithLength:(NSUInteger)length;
 - (NSString *)gb_stringByStandardizingCurrentDir;
 - (NSString *)gb_stringByStandardizingCurrentDirAndPath;

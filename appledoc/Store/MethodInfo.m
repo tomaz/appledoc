@@ -88,16 +88,29 @@
 @implementation MethodInfo (Logging)
 
 - (NSString *)description {
-	NSMutableString *result = [self descriptionStringWithComment];
-	[result appendString:self.isClassMethod ? @"+ " : @"- "];
-	if (_methodResult) [result appendFormat:@"(%@)", self.methodResult];
+	if (!_methodArguments) return @"method";
+	NSMutableString *result = [NSMutableString string];
+	[result appendString:self.isClassMethod ? @"+" : @"-"];
 	if (_methodArguments) {
 		[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argument, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendString:@" "];
 			[result appendFormat:@"%@", argument];
 		}];
 	}
-	if (_methodDescriptors) [result appendFormat:@" %@", self.methodDescriptors];
+	return result;
+}
+
+- (NSString *)debugDescription {
+	NSMutableString *result = [self descriptionStringWithComment];
+	[result appendString:self.isClassMethod ? @"+ " : @"- "];
+	if (_methodResult) [result appendFormat:@"(%@)", self.methodResult];
+	if (_methodArguments) {
+		[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argument, NSUInteger idx, BOOL *stop) {
+			if (idx > 0) [result appendString:@" "];
+			[result appendFormat:@"%@", [argument debugDescription]];
+		}];
+	}
+	if (_methodDescriptors) [result appendFormat:@" %@", [self.methodDescriptors debugDescription]];
 	[result appendString:@";"];
 	if (self.comment.sourceString.length > 0) [result appendString:@"\n"];
 	return result;

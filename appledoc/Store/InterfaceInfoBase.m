@@ -166,6 +166,10 @@
 @implementation InterfaceInfoBase (Logging)
 
 - (NSString *)description {
+	return [NSString stringWithFormat:@"%lu properties, %lu interface methods, %lu class methods", self.interfaceProperties.count, self.interfaceInstanceMethods.count, self.interfaceClassMethods.count];
+}
+
+- (NSString *)debugDescription {
 	NSMutableString *result = [NSMutableString string];
 	if (_interfaceAdoptedProtocols && self.interfaceAdoptedProtocols.count > 0) {
 		[result appendString:@" <"];
@@ -178,7 +182,7 @@
 	if (_interfaceMethodsAndPropertiesInRegistrationOrder && self.interfaceMethodsAndPropertiesInRegistrationOrder.count > 0) {
 		[result appendString:@"\n"];
 		[self.interfaceMethodsAndPropertiesInRegistrationOrder enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-			[result appendFormat:@"%@\n", obj];
+			[result appendFormat:@"%@\n", [obj debugDescription]];
 		}];
 	}
 	[result appendString:@"@end"];

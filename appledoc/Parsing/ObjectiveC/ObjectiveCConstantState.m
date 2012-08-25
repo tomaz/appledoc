@@ -40,7 +40,7 @@
 	LogParDebug(@"Matching constant types and name.");
 	[data.store beginConstantTypes];
 	NSUInteger found = [data.stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched %@.", token);
+		LogParDebug(@"Matched '%@'.", token);
 		if (lookahead < indexOfNameToken) {
 			[data.store appendType:token.stringValue];
 		} else if (lookahead == indexOfNameToken) {

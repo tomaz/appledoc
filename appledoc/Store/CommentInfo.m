@@ -27,6 +27,10 @@
 @implementation CommentInfo (Logging)
 
 - (NSString *)description {
+	return [self.sourceString gb_description];
+}
+
+- (NSString *)debugDescription {
 	return self.sourceString;
 }
 

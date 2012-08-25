@@ -98,7 +98,7 @@
 - (void)parseMultiLinerFromString:(NSString *)string line:(NSUInteger)line {
 	NSUInteger location = [string gb_indexOfString:@"*/"];
 	if (location == NSNotFound) {
-		LogWarn(@"Multi line comment '%@' at %lu is missing comment end!", [string gb_description], line);
+		LogWarn(@"Multi line comment '%@' at %lu is missing comment end!", string, line);
 		return;
 	}
 	
@@ -149,7 +149,7 @@
 - (void)notifyAboutGroupIfNecessaryAndReset:(BOOL)reset {
 	if (!self.groupComment) return;
 	if (self.groupRegistrator) {
-		LogParDebug(@"Notifying about group comment '%@'...", [self.groupComment gb_description]);
+		LogParDebug(@"Notifying about group comment '%@'...", self.groupComment);
 		self.groupRegistrator(self, self.groupComment);
 	}
 	if (reset) self.groupComment = nil;
