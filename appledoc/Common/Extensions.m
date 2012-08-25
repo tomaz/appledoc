@@ -54,18 +54,18 @@
 }
 
 - (NSString *)gb_descriptionWithLength:(NSUInteger)length {
-	static NSRegularExpression *regex = nil;
-	if (!regex) regex = [NSRegularExpression regularExpressionWithPattern:@"\\s+" options:0 error:nil];
-
 	NSRange range = NSMakeRange(0, self.length);
-	NSString *result = [regex stringByReplacingMatchesInString:self options:0 range:range withTemplate:@" "];
-	result = [result gb_stringByTrimmingWhitespaceAndNewLine];
-	if (result.length <= length) return result;
-	
-	NSUInteger extractLength = length / 2;
-	NSString *prefix = [result substringToIndex:extractLength];
-	NSString *suffix = [result substringFromIndex:result.length - extractLength];
-	return [NSString stringWithFormat:@"%@…%@", prefix, suffix];
+	NSStringEnumerationOptions options = NSStringEnumerationByWords;
+	NSMutableString *result = [NSMutableString stringWithCapacity:length];
+	[self enumerateSubstringsInRange:range options:options usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
+		if (result.length > 0) [result appendString:@" "];
+		[result appendString:substring];
+		if (result.length > length) {
+			[result appendString:@"…"];
+			*stop = YES;
+		}
+	}];
+	return result;
 }
 
 - (NSString *)gb_stringByStandardizingCurrentDir {
