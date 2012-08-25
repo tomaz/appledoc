@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "MarkdownParser.h"
+
 @class GBSettings;
 @class ObjectInfoBase;
 @class CommentInfo;
@@ -17,7 +19,7 @@
  
  @warning **Note:** Note that processing is handled by objects - each object also has comment assigned, so there's no need to . However for each object, it's context is also given. The context specifies the "parent" object of our object. Or better: each context is fully rendered on a single HTML page (rendering happens later on, during generation phase). So the context specifies the object that the page describes. For example: if the object that's being processed is a method, then the context is it's parent "top level" object (class, category or protocol). However if the object is already "top level" object, the context is the same object.
  */
-@interface ProcessorTask : NSObject
+@interface ProcessorTask : NSObject <MarkdownParserDelegate>
 
 - (id)initWithStore:(Store *)store settings:(GBSettings *)settings;
 
@@ -37,4 +39,5 @@
 @property (nonatomic, strong) GBSettings *settings;
 @property (nonatomic, strong) ObjectInfoBase *processingObject;
 @property (nonatomic, strong) ObjectInfoBase *processingContext;
+@property (nonatomic, strong) MarkdownParser *markdownParser;
 @end

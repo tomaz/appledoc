@@ -108,6 +108,7 @@
 		73B6595A1588AFDF00AE2314 /* CommentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B659591588AFDF00AE2314 /* CommentParser.m */; };
 		73B6595B1588AFDF00AE2314 /* CommentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B659591588AFDF00AE2314 /* CommentParser.m */; };
 		73B6595F1588B7A900AE2314 /* CommentParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73B6595D1588B7A900AE2314 /* CommentParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
 		73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274DD150E0D60004D27F4 /* Appledoc.m */; };
@@ -288,6 +289,7 @@
 		73B659581588AFDF00AE2314 /* CommentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentParser.h; sourceTree = "<group>"; };
 		73B659591588AFDF00AE2314 /* CommentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentParser.m; sourceTree = "<group>"; };
 		73B6595D1588B7A900AE2314 /* CommentParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentParserTests.mm; sourceTree = "<group>"; };
+		73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProcessorTaskTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		73D274B4150E05DA004D27F4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -582,6 +584,7 @@
 			isa = PBXGroup;
 			children = (
 				73A0268D15D6EFB50077D204 /* ProcessorTests.mm */,
+				73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */,
 				73A3E48D15D8369500769863 /* ProcessCommentComponentsTaskTests.mm */,
 			);
 			path = Processing;
@@ -878,6 +881,7 @@
 				73A0268E15D6EFB50077D204 /* ProcessorTests.mm in Sources */,
 				73A3E48C15D8288D00769863 /* ProcessCommentComponentsTask.m in Sources */,
 				73A3E48E15D8369500769863 /* ProcessCommentComponentsTaskTests.mm in Sources */,
+				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
