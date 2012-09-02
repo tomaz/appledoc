@@ -676,7 +676,7 @@ typedef NSUInteger GBProcessingFlag;
 			}
 			
 			// If there is some text skipped after previous link (or search range), append it to output first.
-			if (linkData->range.location > lastUsedLocation) {
+			if (linkData && linkData->range.location > lastUsedLocation) {
 				NSRange skippedRange = NSMakeRange(lastUsedLocation, linkData->range.location - lastUsedLocation);
 				NSString *skippedText = [string substringWithRange:skippedRange];
                 //NSLog(@"adding skipped text to result : %@", skippedText);
@@ -684,11 +684,13 @@ typedef NSUInteger GBProcessingFlag;
 			}
 			
 			// Convert the raw link to Markdown syntax and append to output.
-			NSString *markdownLink = isInsideMarkdown ? linkData->address : linkData->markdown;
-			[result appendString:markdownLink];
-			
+            if(linkData) {
+                NSString *markdownLink = isInsideMarkdown ? linkData->address : linkData->markdown;
+                [result appendString:markdownLink];
+            }
+            
 			// Update range and remove the link from the temporary array.
-			NSUInteger location = linkData->range.location + linkData->range.length;
+			NSUInteger location = linkData ? linkData->range.location + linkData->range.length : 0;
 			searchRange.location = location;
 			searchRange.length = searchEndLocation - location;
 			lastUsedLocation = location;
@@ -710,12 +712,15 @@ typedef NSUInteger GBProcessingFlag;
 
 - (BOOL)isCrossReference:(GBCrossRefData *)data matchingObject:(id)object {
 	if ([object isTopLevelObject]) {
-		if ([object isKindOfClass:[GBClassData class]])
+		if ([object isKindOfClass:[GBClassData class]]) {
 			if ([data->description isEqualToString:[object nameOfClass]]) return YES;
-		else if ([object isKindOfClass:[GBCategoryData class]])
+        }
+		else if ([object isKindOfClass:[GBCategoryData class]]) {
 			if ([data->description isEqualToString:[object idOfCategory]]) return YES;
-		else if ([object isKindOfClass:[GBProtocolData class]])
+        }
+		else if ([object isKindOfClass:[GBProtocolData class]]) {
 			if ([data->description isEqualToString:[object nameOfProtocol]]) return YES;
+        }
 	} else {
 		if (![object isKindOfClass:[GBDocumentData class]] && [data->description isEqualToString:[object methodSelector]]) return YES;
 	}

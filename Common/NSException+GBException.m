@@ -46,7 +46,7 @@
 	
 	NSMutableString *result = [NSMutableString string];
 	if (message) [result appendFormat:@"%@\n", message];
-	[result appendFormat:@"Error: %@, code %i: %@\n", domain, code, description];
+	[result appendFormat:@"Error: %@, code %li: %@\n", domain, code, description];
 	if (reason) [result appendFormat:@"Reason: %@", reason];
 	return result;
 }

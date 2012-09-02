@@ -298,7 +298,7 @@
 - (void)didFinishWithParseErrorAtLine:(NSInteger)line description:(NSString *)description {
 	if (tokenConsumer) {
 		NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
-		[userInfo setObject:[NSString stringWithFormat:@"Parse error at line %d: %@", line, description]
+		[userInfo setObject:[NSString stringWithFormat:@"Parse error at line %ld: %@", line, description]
 					 forKey:NSLocalizedDescriptionKey];
 		[userInfo setObject:[NSNumber numberWithInteger:line]
 					 forKey:GRMustacheErrorLine];
