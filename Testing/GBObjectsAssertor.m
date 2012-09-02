@@ -209,7 +209,7 @@
 			[expectedComps removeObjectAtIndex:0];
 			char *argList = NULL;
 			if ([expectedComps count] > 0) {
-				argList = (char *)malloc(sizeof(NSString *) * [expectedComps count]);
+				argList = (char *)malloc(sizeof(char) * [expectedComps count]);
 				[expectedComps getObjects:(id *)argList];				
 			}
 			[self assertCommentComponents:argument.argumentDescription matchesValues:firstExpectedComp values:(__va_list_tag *)argList];
