@@ -174,7 +174,7 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 			case LOG_FLAG_DEBUG:	level = @"debug"; break;
 			default:				level = @"unknown"; break;
 		}
-		return [NSString stringWithFormat:@"%@:%u: %@: %@", m->originalFilename, m->originalLine, level, GBLogMessage(m)];
+		return [NSString stringWithFormat:@"%@:%lu: %@: %@", m->originalFilename, m->originalLine, level, GBLogMessage(m)];
 	}
 	return GBLogMessage(m);
 }
