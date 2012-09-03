@@ -103,7 +103,7 @@
 				
 				[self deleteOldLogFiles];
 				
-				[pool release];
+				[pool drain];
 			};
 			
 			dispatch_async([DDLog loggingQueue], block);
@@ -569,7 +569,7 @@
 			maximumFileSize = newMaximumFileSize;
 			[self maybeRollLogFileDueToSize];
 			
-			[pool release];
+			[pool drain];
 		};
 		
 		if (dispatch_get_current_queue() == loggerQueue)
@@ -675,7 +675,7 @@
 			rollingFrequency = newRollingFrequency;
 			[self maybeRollLogFileDueToAge:nil];
 			
-			[pool release];
+			[pool drain];
 		};
 		
 		if (dispatch_get_current_queue() == loggerQueue)
@@ -795,7 +795,7 @@
 		dispatch_block_t block = ^{
 			NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 			[self rollLogFileNow];
-			[pool release];
+			[pool drain];
 		};
 		dispatch_async([DDLog loggingQueue], block);
 		

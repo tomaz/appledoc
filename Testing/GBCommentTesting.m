@@ -38,10 +38,10 @@
 	component.settings = settings;
 	[[settings expect] stringByConvertingMarkdownToHTML:component.markdownValue];
 	// execute
-	NSString *html = component.htmlValue;
+    (void)component.htmlValue;
 	// verify
 	[settings verify];
-	html = nil;	// just to suppress compiler warning of unused var...
+
 }
 
 - (void)testTextString_shouldUseAssignedSettings {
@@ -52,10 +52,9 @@
 	component.settings = settings;
 	[[settings expect] stringByConvertingMarkdownToText:component.markdownValue];
 	// execute
-	NSString *html = component.textValue;
+	(void)component.textValue;
 	// verify
 	[settings verify];
-	html = nil;	// just to suppress compiler warning of unused var...
 }
 
 @end
