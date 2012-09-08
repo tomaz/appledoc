@@ -98,19 +98,19 @@
     if(self.path.length) {
         self.dictionary = [NSDictionary dictionaryWithContentsOfFile:self.path];
         if(!self.dictionary) {
-            *pError = [NSError errorWithCode:0 description:@"DDXcodeProjectFile can't be parsed." reason:@"cannot make plist from file contents"];
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
             return NO;
         }
     }
     if(!self.dictionary) {
-        *pError = [NSError errorWithCode:0 description:@"DDXcodeProjectFile can't be parsed." reason:@"cannot make plist from file contents"];
+        *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
         return NO;
     }
     
     //get main objects dictionary
     NSDictionary *objects = self.dictionary[@"objects"];
     if(![objects isKindOfClass:[NSDictionary class]]) {
-        *pError = [NSError errorWithCode:1 description:@"DDXcodeProjectFile can't be parsed." reason:@"cannot find main objects dictionary"];
+        *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot find main objects dictionary"}];
         return NO;
     }
     
@@ -120,14 +120,14 @@
     //handle each object that can appear in a method found via string to SEL
     for (NSDictionary *object in objects.allValues) {
         if(![object isKindOfClass:[NSDictionary class]] || !object[@"isa"]) {
-            *pError = [NSError errorWithCode:1 description:@"DDXcodeProjectFile can't be parsed." reason:[NSString stringWithFormat:@"cannot handle object %@", object]];
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle object %@", object]}];
             return NO;
         }
             
         //get method by isa
         SEL method = [self methodNameForIsa:object[@"isa"]];
         if(!method) {
-            *pError = [NSError errorWithCode:1 description:@"DDXcodeProjectFile can't be parsed." reason:[NSString stringWithFormat:@"cannot handle isa %@. Selector: %@", object[@"isa"], NSStringFromSelector(method)]];
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle isa %@. Selector: %@", object[@"isa"], NSStringFromSelector(method)]}];
             return NO;
         }
         
@@ -152,7 +152,7 @@
     
     //check mandatory... 1 file at least
     if( !_mutableFilesBuffer.count ) {
-        *pError = [NSError errorWithCode:1 description:@"DDXcodeProjectFile can't be parsed." reason:@"cannot find manatory attributes in plist from file contents"];
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot find manatory attributes in plist from file contents"}];
         return NO;
     }
     
@@ -192,9 +192,7 @@
 
 - (NSError*)parsePBXProject:(NSDictionary*)dict {
     if(!dict[@"attributes"]) {
-        return [NSError errorWithCode:5
-                          description:@"Can't parse project."
-                               reason:[NSString stringWithFormat:@"PBXProject without attributes: %@", dict]];
+        return [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"PBXProject without attributes: %@", dict]}];
     }
 
     self.classPrefix = dict[@"attributes"][@"CLASSPREFIX"];
@@ -209,10 +207,8 @@
             self.projectRoot =  dict[@"projectRoot"];
     }
     
-    if(!self.classPrefix || !self.company || !self.developmentRegion || !self.minimumVersion || !self.projectRoot) {
-        return [NSError errorWithCode:5
-                          description:@"Can't parse project."
-                               reason:[NSString stringWithFormat:@"PBXProject missing mandatory attributes: %@", dict]];
+    if(!self.company || !self.projectRoot) {
+        return [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"PBXProject missing mandatory attributes: %@", dict]}];
     }
     
     return nil;
@@ -226,9 +222,7 @@
     }
     
     if(!dict[@"path"] || !dict[@"lastKnownFileType"]) {
-        return [NSError errorWithCode:5
-                          description:@"Can't parse project."
-                               reason:[NSString stringWithFormat:@"PBXFileReference without path/type: %@", dict]];
+        return [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"PBXFileReference without path/type: %@", dict]}];
     }
     
     //add the path - TO BE resolved later :D
