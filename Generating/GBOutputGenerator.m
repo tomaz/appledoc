@@ -107,12 +107,12 @@
 	NSString *standardized = [path stringByStandardizingPath];
 	NSString *directory = [standardized stringByDeletingLastPathComponent];
 	if (![self.fileManager createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:error]) {
-		GBLogWarn(@"Failed creating directory while writting '%@'!", path);
+		GBLogWarn(@"Failed creating directory while writing '%@'!", path);
 		return NO;
 	}
 	
 	if (![string writeToFile:standardized atomically:YES encoding:NSUTF8StringEncoding error:error]) {
-		GBLogWarn(@"Failed writting '%@'!", path);
+		GBLogWarn(@"Failed writing '%@'!", path);
 		return NO;
 	}
 	

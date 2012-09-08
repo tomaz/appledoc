@@ -117,7 +117,7 @@
 	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Info.plist"];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-		GBLogWarn(@"Failed writting Info.plist to '%@'!", filename);
+		GBLogWarn(@"Failed wrtting Info.plist to '%@'!", filename);
 		return NO;
 	}
 	return YES;
@@ -154,7 +154,7 @@
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Nodes.xml"];
 	[self.temporaryFiles addObject:filename];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-		GBLogWarn(@"Failed writting Nodes.xml to '%@'!", filename);
+		GBLogWarn(@"Failed writing Nodes.xml to '%@'!", filename);
 		return NO;
 	}
 	return YES;
@@ -253,7 +253,7 @@
 		NSString *filename = [outputPath stringByAppendingPathComponent:indexName];
 		[self.temporaryFiles addObject:filename];
 		if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting tokens file '%@'!", filename);
+			GBLogWarn(@"Failed writing tokens file '%@'!", filename);
 			*index = idx;
 			return NO;
 		}
