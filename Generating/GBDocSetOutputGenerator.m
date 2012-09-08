@@ -183,8 +183,8 @@
 	GBLogInfo(@"Indexing DocSet...");
 	GBTask *task = [GBTask task];
 	task.reportIndividualLines = YES;
-	NSArray *args = [NSArray arrayWithObjects:@"index", [self.outputUserPath stringByStandardizingPath], nil];
-	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
+	NSArray *args = [NSArray arrayWithObjects:@"docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil];
+	BOOL result = [task runCommand:@"/usr/bin/xcrun" arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
