@@ -64,7 +64,7 @@
 	[args addObject:installedDocSetPath];
 	
 	// Run the task.
-	BOOL result = [task runCommand:@"/usr/bin/xcrun" arguments:args block:^(NSString *output, NSString *error) {
+	BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
