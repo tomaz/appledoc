@@ -15,6 +15,7 @@
 #import "GBGenerator.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
+#import "DDXcodeProjectFile.h"
 
 static NSString *kGBArgInputPath = @"input";
 static NSString *kGBArgOutputPath = @"output";
@@ -101,6 +102,7 @@ static NSString *kGBArgHelp = @"help";
 - (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
 - (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path;
 
+- (void)injectXcodeSettingsFromArguments:(NSArray *)arguments;
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments;
 - (void)injectProjectSettingsFromArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
@@ -318,6 +320,7 @@ static NSString *kGBArgHelp = @"help";
 		{ nil,																0,		0 },
 	};
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+    [self injectXcodeSettingsFromArguments:arguments];
 	[self injectGlobalSettingsFromArguments:arguments];
 	[self injectProjectSettingsFromArguments:arguments];
 	[optionParser addOptionsFromTable:options];
@@ -455,7 +458,36 @@ static NSString *kGBArgHelp = @"help";
 	return [base stringByAppendingPathComponent:path];
 }
 
-#pragma mark Global and project settings handling
+#pragma mark Xcode, Global and project settings handling
+
+- (void)injectXcodeSettingsFromArguments:(NSArray *)arguments {
+    //check if even deal with a project
+    NSString *path = [arguments objectAtIndex:1];
+    if(![path.pathExtension isEqualToString:@"xcodeproj"])
+        return;
+
+    //parse the file and get a representation of it
+    NSError *error = nil;
+    DDXcodeProjectFile *file = [DDXcodeProjectFile xcodeProjectFileWithPath:path error:&error];
+    if(!file) {
+        NSLog(@"Failed to parse pbx at %@: %@", path, error);
+        return;
+    }
+    
+    //set basic vars
+    [self setProjectName:file.name];
+    [self setProjectCompany:file.company];
+
+    //prepare docset
+    [self setCreateDocset:YES];
+    [self setInstallDocset:YES];
+    [self setDocsetBundleName:file.name];
+    [self setCompanyId:[file.company stringByAppendingFormat:@".%@", file.name].lowercaseString];
+
+    //set output path to be next to project
+    [self.additionalInputPaths addObject:file.projectRoot];
+    [self setOutput:file.projectRoot];
+}
 
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments {
 	// This is where we override factory defaults (factory defaults with global templates). This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.

@@ -210,6 +210,8 @@
 		73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
 		73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		B498BCDF15F6250500183EB5 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B498BCDE15F6250500183EB5 /* DDXcodeProjectFile.m */; };
+		B498BCE015F6250500183EB5 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B498BCDE15F6250500183EB5 /* DDXcodeProjectFile.m */; };
 		D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		D818BACE15203AA700B26451 /* GHUnit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
@@ -508,6 +510,8 @@
 		73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodArgument.m; sourceTree = "<group>"; };
 		73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodDataTesting.m; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
+		B498BCDD15F6250500183EB5 /* DDXcodeProjectFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXcodeProjectFile.h; sourceTree = "<group>"; };
+		B498BCDE15F6250500183EB5 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -759,6 +763,8 @@
 		73D54C9411F8D1CC00CCDDB0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				B498BCDD15F6250500183EB5 /* DDXcodeProjectFile.h */,
+				B498BCDE15F6250500183EB5 /* DDXcodeProjectFile.m */,
 				73D54CA711F8D27F00CCDDB0 /* GBLog.h */,
 				73D54CA811F8D27F00CCDDB0 /* GBLog.m */,
 				73397A2612A5070700EDC035 /* GBTask.h */,
@@ -1271,6 +1277,7 @@
 				73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */,
 				73E1B7D6130BE7C000E3D710 /* GBCommentsProcessor-PreprocessingTesting.m in Sources */,
 				73E0CF46131047E700FAFEC0 /* GBCommentsProcessor-MarkdownTesting.m in Sources */,
+				B498BCE015F6250500183EB5 /* DDXcodeProjectFile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1353,6 +1360,7 @@
 				73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */,
 				73FAC0F9130BCB6F00F22475 /* GBCommentArgument.m in Sources */,
 				73C4C8611377DFF70024FA77 /* GBExitCodes.m in Sources */,
+				B498BCDF15F6250500183EB5 /* DDXcodeProjectFile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
