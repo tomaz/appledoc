@@ -138,8 +138,8 @@ extern id kGBCustomDocumentIndexDescKey;
 /** The path to which documentation set is to be installed. */
 @property (copy) NSString *docsetInstallPath;
 
-/** The path to `docsetutil` tool, including tool filename. */
-@property (copy) NSString *docsetUtilPath;
+/** The path to `xcrun` tool, including tool filename. */
+@property (copy) NSString *xcrunPath;
 
 /** The list of all include paths containing static documentation.
  
