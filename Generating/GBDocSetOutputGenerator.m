@@ -84,7 +84,7 @@
 
 - (BOOL)processInfoPlist:(NSError **)error {
 #define addVarUnlessEmpty(var,key) if ([var length] > 0) [vars setObject:var forKey:key]
-	GBLogInfo(@"Writting DocSet Info.plist...");
+	GBLogInfo(@"Writing DocSet Info.plist...");
 	NSString *templateFilename = @"info-template.plist";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
@@ -124,7 +124,7 @@
 }
 
 - (BOOL)processNodesXml:(NSError **)error {
-	GBLogInfo(@"Writting DocSet Nodex.xml file...");
+	GBLogInfo(@"Writing DocSet Nodex.xml file...");
 	NSString *templateFilename = @"nodes-template.xml";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
@@ -161,7 +161,7 @@
 }
 
 - (BOOL)processTokensXml:(NSError **)error {
-	GBLogInfo(@"Writting DocSet Tokens.xml files...");
+	GBLogInfo(@"Writing DocSet Tokens.xml files...");
 	
 	// Get the template and prepare single Tokens.xml file for each object.
 	NSString *templatePath = [self templatePathForTemplateEndingWith:@"tokens-template.xml"];
