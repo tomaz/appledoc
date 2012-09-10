@@ -21,7 +21,7 @@ static NSString *kGBArgInputPath = @"input";
 static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
-static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
+static NSString *kGBArgXcrunPath = @"xcrun-path";
 static NSString *kGBArgIndexDescPath = @"index-desc";
 static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
@@ -232,7 +232,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
 		{ kGBArgIndexDescPath,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
+		{ kGBArgXcrunPath,                                                  0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgProjectName,												'p',	DDGetoptRequiredArgument },
 		{ kGBArgProjectVersion,												'v',	DDGetoptRequiredArgument },
@@ -652,7 +652,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)setOutput:(NSString *)path { self.settings.outputPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
-- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setXCRunPath:(NSString *)path { self.settings.xcrunPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setInclude:(NSString *)path { [self.settings.includePaths addObject:[self standardizeCurrentDirectoryForPath:path]]; }
 - (void)setIndexDesc:(NSString *)path { self.settings.indexDescriptionPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
@@ -818,7 +818,7 @@ static NSString *kGBArgHelp = @"help";
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
 	for (NSString *path in self.settings.excludeOutputPaths) ddprintf(@"--%@ = %@\n", kGBArgExcludeOutputPath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetUtilPath, self.settings.docsetUtilPath);
+	ddprintf(@"--%@ = %@\n", kGBArgXcrunPath, self.settings.xcrunPath);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleIdentifier, self.settings.docsetBundleIdentifier);

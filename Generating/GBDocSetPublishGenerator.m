@@ -47,6 +47,7 @@
 	
 	// Create command line arguments array.
 	NSMutableArray *args = [NSMutableArray array];
+	[args addObject:@"docsetutil"];
 	[args addObject:@"package"];
 	[args addObject:@"-output"];
 	[args addObject:[outputDocSetPath stringByStandardizingPath]];
@@ -63,7 +64,7 @@
 	[args addObject:installedDocSetPath];
 	
 	// Run the task.
-	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
+	BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
