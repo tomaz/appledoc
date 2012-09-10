@@ -328,7 +328,7 @@ extern id kGBCustomDocumentIndexDescKey;
 
 /** Indicates whether merged section names from categories should be prefixed with category name.
  
- If `YES`, all merged section names from categories are prefixed with category name to make them more easily identifiable. If `NO`, section names are not changed. The first option is useful in case end users of your code are aware of different categories (if you're writting a framework for example). On the other hand, if you're using categories mostly as a way to split class definition to multiple files, you might want to keep this option off.
+ If `YES`, all merged section names from categories are prefixed with category name to make them more easily identifiable. If `NO`, section names are not changed. The first option is useful in case end users of your code are aware of different categories (if you're writing a framework for example). On the other hand, if you're using categories mostly as a way to split class definition to multiple files, you might want to keep this option off.
  
  @warning *Note:* This option is ignored unless `mergeCategoriesToClasses` and `keepMergedCategoriesSections` is used. The option is also ignored for extensions; only section names are used for extensions!
  

@@ -501,7 +501,7 @@ NSString *ExtractFileNameWithoutExtension(const char *filePath, BOOL copy);
  * The DDLogger protocol specifies that an optional formatter can be added to a logger.
  * Most (but not all) loggers will want to support formatters.
  * 
- * However, writting getters and setters in a thread safe manner,
+ * However, writing getters and setters in a thread safe manner,
  * while still maintaining maximum speed for the logging process, is a difficult task.
  * 
  * To do it right, the implementation of the getter/setter has strict requiremenets:
