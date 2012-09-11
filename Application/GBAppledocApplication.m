@@ -16,6 +16,8 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
 #import "DDXcodeProjectFile.h"
+#import "DDEmbeddedDataReader.h"
+#import "DDZipReader.h"
 
 static NSString *kGBArgInputPath = @"input";
 static NSString *kGBArgOutputPath = @"output";
@@ -422,6 +424,52 @@ static NSString *kGBArgHelp = @"help";
 	}
 }
 
+- (BOOL)extractShippedTemplatesToPath:(NSString *)path {
+    path = [path stringByExpandingTildeInPath];
+    
+    //read embedded data
+    NSData *data = [DDEmbeddedDataReader embeddedDataFromSegment:@"__ZIP" inSection:@"__templates" error:nil];
+    if(!data) {
+        NSLog( @"Error: extractShippedTemplatesToPath called, but no data embeded" );
+        return NO;
+    }
+
+    //get a path
+    NSString *p = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+    
+    //write the data
+    BOOL br = [data writeToFile:p atomically:NO];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed write data to tmp path %@", p );
+        return NO;
+    }
+    
+    //open the zip
+    DDZipReader *reader = [[DDZipReader alloc] init];
+    br = [reader openZipFile:p];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to open the zip at %@", p );
+        return NO;
+    }
+    
+    //extract
+    br = [reader unzipFileTo:path flattenStructure:NO];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to unzip the zip from %@ TO %@", p, path );
+        return NO;
+    }
+    
+    //close and remove the temp
+    [reader closeZipFile];
+    br = [[NSFileManager defaultManager] removeItemAtPath:p error:nil];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to rm %@", p );
+        return NO;
+    }
+
+    return YES;
+}
+
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
 	// Validates the given templates path contains all required template files. If not, it returns the reason through the error argument and returns NO. Note that we only do simple "path exist and is directory" tests here, each object that requires templates at the given path will do it's own validation later on and will report errors if it finds something missing.
 	BOOL isDirectory = NO;
@@ -528,7 +576,7 @@ static NSString *kGBArgHelp = @"help";
 			self.templatesFound = YES;
 			return;
 		}
-
+        
         #ifdef COMPILE_TIME_DEFAULT_TEMPLATE_PATH
 		path = COMPILE_TIME_DEFAULT_TEMPLATE_PATH;
 		if ([self validateTemplatesPath:path error:nil]) {
@@ -538,6 +586,18 @@ static NSString *kGBArgHelp = @"help";
 			return;
 		}
         #endif
+        
+        //if we got here, there is NO templates installed which we can find.
+        //IF we have embedded data though, we can get THAT and install it
+		path = @"~/.appledoc";
+        [self extractShippedTemplatesToPath:path];
+		if ([self validateTemplatesPath:path error:nil]) {
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
+			self.templatesFound = YES;
+			return;
+		}
+                
 	}
 }
 
