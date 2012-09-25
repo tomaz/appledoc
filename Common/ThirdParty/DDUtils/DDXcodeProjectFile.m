@@ -98,19 +98,22 @@
     if(self.path.length) {
         self.dictionary = [NSDictionary dictionaryWithContentsOfFile:self.path];
         if(!self.dictionary) {
-            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
+            if(pError)
+                *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
             return NO;
         }
     }
     if(!self.dictionary) {
-        *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
+        if(pError)
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot make plist from file contents"}];
         return NO;
     }
     
     //get main objects dictionary
     NSDictionary *objects = self.dictionary[@"objects"];
     if(![objects isKindOfClass:[NSDictionary class]]) {
-        *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot find main objects dictionary"}];
+        if(pError)
+            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot find main objects dictionary"}];
         return NO;
     }
     
@@ -120,14 +123,16 @@
     //handle each object that can appear in a method found via string to SEL
     for (NSDictionary *object in objects.allValues) {
         if(![object isKindOfClass:[NSDictionary class]] || !object[@"isa"]) {
-            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle object %@", object]}];
+            if(pError)
+                *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle object %@", object]}];
             return NO;
         }
             
         //get method by isa
         SEL method = [self methodNameForIsa:object[@"isa"]];
         if(!method) {
-            *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle isa %@. Selector: %@", object[@"isa"], NSStringFromSelector(method)]}];
+            if(pError)
+                *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey: [NSString stringWithFormat:@"cannot handle isa %@. Selector: %@", object[@"isa"], NSStringFromSelector(method)]}];
             return NO;
         }
         
@@ -145,13 +150,15 @@
 
         //exit on error
         if(suberror) {
-            *pError = suberror;
+            if(pError)
+                *pError = suberror;
             return NO;
         }
     }
     
     //check mandatory... 1 file at least
     if( !_mutableFilesBuffer.count ) {
+        if(pError)
             *pError = [NSError errorWithDomain:@"DDXcodeProjectFile" code:0 userInfo:@{NSLocalizedDescriptionKey:@"cannot find manatory attributes in plist from file contents"}];
         return NO;
     }
@@ -159,7 +166,8 @@
     //resolve all
     NSError *suberror = [self resolveFiles:_mutableFilesBuffer];
     if(suberror) {
-        *pError = suberror;
+        if(pError)
+            *pError = suberror;
         return NO;
     }
     
