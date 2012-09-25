@@ -98,8 +98,8 @@
  
  @param string The string to write.
  @param path The path and filename to write to.
- @param error If writting fails, error description is returned here.
- @return Returns `YES` is writting succeds, `NO` otherwise.
+ @param error If writing fails, error description is returned here.
+ @return Returns `YES` is writing succeds, `NO` otherwise.
  @see generateOutputWithStore:error:
  */
 - (BOOL)writeString:(NSString *)string toFile:(NSString *)path error:(NSError **)error;

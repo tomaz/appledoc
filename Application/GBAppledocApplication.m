@@ -15,12 +15,15 @@
 #import "GBGenerator.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBAppledocApplication.h"
+#import "DDXcodeProjectFile.h"
+#import "DDEmbeddedDataReader.h"
+#import "DDZipReader.h"
 
 static NSString *kGBArgInputPath = @"input";
 static NSString *kGBArgOutputPath = @"output";
 static NSString *kGBArgTemplatesPath = @"templates";
 static NSString *kGBArgDocSetInstallPath = @"docset-install-path";
-static NSString *kGBArgDocSetUtilPath = @"docsetutil-path";
+static NSString *kGBArgXcrunPath = @"xcrun-path";
 static NSString *kGBArgIndexDescPath = @"index-desc";
 static NSString *kGBArgIncludePath = @"include";
 static NSString *kGBArgIgnorePath = @"ignore";
@@ -101,6 +104,7 @@ static NSString *kGBArgHelp = @"help";
 - (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
 - (NSString *)combineBasePath:(NSString *)base withRelativePath:(NSString *)path;
 
+- (void)injectXcodeSettingsFromArguments:(NSArray *)arguments;
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments;
 - (void)injectProjectSettingsFromArguments:(NSArray *)arguments;
 - (void)overrideSettingsWithGlobalSettingsFromPath:(NSString *)path;
@@ -230,7 +234,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgIncludePath,												's',	DDGetoptRequiredArgument },
 		{ kGBArgIndexDescPath,												0,		DDGetoptRequiredArgument },
 		{ kGBArgDocSetInstallPath,											0,		DDGetoptRequiredArgument },
-		{ kGBArgDocSetUtilPath,												0,		DDGetoptRequiredArgument },
+		{ kGBArgXcrunPath,                                                  0,		DDGetoptRequiredArgument },
 		
 		{ kGBArgProjectName,												'p',	DDGetoptRequiredArgument },
 		{ kGBArgProjectVersion,												'v',	DDGetoptRequiredArgument },
@@ -318,6 +322,7 @@ static NSString *kGBArgHelp = @"help";
 		{ nil,																0,		0 },
 	};
 	NSArray *arguments = [[NSProcessInfo processInfo] arguments];
+    [self injectXcodeSettingsFromArguments:arguments];
 	[self injectGlobalSettingsFromArguments:arguments];
 	[self injectProjectSettingsFromArguments:arguments];
 	[optionParser addOptionsFromTable:options];
@@ -419,6 +424,52 @@ static NSString *kGBArgHelp = @"help";
 	}
 }
 
+- (BOOL)extractShippedTemplatesToPath:(NSString *)path {
+    path = [path stringByExpandingTildeInPath];
+    
+    //read embedded data
+    NSData *data = [DDEmbeddedDataReader embeddedDataFromSegment:@"__ZIP" inSection:@"__templates" error:nil];
+    if(!data) {
+        NSLog( @"Error: extractShippedTemplatesToPath called, but no data embeded" );
+        return NO;
+    }
+
+    //get a path
+    NSString *p = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+    
+    //write the data
+    BOOL br = [data writeToFile:p atomically:NO];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed write data to tmp path %@", p );
+        return NO;
+    }
+    
+    //open the zip
+    DDZipReader *reader = [[DDZipReader alloc] init];
+    br = [reader openZipFile:p];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to open the zip at %@", p );
+        return NO;
+    }
+    
+    //extract
+    br = [reader unzipFileTo:path flattenStructure:NO];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to unzip the zip from %@ TO %@", p, path );
+        return NO;
+    }
+    
+    //close and remove the temp
+    [reader closeZipFile];
+    br = [[NSFileManager defaultManager] removeItemAtPath:p error:nil];
+    if(!br) {
+        NSLog( @"Error: extractShippedTemplatesToPath failed to rm %@", p );
+        return NO;
+    }
+
+    return YES;
+}
+
 - (BOOL)validateTemplatesPath:(NSString *)path error:(NSError **)error {
 	// Validates the given templates path contains all required template files. If not, it returns the reason through the error argument and returns NO. Note that we only do simple "path exist and is directory" tests here, each object that requires templates at the given path will do it's own validation later on and will report errors if it finds something missing.
 	BOOL isDirectory = NO;
@@ -455,7 +506,36 @@ static NSString *kGBArgHelp = @"help";
 	return [base stringByAppendingPathComponent:path];
 }
 
-#pragma mark Global and project settings handling
+#pragma mark Xcode, Global and project settings handling
+
+- (void)injectXcodeSettingsFromArguments:(NSArray *)arguments {
+    //check if even deal with a project
+    NSString *path = [arguments objectAtIndex:1];
+    if(![path.pathExtension isEqualToString:@"xcodeproj"])
+        return;
+
+    //parse the file and get a representation of it
+    NSError *error = nil;
+    DDXcodeProjectFile *file = [DDXcodeProjectFile xcodeProjectFileWithPath:path error:&error];
+    if(!file) {
+        NSLog(@"Failed to parse pbx at %@: %@", path, error);
+        return;
+    }
+    
+    //set basic vars
+    [self setProjectName:file.name];
+    [self setProjectCompany:file.company];
+
+    //prepare docset
+    [self setCreateDocset:YES];
+    [self setInstallDocset:YES];
+    [self setDocsetBundleName:file.name];
+    [self setCompanyId:[file.company stringByAppendingFormat:@".%@", file.name].lowercaseString];
+
+    //set output path to be next to project
+    [self.additionalInputPaths addObject:file.projectRoot];
+    [self setOutput:file.projectRoot];
+}
 
 - (void)injectGlobalSettingsFromArguments:(NSArray *)arguments {
 	// This is where we override factory defaults (factory defaults with global templates). This needs to be sent before giving DDCli a chance to go through parameters! DDCli will "take care" (or more correct: it's KVC messages will) of overriding with command line arguments. Note that we scan the arguments backwards to get the latest template value - this is what we'll get with DDCli later on anyway. If no template path is given, check predefined paths.
@@ -496,7 +576,7 @@ static NSString *kGBArgHelp = @"help";
 			self.templatesFound = YES;
 			return;
 		}
-
+        
         #ifdef COMPILE_TIME_DEFAULT_TEMPLATE_PATH
 		path = COMPILE_TIME_DEFAULT_TEMPLATE_PATH;
 		if ([self validateTemplatesPath:path error:nil]) {
@@ -506,6 +586,18 @@ static NSString *kGBArgHelp = @"help";
 			return;
 		}
         #endif
+        
+        //if we got here, there is NO templates installed which we can find.
+        //IF we have embedded data though, we can get THAT and install it
+		path = @"~/.appledoc";
+        [self extractShippedTemplatesToPath:path];
+		if ([self validateTemplatesPath:path error:nil]) {
+			[self overrideSettingsWithGlobalSettingsFromPath:path];
+			self.settings.templatesPath = path;
+			self.templatesFound = YES;
+			return;
+		}
+                
 	}
 }
 
@@ -620,7 +712,7 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)setOutput:(NSString *)path { self.settings.outputPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setDocsetInstallPath:(NSString *)path { self.settings.docsetInstallPath = [self standardizeCurrentDirectoryForPath:path]; }
-- (void)setDocsetutilPath:(NSString *)path { self.settings.docsetUtilPath = [self standardizeCurrentDirectoryForPath:path]; }
+- (void)setXCRunPath:(NSString *)path { self.settings.xcrunPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setInclude:(NSString *)path { [self.settings.includePaths addObject:[self standardizeCurrentDirectoryForPath:path]]; }
 - (void)setIndexDesc:(NSString *)path { self.settings.indexDescriptionPath = [self standardizeCurrentDirectoryForPath:path]; }
 - (void)setTemplates:(NSString *)path { self.settings.templatesPath = [self standardizeCurrentDirectoryForPath:path]; }
@@ -786,7 +878,7 @@ static NSString *kGBArgHelp = @"help";
 	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
 	for (NSString *path in self.settings.excludeOutputPaths) ddprintf(@"--%@ = %@\n", kGBArgExcludeOutputPath, path);
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetUtilPath, self.settings.docsetUtilPath);
+	ddprintf(@"--%@ = %@\n", kGBArgXcrunPath, self.settings.xcrunPath);
 	ddprintf(@"\n");
 	
 	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleIdentifier, self.settings.docsetBundleIdentifier);

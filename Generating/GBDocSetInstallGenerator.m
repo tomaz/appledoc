@@ -76,7 +76,7 @@
 	[message appendFormat:@"Time: %@", [NSDate date]];
 	NSError *error = nil;
 	[message writeToFile:[filename stringByStandardizingPath] atomically:NO encoding:NSUTF8StringEncoding error:&error];
-	if (error) GBLogNSError(error, @"Failed writting docset installed message file at '%@'!", filename);
+	if (error) GBLogNSError(error, @"Failed writing docset installed message file at '%@'!", filename);
 }
 
 #pragma mark Overriden methods
