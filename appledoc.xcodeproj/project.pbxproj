@@ -1263,7 +1263,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\ncd Templates\nzip -r default_templates.zip .\nmv default_templates.zip $PROJECT_DIR\ncd ..";
+			shellScript = "#!/bin/bash\n\ncd Templates\nzip -r default_templates.zip .\nmv default_templates.zip \"$PROJECT_DIR\"\ncd ..";
 		};
 		B4D1FFF515FF637A009736E2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
