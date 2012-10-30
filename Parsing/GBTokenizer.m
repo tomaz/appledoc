@@ -301,10 +301,10 @@
 	if (!self.settings.preprocessHeaderDoc) return line;
 	
 	// Remove the entire line when it contains @method or property or class.
-	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
+	//line = [line stringByReplacingOccurrencesOfRegex:@"(?m:@(protocol|method|property|class).*$)" withString:@""];
 	
 	// Remove unsupported headerDoc words.
-	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];    
+	//line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@(discussion|abstract))\\s?" withString:@"\n"];
 	
 	// Replace methodgroup with name.
 	line = [line stringByReplacingOccurrencesOfRegex:@"(?:@(methodgroup|group))" withString:@"@name"];  
@@ -326,11 +326,13 @@
 	 */
 
 	
+	line = [line stringByReplacingOccurrencesOfRegex:@"(?m:^\\s*@updated).*$?" withString:@"\n"];
+	
 	// Removes any occurance of @brief and it's surrounding whitespace
-	line = [line stringByReplacingOccurrencesOfRegex:@"\\s*@brief\\s*" withString:@""];
+	//line = [line stringByReplacingOccurrencesOfRegex:@"\\s*@brief\\s*" withString:@""];
 
 	// Replaces any occurance of @details and it's surrounding whitespace with a newline
-	line = [line stringByReplacingOccurrencesOfRegex:@"^\\s*@details\\s*" withString:@"\n"];
+	//line = [line stringByReplacingOccurrencesOfRegex:@"^\\s*@details\\s*" withString:@"\n"];
 	
 	return line;
 }

@@ -200,6 +200,8 @@ typedef NSUInteger GBProcessingFlag;
 	NSArray *block = [lines subarrayWithRange:blockRange];
 	if ([self isLineMatchingDirectiveStatement:[block firstObject]]) {
 		NSString *string = [self stringByCombiningTrimmedLines:block];
+		if ([self processDiscussionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processAbstractBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processNoteBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
@@ -229,8 +231,9 @@ typedef NSUInteger GBProcessingFlag;
 	if ([blockString length] == 0) return;
 	
 	// Process the string and register long description component.
-	GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
-	[self.currentComment.longDescription registerComponent:component];
+	//GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
+	
+	//[self.currentComment.longDescription registerComponent:component];
 }
 
 - (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
@@ -383,7 +386,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components objectAtIndex:2];
+	NSString *description = [components objectAtIndex:3];
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -398,6 +401,68 @@ typedef NSUInteger GBProcessingFlag;
 	// Prepare object representation from the description and register the result to the comment.
 	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
 	[self.currentComment.availability registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processDiscussionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.discussionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *description = [components objectAtIndex:3];
+	NSRange range = [string rangeOfString:description];
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+	
+	GBLogDebug(@"- Registering discussion description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Prepare object representation from the description and register the result to the comment.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processAbstractBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.abstractRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *description = [components objectAtIndex:3];
+	NSRange index;
+	index = [description rangeOfString:@"@discussion"];
+	
+	if (index.location == NSNotFound) {
+		index = [description rangeOfString:@"\s+"];
+	}
+	
+	NSRange range;
+	@try {
+		description = [description substringToIndex:index.location];
+	}
+	@catch (NSException *exception) {
+		
+	}
+	@finally {
+		range = [string rangeOfString:description];
+	}
+	NSString *prefix = nil;
+	if (range.location < [string length]) {
+		prefix = [string substringToIndex:range.location];
+	} else {
+		prefix = @"";
+	}
+	
+	GBLogDebug(@"- Registering abstract description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
+	
+	// Prepare object representation from the description and register the result to the comment.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	self.currentComment.shortDescription = component;
 	return YES;
 }
 
@@ -457,6 +522,8 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (BOOL)isLineMatchingDirectiveStatement:(NSString *)string {
+	if ([string isMatchedByRegex:self.components.discussionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.abstractRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.noteSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.warningSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.bugSectionRegex]) return YES;
