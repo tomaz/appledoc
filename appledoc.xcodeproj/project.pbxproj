@@ -73,6 +73,8 @@
 		735CD2C6153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
 		735CD2C7153817E500CADD4E /* MethodGroupInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C5153817E500CADD4E /* MethodGroupInfo.m */; };
 		737C82A3152307AE0064DC46 /* TestStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = 737C82A2152307AE0064DC46 /* TestStrings.m */; };
+		73817C7616417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73817C7516417CB1009B0A85 /* CommentNamedArgumentInfo.m */; };
+		73817C7716417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73817C7516417CB1009B0A85 /* CommentNamedArgumentInfo.m */; };
 		7381A66E1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
 		7381A66F1536C05F00BF9BDD /* InterfaceInfoBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */; };
 		7381A6731536C35100BF9BDD /* ClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6721536C35000BF9BDD /* ClassInfo.m */; };
@@ -254,6 +256,8 @@
 		737C82A2152307AE0064DC46 /* TestStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestStrings.m; sourceTree = "<group>"; };
 		737C82A8152310C80064DC46 /* ObjectiveCStateTestsHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCStateTestsHelpers.h; sourceTree = "<group>"; };
 		737C82A9152310C80064DC46 /* ObjectiveCStateTestsHelpers.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCStateTestsHelpers.mm; sourceTree = "<group>"; };
+		73817C7416417CB1009B0A85 /* CommentNamedArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentNamedArgumentInfo.h; sourceTree = "<group>"; };
+		73817C7516417CB1009B0A85 /* CommentNamedArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentNamedArgumentInfo.m; sourceTree = "<group>"; };
 		7381A66C1536C05F00BF9BDD /* InterfaceInfoBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterfaceInfoBase.h; sourceTree = "<group>"; };
 		7381A66D1536C05F00BF9BDD /* InterfaceInfoBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InterfaceInfoBase.m; sourceTree = "<group>"; };
 		7381A6711536C35000BF9BDD /* ClassInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassInfo.h; sourceTree = "<group>"; };
@@ -565,6 +569,8 @@
 			children = (
 				739B4211158D134D0044B904 /* CommentInfo.h */,
 				739B4212158D134D0044B904 /* CommentInfo.m */,
+				73817C7416417CB1009B0A85 /* CommentNamedArgumentInfo.h */,
+				73817C7516417CB1009B0A85 /* CommentNamedArgumentInfo.m */,
 				73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */,
 				73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */,
 			);
@@ -889,6 +895,7 @@
 				73A3E48E15D8369500769863 /* ProcessCommentComponentsTaskTests.mm in Sources */,
 				73AEC5CA15DAB33700830AC7 /* MarkdownParser.m in Sources */,
 				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
+				73817C7716417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +952,7 @@
 				73A0268915D6E35F0077D204 /* ProcessorTask.m in Sources */,
 				73A3E48B15D8288D00769863 /* ProcessCommentComponentsTask.m in Sources */,
 				73AEC5C915DAB33700830AC7 /* MarkdownParser.m in Sources */,
+				73817C7616417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

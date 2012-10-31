@@ -20,6 +20,13 @@
 	return _commentDiscussion;
 }
 
+- (NSMutableArray *)commentParameters {
+	if (_commentParameters) return _commentParameters;
+	LogIntDebug(@"Initializing comment parameters array due to first access...");
+	_commentParameters = [[NSMutableArray alloc] init];
+	return _commentParameters;
+}
+
 #pragma mark - Helper methods
 
 - (BOOL)isCommentAbstractRegistered {

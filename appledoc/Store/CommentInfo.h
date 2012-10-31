@@ -16,7 +16,8 @@
 - (BOOL)isCommentAbstractRegistered;
 
 @property (nonatomic, strong) CommentComponentInfo *commentAbstract;
-@property (nonatomic, strong) NSMutableArray *commentDiscussion;
+@property (nonatomic, strong) NSMutableArray *commentDiscussion; // CommentComponentInfo
+@property (nonatomic, strong) NSMutableArray *commentParameters; // CommentNamedArgumentInfo
 @property (nonatomic, strong) PKToken *sourceToken;
 @property (nonatomic, strong) NSString *sourceString;
 

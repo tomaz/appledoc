@@ -22,6 +22,48 @@ static void setupCommentText(id comment, NSString *text) {
 	[[[comment stub] andReturn:text] sourceString];
 }
 
+static BOOL matchComponentArray(NSArray *actual, NSString *first, ...) {
+	va_list args;
+	va_start(args, first);
+	NSMutableArray *expected = [@[] mutableCopy];
+	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString *)) {
+		[expected addObject:arg];
+	}
+	va_end(args);
+	
+	if (actual.count != expected.count) return NO;
+	for (NSUInteger i=0; i<actual.count; i++) {
+		NSString *actualString = [actual[i] sourceString];
+		NSString *expectedString = expected[i];
+		if (![actualString isEqualToString:expectedString]) return NO;
+	}
+	return YES;
+}
+
+static BOOL matchNamedArray(NSArray *actual, NSDictionary *first, ...) {
+	va_list args;
+	va_start(args, first);
+	NSMutableArray *expected = [@[] mutableCopy];
+	for (NSDictionary *arg=first; arg!=nil; arg=va_arg(args, NSDictionary *)) {
+		[expected addObject:arg];
+	}
+	va_end(args);
+	
+	if (actual.count != expected.count) return NO;
+	for (NSUInteger i=0; i<actual.count; i++) {
+		CommentNamedArgumentInfo *actualItem = actual[i];
+		CommentNamedArgumentInfo *expectedItem = expected[i];
+		if (![actualItem.argumentName isEqualToString:expectedItem.argumentName]) return NO;
+		if (actualItem.argumentComponents.count != expectedItem.argumentComponents.count) return NO;
+		for (NSUInteger n=0; n<actualItem.argumentComponents.count; n++) {
+			NSString *actualString = [actualItem.argumentComponents[n] sourceString];
+			NSString *expectedString = expectedItem.argumentComponents[n];
+			if (![actualString isEqualToString:expectedString]) return NO;
+		}
+	}
+	return YES;
+}
+
 #pragma mark - 
 
 @interface ProcessCommentComponentsTask (UnitTestingPrivateAPI)
@@ -78,8 +120,7 @@ describe(@"processing:", ^{
 					return [info.sourceString isEqualToString:@"first"];
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					if (array.count != 1) return NO;
-					return [[array[0] sourceString] isEqualToString:@"second"];
+					return matchComponentArray(array, @"second", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -96,9 +137,7 @@ describe(@"processing:", ^{
 					return [info.sourceString isEqualToString:@"first"];
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					if (array.count != 2) return NO;
-					return [[array[0] sourceString] isEqualToString:@"second"];
-					return [[array[1] sourceString] isEqualToString:@"third"];
+					return matchComponentArray(array, @"second", @"third", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -115,9 +154,7 @@ describe(@"processing:", ^{
 					return [info.sourceString isEqualToString:@"first"];
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					if (array.count != 2) return NO;
-					return [[array[0] sourceString] isEqualToString:@"line one\nline two\nline three"];
-					return [[array[1] sourceString] isEqualToString:@"third paragraph\nand line two"];
+					return matchComponentArray(array, @"line one\nline two\nline three", @"third paragraph\nand line two", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -154,9 +191,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract\n@warning text"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 1) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -175,9 +210,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 1) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"@warning text"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"@warning text", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -194,10 +227,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 2) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@warning text"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", @"@warning text", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -214,11 +244,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 3) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@warning text"]) return NO;
-						if (![[array[2] sourceString] isEqualToString:@"next paragraph"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", @"@warning text", @"next paragraph", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -235,10 +261,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 2) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"@warning first"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@warning second"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"@warning first", @"@warning second", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -276,9 +299,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract\n@bug text"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 1) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -297,9 +318,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 1) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"@bug text"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"@bug text", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -316,10 +335,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 2) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@bug text"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", @"@bug text", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -336,11 +352,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 3) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"paragraph"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@bug text"]) return NO;
-						if (![[array[2] sourceString] isEqualToString:@"next paragraph"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"paragraph", @"@bug text", @"next paragraph", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -357,10 +369,7 @@ describe(@"processing:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						if (array.count != 2) return NO;
-						if (![[array[0] sourceString] isEqualToString:@"@bug first"]) return NO;
-						if (![[array[1] sourceString] isEqualToString:@"@bug second"]) return NO;
-						return YES;
+						return matchComponentArray(array, @"@bug first", @"@bug second", nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -368,6 +377,26 @@ describe(@"processing:", ^{
 					^{ [comment verify]; } should_not raise_exception();
 				});
 			});
+		});
+	});
+	
+	describe(@"@param", ^{
+		it(@"should register single parameter:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@param name description");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name": @"description"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+			
 		});
 	});
 });

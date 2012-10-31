@@ -24,6 +24,7 @@ describe(@"lazy accessors:", ^{
 		runWithCommentInfo(^(CommentInfo *info) {
 			// execute & verify
 			info.commentDiscussion should_not be_nil();
+			info.commentParameters should_not be_nil();
 		});
 	});
 });
