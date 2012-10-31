@@ -51,7 +51,7 @@
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
 	LogProDebug(@"Creating component for %@...", string);
 	CommentComponentInfo *result = [[CommentComponentInfo alloc] init];
-	result.componentSourceString = string;
+	result.sourceString = string;
 	return result;
 }
 

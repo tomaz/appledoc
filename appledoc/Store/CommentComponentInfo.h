@@ -12,7 +12,7 @@
  */
 @interface CommentComponentInfo : NSObject
 
-@property (nonatomic, strong) NSString *componentSourceString;
 @property (nonatomic, strong) NSString *componentMarkdown;
+@property (nonatomic, strong) NSString *sourceString;
 
 @end
