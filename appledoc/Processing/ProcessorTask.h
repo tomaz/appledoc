@@ -35,6 +35,7 @@
  */
 @interface ProcessorTask (Subclass)
 - (NSInteger)processComment:(CommentInfo *)comment;
+- (NSString *)stringFromBuffer:(struct buf *)buffer;
 @property (nonatomic, strong) Store *store;
 @property (nonatomic, strong) GBSettings *settings;
 @property (nonatomic, strong) ObjectInfoBase *processingObject;

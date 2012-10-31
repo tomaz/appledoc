@@ -54,3 +54,21 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation ProcessorTask (Subclass)
+
+- (NSString *)stringFromBuffer:(struct buf *)buffer {
+	if (!buffer || buffer->size == 0) return @"";
+	uint8_t *str = malloc(buffer->size + 1);
+	if (!str) {
+		LogError(@"Failed allocating %lu bytes for converting C string to NSString!", buffer->size);
+		return nil;
+	}
+	memcpy(str, buffer->data, buffer->size);
+	str[buffer->size] = 0;
+	return [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
+}
+
+@end

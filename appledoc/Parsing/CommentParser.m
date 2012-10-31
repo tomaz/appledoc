@@ -171,7 +171,7 @@
 - (NSString *)trimmedGroupName:(NSString *)line {
 	line = [line gb_stringByTrimmingWhitespaceAndNewLine];
 	line = [line gb_stringByReplacingWhitespaceWithSpaces];
-	line = [line substringFromIndex:6];
+	line = [line substringFromIndex:5];
 	return line;
 }
 

@@ -20,6 +20,12 @@
 	return _commentDiscussion;
 }
 
+#pragma mark - Helper methods
+
+- (BOOL)isCommentAbstractRegistered {
+	return (self.commentAbstract != nil);
+}
+
 @end
 
 #pragma mark - 

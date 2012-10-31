@@ -28,4 +28,24 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
+describe(@"helper methods:", ^{
+	describe(@"comment abstract:", ^{
+		it(@"should detect that abstract is not registered", ^{
+			runWithCommentInfo(^(CommentInfo *info) {
+				// execute & verify
+				info.isCommentAbstractRegistered should_not be_truthy();
+			});
+		});
+
+		it(@"should detect that abstract is registered", ^{
+			runWithCommentInfo(^(CommentInfo *info) {
+				// setup
+				info.commentAbstract = [[CommentComponentInfo alloc] init];
+				// execute & verify
+				info.isCommentAbstractRegistered should be_truthy();
+			});
+		});
+	});
+});
+
 TEST_END

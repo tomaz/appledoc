@@ -103,6 +103,8 @@
 		73A589FE15493F5B003838E0 /* DescriptorsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A589FC15493F5B003838E0 /* DescriptorsInfo.m */; };
 		73A58A01154940DC003838E0 /* DescriptorsInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73AD21171553DE0300C3B792 /* ObjectiveCParseDataTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73AEC5C915DAB33700830AC7 /* MarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AEC5C815DAB33700830AC7 /* MarkdownParser.m */; };
+		73AEC5CA15DAB33700830AC7 /* MarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AEC5C815DAB33700830AC7 /* MarkdownParser.m */; };
 		73B62BE61588A1E2003FC025 /* libPods-AppledocTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B62BE51588A1E2003FC025 /* libPods-AppledocTests.a */; };
 		73B62BE91588A207003FC025 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73B62BE81588A207003FC025 /* libPods.a */; };
 		73B6595A1588AFDF00AE2314 /* CommentParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73B659591588AFDF00AE2314 /* CommentParser.m */; };
@@ -284,6 +286,8 @@
 		73A589FC15493F5B003838E0 /* DescriptorsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DescriptorsInfo.m; sourceTree = "<group>"; };
 		73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DescriptorsInfoTests.mm; sourceTree = "<group>"; };
 		73AD21161553DE0300C3B792 /* ObjectiveCParseDataTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCParseDataTests.mm; sourceTree = "<group>"; };
+		73AEC5C715DAB33700830AC7 /* MarkdownParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarkdownParser.h; sourceTree = "<group>"; };
+		73AEC5C815DAB33700830AC7 /* MarkdownParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MarkdownParser.m; sourceTree = "<group>"; };
 		73B62BE51588A1E2003FC025 /* libPods-AppledocTests.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AppledocTests.a"; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods-AppledocTests.a"; sourceTree = "<group>"; };
 		73B62BE81588A207003FC025 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods.a"; sourceTree = "<group>"; };
 		73B659581588AFDF00AE2314 /* CommentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentParser.h; sourceTree = "<group>"; };
@@ -576,6 +580,8 @@
 				73A0268815D6E35F0077D204 /* ProcessorTask.m */,
 				73A3E48915D8288D00769863 /* ProcessCommentComponentsTask.h */,
 				73A3E48A15D8288D00769863 /* ProcessCommentComponentsTask.m */,
+				73AEC5C715DAB33700830AC7 /* MarkdownParser.h */,
+				73AEC5C815DAB33700830AC7 /* MarkdownParser.m */,
 			);
 			path = Processing;
 			sourceTree = "<group>";
@@ -881,6 +887,7 @@
 				73A0268E15D6EFB50077D204 /* ProcessorTests.mm in Sources */,
 				73A3E48C15D8288D00769863 /* ProcessCommentComponentsTask.m in Sources */,
 				73A3E48E15D8369500769863 /* ProcessCommentComponentsTaskTests.mm in Sources */,
+				73AEC5CA15DAB33700830AC7 /* MarkdownParser.m in Sources */,
 				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -937,6 +944,7 @@
 				73A0268515D6DC830077D204 /* Processor.m in Sources */,
 				73A0268915D6E35F0077D204 /* ProcessorTask.m in Sources */,
 				73A3E48B15D8288D00769863 /* ProcessCommentComponentsTask.m in Sources */,
+				73AEC5C915DAB33700830AC7 /* MarkdownParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

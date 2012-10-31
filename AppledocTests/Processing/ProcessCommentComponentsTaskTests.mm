@@ -13,8 +13,8 @@
 static void runWithTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
 	// ProcessCommentComponentsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
 	ProcessCommentComponentsTask *task = [[ProcessCommentComponentsTask alloc] init];
-	id comment = [OCMockObject mockForClass:[CommentInfo class]];
-	handler(task, comment);
+	id mock = [OCMockObject niceMockForClass:[CommentInfo class]];
+	handler(task, mock);
 	[task release];
 }
 
@@ -60,7 +60,7 @@ describe(@"processing:", ^{
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
 					if (array.count != 1) return NO;
-					return [array[0] isEqualToString:@"second"];
+					return [[array[0] componentSourceString] isEqualToString:@"second"];
 				}]];
 				// execute
 				[task processComment:comment];
@@ -78,8 +78,8 @@ describe(@"processing:", ^{
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
 					if (array.count != 2) return NO;
-					if (![array[0] isEqualToString:@"@warning text1"]) return NO;
-					if (![array[1] isEqualToString:@"@warning text2"]) return NO;
+					if (![[array[0] componentSourceString] isEqualToString:@"@warning text1"]) return NO;
+					if (![[array[1] componentSourceString] isEqualToString:@"@warning text2"]) return NO;
 					return YES;
 				}]];
 				// execute

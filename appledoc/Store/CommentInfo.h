@@ -13,6 +13,8 @@
  */
 @interface CommentInfo : NSObject
 
+- (BOOL)isCommentAbstractRegistered;
+
 @property (nonatomic, strong) CommentComponentInfo *commentAbstract;
 @property (nonatomic, strong) NSMutableArray *commentDiscussion;
 @property (nonatomic, strong) PKToken *sourceToken;
