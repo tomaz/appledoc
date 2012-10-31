@@ -12,4 +12,5 @@
 - (NSString *)fullText;
 - (NSMutableArray *)fullTextInPieces;
 
+- (NSUInteger)stackAddress;
 @end

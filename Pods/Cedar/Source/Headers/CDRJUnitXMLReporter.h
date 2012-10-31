@@ -4,5 +4,4 @@
 @interface CDRJUnitXMLReporter : CDRDefaultReporter {
     NSMutableArray *successMessages_;
 }
-
 @end

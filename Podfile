@@ -1,6 +1,6 @@
 platform :osx
 
-dependency do |s|
+pod do |s|
 	s.name     = 'ParseKit'
 	s.version  = '0.0.2'
 	s.license  = 'Apache'
@@ -16,7 +16,7 @@ dependency do |s|
 	s.requires_arc = false
 end
 
-dependency do |s|
+pod do |s|
 	s.name     = 'DDCli'
 	s.version  = '1.0'
 	s.license  = ''
@@ -28,7 +28,7 @@ dependency do |s|
 	s.clean_paths  = 'ddcli_main.m', 'ddcli_Prefix.pch', 'ddcli.xcodeproj', 'doc', 'ExampleApp.*', 'SimpleApp.*', 'tools', 'versions.xcconfig', 'lib/DDCliApplication.*', 'lib/DDCliParseException.*', 'lib/DDCommandLineInterface.*', 'lib/DDGetoptLongParser.*'
 end
 
-dependency do |s|
+pod do |s|
 	s.name     = 'GBCli'
 	s.version  = '1.0'
 	s.license  = ''
@@ -40,7 +40,7 @@ dependency do |s|
 	s.clean_paths  = 'GBCli.xcodeproj', 'GBCli/GBCli-Prefix.pch', 'GBCli/GBSettings+Application.*', 'GBCli/main.*'
 end
 
-dependency do |s|
+pod do |s|
 	s.name     = 'sundown'
 	s.version  = '1.0'
 	s.license  = 'MIT'
@@ -54,22 +54,9 @@ end
 	
 target :AppledocTests do
 
-	dependency do |s|
-		s.name     = 'Cedar'
-		s.version  = '0.0.3'
-		s.license  = 'MIT'
-		s.summary  = 'BDD-style testing using Objective-C.'
-		s.homepage = 'https://github.com/pivotal/cedar'
-		s.author   = { 'Pivotal Labs' => 'http://pivotallabs.com' }
-		s.source   = { :git => 'git://github.com/pivotal/cedar.git', :commit => '71930ff' }
-		files = FileList['Source/**/*.{h,m}']
-		files.exclude(/iPhone/)
-		s.source_files = files 
-		s.clean_paths = FileList['*'].exclude(/(Source|README.markdown|MIT.LICENSE)$/)
-		s.library = 'stdc++'
-	end
-	
-	dependency do |s|
+	pod 'Cedar', '0.8.1'
+
+	pod do |s|
 		s.name = 'OCMock'
 		s.version = '2.0.2'
 		s.homepage = 'http://ocmock.org'

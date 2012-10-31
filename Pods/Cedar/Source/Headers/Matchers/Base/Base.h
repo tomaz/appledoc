@@ -41,11 +41,15 @@ namespace Cedar { namespace Matchers {
 
     template<typename MessageBuilder_> template<typename U>
     NSString * Base<MessageBuilder_>::failure_message_for(const U & value) const {
-        return [NSString stringWithFormat:@"Expected <%@> to %@", MessageBuilder_::string_for_actual_value(value), this->failure_message_end()];
+        NSString * failureMessageEnd = this->failure_message_end();
+        NSString * actualValueString = MessageBuilder_::string_for_actual_value(value);
+        return [NSString stringWithFormat:@"Expected <%@> to %@", actualValueString, failureMessageEnd];
     }
 
     template<typename MessageBuilder_> template<typename U>
     NSString * Base<MessageBuilder_>::negative_failure_message_for(const U & value) const {
-        return [NSString stringWithFormat:@"Expected <%@> to not %@", MessageBuilder_::string_for_actual_value(value), this->failure_message_end()];
+        NSString * failureMessageEnd = this->failure_message_end();
+        NSString * actualValueString = MessageBuilder_::string_for_actual_value(value);
+        return [NSString stringWithFormat:@"Expected <%@> to not %@", actualValueString, failureMessageEnd];
     }
 }}

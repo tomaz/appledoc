@@ -2,7 +2,7 @@
 #import "CDRExampleBase.h"
 
 @protocol CDRExampleReporter;
-@class CDRExampleGroup, CDRExample, SpecHelper;
+@class CDRExampleGroup, CDRExample, SpecHelper, CDRSymbolicator;
 
 @protocol CDRSpec
 @end
@@ -16,15 +16,15 @@ void beforeEach(CDRSpecBlock);
 void afterEach(CDRSpecBlock);
 
 CDRExampleGroup * describe(NSString *, CDRSpecBlock);
-CDRExampleGroup * context(NSString *, CDRSpecBlock);
+extern CDRExampleGroup* (*context)(NSString *, CDRSpecBlock);
 CDRExample * it(NSString *, CDRSpecBlock);
 
-CDRExampleGroup * xcontext(NSString *, CDRSpecBlock);
 CDRExampleGroup * xdescribe(NSString *, CDRSpecBlock);
+extern CDRExampleGroup* (*xcontext)(NSString *, CDRSpecBlock);
 CDRExample * xit(NSString *, CDRSpecBlock);
 
 CDRExampleGroup * fdescribe(NSString *, CDRSpecBlock);
-CDRExampleGroup * fcontext(NSString *, CDRSpecBlock);
+extern CDRExampleGroup* (*fcontext)(NSString *, CDRSpecBlock);
 CDRExample * fit(NSString *, CDRSpecBlock);
 
 void fail(NSString *);
@@ -40,12 +40,18 @@ void fail(NSString *);
 #endif // __cplusplus
 
 @interface CDRSpec : NSObject <CDRSpec> {
-  CDRExampleGroup *rootGroup_;
-  CDRExampleGroup *currentGroup_;
+    CDRExampleGroup *rootGroup_;
+    CDRExampleGroup *currentGroup_;
+    NSString *fileName_;
+    CDRSymbolicator *symbolicator_;
 }
 
 @property (nonatomic, retain) CDRExampleGroup *currentGroup, *rootGroup;
+@property (nonatomic, retain) NSString *fileName;
+@property (nonatomic, retain) CDRSymbolicator *symbolicator;
+
 - (void)defineBehaviors;
+- (void)markAsFocusedClosestToLineNumber:(NSUInteger)lineNumber;
 @end
 
 @interface CDRSpec (SpecDeclaration)
@@ -56,7 +62,8 @@ void fail(NSString *);
 @interface name : CDRSpec            \
 @end                                 \
 @implementation name                 \
-- (void)declareBehaviors {
+- (void)declareBehaviors {           \
+    self.fileName = [NSString stringWithUTF8String:__FILE__];
 
 #define SPEC_END                     \
 }                                    \

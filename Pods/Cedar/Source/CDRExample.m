@@ -51,6 +51,7 @@ const CDRSpecBlock PENDING = nil;
 }
 
 - (void)run {
+    NSDate *startDate = [[NSDate alloc] init];
     if (!self.shouldRun) {
         self.state = CDRExampleStateSkipped;
     } else if (block_) {
@@ -71,6 +72,8 @@ const CDRSpecBlock PENDING = nil;
     } else {
         self.state = CDRExampleStatePending;
     }
+    runTime_ = -[startDate timeIntervalSinceNow];
+    [startDate release];
 }
 
 #pragma mark Private interface

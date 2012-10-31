@@ -82,9 +82,12 @@
 }
 
 - (void)run {
+    NSDate *startDate = [[NSDate alloc] init];
     [self startObservingExamples];
     [examples_ makeObjectsPerformSelector:@selector(run)];
     [self stopObservingExamples];
+    runTime_ = -[startDate timeIntervalSinceNow];
+    [startDate release];
 }
 
 - (BOOL)hasFocusedExamples {

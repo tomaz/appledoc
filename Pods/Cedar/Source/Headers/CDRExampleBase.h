@@ -19,11 +19,13 @@ typedef enum CDRExampleState CDRExampleState;
   NSString *text_;
   id<CDRExampleParent> parent_;
   BOOL focused_;
+  NSTimeInterval runTime_;
 }
 
 @property (nonatomic, readonly) NSString *text;
 @property (nonatomic, assign) id<CDRExampleParent> parent;
 @property (nonatomic, assign, getter=isFocused) BOOL focused;
+@property (nonatomic) NSUInteger stackAddress;
 
 - (id)initWithText:(NSString *)text;
 
@@ -40,5 +42,6 @@ typedef enum CDRExampleState CDRExampleState;
 
 @interface CDRExampleBase (RunReporting)
 - (CDRExampleState)state;
+- (NSTimeInterval)runTime;
 - (float)progress;
 @end

@@ -12,7 +12,9 @@ namespace Cedar { namespace Matchers { namespace Stringifiers {
                 if (!first) {
                     [result appendString:@","];
                 }
-                [result appendString:[NSString stringWithFormat:@"\n    %@", string_for(*it)]];
+                
+                NSString * string = string_for(*it);
+                [result appendString:[NSString stringWithFormat:@"\n    %@", string]];
             }
             return result;
         }
@@ -20,7 +22,8 @@ namespace Cedar { namespace Matchers { namespace Stringifiers {
 
     template<typename T>
     NSString * string_for(const typename std::vector<T> & container) {
-        return [NSString stringWithFormat:@"(%@\n)", comma_and_newline_delimited_list(container)];
+        NSString * delimitedList = comma_and_newline_delimited_list(container);
+        return [NSString stringWithFormat:@"(%@\n)", delimitedList];
     }
 
     template<typename T, typename U>
@@ -28,7 +31,9 @@ namespace Cedar { namespace Matchers { namespace Stringifiers {
         NSMutableString *result = [NSMutableString stringWithString:@"{"];
 
         for (typename std::map<T, U>::const_iterator it = container.begin(); it != container.end(); ++it) {
-            [result appendString:[NSString stringWithFormat:@"\n    %@ = %@;", string_for(it->first), string_for(it->second)]];
+            NSString * keyString = string_for(it->first);
+            NSString * valueString = string_for(it->second);
+            [result appendString:[NSString stringWithFormat:@"\n    %@ = %@;", keyString, valueString]];
         }
         [result appendString:@"\n}"];
         return result;
@@ -36,6 +41,7 @@ namespace Cedar { namespace Matchers { namespace Stringifiers {
 
     template<typename T>
     NSString * string_for(const typename std::set<T> & container) {
-        return [NSString stringWithFormat:@"{(%@\n)}", comma_and_newline_delimited_list(container)];
+        NSString * delimitedList = comma_and_newline_delimited_list(container);
+        return [NSString stringWithFormat:@"{(%@\n)}", delimitedList];
     }
 }}}

@@ -5,6 +5,7 @@ BDD-style testing using Objective-C
 
 ## Usage
 
+
 ### Clone from GitHub
 
 * Don't forget to initialize submodules:
@@ -12,94 +13,65 @@ BDD-style testing using Objective-C
         $ git submodule update --init
 
 
+### Installation
+
+* Run the `installCodeSnippetsAndTemplates` script in the Cedar directory.
+
+        $ ./installCodeSnippetsAndTemplates
+
+
 ### Non-iOS testing
 
-* Build the Cedar framework.  Note that you must build for an Objective-C
-  runtime that supports blocks; this means Mac OS X 10.6, or a runtime from
-  Plausible Labs (see below).
-* Create a command-line executable target for your tests in your project.  Name
-  this target Specs, unless you have another name you'd prefer.
-* Add the Cedar framework to your project, and link your Specs target with it.
-* Do the Copy Framework Dance:
-    - Add a Copy Files build phase to your Specs target.
-    - Select the Frameworks destination for the build phase.
-    - Add Cedar to the new build phase.
-* Add a main.m to your Specs target that looks like this:
+* Select your project in Xcode to bring up the project editor.
+* Click on "Add Target".
+* Select "Cedar" under the Mac section.
+* Select either an OSX Cedar Testing Bundle or a OSX Cedar Spec Suite.  If you
+  prefer to run a separate target to see your spec results, choose the
+  spec suite.  If you prefer to run your specs with Xcode's built-in
+  OCUnit runner, choose the testing bundle.  Name this target Specs, or something
+  else suitable.
+* If you're using ARC there are some caveats with using Cedar matchers, see below under "Matchers and ARC".
+* If you created a spec bundle, you must additionally add it to the list of tests
+  for the intended target:
+  * Select the target you want the tests to run against.
+  * Edit the scheme (Cmd-<)
+  * Select Test and then add your spec bundle to the list of tests
+* You target is now set up and should include an ExampleSpec.mm.  To run it:
+  * Spec bundle: Choose Test (Cmd-U) for the target you want to run tests for.
+  * Spec suite: Select your spec suite target and Run/Debug.
 
-        #import <Cedar/Cedar.h>
 
-        int main (int argc, const char *argv[]) {
-          return runSpecs();
-        }
 
-* Write your specs.  Cedar provides the SpecHelper.h file with some minimal
-  macros to remove as much distraction as possible from your specs.  A spec
-  file need not have a header file, and looks like this:
+### iOS testing
 
-        #import <Cedar/SpecHelper.h>
+* Select your project in Xcode to bring up the project editor.
+* Click on "Add Target".
+* Select "Cedar" under the iOS section.
+* Select either an iOS Cedar Testing Bundle or a iOS Cedar Spec Suite.  If you
+  prefer to run a separate target to see your spec results, choose the
+  spec suite.  If you prefer to run your specs with Xcode's built-in
+  OCUnit runner, choose the testing bundle.  Name this target Specs, or something
+  else suitable.
+* If you're using ARC there are some caveats with using Cedar matchers, see below under "Matchers and ARC".
+* If you're creating a spec bundle, you must specify the intended target of your tests
+  when creating it in the Test Target field.  Additionally, once you have created your
+  spec bundle target, you must then add it to the list of tests for the test target:
+  * Select the test target.
+  * Edit the scheme (Cmd-<)
+  * Select Test and then add your spec bundle to the list of tests.
+* Your target is now set up and should include an ExampleSpec.mm.  To run it:
+  * Spec bundle: Choose Test (Cmd-U) for the target you want to run tests for.
+  * Spec suite: Select your spec suite target and Run/Debug.
 
-        SPEC_BEGIN(FooSpec)
-        describe(@"Foo", ^{
-          beforeEach(^{
-            ...
-          });
+#### Running iOS tests suites in headless mode
 
-          it(@"should do something", ^{
-            ...
-          });
-        });
-        SPEC_END
-
-* Build and run.  Note that, unlike OCUnit, you must run your executable in
-  order to run your specs.  Also unlike OCUnit this allows you to use the
-  debugger when running specs.
-
-### iPhone testing
-
-* Build the Cedar-iOS static framework.  This framework contains a universal
-  binary that will work both on the simulator and the device.
-  NOTE: due to a bug in the build process the script that builds the framework
-  will sometimes not copy all of the header files appropriately.  If after you
-  build the Headers directory under the built framework is empty, try deleting
-  the built framework and building again.
-* Create a Cocoa Touch "Application" target for your tests in your project.  Name
-  this target UISpecs, or something similar.
-* Open the Info.plist file for your project and remove the "Main nib file base
-  name" entry.  The project template will likely have set this to "MainWindow."
-* Add the Cedar-iOS static framework to your project, and link your UISpecs
-  target with it.
-* Add `-ObjC`, `-lstdc++` and `-all_load` to the Other Linker Flags build setting for the
-  UISpecs target.  This is necessary for the linker to correctly load symbols
-  for Objective-C classes from static libraries.
-* Add a main.m to your UISpecs target that looks like this:
-
-        #import <UIKit/UIKit.h>
-        #import <Cedar-iOS/Cedar-iOS.h>
-
-        int main(int argc, char *argv[]) {
-            NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-
-            int retVal = UIApplicationMain(argc, argv, nil, @"CedarApplicationDelegate");
-            [pool release];
-            return retVal;
-        }
-
-* Build and run.  The simulator (or device) should start and display the status
-  of each of your spec classes in a table view.  You can navigate the hierarchy
-  of your examples by clicking on the table cells.
-* If you would like to use OCHamcrest or OCMock in your UI specs, Pivotal has
-  created static frameworks which will work on the iPhone for both.  These must
-  be built so you can add them as available frameworks in your specs.  See the
-  sections below on Matchers and Mocks for links to the relevant projects.
-* If you would like to run specs both in your UI spec target and your non-UI
-  spec target, you'll need to conditionally include the appropriate Cedar
-  headers in your spec files depending on the target SDK.  For example:
-
-        #if TARGET_OS_IPHONE
-        #import <Cedar-iOS/SpecHelper.h>
-        #else
-        #import <Cedar/SpecHelper.h>
-        #endif
+* By default, when you run an iOS test suite target, the results are displayed in a UITableView
+  in the simulator.  If you prefer to have the results output to the console instead, just add
+  the `CEDAR_HEADLESS_SPECS` to the environment of the spec suite target:
+  * Select the spec suite target
+  * Edit the scheme (Cmd-<)
+  * Select Run > Arguments
+  * Add `CEDAR_HEADLESS_SPECS` to the Environment section.
 
 
 ## Matchers
@@ -109,12 +81,14 @@ matcher libraries.  For example, rather than this (OCHamcrest):
 
     assertThat(aString, equalTo(@"something"));
     assertThatInt(anInteger, equalToInt(7));
+    assertThatInt(anInteger, isNot(equalToInt(9)));
     assertThatBool(aBoolean, equalTo(YES));
 
 you can write the following:
 
     expect(aString).to(equal(@"something"));
     expect(anInteger).to(equal(7));
+    expect(anInteger).to_not(equal(9));
     expect(aBoolean).to(equal(YES));
 
 although you would more likely write the last line as:
@@ -123,16 +97,45 @@ although you would more likely write the last line as:
 
 Here is a list of built-in matchers you can use:
 
-    expect(...).to(equal(10));
     expect(...).to(be_nil());
-    expect(...).to(be_close_to(5)); // default within(.01)
-    expect(...).to(be_close_to(5).within(.02));
-    expect(...).to(be_instance_of([NSObject class]));
-    expect(...).to(be_same_instance_as(object));
+
     expect(...).to(be_truthy());
     expect(...).to_not(be_truthy());
+
+    expect(...).to(equal(10));
+    expect(...).to == 10; // shortcut to the above
+    expect(...) == 10; // shortcut to the above
+
+    expect(...).to(be_greater_than(5));
+    expect(...).to > 5; // shortcut to the above
+    expect(...) > 5; // shortcut to the above
+
+    expect(...).to(be_greater_than_or_equal_to(10));
+    expect(...).to(be_gte(10)); // shortcut to the above
+    expect(...).to >= 10; // shortcut to the above
+    expect(...) >= 10; // shortcut to the above
+
+    expect(...).to(be_less_than(11));
+    expect(...).to < 11; // shortcut to the above
+    expect(...) < 11; // shortcut to the above
+
+    expect(...).to(be_less_than_or_equal_to(10));
+    expect(...).to(be_lte(10)); //shortcut to the above
+    expect(...).to <= 10; // shortcut to the above
+    expect(...) <= 10; // shortcut to the above
+
+    expect(...).to(be_close_to(5)); // default within(.01)
+    expect(...).to(be_close_to(5).within(.02));
+
+    expect(...).to(be_instance_of([NSObject class]));
+    expect(...).to(be_instance_of([NSObject class]).or_any_subclass());
+
+    expect(...).to(be_same_instance_as(object));
+
     expect(...).to(contain(@"something"));
     expect(...).to(be_empty());
+
+    expect(^{ ... }).to(raise_exception([NSInternalInconsistencyException class]));
 
 These matchers use C++ templates for type deduction.  You'll need to do two things to use them:
 
@@ -146,7 +149,7 @@ It's also theoretically very easy to add your own matchers without modifying the
 Cedar library (more on this later).
 
 These matchers will break Apple's GCC compiler, and versions 2.0 and older of the LLVM compiler
-(this translates to any compiler shipped with a version of Xcode before 4.1).  Fortunately, 
+(this translates to any compiler shipped with a version of Xcode before 4.1).  Fortunately,
 LLVM 2.1 fixes the issues.
 
 Note: If you decide to use another matcher library that uses `expect(...)` to
@@ -159,6 +162,21 @@ Note: If you prefer RSpec's `should` syntax you can write your expectations as f
 
         1 + 2 should equal(3);
         glass should_not be_empty();
+
+### Matchers and ARC
+
+A bug in the current Xcode compiler currently prevents the type C++ deduction from actually working if you have automatic reference counting enabled.  At this time, this leaves you with a few alternatives:
+
+1. Disable ARC for your spec files, but continue to use it for your application code.  You can do this by selecting spec files in the target's "Compile Sources" build phase and adding the compiler flag `-fno-objc-arc`.  You can help ensure that you do this by creating a `SpecHelper.h` file in your spec target that you `#import` into every spec which contains this guard:
+
+        #if __has_feature(objc_arc)
+            #error ARC must be disabled for specs!
+        #endif
+
+2. Use another matcher library like [Expecta](http://github.com/petejkim/expecta).  Just remove the following line from your spec files:
+
+
+        using namespace Cedar::Matchers;
 
 
 ## Shared example groups
@@ -231,21 +249,33 @@ object, and each shared example group will receive it:
 In many cases you have some housekeeping you'd like to take care of before every spec in your entire
 suite.  For example, loading fixtures or resetting a global variable.  Cedar will look for the
 +beforeEach and +afterEach class methods on every class it loads; you can add this class method
-onto any class you compile into your specs and Cedar will run it.  This allows spec libraries to 
-provide global +beforeEach and +afterEach methods specific to their own functionality, and they 
+onto any class you compile into your specs and Cedar will run it.  This allows spec libraries to
+provide global +beforeEach and +afterEach methods specific to their own functionality, and they
 will run automatically.
 
-If you want to run your own code before or after every spec, simply declare a class and implement 
+If you want to run your own code before or after every spec, simply declare a class and implement
 the +beforeEach and/or +afterEach methods.
 
 
 ## Mocks and stubs
 
-Cedar works fine with OCMock.  You can download and use the [OCMock framework](http://www.mulle-kybernetik.com/software/OCMock/).
-Pivotal also has a fork of a [GitHub import of the OCMock codebase](http://github.com/pivotal/OCMock),
-which contains our iPhone-specific static framework target.  Cedar also references
-the Pivotal fork of OCMock as a submodule.
+Doubles.  Got 'em.
 
+    spy_on(someInstance);
+    id<CedarDouble> fake = fake_for(someClass);
+    id<CedarDouble> anotherFake = fake_for(someProtocol);
+    id<CedarDouble> niceFake = nice_fake_for(someClass);
+    id<CedarDouble> anotherNiceFake = nice_fake_for(someProtocol);
+
+Method stubbing:
+
+    fake stub_method("selector").with(x);
+    fake stub_method("selector").with(x).and_with(y);
+    fake stub_method("selector").and_return(z);
+    fake stub_method("selector").with(x).and_return(z);
+    fake stub_method("selector").and_raise_exception();
+    fake stub_method("selector").and_raise_exception([NSException]);
+    fake stub_method("selector").with(anything);
 
 ## Pending specs
 
@@ -263,8 +293,8 @@ default parameters.
 ## Focused specs
 
 Sometimes when debugging or developing a new feature it is useful to run only a
-subset of your tests.  That can be achieved by marking any number/combination of
-examples with an 'f'. You can use `fit`, `fdescribe` and `fcontext` like this:
+subset of your tests.  That can be achieved by marking any number of examples
+with an 'f'. You can use `fit`, `fdescribe` and `fcontext` like this:
 
           fit(@"should do something eventually", ^{
               // ...
@@ -278,6 +308,10 @@ It might not be immediately obvious why the test runner always returns a
 non-zero exit code when a test suite contains at least one focused example. That
 was done to make CI fail if someone accidently forgets to unfocus focused
 examples before commiting and pushing.
+
+Note: For improved Xcode integration see
+[CedarShortcuts](https://github.com/cppforlife/CedarShortcuts), an Xcode plugin
+that provides keyboard shortcuts for focusing on specs under editor cursor.
 
 
 ## Reporters
@@ -318,9 +352,23 @@ Here is how it looks after that:
 
 If the default reporter for some reason does not fit your needs you can always
 write a custom reporter.  `CDRTeamCityReporter` is one such example.  It was
-written to output test results in a way that TeamCity CI server can understand. 
+written to output test results in a way that TeamCity CI server can understand.
 You can tell Cedar which reporter to use by setting `CEDAR_REPORTER_CLASS` env
 variable to your custom reporter class name.
+
+### Finding Slow-Running Tests
+
+Set the `CEDAR_REPORT_SLOW_TESTS` environment vairables to have Cedar identify
+and prints out the slowest `N` (10 by default) tests in your suite, and the
+slowest `N` top-level groups. These top-level groups typically have a one to one
+correspondence with your spec files allowing you to easily identify the slowest
+running slow files. You can change `N` by setting the `CEDAR_TOP_N_SLOW_TESTS`
+env variable.
+
+### Faster Failure Reporting
+
+Set the `CEDAR_REPORT_FAILURES_IMMEDIATELY` environment variable to have Cedar
+print failure details before finishing running all tests.
 
 ### JUnit XML Reporting
 
@@ -334,101 +382,53 @@ By default, the XML file will be written to `build/TEST-Cedar.xml` but this
 path can be overridden with the `CEDAR_JUNIT_XML_FILE` env variable.
 
 
-## OCUnit Support (new, not battle tested)
-
-We encourage you to use Cedar without OCUnit as described in the 'Usage' section
-above to avoid several OCUnit imposed limitations; however, if for some reason
-you choose to use OCUnit, Cedar does support it.  You can find example
-application that uses Cedar with OCUnit in OCUnitApp, OCUnitAppTests and
-OCUnitAppLogicTests directories.  Also Rakefile contains two useful rake tasks
-`ocunit:logic` and `ocunit:application` that let you run OCUnit tests from the
-command line.
-
-
-### OCUnit Logic Tests
-
-* Create new "Cocoa Touch Unit Testing Bundle" target in your project.
-  Name it LogicSpecs.
-* Build the Cedar framework.
-* Add the Cedar framework to your project, and link your LogicSpecs
-  target with it.
-* Add `-ObjC`, `-all_load` and `-lstdc++` to the Other Linker Flags build setting for the
-  LogicSpecs target.
-* Write your specs and include them in LogicSpecs target.  A spec file need not have
-  a header file, and looks like this:
-
-        #import <Cedar/SpecHelper.h>
-
-        SPEC_BEGIN(FooSpec)
-        describe(@"Foo", ^{
-          beforeEach(^{
-            ...
-          });
-
-          it(@"should do something", ^{
-            ...
-          });
-        });
-        SPEC_END
-
-* Build LogicSpecs and run them in test mode (click and hold Run and select
-  Test).  You should see specs result output in the console window.
-
-In addition to running logic tests in Xcode you can also run them from the
-command line.  To do so first copy Rakefile to your project and update
-`PROJECT_NAME`, `APP_NAME` and `OCUNIT_LOGIC_SPECS_TARGET_NAME` constants in it.
- Run your tests with `rake ocunit:logic`.
-
-
-### OCUnit Application Tests
-
-* If you are creating new project just check "Include Unit Tests" option.  If
-  you want to add application tests to an existing application here is a [good
-  tutorial](http://twobitlabs.com/2011/06/adding-ocunit-to-an-existing-ios-project-with-xcode-4/).
-  Name your target ApplicationSpecs (or if you used "Include Unit Tests"
-  option Xcode will create target for you named [AppName]Tests.)
-* Build the Cedar-iOS static framework.
-* Add the Cedar-iOS static framework to your project, and link
-  ApplicationSpecs target with it.
-* Add `-ObjC`, `-all_load` and `-lstdc++` to the Other Linker Flags build setting for the
-  ApplicationSpecs target.
-* Write your specs and include them in ApplicationSpecs target.  A spec file
-  need not have a header file, and looks like this:
-
-        #import <Cedar/SpecHelper.h>
-
-        SPEC_BEGIN(FooSpec)
-        describe(@"Foo", ^{
-          beforeEach(^{
-            ...
-          });
-
-          it(@"should do something", ^{
-            ...
-          });
-        });
-        SPEC_END
-
-* Build ApplicationSpecs and run them in test mode (click and hold Run and
-  select Test).  You should see specs result output in the console window.
-
-In addition to running application tests in Xcode you can also run them from the
-command line.  To do so first copy Rakefile to your project and update
-`PROJECT_NAME`, `APP_NAME` and `OCUNIT_APPLICATION_SPECS_TARGET_NAME` constants
-in it.  Run your tests with `rake ocunit:application`.
-
-
 ## Code Snippets
 
-Xcode 4 has replaced text macros with code snippets.  If you're still using Xcode 3,
-check out the xcode3 branch from git and read the section on MACROS.
+Code snippets are installed as part of Cedar.  These are installed into
+`~/Library/Developer/XCode/UserData/CodeSnippets`
 
-You can place the codesnippet files contained in CodeSnippets directory into this location
-(you may need to create the directory):
 
-        ~/Library/Developer/XCode/UserData/CodeSnippets
+## Command line automation
 
-Alternately, you can run the installCodeSnippets script, which will do it for you. 
+The Rakefile contains useful rake tasks that let you run cedar specs from the
+command line.  The `ocunit:logic` and `ocunit:application` tasks demonstrate how
+you can run OCUnit style test bundles.  The `specs` and `uispecs` tasks show how
+you can run cedar test suites.
+
+
+## Troubleshooting
+
+### Linker problem ld: file not found
+Example failure:
+
+    ld: file not found: <path to build dir>/Products/<Configuration>-<device>/<target name>.app/<target name>
+    clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+  * This error occurs when there is an incorrect target name used.
+  * To fix this, Update the `Bundle Loader` setting in build settings to
+  `$(BUILT_PRODUCTS_DIR)/<target name>.app/<target name>`
+  Ensuring that your new target name is the correct.
+
+### Linker problem ld: symbol(s) not found
+Example failure:
+
+    Undefined symbols for architecture i386:
+    "_OBJC_CLASS_$_SomeClassFromYourApp", referenced from:
+        objc-class-ref in SomeClassFromYourAppSpec.o
+        (maybe you meant: _OBJC_CLASS_$__OBJC_CLASS_$_SomeClassFromYourApp)
+    ld: symbol(s) not found for architecture i386
+
+This error can happen when you have a spec bundle which is run against code built with "Strip Debug Symbols During Copy" set to Yes.
+
+You should ensure that you're running your tests against code built with this configuration setting set to No.  This should be the default if you're building with the Debug configuration.
+
+### No matching function to call
+Example failure:
+
+    error: no matching function for call to 'CDR_expect'
+    note: candidate template ignored: substitution failure [with T = SOME_TYPE]
+
+  * This is caused by a C++ compiler bug in Xcode when ARC is enabled and you use a Cedar matcher.  See the above section "Matchers and ARC" on how to deal with this.
 
 
 ## Contributions and feedback

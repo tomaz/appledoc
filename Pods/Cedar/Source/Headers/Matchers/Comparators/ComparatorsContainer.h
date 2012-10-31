@@ -8,7 +8,11 @@ namespace Cedar { namespace Matchers { namespace Comparators {
 #pragma mark compare_empty
     template<typename T>
     bool compare_empty(const T & container) {
-        return 0 == [container count];
+        if ([container respondsToSelector:@selector(count)]) {
+            return 0 == [(id)container count];
+        } else {
+            return 0 == [(id)container length];
+        }
     }
 
     template<typename T>

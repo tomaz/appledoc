@@ -1,0 +1,1 @@
+../../ParseKit/src/NSString+ParseKitAdditions.h

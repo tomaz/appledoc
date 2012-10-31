@@ -44,7 +44,8 @@ namespace Cedar { namespace Matchers {
 
     template<typename T>
     /*virtual*/ NSString * BeGTE<T>::failure_message_end() const {
-        return [NSString stringWithFormat:@"be greater than or equal to <%@>", Stringifiers::string_for(expectedValue_)];
+        NSString * expectedValueString = Stringifiers::string_for(expectedValue_);
+        return [NSString stringWithFormat:@"be greater than or equal to <%@>", expectedValueString];
     }
 
     template<typename T> template<typename U>

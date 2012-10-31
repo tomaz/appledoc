@@ -52,7 +52,9 @@ namespace Cedar { namespace Matchers {
 
     template<typename T>
     /*virtual*/ NSString * BeCloseTo<T>::failure_message_end() const {
-        return [NSString stringWithFormat:@"be close to <%@> (within %@)", Stringifiers::string_for(expectedValue_), Stringifiers::string_for(threshold_)];
+        NSString * expectedValueString = Stringifiers::string_for(expectedValue_);
+        NSString * thresholdString = Stringifiers::string_for(threshold_);
+        return [NSString stringWithFormat:@"be close to <%@> (within %@)", expectedValueString, thresholdString];
     }
 
     template<typename T> template<typename U, typename V>

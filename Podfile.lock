@@ -1,15 +1,21 @@
-PODS:
-  - Cedar (0.0.3)
-  - DDCli (1.0)
-  - GBCli (1.0)
-  - OCMock (2.0.2)
-  - ParseKit (0.0.2)
-  - sundown (1.0)
 
-DEPENDENCIES:
-  - Cedar (defined in Podfile)
-  - DDCli (defined in Podfile)
-  - GBCli (defined in Podfile)
-  - OCMock (defined in Podfile)
-  - ParseKit (defined in Podfile)
-  - sundown (defined in Podfile)
+DEPENDENCIES: 
+- Cedar (= 0.8.1)
+- DDCli (defined in Podfile)
+- GBCli (defined in Podfile)
+- OCMock (defined in Podfile)
+- ParseKit (defined in Podfile)
+- sundown (defined in Podfile)
+
+SPEC CHECKSUMS: 
+  Cedar: fd258dcfeb6330ef5a499c9104d09cf8f70bcbe9
+
+COCOAPODS: 0.15.1
+
+PODS: 
+- Cedar (0.8.1)
+- DDCli (1.0)
+- GBCli (1.0)
+- OCMock (2.0.2)
+- ParseKit (0.0.2)
+- sundown (1.0)

@@ -4,7 +4,8 @@ namespace Cedar { namespace Matchers {
     struct BeInstanceOfMessageBuilder {
         template<typename U>
         static NSString * string_for_actual_value(const U & value) {
-            return [NSString stringWithFormat:@"%@ (%@)", value, [value class]];
+            id idValue = value;
+            return [NSString stringWithFormat:@"%@ (%@)", idValue, NSStringFromClass([idValue class])];
         }
     };
 

@@ -2,6 +2,7 @@
 
 @interface CDRExampleGroup : CDRExampleBase <CDRExampleParent> {
     NSMutableArray *beforeBlocks_, *examples_, *afterBlocks_;
+    NSUInteger stackAddress_;
     BOOL isRoot_;
 }
 

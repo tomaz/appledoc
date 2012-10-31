@@ -3,12 +3,13 @@
 
 @implementation CDRExampleBase
 
-@synthesize text = text_, parent = parent_, focused = focused_;
+@synthesize text = text_, parent = parent_, focused = focused_, stackAddress = stackAddress_;
 
 - (id)initWithText:(NSString *)text {
     if (self = [super init]) {
         text_ = [text retain];
         focused_ = NO;
+        runTime_ = 0;
     }
     return self;
 }
@@ -56,6 +57,10 @@
     } else {
         return [NSMutableArray arrayWithObject:self.text];
     }
+}
+
+- (NSTimeInterval)runTime {
+    return runTime_;
 }
 
 @end
