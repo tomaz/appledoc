@@ -396,7 +396,41 @@ describe(@"processing:", ^{
 				// verify
 				^{ [comment verify]; } should_not raise_exception();
 			});
-			
+		});
+		
+		it(@"should register multiple parameters:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@param name1 description1\n@param name2 description 2");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name1": @"description1"}, @{@"name2": @"description 2"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		
+		it(@"should handle more complex scenarios:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@param name1 description1\nin mutliple\nlines\n\n@param name2 description 2");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name1": @"description1\nin multiple\nlines"}, @{@"name2": @"description 2"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
 		});
 	});
 });

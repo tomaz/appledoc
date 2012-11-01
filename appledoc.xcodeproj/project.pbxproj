@@ -67,6 +67,7 @@
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
+		73558FC81642F6F900E17831 /* CommentNamedArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		735CD2BF1538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -247,6 +248,7 @@
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
+		73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentNamedArgumentInfoTests.mm; sourceTree = "<group>"; };
 		735CD2BD1538109900CADD4E /* ObjectLinkInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkInfo.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkInfo.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
@@ -512,6 +514,7 @@
 				730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */,
 				7336652815457BF7000F7AFF /* ConstantInfoTests.mm */,
 				73A0267E15D6D4870077D204 /* CommentInfoTests.mm */,
+				73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -896,6 +899,7 @@
 				73AEC5CA15DAB33700830AC7 /* MarkdownParser.m in Sources */,
 				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
 				73817C7716417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */,
+				73558FC81642F6F900E17831 /* CommentNamedArgumentInfoTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

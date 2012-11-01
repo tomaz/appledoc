@@ -9,6 +9,7 @@
 #import "Objects.h"
 #import "CommentInfo.h"
 #import "CommentComponentInfo.h"
+#import "CommentNamedArgumentInfo.h"
 #import "ProcessCommentComponentsTask.h"
 
 @interface ProcessCommentComponentsTask ()
@@ -29,8 +30,26 @@
 	[self registerCommentComponentFromString:self.currentComponentBuilder];
 	if (self.currentDiscussion.count > 0) {
 		LogProDebug(@"Registering abstract and discussion...");
+		
+		// Always take first paragraph as abstract. The rest are either discussion or parameters/exceptions etc.
 		CommentComponentInfo *abstract = self.currentDiscussion[0];
 		[self.currentDiscussion removeObject:abstract];
+		
+		// Scan through the components and prepare various sections.
+		NSMutableArray *discussion = [@[] mutableCopy];
+		NSMutableArray *parameters = [@[] mutableCopy];
+		__block CommentNamedArgumentInfo *currentNamedArgument = nil;
+		[self.currentDiscussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
+			if ([component.sourceString hasPrefix:@"@param"]) {
+				currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
+				[parameters addObject:currentNamedArgument];
+			}
+			if (currentNamedArgument) {
+				[currentNamedArgument.argumentComponents addObject:component];
+				return;
+			}
+			[discussion addObject:component];
+		}];
 		[comment setCommentAbstract:abstract];
 		[comment setCommentDiscussion:self.currentDiscussion];
 	}
