@@ -86,11 +86,19 @@
 		7381A6881536E2F000BF9BDD /* ProtocolInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6871536E2F000BF9BDD /* ProtocolInfo.m */; };
 		7381A6891536E2F000BF9BDD /* ProtocolInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7381A6871536E2F000BF9BDD /* ProtocolInfo.m */; };
 		738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 738BE17315172D8D009079C8 /* GBSettings+Helpers.m */; };
+		738F2C951642FF7100BEC518 /* NSError+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C941642FF7100BEC518 /* NSError+Appledoc.m */; };
+		738F2C961642FF7100BEC518 /* NSError+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C941642FF7100BEC518 /* NSError+Appledoc.m */; };
+		738F2C991642FFC000BEC518 /* NSFileManager+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C981642FFC000BEC518 /* NSFileManager+Appledoc.m */; };
+		738F2C9A1642FFC000BEC518 /* NSFileManager+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C981642FFC000BEC518 /* NSFileManager+Appledoc.m */; };
+		738F2C9D1643014800BEC518 /* NSString+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C9C1643014800BEC518 /* NSString+Appledoc.m */; };
+		738F2C9E1643014800BEC518 /* NSString+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2C9C1643014800BEC518 /* NSString+Appledoc.m */; };
+		738F2CA11643019F00BEC518 /* NSArray+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */; };
+		738F2CA21643019F00BEC518 /* NSArray+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */; };
+		738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */; };
+		738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */; };
 		738F419015232E6B008CB370 /* ObjectiveCPropertyStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739B4213158D134D0044B904 /* CommentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B4212158D134D0044B904 /* CommentInfo.m */; };
 		739B4214158D134D0044B904 /* CommentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B4212158D134D0044B904 /* CommentInfo.m */; };
-		739C11B01515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
-		739C11B11515320C004D139B /* Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 739C11AF1515320C004D139B /* Extensions.m */; };
 		73A0267C15D6D36A0077D204 /* CommentComponentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */; };
 		73A0267D15D6D36A0077D204 /* CommentComponentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */; };
 		73A0267F15D6D4870077D204 /* CommentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73A0267E15D6D4870077D204 /* CommentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -271,12 +279,21 @@
 		7381A6871536E2F000BF9BDD /* ProtocolInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProtocolInfo.m; sourceTree = "<group>"; };
 		738BE17215172D8D009079C8 /* GBSettings+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBSettings+Helpers.h"; sourceTree = "<group>"; };
 		738BE17315172D8D009079C8 /* GBSettings+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBSettings+Helpers.m"; sourceTree = "<group>"; };
+		738F2C931642FF7100BEC518 /* NSError+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Appledoc.h"; sourceTree = "<group>"; };
+		738F2C941642FF7100BEC518 /* NSError+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Appledoc.m"; sourceTree = "<group>"; };
+		738F2C971642FFC000BEC518 /* NSFileManager+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+Appledoc.h"; sourceTree = "<group>"; };
+		738F2C981642FFC000BEC518 /* NSFileManager+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Appledoc.m"; sourceTree = "<group>"; };
+		738F2C9B1643014800BEC518 /* NSString+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Appledoc.h"; sourceTree = "<group>"; };
+		738F2C9C1643014800BEC518 /* NSString+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Appledoc.m"; sourceTree = "<group>"; };
+		738F2C9F1643019F00BEC518 /* NSArray+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Appledoc.h"; sourceTree = "<group>"; };
+		738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Appledoc.m"; sourceTree = "<group>"; };
+		738F2CA3164301E500BEC518 /* PKToken+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+Appledoc.h"; sourceTree = "<group>"; };
+		738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+Appledoc.m"; sourceTree = "<group>"; };
+		738F2CA71643026D00BEC518 /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
 		738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCPropertyStateTests.mm; sourceTree = "<group>"; };
 		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
 		739B4211158D134D0044B904 /* CommentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentInfo.h; sourceTree = "<group>"; };
 		739B4212158D134D0044B904 /* CommentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentInfo.m; sourceTree = "<group>"; };
-		739C11AE1515320C004D139B /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
-		739C11AF1515320C004D139B /* Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Extensions.m; sourceTree = "<group>"; };
 		73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentComponentInfo.h; sourceTree = "<group>"; };
 		73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentComponentInfo.m; sourceTree = "<group>"; };
 		73A0267E15D6D4870077D204 /* CommentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentInfoTests.mm; sourceTree = "<group>"; };
@@ -544,6 +561,24 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		738F2C911642FF4700BEC518 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				738F2CA71643026D00BEC518 /* Extensions.h */,
+				738F2CA3164301E500BEC518 /* PKToken+Appledoc.h */,
+				738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */,
+				738F2C9B1643014800BEC518 /* NSString+Appledoc.h */,
+				738F2C9C1643014800BEC518 /* NSString+Appledoc.m */,
+				738F2C931642FF7100BEC518 /* NSError+Appledoc.h */,
+				738F2C941642FF7100BEC518 /* NSError+Appledoc.m */,
+				738F2C9F1643019F00BEC518 /* NSArray+Appledoc.h */,
+				738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */,
+				738F2C971642FFC000BEC518 /* NSFileManager+Appledoc.h */,
+				738F2C981642FFC000BEC518 /* NSFileManager+Appledoc.m */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		73A0267815D68E2E0077D204 /* Objects */ = {
 			isa = PBXGroup;
 			children = (
@@ -641,6 +676,7 @@
 			isa = PBXGroup;
 			children = (
 				73ED9443150E9FD00032FD07 /* Common */,
+				738F2C911642FF4700BEC518 /* Extensions */,
 				73D274CC150E08AA004D27F4 /* Application */,
 				73500D2D151748F3000416E3 /* Store */,
 				73500D2B151748C8000416E3 /* Parsing */,
@@ -679,8 +715,6 @@
 				73118B11151906F100E9D7F1 /* Constants.m */,
 				73ED9444150E9FEC0032FD07 /* Logging.h */,
 				73ED9445150E9FEC0032FD07 /* Logging.m */,
-				739C11AE1515320C004D139B /* Extensions.h */,
-				739C11AF1515320C004D139B /* Extensions.m */,
 				73239A0F155706380077AB8A /* StateBase.h */,
 				73239A10155706380077AB8A /* StateBase.m */,
 				73280F26150FE48700D1E6E8 /* GBSettings+Appledoc.h */,
@@ -824,7 +858,6 @@
 				7317FACE150F633900B39CFD /* SettingsTests.mm in Sources */,
 				73280F29150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
 				73280F321510989600D1E6E8 /* AppledocTests.mm in Sources */,
-				739C11B11515320C004D139B /* Extensions.m in Sources */,
 				73500D3115174910000416E3 /* Store.m in Sources */,
 				73500D351517581A000416E3 /* Parser.m in Sources */,
 				734425131517631F00B6EC33 /* ParserTests.mm in Sources */,
@@ -900,6 +933,11 @@
 				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
 				73817C7716417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */,
 				73558FC81642F6F900E17831 /* CommentNamedArgumentInfoTests.mm in Sources */,
+				738F2C961642FF7100BEC518 /* NSError+Appledoc.m in Sources */,
+				738F2C9A1642FFC000BEC518 /* NSFileManager+Appledoc.m in Sources */,
+				738F2C9E1643014800BEC518 /* NSString+Appledoc.m in Sources */,
+				738F2CA21643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
+				738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,7 +949,6 @@
 				73D274DE150E0D60004D27F4 /* Appledoc.m in Sources */,
 				73ED9446150E9FEC0032FD07 /* Logging.m in Sources */,
 				73280F28150FE48700D1E6E8 /* GBSettings+Appledoc.m in Sources */,
-				739C11B01515320C004D139B /* Extensions.m in Sources */,
 				738BE17415172D8E009079C8 /* GBSettings+Helpers.m in Sources */,
 				73500D3015174910000416E3 /* Store.m in Sources */,
 				73500D341517581A000416E3 /* Parser.m in Sources */,
@@ -957,6 +994,11 @@
 				73A3E48B15D8288D00769863 /* ProcessCommentComponentsTask.m in Sources */,
 				73AEC5C915DAB33700830AC7 /* MarkdownParser.m in Sources */,
 				73817C7616417CB1009B0A85 /* CommentNamedArgumentInfo.m in Sources */,
+				738F2C951642FF7100BEC518 /* NSError+Appledoc.m in Sources */,
+				738F2C991642FFC000BEC518 /* NSFileManager+Appledoc.m in Sources */,
+				738F2C9D1643014800BEC518 /* NSString+Appledoc.m in Sources */,
+				738F2CA11643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
+				738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

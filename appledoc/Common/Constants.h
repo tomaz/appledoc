@@ -8,12 +8,11 @@
 
 /** Application and task results.
  */
-enum {
+typedef NS_ENUM(NSUInteger,GBResult) {
 	GBResultOk = 0,
 	GBResultSystemError,
 	GBResultFailedMatch,
 };
-typedef NSInteger GBResult;
 
 /** Helper macro for simplifying processing of multiple subsequent methods that all return GBResult.
  */
