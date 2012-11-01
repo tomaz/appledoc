@@ -44,6 +44,14 @@
 
 #pragma mark Sections detection
 
+- (NSString *)abstractRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(abstract|brief)"]);
+}
+
+- (NSString *)discussionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(discussion|details)"]);
+}
+
 - (NSString *)noteSectionRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"note"]);
 }
