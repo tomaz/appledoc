@@ -61,8 +61,7 @@
 	if (![script executeAndReturnError:&errorDict])
 	{
 		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
-		if (error) *error = [NSError errorWithCode:GBErrorDocSetXcodeReloadFailed description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
-		return NO;
+		GBLogWarn(@"Warning: Documentation set was installed, but couldn't reload documentation within Xcode. %@", message)
 	}
 	return YES;
 }
