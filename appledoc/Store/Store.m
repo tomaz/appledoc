@@ -13,7 +13,7 @@
 @property (nonatomic, readonly) id previousRegistrationObject;
 @property (nonatomic, strong) id lastPoppedRegistrationObject;
 @property (nonatomic, strong) PKToken *currentSourceInfo;
-@property (nonatomic, strong) NSString *commentTextForNextObject;
+@property (nonatomic, copy) NSString *commentTextForNextObject;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
 @end
 

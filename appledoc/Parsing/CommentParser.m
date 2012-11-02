@@ -10,8 +10,8 @@
 #import "CommentParser.h"
 
 @interface CommentParser ()
-@property (nonatomic, strong) NSString *groupComment;
-@property (nonatomic, strong) NSString *comment;
+@property (nonatomic, copy) NSString *groupComment;
+@property (nonatomic, copy) NSString *comment;
 @property (nonatomic, assign) BOOL isCommentInline;
 @property (nonatomic, assign) NSUInteger lastSingleLinerLine;
 @end

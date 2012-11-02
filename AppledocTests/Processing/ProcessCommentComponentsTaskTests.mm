@@ -52,14 +52,21 @@ static BOOL matchNamedArray(NSArray *actual, NSDictionary *first, ...) {
 	if (actual.count != expected.count) return NO;
 	for (NSUInteger i=0; i<actual.count; i++) {
 		CommentNamedArgumentInfo *actualItem = actual[i];
-		CommentNamedArgumentInfo *expectedItem = expected[i];
-		if (![actualItem.argumentName isEqualToString:expectedItem.argumentName]) return NO;
-		if (actualItem.argumentComponents.count != expectedItem.argumentComponents.count) return NO;
-		for (NSUInteger n=0; n<actualItem.argumentComponents.count; n++) {
-			NSString *actualString = [actualItem.argumentComponents[n] sourceString];
-			NSString *expectedString = expectedItem.argumentComponents[n];
-			if (![actualString isEqualToString:expectedString]) return NO;
-		}
+		NSDictionary *expectedItem = expected[i];
+		
+		// If there's no name key in the dictionary, fail.
+		NSString *expectedString = [expectedItem objectForKey:actualItem.argumentName];
+		if (!expectedString) return NO;
+		
+		// Compose all components into a single string delimited by empty lines.
+		NSMutableString *actualString = [@"" mutableCopy];
+		[actualItem.argumentComponents enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
+			if (actualString.length > 0) [actualString appendString:@"\n\n"];
+			[actualString appendString:component.sourceString];
+		}];
+		
+		// If the two strings don't match, exit.
+		if (![actualString isEqualToString:expectedString]) return NO;
 	}
 	return YES;
 }
@@ -83,9 +90,6 @@ describe(@"processing:", ^{
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"line"];
 				}]];
-				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return (array.count == 0);
-				}]];
 				// execute
 				[task processComment:comment];
 				// verify
@@ -99,9 +103,6 @@ describe(@"processing:", ^{
 				setupCommentText(comment, @"line one\nline two\nline three");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"line one\nline two\nline three"];
-				}]];
-				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return (array.count == 0);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -172,9 +173,6 @@ describe(@"processing:", ^{
 					setupCommentText(comment, @"abstract\n@warning text");
 					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 						return [info.sourceString isEqualToString:@"abstract\n@warning text"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return (array.count == 0);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -280,9 +278,6 @@ describe(@"processing:", ^{
 					setupCommentText(comment, @"abstract\n@bug text");
 					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 						return [info.sourceString isEqualToString:@"abstract\n@bug text"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return (array.count == 0);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -401,12 +396,12 @@ describe(@"processing:", ^{
 		it(@"should register multiple parameters:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@param name1 description1\n@param name2 description 2");
+				setupCommentText(comment, @"abstract\n\n@param name1 description 1\n@param name2 description 2");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
 				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name1": @"description1"}, @{@"name2": @"description 2"}, nil);
+					return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -419,7 +414,7 @@ describe(@"processing:", ^{
 		it(@"should handle more complex scenarios:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@param name1 description1\nin mutliple\nlines\n\n@param name2 description 2");
+				setupCommentText(comment, @"abstract\n\n@param name1 description1\nin multiple\nlines\n\n@param name2 description 2");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];

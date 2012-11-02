@@ -10,4 +10,5 @@
 #import "NSString+Appledoc.h"
 #import "NSError+Appledoc.h"
 #import "NSArray+Appledoc.h"
+#import "NSRegularExpression+Appledoc.h"
 #import "NSFileManager+Appledoc.h"

@@ -19,6 +19,6 @@
 @property (nonatomic, strong) NSMutableArray *commentDiscussion; // CommentComponentInfo
 @property (nonatomic, strong) NSMutableArray *commentParameters; // CommentNamedArgumentInfo
 @property (nonatomic, strong) PKToken *sourceToken;
-@property (nonatomic, strong) NSString *sourceString;
+@property (nonatomic, copy) NSString *sourceString;
 
 @end

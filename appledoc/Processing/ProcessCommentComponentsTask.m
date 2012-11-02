@@ -27,7 +27,7 @@
 	LogProInfo(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
 	self.currentDiscussion = [@[] mutableCopy];
 	[self.markdownParser parseString:comment.sourceString];
-	[self registerCommentComponentFromString:self.currentComponentBuilder];
+	[self registerCommentComponentsFromString:self.currentComponentBuilder];
 	if (self.currentDiscussion.count > 0) {
 		LogProDebug(@"Registering abstract and discussion...");
 		
@@ -35,34 +35,68 @@
 		CommentComponentInfo *abstract = self.currentDiscussion[0];
 		[self.currentDiscussion removeObject:abstract];
 		
-		// Scan through the components and prepare various sections.
+		// Scan through the components and prepare various sections. Note that once we step into arguments, we take all subsequent components as part of the argument!
 		NSMutableArray *discussion = [@[] mutableCopy];
 		NSMutableArray *parameters = [@[] mutableCopy];
 		__block CommentNamedArgumentInfo *currentNamedArgument = nil;
 		[self.currentDiscussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
-			if ([component.sourceString hasPrefix:@"@param"]) {
+			NSString *string = component.sourceString;
+			
+			// Match @param. Note that we also remove '@param <name>' prefix from source string.
+			[[NSRegularExpression gb_paramMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+				NSString *name = [match gb_stringAtIndex:1 in:string];
+				LogProDebug(@"Starting @param %@...", name);
+				component.sourceString = [match gb_remainingStringIn:string];
 				currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
+				currentNamedArgument.argumentName = name;
 				[parameters addObject:currentNamedArgument];
-			}
+			}];
+			
+			// Append component to current named argument (@param, @exception etc) if one available.
 			if (currentNamedArgument) {
+				LogProDebug(@"Appending %@ to argument %@...", [string gb_description], currentNamedArgument.argumentName);
 				[currentNamedArgument.argumentComponents addObject:component];
 				return;
 			}
+			
+			// Append component to discussion otherwise.
+			LogProDebug(@"Appending %@ to discussion...", [string gb_description]);
 			[discussion addObject:component];
 		}];
+		
 		[comment setCommentAbstract:abstract];
-		[comment setCommentDiscussion:self.currentDiscussion];
+		if (discussion.count > 0) [comment setCommentDiscussion:discussion];
+		if (parameters.count > 0) [comment setCommentParameters:parameters];
 	}
 	return GBResultOk;
 }
 
 #pragma mark - Comment components handling
 
-- (void)registerCommentComponentFromString:(NSString *)string {
+- (void)registerCommentComponentsFromString:(NSString *)string {
 	if (string.length == 0) return;
 	LogProDebug(@"Registering comment component from '%@'...", [string gb_description]);
-	CommentComponentInfo *component = [self componentInfoFromString:string];
-	[self.currentDiscussion addObject:component];
+	
+	// Split multiple named arguments (@param, @exception etc.) into separate components. If single or none found, just use the whole string.
+	NSArray *matches = [[NSRegularExpression gb_argumentMatchingRegularExpression] gb_allMatchesIn:string];
+	if (matches.count > 1 && [matches[0] range].location == 0) {
+		__block NSUInteger lastMatchLocation;
+		[matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
+			if (idx == 0) return;
+			NSUInteger previousMatchLocation = [matches[idx-1] range].location;
+			lastMatchLocation = match.range.location;
+			NSRange range = NSMakeRange(previousMatchLocation, lastMatchLocation - previousMatchLocation);
+			NSString *componentString = [[string substringWithRange:range] gb_stringByTrimmingWhitespaceAndNewLine];
+			CommentComponentInfo *component = [self componentInfoFromString:componentString];
+			[self.currentDiscussion addObject:component];
+		}];
+		NSString *lastString = [string substringFromIndex:lastMatchLocation];
+		CommentComponentInfo *component = [self componentInfoFromString:lastString];
+		[self.currentDiscussion addObject:component];
+	} else {
+		CommentComponentInfo *component = [self componentInfoFromString:string];
+		[self.currentDiscussion addObject:component];
+	}
 }
 
 #pragma mark - Low level string parsing
@@ -111,7 +145,7 @@
 - (void)markdownParser:(MarkdownParser *)parser parseParagraph:(const struct buf *)text output:(struct buf *)buffer {
 	NSString *paragraph = [self stringFromBuffer:text];
 	LogProDebug(@"Detected paragraph '%@'.", [paragraph gb_description]);
-	if (self.currentComponentBuilder) [self registerCommentComponentFromString:self.currentComponentBuilder];
+	if (self.currentComponentBuilder) [self registerCommentComponentsFromString:self.currentComponentBuilder];
 	self.currentComponentBuilder = [paragraph mutableCopy];
 }
 

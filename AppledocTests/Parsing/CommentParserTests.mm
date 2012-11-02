@@ -13,8 +13,8 @@
 
 @interface ParserRegistratorMock : NSObject
 - (id)initWithParser:(CommentParser *)parser;
-@property (nonatomic, strong) NSString *groupComment;
-@property (nonatomic, strong) NSString *comment;
+@property (nonatomic, copy) NSString *groupComment;
+@property (nonatomic, copy) NSString *comment;
 @property (nonatomic, assign) BOOL isCommentInline;
 @end
 

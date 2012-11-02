@@ -15,7 +15,7 @@
  */
 @interface MethodInfo : ObjectInfoBase
 
-@property (nonatomic, strong) NSString *methodType;
+@property (nonatomic, copy) NSString *methodType;
 @property (nonatomic, strong) TypeInfo *methodResult;
 @property (nonatomic, strong) DescriptorsInfo *methodDescriptors;
 @property (nonatomic, strong) NSMutableArray *methodArguments;

@@ -96,6 +96,8 @@
 		738F2CA21643019F00BEC518 /* NSArray+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */; };
 		738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */; };
 		738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */; };
+		738F2CAD1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CAC1643035C00BEC518 /* NSRegularExpression+Appledoc.m */; };
+		738F2CAE1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 738F2CAC1643035C00BEC518 /* NSRegularExpression+Appledoc.m */; };
 		738F419015232E6B008CB370 /* ObjectiveCPropertyStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		739B4213158D134D0044B904 /* CommentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B4212158D134D0044B904 /* CommentInfo.m */; };
 		739B4214158D134D0044B904 /* CommentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 739B4212158D134D0044B904 /* CommentInfo.m */; };
@@ -199,10 +201,10 @@
 		730BCC8E1540057000B909FD /* AttributesInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AttributesInfoTests.mm; sourceTree = "<group>"; };
 		730FB570153BFF2E002DB54F /* PropertyInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyInfo.h; sourceTree = "<group>"; };
 		730FB571153BFF2E002DB54F /* PropertyInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropertyInfo.m; sourceTree = "<group>"; };
-		730FB575153C0889002DB54F /* MethodInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodInfo.h; sourceTree = "<group>"; };
+		730FB575153C0889002DB54F /* MethodInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = MethodInfo.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		730FB576153C0889002DB54F /* MethodInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodInfo.m; sourceTree = "<group>"; };
 		7311033E15415545005F46E5 /* MethodStateMultipleDeclarations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodStateMultipleDeclarations.m; sourceTree = "<group>"; };
-		731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyStateMultipleDefinitions.h; sourceTree = "<group>"; };
+		731103B8154184FC005F46E5 /* PropertyStateMultipleDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PropertyStateMultipleDefinitions.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		731103BB15418B4B005F46E5 /* EnumInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumInfo.h; sourceTree = "<group>"; };
 		731103BC15418B4B005F46E5 /* EnumInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumInfo.m; sourceTree = "<group>"; };
 		73118B10151906F100E9D7F1 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -253,7 +255,7 @@
 		7349F65A153EDA5C004D7AC7 /* MethodArgumentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodArgumentInfo.h; sourceTree = "<group>"; };
 		7349F65B153EDA5C004D7AC7 /* MethodArgumentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodArgumentInfo.m; sourceTree = "<group>"; };
 		73500D2E15174910000416E3 /* Store.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Store.h; sourceTree = "<group>"; };
-		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Store.m; sourceTree = "<group>"; };
+		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Store.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
 		73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentNamedArgumentInfoTests.mm; sourceTree = "<group>"; };
@@ -290,9 +292,11 @@
 		738F2CA3164301E500BEC518 /* PKToken+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+Appledoc.h"; sourceTree = "<group>"; };
 		738F2CA4164301E500BEC518 /* PKToken+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+Appledoc.m"; sourceTree = "<group>"; };
 		738F2CA71643026D00BEC518 /* Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Extensions.h; sourceTree = "<group>"; };
+		738F2CAB1643035C00BEC518 /* NSRegularExpression+Appledoc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSRegularExpression+Appledoc.h"; sourceTree = "<group>"; };
+		738F2CAC1643035C00BEC518 /* NSRegularExpression+Appledoc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSRegularExpression+Appledoc.m"; sourceTree = "<group>"; };
 		738F418F15232E6B008CB370 /* ObjectiveCPropertyStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCPropertyStateTests.mm; sourceTree = "<group>"; };
 		7397046A1511283300486507 /* AppledocInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocInfo.h; sourceTree = SOURCE_ROOT; };
-		739B4211158D134D0044B904 /* CommentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentInfo.h; sourceTree = "<group>"; };
+		739B4211158D134D0044B904 /* CommentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CommentInfo.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		739B4212158D134D0044B904 /* CommentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentInfo.m; sourceTree = "<group>"; };
 		73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentComponentInfo.h; sourceTree = "<group>"; };
 		73A0267B15D6D36A0077D204 /* CommentComponentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentComponentInfo.m; sourceTree = "<group>"; };
@@ -314,8 +318,8 @@
 		73B62BE51588A1E2003FC025 /* libPods-AppledocTests.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-AppledocTests.a"; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods-AppledocTests.a"; sourceTree = "<group>"; };
 		73B62BE81588A207003FC025 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "../../../../../Library/Developer/Xcode/DerivedData/appledoc-bhpaaotjueeopogaoklyxmrllize/Build/Products/Debug/libPods.a"; sourceTree = "<group>"; };
 		73B659581588AFDF00AE2314 /* CommentParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentParser.h; sourceTree = "<group>"; };
-		73B659591588AFDF00AE2314 /* CommentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentParser.m; sourceTree = "<group>"; };
-		73B6595D1588B7A900AE2314 /* CommentParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentParserTests.mm; sourceTree = "<group>"; };
+		73B659591588AFDF00AE2314 /* CommentParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CommentParser.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		73B6595D1588B7A900AE2314 /* CommentParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = CommentParserTests.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProcessorTaskTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -573,6 +577,8 @@
 				738F2C941642FF7100BEC518 /* NSError+Appledoc.m */,
 				738F2C9F1643019F00BEC518 /* NSArray+Appledoc.h */,
 				738F2CA01643019F00BEC518 /* NSArray+Appledoc.m */,
+				738F2CAB1643035C00BEC518 /* NSRegularExpression+Appledoc.h */,
+				738F2CAC1643035C00BEC518 /* NSRegularExpression+Appledoc.m */,
 				738F2C971642FFC000BEC518 /* NSFileManager+Appledoc.h */,
 				738F2C981642FFC000BEC518 /* NSFileManager+Appledoc.m */,
 			);
@@ -938,6 +944,7 @@
 				738F2C9E1643014800BEC518 /* NSString+Appledoc.m in Sources */,
 				738F2CA21643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
 				738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
+				738F2CAE1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -999,6 +1006,7 @@
 				738F2C9D1643014800BEC518 /* NSString+Appledoc.m in Sources */,
 				738F2CA11643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
 				738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
+				738F2CAD1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
