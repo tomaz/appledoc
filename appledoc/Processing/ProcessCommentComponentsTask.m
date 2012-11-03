@@ -38,19 +38,35 @@
 		// Scan through the components and prepare various sections. Note that once we step into arguments, we take all subsequent components as part of the argument!
 		NSMutableArray *discussion = [@[] mutableCopy];
 		NSMutableArray *parameters = [@[] mutableCopy];
+		NSMutableArray *exceptions = [@[] mutableCopy];
 		__block CommentNamedArgumentInfo *currentNamedArgument = nil;
 		[self.currentDiscussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
 			NSString *string = component.sourceString;
+			BOOL matched = NO;
 			
 			// Match @param. Note that we also remove '@param <name>' prefix from source string.
-			[[NSRegularExpression gb_paramMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
-				NSString *name = [match gb_stringAtIndex:1 in:string];
-				LogProDebug(@"Starting @param %@...", name);
-				component.sourceString = [match gb_remainingStringIn:string];
-				currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
-				currentNamedArgument.argumentName = name;
-				[parameters addObject:currentNamedArgument];
-			}];
+			if (!matched) {
+				matched = [[NSRegularExpression gb_paramMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+					NSString *name = [match gb_stringAtIndex:1 in:string];
+					LogProDebug(@"Starting @param %@...", name);
+					component.sourceString = [match gb_remainingStringIn:string];
+					currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
+					currentNamedArgument.argumentName = name;
+					[parameters addObject:currentNamedArgument];
+				}];
+			}
+			
+			// Match @exception. Note that we also remove '@exception <name>' prefix from source string.
+			if (!matched) {
+				matched = [[NSRegularExpression gb_exceptionMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+					NSString *name = [match gb_stringAtIndex:1 in:string];
+					LogProDebug(@"Starting @exception %@...", name);
+					component.sourceString = [match gb_remainingStringIn:string];
+					currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
+					currentNamedArgument.argumentName = name;
+					[exceptions addObject:currentNamedArgument];
+				}];
+			}
 			
 			// Append component to current named argument (@param, @exception etc) if one available.
 			if (currentNamedArgument) {
@@ -67,6 +83,7 @@
 		[comment setCommentAbstract:abstract];
 		if (discussion.count > 0) [comment setCommentDiscussion:discussion];
 		if (parameters.count > 0) [comment setCommentParameters:parameters];
+		if (exceptions.count > 0) [comment setCommentExceptions:exceptions];
 	}
 	return GBResultOk;
 }

@@ -375,6 +375,7 @@ describe(@"processing:", ^{
 		});
 	});
 	
+	
 	describe(@"@param", ^{
 		it(@"should register single parameter:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
@@ -410,7 +411,6 @@ describe(@"processing:", ^{
 			});
 		});
 		
-		
 		it(@"should handle more complex scenarios:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -419,6 +419,59 @@ describe(@"processing:", ^{
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
 				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name1": @"description1\nin multiple\nlines"}, @{@"name2": @"description 2"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+	});
+	
+	describe(@"@exception", ^{
+		it(@"should register single exception:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@exception name description");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name": @"description"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should register multiple exceptions:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@exception name1 description 1\n@exception name2 description 2");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should handle more complex scenarios:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@exception name1 description1\nin multiple\nlines\n\n@exception name2 description 2");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
 					return matchNamedArray(array, @{@"name1": @"description1\nin multiple\nlines"}, @{@"name2": @"description 2"}, nil);
 				}]];
 				// execute

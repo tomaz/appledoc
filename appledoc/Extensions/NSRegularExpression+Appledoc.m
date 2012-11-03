@@ -26,6 +26,10 @@
 	GBPattern(@"^@param\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
 }
 
++ (NSRegularExpression *)gb_exceptionMatchingRegularExpression {
+	GBPattern(@"^@exception\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
+}
+
 + (NSRegularExpression *)gb_argumentMatchingRegularExpression {
 	GBPattern(@"^(@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
 }

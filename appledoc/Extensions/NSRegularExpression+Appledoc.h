@@ -13,6 +13,7 @@ typedef void(^GBRegexMatchBlock)(NSTextCheckingResult *match);
 @interface NSRegularExpression (Appledoc)
 
 + (NSRegularExpression *)gb_paramMatchingRegularExpression;	// @param name
++ (NSRegularExpression *)gb_exceptionMatchingRegularExpression; // @exception name
 + (NSRegularExpression *)gb_argumentMatchingRegularExpression; // @param|@exception|@return
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock;
