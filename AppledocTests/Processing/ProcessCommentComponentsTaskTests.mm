@@ -81,345 +81,114 @@ static BOOL matchNamedArray(NSArray *actual, NSDictionary *first, ...) {
 
 TEST_BEGIN(ProcessCommentComponentsTaskTests)
 
-describe(@"processing:", ^{
-	describe(@"abstract:", ^{
-		it(@"should convert single line to abstract", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"line");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"line"];
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
-		});
-		
-		it(@"should convert single paragraph composed of multiple lines to abstract", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"line one\nline two\nline three");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"line one\nline two\nline three"];
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
+describe(@"abstract:", ^{
+	it(@"should convert single line to abstract", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"line");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"line"];
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
 		});
 	});
-		
-	describe(@"discussion:", ^{
-		it(@"should convert second paragraph to discussion", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"first\n\nsecond");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"first"];
-				}]];
-				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchComponentArray(array, @"second", nil);
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
+	
+	it(@"should convert single paragraph composed of multiple lines to abstract", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"line one\nline two\nline three");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"line one\nline two\nline three"];
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
 		});
+	});
+});
+	
+describe(@"discussion:", ^{
+	it(@"should convert second paragraph to discussion", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"first\n\nsecond");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"first"];
+			}]];
+			[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchComponentArray(array, @"second", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
 
-		it(@"should convert second and subsequent paragraphs to discussion", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"first\n\nsecond\n\nthird");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"first"];
-				}]];
-				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchComponentArray(array, @"second", @"third", nil);
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
+	it(@"should convert second and subsequent paragraphs to discussion", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"first\n\nsecond\n\nthird");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"first"];
+			}]];
+			[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchComponentArray(array, @"second", @"third", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
 		});
+	});
 
-		it(@"should handle multiple paragraphs with mutliple lines", ^{
+	it(@"should handle multiple paragraphs with mutliple lines", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"first\n\nline one\nline two\nline three\n\nthird paragraph\nand line two");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"first"];
+			}]];
+			[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchComponentArray(array, @"line one\nline two\nline three", @"third paragraph\nand line two", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+});
+	
+describe(@"@warning:", ^{
+	describe(@"as part of abstract:", ^{
+		it(@"should take as part of abstract if not delimited by empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"first\n\nline one\nline two\nline three\n\nthird paragraph\nand line two");
+				setupCommentText(comment, @"abstract\n@warning text");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"first"];
+					return [info.sourceString isEqualToString:@"abstract\n@warning text"];
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n@warning text\n\nparagraph");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract\n@warning text"];
 				}]];
 				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchComponentArray(array, @"line one\nline two\nline three", @"third paragraph\nand line two", nil);
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
-		});
-	});
-		
-	describe(@"@warning:", ^{
-		describe(@"as part of abstract:", ^{
-			it(@"should take as part of abstract if not delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n@warning text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract\n@warning text"];
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should take as part of abstract and take next paragraph as discussion", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n@warning text\n\nparagraph");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract\n@warning text"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-		});
-		
-		describe(@"as part of discussion:", ^{
-			it(@"should take as part of discussion if found as first paragraph after abstract", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\n@warning text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"@warning text", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph if delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\nparagraph\n\n@warning text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", @"@warning text", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph after next empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\nparagraph\n\n@warning text\n\nnext paragraph");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", @"@warning text", @"next paragraph", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph with next @warning directive", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\n@warning first\n\n@warning second");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"@warning first", @"@warning second", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-		});
-	});
-	
-	describe(@"@bug:", ^{
-		describe(@"as part of abstract:", ^{
-			it(@"should take as part of abstract if not delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n@bug text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract\n@bug text"];
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should take as part of abstract and take next paragraph as discussion", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n@bug text\n\nparagraph");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract\n@bug text"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-		});
-		
-		describe(@"as part of discussion:", ^{
-			it(@"should take as part of discussion if found as first paragraph after abstract", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\n@bug text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"@bug text", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph if delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\nparagraph\n\n@bug text");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", @"@bug text", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph after next empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\nparagraph\n\n@bug text\n\nnext paragraph");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", @"@bug text", @"next paragraph", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-			
-			it(@"should start new paragraph with next @bug directive", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupCommentText(comment, @"abstract\n\n@bug first\n\n@bug second");
-					[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-						return [info.sourceString isEqualToString:@"abstract"];
-					}]];
-					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"@bug first", @"@bug second", nil);
-					}]];
-					// execute
-					[task processComment:comment];
-					// verify
-					^{ [comment verify]; } should_not raise_exception();
-				});
-			});
-		});
-	});
-	
-	
-	describe(@"@param:", ^{
-		it(@"should register single parameter:", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"abstract\n\n@param name description");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"abstract"];
-				}]];
-				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name": @"description"}, nil);
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
-		});
-		
-		it(@"should register multiple parameters:", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"abstract\n\n@param name1 description 1\n@param name2 description 2");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"abstract"];
-				}]];
-				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
-				}]];
-				// execute
-				[task processComment:comment];
-				// verify
-				^{ [comment verify]; } should_not raise_exception();
-			});
-		});
-		
-		it(@"should handle more complex scenarios:", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-				// setup
-				setupCommentText(comment, @"abstract\n\n@param name1 description1\nin multiple\nlines\n\n@param name2 description 2");
-				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
-					return [info.sourceString isEqualToString:@"abstract"];
-				}]];
-				[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name1": @"description1\nin multiple\nlines"}, @{@"name2": @"description 2"}, nil);
+					return matchComponentArray(array, @"paragraph", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -429,16 +198,16 @@ describe(@"processing:", ^{
 		});
 	});
 	
-	describe(@"@exception:", ^{
-		it(@"should register single exception:", ^{
+	describe(@"as part of discussion:", ^{
+		it(@"should take as part of discussion if found as first paragraph after abstract", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@exception name description");
+				setupCommentText(comment, @"abstract\n\n@warning text");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
-				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name": @"description"}, nil);
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"@warning text", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -447,15 +216,15 @@ describe(@"processing:", ^{
 			});
 		});
 		
-		it(@"should register multiple exceptions:", ^{
+		it(@"should start new paragraph if delimited by empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@exception name1 description 1\n@exception name2 description 2");
+				setupCommentText(comment, @"abstract\n\nparagraph\n\n@warning text");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
-				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"paragraph", @"@warning text", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -464,15 +233,67 @@ describe(@"processing:", ^{
 			});
 		});
 		
-		it(@"should handle more complex scenarios:", ^{
+		it(@"should start new paragraph after next empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@exception name1 description1\nin multiple\nlines\n\n@exception name2 description 2");
+				setupCommentText(comment, @"abstract\n\nparagraph\n\n@warning text\n\nnext paragraph");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
-				[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-					return matchNamedArray(array, @{@"name1": @"description1\nin multiple\nlines"}, @{@"name2": @"description 2"}, nil);
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"paragraph", @"@warning text", @"next paragraph", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should start new paragraph with next @warning directive", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@warning first\n\n@warning second");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"@warning first", @"@warning second", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+	});
+});
+
+describe(@"@bug:", ^{
+	describe(@"as part of abstract:", ^{
+		it(@"should take as part of abstract if not delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n@bug text");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract\n@bug text"];
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should take as part of abstract and take next paragraph as discussion", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n@bug text\n\nparagraph");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract\n@bug text"];
+				}]];
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"paragraph", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -482,16 +303,16 @@ describe(@"processing:", ^{
 		});
 	});
 	
-	describe(@"@return:", ^{
-		it(@"should register single return:", ^{
+	describe(@"as part of discussion:", ^{
+		it(@"should take as part of discussion if found as first paragraph after abstract", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@return description");
+				setupCommentText(comment, @"abstract\n\n@bug text");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
-				[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
-					return matchComponentArray(info.sectionComponents, @"description", nil);
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"@bug text", nil);
 				}]];
 				// execute
 				[task processComment:comment];
@@ -500,21 +321,215 @@ describe(@"processing:", ^{
 			});
 		});
 		
-		it(@"should use last return if multiple found:", ^{
+		it(@"should start new paragraph if delimited by empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupCommentText(comment, @"abstract\n\n@return description 1\n@return description 2");
+				setupCommentText(comment, @"abstract\n\nparagraph\n\n@bug text");
 				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
 					return [info.sourceString isEqualToString:@"abstract"];
 				}]];
-				[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
-					return matchComponentArray(info.sectionComponents, @"description 2", nil);
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"paragraph", @"@bug text", nil);
 				}]];
 				// execute
 				[task processComment:comment];
 				// verify
 				^{ [comment verify]; } should_not raise_exception();
 			});
+		});
+		
+		it(@"should start new paragraph after next empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\nparagraph\n\n@bug text\n\nnext paragraph");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"paragraph", @"@bug text", @"next paragraph", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should start new paragraph with next @bug directive", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@bug first\n\n@bug second");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+					return matchComponentArray(array, @"@bug first", @"@bug second", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+	});
+});
+
+
+describe(@"@param:", ^{
+	it(@"should register single parameter:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@param name description");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name": @"description"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should register multiple parameters:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@param name1 description 1\n@param name2 description 2");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@param name1 description1\nin multiple\n\nlines and paragraphs\n\n@param name2 description 2");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentParameters:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name1": @"description1\nin multiple\n\nlines and paragraphs"}, @{@"name2": @"description 2"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"@exception:", ^{
+	it(@"should register single exception:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@exception name description");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name": @"description"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should register multiple exceptions:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@exception name1 description 1\n@exception name2 description 2");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name1": @"description 1"}, @{@"name2": @"description 2"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@exception name1 description1\nin multiple\n\nlines and paragraphs\n\n@exception name2 description 2");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentExceptions:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
+				return matchNamedArray(array, @{@"name1": @"description1\nin multiple\n\nlines and paragraphs"}, @{@"name2": @"description 2"}, nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+});
+
+describe(@"@return:", ^{
+	it(@"should register single return:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@return description");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
+				return matchComponentArray(info.sectionComponents, @"description", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should use last return if multiple found:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@return description 1\n@return description 2");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
+				return matchComponentArray(info.sectionComponents, @"description 2", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
+		});
+	});
+	
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupCommentText(comment, @"abstract\n\n@return description\nin multiple\n\nlines and paragraphs");
+			[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+				return [info.sourceString isEqualToString:@"abstract"];
+			}]];
+			[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
+				return matchComponentArray(info.sectionComponents, @"description\nin multiple", @"lines and paragraphs", nil);
+			}]];
+			// execute
+			[task processComment:comment];
+			// verify
+			^{ [comment verify]; } should_not raise_exception();
 		});
 	});
 });
