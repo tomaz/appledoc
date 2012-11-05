@@ -39,39 +39,19 @@
 		NSMutableArray *discussion = [@[] mutableCopy];
 		NSMutableArray *parameters = [@[] mutableCopy];
 		NSMutableArray *exceptions = [@[] mutableCopy];
-		__block CommentNamedArgumentInfo *currentNamedArgument = nil;
+		__block CommentComponentInfo *result = nil;
+		__block NSMutableArray *currentSectionComponents = nil;
+		__weak ProcessCommentComponentsTask *bself = self;
 		[self.currentDiscussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
+			// Match one of the known directives.
+			if ([bself matchParamSectionFromComponent:component commentSections:parameters sectionComponents:&currentSectionComponents]) return;
+			if ([bself matchExceptionSectionFromComponent:component commentSections:exceptions sectionComponents:&currentSectionComponents]) return;
+						
+			// Append component to current section array if one available.
 			NSString *string = component.sourceString;
-			BOOL matched = NO;
-			
-			// Match @param. Note that we also remove '@param <name>' prefix from source string.
-			if (!matched) {
-				matched = [[NSRegularExpression gb_paramMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
-					NSString *name = [match gb_stringAtIndex:1 in:string];
-					LogProDebug(@"Starting @param %@...", name);
-					component.sourceString = [match gb_remainingStringIn:string];
-					currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
-					currentNamedArgument.argumentName = name;
-					[parameters addObject:currentNamedArgument];
-				}];
-			}
-			
-			// Match @exception. Note that we also remove '@exception <name>' prefix from source string.
-			if (!matched) {
-				matched = [[NSRegularExpression gb_exceptionMatchingRegularExpression] gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
-					NSString *name = [match gb_stringAtIndex:1 in:string];
-					LogProDebug(@"Starting @exception %@...", name);
-					component.sourceString = [match gb_remainingStringIn:string];
-					currentNamedArgument = [[CommentNamedArgumentInfo alloc] init];
-					currentNamedArgument.argumentName = name;
-					[exceptions addObject:currentNamedArgument];
-				}];
-			}
-			
-			// Append component to current named argument (@param, @exception etc) if one available.
-			if (currentNamedArgument) {
-				LogProDebug(@"Appending %@ to argument %@...", [string gb_description], currentNamedArgument.argumentName);
-				[currentNamedArgument.argumentComponents addObject:component];
+			if (currentSectionComponents) {
+				LogProDebug(@"Appending %@ to current section...", [string gb_description]);
+				[currentSectionComponents addObject:component];
 				return;
 			}
 			
@@ -88,14 +68,61 @@
 	return GBResultOk;
 }
 
+- (BOOL)matchParamSectionFromComponent:(CommentComponentInfo *)source commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
+	NSRegularExpression *expression = [NSRegularExpression gb_paramMatchingExpression];
+	return [self matchNamedDirectiveSectionFromComponent:source expression:expression commentSections:sections sectionComponents:components];
+}
+
+- (BOOL)matchExceptionSectionFromComponent:(CommentComponentInfo *)source commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
+	NSRegularExpression *expression = [NSRegularExpression gb_exceptionMatchingExpression];
+	return [self matchNamedDirectiveSectionFromComponent:source expression:expression commentSections:sections sectionComponents:components];
+}
+
+- (BOOL)matchReturnSectionFromComponent:(CommentComponentInfo *)source sections:(NSMutableArray *)sections components:(NSMutableArray **)components {
+}
+
+#pragma mark - Matching helper methods
+
+- (BOOL)matchNamedDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
+	NSString *string = source.sourceString;
+	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+		// Get directive identifier (@param etc.) and name.
+		NSString *type = [match gb_stringAtIndex:1 in:string];
+		NSString *name = [match gb_stringAtIndex:2 in:string];
+		
+		// Delete directive identifier and name from source string, then create new components array (so we can later update it with additional components aka paragraphs).
+		LogProDebug(@"Matched %@ %@...", type, name);
+		source.sourceString = [match gb_remainingStringIn:string];
+		*components = [@[source] mutableCopy];
+		
+		// Create named argument and set the data.
+		CommentNamedArgumentInfo *argument = [[CommentNamedArgumentInfo alloc] init];
+		[argument setArgumentName:name];
+		[argument.argumentComponents addObject:source];
+		
+		// Add the argument to the sections array, so we later add it to comment.
+		[sections addObject:argument];
+	}];
+}
+
+- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression toComponent:(CommentComponentInfo **)dest argument:(CommentNamedArgumentInfo **)argument {
+	NSString *string = source.sourceString;
+	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+		NSString *type = [match gb_stringAtIndex:1 in:string];
+		LogProDebug(@"Matched %@...", type);
+		source.sourceString = [match gb_remainingStringIn:string];
+		*dest = source;
+		*argument = nil;
+	}];
+}
+
 #pragma mark - Comment components handling
 
 - (void)registerCommentComponentsFromString:(NSString *)string {
+	// Split multiple named arguments (@param, @exception etc.) into separate components. If single or none found, just use the whole string.
 	if (string.length == 0) return;
 	LogProDebug(@"Registering comment component from '%@'...", [string gb_description]);
-	
-	// Split multiple named arguments (@param, @exception etc.) into separate components. If single or none found, just use the whole string.
-	NSArray *matches = [[NSRegularExpression gb_argumentMatchingRegularExpression] gb_allMatchesIn:string];
+	NSArray *matches = [[NSRegularExpression gb_argumentMatchingExpression] gb_allMatchesIn:string];
 	if (matches.count > 1 && [matches[0] range].location == 0) {
 		__block NSUInteger lastMatchLocation;
 		[matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {

@@ -12,9 +12,10 @@ typedef void(^GBRegexMatchBlock)(NSTextCheckingResult *match);
 
 @interface NSRegularExpression (Appledoc)
 
-+ (NSRegularExpression *)gb_paramMatchingRegularExpression;	// @param name
-+ (NSRegularExpression *)gb_exceptionMatchingRegularExpression; // @exception name
-+ (NSRegularExpression *)gb_argumentMatchingRegularExpression; // @param|@exception|@return
++ (NSRegularExpression *)gb_paramMatchingExpression;	// @param name
++ (NSRegularExpression *)gb_exceptionMatchingExpression; // @exception name
++ (NSRegularExpression *)gb_returnMatchingExpression; // @return
++ (NSRegularExpression *)gb_argumentMatchingExpression; // @param|@exception|@return
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock;
 - (BOOL)gb_firstMatchIn:(NSString *)string options:(NSRegularExpressionOptions)options match:(GBRegexMatchBlock)matchBlock;

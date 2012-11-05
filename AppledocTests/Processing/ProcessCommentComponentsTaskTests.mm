@@ -376,7 +376,7 @@ describe(@"processing:", ^{
 	});
 	
 	
-	describe(@"@param", ^{
+	describe(@"@param:", ^{
 		it(@"should register single parameter:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -429,7 +429,7 @@ describe(@"processing:", ^{
 		});
 	});
 	
-	describe(@"@exception", ^{
+	describe(@"@exception:", ^{
 		it(@"should register single exception:", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup

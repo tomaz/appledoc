@@ -22,15 +22,19 @@
 
 #pragma mark - Specific patterns
 
-+ (NSRegularExpression *)gb_paramMatchingRegularExpression {
-	GBPattern(@"^@param\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
++ (NSRegularExpression *)gb_paramMatchingExpression {
+	GBPattern(@"^(@param)\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
 }
 
-+ (NSRegularExpression *)gb_exceptionMatchingRegularExpression {
-	GBPattern(@"^@exception\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
++ (NSRegularExpression *)gb_exceptionMatchingExpression {
+	GBPattern(@"^(@exception)\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
 }
 
-+ (NSRegularExpression *)gb_argumentMatchingRegularExpression {
++ (NSRegularExpression *)gb_returnMatchingExpression {
+	GBPattern(@"^(@return)\\s+", NSRegularExpressionAnchorsMatchLines)
+}
+
++ (NSRegularExpression *)gb_argumentMatchingExpression {
 	GBPattern(@"^(@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
 }
 
