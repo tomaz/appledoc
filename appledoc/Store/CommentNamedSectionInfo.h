@@ -6,11 +6,12 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "CommentSectionInfo.h"
+
 /** Handles data for comment named section (parameters, exceptions).
  */
-@interface CommentNamedSectionInfo : NSObject
+@interface CommentNamedSectionInfo : CommentSectionInfo
 
-@property (nonatomic, copy) NSString *argumentName;
-@property (nonatomic, copy) NSMutableArray *argumentComponents; // CommentComponentInfo
+@property (nonatomic, copy) NSString *sectionName;
 
 @end

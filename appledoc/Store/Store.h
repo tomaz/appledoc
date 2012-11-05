@@ -29,6 +29,7 @@
 #import "ConstantInfo.h"
 
 #import "CommentInfo.h"
+#import "CommentSectionInfo.h"
 #import "CommentNamedSectionInfo.h"
 #import "CommentComponentInfo.h"
 

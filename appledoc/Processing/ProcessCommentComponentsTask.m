@@ -97,8 +97,8 @@
 		
 		// Create named argument and set the data.
 		CommentNamedSectionInfo *argument = [[CommentNamedSectionInfo alloc] init];
-		[argument setArgumentName:name];
-		[argument.argumentComponents addObject:source];
+		[argument setSectionName:name];
+		[argument.sectionComponents addObject:source];
 		
 		// Add the argument to the sections array, so we later add it to comment.
 		[sections addObject:argument];

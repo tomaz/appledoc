@@ -11,13 +11,4 @@
 
 @implementation CommentNamedSectionInfo
 
-#pragma mark - Properties
-
-- (NSMutableArray *)argumentComponents {
-	if (_argumentComponents) return _argumentComponents;
-	LogIntDebug(@"Initializing comment named argument components array due to first access...");
-	_argumentComponents = [[NSMutableArray alloc] init];
-	return _argumentComponents;
-}
-
 @end

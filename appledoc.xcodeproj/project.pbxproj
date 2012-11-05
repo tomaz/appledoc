@@ -67,7 +67,7 @@
 		73500D3115174910000416E3 /* Store.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D2F15174910000416E3 /* Store.m */; };
 		73500D341517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
 		73500D351517581A000416E3 /* Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73500D331517581A000416E3 /* Parser.m */; };
-		73558FC81642F6F900E17831 /* CommentNamedArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73558FC81642F6F900E17831 /* CommentSectionTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73558FC71642F6F900E17831 /* CommentSectionTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		735CD2BF1538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
 		735CD2C01538109900CADD4E /* ObjectLinkInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */; };
 		735CD2C31538126400CADD4E /* InterfaceInfoBaseTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -133,6 +133,8 @@
 		73D5402A1525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D5402C1525D59600C57E1B /* ObjectiveCEnumStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73DC6D2F164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
+		73DC6D30164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
 		73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
 		73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
 		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
@@ -258,7 +260,7 @@
 		73500D2F15174910000416E3 /* Store.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = Store.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		73500D321517581A000416E3 /* Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Parser.h; sourceTree = "<group>"; };
 		73500D331517581A000416E3 /* Parser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Parser.m; sourceTree = "<group>"; };
-		73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentNamedArgumentInfoTests.mm; sourceTree = "<group>"; };
+		73558FC71642F6F900E17831 /* CommentSectionTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CommentSectionTests.mm; sourceTree = "<group>"; };
 		735CD2BD1538109900CADD4E /* ObjectLinkInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectLinkInfo.h; sourceTree = "<group>"; };
 		735CD2BE1538109900CADD4E /* ObjectLinkInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectLinkInfo.m; sourceTree = "<group>"; };
 		735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = InterfaceInfoBaseTests.mm; sourceTree = "<group>"; };
@@ -333,6 +335,8 @@
 		73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCPragmaMarkStateTests.mm; sourceTree = "<group>"; };
 		73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCEnumStateTests.mm; sourceTree = "<group>"; };
 		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodArgumentInfoTests.mm; sourceTree = "<group>"; };
+		73DC6D2D164800B800C1AA0D /* CommentSectionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentSectionInfo.h; sourceTree = "<group>"; };
+		73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentSectionInfo.m; sourceTree = "<group>"; };
 		73DFDD4115527F2D007746D4 /* TestCaseBase.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestCaseBase.hh; sourceTree = "<group>"; };
 		73E416DB1541A14700600606 /* EnumInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EnumInfoTests.mm; sourceTree = "<group>"; };
 		73E416DE1541A8B100600606 /* EnumItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumItemInfo.h; sourceTree = "<group>"; };
@@ -535,7 +539,7 @@
 				730BCC87153FF91C00B909FD /* PropertyInfoTests.mm */,
 				7336652815457BF7000F7AFF /* ConstantInfoTests.mm */,
 				73A0267E15D6D4870077D204 /* CommentInfoTests.mm */,
-				73558FC71642F6F900E17831 /* CommentNamedArgumentInfoTests.mm */,
+				73558FC71642F6F900E17831 /* CommentSectionTests.mm */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -613,6 +617,8 @@
 			children = (
 				739B4211158D134D0044B904 /* CommentInfo.h */,
 				739B4212158D134D0044B904 /* CommentInfo.m */,
+				73DC6D2D164800B800C1AA0D /* CommentSectionInfo.h */,
+				73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */,
 				73817C7416417CB1009B0A85 /* CommentNamedSectionInfo.h */,
 				73817C7516417CB1009B0A85 /* CommentNamedSectionInfo.m */,
 				73A0267A15D6D36A0077D204 /* CommentComponentInfo.h */,
@@ -938,13 +944,14 @@
 				73AEC5CA15DAB33700830AC7 /* MarkdownParser.m in Sources */,
 				73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */,
 				73817C7716417CB1009B0A85 /* CommentNamedSectionInfo.m in Sources */,
-				73558FC81642F6F900E17831 /* CommentNamedArgumentInfoTests.mm in Sources */,
+				73558FC81642F6F900E17831 /* CommentSectionTests.mm in Sources */,
 				738F2C961642FF7100BEC518 /* NSError+Appledoc.m in Sources */,
 				738F2C9A1642FFC000BEC518 /* NSFileManager+Appledoc.m in Sources */,
 				738F2C9E1643014800BEC518 /* NSString+Appledoc.m in Sources */,
 				738F2CA21643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
 				738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 				738F2CAE1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
+				73DC6D30164800B900C1AA0D /* CommentSectionInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1007,6 +1014,7 @@
 				738F2CA11643019F00BEC518 /* NSArray+Appledoc.m in Sources */,
 				738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 				738F2CAD1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
+				73DC6D2F164800B900C1AA0D /* CommentSectionInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

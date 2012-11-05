@@ -9,21 +9,21 @@
 #import "Store.h"
 #import "TestCaseBase.hh"
 
-static void runWithCommentNamedSectionInfo(void(^handler)(CommentNamedSectionInfo *info)) {
-	CommentNamedSectionInfo *info = [[CommentNamedSectionInfo alloc] init];
+static void runWithCommentNamedSectionInfo(void(^handler)(CommentSectionInfo *info)) {
+	CommentSectionInfo *info = [[CommentSectionInfo alloc] init];
 	handler(info);
 	[info release];
 }
 
 #pragma mark - 
 
-TEST_BEGIN(CommentNamedSectionInfoTests)
+TEST_BEGIN(CommentSectionInfoTests)
 
 describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
-		runWithCommentNamedSectionInfo(^(CommentNamedSectionInfo *info) {
+		runWithCommentNamedSectionInfo(^(CommentSectionInfo *info) {
 			// execute & verify
-			info.argumentComponents should_not be_nil();
+			info.sectionComponents should_not be_nil();
 		});
 	});
 });

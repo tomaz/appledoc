@@ -55,12 +55,12 @@ static BOOL matchNamedArray(NSArray *actual, NSDictionary *first, ...) {
 		NSDictionary *expectedItem = expected[i];
 		
 		// If there's no name key in the dictionary, fail.
-		NSString *expectedString = [expectedItem objectForKey:actualItem.argumentName];
+		NSString *expectedString = [expectedItem objectForKey:actualItem.sectionName];
 		if (!expectedString) return NO;
 		
 		// Compose all components into a single string delimited by empty lines.
 		NSMutableString *actualString = [@"" mutableCopy];
-		[actualItem.argumentComponents enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
+		[actualItem.sectionComponents enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
 			if (actualString.length > 0) [actualString appendString:@"\n\n"];
 			[actualString appendString:component.sourceString];
 		}];
