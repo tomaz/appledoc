@@ -1,5 +1,5 @@
 //
-//  CommentNamedArgumentInfo.m
+//  CommentNamedSectionInfo.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 31.10.12.
@@ -7,9 +7,9 @@
 //
 
 #import "Objects.h"
-#import "CommentNamedArgumentInfo.h"
+#import "CommentNamedSectionInfo.h"
 
-@implementation CommentNamedArgumentInfo
+@implementation CommentNamedSectionInfo
 
 #pragma mark - Properties
 

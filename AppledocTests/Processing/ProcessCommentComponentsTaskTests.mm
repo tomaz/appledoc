@@ -51,7 +51,7 @@ static BOOL matchNamedArray(NSArray *actual, NSDictionary *first, ...) {
 	
 	if (actual.count != expected.count) return NO;
 	for (NSUInteger i=0; i<actual.count; i++) {
-		CommentNamedArgumentInfo *actualItem = actual[i];
+		CommentNamedSectionInfo *actualItem = actual[i];
 		NSDictionary *expectedItem = expected[i];
 		
 		// If there's no name key in the dictionary, fail.

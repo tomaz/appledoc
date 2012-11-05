@@ -9,7 +9,7 @@
 #import "Objects.h"
 #import "CommentInfo.h"
 #import "CommentComponentInfo.h"
-#import "CommentNamedArgumentInfo.h"
+#import "CommentNamedSectionInfo.h"
 #import "ProcessCommentComponentsTask.h"
 
 @interface ProcessCommentComponentsTask ()
@@ -96,7 +96,7 @@
 		*components = [@[source] mutableCopy];
 		
 		// Create named argument and set the data.
-		CommentNamedArgumentInfo *argument = [[CommentNamedArgumentInfo alloc] init];
+		CommentNamedSectionInfo *argument = [[CommentNamedSectionInfo alloc] init];
 		[argument setArgumentName:name];
 		[argument.argumentComponents addObject:source];
 		
@@ -105,7 +105,7 @@
 	}];
 }
 
-- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression toComponent:(CommentComponentInfo **)dest argument:(CommentNamedArgumentInfo **)argument {
+- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression toComponent:(CommentComponentInfo **)dest argument:(CommentNamedSectionInfo **)argument {
 	NSString *string = source.sourceString;
 	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
 		NSString *type = [match gb_stringAtIndex:1 in:string];
