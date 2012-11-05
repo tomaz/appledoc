@@ -481,6 +481,42 @@ describe(@"processing:", ^{
 			});
 		});
 	});
+	
+	describe(@"@return:", ^{
+		it(@"should register single return:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@return description");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
+					return matchComponentArray(info.sectionComponents, @"description", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+		
+		it(@"should use last return if multiple found:", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupCommentText(comment, @"abstract\n\n@return description 1\n@return description 2");
+				[[comment expect] setCommentAbstract:[OCMArg checkWithBlock:^BOOL(CommentComponentInfo *info) {
+					return [info.sourceString isEqualToString:@"abstract"];
+				}]];
+				[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
+					return matchComponentArray(info.sectionComponents, @"description 2", nil);
+				}]];
+				// execute
+				[task processComment:comment];
+				// verify
+				^{ [comment verify]; } should_not raise_exception();
+			});
+		});
+	});
 });
 
 TEST_END

@@ -36,16 +36,17 @@
 		[self.currentDiscussion removeObject:abstract];
 		
 		// Scan through the components and prepare various sections. Note that once we step into arguments, we take all subsequent components as part of the argument!
-		NSMutableArray *discussion = [@[] mutableCopy];
-		NSMutableArray *parameters = [@[] mutableCopy];
-		NSMutableArray *exceptions = [@[] mutableCopy];
-		__block CommentComponentInfo *result = nil;
+		NSMutableArray *discussioSections = [@[] mutableCopy];
+		NSMutableArray *parameterSections = [@[] mutableCopy];
+		NSMutableArray *exceptionSections = [@[] mutableCopy];
+		__block CommentSectionInfo *returnSection;
 		__block NSMutableArray *currentSectionComponents = nil;
 		__weak ProcessCommentComponentsTask *bself = self;
 		[self.currentDiscussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
 			// Match one of the known directives.
-			if ([bself matchParamSectionFromComponent:component commentSections:parameters sectionComponents:&currentSectionComponents]) return;
-			if ([bself matchExceptionSectionFromComponent:component commentSections:exceptions sectionComponents:&currentSectionComponents]) return;
+			if ([bself matchParamSectionFromComponent:component commentSections:parameterSections sectionComponents:&currentSectionComponents]) return;
+			if ([bself matchExceptionSectionFromComponent:component commentSections:exceptionSections sectionComponents:&currentSectionComponents]) return;
+			if ([bself matchReturnSectionFromComponent:component commentSection:&returnSection components:&currentSectionComponents]) return;
 						
 			// Append component to current section array if one available.
 			NSString *string = component.sourceString;
@@ -57,13 +58,14 @@
 			
 			// Append component to discussion otherwise.
 			LogProDebug(@"Appending %@ to discussion...", [string gb_description]);
-			[discussion addObject:component];
+			[discussioSections addObject:component];
 		}];
 		
 		[comment setCommentAbstract:abstract];
-		if (discussion.count > 0) [comment setCommentDiscussion:discussion];
-		if (parameters.count > 0) [comment setCommentParameters:parameters];
-		if (exceptions.count > 0) [comment setCommentExceptions:exceptions];
+		if (discussioSections.count > 0) [comment setCommentDiscussion:discussioSections];
+		if (parameterSections.count > 0) [comment setCommentParameters:parameterSections];
+		if (exceptionSections.count > 0) [comment setCommentExceptions:exceptionSections];
+		if (returnSection) [comment setCommentReturn:returnSection];
 	}
 	return GBResultOk;
 }
@@ -78,7 +80,9 @@
 	return [self matchNamedDirectiveSectionFromComponent:source expression:expression commentSections:sections sectionComponents:components];
 }
 
-- (BOOL)matchReturnSectionFromComponent:(CommentComponentInfo *)source sections:(NSMutableArray *)sections components:(NSMutableArray **)components {
+- (BOOL)matchReturnSectionFromComponent:(CommentComponentInfo *)source commentSection:(CommentSectionInfo **)section components:(NSMutableArray **)components {
+	NSRegularExpression *expression = [NSRegularExpression gb_returnMatchingExpression];
+	return [self matchSimpleDirectiveSectionFromComponent:source expression:expression commentSection:section components:components];
 }
 
 #pragma mark - Matching helper methods
@@ -89,30 +93,41 @@
 		// Get directive identifier (@param etc.) and name.
 		NSString *type = [match gb_stringAtIndex:1 in:string];
 		NSString *name = [match gb_stringAtIndex:2 in:string];
-		
-		// Delete directive identifier and name from source string, then create new components array (so we can later update it with additional components aka paragraphs).
 		LogProDebug(@"Matched %@ %@...", type, name);
-		source.sourceString = [match gb_remainingStringIn:string];
-		*components = [@[source] mutableCopy];
 		
-		// Create named argument and set the data.
-		CommentNamedSectionInfo *argument = [[CommentNamedSectionInfo alloc] init];
-		[argument setSectionName:name];
-		[argument.sectionComponents addObject:source];
+		// Delete directive identifier and name from source string.
+		source.sourceString = [match gb_remainingStringIn:string];
+		
+		// Create named section info and set the data.
+		CommentNamedSectionInfo *section = [[CommentNamedSectionInfo alloc] init];
+		[section setSectionName:name];
+		[section.sectionComponents addObject:source];
 		
 		// Add the argument to the sections array, so we later add it to comment.
-		[sections addObject:argument];
+		[sections addObject:section];
+		
+		// Update parent section components array with our newly created section so that we can later append additional components (aka paragraphs).
+		*components = section.sectionComponents;
 	}];
 }
 
-- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression toComponent:(CommentComponentInfo **)dest argument:(CommentNamedSectionInfo **)argument {
+- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression commentSection:(CommentSectionInfo **)section components:(NSMutableArray **)components {
 	NSString *string = source.sourceString;
 	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
+		// Get directive identifier (@return etc.).
 		NSString *type = [match gb_stringAtIndex:1 in:string];
 		LogProDebug(@"Matched %@...", type);
+		
+		// Delete directive identifier from source string.
 		source.sourceString = [match gb_remainingStringIn:string];
-		*dest = source;
-		*argument = nil;
+	
+		// Create section info and set the data. Note that we update parent section so we can address the object and register it to comment later on.
+		CommentSectionInfo *newSection = [[CommentSectionInfo alloc] init];
+		[[newSection sectionComponents] addObject:source];
+		*section = newSection;
+				
+		// Update parent section components array with our newly created section so that we can later append additional components (aka paragraphs).
+		*components = newSection.sectionComponents;
 	}];
 }
 
