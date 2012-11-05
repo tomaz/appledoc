@@ -230,10 +230,11 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *blockString = [self stringByCombiningTrimmedLines:blockLines];
 	if ([blockString length] == 0) return;
 	
-	// Process the string and register long description component.
-	//GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
-	
-	//[self.currentComment.longDescription registerComponent:component];
+	// Process the string and register long description component. If discussion is already registered (i.e. from @discussion directive), ignore it.
+	if (self.currentComment.longDescription.components.count == 0) {
+		GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
+		[self.currentComment.longDescription registerComponent:component];
+	}
 }
 
 - (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
@@ -437,7 +438,7 @@ typedef NSUInteger GBProcessingFlag;
 	index = [description rangeOfString:@"@discussion"];
 	
 	if (index.location == NSNotFound) {
-		index = [description rangeOfString:@"\s+"];
+		index = [description rangeOfRegex:@"\\s+"];
 	}
 	
 	NSRange range;
