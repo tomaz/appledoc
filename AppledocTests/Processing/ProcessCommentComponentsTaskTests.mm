@@ -164,7 +164,7 @@ describe(@"discussion:", ^{
 	});
 });
 	
-describe(@"@warning & @bug:", ^{
+describe(@"warnings and bugs:", ^{
 	describe(@"as part of abstract:", ^{
 		sharedExamplesFor(@"example1", ^(NSDictionary *info) {
 			it(@"should take as part of abstract if not delimited by empty line", ^{
@@ -323,7 +323,7 @@ describe(@"@warning & @bug:", ^{
 	});
 });
 
-describe(@"@param:", ^{
+describe(@"method parameters:", ^{
 	it(@"should register single parameter:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -376,7 +376,7 @@ describe(@"@param:", ^{
 	});
 });
 
-describe(@"@exception:", ^{
+describe(@"method exceptions:", ^{
 	it(@"should register single exception:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -429,7 +429,7 @@ describe(@"@exception:", ^{
 	});
 });
 
-describe(@"@return:", ^{
+describe(@"method return:", ^{
 	it(@"should register single return:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
