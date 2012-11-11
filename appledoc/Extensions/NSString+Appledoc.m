@@ -52,6 +52,10 @@
 	return [self gb_descriptionWithLength:self.length];
 }
 
+- (NSString *)gb_stringByTrimmingNewLines {
+	return [self stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+}
+
 - (NSString *)gb_stringByTrimmingWhitespaceAndNewLine {
 	return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }

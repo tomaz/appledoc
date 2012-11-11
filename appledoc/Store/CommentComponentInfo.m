@@ -11,6 +11,12 @@
 
 @implementation CommentComponentInfo
 
++ (id)componentWithSourceString:(NSString *)string {
+	CommentComponentInfo *result = [[self alloc] init];
+	result.sourceString = string;
+	return result;
+}
+
 @end
 
 #pragma mark -

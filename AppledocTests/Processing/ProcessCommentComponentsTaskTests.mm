@@ -110,8 +110,8 @@ describe(@"abstract:", ^{
 		});
 	});
 });
-	
-describe(@"discussion:", ^{
+
+describe(@"normal text:", ^{
 	it(@"should convert second paragraph to discussion", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -128,7 +128,7 @@ describe(@"discussion:", ^{
 			^{ [comment verify]; } should_not raise_exception();
 		});
 	});
-
+	
 	it(@"should convert second and subsequent paragraphs to discussion", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -137,7 +137,7 @@ describe(@"discussion:", ^{
 				return [info.sourceString isEqualToString:@"first"];
 			}]];
 			[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-				return matchComponentArray(array, @"second", @"third", nil);
+				return matchComponentArray(array, @"second\n\nthird", nil);
 			}]];
 			// execute
 			[task processComment:comment];
@@ -145,7 +145,7 @@ describe(@"discussion:", ^{
 			^{ [comment verify]; } should_not raise_exception();
 		});
 	});
-
+	
 	it(@"should handle multiple paragraphs with mutliple lines", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -154,7 +154,7 @@ describe(@"discussion:", ^{
 				return [info.sourceString isEqualToString:@"first"];
 			}]];
 			[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-				return matchComponentArray(array, @"line one\nline two\nline three", @"third paragraph\nand line two", nil);
+				return matchComponentArray(array, @"line one\nline two\nline three\n\nthird paragraph\nand line two", nil);
 			}]];
 			// execute
 			[task processComment:comment];
@@ -163,7 +163,7 @@ describe(@"discussion:", ^{
 		});
 	});
 });
-	
+
 describe(@"warnings and bugs:", ^{
 	describe(@"as part of abstract:", ^{
 		sharedExamplesFor(@"example1", ^(NSDictionary *info) {
@@ -204,17 +204,13 @@ describe(@"warnings and bugs:", ^{
 		});
 
 		describe(@"@warning:", ^{
-			beforeEach(^{
-				[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning";
-			});
+			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
 			itShouldBehaveLike(@"example1");
 			itShouldBehaveLike(@"example2");
 		});
 		
 		describe(@"@bug:", ^{
-			beforeEach(^{
-				[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug";
-			});
+			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
 			itShouldBehaveLike(@"example1");
 			itShouldBehaveLike(@"example2");
 		});
@@ -262,7 +258,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		sharedExamplesFor(@"example3", ^(NSDictionary *info) {
-			it(@"should start new paragraph after next empty line", ^{
+			it(@"should take all subsequent paragraphs as part of section", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
@@ -271,7 +267,7 @@ describe(@"warnings and bugs:", ^{
 						return [info.sourceString isEqualToString:@"abstract"];
 					}]];
 					[[comment expect] setCommentDiscussion:[OCMArg checkWithBlock:^BOOL(NSMutableArray *array) {
-						return matchComponentArray(array, @"paragraph", [NSString stringWithFormat:@"%@ text", identifier], @"next paragraph", nil);
+						return matchComponentArray(array, @"paragraph", [NSString stringWithFormat:@"%@ text\n\nnext paragraph", identifier], nil);
 					}]];
 					// execute
 					[task processComment:comment];
@@ -282,7 +278,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		sharedExamplesFor(@"example4", ^(NSDictionary *info) {
-			it(@"should start new paragraph with next @warning directive", ^{
+			it(@"should start new paragraph with next section directive", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
@@ -302,9 +298,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		describe(@"@warning:", ^{
-			beforeEach(^{
-				[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning";
-			});
+			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
 			itShouldBehaveLike(@"example1");
 			itShouldBehaveLike(@"example2");
 			itShouldBehaveLike(@"example3");
@@ -312,9 +306,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		describe(@"@bug:", ^{
-			beforeEach(^{
-				[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug";
-			});
+			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
 			itShouldBehaveLike(@"example1");
 			itShouldBehaveLike(@"example2");
 			itShouldBehaveLike(@"example3");
@@ -472,7 +464,7 @@ describe(@"method return:", ^{
 				return [info.sourceString isEqualToString:@"abstract"];
 			}]];
 			[[comment expect] setCommentReturn:[OCMArg checkWithBlock:^BOOL(CommentSectionInfo *info) {
-				return matchComponentArray(info.sectionComponents, @"description\nin multiple", @"lines and paragraphs", nil);
+				return matchComponentArray(info.sectionComponents, @"description\nin multiple\n\nlines and paragraphs", nil);
 			}]];
 			// execute
 			[task processComment:comment];

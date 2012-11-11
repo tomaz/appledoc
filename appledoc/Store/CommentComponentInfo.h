@@ -12,6 +12,8 @@
  */
 @interface CommentComponentInfo : NSObject
 
++ (id)componentWithSourceString:(NSString *)string;
+
 @property (nonatomic, copy) NSString *componentMarkdown;
 @property (nonatomic, copy) NSString *sourceString;
 

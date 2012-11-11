@@ -22,19 +22,27 @@
 
 #pragma mark - Specific patterns
 
++ (NSRegularExpression *)gb_emptyLineMatchingExpression {
+	GBPattern(@"\\n?^\\s*$\\n?", NSRegularExpressionAnchorsMatchLines)
+}
+
 + (NSRegularExpression *)gb_paramMatchingExpression {
-	GBPattern(@"^(@param)\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
+	GBPattern(@"^(@param)\\s+(\\S+)\\s+", 0) // only at start of string!
 }
 
 + (NSRegularExpression *)gb_exceptionMatchingExpression {
-	GBPattern(@"^(@exception)\\s+(\\S+)\\s+", NSRegularExpressionAnchorsMatchLines)
+	GBPattern(@"^(@exception)\\s+(\\S+)\\s+", 0) // only at start of string!
 }
 
 + (NSRegularExpression *)gb_returnMatchingExpression {
-	GBPattern(@"^(@return)\\s+", NSRegularExpressionAnchorsMatchLines)
+	GBPattern(@"^(@return)\\s+", 0) // only at start of string!
 }
 
-+ (NSRegularExpression *)gb_argumentMatchingExpression {
++ (NSRegularExpression *)gb_sectionDelimiterMatchingExpression {
+	GBPattern(@"^(@warning|@bug|@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
+}
+
++ (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression {
 	GBPattern(@"^(@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
 }
 
@@ -56,7 +64,19 @@
 	
 }
 
+- (NSTextCheckingResult *)gb_firstMatchIn:(NSString *)string {
+	return [self firstMatchInString:string options:0 range:NSMakeRange(0, string.length)];
+}
+
 #pragma mark - All matches handling
+
+- (BOOL)gb_allMatchesIn:(NSString *)string match:(GBRegexAllMatchBlock)matchBlock {
+	NSArray *matches = [self gb_allMatchesIn:string];
+	[matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
+		matchBlock(match, idx, stop);
+	}];
+	return (matches.count > 0);
+}
 
 - (NSArray *)gb_allMatchesIn:(NSString *)string {
 	return [self matchesInString:string options:0 range:NSMakeRange(0, string.length)];
@@ -75,6 +95,13 @@
 
 - (NSString *)gb_remainingStringIn:(NSString *)string {
 	return [string substringFromIndex:self.range.location + self.range.length];
+}
+
+- (NSRange)gb_remainingRangeIn:(NSString *)string {
+	NSRange result;
+	result.location = self.range.location + self.range.length;
+	result.length = string.length - result.location;
+	return result;
 }
 
 @end

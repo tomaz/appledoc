@@ -7,19 +7,25 @@
 //
 
 typedef void(^GBRegexMatchBlock)(NSTextCheckingResult *match);
+typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop);
 
 #pragma mark - 
 
 @interface NSRegularExpression (Appledoc)
 
++ (NSRegularExpression *)gb_emptyLineMatchingExpression;
 + (NSRegularExpression *)gb_paramMatchingExpression;	// @param name
 + (NSRegularExpression *)gb_exceptionMatchingExpression; // @exception name
 + (NSRegularExpression *)gb_returnMatchingExpression; // @return
-+ (NSRegularExpression *)gb_argumentMatchingExpression; // @param|@exception|@return
++ (NSRegularExpression *)gb_sectionDelimiterMatchingExpression; // @warning|@bug|@param|@exception|@return
++ (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression; // @param|@exception|@return
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock;
 - (BOOL)gb_firstMatchIn:(NSString *)string options:(NSRegularExpressionOptions)options match:(GBRegexMatchBlock)matchBlock;
 - (BOOL)gb_firstMatchIn:(NSString *)string options:(NSRegularExpressionOptions)options range:(NSRange)range match:(GBRegexMatchBlock)matchBlock;
+- (NSTextCheckingResult *)gb_firstMatchIn:(NSString *)string;
+
+- (BOOL)gb_allMatchesIn:(NSString *)string match:(GBRegexAllMatchBlock)matchBlock;
 - (NSArray *)gb_allMatchesIn:(NSString *)string;
 
 @end
@@ -30,5 +36,6 @@ typedef void(^GBRegexMatchBlock)(NSTextCheckingResult *match);
 
 - (NSString *)gb_stringAtIndex:(NSUInteger)index in:(NSString *)string;
 - (NSString *)gb_remainingStringIn:(NSString *)string;
+- (NSRange)gb_remainingRangeIn:(NSString *)string;
 
 @end

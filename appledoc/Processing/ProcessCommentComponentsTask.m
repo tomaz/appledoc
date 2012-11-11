@@ -13,8 +13,8 @@
 #import "ProcessCommentComponentsTask.h"
 
 @interface ProcessComponentsData : NSObject
-@property (nonatomic, strong) NSMutableString *componentBuilder;
-@property (nonatomic, strong) NSMutableArray *discussion;
+@property (nonatomic, strong) NSMutableString *builder;
+@property (nonatomic, strong) NSMutableArray *sections;
 @end
 
 @implementation ProcessComponentsData @end
@@ -28,140 +28,175 @@
 - (NSInteger)processComment:(CommentInfo *)comment {
 	LogProInfo(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
 	
-	// Parse the comment string.
+	// Prepare internal data.
 	ProcessComponentsData *data = [[ProcessComponentsData alloc] init];
-	data.discussion = [@[] mutableCopy];
+	data.builder = [@"" mutableCopy];
+	data.sections = [@[] mutableCopy];
+	
+	// Parse comment string into sections.
+	[self parseSectionsFromComment:comment toData:data];
+	[self parseAbstractFromData:data];
+	if (data.sections.count == 0) return GBResultOk;
+	
+	// Process sections into comment components.
+	[self registerAbstractFromData:data toComment:comment];
+	[self registerDiscussionFromData:data toComment:comment];
+	[self registerMethodFromData:data toComment:comment];
+}
+
+- (void)parseSectionsFromComment:(CommentInfo *)comment toData:(ProcessComponentsData *)data {
+	LogProDebug(@"Parsing comment string into sections...");
 	[self.markdownParser parseString:comment.sourceString context:data];
-	[self registerCommentComponentsFromData:data]; // append any remaining data
-	if (data.discussion.count == 0) return GBResultOk;
-	
-	// Always take first paragraph as abstract. The rest are either discussion or parameters/exceptions etc.
-	LogProDebug(@"Registering abstract and discussion...");
-	CommentComponentInfo *abstract = data.discussion[0];
-	[data.discussion removeObject:abstract];
-	
-	// Scan through the components and prepare various sections. Note that once we step into arguments, we take all subsequent components as part of the argument!
-	NSMutableArray *discussioSections = [@[] mutableCopy];
-	NSMutableArray *parameterSections = [@[] mutableCopy];
-	NSMutableArray *exceptionSections = [@[] mutableCopy];
-	__block CommentSectionInfo *returnSection;
-	__block NSMutableArray *currentSectionComponents = nil;
-	__weak ProcessCommentComponentsTask *bself = self;
-	[data.discussion enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
-		// Match one of the known directives.
-		if ([bself matchParamSectionFromComponent:component commentSections:parameterSections sectionComponents:&currentSectionComponents]) return;
-		if ([bself matchExceptionSectionFromComponent:component commentSections:exceptionSections sectionComponents:&currentSectionComponents]) return;
-		if ([bself matchReturnSectionFromComponent:component commentSection:&returnSection components:&currentSectionComponents]) return;
-					
-		// Append component to current section array if one available.
-		NSString *string = component.sourceString;
-		if (currentSectionComponents) {
-			LogProDebug(@"Appending %@ to current section...", [string gb_description]);
-			[currentSectionComponents addObject:component];
-			return;
-		}
-		
-		// Append component to discussion otherwise.
-		LogProDebug(@"Appending %@ to discussion...", [string gb_description]);
-		[discussioSections addObject:component];
-	}];
-	
-	// Register all components.
-	[comment setCommentAbstract:abstract];
-	if (discussioSections.count > 0) [comment setCommentDiscussion:discussioSections];
-	if (parameterSections.count > 0) [comment setCommentParameters:parameterSections];
-	if (exceptionSections.count > 0) [comment setCommentExceptions:exceptionSections];
-	if (returnSection) [comment setCommentReturn:returnSection];
-	return GBResultOk;
+	[self processAndRegisterString:data.builder toData:data append:NO];
 }
 
-- (BOOL)matchParamSectionFromComponent:(CommentComponentInfo *)source commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
+- (void)parseAbstractFromData:(ProcessComponentsData *)data {
+	// Find first empty line in first section.
+	if (data.sections.count == 0) return;
+	LogProDebug(@"Parsing abstract from sections...");
+	NSString *firstSection = data.sections[0];
+	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
+	NSTextCheckingResult *match = [expression gb_firstMatchIn:firstSection];
+	if (!match) return;
+	
+	// Split first section into two - delimited by first empty line.
+	NSUInteger firstSectionEndIndex = match.range.location;
+	NSUInteger subsequentSectionsStartIndex = firstSectionEndIndex + match.range.length;
+	NSString *abstractSection = [firstSection substringToIndex:firstSectionEndIndex];
+	NSString *discussionSection = [firstSection substringFromIndex:subsequentSectionsStartIndex];
+	[data.sections removeObjectAtIndex:0];
+	[data.sections insertObject:abstractSection atIndex:0];
+	[data.sections insertObject:discussionSection atIndex:1];
+}
+
+- (void)registerAbstractFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
+	LogProDebug(@"Registering abstract...");
+	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:data.sections[0]];
+	[comment setCommentAbstract:component];
+	[data.sections removeObjectAtIndex:0];
+}
+
+- (void)registerDiscussionFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
+	// Register all discussion sections - up until first parameter related section.
+	NSRegularExpression *expression = [NSRegularExpression gb_methodSectionDelimiterMatchingExpression];
+	NSMutableArray *discussion = nil;
+	while (data.sections.count > 0) {
+		NSString *sectionString = data.sections[0];
+		NSTextCheckingResult *match = [expression gb_firstMatchIn:sectionString];
+		if (match && match.range.location == 0) break;
+		if (!discussion) discussion = [@[] mutableCopy];
+		CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:sectionString];
+		[discussion addObject:component];
+		[data.sections removeObjectAtIndex:0];
+	}
+	if (discussion.count > 0) [comment setCommentDiscussion:discussion];
+}
+
+- (void)registerMethodFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
+	NSMutableArray *parameters = nil;
+	NSMutableArray *exceptions = nil;
+	CommentSectionInfo *result = nil;
+	CommentSectionInfo *lastSection = nil;
+	while (data.sections.count > 0) {
+		NSString *sectionString = data.sections[0];
+		if ([self matchParameterSectionFromString:sectionString sections:data.sections toArray:&parameters]) continue;
+		if ([self matchExceptionSectionFromString:sectionString sections:data.sections toArray:&exceptions]) continue;
+		if ([self matchReturnSectionFromString:sectionString sections:data.sections toInfo:&result]) continue;
+		break;
+	}
+	if (parameters) [comment setCommentParameters:parameters];
+	if (exceptions) [comment setCommentExceptions:exceptions];
+	if (result) [comment setCommentReturn:result];
+}
+
+#pragma mark - Matching method directives
+
+- (BOOL)matchParameterSectionFromString:(NSString *)string sections:(NSMutableArray *)sections toArray:(NSMutableArray **)array {
 	NSRegularExpression *expression = [NSRegularExpression gb_paramMatchingExpression];
-	return [self matchNamedDirectiveSectionFromComponent:source expression:expression commentSections:sections sectionComponents:components];
+	return [self matchNamedMethodSectionFromString:string expression:expression sections:sections toArray:array];
 }
 
-- (BOOL)matchExceptionSectionFromComponent:(CommentComponentInfo *)source commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
+- (BOOL)matchExceptionSectionFromString:(NSString *)string sections:(NSMutableArray *)sections toArray:(NSMutableArray **)array {
 	NSRegularExpression *expression = [NSRegularExpression gb_exceptionMatchingExpression];
-	return [self matchNamedDirectiveSectionFromComponent:source expression:expression commentSections:sections sectionComponents:components];
+	return [self matchNamedMethodSectionFromString:string expression:expression sections:sections toArray:array];
 }
 
-- (BOOL)matchReturnSectionFromComponent:(CommentComponentInfo *)source commentSection:(CommentSectionInfo **)section components:(NSMutableArray **)components {
+- (BOOL)matchReturnSectionFromString:(NSString *)string sections:(NSMutableArray *)sections toInfo:(CommentSectionInfo **)dest {
 	NSRegularExpression *expression = [NSRegularExpression gb_returnMatchingExpression];
-	return [self matchSimpleDirectiveSectionFromComponent:source expression:expression commentSection:section components:components];
+	return [self matchSimpleSectionFromString:string expression:expression sections:sections toInfo:dest];
 }
 
-#pragma mark - Matching helper methods
-
-- (BOOL)matchNamedDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression commentSections:(NSMutableArray *)sections sectionComponents:(NSMutableArray **)components {
-	NSString *string = source.sourceString;
-	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
-		// Get directive identifier (@param etc.) and name.
-		NSString *type = [match gb_stringAtIndex:1 in:string];
-		NSString *name = [match gb_stringAtIndex:2 in:string];
-		LogProDebug(@"Matched %@ %@...", type, name);
-		
-		// Delete directive identifier and name from source string.
-		source.sourceString = [match gb_remainingStringIn:string];
-		
-		// Create named section info and set the data.
-		CommentNamedSectionInfo *section = [[CommentNamedSectionInfo alloc] init];
-		[section setSectionName:name];
-		[section.sectionComponents addObject:source];
-		
-		// Add the argument to the sections array, so we later add it to comment.
-		[sections addObject:section];
-		
-		// Update parent section components array with our newly created section so that we can later append additional components (aka paragraphs).
-		*components = section.sectionComponents;
-	}];
+- (BOOL)matchNamedMethodSectionFromString:(NSString *)string expression:(NSRegularExpression *)expression sections:(NSMutableArray *)sections toArray:(NSMutableArray **)array {
+	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
+	if (!match) return NO;
+	NSString *description = [match gb_remainingStringIn:string];
+	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:description];
+	CommentNamedSectionInfo *info = [[CommentNamedSectionInfo alloc] init];
+	[info setSectionName:[match gb_stringAtIndex:2 in:string]];
+	[info.sectionComponents addObject:component];
+	if (!*array) *array = [@[] mutableCopy];
+	[*array addObject:info];
+	[sections removeObjectAtIndex:0];
+	return YES;
 }
 
-- (BOOL)matchSimpleDirectiveSectionFromComponent:(CommentComponentInfo *)source expression:(NSRegularExpression *)expression commentSection:(CommentSectionInfo **)section components:(NSMutableArray **)components {
-	NSString *string = source.sourceString;
-	return [expression gb_firstMatchIn:string match:^(NSTextCheckingResult *match) {
-		// Get directive identifier (@return etc.).
-		NSString *type = [match gb_stringAtIndex:1 in:string];
-		LogProDebug(@"Matched %@...", type);
-		
-		// Delete directive identifier from source string.
-		source.sourceString = [match gb_remainingStringIn:string];
-	
-		// Create section info and set the data. Note that we update parent section so we can address the object and register it to comment later on.
-		CommentSectionInfo *newSection = [[CommentSectionInfo alloc] init];
-		[[newSection sectionComponents] addObject:source];
-		*section = newSection;
-				
-		// Update parent section components array with our newly created section so that we can later append additional components (aka paragraphs).
-		*components = newSection.sectionComponents;
-	}];
+- (BOOL)matchSimpleSectionFromString:(NSString *)string expression:(NSRegularExpression *)expression sections:(NSMutableArray *)sections toInfo:(CommentSectionInfo **)dest {
+	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
+	if (!match) return NO;
+	NSString *description = [match gb_remainingStringIn:string];
+	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:description];
+	CommentSectionInfo *info = [[CommentSectionInfo alloc] init];
+	[info.sectionComponents addObject:component];
+	*dest = info;
+	[sections removeObjectAtIndex:0];
+	return YES;
 }
 
 #pragma mark - Comment components handling
 
-- (void)registerCommentComponentsFromData:(ProcessComponentsData *)data {
-	// Split multiple named arguments (@param, @exception etc.) into separate components. If single or none found, just use the whole string.
-	NSString *string = data.componentBuilder;
+- (void)processAndRegisterString:(NSString *)string toData:(ProcessComponentsData *)data append:(BOOL)append {
+	// Process @ directive section if matched at the start of the string.
 	if (string.length == 0) return;
-	LogProDebug(@"Registering comment component from '%@'...", [string gb_description]);
-	NSArray *matches = [[NSRegularExpression gb_argumentMatchingExpression] gb_allMatchesIn:string];
-	if (matches.count > 1 && [matches[0] range].location == 0) {
-		__block NSUInteger lastMatchLocation;
+	LogProDebug(@"Processing and registering '%@'...", [string gb_description]);
+	NSRegularExpression *expression = [NSRegularExpression gb_sectionDelimiterMatchingExpression];
+	NSArray *matches = [expression gb_allMatchesIn:string];
+	if (matches.count > 0 && [matches[0] range].location == 0) {
+		// Register existing section if needed.
+		if (data.builder.length > 0) {
+			LogProDebug(@"Detected section '%@'.", data.builder);
+			[data.sections addObject:data.builder];
+			data.builder = [@"" mutableCopy];
+		}
+
+		// Process directives.
+		__block NSUInteger lastMatchLocation = 0;
 		[matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
 			if (idx == 0) return;
 			NSUInteger previousMatchLocation = [matches[idx-1] range].location;
-			lastMatchLocation = match.range.location;
-			NSRange range = NSMakeRange(previousMatchLocation, lastMatchLocation - previousMatchLocation);
-			NSString *componentString = [[string substringWithRange:range] gb_stringByTrimmingWhitespaceAndNewLine];
-			CommentComponentInfo *component = [self componentInfoFromString:componentString];
-			[data.discussion addObject:component];
+			NSUInteger currentMatchLocation = match.range.location;
+			NSRange sectionRange = NSMakeRange(previousMatchLocation, currentMatchLocation - previousMatchLocation);
+			NSString *sectionString = [[string substringWithRange:sectionRange] gb_stringByTrimmingNewLines];
+			LogProDebug(@"Detected section '%@'.", sectionString);
+			[data.sections addObject:sectionString];
+			lastMatchLocation = currentMatchLocation;
 		}];
-		NSString *lastString = [string substringFromIndex:lastMatchLocation];
-		CommentComponentInfo *component = [self componentInfoFromString:lastString];
-		[data.discussion addObject:component];
-	} else {
-		CommentComponentInfo *component = [self componentInfoFromString:string];
-		[data.discussion addObject:component];
+		
+		// Finish the last directive. Note that this time we only copy it to builder so we can append additional paragraphs in next shot.
+		data.builder = [[[string substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines] mutableCopy];
+		LogProDebug(@"Detected section '%@'.", data.builder);
+		return;
 	}
+	
+	// Append all other text to current section builder if append is allowed.
+	if (append) {
+		LogParDebug(@"Appending string '%@'...", [string gb_description]);
+		if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
+		[data.builder appendString:[string gb_stringByTrimmingNewLines]];
+		return;
+	}
+	
+	// Register remaining paragraph.
+	[data.sections addObject:string];
 }
 
 #pragma mark - Low level string parsing
@@ -180,19 +215,20 @@
 @implementation ProcessCommentComponentsTask (MarkdownParserDelegateImplementation)
 
 - (void)markdownParser:(MarkdownParser *)parser parseBlockCode:(const struct buf *)text language:(const struct buf *)language output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block code '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing block code '%@'...", [[parser stringFromBuffer:text] gb_description]);
+	
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseBlockQuote:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block quote '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing block quote '%@'...", [[parser stringFromBuffer:text] gb_description]);
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseBlockHTML:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block HTML '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing block HTML '%@'...", [[parser stringFromBuffer:text] gb_description]);
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseHeader:(const struct buf *)text level:(NSInteger)level output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing header '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing header '%@'...", [[parser stringFromBuffer:text] gb_description]);
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseHRule:(struct buf *)buffer context:(ProcessComponentsData *)data {
@@ -200,18 +236,17 @@
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseList:(const struct buf *)text flags:(NSInteger)flags output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing list '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing list '%@'...", [[parser stringFromBuffer:text] gb_description]);
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseListItem:(const struct buf *)text flags:(NSInteger)flags output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing list item '%@'...", [[self stringFromBuffer:text] gb_description]);
+	LogProDebug(@"Processing list item '%@'...", [[parser stringFromBuffer:text] gb_description]);
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseParagraph:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	NSString *paragraph = [self stringFromBuffer:text];
+	NSString *paragraph = [parser stringFromBuffer:text];
 	LogProDebug(@"Detected paragraph '%@'.", [paragraph gb_description]);
-	if (data.componentBuilder) [self registerCommentComponentsFromData:data];
-	data.componentBuilder = [paragraph mutableCopy];
+	[self processAndRegisterString:paragraph toData:data append:YES];
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseTableHeader:(const struct buf *)header body:(const struct buf *)body output:(struct buf *)buffer context:(ProcessComponentsData *)data {

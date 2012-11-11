@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Logging.h"
 #import "MarkdownParser.h"
 
 static struct sd_callbacks gb_markdown_callbacks;
@@ -64,6 +65,7 @@ void gb_markdown_doc_footer(struct buf *ob, MarkdownParser *opaque);
 
 #pragma mark - Parsing
 
+static uint8_t thebuffer;
 - (NSString *)parseString:(NSString *)string context:(id)context {
 	struct buf *inputBuffer = bufnew(self.bufferAllocationSize);
 	struct buf *outputBuffer = bufnew(self.bufferAllocationSize);
@@ -72,6 +74,7 @@ void gb_markdown_doc_footer(struct buf *ob, MarkdownParser *opaque);
 
 	inputBuffer->data = [string UTF8String];
 	inputBuffer->size = [string lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+	thebuffer = inputBuffer->data;
 	self.textBeingParsed = inputBuffer->data;
 	self.wasAtLeastOneCallbackInvoked = NO;
 	self.parsingContext = context;
@@ -88,6 +91,18 @@ void gb_markdown_doc_footer(struct buf *ob, MarkdownParser *opaque);
 	self.textBeingParsed = NULL;
 	bufrelease(outputBuffer);
 	return result;
+}
+
+- (NSString *)stringFromBuffer:(const struct buf *)buffer {
+	if (!buffer || buffer->size == 0) return @"";
+	uint8_t *str = malloc(buffer->size + 1);
+	if (!str) {
+		LogError(@"Failed allocating %lu bytes for converting C string to NSString!", buffer->size);
+		return nil;
+	}
+	memcpy(str, buffer->data, buffer->size);
+	str[buffer->size] = 0;
+	return [NSString stringWithCString:str encoding:NSUTF8StringEncoding];
 }
 
 #pragma mark - Helper methods

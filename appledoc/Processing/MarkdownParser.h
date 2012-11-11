@@ -21,6 +21,8 @@
 
 - (NSString *)parseString:(NSString *)string context:(id)context;
 
+- (NSString *)stringFromBuffer:(const struct buf *)buffer;
+
 @property (nonatomic, assign) uint8_t *textBeingParsed;
 @property (nonatomic, assign) NSInteger parserExtensions;
 @property (nonatomic, assign) NSUInteger bufferAllocationSize;
