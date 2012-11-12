@@ -81,15 +81,12 @@ describe(@"method groups registration:", ^{
 	it(@"should not add new object to stack (interface needs to be able to catch method and properties registration)", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[MethodGroupInfo class]];
-			}]];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info appendMethodGroupWithDescription:@"description"];
 			// verify
-			^{ [mock verify]; } should raise_exception();
+			gbfail([verify(mock) pushRegistrationObject:instanceOf([MethodGroupInfo class])]);
 		});
 	});
 });
@@ -98,7 +95,7 @@ describe(@"properties registration:", ^{
 	 it(@"should create new property info", ^{
 		 runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// setup
-			info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+			info.objectRegistrar = mock([Store class]);
 			// execute
 			[info beginPropertyDefinition];
 			// verify
@@ -111,15 +108,12 @@ describe(@"properties registration:", ^{
 	it(@"should push property info to registration stack", ^{
 		runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[PropertyInfo class]];
-			}]];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginPropertyDefinition];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:instanceOf([PropertyInfo class])]);
 		});
 	});
 	
@@ -162,7 +156,7 @@ describe(@"methods registration:", ^{
 		it(@"should create new method info and add it to class methods array", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
-				info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+				info.objectRegistrar = mock([Store class]);
 				// execute
 				[info beginMethodDefinitionWithType:GBStoreTypes.classMethod];
 				// verify
@@ -176,15 +170,12 @@ describe(@"methods registration:", ^{
 		it(@"should push method info to registration stack", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
-				id mock = [OCMockObject mockForClass:[Store class]];
-				[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-					return ([obj isKindOfClass:[MethodInfo class]] && [[obj methodType] isEqual:GBStoreTypes.classMethod]);
-				}]];
+				id mock = mock([Store class]);
 				info.objectRegistrar = mock;
 				// execute
 				[info beginMethodDefinitionWithType:GBStoreTypes.classMethod];
 				// verify
-				^{ [mock verify]; } should_not raise_exception();
+				gbcatch([verify(mock) pushRegistrationObject:instanceOf([MethodInfo class])]);
 			});
 		});
 		
@@ -226,7 +217,7 @@ describe(@"methods registration:", ^{
 		it(@"should create new method info and add it to instance methods array", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
-				info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+				info.objectRegistrar = mock([Store class]);
 				// execute
 				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 				// verify
@@ -240,15 +231,12 @@ describe(@"methods registration:", ^{
 		it(@"should push method info to registration stack", ^{
 			runWithInterfaceInfoBase(^(InterfaceInfoBase *info) {
 				// setup
-				id mock = [OCMockObject mockForClass:[Store class]];
-				[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-					return ([obj isKindOfClass:[MethodInfo class]] && [[obj methodType] isEqual:GBStoreTypes.instanceMethod]);
-				}]];
+				id mock = mock([Store class]);
 				info.objectRegistrar = mock;
 				// execute
 				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 				// verify
-				^{ [mock verify]; } should_not raise_exception();
+				gbcatch([verify(mock) pushRegistrationObject:instanceOf([MethodInfo class])]);
 			});
 		});
 		

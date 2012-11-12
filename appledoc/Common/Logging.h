@@ -49,7 +49,7 @@ extern NSUInteger log_level;
 #pragma mark - Logging macros & functions
 
 #define LOG_MACRO(flg, frmt, ...) { \
-	NSString *message = [NSString stringWithFormat:frmt, ##__VA_ARGS__]; \
+	NSString *message = [NSString gb_format:frmt, ##__VA_ARGS__]; \
 	log_function(flg, __FILE__, __PRETTY_FUNCTION__, __LINE__, message); \
 }
 

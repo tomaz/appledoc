@@ -54,7 +54,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfStruct) return @"struct";
-	return [NSString stringWithFormat:@"struct %@", self.nameOfStruct];
+	return [NSString gb_format:@"struct %@", self.nameOfStruct];
 }
 
 - (NSString *)debugDescription {

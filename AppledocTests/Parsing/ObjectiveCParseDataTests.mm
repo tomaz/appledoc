@@ -12,7 +12,7 @@
 
 static void runWithData(void(^handler)(ObjectiveCParseData *data)) {
 	runWithString(@"", ^(id parser, id tokens) {
-		id store = [OCMockObject niceMockForClass:[Store class]];
+		id store = mock([Store class]);
 		ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:tokens parser:parser store:store];
 		handler(data);
 	});

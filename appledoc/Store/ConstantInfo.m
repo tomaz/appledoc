@@ -59,7 +59,7 @@
 
 - (NSString *)description {
 	if (!_constantName) return @"constant";
-	return [NSString stringWithFormat:@"constant %@", self.constantName];
+	return [NSString gb_format:@"constant %@", self.constantName];
 }
 
 - (NSString *)debugDescription {

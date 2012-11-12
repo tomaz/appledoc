@@ -72,6 +72,8 @@ target :AppledocTests do
 		}
 	end
 	
+	pod 'OCMockito', '0.22'
+	pod 'OCHamcrest', '1.8'
 
 	pod do |s|
 		s.name = 'OCMock'

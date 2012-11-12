@@ -10,6 +10,14 @@
 
 @implementation NSString (Appledoc)
 
++ (NSString *)gb_format:(NSString *)format, ... {
+	va_list args;
+	va_start(args, format);
+	NSString *result = [[NSString alloc] initWithFormat:format arguments:args];
+	va_end(args);
+	return result;
+}
+
 + (NSUInteger)gb_defaultDescriptionLength {
 	return 35;
 }

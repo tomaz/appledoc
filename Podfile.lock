@@ -3,7 +3,9 @@ DEPENDENCIES:
 - Cedar (defined in Podfile)
 - DDCli (defined in Podfile)
 - GBCli (defined in Podfile)
+- OCHamcrest (= 1.8)
 - OCMock (defined in Podfile)
+- OCMockito (= 0.22)
 - ParseKit (defined in Podfile)
 - sundown (defined in Podfile)
 
@@ -13,6 +15,13 @@ PODS:
 - Cedar (0.8.1)
 - DDCli (1.0)
 - GBCli (1.0)
+- OCHamcrest (1.8)
 - OCMock (2.0.2)
+- OCMockito (0.22): 
+  - OCHamcrest (~> 1.7)
 - ParseKit (0.0.2)
 - sundown (1.0)
+
+SPEC CHECKSUMS: 
+  OCMockito: 2074647e72d9525d6569dfc272d4fe16797a044f
+  OCHamcrest: 75258b3746b118ed9de96a6a8d985546f32e0f9b

@@ -29,7 +29,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfClass) return @"category";
-	return [NSString stringWithFormat:@"@interface %@(%@) w/ %@", self.nameOfClass, self.isCategory ? self.nameOfCategory : @"", [super description]];
+	return [NSString gb_format:@"@interface %@(%@) w/ %@", self.nameOfClass, self.isCategory ? self.nameOfCategory : @"", [super description]];
 }
 
 - (NSString *)debugDescription {

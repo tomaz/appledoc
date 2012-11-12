@@ -23,7 +23,6 @@ describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithCommentInfo(^(CommentInfo *info) {
 			// execute & verify
-			info.commentDiscussion should_not be_nil();
 			info.commentParameters should_not be_nil();
 			info.commentExceptions should_not be_nil();
 		});

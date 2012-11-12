@@ -6,6 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+#import "Objects.h"
 #import "Logging.h"
 #import "MarkdownParser.h"
 

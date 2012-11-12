@@ -1,0 +1,266 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0817B5F9147ECC4E00C5401D /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0817B5F8147ECC4E00C5401D /* OCHamcrest.framework */; };
+		0817B5FA147ECC5E00C5401D /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0817B5F8147ECC4E00C5401D /* OCHamcrest.framework */; };
+		0817B5FB147ECC6200C5401D /* OCMockito.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0846234A147DE82200FEEDBE /* OCMockito.framework */; };
+		0817B5FD147ECC9F00C5401D /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0817B5FC147ECC9F00C5401D /* SenTestingKit.framework */; };
+		0846234B147DE82200FEEDBE /* OCMockito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0846234A147DE82200FEEDBE /* OCMockito.framework */; };
+		0FC264990DA88F1100B4CD6B /* Example.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FC264980DA88F1100B4CD6B /* Example.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		08B518CA12A065C700147210 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				0817B5FA147ECC5E00C5401D /* OCHamcrest.framework in CopyFiles */,
+				0817B5FB147ECC6200C5401D /* OCMockito.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0817B5F8147ECC4E00C5401D /* OCHamcrest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrest.framework; path = "../../OCHamcrest-1.6/OCHamcrest.framework"; sourceTree = "<group>"; };
+		0817B5FC147ECC9F00C5401D /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		0846234A147DE82200FEEDBE /* OCMockito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMockito.framework; path = ../../OCMockito.framework; sourceTree = "<group>"; };
+		0FC2648E0DA88ECB00B4CD6B /* Example.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Example.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FC264900DA88ECB00B4CD6B /* Example-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Example-Info.plist"; sourceTree = "<group>"; };
+		0FC264980DA88F1100B4CD6B /* Example.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Example.m; sourceTree = "<group>"; usesTabs = 0; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0FC2648B0DA88ECB00B4CD6B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0846234B147DE82200FEEDBE /* OCMockito.framework in Frameworks */,
+				0817B5F9147ECC4E00C5401D /* OCHamcrest.framework in Frameworks */,
+				0817B5FD147ECC9F00C5401D /* SenTestingKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08462349147DE7D900FEEDBE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0817B5FC147ECC9F00C5401D /* SenTestingKit.framework */,
+				0817B5F8147ECC4E00C5401D /* OCHamcrest.framework */,
+				0846234A147DE82200FEEDBE /* OCMockito.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0FC264760DA88EAA00B4CD6B = {
+			isa = PBXGroup;
+			children = (
+				0FC264980DA88F1100B4CD6B /* Example.m */,
+				0FC2658B0DA8981900B4CD6B /* Resources */,
+				08462349147DE7D900FEEDBE /* Frameworks */,
+				0FC2648F0DA88ECB00B4CD6B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0FC2648F0DA88ECB00B4CD6B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0FC2648E0DA88ECB00B4CD6B /* Example.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0FC2658B0DA8981900B4CD6B /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0FC264900DA88ECB00B4CD6B /* Example-Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0FC2648D0DA88ECB00B4CD6B /* Example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FC264940DA88ECB00B4CD6B /* Build configuration list for PBXNativeTarget "Example" */;
+			buildPhases = (
+				0FC2648A0DA88ECB00B4CD6B /* Sources */,
+				0FC2648B0DA88ECB00B4CD6B /* Frameworks */,
+				08B518CA12A065C700147210 /* CopyFiles */,
+				0FC2648C0DA88ECB00B4CD6B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Example;
+			productName = Example;
+			productReference = 0FC2648E0DA88ECB00B4CD6B /* Example.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0FC264780DA88EAA00B4CD6B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 0FC2647B0DA88EAA00B4CD6B /* Build configuration list for PBXProject "MacExample" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 0FC264760DA88EAA00B4CD6B;
+			productRefGroup = 0FC2648F0DA88ECB00B4CD6B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0FC2648D0DA88ECB00B4CD6B /* Example */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0FC2648C0DA88ECB00B4CD6B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0FC2648A0DA88ECB00B4CD6B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FC264990DA88F1100B4CD6B /* Example.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0FC264790DA88EAA00B4CD6B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = "";
+			};
+			name = Debug;
+		};
+		0FC2647A0DA88EAA00B4CD6B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = "";
+			};
+			name = Release;
+		};
+		0FC264920DA88ECB00B4CD6B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/../..\"",
+					"\"$(SRCROOT)/../../OCHamcrest-1.6\"",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Example-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				PRODUCT_NAME = Example;
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		0FC264930DA88ECB00B4CD6B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"\"$(SRCROOT)/../..\"",
+					"\"$(SRCROOT)/../../OCHamcrest-1.6\"",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../..\"";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Example-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+				);
+				PRODUCT_NAME = Example;
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0FC2647B0DA88EAA00B4CD6B /* Build configuration list for PBXProject "MacExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FC264790DA88EAA00B4CD6B /* Debug */,
+				0FC2647A0DA88EAA00B4CD6B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0FC264940DA88ECB00B4CD6B /* Build configuration list for PBXNativeTarget "Example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FC264920DA88ECB00B4CD6B /* Debug */,
+				0FC264930DA88ECB00B4CD6B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0FC264780DA88EAA00B4CD6B /* Project object */;
+}

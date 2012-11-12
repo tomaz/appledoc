@@ -57,7 +57,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfEnum) return @"enum";
-	return [NSString stringWithFormat:@"enum %@ w/ %lu items", self.nameOfEnum, 0];
+	return [NSString gb_format:@"enum %@ w/ %lu items", self.nameOfEnum, 0];
 }
 
 - (NSString *)debugDescription {
