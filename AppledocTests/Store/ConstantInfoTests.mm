@@ -31,13 +31,12 @@ describe(@"constant types registration:", ^{
 	it(@"should change current registration object to constant types info", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:info.constantTypes];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginConstantTypes];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:info.constantTypes]);
 		});
 	});
 });
@@ -67,13 +66,12 @@ describe(@"constant descriptors registration:", ^{
 	it(@"should push descriptors info to registration stack", ^{
 		runWithConstantInfo(^(ConstantInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:info.constantDescriptors];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginConstantDescriptors];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:info.constantDescriptors]);
 		});
 	});
 });
