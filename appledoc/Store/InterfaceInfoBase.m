@@ -166,7 +166,7 @@
 @implementation InterfaceInfoBase (Logging)
 
 - (NSString *)description {
-	return [NSString stringWithFormat:@"%lu properties, %lu interface methods, %lu class methods", self.interfaceProperties.count, self.interfaceInstanceMethods.count, self.interfaceClassMethods.count];
+	return [NSString gb_format:@"%lu properties, %lu interface methods, %lu class methods", self.interfaceProperties.count, self.interfaceInstanceMethods.count, self.interfaceClassMethods.count];
 }
 
 - (NSString *)debugDescription {

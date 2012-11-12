@@ -175,7 +175,7 @@
 	// If path doesn't exist, exit.
 	if (![manager fileExistsAtPath:standardized]) {
 		if (*error) {
-			NSString *description = [NSString stringWithFormat:@"Template path doesn't exist at '%@'!", path];
+			NSString *description = [NSString gb_format:@"Template path doesn't exist at '%@'!", path];
 			*error = [NSError gb_errorWithCode:GBErrorCodeTemplatePathNotFound description:description reason:nil];
 		}
 		return NO;
@@ -184,7 +184,7 @@
 	// If path isn't a directory, exit.
 	if (![manager gb_fileExistsAndIsDirectoryAtPath:standardized]) {
 		if (*error) {
-			NSString *description = [NSString stringWithFormat:@"Template path '%@' exists, but is not directory!", path];
+			NSString *description = [NSString gb_format:@"Template path '%@' exists, but is not directory!", path];
 			*error = [NSError gb_errorWithCode:GBErrorCodeTemplatePathNotDirectory description:description reason:nil];
 		}
 		return NO;

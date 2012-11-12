@@ -160,11 +160,11 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n%@ text", identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n%@ text", identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component([NSString stringWithFormat:@"abstract\n%@ text", identifier])]);
+					gbcatch([verify(comment) setCommentAbstract:component([NSString gb_format:@"abstract\n%@ text", identifier])]);
 				});
 			});
 		});
@@ -174,11 +174,11 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n%@ text\n\nparagraph", identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n%@ text\n\nparagraph", identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component([NSString stringWithFormat:@"abstract\n%@ text", identifier])]);
+					gbcatch([verify(comment) setCommentAbstract:component([NSString gb_format:@"abstract\n%@ text", identifier])]);
 					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", nil)]);
 				});
 			});
@@ -203,12 +203,12 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n\n%@ text", identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n\n%@ text", identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
 					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section([NSString stringWithFormat:@"%@ text", identifier], nil)]);
+					gbcatch([verify(comment) setCommentDiscussion:section([NSString gb_format:@"%@ text", identifier], nil)]);
 				});
 			});
 		});
@@ -218,12 +218,12 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n\nparagraph\n\n%@ text", identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n\nparagraph\n\n%@ text", identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
 					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString stringWithFormat:@"%@ text", identifier], nil)]);
+					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString gb_format:@"%@ text", identifier], nil)]);
 				});
 			});
 		});
@@ -233,12 +233,12 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n\nparagraph\n\n%@ text\n\nnext paragraph", identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n\nparagraph\n\n%@ text\n\nnext paragraph", identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
 					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString stringWithFormat:@"%@ text\n\nnext paragraph", identifier], nil)]);
+					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString gb_format:@"%@ text\n\nnext paragraph", identifier], nil)]);
 				});
 			});
 		});
@@ -248,12 +248,12 @@ describe(@"warnings and bugs:", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
 					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString stringWithFormat:@"abstract\n\n%@ first\n\n%@ second", identifier, identifier]);
+					setupComment(comment, [NSString gb_format:@"abstract\n\n%@ first\n\n%@ second", identifier, identifier]);
 					// execute
 					[task processComment:comment];
 					// verify
 					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section([NSString stringWithFormat:@"%@ first", identifier], [NSString stringWithFormat:@"%@ second", identifier], nil)]);
+					gbcatch([verify(comment) setCommentDiscussion:section([NSString gb_format:@"%@ first", identifier], [NSString gb_format:@"%@ second", identifier], nil)]);
 				});
 			});
 		});

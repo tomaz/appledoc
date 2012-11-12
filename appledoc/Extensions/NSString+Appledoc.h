@@ -8,6 +8,7 @@
 
 @interface NSString (Appledoc)
 
++ (NSString *)gb_format:(NSString *)format, ... NS_FORMAT_FUNCTION(1, 2);
 + (NSUInteger)gb_defaultDescriptionLength;
 - (NSString *)gb_description;
 - (NSString *)gb_descriptionWithLength:(NSUInteger)length;

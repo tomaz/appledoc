@@ -33,7 +33,7 @@ using namespace Cedar::Matchers;
 
 #define TEST_BEGIN(name) \
 	SPEC_BEGIN(name) \
-		describe([NSString stringWithFormat:@"%s:", #name], ^{
+		describe([NSString gb_format:@"%s:", #name], ^{
 
 #define TEST_END \
 		}); \

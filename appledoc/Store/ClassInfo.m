@@ -18,7 +18,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfClass) return @"class";
-	return [NSString stringWithFormat:@"@interface %@ w/ %@", self.nameOfClass, [super description]];
+	return [NSString gb_format:@"@interface %@ w/ %@", self.nameOfClass, [super description]];
 }
 
 - (NSString *)debugDescription {

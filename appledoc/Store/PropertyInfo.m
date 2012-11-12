@@ -29,11 +29,11 @@
 	NSString *result = [self.propertyAttributes valueForAttribute:@"setter"];
 	if (result) {
 		if ([result hasSuffix:@":"]) return result;
-		return [NSString stringWithFormat:@"%@:", result];
+		return [NSString gb_format:@"%@:", result];
 	}
 	NSString *prefix = [[self.propertyName substringToIndex:1] uppercaseString];
 	NSString *suffix = [self.propertyName substringFromIndex:1];
-	result = [NSString stringWithFormat:@"set%@%@:", prefix, suffix];
+	result = [NSString gb_format:@"set%@%@:", prefix, suffix];
 	return result;
 }
 
@@ -97,7 +97,7 @@
 
 - (NSString *)description {
 	if (!self.propertyName) return @"property";
-	return [NSString stringWithFormat:@"@property %@", self.propertyName];
+	return [NSString gb_format:@"@property %@", self.propertyName];
 }
 
 - (NSString *)debugDescription {
