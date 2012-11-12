@@ -32,13 +32,12 @@ describe(@"method argument types registration:", ^{
 	it(@"should push argument type to registration stack", ^{
 		runWithMethodArgumentInfo(^(MethodArgumentInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:info.argumentType];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginMethodArgumentTypes];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:info.argumentType]);
 		});
 	});
 });

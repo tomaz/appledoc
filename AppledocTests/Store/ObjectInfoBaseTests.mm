@@ -22,13 +22,12 @@ describe(@"push object to registration stack:", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
 			id child = @"child";
-			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-			[[registrar expect] pushRegistrationObject:child];
+			id registrar = mockProtocol(@protocol(StoreRegistrar));
 			info.objectRegistrar = registrar;
 			// execute
 			[info pushRegistrationObject:child];
 			// verify
-			^{ [registrar verify]; } should_not raise_exception();
+			gbcatch([verify(registrar) pushRegistrationObject:child]);
 		});
 	});
 });
@@ -38,61 +37,55 @@ describe(@"pop object from registration stack:", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
 			id child = @"child";
-			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-			[[[registrar expect] andReturn:child] popRegistrationObject];
+			id registrar = mockProtocol(@protocol(StoreRegistrar));
 			info.objectRegistrar = registrar;
 			// execute
-			id poppedObject = [info popRegistrationObject];
+			[info popRegistrationObject];
 			// verify
-			^{ [registrar verify]; } should_not raise_exception();
-			poppedObject should equal(child);
+			gbcatch([verify(registrar) popRegistrationObject]);
 		});
 	});
 });
 
-describe(@"pop object from registration stack:", ^{
+describe(@"current registration object:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
 			id child = @"child";
-			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-			[[[registrar expect] andReturn:child] currentRegistrationObject];
+			id registrar = mockProtocol(@protocol(StoreRegistrar));
 			info.objectRegistrar = registrar;
 			// execute
-			id currentObject = [info currentRegistrationObject];
+			[info currentRegistrationObject];
 			// verify
-			^{ [registrar verify]; } should_not raise_exception();
-			currentObject should equal(child);
+			gbcatch([verify(registrar) currentRegistrationObject]);
 		});
 	});
 });
 
-describe(@"pop object from registration stack:", ^{
+describe(@"expect current registration object respond to:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
-			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-			[[registrar expect] expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			id registrar = mockProtocol(@protocol(StoreRegistrar));
 			info.objectRegistrar = registrar;
 			// execute
 			[info expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
 			// verify
-			^{ [registrar verify]; } should_not raise_exception();
+			gbcatch([verify(registrar) expectCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)]);
 		});
 	});
 });
 
-describe(@"pop object from registration stack:", ^{
+describe(@"does current registration object respond to:", ^{
 	it(@"should forward request to assigned store registrar", ^{
 		runWithObjectInfoBase(^(ObjectInfoBase *info) {
 			// setup
-			id registrar = [OCMockObject mockForProtocol:@protocol(StoreRegistrar)];
-			[[registrar expect] doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
+			id registrar = mockProtocol(@protocol(StoreRegistrar));
 			info.objectRegistrar = registrar;
 			// execute
 			[info doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)];
 			// verify
-			^{ [registrar verify]; } should_not raise_exception();
+			gbcatch([verify(registrar) doesCurrentRegistrationObjectRespondTo:@selector(currentRegistrationObject)]);
 		});
 	});
 });

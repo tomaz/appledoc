@@ -92,6 +92,7 @@ int main(int argc, char *argv[]) {
 			[result appendString:@"- DDCli by Dave Dribin\n"];
 			[result appendFormat:@"- ParseKiy by Todd Ditchendorf\n"];
 			[result appendFormat:@"- OCHamcrest by Jon Reid\n"];
+			[result appendFormat:@"- OCMockito by Jon Reid\n"];
 			[result appendFormat:@"- OCMock by Mulle Kybernetik\n"];
 			[result appendString:@"\n"];
 			[result appendString:@"We'd like to thank all authors for their contribution!\n"];

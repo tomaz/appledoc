@@ -46,7 +46,7 @@ describe(@"run:", ^{
 			id settings = mock([GBSettings class]);
 			id parser = mock([Parser class]);
 			id store = mock([Store class]);
-			appledoc.processor = [OCMockObject niceMockForClass:[Processor class]];;
+			appledoc.processor = mock([Processor class]);
 			appledoc.store = store;
 			appledoc.parser = parser;
 			// execute

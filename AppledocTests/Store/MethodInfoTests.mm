@@ -65,15 +65,12 @@ describe(@"method results registration:", ^{
 	it(@"should change current registration object to results", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[TypeInfo class]];
-			}]];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginMethodResults];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:instanceOf([TypeInfo class])]);
 		});
 	});
 });
@@ -82,7 +79,7 @@ describe(@"method argument registration:", ^{
 	it(@"should create new method argument", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
-			info.objectRegistrar = [OCMockObject niceMockForClass:[Store class]];
+			info.objectRegistrar = mock([Store class]);
 			// execute
 			[info beginMethodArgument];
 			// verify
@@ -95,15 +92,12 @@ describe(@"method argument registration:", ^{
 	it(@"should push argument to registration stack", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[MethodArgumentInfo class]];
-			}]];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginMethodArgument];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:instanceOf([MethodArgumentInfo class])]);
 		});
 	});
 });
@@ -112,15 +106,12 @@ describe(@"method descriptors registration:", ^{
 	it(@"should change current registration object to descriptors info", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
-			id mock = [OCMockObject mockForClass:[Store class]];
-			[[mock expect] pushRegistrationObject:[OCMArg checkWithBlock:^BOOL(id obj) {
-				return [obj isKindOfClass:[DescriptorsInfo class]];
-			}]];
+			id mock = mock([Store class]);
 			info.objectRegistrar = mock;
 			// execute
 			[info beginMethodDescriptors];
 			// verify
-			^{ [mock verify]; } should_not raise_exception();
+			gbcatch([verify(mock) pushRegistrationObject:instanceOf([DescriptorsInfo class])]);
 		});
 	});
 });

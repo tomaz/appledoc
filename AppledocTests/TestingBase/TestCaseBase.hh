@@ -30,6 +30,7 @@
 using namespace Cedar::Matchers;
 
 #define gbcatch(code) ^{ code; } should_not raise_exception()
+#define gbfail(code) ^{ code; } should raise_exception()
 
 #define TEST_BEGIN(name) \
 	SPEC_BEGIN(name) \
