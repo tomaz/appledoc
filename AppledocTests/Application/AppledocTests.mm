@@ -43,34 +43,32 @@ describe(@"run:", ^{
 	it(@"should invoke parser", ^{
 		runWithAppledoc(^(Appledoc *appledoc) {
 			// setup
-			id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-			id store = [OCMockObject niceMockForClass:[Store class]];
-			id parser = [OCMockObject mockForClass:[Parser class]];
-			[[parser expect] runWithSettings:settings store:store];
+			id settings = mock([GBSettings class]);
+			id parser = mock([Parser class]);
+			id store = mock([Store class]);
 			appledoc.processor = [OCMockObject niceMockForClass:[Processor class]];;
 			appledoc.store = store;
 			appledoc.parser = parser;
 			// execute
 			[appledoc runWithSettings:settings];
 			// verify
-			^{ [parser verify]; } should_not raise_exception();
+			gbcatch([verify(parser) runWithSettings:settings store:store]);
 		});
 	});
 
 	it(@"should invoke processor", ^{
 		runWithAppledoc(^(Appledoc *appledoc) {
 			// setup
-			id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-			id store = [OCMockObject niceMockForClass:[Store class]];
-			id processor = [OCMockObject mockForClass:[Processor class]];
-			[[processor expect] runWithSettings:settings store:store];
-			appledoc.parser = [OCMockObject niceMockForClass:[Parser class]];
+			id settings = mock([GBSettings class]);
+			id store = mock([Store class]);
+			id processor = mock([Processor class]);
+			appledoc.parser = mock([Parser class]);
 			appledoc.store = store;
 			appledoc.processor = processor;
 			// execute
 			[appledoc runWithSettings:settings];
 			// verify
-			^{ [processor verify]; } should_not raise_exception();
+			gbcatch([verify(processor) runWithSettings:settings store:store]);
 		});
 	});
 });
