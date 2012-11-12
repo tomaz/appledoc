@@ -79,17 +79,17 @@
 - (void)registerDiscussionFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
 	// Register all discussion sections - up until first parameter related section.
 	NSRegularExpression *expression = [NSRegularExpression gb_methodSectionDelimiterMatchingExpression];
-	NSMutableArray *discussion = nil;
+	CommentSectionInfo *discussion = nil;
 	while (data.sections.count > 0) {
 		NSString *sectionString = data.sections[0];
 		NSTextCheckingResult *match = [expression gb_firstMatchIn:sectionString];
 		if (match && match.range.location == 0) break;
-		if (!discussion) discussion = [@[] mutableCopy];
+		if (!discussion) discussion = [[CommentSectionInfo alloc] init];
 		CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:sectionString];
-		[discussion addObject:component];
+		[discussion.sectionComponents addObject:component];
 		[data.sections removeObjectAtIndex:0];
 	}
-	if (discussion.count > 0) [comment setCommentDiscussion:discussion];
+	if (discussion) [comment setCommentDiscussion:discussion];
 }
 
 - (void)registerMethodFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {

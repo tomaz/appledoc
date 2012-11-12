@@ -13,13 +13,6 @@
 
 #pragma mark - Properties
 
-- (NSMutableArray *)commentDiscussion {
-	if (_commentDiscussion) return _commentDiscussion;
-	LogIntDebug(@"Initializing comment discussion items array due to first access...");
-	_commentDiscussion = [[NSMutableArray alloc] init];
-	return _commentDiscussion;
-}
-
 - (NSMutableArray *)commentParameters {
 	if (_commentParameters) return _commentParameters;
 	LogIntDebug(@"Initializing comment parameters array due to first access...");
