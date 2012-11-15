@@ -10,33 +10,12 @@
 #import "ProcessCommentComponentsTask.h"
 #import "TestCaseBase.hh"
 
-@implementation CommentComponentInfo (UnitTestingPrivateAPI)
-- (BOOL)isEqual:(id)object {
-	return [self.sourceString isEqualToString:[object sourceString]];
-}
-@end
-
-@implementation CommentSectionInfo (UnitTestingPrivateAPI)
-- (BOOL)isEqual:(id)object {
-	NSArray *objectComponents = [object sectionComponents];
-	if (objectComponents.count != self.sectionComponents.count) return NO;
-	for (NSUInteger i=0; i<objectComponents.count; i++) {
-		if (![objectComponents[i] isEqual:self.sectionComponents[i]]) return NO;
-	}
-	return YES;
-}
-@end
-
-@implementation CommentNamedSectionInfo (UnitTestingPrivateAPI)
-- (BOOL)isEqual:(id)object {
-	if (![self.sectionName isEqualToString:[object sectionName]]) return NO;
-	return [super isEqual:object];
-}
-@end
+#define GBAbstract ((CommentComponentInfo *)[comment commentAbstract])
+#define GBDiscussion ((CommentSectionInfo *)[comment commentDiscussion])
 
 #pragma mark -
 
-static void runWithTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
+static void runWithMockTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
 	// ProcessCommentComponentsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
 	ProcessCommentComponentsTask *task = [[ProcessCommentComponentsTask alloc] init];
 	id mock = mock([CommentInfo class]);
@@ -44,40 +23,19 @@ static void runWithTask(void(^handler)(ProcessCommentComponentsTask *task, id co
 	[task release];
 }
 
+static void runWithTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
+	// ProcessCommentComponentsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
+	ProcessCommentComponentsTask *task = [[ProcessCommentComponentsTask alloc] init];
+	CommentInfo *comment = [[CommentInfo alloc] init];
+	handler(task, comment);
+	[task release];
+}
+
 static void setupComment(id comment, NSString *text) {
-	[given([comment sourceString]) willReturn:text];
-}
-
-static CommentComponentInfo *component(NSString *first) {
-	return [CommentComponentInfo componentWithSourceString:first];
-}
-
-static CommentSectionInfo *section(NSString *first, ...) {
-	va_list args;
-	va_start(args, first);
-	CommentSectionInfo *result = [[CommentSectionInfo alloc] init];
-	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString *)) {
-		[result.sectionComponents addObject:[CommentComponentInfo componentWithSourceString:arg]];
-	}
-	va_end(args);
-	return result;
-}
-
-static NSMutableArray *arguments(NSArray *first, ...) {
-	va_list args;
-	va_start(args, first);
-	NSMutableArray *result = [@[] mutableCopy];
-	for (NSArray *arg=first; arg!=nil; arg=va_arg(args, NSArray *)) {
-		CommentNamedSectionInfo *section = [[CommentNamedSectionInfo alloc] init];
-		section.sectionName = arg[0];
-		for (NSUInteger i=1; i<arg.count; i++) {
-			CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:arg[i]];
-			[section.sectionComponents addObject:component];
-		}
-		[result addObject:section];
-	}
-	va_end(args);
-	return result;
+	if ([comment isKindOfClass:[CommentInfo class]])
+		[comment setSourceString:text];
+	else
+		[given([comment sourceString]) willReturn:text];
 }
 
 #pragma mark -
@@ -96,10 +54,10 @@ describe(@"abstract:", ^{
 			// setup
 			setupComment(comment, @"line");
 			// execute
-			//[task processComment:comment];
-			[comment setCommentAbstract:[CommentComponentInfo componentWithSourceString:@"line"]];
+			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"line")]);
+			((CommentComponentInfo *)[comment commentAbstract]).sourceString should equal(@"line");
+			GBAbstract.sourceString should equal(@"line");
 		});
 	});
 	
@@ -110,7 +68,7 @@ describe(@"abstract:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"line one\nline two\nline three")]);
+			GBAbstract.sourceString should equal(@"line one\nline two\nline three");
 		});
 	});
 });
@@ -119,52 +77,59 @@ describe(@"normal text:", ^{
 	it(@"should convert second paragraph to discussion", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
-			setupComment(comment, @"first\n\nsecond");
+			setupComment(comment, @"abstract\n\nsecond");
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"first")]);
-			gbcatch([verify(comment) setCommentDiscussion:section(@"second", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second");
 		});
 	});
 	
 	it(@"should convert second and subsequent paragraphs to discussion", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
-			setupComment(comment, @"first\n\nsecond\n\nthird");
+			setupComment(comment, @"abstract\n\nsecond\n\nthird");
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"first")]);
-			gbcatch([verify(comment) setCommentDiscussion:section(@"second\n\nthird", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second\n\nthird");
 		});
 	});
 	
 	it(@"should handle multiple paragraphs with mutliple lines", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
-			setupComment(comment, @"first\n\nline one\nline two\nline three\n\nthird paragraph\nand line two");
+			setupComment(comment, @"abstract\n\nline one\nline two\nline three\n\nthird paragraph\nand line two");
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"first")]);
-			gbcatch([verify(comment) setCommentDiscussion:section(@"line one\nline two\nline three\n\nthird paragraph\nand line two", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"line one\nline two\nline three\n\nthird paragraph\nand line two");
+		});
+	});
+});
+
 		});
 	});
 });
 
 describe(@"warnings and bugs:", ^{
+#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
 	describe(@"as part of abstract:", ^{
 		sharedExamplesFor(@"example1", ^(NSDictionary *info) {
 			it(@"should take as part of abstract if not delimited by empty line", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n%@ text", identifier]);
+					setupComment(comment, GBReplace(@"abstract\n@id text"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component([NSString gb_format:@"abstract\n%@ text", identifier])]);
+					GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
 				});
 			});
 		});
@@ -173,13 +138,13 @@ describe(@"warnings and bugs:", ^{
 			it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n%@ text\n\nparagraph", identifier]);
+					setupComment(comment, GBReplace(@"abstract\n@id text\n\nparagraph"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component([NSString gb_format:@"abstract\n%@ text", identifier])]);
-					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", nil)]);
+					GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
+					GBDiscussion.sectionComponents.count should equal(1);
+					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
 				});
 			});
 		});
@@ -202,13 +167,13 @@ describe(@"warnings and bugs:", ^{
 			it(@"should take as part of discussion if found as first paragraph after abstract", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n\n%@ text", identifier]);
+					setupComment(comment, GBReplace(@"abstract\n\n@id text"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section([NSString gb_format:@"%@ text", identifier], nil)]);
+					GBAbstract.sourceString should equal(@"abstract");
+					GBDiscussion.sectionComponents.count should equal(1);
+					[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id text"));
 				});
 			});
 		});
@@ -217,13 +182,14 @@ describe(@"warnings and bugs:", ^{
 			it(@"should start new paragraph if delimited by empty line", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n\nparagraph\n\n%@ text", identifier]);
+					setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString gb_format:@"%@ text", identifier], nil)]);
+					GBAbstract.sourceString should equal(@"abstract");
+					GBDiscussion.sectionComponents.count should equal(2);
+					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text"));
 				});
 			});
 		});
@@ -232,13 +198,14 @@ describe(@"warnings and bugs:", ^{
 			it(@"should take all subsequent paragraphs as part of section", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n\nparagraph\n\n%@ text\n\nnext paragraph", identifier]);
+					setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text\n\nnext paragraph"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section(@"paragraph", [NSString gb_format:@"%@ text\n\nnext paragraph", identifier], nil)]);
+					GBAbstract.sourceString should equal(@"abstract");
+					GBDiscussion.sectionComponents.count should equal(2);
+					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text\n\nnext paragraph"));
 				});
 			});
 		});
@@ -247,13 +214,14 @@ describe(@"warnings and bugs:", ^{
 			it(@"should start new paragraph with next section directive", ^{
 				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 					// setup
-					NSString *identifier = info[@"id"];
-					setupComment(comment, [NSString gb_format:@"abstract\n\n%@ first\n\n%@ second", identifier, identifier]);
+					setupComment(comment, GBReplace(@"abstract\n\n@id first\n\n@id second"));
 					// execute
 					[task processComment:comment];
 					// verify
-					gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-					gbcatch([verify(comment) setCommentDiscussion:section([NSString gb_format:@"%@ first", identifier], [NSString gb_format:@"%@ second", identifier], nil)]);
+					GBAbstract.sourceString should equal(@"abstract");
+					GBDiscussion.sectionComponents.count should equal(2);
+					[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id first"));
+					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id second"));
 				});
 			});
 		});
@@ -277,6 +245,9 @@ describe(@"warnings and bugs:", ^{
 });
 
 describe(@"method parameters:", ^{
+#define GBParameters ((NSArray *)[comment commentParameters])
+#define GBParameter(i) GBParameters[i]
+#define GBComponent(i,n) [GBParameters[i] sectionComponents][n]
 	it(@"should register single parameter:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -284,8 +255,11 @@ describe(@"method parameters:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentParameters:arguments(@[@"name", @"description"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBParameters.count should equal(1);
+			[GBParameter(0) sectionName] should equal(@"name");
+			[GBParameter(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description");
 		});
 	});
 	
@@ -296,8 +270,14 @@ describe(@"method parameters:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentParameters:arguments(@[@"name1", @"description 1"], @[@"name2", @"description 2"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBParameters.count should equal(2);
+			[GBParameter(0) sectionName] should equal(@"name1");
+			[GBParameter(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description 1");
+			[GBParameter(1) sectionName] should equal(@"name2");
+			[GBParameter(1) sectionComponents].count should equal(1);
+			[GBComponent(1,0) sourceString] should equal(@"description 2");
 		});
 	});
 	
@@ -308,13 +288,22 @@ describe(@"method parameters:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentParameters:arguments(@[@"name1", @"description1\nin multiple\n\nlines and paragraphs"], @[@"name2", @"description 2"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBParameters.count should equal(2);
+			[GBParameter(0) sectionName] should equal(@"name1");
+			[GBParameter(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description1\nin multiple\n\nlines and paragraphs");
+			[GBParameter(1) sectionName] should equal(@"name2");
+			[GBParameter(1) sectionComponents].count should equal(1);
+			[GBComponent(1,0) sourceString] should equal(@"description 2");
 		});
 	});
 });
 
 describe(@"method exceptions:", ^{
+#define GBExceptions ((NSArray *)[comment commentExceptions])
+#define GBException(i) GBExceptions[i]
+#define GBComponent(i,n) [GBExceptions[i] sectionComponents][n]
 	it(@"should register single exception:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -322,8 +311,11 @@ describe(@"method exceptions:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentExceptions:arguments(@[@"name", @"description"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBExceptions.count should equal(1);
+			[GBException(0) sectionName] should equal(@"name");
+			[GBException(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description");
 		});
 	});
 	
@@ -334,8 +326,14 @@ describe(@"method exceptions:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentExceptions:arguments(@[@"name1", @"description 1"], @[@"name2", @"description 2"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBExceptions.count should equal(2);
+			[GBException(0) sectionName] should equal(@"name1");
+			[GBException(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description 1");
+			[GBException(1) sectionName] should equal(@"name2");
+			[GBException(1) sectionComponents].count should equal(1);
+			[GBComponent(1,0) sourceString] should equal(@"description 2");
 		});
 	});
 	
@@ -346,13 +344,20 @@ describe(@"method exceptions:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentExceptions:arguments(@[@"name1", @"description1\nin multiple\n\nlines and paragraphs"], @[@"name2", @"description 2"], nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			GBExceptions.count should equal(2);
+			[GBException(0) sectionName] should equal(@"name1");
+			[GBException(0) sectionComponents].count should equal(1);
+			[GBComponent(0,0) sourceString] should equal(@"description1\nin multiple\n\nlines and paragraphs");
+			[GBException(1) sectionName] should equal(@"name2");
+			[GBException(1) sectionComponents].count should equal(1);
+			[GBComponent(1,0) sourceString] should equal(@"description 2");
 		});
 	});
 });
 
 describe(@"method return:", ^{
+#define GBReturn ((CommentSectionInfo *)[comment commentReturn])
 	it(@"should register single return:", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -360,8 +365,9 @@ describe(@"method return:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentReturn:section(@"description", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			[GBReturn sectionComponents].count should equal(1);
+			[[GBReturn sectionComponents][0] sourceString] should equal(@"description");
 		});
 	});
 	
@@ -372,8 +378,9 @@ describe(@"method return:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentReturn:section(@"description 2", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			[GBReturn sectionComponents].count should equal(1);
+			[[GBReturn sectionComponents][0] sourceString] should equal(@"description 2");
 		});
 	});
 	
@@ -384,8 +391,9 @@ describe(@"method return:", ^{
 			// execute
 			[task processComment:comment];
 			// verify
-			gbcatch([verify(comment) setCommentAbstract:component(@"abstract")]);
-			gbcatch([verify(comment) setCommentReturn:section(@"description\nin multiple\n\nlines and paragraphs", nil)]);
+			GBAbstract.sourceString should equal(@"abstract");
+			[GBReturn sectionComponents].count should equal(1);
+			[[GBReturn sectionComponents][0] sourceString] should equal(@"description\nin multiple\n\nlines and paragraphs");
 		});
 	});
 });
