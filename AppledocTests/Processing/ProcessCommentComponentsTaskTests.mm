@@ -114,7 +114,116 @@ describe(@"normal text:", ^{
 	});
 });
 
+describe(@"block code:", ^{
+#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
+	sharedExamplesFor(@"example1", ^(NSDictionary *info){
+		it(@"should append block code to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--block code"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tblock code");
+			});
 		});
+	});
+	
+	sharedExamplesFor(@"example2", ^(NSDictionary *info) {
+		it(@"should append all block code lines to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--line 2"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\tline 2");
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example3", ^(NSDictionary *info) {
+		it(@"should append multiple block code sections to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n\n--line 2\n--line 3"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t\n\tline 2\n\tline 3");
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example4", ^(NSDictionary *info) {
+		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line 1\n\n\tline 1\n\nnormal line 2\n\n\tline 2");
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example5", ^(NSDictionary *info) {
+		it(@"should continue normal paragraph if not delimited with empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n--continue line"));
+				// execute
+				[task processComment:comment];
+				// verify - note that sundown converts tab into spaces in this case!
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n    continue line");
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example6", ^(NSDictionary *info) {
+		it(@"should keep all formatting after initial code block marker", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--\tline 2\n--    line 3"));
+				// execute
+				[task processComment:comment];
+				// verify - note that sundown converts tab into spaces!
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t    line 2\n\t    line 3");
+			});
+		});
+	});
+	
+	describe(@"delimited with tab:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t"; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+		itShouldBehaveLike(@"example5");
+		itShouldBehaveLike(@"example6");
+	});
+	
+	describe(@"delimited with spaces", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    "; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+		itShouldBehaveLike(@"example5");
+		itShouldBehaveLike(@"example6");
 	});
 });
 

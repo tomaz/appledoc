@@ -189,14 +189,19 @@
 	
 	// Append all other text to current section builder if append is allowed.
 	if (append) {
-		LogParDebug(@"Appending string '%@'...", [string gb_description]);
-		if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
-		[data.builder appendString:[string gb_stringByTrimmingNewLines]];
+		[self appendBlockFromString:string toData:data];
 		return;
 	}
 	
 	// Register remaining paragraph.
 	[data.sections addObject:string];
+}
+
+- (void)appendBlockFromString:(NSString *)string toData:(ProcessComponentsData *)data {
+	if (string.length == 0) return;
+	LogParDebug(@"Appending block '%@'...", [string gb_description]);
+	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
+	[data.builder appendString:[string gb_stringByTrimmingNewLines]];
 }
 
 #pragma mark - Low level string parsing
@@ -215,8 +220,13 @@
 @implementation ProcessCommentComponentsTask (MarkdownParserDelegateImplementation)
 
 - (void)markdownParser:(MarkdownParser *)parser parseBlockCode:(const struct buf *)text language:(const struct buf *)language output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block code '%@'...", [[parser stringFromBuffer:text] gb_description]);
-	
+	NSString *block = [parser stringFromBuffer:text];
+	LogProDebug(@"Processing block code '%@'...", [block gb_description]);
+	NSMutableString *formattedBlock = [@"" mutableCopy];
+	[block enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+		[formattedBlock appendFormat:@"\t%@\n", line];
+	}];
+	[self appendBlockFromString:formattedBlock toData:data];
 }
 
 - (void)markdownParser:(MarkdownParser *)parser parseBlockQuote:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
