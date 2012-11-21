@@ -227,6 +227,59 @@ describe(@"block code:", ^{
 	});
 });
 
+describe(@"block quote", ^{
+	it(@"should append block quote to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> block quote");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> block quote");
+		});
+	});
+
+	it(@"should append all block quotes to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> line 1\n> line 2\n\n> line 3");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> line 1\n> line 2\n\n> line 3");
+		});
+	});
+	
+	it(@"should handle nested block quotes", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> level 1\n> > level 2\n> back to 1");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> level 1\n> > level 2\n> back to 1");
+		});
+	});
+	
+	it(@"should take block quote for abstract", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"> block quote");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"> block quote");
+			GBDiscussion.sectionComponents.count should equal(0);
+		});
+	});
+});
+
 describe(@"warnings and bugs:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
 	describe(@"as part of abstract:", ^{
