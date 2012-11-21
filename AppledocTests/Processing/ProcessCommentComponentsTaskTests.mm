@@ -126,7 +126,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tblock code");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--block code"));
 			});
 		});
 	});
@@ -141,7 +141,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\tline 2");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--line 2"));
 			});
 		});
 	});
@@ -156,7 +156,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t\n\tline 2\n\tline 3");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n\n--line 2\n--line 3"));
 			});
 		});
 	});
@@ -171,7 +171,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line 1\n\n\tline 1\n\nnormal line 2\n\n\tline 2");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
 			});
 		});
 	});
@@ -183,10 +183,10 @@ describe(@"block code:", ^{
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n--continue line"));
 				// execute
 				[task processComment:comment];
-				// verify - note that sundown converts tab into spaces in this case!
+				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n    continue line");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
 			});
 		});
 	});
@@ -198,10 +198,10 @@ describe(@"block code:", ^{
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--\tline 2\n--    line 3"));
 				// execute
 				[task processComment:comment];
-				// verify - note that sundown converts tab into spaces!
+				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t    line 2\n\t    line 3");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--\tline 2\n--    line 3"));
 			});
 		});
 	});

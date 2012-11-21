@@ -35,7 +35,7 @@
 	
 	// Parse comment string into sections.
 	[self parseSectionsFromComment:comment toData:data];
-	[self parseAbstractFromData:data];
+	[self registerSectionFromBuilderInData:data startNewSection:NO];
 	if (data.sections.count == 0) return GBResultOk;
 	
 	// Process sections into comment components.
@@ -44,30 +44,76 @@
 	[self registerMethodFromData:data toComment:comment];
 }
 
+#pragma mark - Splitting source string to sections
+
 - (void)parseSectionsFromComment:(CommentInfo *)comment toData:(ProcessComponentsData *)data {
 	LogProDebug(@"Parsing comment string into sections...");
-	[self.markdownParser parseString:comment.sourceString context:data];
-	[self processAndRegisterString:data.builder toData:data append:NO];
+	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
+	NSString *sourceString = comment.sourceString;
+	__weak ProcessCommentComponentsTask *bself = self;
+	__block NSUInteger index = 0;
+	[expression gb_allMatchesIn:sourceString match:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
+		NSRange range = NSMakeRange(index, match.range.location - index);
+		NSString *section = [sourceString substringWithRange:range];
+		[bself parseSectionsFromString:section toData:data];
+		index = match.range.location + match.range.length;
+	}];
+	NSString *remainingString = [sourceString substringFromIndex:index];
+	[self parseSectionsFromString:remainingString toData:data];
 }
 
-- (void)parseAbstractFromData:(ProcessComponentsData *)data {
-	// Find first empty line in first section.
-	if (data.sections.count == 0) return;
-	LogProDebug(@"Parsing abstract from sections...");
-	NSString *firstSection = data.sections[0];
-	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
-	NSTextCheckingResult *match = [expression gb_firstMatchIn:firstSection];
-	if (!match) return;
+- (void)parseSectionsFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
+	if (sectionString.length == 0) return;
+
+	// If current "paragraph" starts with section directive, we must split the whole string into individual sections, each directive starting new section.
+	NSRegularExpression *sectionExpression = [NSRegularExpression gb_sectionDelimiterMatchingExpression];
+	NSArray *sectionMatches = [sectionExpression gb_allMatchesIn:sectionString];
+	if (sectionMatches.count > 0 && [sectionMatches[0] range].location == 0) {
+		// Register current builder as section, if needed.
+		if (data.builder.length > 0) [self registerSectionFromBuilderInData:data startNewSection:YES];
+
+		// Register all directives from current section string.
+		__weak ProcessCommentComponentsTask *bself = self;
+		__block NSUInteger lastMatchLocation = 0;
+		[sectionMatches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
+			if (idx == 0) return;
+			NSString *currentSectionString = [[match gb_prefixFromIndex:lastMatchLocation in:sectionString] gb_stringByTrimmingNewLines];
+			[data.builder appendString:currentSectionString];
+			[bself registerSectionFromBuilderInData:data startNewSection:YES];
+			lastMatchLocation = match.range.location;
+		}];
+		
+		// Register remaining section, but keep the string so we can append subsequent paragraphs to it.
+		NSString *remainingSectionString = [[sectionString substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines];
+		[data.builder appendString:remainingSectionString];
+		[self registerSectionFromBuilderInData:data startNewSection:NO];
+		return;
+	}
 	
-	// Split first section into two - delimited by first empty line.
-	NSUInteger firstSectionEndIndex = match.range.location;
-	NSUInteger subsequentSectionsStartIndex = firstSectionEndIndex + match.range.length;
-	NSString *abstractSection = [firstSection substringToIndex:firstSectionEndIndex];
-	NSString *discussionSection = [firstSection substringFromIndex:subsequentSectionsStartIndex];
-	[data.sections removeObjectAtIndex:0];
-	[data.sections insertObject:abstractSection atIndex:0];
-	[data.sections insertObject:discussionSection atIndex:1];
+	// If this is the first paragraph to be registered, take it as abstract and create single section out of it.
+	if (data.sections.count == 0) {
+		LogProDebug(@"Detected abstract '%@'...", [sectionString gb_description]);
+		[data.builder appendString:sectionString];
+		[self registerSectionFromBuilderInData:data startNewSection:YES];
+		return;
+	}
+	
+	// Otherwise append "normal" paragraph to current section builder to be registered later on.
+	LogProDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
+	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
+	[data.builder appendString:[sectionString gb_stringByTrimmingNewLines]];
 }
+
+- (void)registerSectionFromBuilderInData:(ProcessComponentsData *)data startNewSection:(BOOL)startNew {
+	// Note that we need to handle special case where current builder string is the same pointer as last object; in such case we can ignore it, but we do need to clear the string!
+	if (data.builder.length == 0) return;
+	if (data.builder == data.sections.lastObject) { data.builder=[@"" mutableCopy]; return; }
+	LogProDebug(@"Registering section '%@'...", [data.builder gb_description]);
+	[data.sections addObject:data.builder];
+	if (startNew) data.builder = [@"" mutableCopy];
+}
+
+#pragma mark - Registering sections to comment
 
 - (void)registerAbstractFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
 	LogProDebug(@"Registering abstract...");
@@ -154,118 +200,11 @@
 
 #pragma mark - Comment components handling
 
-- (void)processAndRegisterString:(NSString *)string toData:(ProcessComponentsData *)data append:(BOOL)append {
-	// Process @ directive section if matched at the start of the string.
-	if (string.length == 0) return;
-	LogProDebug(@"Processing and registering '%@'...", [string gb_description]);
-	NSRegularExpression *expression = [NSRegularExpression gb_sectionDelimiterMatchingExpression];
-	NSArray *matches = [expression gb_allMatchesIn:string];
-	if (matches.count > 0 && [matches[0] range].location == 0) {
-		// Register existing section if needed.
-		if (data.builder.length > 0) {
-			LogProDebug(@"Detected section '%@'.", data.builder);
-			[data.sections addObject:data.builder];
-			data.builder = [@"" mutableCopy];
-		}
-
-		// Process directives.
-		__block NSUInteger lastMatchLocation = 0;
-		[matches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
-			if (idx == 0) return;
-			NSUInteger previousMatchLocation = [matches[idx-1] range].location;
-			NSUInteger currentMatchLocation = match.range.location;
-			NSRange sectionRange = NSMakeRange(previousMatchLocation, currentMatchLocation - previousMatchLocation);
-			NSString *sectionString = [[string substringWithRange:sectionRange] gb_stringByTrimmingNewLines];
-			LogProDebug(@"Detected section '%@'.", sectionString);
-			[data.sections addObject:sectionString];
-			lastMatchLocation = currentMatchLocation;
-		}];
-		
-		// Finish the last directive. Note that this time we only copy it to builder so we can append additional paragraphs in next shot.
-		data.builder = [[[string substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines] mutableCopy];
-		LogProDebug(@"Detected section '%@'.", data.builder);
-		return;
-	}
-	
-	// Append all other text to current section builder if append is allowed.
-	if (append) {
-		[self appendBlockFromString:string toData:data];
-		return;
-	}
-	
-	// Register remaining paragraph.
-	[data.sections addObject:string];
-}
-
-- (void)appendBlockFromString:(NSString *)string toData:(ProcessComponentsData *)data {
-	if (string.length == 0) return;
-	LogParDebug(@"Appending block '%@'...", [string gb_description]);
-	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
-	[data.builder appendString:[string gb_stringByTrimmingNewLines]];
-}
-
-#pragma mark - Low level string parsing
-
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
 	LogProDebug(@"Creating component for %@...", string);
 	CommentComponentInfo *result = [[CommentComponentInfo alloc] init];
 	result.sourceString = string;
 	return result;
-}
-
-@end
-
-#pragma mark -
-
-@implementation ProcessCommentComponentsTask (MarkdownParserDelegateImplementation)
-
-- (void)markdownParser:(MarkdownParser *)parser parseBlockCode:(const struct buf *)text language:(const struct buf *)language output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	NSString *block = [parser stringFromBuffer:text];
-	LogProDebug(@"Processing block code '%@'...", [block gb_description]);
-	NSMutableString *formattedBlock = [@"" mutableCopy];
-	[block enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-		[formattedBlock appendFormat:@"\t%@\n", line];
-	}];
-	[self appendBlockFromString:formattedBlock toData:data];
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseBlockQuote:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block quote '%@'...", [[parser stringFromBuffer:text] gb_description]);
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseBlockHTML:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing block HTML '%@'...", [[parser stringFromBuffer:text] gb_description]);
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseHeader:(const struct buf *)text level:(NSInteger)level output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing header '%@'...", [[parser stringFromBuffer:text] gb_description]);
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseHRule:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing hrule...");
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseList:(const struct buf *)text flags:(NSInteger)flags output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing list '%@'...", [[parser stringFromBuffer:text] gb_description]);
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseListItem:(const struct buf *)text flags:(NSInteger)flags output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	LogProDebug(@"Processing list item '%@'...", [[parser stringFromBuffer:text] gb_description]);
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseParagraph:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-	NSString *paragraph = [parser stringFromBuffer:text];
-	LogProDebug(@"Detected paragraph '%@'.", [paragraph gb_description]);
-	[self processAndRegisterString:paragraph toData:data append:YES];
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseTableHeader:(const struct buf *)header body:(const struct buf *)body output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseTableRow:(const struct buf *)text output:(struct buf *)buffer context:(ProcessComponentsData *)data {
-}
-
-- (void)markdownParser:(MarkdownParser *)parser parseTableCell:(const struct buf *)text flags:(NSInteger)flags output:(struct buf *)buffer context:(ProcessComponentsData *)data {
 }
 
 @end
