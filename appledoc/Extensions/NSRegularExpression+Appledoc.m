@@ -93,6 +93,12 @@
 	return [string substringWithRange:range];
 }
 
+- (NSString *)gb_prefixFromIndex:(NSUInteger)index in:(NSString *)string {
+	NSUInteger location = self.range.location;
+	NSRange range = NSMakeRange(index, location - index);
+	return [string substringWithRange:range];
+}
+
 - (NSString *)gb_remainingStringIn:(NSString *)string {
 	return [string substringFromIndex:self.range.location + self.range.length];
 }

@@ -35,6 +35,7 @@ typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx,
 @interface NSTextCheckingResult (Appledoc)
 
 - (NSString *)gb_stringAtIndex:(NSUInteger)index in:(NSString *)string;
+- (NSString *)gb_prefixFromIndex:(NSUInteger)index in:(NSString *)string;
 - (NSString *)gb_remainingStringIn:(NSString *)string;
 - (NSRange)gb_remainingRangeIn:(NSString *)string;
 

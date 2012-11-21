@@ -126,7 +126,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tblock code");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--block code"));
 			});
 		});
 	});
@@ -141,7 +141,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\tline 2");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--line 2"));
 			});
 		});
 	});
@@ -156,7 +156,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t\n\tline 2\n\tline 3");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n\n--line 2\n--line 3"));
 			});
 		});
 	});
@@ -171,7 +171,7 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line 1\n\n\tline 1\n\nnormal line 2\n\n\tline 2");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
 			});
 		});
 	});
@@ -183,10 +183,10 @@ describe(@"block code:", ^{
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n--continue line"));
 				// execute
 				[task processComment:comment];
-				// verify - note that sundown converts tab into spaces in this case!
+				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n    continue line");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
 			});
 		});
 	});
@@ -198,10 +198,10 @@ describe(@"block code:", ^{
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--\tline 2\n--    line 3"));
 				// execute
 				[task processComment:comment];
-				// verify - note that sundown converts tab into spaces!
+				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n\tline 1\n\t    line 2\n\t    line 3");
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--\tline 2\n--    line 3"));
 			});
 		});
 	});
@@ -224,6 +224,160 @@ describe(@"block code:", ^{
 		itShouldBehaveLike(@"example4");
 		itShouldBehaveLike(@"example5");
 		itShouldBehaveLike(@"example6");
+	});
+});
+
+describe(@"block quote:", ^{
+	it(@"should append block quote to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> block quote");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> block quote");
+		});
+	});
+
+	it(@"should append all block quotes to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> line 1\n> line 2\n\n> line 3");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> line 1\n> line 2\n\n> line 3");
+		});
+	});
+	
+	it(@"should handle nested block quotes", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\n> level 1\n> > level 2\n> back to 1");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> level 1\n> > level 2\n> back to 1");
+		});
+	});
+	
+	it(@"should take block quote for abstract", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"> block quote");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"> block quote");
+			GBDiscussion.sectionComponents.count should equal(0);
+		});
+	});
+});
+
+describe(@"lists:", ^{
+#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
+	sharedExamplesFor(@"example1", ^(NSDictionary *info) {
+		it(@"should append list to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- list item"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- list item"));
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example2", ^(NSDictionary *info) {
+		it(@"should append all list items to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example3", ^(NSDictionary *info) {
+		it(@"should handle nested lists", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
+			});
+		});
+	});
+		
+	sharedExamplesFor(@"example4", ^(NSDictionary *info) {
+		it(@"should take list for abstract", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"-- item"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(GBReplace(@"-- item"));
+				GBDiscussion.sectionComponents.count should equal(0);
+			});
+		});
+	});
+
+	describe(@"unordered lists with minus:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"-"; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+	});
+	
+	describe(@"unordered lists with star:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"*"; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+	});
+	
+	describe(@"ordered lists:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"1."; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+	});
+});
+
+describe(@"tables:", ^{
+	it(@"should append table to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
+		});
 	});
 });
 
