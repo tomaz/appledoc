@@ -366,6 +366,21 @@ describe(@"lists:", ^{
 	});
 });
 
+describe(@"tables:", ^{
+	it(@"should append table to previous paragraph", ^{
+		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\nnormal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBAbstract.sourceString should equal(@"abstract");
+			GBDiscussion.sectionComponents.count should equal(1);
+			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
+		});
+	});
+});
+
 describe(@"warnings and bugs:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
 	describe(@"as part of abstract:", ^{
