@@ -227,7 +227,7 @@ describe(@"block code:", ^{
 	});
 });
 
-describe(@"block quote", ^{
+describe(@"block quote:", ^{
 	it(@"should append block quote to previous paragraph", ^{
 		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 			// setup
@@ -277,6 +277,92 @@ describe(@"block quote", ^{
 			GBAbstract.sourceString should equal(@"> block quote");
 			GBDiscussion.sectionComponents.count should equal(0);
 		});
+	});
+});
+
+describe(@"lists:", ^{
+#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
+	sharedExamplesFor(@"example1", ^(NSDictionary *info) {
+		it(@"should append list to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- list item"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- list item"));
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example2", ^(NSDictionary *info) {
+		it(@"should append all list items to previous paragraph", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
+			});
+		});
+	});
+	
+	sharedExamplesFor(@"example3", ^(NSDictionary *info) {
+		it(@"should handle nested lists", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
+			});
+		});
+	});
+		
+	sharedExamplesFor(@"example4", ^(NSDictionary *info) {
+		it(@"should take list for abstract", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"-- item"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(GBReplace(@"-- item"));
+				GBDiscussion.sectionComponents.count should equal(0);
+			});
+		});
+	});
+
+	describe(@"unordered lists with minus:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"-"; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+	});
+	
+	describe(@"unordered lists with star:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"*"; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
+	});
+	
+	describe(@"ordered lists:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"1."; });
+		itShouldBehaveLike(@"example1");
+		itShouldBehaveLike(@"example2");
+		itShouldBehaveLike(@"example3");
+		itShouldBehaveLike(@"example4");
 	});
 });
 
