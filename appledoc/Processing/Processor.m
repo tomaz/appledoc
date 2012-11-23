@@ -16,7 +16,7 @@
 #pragma mark - Task invocation
 
 - (NSInteger)runTask {
-	LogNormal(@"Processing started...");
+	LogNormal(@"Processing...");
 	__weak Processor *blockSelf = self;
 	__block GBResult result = GBResultOk;
 
@@ -47,7 +47,7 @@
 #pragma mark - Processor helpers
 
 - (NSInteger)processInterface:(InterfaceInfoBase *)interface {
-	LogVerbose(@"Processing %@...", interface);
+	LogNormal(@"%@", interface);
 	NSInteger result = GBResultOk;
 	[self processCommentForObject:interface context:interface];
 	GB_PROCESS([self processMembers:interface.interfaceClassMethods forObject:interface]);

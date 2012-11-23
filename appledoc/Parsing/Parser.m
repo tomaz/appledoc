@@ -20,13 +20,13 @@ typedef void(^ParserPathBlock)(NSString *path);
 #pragma mark - Task invocation
 
 - (NSInteger)runTask {
-	LogNormal(@"Starting parsing...");
+	LogNormal(@"Parsing...");
 	__weak Parser *blockSelf = self;
 	__block GBResult result = GBResultOk;
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		GBResult pr = [blockSelf parsePath:path withBlock:^(NSString *path) {
 			if (![blockSelf isSourceCodeFile:path]) return;
-			LogVerbose(@"Parsing source file '%@'...", path);
+			LogNormal(@"%@", path);
 			NSInteger parseResult = [self.objectiveCParser parseFile:path withSettings:self.settings store:self.store];
 			if (parseResult > result) result = parseResult;
 		}];
@@ -39,7 +39,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 #pragma mark - Parsing helpers
 
 - (NSInteger)parsePath:(NSString *)path withBlock:(ParserPathBlock)handler {
-	LogVerbose(@"Parsing '%@'...", path);
+	LogDebug(@"Parsing '%@'...", path);
 	NSString *standardized = [path gb_stringByStandardizingCurrentDirAndPath];
 	
 	if (![self.fileManager fileExistsAtPath:standardized]) {
@@ -95,7 +95,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 		LogNormal(@"Path '%@' ignored, skipping...", path);
 		return GBResultOk;
 	}
-	LogVerbose(@"Parsing file '%@'...", path);
+	LogDebug(@"Parsing file '%@'...", path);
 	handler(path);
 	return GBResultOk;
 }

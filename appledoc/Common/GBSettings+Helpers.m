@@ -28,7 +28,6 @@
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
 	self.loggingFormat = 0;
-	self.loggingLevel = 2;
 	self.loggingCommonEnabled = YES;
 	self.loggingStoreEnabled = NO;
 	self.loggingParsingEnabled = NO;
