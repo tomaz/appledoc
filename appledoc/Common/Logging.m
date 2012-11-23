@@ -105,4 +105,4 @@ void initialize_logging_from_settings(GBSettings *settings) {
 #pragma mark - Definitions of external symbols
 
 logger_function_t log_function = log_function_none;
-NSUInteger log_level = LOG_LEVEL_NORMAL;
+NSUInteger log_level = LOG_LEVEL_OFF;

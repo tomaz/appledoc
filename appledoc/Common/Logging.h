@@ -23,6 +23,7 @@ extern NSUInteger log_level;
 #define LOG_FLAG_VERBOSE	(1 << 3)	// 0b0000001000
 #define LOG_FLAG_DEBUG		(1 << 4)	// 0b0000010000
 
+#define LOG_LEVEL_OFF		(0)
 #define LOG_LEVEL_ERROR		(LOG_FLAG_ERROR)						// 0b00001
 #define LOG_LEVEL_WARN		(LOG_FLAG_WARN    | LOG_LEVEL_ERROR)	// 0b00011
 #define LOG_LEVEL_NORMAL	(LOG_FLAG_NORMAL  | LOG_LEVEL_WARN)		// 0b00111
