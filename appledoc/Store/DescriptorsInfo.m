@@ -16,7 +16,7 @@
 
 - (NSMutableArray *)descriptorItems {
 	if (_descriptorItems) return _descriptorItems;
-	LogIntDebug(@"Initializing descriptor items array due to first access...");
+	LogDebug(@"Initializing descriptor items array due to first access...");
 	_descriptorItems = [[NSMutableArray alloc] init];
 	return _descriptorItems;
 }
@@ -28,7 +28,7 @@
 @implementation DescriptorsInfo (Registrations)
 
 - (void)appendDescriptor:(NSString *)descriptor {
-	LogStoInfo(@"Assigning descriptor %@...", descriptor);
+	LogVerbose(@"Assigning descriptor %@...", descriptor);
 	[self.descriptorItems addObject:descriptor];
 }
 

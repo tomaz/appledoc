@@ -24,11 +24,11 @@
 }
 
 - (BOOL)consumePragmaStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matched #pragma mark.");
+	LogDebug(@"Matched #pragma mark.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.stream consume:3]; // # pragma mark
 	if ([data.stream matches:@"-", nil]) {
-		LogParDebug(@"Matched - (part of #pragma mark -)");
+		LogDebug(@"Matched - (part of #pragma mark -)");
 		[data.stream consume:1];
 	}
 	return YES;
@@ -40,19 +40,19 @@
 	PKToken *firstDescriptionToken = data.stream.current;
 	PKToken *lastDescriptionToken = [self consumeUntilLastPragmaDescriptionToken:data];
 	if (!lastDescriptionToken) {
-		LogParDebug(@"No pragma mark description, bailing out!");
+		LogDebug(@"No pragma mark description, bailing out!");
 		[data.parser popState];
 		return NO;
 	}
 	
 	NSString *description = [self pragmaDescriptionFromStartToken:firstDescriptionToken endToken:lastDescriptionToken data:data];
 	if (description.length == 0) {
-		LogParDebug(@"Empty pragma mark description, bailing out!");
+		LogDebug(@"Empty pragma mark description, bailing out!");
 		[data.parser popState];
 		return NO;
 	}
 	
-	LogParDebug(@"Ending #pragma mark.");
+	LogDebug(@"Ending #pragma mark.");
 	[data.store appendMethodGroupWithDescription:description];
 	[data.parser popState];
 	return YES;
@@ -63,7 +63,7 @@
 - (PKToken *)consumeUntilLastPragmaDescriptionToken:(ObjectiveCParseData *)data {
 	PKToken *result = nil;
 	while (!data.stream.eof && [self isCurrentTokenOnStartingLine:data]) {
-		LogParDebug(@"Matched '%@'.", data.stream.current);
+		LogDebug(@"Matched '%@'.", data.stream.current);
 		result = data.stream.current;
 		[data.stream consume:1];
 	}
@@ -81,11 +81,11 @@
 
 - (BOOL)isCurrentTokenOnStartingLine:(ObjectiveCParseData *)data {
 	if (data.stream.eof) {
-		LogParDebug(@"End of tokens reached, bailing out.");
+		LogDebug(@"End of tokens reached, bailing out.");
 		[data.parser popState];
 		return NO;
 	} else if (data.stream.current.location.y != self.startingLine) {
-		LogParDebug(@"End of line reached, bailing out.");
+		LogDebug(@"End of line reached, bailing out.");
 		[data.parser popState];
 		return NO;
 	}

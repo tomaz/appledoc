@@ -28,7 +28,7 @@
 }
 
 - (BOOL)consumePropertyStartTokens:(ObjectiveCParseData *)data {
-    LogParDebug(@"Matched property definition.");
+    LogDebug(@"Matched property definition.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginPropertyDefinition];
 	[data.stream consume:2];
@@ -37,16 +37,16 @@
 
 - (BOOL)parsePropertyAttributes:(ObjectiveCParseData *)data {
     if ([data.stream matches:@"(", nil]) {
-		LogParDebug(@"Matching attributes...");
+		LogDebug(@"Matching attributes...");
 		[data.store beginPropertyAttributes];
 		NSArray *delimiters = self.propertyAttributeDelimiters;
 		NSUInteger found = [data.stream matchStart:@"(" end:@")" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-			LogParDebug(@"Matched '%@'.", token);
+			LogDebug(@"Matched '%@'.", token);
 			if ([token matches:delimiters]) return;
 			[data.store appendAttribute:token.stringValue];
 		}];
 		if (found == NSNotFound) {
-			LogParDebug(@"Failed matching attributes, bailing out.");
+			LogDebug(@"Failed matching attributes, bailing out.");
 			[data.store cancelCurrentObject]; // attribute types
 			[data.store cancelCurrentObject]; // property definition
 			[data.parser popState];
@@ -62,10 +62,10 @@
 	NSUInteger indexOfEndToken = [self lookaheadIndexOfPropertyEndToken:data];
 	NSUInteger indexOfNameToken = MIN(indexOfDescriptorToken, indexOfEndToken) - 1;
 	BOOL hasDescriptors = (indexOfEndToken > indexOfDescriptorToken);
-	LogParDebug(@"Matching types and name.");
+	LogDebug(@"Matching types and name.");
 	[data.store beginPropertyTypes];
 	NSUInteger found = [data.stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched '%@'.", token);
+		LogDebug(@"Matched '%@'.", token);
 		if (lookahead < indexOfNameToken) {
 			[data.store appendType:token.stringValue];
 		} else if (lookahead == indexOfNameToken) {
@@ -81,7 +81,7 @@
 		}
 	}];
 	if (found == NSNotFound) {
-		LogParDebug(@"Failed matching type and name, bailing out.");
+		LogDebug(@"Failed matching type and name, bailing out.");
 		[data.store cancelCurrentObject]; // property types
 		[data.store cancelCurrentObject]; // property definition
 		[data.parser popState]; 
@@ -91,7 +91,7 @@
 }
 
 - (BOOL)finalizeProperty:(ObjectiveCParseData *)data {
-	LogParDebug(@"Ending property.");
+	LogDebug(@"Ending property.");
 	[data.store endCurrentObject]; // property definition
 	[data.parser popState];
 	return YES;
@@ -99,7 +99,7 @@
 
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptor:(ObjectiveCParseData *)data {
 	// Require at least one token for type and one for name. Note that we should take all asterisks as types while here!
-    LogParDebug(@"Scanning tokens for property descriptors.");
+    LogDebug(@"Scanning tokens for property descriptors.");
 	__block BOOL wasPreviousTokenPossiblePropertyName = YES;
 	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *isDescriptor) {
 		if ([token matches:@"*"]) {
@@ -114,7 +114,7 @@
 }
 
 - (NSUInteger)lookaheadIndexOfPropertyEndToken:(ObjectiveCParseData *)data {
-	LogParDebug(@"Scanning tokens for property end.");
+	LogDebug(@"Scanning tokens for property end.");
 	return [data lookaheadIndexOfFirstToken:@";"];
 }
 
@@ -122,7 +122,7 @@
 
 - (NSArray *)propertyAttributeDelimiters {
 	if (_propertyAttributeDelimiters) return _propertyAttributeDelimiters;
-	LogIntDebug(@"Initializing attribute delimiters due to first access...");
+	LogDebug(@"Initializing attribute delimiters due to first access...");
 	_propertyAttributeDelimiters = @[@"(", @",", @")", @";"];
 	return _propertyAttributeDelimiters;
 }

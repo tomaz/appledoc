@@ -49,7 +49,6 @@ static char *log_flag_description(int flag) {
 		case LOG_FLAG_ERROR: return "ERROR";
 		case LOG_FLAG_WARN: return "WARN";
 		case LOG_FLAG_NORMAL: return "NORMAL";
-		case LOG_FLAG_INFO: return "INFO";
 		case LOG_FLAG_VERBOSE: return "VERBOSE";
 		case LOG_FLAG_DEBUG: return "DEBUG";
 	}
@@ -90,12 +89,8 @@ static void log_function_3(int flag, const char *path, const char *function, int
 
 void initialize_logging_from_settings(GBSettings *settings) {
 	switch (settings.loggingLevel) {
-		case 0: log_level = LOG_LEVEL_ERROR; break;
-		case 1: log_level = LOG_LEVEL_WARN; break;
-		case 2: log_level = LOG_LEVEL_NORMAL; break;
-		case 3: log_level = LOG_LEVEL_INFO; break;
-		case 4: log_level = LOG_LEVEL_VERBOSE; break;
-		case 5: log_level = LOG_LEVEL_DEBUG; break;
+		case 1: log_level = LOG_LEVEL_VERBOSE; break;
+		case 2: log_level = LOG_LEVEL_DEBUG; break;
 		default: log_level = LOG_LEVEL_NORMAL; break;
 	}
 	switch (settings.loggingFormat) {
@@ -105,11 +100,6 @@ void initialize_logging_from_settings(GBSettings *settings) {
 		case 3: log_function = log_function_3; break;
 		default: log_function = log_function_0; break;
 	}
-	if (settings.loggingCommonEnabled) log_level |= LOG_FLAG_COMMON;
-	if (settings.loggingStoreEnabled) log_level |= LOG_FLAG_STORE;
-	if (settings.loggingParsingEnabled) log_level |= LOG_FLAG_PARSING;
-	if (settings.loggingProcessingEnabled) log_level |= LOG_FLAG_PROCESSING;
-	if (settings.loggingInternalEnabled) log_level |= LOG_FLAG_INTERNAL;
 }
 
 #pragma mark - Definitions of external symbols

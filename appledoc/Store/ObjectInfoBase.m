@@ -32,7 +32,7 @@
 
 - (void)pushRegistrationObject:(id)object {
 	if (!self.objectRegistrar) {
-		LogStoWarn(@"No registrar is assigned, can't push %@!", object);
+		LogWarn(@"No registrar is assigned, can't push %@!", object);
 		return;
 	}
 	[self.objectRegistrar pushRegistrationObject:object];
@@ -40,7 +40,7 @@
 
 - (id)popRegistrationObject {
 	if (!self.objectRegistrar) {
-		LogStoWarn(@"No registrar is assigned, can't pop!");
+		LogWarn(@"No registrar is assigned, can't pop!");
 		return nil;
 	}
 	return [self.objectRegistrar popRegistrationObject];

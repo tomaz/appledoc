@@ -55,7 +55,7 @@
 #pragma mark - Parsing
 
 - (NSInteger)parseString:(NSString *)string {
-	LogParDebug(@"Parsing '%@' for Objective C data...", [self.filename lastPathComponent]);
+	LogDebug(@"Parsing '%@' for Objective C data...", [self.filename lastPathComponent]);
 	[self prepareParserForParsingString:string];
 	return [self parseTokens];
 }
@@ -72,7 +72,7 @@
 	ObjectiveCParseData *data = [ObjectiveCParseData dataWithStream:self.tokensStream parser:self store:self.store];
 	while (!self.tokensStream.eof) {
 		PKToken *token = self.tokensStream.current;
-		LogParDebug(@"Parsing token '%@'...", [token.stringValue gb_description]);
+		LogDebug(@"Parsing token '%@'...", [token.stringValue gb_description]);
 		if ([self parseCommentToken:token]) continue;
 		if (![self registerComments]) break;
 		if (![self parseTokensWithData:data result:&result]) break;
@@ -84,7 +84,7 @@
 - (BOOL)parseTokensWithData:(ObjectiveCParseData *)data result:(GBResult *)result {
 	GBResult stateResult = [self.currentState parseWithData:data];
 	if ([self isParseResultFailure:stateResult]) {
-		LogParDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
+		LogDebug(@"State %@ reported error code %ld, bailing out!", self.currentState, stateResult);
 		if (result) *result = stateResult;
 		return NO;
 	}
@@ -93,13 +93,13 @@
 
 - (BOOL)parseCommentToken:(PKToken *)token {
 	if (!token.isComment) return NO;
-	LogParDebug(@"Token is comment, testing for appledoc comments...");
+	LogDebug(@"Token is comment, testing for appledoc comments...");
 	if ([self.commentParser isAppledocComment:token.stringValue]) {
-		LogParDebug(@"Token is appledoc comment, parsing...");
+		LogDebug(@"Token is appledoc comment, parsing...");
 		if (!self.commentStartToken) self.commentStartToken = token;
 		[self.commentParser parseComment:token.stringValue line:token.location.y];
 	}
-	LogParDebug(@"Consuming comment...");
+	LogDebug(@"Consuming comment...");
 	[self.tokensStream consume:1];
 	return YES;
 }
@@ -121,13 +121,13 @@
 #pragma mark - States handling
 
 - (void)pushState:(ObjectiveCParserState *)state {
-	LogParDebug(@"Pushing parser state: %@...", state);
+	LogDebug(@"Pushing parser state: %@...", state);
 	[self.statesStack addObject:state];
 	self.currentState = state;
 }
 
 - (void)popState {
-	LogParDebug(@"Popping parser state...");
+	LogDebug(@"Popping parser state...");
 	[self.statesStack removeLastObject];
 	self.currentState = (self.statesStack.count > 0) ? self.statesStack.lastObject : nil;
 }
@@ -136,56 +136,56 @@
 
 - (ObjectiveCParserState *)fileState {
 	if (_fileState) return _fileState;
-	LogIntDebug(@"Initializing file state due to first access...");
+	LogDebug(@"Initializing file state due to first access...");
 	_fileState = [[ObjectiveCFileState alloc] init];
 	return _fileState;
 }
 
 - (ObjectiveCParserState *)interfaceState {
 	if (_interfaceState) return _interfaceState;
-	LogIntDebug(@"Initializing interface state due to first access...");
+	LogDebug(@"Initializing interface state due to first access...");
 	_interfaceState = [[ObjectiveCInterfaceState alloc] init];
 	return _interfaceState;
 }
 
 - (ObjectiveCParserState *)propertyState {
 	if (_propertyState) return _propertyState;
-	LogIntDebug(@"Initializing property state due to first access...");
+	LogDebug(@"Initializing property state due to first access...");
 	_propertyState = [[ObjectiveCPropertyState alloc] init];
 	return _propertyState;
 }
 
 - (ObjectiveCParserState *)methodState {
 	if (_methodState) return _methodState;
-	LogIntDebug(@"Initializing method state due to first access...");
+	LogDebug(@"Initializing method state due to first access...");
 	_methodState = [[ObjectiveCMethodState alloc] init];
 	return _methodState;
 }
 
 - (ObjectiveCParserState *)pragmaMarkState {
 	if (_pragmaMarkState) return _pragmaMarkState;
-	LogIntDebug(@"Initializing pragma mark state due to first access...");
+	LogDebug(@"Initializing pragma mark state due to first access...");
 	_pragmaMarkState = [[ObjectiveCPragmaMarkState alloc] init];
 	return _pragmaMarkState;
 }
 
 - (ObjectiveCParserState *)enumState {
 	if (_enumState) return _enumState;
-	LogIntDebug(@"Initializing enum state due to first access...");
+	LogDebug(@"Initializing enum state due to first access...");
 	_enumState = [[ObjectiveCEnumState alloc] init];
 	return _enumState;
 }
 
 - (ObjectiveCParserState *)structState {
 	if (_structState) return _structState;
-	LogIntDebug(@"Initializing struct state due to first access...");
+	LogDebug(@"Initializing struct state due to first access...");
 	_structState = [[ObjectiveCStructState alloc] init];
 	return _structState;
 }
 
 - (ObjectiveCParserState *)constantState {
 	if (_constantState) return _constantState;
-	LogIntDebug(@"Initializing constant state due to first access...");
+	LogDebug(@"Initializing constant state due to first access...");
 	_constantState = [[ObjectiveCConstantState alloc] init];
 	return _constantState;
 }
@@ -194,7 +194,7 @@
 
 - (PKTokenizer *)tokenizer {
 	if (_tokenizer) return _tokenizer;
-	LogIntDebug(@"Initializing tokenizer due to first access...");
+	LogDebug(@"Initializing tokenizer due to first access...");
 	_tokenizer = [PKTokenizer tokenizer];
 	[_tokenizer setTokenizerState:_tokenizer.wordState from:'_' to:'_'];	// Allow words to start with _
 	[_tokenizer.symbolState add:@"..."];	// Allow ... as single token
@@ -204,22 +204,22 @@
 
 - (CommentParser *)commentParser {
 	if (_commentParser) return _commentParser;
-	LogIntDebug(@"Initializing comment parser due to first access...");
+	LogDebug(@"Initializing comment parser due to first access...");
 	Store *store = self.store;
 	__weak ObjectiveCParser *blockSelf = self;
 	_commentParser = [[CommentParser alloc] init];
 	_commentParser.groupRegistrator = ^(CommentParser *parser, NSString *group) {
-		LogParDebug(@"Registering method group %@...", group);
+		LogDebug(@"Registering method group %@...", group);
 		[store appendMethodGroupWithDescription:group];
 		blockSelf.commentStartToken = nil;
 	};
 	_commentParser.commentRegistrator = ^(CommentParser *parser, NSString *comment, BOOL isInline) {
 		if (isInline) {
-			LogParDebug(@"Registering inline comment %@...", [comment gb_description]);
+			LogDebug(@"Registering inline comment %@...", [comment gb_description]);
 			[store setCurrentSourceInfo:blockSelf.commentStartToken];
 			[store appendCommentToPreviousObject:comment];
 		} else {
-			LogParDebug(@"Registering comment %@...", [comment gb_description]);
+			LogDebug(@"Registering comment %@...", [comment gb_description]);
 			[store setCurrentSourceInfo:blockSelf.commentStartToken];
 			[store appendCommentToNextObject:comment];
 		}

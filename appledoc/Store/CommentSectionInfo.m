@@ -15,7 +15,7 @@
 
 - (NSMutableArray *)sectionComponents {
 	if (_sectionComponents) return _sectionComponents;
-	LogIntDebug(@"Initializing comment named section components array due to first access...");
+	LogDebug(@"Initializing comment named section components array due to first access...");
 	_sectionComponents = [[NSMutableArray alloc] init];
 	return _sectionComponents;
 }

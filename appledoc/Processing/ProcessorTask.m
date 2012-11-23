@@ -47,7 +47,7 @@
 
 - (MarkdownParser *)markdownParser {
 	if (_markdownParser) return _markdownParser;
-	LogIntDebug(@"Initializing markdown parser due to first access...");
+	LogDebug(@"Initializing markdown parser due to first access...");
 	_markdownParser = [[MarkdownParser alloc] init];
 	_markdownParser.delegate = self;
 	return _markdownParser;

@@ -53,10 +53,10 @@
 
 - (void)parseComment:(NSString *)comment line:(NSUInteger)line {
 	if ([self isSingleLiner:comment]) {
-		LogParDebug(@"Parsing single line comment '%@' at %lu...", [comment gb_description], line);
+		LogDebug(@"Parsing single line comment '%@' at %lu...", [comment gb_description], line);
 		[self parseSingleLinerFromString:comment line:line];
 	} else if ([self isMultiLiner:comment]) {
-		LogParDebug(@"Parsing multi line comment '%@' at %lu...", [comment gb_description], line);
+		LogDebug(@"Parsing multi line comment '%@' at %lu...", [comment gb_description], line);
 		[self parseMultiLinerFromString:comment line:line];
 	} else {
 		LogWarn(@"Invalid comment '%@' at line %lu!", [comment gb_description], line);
@@ -64,7 +64,7 @@
 }
 
 - (void)notifyAndReset {
-	LogParDebug(@"Resetting internal comment data...");
+	LogDebug(@"Resetting internal comment data...");
 	[self notifyAboutGroupIfNecessaryAndReset:YES];
 	[self notifyAboutCommentIfNecessaryAndReset:YES];
 }
@@ -149,7 +149,7 @@
 - (void)notifyAboutGroupIfNecessaryAndReset:(BOOL)reset {
 	if (!self.groupComment) return;
 	if (self.groupRegistrator) {
-		LogParDebug(@"Notifying about group comment '%@'...", self.groupComment);
+		LogDebug(@"Notifying about group comment '%@'...", self.groupComment);
 		self.groupRegistrator(self, self.groupComment);
 	}
 	if (reset) self.groupComment = nil;
@@ -158,7 +158,7 @@
 - (void)notifyAboutCommentIfNecessaryAndReset:(BOOL)reset {
 	if (!self.comment) return;
 	if (self.commentRegistrator) {
-		LogParDebug(@"Notifying about %@comment '%@'...", self.isCommentInline ? @"inline " : @"", [self.comment gb_description]);
+		LogDebug(@"Notifying about %@comment '%@'...", self.isCommentInline ? @"inline " : @"", [self.comment gb_description]);
 		self.commentRegistrator(self, self.comment, self.isCommentInline);
 	}
 	if (reset) self.comment = nil;

@@ -26,7 +26,7 @@
 }
 
 - (BOOL)consumeConstantStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching start of constant.");
+	LogDebug(@"Matching start of constant.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginConstant];
 	return YES;
@@ -37,10 +37,10 @@
 	NSUInteger indexOfEndToken = [self lookaheadIndexOfConstantEndToken:data];
 	NSUInteger indexOfNameToken = MIN(indexOfDescriptorToken, indexOfEndToken) - 1;
 	BOOL hasDescriptors = (indexOfEndToken > indexOfDescriptorToken);
-	LogParDebug(@"Matching constant types and name.");
+	LogDebug(@"Matching constant types and name.");
 	[data.store beginConstantTypes];
 	NSUInteger found = [data.stream matchUntil:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched '%@'.", token);
+		LogDebug(@"Matched '%@'.", token);
 		if (lookahead < indexOfNameToken) {
 			[data.store appendType:token.stringValue];
 		} else if (lookahead == indexOfNameToken) {
@@ -54,7 +54,7 @@
 		}
 	}];
 	if (found == NSNotFound) {
-		LogParDebug(@"Failed matching type and name, bailing out.");
+		LogDebug(@"Failed matching type and name, bailing out.");
 		[data.store cancelCurrentObject]; // constant types
 		[data.store cancelCurrentObject]; // constant definition
 		[data.parser popState]; 
@@ -64,8 +64,8 @@
 }
 
 - (BOOL)finalizeConstant:(ObjectiveCParseData *)data {
-	LogParDebug(@"Finalizing constant.");
-	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	LogDebug(@"Finalizing constant.");
+	LogVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // constant definition
 	[data.parser popState];
 	return YES;
@@ -97,7 +97,7 @@
 
 - (NSUInteger)lookaheadIndexOfFirstPotentialDescriptorToken:(ObjectiveCParseData *)data {
 	// This one is a bit tricky: we want to leave at least 2 tokens before accepting descriptors: one for type and one for name. But if all tokens look like descriptor from start on, we should take them to be types - this would cover cases like (__unsafe_unretained etc). If all tokens look like descriptors, then just take the last as constant name and all prior as types.
-    LogParDebug(@"Scanning tokens for constant descriptors.");
+    LogDebug(@"Scanning tokens for constant descriptors.");
 	__block NSUInteger numberOfSuccessiveDescriptorLikeTokens = 0;
 	NSUInteger result = [data lookaheadIndexOfFirstPotentialDescriptorWithEndDelimiters:@";" block:^(PKToken *token, NSUInteger lookahead, BOOL *isDescriptor) {
 		BOOL looksLikeDescriptor = [data doesStringLookLikeDescriptor:token.stringValue];
@@ -112,7 +112,7 @@
 }
 
 - (NSUInteger)lookaheadIndexOfConstantEndToken:(ObjectiveCParseData *)data {
-	LogParDebug(@"Scanning tokens for property end.");
+	LogDebug(@"Scanning tokens for property end.");
 	return [data lookaheadIndexOfFirstToken:@";"];
 }
 
@@ -120,7 +120,7 @@
 
 - (NSArray *)constantInvalidTokens {
 	if (_constantInvalidTokens) return _constantInvalidTokens;
-	LogIntDebug(@"Initializing invalid tokens array for constant due to first access...");
+	LogDebug(@"Initializing invalid tokens array for constant due to first access...");
 	_constantInvalidTokens = @[@"(", @")", @"[", @"]", @"{", @"}", @"^", @"#"];
 	return _constantInvalidTokens;
 }

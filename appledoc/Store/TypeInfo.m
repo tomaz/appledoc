@@ -16,7 +16,7 @@
 
 - (NSMutableArray *)typeItems {
 	if (_typeItems) return _typeItems;
-	LogIntDebug(@"Initializing type items array due to first access...");
+	LogDebug(@"Initializing type items array due to first access...");
 	_typeItems = [[NSMutableArray alloc] init];
 	return _typeItems;
 }
@@ -28,7 +28,7 @@
 @implementation TypeInfo (Registrations)
 
 - (void)appendType:(NSString *)type {
-	LogStoVerbose(@"Appending type '%@'...", type);
+	LogVerbose(@"Appending type '%@'...", type);
 	[self.typeItems addObject:type];
 }
 

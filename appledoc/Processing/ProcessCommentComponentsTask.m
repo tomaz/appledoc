@@ -26,7 +26,7 @@
 #pragma mark - Processing
 
 - (NSInteger)processComment:(CommentInfo *)comment {
-	LogProInfo(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
+	LogVerbose(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
 	
 	// Prepare internal data.
 	ProcessComponentsData *data = [[ProcessComponentsData alloc] init];
@@ -47,7 +47,7 @@
 #pragma mark - Splitting source string to sections
 
 - (void)parseSectionsFromComment:(CommentInfo *)comment toData:(ProcessComponentsData *)data {
-	LogProDebug(@"Parsing comment string into sections...");
+	LogDebug(@"Parsing comment string into sections...");
 	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
 	NSString *sourceString = comment.sourceString;
 	__weak ProcessCommentComponentsTask *bself = self;
@@ -92,14 +92,14 @@
 	
 	// If this is the first paragraph to be registered, take it as abstract and create single section out of it.
 	if (data.sections.count == 0) {
-		LogProDebug(@"Detected abstract '%@'...", [sectionString gb_description]);
+		LogDebug(@"Detected abstract '%@'...", [sectionString gb_description]);
 		[data.builder appendString:sectionString];
 		[self registerSectionFromBuilderInData:data startNewSection:YES];
 		return;
 	}
 	
 	// Otherwise append "normal" paragraph to current section builder to be registered later on.
-	LogProDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
+	LogDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
 	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
 	[data.builder appendString:[sectionString gb_stringByTrimmingNewLines]];
 }
@@ -108,7 +108,7 @@
 	// Note that we need to handle special case where current builder string is the same pointer as last object; in such case we can ignore it, but we do need to clear the string!
 	if (data.builder.length == 0) return;
 	if (data.builder == data.sections.lastObject) { data.builder=[@"" mutableCopy]; return; }
-	LogProDebug(@"Registering section '%@'...", [data.builder gb_description]);
+	LogDebug(@"Registering section '%@'...", [data.builder gb_description]);
 	[data.sections addObject:data.builder];
 	if (startNew) data.builder = [@"" mutableCopy];
 }
@@ -116,7 +116,7 @@
 #pragma mark - Registering sections to comment
 
 - (void)registerAbstractFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
-	LogProDebug(@"Registering abstract...");
+	LogDebug(@"Registering abstract...");
 	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:data.sections[0]];
 	[comment setCommentAbstract:component];
 	[data.sections removeObjectAtIndex:0];
@@ -201,7 +201,7 @@
 #pragma mark - Comment components handling
 
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
-	LogProDebug(@"Creating component for %@...", string);
+	LogDebug(@"Creating component for %@...", string);
 	CommentComponentInfo *result = [[CommentComponentInfo alloc] init];
 	result.sourceString = string;
 	return result;

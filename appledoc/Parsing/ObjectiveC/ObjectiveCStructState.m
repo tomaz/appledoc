@@ -46,7 +46,7 @@
 
 - (NSArray *)structItemDelimiters {
 	if (_structItemDelimiters) return _structItemDelimiters;
-	LogIntDebug(@"Initializing struct item delimiters array due to first access...");
+	LogDebug(@"Initializing struct item delimiters array due to first access...");
 	_structItemDelimiters = @[@",", @";", @"}"];
 	return _structItemDelimiters;
 }
@@ -58,7 +58,7 @@
 @implementation ObjectiveCStructState (TopLevelParsing)
 
 - (BOOL)parseConstant:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching constant definition.");
+	LogDebug(@"Matching constant definition.");
 	[data.parser pushState:data.parser.constantState];
 	return YES;
 }
@@ -72,9 +72,9 @@
 
 - (BOOL)parseEndOfStruct:(ObjectiveCParseData *)data {	
 	if (![data.stream matches:@"}", nil]) return NO;
-	LogParDebug(@"Matched struct end.");
+	LogDebug(@"Matched struct end.");
 	if (![self parseStructNameAfterBody:data]) return NO;
-	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	LogVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject];
 	[data.parser popState];
 	return YES;
@@ -95,13 +95,13 @@
 		*stop = YES;
 	}];
 	if (!foundComma) return NO;
-	LogParDebug(@"Ignoring item as it looks like it's delimited with comma!");
+	LogDebug(@"Ignoring item as it looks like it's delimited with comma!");
 	[data.stream consume:numberOfLookaheadTokens];
 	return YES;
 }
 
 - (BOOL)consumeStructStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matched struct definition.");
+	LogDebug(@"Matched struct definition.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginStruct];
 	[data.stream consume:1];
@@ -119,16 +119,16 @@
 
 - (BOOL)parseStructName:(ObjectiveCParseData *)data endDelimiters:(id)delimiters delimitersRequired:(BOOL)required {
 	__block PKToken *nameToken = nil;
-	LogParDebug(@"Matching struct body start.");
+	LogDebug(@"Matching struct body start.");
 	NSUInteger matchResult = [data.stream matchUntil:delimiters block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
-		LogParDebug(@"Matched '%@'", token);
+		LogDebug(@"Matched '%@'", token);
 		if ([token matches:delimiters]) return;
 		if ([token matches:@"}"]) return;
 		if (!nameToken) nameToken = token;
 	}];
 	if (matchResult == NSNotFound) {
 		if (required) {
-			LogParDebug(@"Failed matching %@, bailing out.", delimiters);
+			LogDebug(@"Failed matching %@, bailing out.", delimiters);
 			[data.store cancelCurrentObject];
 			[data.parser popState];
 			return NO;
@@ -141,7 +141,7 @@
 		return YES;
 	}
 	
-	LogParDebug(@"Matched '%@' for struct name.", nameToken);
+	LogDebug(@"Matched '%@' for struct name.", nameToken);
 	if (!self.wasStructNameParsed) {
 		[data.store appendStructName:nameToken.stringValue];
 		self.wasStructNameParsed = YES;

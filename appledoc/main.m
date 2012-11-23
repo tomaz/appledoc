@@ -29,7 +29,7 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 'i',	GBOptions.ignoredPaths,				@"[a] Ignore given path",										GBValueRequired },
 		
 		{ 0,	nil,								@"LOGGING",														GBOptionSeparator },
-		{ 0,	GBOptions.loggingLevel,				@"Log verbosity (0-5)",											GBValueRequired },
+		{ 0,	GBOptions.loggingLevel,				@"Log verbosity",												GBValueOptional },
 		{ 0,	GBOptions.loggingFormat,			@"Log format (0-3)",											GBValueRequired },
 		{ 0,	GBOptions.loggingCommonEnabled,		@"[b] Enable common logging",									GBValueNone|GBOptionNoHelp },
 		{ 0,	GBOptions.loggingStoreEnabled,		@"[b] Enable store logging",									GBValueNone|GBOptionNoHelp },

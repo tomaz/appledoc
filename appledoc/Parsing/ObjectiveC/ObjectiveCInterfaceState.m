@@ -31,11 +31,11 @@
 
 - (BOOL)parseAdoptedProtocols:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"<", nil]) return NO;
-	LogParDebug(@"Matching adopted protocols.");
+	LogDebug(@"Matching adopted protocols.");
 	NSArray *delimiters = self.interfaceAdoptedProtocolDelimiters;
 	NSUInteger result = [data.stream matchUntil:@">" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:delimiters]) return;
-		LogParDebug(@"Matched adopted protocol %@", token);
+		LogDebug(@"Matched adopted protocol %@", token);
 		[data.store setCurrentSourceInfo:token];
 		[data.store appendAdoptedProtocolWithName:token.stringValue];
 	}];
@@ -46,7 +46,7 @@
 - (BOOL)parseMethod:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"-", nil] && ![data.stream matches:@"+", nil]) return NO;
 	// Must not consume otherwise we can't distinguish between instance and class method!
-	LogParDebug(@"Matched '%@', testing for method.", data.stream.current);
+	LogDebug(@"Matched '%@', testing for method.", data.stream.current);
 	[data.parser pushState:data.parser.methodState];
 	return YES;
 }
@@ -54,7 +54,7 @@
 - (BOOL)parseProperty:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @"property", nil]) return NO;
 	// Although we could consume, we don't to keep compatible with other methods...
-	LogParDebug(@"Matched property definition.");
+	LogDebug(@"Matched property definition.");
 	[data.parser pushState:data.parser.propertyState];
 	return YES;
 }
@@ -62,15 +62,15 @@
 - (BOOL)parsePragmaMark:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"#", @"pragma", @"mark", nil]) return NO;
 	// Must not consume here otherwise it makes it very hard to determine whether '-' following #pragma mark is part of #pragma or start of instance method!
-	LogParDebug(@"Matched #pragma mark.");
+	LogDebug(@"Matched #pragma mark.");
 	[data.parser pushState:data.parser.pragmaMarkState];
 	return YES;
 }
 
 - (BOOL)parseEndOfInterface:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @"end", nil]) return NO;
-	LogParDebug(@"Matched @end.");
-	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	LogDebug(@"Matched @end.");
+	LogVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject];
 	[data.stream consume:2];
 	[data.parser popState];
@@ -81,7 +81,7 @@
 
 - (NSArray *)interfaceAdoptedProtocolDelimiters {
 	if (_interfaceAdoptedProtocolDelimiters) return _interfaceAdoptedProtocolDelimiters;
-	LogIntDebug(@"Initializing adopted protocols delimiters due to first access...");
+	LogDebug(@"Initializing adopted protocols delimiters due to first access...");
 	_interfaceAdoptedProtocolDelimiters = @[@"<", @",", @">"];
 	return _interfaceAdoptedProtocolDelimiters;
 }

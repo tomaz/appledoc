@@ -16,6 +16,7 @@
 	if (result) {
 		[result registerArrayForKey:GBOptions.inputPaths];
 		[result registerArrayForKey:GBOptions.ignoredPaths];
+		[result setLoggingLevel:0];
 	}
 	return result;
 }

@@ -18,14 +18,14 @@
 
 - (TypeInfo *)constantTypes {
 	if (_constantTypes) return _constantTypes;
-	LogIntDebug(@"Initializing constant types due to first access...");
+	LogDebug(@"Initializing constant types due to first access...");
 	_constantTypes = [[TypeInfo alloc] init];
 	return _constantTypes;
 }
 
 - (DescriptorsInfo *)constantDescriptors {
 	if (_constantDescriptors) return _constantDescriptors;
-	LogIntDebug(@"Initializing constant descriptors due to first access...");
+	LogDebug(@"Initializing constant descriptors due to first access...");
 	_constantDescriptors = [[DescriptorsInfo alloc] init];
 	return _constantDescriptors;
 }
@@ -37,17 +37,17 @@
 @implementation ConstantInfo (Registrations)
 
 - (void)beginConstantTypes {
-	LogStoVerbose(@"Starting constant types...");
+	LogVerbose(@"Starting constant types...");
 	[self pushRegistrationObject:self.constantTypes];
 }
 
 - (void)beginConstantDescriptors {
-	LogStoVerbose(@"Starting constant descriptors...");
+	LogVerbose(@"Starting constant descriptors...");
 	[self pushRegistrationObject:self.constantDescriptors];
 }
 
 - (void)appendConstantName:(NSString *)name {
-	LogStoInfo(@"Assigning constant name %@...", name);
+	LogVerbose(@"Assigning constant name %@...", name);
 	self.constantName = name;
 }
 

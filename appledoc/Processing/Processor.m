@@ -20,27 +20,27 @@
 	__weak Processor *blockSelf = self;
 	__block GBResult result = GBResultOk;
 
-	LogInfo(@"Processing classes...");
+	LogVerbose(@"Processing classes...");
 	[self.store.storeClasses enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogInfo(@"Processing extensions...");
+	LogVerbose(@"Processing extensions...");
 	[self.store.storeExtensions enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogInfo(@"Processing categories...");
+	LogVerbose(@"Processing categories...");
 	[self.store.storeCategories enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogInfo(@"Processing protocols...");
+	LogVerbose(@"Processing protocols...");
 	[self.store.storeProtocols enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogInfo(@"Processing finished.");
+	LogVerbose(@"Processing finished.");
 	return result;
 }
 
@@ -68,7 +68,7 @@
 
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)context {
 	if (!object.comment) return GBResultOk;
-	LogProDebug(@"Processing comment for %@", object);
+	LogDebug(@"Processing comment for %@", object);
 	NSInteger result = GBResultOk;
 	GB_PROCESS([self.processCommentComponentsTask processCommentForObject:object context:context])
 	return result;
@@ -78,7 +78,7 @@
 
 - (ProcessorTask *)processCommentComponentsTask {
 	if (_processCommentComponentsTask) return _processCommentComponentsTask;
-	LogIntDebug(@"Initializing comment components processor task due to first acces...");
+	LogDebug(@"Initializing comment components processor task due to first acces...");
 	_processCommentComponentsTask = [[ProcessCommentComponentsTask alloc] init];
 	return _processCommentComponentsTask;
 }

@@ -16,7 +16,7 @@
 
 - (NSMutableArray *)enumItems {
 	if (_enumItems) return _enumItems;
-	LogIntDebug(@"Initializing enumeration items array due to first access...");
+	LogDebug(@"Initializing enumeration items array due to first access...");
 	_enumItems = [[NSMutableArray alloc] init];
 	return _enumItems;
 }
@@ -28,19 +28,19 @@
 @implementation EnumInfo (Registrations)
 
 - (void)appendEnumerationName:(NSString *)name {
-	LogStoInfo(@"Appending enumeration name %@...", name);
+	LogVerbose(@"Appending enumeration name %@...", name);
 	self.nameOfEnum = name;
 }
 
 - (void)appendEnumerationItem:(NSString *)name {
-	LogStoInfo(@"Creating enumeration item %@...", name);
+	LogVerbose(@"Creating enumeration item %@...", name);
 	EnumItemInfo *info = [[EnumItemInfo alloc] init];
 	info.itemName = name;
 	[self.enumItems addObject:info];
 }
 
 - (void)appendEnumerationValue:(NSString *)value {
-	LogStoInfo(@"Appending enumeration item value %@...", value);
+	LogVerbose(@"Appending enumeration item value %@...", value);
 	if (self.enumItems.count == 0) {
 		LogWarn(@"Can't append enumeration value because no item is registered!");
 		return;

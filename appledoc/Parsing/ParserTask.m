@@ -22,12 +22,12 @@
 #pragma mark - Running the task
 
 - (NSInteger)parseFile:(NSString *)filename withSettings:(GBSettings *)settings store:(Store *)store {
-	LogParDebug(@"Parsing '%@'...", filename);
+	LogDebug(@"Parsing '%@'...", filename);
 	NSError *error = nil;
 	NSString *standardized = [filename gb_stringByStandardizingCurrentDirAndPath];
 	NSString *string = [NSString stringWithContentsOfFile:standardized encoding:NSUTF8StringEncoding error:&error];
 	if (!string) {
-		LogParNSError(error, @"Failed reading contents of '%@'!", filename);
+		LogNSError(error, @"Failed reading contents of '%@'!", filename);
 		return GBResultSystemError;
 	}
 	self.filename = standardized;

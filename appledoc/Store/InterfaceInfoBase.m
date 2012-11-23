@@ -37,42 +37,42 @@
 
 - (NSMutableArray *)interfaceAdoptedProtocols {
 	if (_interfaceAdoptedProtocols) return _interfaceAdoptedProtocols;
-	LogIntDebug(@"Initializing adopted protocols array due to first access...");
+	LogDebug(@"Initializing adopted protocols array due to first access...");
 	_interfaceAdoptedProtocols = [[NSMutableArray alloc] init];
 	return _interfaceAdoptedProtocols;
 }
 
 - (NSMutableArray *)interfaceMethodGroups {
 	if (_interfaceMethodGroups) return _interfaceMethodGroups;
-	LogIntDebug(@"Initializing method groups array due to first access...");
+	LogDebug(@"Initializing method groups array due to first access...");
 	_interfaceMethodGroups = [[NSMutableArray alloc] init];
 	return _interfaceMethodGroups;
 }
 
 - (NSMutableArray *)interfaceProperties {
 	if (_interfaceProperties) return _interfaceProperties;
-	LogIntDebug(@"Initializing properties array due to first access...");
+	LogDebug(@"Initializing properties array due to first access...");
 	_interfaceProperties = [[NSMutableArray alloc] init];
 	return _interfaceProperties;
 }
 
 - (NSMutableArray *)interfaceInstanceMethods {
 	if (_interfaceInstanceMethods) return _interfaceInstanceMethods;
-	LogIntDebug(@"Initializing instance methods array due to first access...");
+	LogDebug(@"Initializing instance methods array due to first access...");
 	_interfaceInstanceMethods = [[NSMutableArray alloc] init];
 	return _interfaceInstanceMethods;
 }
 
 - (NSMutableArray *)interfaceClassMethods {
 	if (_interfaceClassMethods) return _interfaceClassMethods;
-	LogIntDebug(@"Initializing class methods array due to first access...");
+	LogDebug(@"Initializing class methods array due to first access...");
 	_interfaceClassMethods = [[NSMutableArray alloc] init];
 	return _interfaceClassMethods;
 }
 
 - (NSMutableArray *)interfaceMethodsAndPropertiesInRegistrationOrder {
 	if (_interfaceMethodsAndPropertiesInRegistrationOrder) return _interfaceMethodsAndPropertiesInRegistrationOrder;
-	LogIntDebug(@"Initializing methods and properties array due to first access...");
+	LogDebug(@"Initializing methods and properties array due to first access...");
 	_interfaceMethodsAndPropertiesInRegistrationOrder = [[NSMutableArray alloc] init];
 	return _interfaceMethodsAndPropertiesInRegistrationOrder;
 }
@@ -86,9 +86,9 @@
 #pragma mark - Interface level registrations
 
 - (void)appendAdoptedProtocolWithName:(NSString *)name {
-	LogStoVerbose(@"Appending adopted protocol %@...", name);
+	LogVerbose(@"Appending adopted protocol %@...", name);
 	if ([self.interfaceAdoptedProtocols gb_containsObjectLinkInfoWithName:name]) {
-		LogStoDebug(@"%@ is already in the adopted protocols list, ignoring...", name);
+		LogDebug(@"%@ is already in the adopted protocols list, ignoring...", name);
 		return;
 	}
 	ObjectLinkInfo *data = [ObjectLinkInfo ObjectLinkInfoWithName:name];
@@ -98,7 +98,7 @@
 #pragma mark - Method groups
 
 - (void)appendMethodGroupWithDescription:(NSString *)description {
-	LogStoInfo(@"Starting method group...");
+	LogVerbose(@"Starting method group...");
 	MethodGroupInfo *data = [MethodGroupInfo MethodGroupInfoWithName:description];
 	[self.interfaceMethodGroups addObject:data];
 }
@@ -106,7 +106,7 @@
 #pragma mark - Properties
 
 - (void)beginPropertyDefinition {
-	LogStoInfo(@"Starting property definition...");
+	LogVerbose(@"Starting property definition...");
 	PropertyInfo *info = [[PropertyInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.sourceToken = self.currentSourceInfo;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
@@ -118,7 +118,7 @@
 #pragma mark - Methods
 
 - (void)beginMethodDefinitionWithType:(NSString *)type {
-	LogStoInfo(@"Starting %@ definition...", type);
+	LogVerbose(@"Starting %@ definition...", type);
 	NSMutableArray *methodsArray = [self methodsArrayForType:type];
 	if (!methodsArray) LogWarn(@"Unsupported method type %@!", type);
 	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];
@@ -134,19 +134,19 @@
 
 - (void)cancelCurrentObject {
 	if ([self.currentRegistrationObject isKindOfClass:[PropertyInfo class]]) {
-		LogStoInfo(@"Cancelling current property info!");
+		LogVerbose(@"Cancelling current property info!");
 		MethodGroupInfo *lastMethodGroup = [self.interfaceMethodGroups lastObject];
 		if ([lastMethodGroup.methodGroupMethods lastObject] == self.currentRegistrationObject) {
-			LogStoDebug(@"Removing property info from last method group!");
+			LogDebug(@"Removing property info from last method group!");
 			[lastMethodGroup.methodGroupMethods removeLastObject];
 		}
 		[self.interfaceProperties removeLastObject];
 		[self.interfaceMethodsAndPropertiesInRegistrationOrder removeLastObject];
 	} else if ([self.currentRegistrationObject isKindOfClass:[MethodInfo class]]) {
-		LogStoInfo(@"Cancelling current method info!");
+		LogVerbose(@"Cancelling current method info!");
 		MethodGroupInfo *lastMethodGroup = [self.interfaceMethodGroups lastObject];
 		if ([lastMethodGroup.methodGroupMethods lastObject] == self.currentRegistrationObject) {
-			LogStoDebug(@"Removing method info from last method group!");
+			LogDebug(@"Removing method info from last method group!");
 			[lastMethodGroup.methodGroupMethods removeLastObject];
 		}
 		NSString *type = [self.currentRegistrationObject methodType];

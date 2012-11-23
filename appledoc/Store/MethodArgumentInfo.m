@@ -17,7 +17,7 @@
 
 - (TypeInfo *)argumentType {
 	if (_argumentType) return _argumentType;
-	LogIntDebug(@"Initializing method argument type due to first access...");
+	LogDebug(@"Initializing method argument type due to first access...");
 	_argumentType = [[TypeInfo alloc] init];
 	return _argumentType;
 }
@@ -34,17 +34,17 @@
 
 - (void)beginMethodArgumentTypes {
 	// Note that we don't have to respond to endCurrentObject or cancelCurrentObject to pop argumentType - Store will automatically pop it from its stack whenever either of these messages are sent to it.
-	LogStoVerbose(@"Starting method argument types...");
+	LogVerbose(@"Starting method argument types...");
 	[self pushRegistrationObject:self.argumentType];
 }
 
 - (void)appendMethodArgumentSelector:(NSString *)name {
-	LogStoInfo(@"Assigning method argument selector %@...", name);
+	LogVerbose(@"Assigning method argument selector %@...", name);
 	self.argumentSelector = name;
 }
 
 - (void)appendMethodArgumentVariable:(NSString *)name {
-	LogStoInfo(@"Assigning method argument variable %@...", name);
+	LogVerbose(@"Assigning method argument variable %@...", name);
 	self.argumentVariable = name;
 }
 

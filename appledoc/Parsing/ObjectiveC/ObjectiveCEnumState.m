@@ -43,7 +43,7 @@
 }
 
 - (BOOL)consumeEnumStartTokens:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matched enum.");
+	LogDebug(@"Matched enum.");
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginEnumeration];
 	[data.stream consume:1];
@@ -51,7 +51,7 @@
 }
 
 - (BOOL)parseEnumNameBeforeBody:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching enum body start.");
+	LogDebug(@"Matching enum body start.");
 	
 	__block PKToken *nameToken = nil;
 	NSUInteger result = [data.stream matchUntil:@"{" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) { 
@@ -59,14 +59,14 @@
 		nameToken = token;
 	}];
 	if (result == NSNotFound) {
-		LogParDebug(@"Failed matching enum body start, bailing out.");
+		LogDebug(@"Failed matching enum body start, bailing out.");
 		[data.store cancelCurrentObject]; // enum
 		[data.parser popState];
 		return NO;
 	}
 	
 	if (nameToken) {
-		LogParDebug(@"Matched enum name %@.", nameToken);
+		LogDebug(@"Matched enum name %@.", nameToken);
 		[data.store appendEnumerationName:nameToken.stringValue];
 	}
 	self.wasEnumNameParsed = (nameToken != nil);
@@ -74,24 +74,24 @@
 }
 
 - (BOOL)parseEnumBody:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching enum body.");
+	LogDebug(@"Matching enum body.");
 	self.enumItemContext.currentState = self.enumItemState;
 	self.enumItemState.data = data;
 	self.enumValueState.data = data;
 	NSUInteger result = [data.stream matchUntil:@"}" block:^(PKToken *token, NSUInteger lookahead, BOOL *stop) {
 		if ([token matches:self.enumItemDelimiters]) {
-			LogParDebug(@"Matched '%@', ending item.", token);
+			LogDebug(@"Matched '%@', ending item.", token);
 			[self.enumItemContext changeStateTo:self.enumItemState];
 		} else if ([token matches:@"="]) {
-			LogParDebug(@"Matched '%@', registering value.", token);
+			LogDebug(@"Matched '%@', registering value.", token);
 			[self.enumItemContext changeStateTo:self.enumValueState];
 		} else {
-			LogParDebug(@"Matching '%@'.", token);
+			LogDebug(@"Matching '%@'.", token);
 			[self.enumItemContext.currentState parseToken:token];
 		}		
 	}];
 	if (result == NSNotFound) {
-		LogParDebug(@"Failed matching end of enum body, bailing out.");
+		LogDebug(@"Failed matching end of enum body, bailing out.");
 		[data.stream consume:1];
 		[data.store cancelCurrentObject]; // enum
 		[data.parser popState];
@@ -101,9 +101,9 @@
 }
 
 - (BOOL)parseEnumBodyEnd:(ObjectiveCParseData *)data {
-	LogParDebug(@"Matching enum ending semicolon.");
+	LogDebug(@"Matching enum ending semicolon.");
 	if (![data.stream.current matches:@";"]) {
-		LogParDebug(@"Failed matching ending enum semicolon, bailing out.");
+		LogDebug(@"Failed matching ending enum semicolon, bailing out.");
 		[data.store cancelCurrentObject];
 		[data.parser popState];
 		return NO;
@@ -126,8 +126,8 @@
 }
 
 - (BOOL)finalizeEnum:(ObjectiveCParseData *)data {
-	LogParDebug(@"Ending enum.");
-	LogParVerbose(@"\n%@", data.store.currentRegistrationObject);
+	LogDebug(@"Ending enum.");
+	LogVerbose(@"\n%@", data.store.currentRegistrationObject);
 	[data.store endCurrentObject]; // enum
 	[data.parser popState];
 	return YES;
@@ -137,14 +137,14 @@
 
 - (ContextBase *)enumItemContext {
 	if (_enumItemContext) return _enumItemContext;
-	LogIntDebug(@"Initializing enum item context due to first access...");
+	LogDebug(@"Initializing enum item context due to first access...");
 	_enumItemContext = [[ContextBase alloc] init];
 	return _enumItemContext;
 }
 
 - (ObjectiveCEnumItemState *)enumItemState {
 	if (_enumItemState) return _enumItemState;
-	LogIntDebug(@"Initializing enum item state due to first access...");
+	LogDebug(@"Initializing enum item state due to first access...");
 	_enumItemState = [[ObjectiveCEnumItemState alloc] init];
 	_enumItemState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
 		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
@@ -156,7 +156,7 @@
 
 - (ObjectiveCEnumItemState *)enumValueState {
 	if (_enumValueState) return _enumValueState;
-	LogIntDebug(@"Initializing enum value state due to first access...");
+	LogDebug(@"Initializing enum value state due to first access...");
 	_enumValueState = [[ObjectiveCEnumItemState alloc] init];
 	_enumValueState.willResignCurrentStateBlock = ^(ObjectiveCEnumItemState *state, id context){
 		NSString *value = [state.data.stream stringStartingWith:state.startToken endingWith:state.endToken];
@@ -170,7 +170,7 @@
 
 - (NSArray *)enumItemDelimiters {
 	if (_enumItemDelimiters) return _enumItemDelimiters;
-	LogIntDebug(@"Initializing enum item delimiters due to first access...");
+	LogDebug(@"Initializing enum item delimiters due to first access...");
 	_enumItemDelimiters = @[@",", @"}", @";"];
 	return _enumItemDelimiters;
 }
@@ -192,7 +192,7 @@
 }
 
 - (void)parseToken:(PKToken *)token {
-	LogParDebug(@"Matched %@.", token);
+	LogDebug(@"Matched %@.", token);
 	if (!self.startToken) self.startToken = token;
 	self.endToken = token;
 }

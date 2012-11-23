@@ -26,13 +26,13 @@ typedef void(^ParserPathBlock)(NSString *path);
 	[self.settings.arguments enumerateObjectsUsingBlock:^(NSString *path, NSUInteger idx, BOOL *stop) {
 		GBResult pr = [blockSelf parsePath:path withBlock:^(NSString *path) {
 			if (![blockSelf isSourceCodeFile:path]) return;
-			LogInfo(@"Parsing source file '%@'...", path);
+			LogVerbose(@"Parsing source file '%@'...", path);
 			NSInteger parseResult = [self.objectiveCParser parseFile:path withSettings:self.settings store:self.store];
 			if (parseResult > result) result = parseResult;
 		}];
 		if (pr > result) result = pr;
 	}];
-	LogInfo(@"Parsing finished.");
+	LogVerbose(@"Parsing finished.");
 	return result;
 }
 
@@ -139,7 +139,7 @@ typedef void(^ParserPathBlock)(NSString *path);
 
 - (ParserTask *)objectiveCParser {
 	if (_objectiveCParser) return _objectiveCParser;
-	LogIntDebug(@"Initializing objective c parser due to first access...");
+	LogDebug(@"Initializing objective c parser due to first access...");
 	_objectiveCParser = [[ObjectiveCParser alloc] init];
 	return _objectiveCParser;
 }

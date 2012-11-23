@@ -28,7 +28,7 @@
 
 - (BOOL)parseClassExtension:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @"interface", GBTokens.any, @"(", @")", nil]) return NO;
-	LogParDebug(@"Matched class extension interface.");
+	LogDebug(@"Matched class extension interface.");
 	PKToken *name = [data.stream la:2];
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginExtensionForClassWithName:name.stringValue];
@@ -39,7 +39,7 @@
 
 - (BOOL)parseClassCategory:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, @"(", GBTokens.any, @")", nil]) return NO;
-	LogParDebug(@"Matched category interface or implementation.");
+	LogDebug(@"Matched category interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	PKToken *category = [data.stream la:4];
 	[data.store setCurrentSourceInfo:data.stream.current];
@@ -51,7 +51,7 @@
 
 - (BOOL)parseDerivedClass:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, @":", GBTokens.any, nil]) return NO;
-	LogParDebug(@"Matched class interface or implementation.");
+	LogDebug(@"Matched class interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	PKToken *derived = [data.stream la:4];
 	[data.store setCurrentSourceInfo:data.stream.current];
@@ -63,7 +63,7 @@
 
 - (BOOL)parseRootClass:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @[@"interface", @"implementation"], GBTokens.any, nil]) return NO;
-	LogParDebug(@"Matched root class interface or implementation.");
+	LogDebug(@"Matched root class interface or implementation.");
 	PKToken *name = [data.stream la:2];
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginClassWithName:name.stringValue derivedFromClassWithName:nil];
@@ -74,7 +74,7 @@
 
 - (BOOL)parseProtocol:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"@", @"protocol", GBTokens.any, nil]) return NO;
-	LogParDebug(@"Matched protocol definition.");
+	LogDebug(@"Matched protocol definition.");
 	PKToken *name = [data.stream la:2];
 	[data.store setCurrentSourceInfo:data.stream.current];
 	[data.store beginProtocolWithName:name.stringValue];
@@ -85,21 +85,21 @@
 
 - (BOOL)parseEnum:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"enum", nil]) return NO;
-	LogParDebug(@"Matched '%@', testing for enumeration.", data.stream.current);
+	LogDebug(@"Matched '%@', testing for enumeration.", data.stream.current);
 	[data.parser pushState:data.parser.enumState];
 	return YES;
 }
 
 - (BOOL)parseStruct:(ObjectiveCParseData *)data {
 	if (![data.stream matches:@"struct", nil]) return NO;
-	LogParDebug(@"Matched '%@', testing for struct.", data.stream.current);
+	LogDebug(@"Matched '%@', testing for struct.", data.stream.current);
 	[data.parser pushState:data.parser.structState];
 	return YES;
 }
 
 - (BOOL)parseConstant:(ObjectiveCParseData *)data {
 	if (![(id)data.parser.constantState doesDataContainConstant:data]) return NO;
-	LogParDebug(@"Matched '%@', testing for constant.", data.stream.current);
+	LogDebug(@"Matched '%@', testing for constant.", data.stream.current);
 	[data.parser pushState:data.parser.constantState];
 	return YES;
 }

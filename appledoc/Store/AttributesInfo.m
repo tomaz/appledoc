@@ -26,7 +26,7 @@
 
 - (NSMutableArray *)attributeItems {
 	if (_attributeItems) return _attributeItems;
-	LogIntDebug(@"Initializing attribute items array due to first access...");
+	LogDebug(@"Initializing attribute items array due to first access...");
 	_attributeItems = [[NSMutableArray alloc] init];
 	return _attributeItems;
 }
@@ -38,7 +38,7 @@
 @implementation AttributesInfo (Registrations)
 
 - (void)appendAttribute:(NSString *)attribute {
-	LogStoInfo(@"Assigning attribute %@...", attribute);
+	LogVerbose(@"Assigning attribute %@...", attribute);
 	[self.attributeItems addObject:attribute];
 }
 

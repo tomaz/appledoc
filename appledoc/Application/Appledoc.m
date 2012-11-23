@@ -32,7 +32,7 @@
 		return result;
 	}
 	
-	LogInfo(@"appledoc finished!");
+	LogNormal(@"appledoc finished!");
 	return result;
 }
 
@@ -40,21 +40,21 @@
 
 - (Store *)store {
 	if (_store) return _store;
-	LogIntDebug(@"Initializing store due to first access...");
+	LogDebug(@"Initializing store due to first access...");
 	_store = [[Store alloc] init];
 	return _store;
 }
 
 - (Parser *)parser {
 	if (_parser) return _parser;
-	LogIntDebug(@"Initializing parser due to first access...");
+	LogDebug(@"Initializing parser due to first access...");
 	_parser = [[Parser alloc] init];
 	return _parser;
 }
 
 - (Processor *)processor {
 	if (_processor) return _processor;
-	LogIntDebug(@"Initializing processor due to first access...");
+	LogDebug(@"Initializing processor due to first access...");
 	_processor = [[Processor alloc] init];
 	return _processor;
 }

@@ -17,7 +17,7 @@
 
 - (NSMutableArray *)structItems {
 	if (_structItems) return _structItems;
-	LogIntDebug(@"Initializing struct items array due to first access...");
+	LogDebug(@"Initializing struct items array due to first access...");
 	_structItems = [[NSMutableArray alloc] init];
 	return _structItems;
 }
@@ -29,12 +29,12 @@
 @implementation StructInfo (Registrations)
 
 - (void)appendStructName:(NSString *)name {
-	LogStoInfo(@"Appending struct name %@...", name);
+	LogVerbose(@"Appending struct name %@...", name);
 	self.nameOfStruct = name;
 }
 
 - (void)beginConstant {
-	LogStoVerbose(@"Starting constant...");
+	LogVerbose(@"Starting constant...");
 	ConstantInfo *info = [[ConstantInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.sourceToken = self.currentSourceInfo;
 	[self.structItems addObject:info];
@@ -42,7 +42,7 @@
 }
 
 - (void)cancelCurrentObject {
-	LogStoInfo(@"Cancelling current struct item...");
+	LogVerbose(@"Cancelling current struct item...");
 	[self.structItems removeLastObject];
 }
 
