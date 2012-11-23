@@ -84,6 +84,7 @@ describe(@"normal text:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -97,6 +98,7 @@ describe(@"normal text:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second\n\nthird");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -110,13 +112,14 @@ describe(@"normal text:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"line one\nline two\nline three\n\nthird paragraph\nand line two");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 });
 
 describe(@"block code:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
-	sharedExamplesFor(@"example1", ^(NSDictionary *info){
+	sharedExamplesFor(@"block code", ^(NSDictionary *info){
 		it(@"should append block code to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -129,9 +132,7 @@ describe(@"block code:", ^{
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--block code"));
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example2", ^(NSDictionary *info) {
+
 		it(@"should append all block code lines to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -144,9 +145,7 @@ describe(@"block code:", ^{
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--line 2"));
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example3", ^(NSDictionary *info) {
+
 		it(@"should append multiple block code sections to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -159,9 +158,7 @@ describe(@"block code:", ^{
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n\n--line 2\n--line 3"));
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example4", ^(NSDictionary *info) {
+
 		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -174,9 +171,7 @@ describe(@"block code:", ^{
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example5", ^(NSDictionary *info) {
+
 		it(@"should continue normal paragraph if not delimited with empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -189,9 +184,7 @@ describe(@"block code:", ^{
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example6", ^(NSDictionary *info) {
+
 		it(@"should keep all formatting after initial code block marker", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -208,22 +201,12 @@ describe(@"block code:", ^{
 	
 	describe(@"delimited with tab:", ^{
 		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t"; });
-		itShouldBehaveLike(@"example1");
-		itShouldBehaveLike(@"example2");
-		itShouldBehaveLike(@"example3");
-		itShouldBehaveLike(@"example4");
-		itShouldBehaveLike(@"example5");
-		itShouldBehaveLike(@"example6");
+		itShouldBehaveLike(@"block code");
 	});
 	
 	describe(@"delimited with spaces", ^{
 		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    "; });
-		itShouldBehaveLike(@"example1");
-		itShouldBehaveLike(@"example2");
-		itShouldBehaveLike(@"example3");
-		itShouldBehaveLike(@"example4");
-		itShouldBehaveLike(@"example5");
-		itShouldBehaveLike(@"example6");
+		itShouldBehaveLike(@"block code");
 	});
 });
 
@@ -238,6 +221,7 @@ describe(@"block quote:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> block quote");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 
@@ -251,6 +235,7 @@ describe(@"block quote:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> line 1\n> line 2\n\n> line 3");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -264,6 +249,7 @@ describe(@"block quote:", ^{
 			GBAbstract.sourceString should equal(@"abstract");
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> level 1\n> > level 2\n> back to 1");
+			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -282,7 +268,7 @@ describe(@"block quote:", ^{
 
 describe(@"lists:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
-	sharedExamplesFor(@"example1", ^(NSDictionary *info) {
+	sharedExamplesFor(@"lists", ^(NSDictionary *info) {
 		it(@"should append list to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -293,11 +279,10 @@ describe(@"lists:", ^{
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- list item"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example2", ^(NSDictionary *info) {
+
 		it(@"should append all list items to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -308,11 +293,10 @@ describe(@"lists:", ^{
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 			});
 		});
-	});
-	
-	sharedExamplesFor(@"example3", ^(NSDictionary *info) {
+
 		it(@"should handle nested lists", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -323,11 +307,10 @@ describe(@"lists:", ^{
 				GBAbstract.sourceString should equal(@"abstract");
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 			});
 		});
-	});
-		
-	sharedExamplesFor(@"example4", ^(NSDictionary *info) {
+
 		it(@"should take list for abstract", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -343,26 +326,17 @@ describe(@"lists:", ^{
 
 	describe(@"unordered lists with minus:", ^{
 		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"-"; });
-		itShouldBehaveLike(@"example1");
-		itShouldBehaveLike(@"example2");
-		itShouldBehaveLike(@"example3");
-		itShouldBehaveLike(@"example4");
+		itShouldBehaveLike(@"lists");
 	});
 	
 	describe(@"unordered lists with star:", ^{
 		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"*"; });
-		itShouldBehaveLike(@"example1");
-		itShouldBehaveLike(@"example2");
-		itShouldBehaveLike(@"example3");
-		itShouldBehaveLike(@"example4");
+		itShouldBehaveLike(@"lists");
 	});
 	
 	describe(@"ordered lists:", ^{
 		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"1."; });
-		itShouldBehaveLike(@"example1");
-		itShouldBehaveLike(@"example2");
-		itShouldBehaveLike(@"example3");
-		itShouldBehaveLike(@"example4");
+		itShouldBehaveLike(@"lists");
 	});
 });
 
@@ -383,127 +357,99 @@ describe(@"tables:", ^{
 
 describe(@"warnings and bugs:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
-	describe(@"as part of abstract:", ^{
-		sharedExamplesFor(@"example1", ^(NSDictionary *info) {
-			it(@"should take as part of abstract if not delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n@id text"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
-				});
-			});
-		});
-				
-		sharedExamplesFor(@"example2", ^(NSDictionary *info) {
-			it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n@id text\n\nparagraph"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
-					GBDiscussion.sectionComponents.count should equal(1);
-					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
-				});
+	sharedExamplesFor(@"as part of abstract", ^(NSDictionary *info) {
+		it(@"should take as part of abstract if not delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
 			});
 		});
 
-		describe(@"@warning:", ^{
-			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
-			itShouldBehaveLike(@"example1");
-			itShouldBehaveLike(@"example2");
+		it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n@id text\n\nparagraph"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+			});
 		});
-		
-		describe(@"@bug:", ^{
-			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
-			itShouldBehaveLike(@"example1");
-			itShouldBehaveLike(@"example2");
+	});
+
+	sharedExamplesFor(@"as part of discussion", ^(NSDictionary *info) {
+		it(@"should take as part of discussion if found as first paragraph after abstract", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id text"));
+			});
+		});
+
+		it(@"should start new paragraph if delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text"));
+			});
+		});
+
+		it(@"should take all subsequent paragraphs as part of section", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text\n\nnext paragraph"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text\n\nnext paragraph"));
+			});
+		});
+
+		it(@"should start new paragraph with next section directive", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id first\n\n@id second"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id first"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id second"));
+			});
 		});
 	});
 	
-	describe(@"as part of discussion:", ^{
-		sharedExamplesFor(@"example1", ^(NSDictionary *info) {
-			it(@"should take as part of discussion if found as first paragraph after abstract", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n\n@id text"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(@"abstract");
-					GBDiscussion.sectionComponents.count should equal(1);
-					[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id text"));
-				});
-			});
-		});
-		
-		sharedExamplesFor(@"example2", ^(NSDictionary *info) {
-			it(@"should start new paragraph if delimited by empty line", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(@"abstract");
-					GBDiscussion.sectionComponents.count should equal(2);
-					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
-					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text"));
-				});
-			});
-		});
-		
-		sharedExamplesFor(@"example3", ^(NSDictionary *info) {
-			it(@"should take all subsequent paragraphs as part of section", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text\n\nnext paragraph"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(@"abstract");
-					GBDiscussion.sectionComponents.count should equal(2);
-					[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
-					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text\n\nnext paragraph"));
-				});
-			});
-		});
-		
-		sharedExamplesFor(@"example4", ^(NSDictionary *info) {
-			it(@"should start new paragraph with next section directive", ^{
-				runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
-					// setup
-					setupComment(comment, GBReplace(@"abstract\n\n@id first\n\n@id second"));
-					// execute
-					[task processComment:comment];
-					// verify
-					GBAbstract.sourceString should equal(@"abstract");
-					GBDiscussion.sectionComponents.count should equal(2);
-					[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id first"));
-					[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id second"));
-				});
-			});
-		});
-		
-		describe(@"@warning:", ^{
-			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
-			itShouldBehaveLike(@"example1");
-			itShouldBehaveLike(@"example2");
-			itShouldBehaveLike(@"example3");
-			itShouldBehaveLike(@"example4");
-		});
-		
-		describe(@"@bug:", ^{
-			beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
-			itShouldBehaveLike(@"example1");
-			itShouldBehaveLike(@"example2");
-			itShouldBehaveLike(@"example3");
-			itShouldBehaveLike(@"example4");
-		});
+	describe(@"@warning:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
+		itShouldBehaveLike(@"as part of abstract");
+		itShouldBehaveLike(@"as part of discussion");
+	});
+	
+	describe(@"@bug:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
+		itShouldBehaveLike(@"as part of abstract");
+		itShouldBehaveLike(@"as part of discussion");
 	});
 });
 
@@ -523,6 +469,7 @@ describe(@"method parameters:", ^{
 			[GBParameter(0) sectionName] should equal(@"name");
 			[GBParameter(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -538,9 +485,11 @@ describe(@"method parameters:", ^{
 			[GBParameter(0) sectionName] should equal(@"name1");
 			[GBParameter(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description 1");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 			[GBParameter(1) sectionName] should equal(@"name2");
 			[GBParameter(1) sectionComponents].count should equal(1);
 			[GBComponent(1,0) sourceString] should equal(@"description 2");
+			[GBComponent(1,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -556,9 +505,11 @@ describe(@"method parameters:", ^{
 			[GBParameter(0) sectionName] should equal(@"name1");
 			[GBParameter(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description1\nin multiple\n\nlines and paragraphs");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 			[GBParameter(1) sectionName] should equal(@"name2");
 			[GBParameter(1) sectionComponents].count should equal(1);
 			[GBComponent(1,0) sourceString] should equal(@"description 2");
+			[GBComponent(1,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 });
@@ -579,6 +530,7 @@ describe(@"method exceptions:", ^{
 			[GBException(0) sectionName] should equal(@"name");
 			[GBException(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -594,9 +546,11 @@ describe(@"method exceptions:", ^{
 			[GBException(0) sectionName] should equal(@"name1");
 			[GBException(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description 1");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 			[GBException(1) sectionName] should equal(@"name2");
 			[GBException(1) sectionComponents].count should equal(1);
 			[GBComponent(1,0) sourceString] should equal(@"description 2");
+			[GBComponent(1,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -612,9 +566,11 @@ describe(@"method exceptions:", ^{
 			[GBException(0) sectionName] should equal(@"name1");
 			[GBException(0) sectionComponents].count should equal(1);
 			[GBComponent(0,0) sourceString] should equal(@"description1\nin multiple\n\nlines and paragraphs");
+			[GBComponent(0,0) class] should equal([CommentComponentInfo class]);
 			[GBException(1) sectionName] should equal(@"name2");
 			[GBException(1) sectionComponents].count should equal(1);
 			[GBComponent(1,0) sourceString] should equal(@"description 2");
+			[GBComponent(1,0) class] should equal([CommentComponentInfo class]);
 		});
 	});
 });
@@ -629,8 +585,9 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
-			[GBReturn sectionComponents].count should equal(1);
-			[[GBReturn sectionComponents][0] sourceString] should equal(@"description");
+			GBReturn.sectionComponents.count should equal(1);
+			[GBReturn.sectionComponents[0] sourceString] should equal(@"description");
+			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -642,8 +599,9 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
-			[GBReturn sectionComponents].count should equal(1);
-			[[GBReturn sectionComponents][0] sourceString] should equal(@"description 2");
+			GBReturn.sectionComponents.count should equal(1);
+			[GBReturn.sectionComponents[0] sourceString] should equal(@"description 2");
+			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -655,8 +613,9 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
-			[GBReturn sectionComponents].count should equal(1);
-			[[GBReturn sectionComponents][0] sourceString] should equal(@"description\nin multiple\n\nlines and paragraphs");
+			GBReturn.sectionComponents.count should equal(1);
+			[GBReturn.sectionComponents[0] sourceString] should equal(@"description\nin multiple\n\nlines and paragraphs");
+			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 		});
 	});
 });
