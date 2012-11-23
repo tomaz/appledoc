@@ -40,64 +40,56 @@ describe(@"running:", ^{
 		it(@"should enumerate classes", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id classes = [OCMockObject mockForClass:[NSArray class]];
-				[[classes expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:classes] storeClasses];
+				id settings = mock([GBSettings class]);
+				id classes = mock([NSArray class]);
+				id store = mock([Store class]);
+				[given([store storeClasses]) willReturn:classes];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [store verify]; } should_not raise_exception();
-				^{ [classes verify]; } should_not raise_exception();
+				gbcatch([verify(classes) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 
 		it(@"should enumerate extensions", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id extensions = [OCMockObject mockForClass:[NSArray class]];
-				[[extensions expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:extensions] storeExtensions];
+				id settings = mock([GBSettings class]);
+				id extensions = mock([NSArray class]);
+				id store = mock([Store class]);
+				[given([store storeExtensions]) willReturn:extensions];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [store verify]; } should_not raise_exception();
-				^{ [extensions verify]; } should_not raise_exception();
+				gbcatch([verify(extensions) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 		
 		it(@"should enumerate categories", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id categories = [OCMockObject mockForClass:[NSArray class]];
-				[[categories expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:categories] storeCategories];
+				id settings = mock([GBSettings class]);
+				id categories = mock([NSArray class]);
+				id store = mock([Store class]);
+				[given([store storeCategories]) willReturn:categories];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [store verify]; } should_not raise_exception();
-				^{ [categories verify]; } should_not raise_exception();
+				gbcatch([verify(categories) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 		
 		it(@"should enumerate protocols", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id protocols = [OCMockObject mockForClass:[NSArray class]];
-				[[protocols expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:protocols] storeProtocols];
+				id settings = mock([GBSettings class]);
+				id protocols = mock([NSArray class]);
+				id store = mock([Store class]);
+				[given([store storeProtocols]) willReturn:protocols];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [store verify]; } should_not raise_exception();
-				^{ [protocols verify]; } should_not raise_exception();
+				gbcatch([verify(protocols) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 	});
@@ -109,12 +101,9 @@ describe(@"running:", ^{
 		__block id properties;
 		
 		beforeEach(^{
-			classMethods = [OCMockObject mockForClass:[NSArray class]];
-			[[classMethods expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-			interfaceMethods = [OCMockObject mockForClass:[NSArray class]];
-			[[interfaceMethods expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
-			properties = [OCMockObject mockForClass:[NSArray class]];
-			[[properties expect] enumerateObjectsUsingBlock:OCMOCK_ANY];
+			classMethods = mock([NSArray class]);
+			interfaceMethods = mock([NSArray class]);
+			properties = mock([NSArray class]);
 			object = [[[InterfaceInfoBase alloc] init] autorelease];
 			object.interfaceClassMethods = classMethods;
 			object.interfaceInstanceMethods = interfaceMethods;
@@ -124,60 +113,60 @@ describe(@"running:", ^{
 		it(@"should enumerate class members", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:@[object]] storeClasses];
+				id settings = mock([GBSettings class]);
+				id store = mock([Store class]);
+				[given([store storeClasses]) willReturn:@[object]];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [classMethods verify]; } should_not raise_exception();
-				^{ [interfaceMethods verify]; } should_not raise_exception();
-				^{ [properties verify]; } should_not raise_exception();
+				gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 		
 		it(@"should enumerate extension members", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:@[object]] storeExtensions];
+				id settings = mock([GBSettings class]);
+				id store = mock([Store class]);
+				[given([store storeExtensions]) willReturn:@[object]];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [classMethods verify]; } should_not raise_exception();
-				^{ [interfaceMethods verify]; } should_not raise_exception();
-				^{ [properties verify]; } should_not raise_exception();
+				gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 
 		it(@"should enumerate category members", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:@[object]] storeCategories];
+				id settings = mock([GBSettings class]);
+				id store = mock([Store class]);
+				[given([store storeCategories]) willReturn:@[object]];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [classMethods verify]; } should_not raise_exception();
-				^{ [interfaceMethods verify]; } should_not raise_exception();
-				^{ [properties verify]; } should_not raise_exception();
+				gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 		
 		it(@"should enumerate protocol members", ^{
 			runWithProcessor(^(Processor *processor) {
 				// setup
-				id settings = [OCMockObject niceMockForClass:[GBSettings class]];
-				id store = [OCMockObject niceMockForClass:[Store class]];
-				[[[store expect] andReturn:@[object]] storeProtocols];
+				id settings = mock([GBSettings class]);
+				id store = mock([Store class]);
+				[given([store storeProtocols]) willReturn:@[object]];
 				// execute
 				[processor runWithSettings:settings store:store];
 				// verify
-				^{ [classMethods verify]; } should_not raise_exception();
-				^{ [interfaceMethods verify]; } should_not raise_exception();
-				^{ [properties verify]; } should_not raise_exception();
+				gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
+				gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
 			});
 		});
 	});
@@ -189,33 +178,32 @@ describe(@"processing comments:", ^{
 	__block id componentsTask;
 	
 	beforeEach(^{
-		context = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		object = [OCMockObject mockForClass:[ObjectInfoBase class]];
-		componentsTask = [OCMockObject mockForClass:[ProcessorTask class]];
+		context = mock([ObjectInfoBase class]);
+		object = mock([ObjectInfoBase class]);
+		componentsTask = mock([ProcessorTask class]);
 	});
 	
 	it(@"should invoke all required tasks if comment is given", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
-			[[[object stub] andReturn:@""] comment];
-			[[componentsTask expect] processCommentForObject:object context:context];
+			[given([object comment]) willReturn:@""];
 			processor.processCommentComponentsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify
-			^{ [componentsTask verify]; } should_not raise_exception();
+			gbcatch([verify(componentsTask) processCommentForObject:object context:context]);
 		});
 	});
 
 	it(@"should ignore all required tasks if comment is not given", ^{
 		runWithProcessor(^(Processor *processor) {
-			// setup - no need to specify expectations as strict mock will raise exception if unexpected message is received
-			[[[object stub] andReturn:nil] comment];
+			// setup
+			[given([object comment]) willReturn:nil];
 			processor.processCommentComponentsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
-			// verify
-			^{ [componentsTask verify]; } should_not raise_exception();
+			// verify - we should fail because the method should not be invoked when comment is nil.
+			gbfail([verify(componentsTask) processCommentForObject:object context:context]);
 		});
 	});
 });
