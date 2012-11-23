@@ -117,7 +117,7 @@
 
 - (void)registerAbstractFromData:(ProcessComponentsData *)data toComment:(CommentInfo *)comment {
 	LogDebug(@"Registering abstract...");
-	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:data.sections[0]];
+	CommentComponentInfo *component = [self componentInfoFromString:data.sections[0]];
 	[comment setCommentAbstract:component];
 	[data.sections removeObjectAtIndex:0];
 }
@@ -131,7 +131,7 @@
 		NSTextCheckingResult *match = [expression gb_firstMatchIn:sectionString];
 		if (match && match.range.location == 0) break;
 		if (!discussion) discussion = [[CommentSectionInfo alloc] init];
-		CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:sectionString];
+		CommentComponentInfo *component = [self componentInfoFromString:sectionString];
 		[discussion.sectionComponents addObject:component];
 		[data.sections removeObjectAtIndex:0];
 	}
@@ -176,7 +176,7 @@
 	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
 	if (!match) return NO;
 	NSString *description = [match gb_remainingStringIn:string];
-	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:description];
+	CommentComponentInfo *component = [self componentInfoFromString:description];
 	CommentNamedSectionInfo *info = [[CommentNamedSectionInfo alloc] init];
 	[info setSectionName:[match gb_stringAtIndex:2 in:string]];
 	[info.sectionComponents addObject:component];
@@ -190,7 +190,7 @@
 	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
 	if (!match) return NO;
 	NSString *description = [match gb_remainingStringIn:string];
-	CommentComponentInfo *component = [CommentComponentInfo componentWithSourceString:description];
+	CommentComponentInfo *component = [self componentInfoFromString:description];
 	CommentSectionInfo *info = [[CommentSectionInfo alloc] init];
 	[info.sectionComponents addObject:component];
 	*dest = info;
@@ -202,9 +202,9 @@
 
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
 	LogDebug(@"Creating component for %@...", string);
-	CommentComponentInfo *result = [[CommentComponentInfo alloc] init];
-	result.sourceString = string;
-	return result;
+	if ([string hasPrefix:@"@warning"]) return [CommentWarningSectionInfo componentWithSourceString:string];
+	if ([string hasPrefix:@"@bug"]) return [CommentBugSectionInfo componentWithSourceString:string];
+	return [CommentComponentInfo componentWithSourceString:string];
 }
 
 @end

@@ -32,3 +32,11 @@
 }
 
 @end
+
+#pragma mark - 
+
+@implementation CommentWarningSectionInfo
+@end
+
+@implementation CommentBugSectionInfo
+@end

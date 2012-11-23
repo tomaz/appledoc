@@ -58,6 +58,7 @@ describe(@"abstract:", ^{
 			// verify
 			((CommentComponentInfo *)[comment commentAbstract]).sourceString should equal(@"line");
 			GBAbstract.sourceString should equal(@"line");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 		});
 	});
 	
@@ -69,6 +70,7 @@ describe(@"abstract:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"line one\nline two\nline three");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 		});
 	});
 });
@@ -82,6 +84,7 @@ describe(@"normal text:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -96,6 +99,7 @@ describe(@"normal text:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"second\n\nthird");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -110,6 +114,7 @@ describe(@"normal text:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"line one\nline two\nline three\n\nthird paragraph\nand line two");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -128,6 +133,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--block code"));
 			});
@@ -141,6 +147,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--line 2"));
 			});
@@ -154,6 +161,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n\n--line 2\n--line 3"));
 			});
@@ -167,6 +175,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
 			});
@@ -180,6 +189,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
 			});
@@ -193,6 +203,7 @@ describe(@"block code:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--\tline 2\n--    line 3"));
 			});
@@ -219,6 +230,7 @@ describe(@"block quote:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> block quote");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -233,6 +245,7 @@ describe(@"block quote:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> line 1\n> line 2\n\n> line 3");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -247,6 +260,7 @@ describe(@"block quote:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(1);
 			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> level 1\n> > level 2\n> back to 1");
 			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -261,6 +275,7 @@ describe(@"block quote:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"> block quote");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBDiscussion.sectionComponents.count should equal(0);
 		});
 	});
@@ -277,6 +292,7 @@ describe(@"lists:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- list item"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -291,6 +307,7 @@ describe(@"lists:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -357,6 +374,7 @@ describe(@"tables:", ^{
 
 describe(@"warnings and bugs:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
+#define GBClass() info[@"type"]
 	sharedExamplesFor(@"as part of abstract", ^(NSDictionary *info) {
 		it(@"should take as part of abstract if not delimited by empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
@@ -366,6 +384,7 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 			});
 		});
 
@@ -377,8 +396,22 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(GBReplace(@"abstract\n@id text"));
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+			});
+		});
+		
+		it(@"should make abstract special component if started with directive", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(GBReplace(@"@id text"));
+				[GBAbstract class] should equal(GBClass());
 			});
 		});
 	});
@@ -392,8 +425,10 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id text"));
+				[GBDiscussion.sectionComponents[0] class] should equal(GBClass());
 			});
 		});
 
@@ -405,9 +440,11 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
 				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text"));
+				[GBDiscussion.sectionComponents[1] class] should equal(GBClass());
 			});
 		});
 
@@ -419,9 +456,11 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(@"paragraph");
 				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id text\n\nnext paragraph"));
+				[GBDiscussion.sectionComponents[1] class] should equal(GBClass());
 			});
 		});
 
@@ -433,21 +472,30 @@ describe(@"warnings and bugs:", ^{
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id first"));
 				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"@id second"));
+				[GBDiscussion.sectionComponents[0] class] should equal(GBClass());
+				[GBDiscussion.sectionComponents[1] class] should equal(GBClass());
 			});
 		});
 	});
 	
 	describe(@"@warning:", ^{
-		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning";
+			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentWarningSectionInfo class];
+		});
 		itShouldBehaveLike(@"as part of abstract");
 		itShouldBehaveLike(@"as part of discussion");
 	});
 	
 	describe(@"@bug:", ^{
-		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug";
+			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentBugSectionInfo class];
+		});
 		itShouldBehaveLike(@"as part of abstract");
 		itShouldBehaveLike(@"as part of discussion");
 	});
@@ -465,6 +513,7 @@ describe(@"method parameters:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBParameters.count should equal(1);
 			[GBParameter(0) sectionName] should equal(@"name");
 			[GBParameter(0) sectionComponents].count should equal(1);
@@ -481,6 +530,7 @@ describe(@"method parameters:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBParameters.count should equal(2);
 			[GBParameter(0) sectionName] should equal(@"name1");
 			[GBParameter(0) sectionComponents].count should equal(1);
@@ -501,6 +551,7 @@ describe(@"method parameters:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBParameters.count should equal(2);
 			[GBParameter(0) sectionName] should equal(@"name1");
 			[GBParameter(0) sectionComponents].count should equal(1);
@@ -526,6 +577,7 @@ describe(@"method exceptions:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBExceptions.count should equal(1);
 			[GBException(0) sectionName] should equal(@"name");
 			[GBException(0) sectionComponents].count should equal(1);
@@ -542,6 +594,7 @@ describe(@"method exceptions:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBExceptions.count should equal(2);
 			[GBException(0) sectionName] should equal(@"name1");
 			[GBException(0) sectionComponents].count should equal(1);
@@ -562,6 +615,7 @@ describe(@"method exceptions:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBExceptions.count should equal(2);
 			[GBException(0) sectionName] should equal(@"name1");
 			[GBException(0) sectionComponents].count should equal(1);
@@ -585,6 +639,7 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBReturn.sectionComponents.count should equal(1);
 			[GBReturn.sectionComponents[0] sourceString] should equal(@"description");
 			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -599,6 +654,7 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBReturn.sectionComponents.count should equal(1);
 			[GBReturn.sectionComponents[0] sourceString] should equal(@"description 2");
 			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
@@ -613,6 +669,7 @@ describe(@"method return:", ^{
 			[task processComment:comment];
 			// verify
 			GBAbstract.sourceString should equal(@"abstract");
+			[GBAbstract class] should equal([CommentComponentInfo class]);
 			GBReturn.sectionComponents.count should equal(1);
 			[GBReturn.sectionComponents[0] sourceString] should equal(@"description\nin multiple\n\nlines and paragraphs");
 			[GBReturn.sectionComponents[0] class] should equal([CommentComponentInfo class]);
