@@ -134,8 +134,11 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
-				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--block code"));
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--block code"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
 		});
 
@@ -148,8 +151,11 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
-				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--line 2"));
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1\n--line 2"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
 		});
 
@@ -162,8 +168,13 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
-				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n\n--line 2\n--line 3"));
+				GBDiscussion.sectionComponents.count should equal(3);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1"));
+				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"--line 2\n--line 3"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
+				[GBDiscussion.sectionComponents[2] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
 		});
 
@@ -176,8 +187,15 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
-				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
+				GBDiscussion.sectionComponents.count should equal(4);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1"));
+				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"normal line 2"));
+				[GBDiscussion.sectionComponents[3] sourceString] should equal(GBReplace(@"--line 2"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
+				[GBDiscussion.sectionComponents[2] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[3] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
 		});
 
@@ -192,6 +210,7 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 			});
 		});
 
@@ -204,8 +223,11 @@ describe(@"block code:", ^{
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
-				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n--line 1\n--\tline 2\n--    line 3"));
+				GBDiscussion.sectionComponents.count should equal(2);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1\n--\tline 2\n--    line 3"));
+				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
+				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
 		});
 	});

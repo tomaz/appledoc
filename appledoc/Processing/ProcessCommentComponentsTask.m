@@ -64,6 +64,7 @@
 
 - (void)parseSectionsFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
 	if (sectionString.length == 0) return;
+	if ([self parseCodeBlockFromString:sectionString toData:data]) return;
 	if ([self parseStyledSectionFromString:sectionString toData:data]) return;
 	if ([self parseMethodSectionFromString:sectionString toData:data]) return;
 	
@@ -79,6 +80,15 @@
 	LogDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
 	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
 	[data.builder appendString:[sectionString gb_stringByTrimmingNewLines]];
+}
+
+- (BOOL)parseCodeBlockFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
+	// If current section represents code block, tread whole section as code block. Note that this doesn't work for empty strings!
+	if (![self isStringCodeBlock:sectionString]) return NO;
+	[self registerSectionFromBuilderInDataIfNeeded:data startNewSection:YES];
+	[data.builder appendString:sectionString];
+	[self registerSectionFromBuilderInDataIfNeeded:data startNewSection:YES];
+	return YES;
 }
 
 - (BOOL)parseStyledSectionFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
@@ -221,7 +231,19 @@
 	LogDebug(@"Creating component for %@...", string);
 	if ([string hasPrefix:@"@warning"]) return [CommentWarningComponentInfo componentWithSourceString:string];
 	if ([string hasPrefix:@"@bug"]) return [CommentBugComponentInfo componentWithSourceString:string];
+	if ([self isStringCodeBlock:string]) return [CommentCodeBlockComponentInfo componentWithSourceString:string];
 	return [CommentComponentInfo componentWithSourceString:string];
+}
+
+- (BOOL)isStringCodeBlock:(NSString *)string {
+	if (string.length == 0) return NO;
+	__block BOOL result = YES;
+	[string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+		if ([line hasPrefix:@"\t"] || [line hasPrefix:@"    "]) return;
+		result = NO;
+		*stop = YES;
+	}];
+	return result;
 }
 
 @end

@@ -40,3 +40,6 @@
 
 @implementation CommentBugComponentInfo
 @end
+
+@implementation CommentCodeBlockComponentInfo
+@end

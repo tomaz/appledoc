@@ -32,3 +32,8 @@
  */
 @interface CommentBugComponentInfo : CommentComponentInfo
 @end
+
+/** Concrete comment component describing a code block section.
+ */
+@interface CommentCodeBlockComponentInfo : CommentComponentInfo
+@end
