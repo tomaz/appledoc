@@ -38,8 +38,8 @@
 	GBPattern(@"^(@return)\\s+", 0) // only at start of string!
 }
 
-+ (NSRegularExpression *)gb_sectionDelimiterMatchingExpression {
-	GBPattern(@"^(@warning|@bug|@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
++ (NSRegularExpression *)gb_styledSectionDelimiterMatchingExpression {
+	GBPattern(@"^(@warning|@bug)", NSRegularExpressionAnchorsMatchLines)
 }
 
 + (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression {
@@ -108,6 +108,10 @@
 	result.location = self.range.location + self.range.length;
 	result.length = string.length - result.location;
 	return result;
+}
+
+- (BOOL)gb_isMatchedAtStart {
+	return (self.range.location == 0);
 }
 
 @end

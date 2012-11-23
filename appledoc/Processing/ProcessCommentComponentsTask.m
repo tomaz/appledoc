@@ -64,31 +64,8 @@
 
 - (void)parseSectionsFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
 	if (sectionString.length == 0) return;
-
-	// If current "paragraph" starts with section directive, we must split the whole string into individual sections, each directive starting new section.
-	NSRegularExpression *sectionExpression = [NSRegularExpression gb_sectionDelimiterMatchingExpression];
-	NSArray *sectionMatches = [sectionExpression gb_allMatchesIn:sectionString];
-	if (sectionMatches.count > 0 && [sectionMatches[0] range].location == 0) {
-		// Register current builder as section, if needed.
-		if (data.builder.length > 0) [self registerSectionFromBuilderInData:data startNewSection:YES];
-
-		// Register all directives from current section string.
-		__weak ProcessCommentComponentsTask *bself = self;
-		__block NSUInteger lastMatchLocation = 0;
-		[sectionMatches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
-			if (idx == 0) return;
-			NSString *currentSectionString = [[match gb_prefixFromIndex:lastMatchLocation in:sectionString] gb_stringByTrimmingNewLines];
-			[data.builder appendString:currentSectionString];
-			[bself registerSectionFromBuilderInData:data startNewSection:YES];
-			lastMatchLocation = match.range.location;
-		}];
-		
-		// Register remaining section, but keep the string so we can append subsequent paragraphs to it.
-		NSString *remainingSectionString = [[sectionString substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines];
-		[data.builder appendString:remainingSectionString];
-		[self registerSectionFromBuilderInData:data startNewSection:NO];
-		return;
-	}
+	if ([self parseStyledSectionFromString:sectionString toData:data]) return;
+	if ([self parseMethodSectionFromString:sectionString toData:data]) return;
 	
 	// If this is the first paragraph to be registered, take it as abstract and create single section out of it.
 	if (data.sections.count == 0) {
@@ -102,6 +79,46 @@
 	LogDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
 	if (data.builder.length > 0) [data.builder appendString:@"\n\n"];
 	[data.builder appendString:[sectionString gb_stringByTrimmingNewLines]];
+}
+
+- (BOOL)parseStyledSectionFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
+	// If current section represents @warning and @bug, treat whole section string as styled section.
+	NSTextCheckingResult *styledSectionMatch = [[NSRegularExpression gb_styledSectionDelimiterMatchingExpression] gb_firstMatchIn:sectionString];
+	if (![styledSectionMatch gb_isMatchedAtStart]) return NO;
+	[self registerSectionFromBuilderInDataIfNeeded:data startNewSection:YES];
+	[data.builder appendString:sectionString];
+	[self registerSectionFromBuilderInData:data startNewSection:NO];
+	return YES;
+}
+
+- (BOOL)parseMethodSectionFromString:(NSString *)sectionString toData:(ProcessComponentsData *)data {
+	// If current "paragraph" starts with method section directive, we must split the whole string into individual sections, each directive starting new section.
+	NSRegularExpression *expression = [NSRegularExpression gb_methodSectionDelimiterMatchingExpression];
+	NSArray *sectionMatches = [expression gb_allMatchesIn:sectionString];
+	if (sectionMatches.count == 0 || ![sectionMatches[0] gb_isMatchedAtStart]) return NO;
+	
+	__weak ProcessCommentComponentsTask *bself = self;
+	__block NSUInteger lastMatchLocation = 0;
+	[self registerSectionFromBuilderInDataIfNeeded:data startNewSection:YES];
+	[sectionMatches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
+		if (idx == 0) return;
+		NSString *currentSectionString = [[match gb_prefixFromIndex:lastMatchLocation in:sectionString] gb_stringByTrimmingNewLines];
+		[data.builder appendString:currentSectionString];
+		[bself registerSectionFromBuilderInData:data startNewSection:YES];
+		lastMatchLocation = match.range.location;
+	}];
+	
+	// Register remaining section, but keep the string so we can append subsequent paragraphs to it.
+	NSString *remainingSectionString = [[sectionString substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines];
+	[data.builder appendString:remainingSectionString];
+	[self registerSectionFromBuilderInData:data startNewSection:NO];
+	return YES;
+}
+
+- (BOOL)registerSectionFromBuilderInDataIfNeeded:(ProcessComponentsData *)data startNewSection:(BOOL)startNew {
+ 	if (data.builder.length == 0) return NO;
+	[self registerSectionFromBuilderInData:data startNewSection:startNew];
+	return YES;
 }
 
 - (void)registerSectionFromBuilderInData:(ProcessComponentsData *)data startNewSection:(BOOL)startNew {
@@ -202,8 +219,8 @@
 
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
 	LogDebug(@"Creating component for %@...", string);
-	if ([string hasPrefix:@"@warning"]) return [CommentWarningSectionInfo componentWithSourceString:string];
-	if ([string hasPrefix:@"@bug"]) return [CommentBugSectionInfo componentWithSourceString:string];
+	if ([string hasPrefix:@"@warning"]) return [CommentWarningComponentInfo componentWithSourceString:string];
+	if ([string hasPrefix:@"@bug"]) return [CommentBugComponentInfo componentWithSourceString:string];
 	return [CommentComponentInfo componentWithSourceString:string];
 }
 

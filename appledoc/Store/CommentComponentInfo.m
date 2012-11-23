@@ -35,8 +35,8 @@
 
 #pragma mark - 
 
-@implementation CommentWarningSectionInfo
+@implementation CommentWarningComponentInfo
 @end
 
-@implementation CommentBugSectionInfo
+@implementation CommentBugComponentInfo
 @end

@@ -432,6 +432,21 @@ describe(@"warnings and bugs:", ^{
 			});
 		});
 
+		it(@"should continue section if not delimited by empty line", ^{
+			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id text\n@id continuation"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract.sourceString should equal(@"abstract");
+				[GBAbstract class] should equal([CommentComponentInfo class]);
+				GBDiscussion.sectionComponents.count should equal(1);
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"@id text\n@id continuation"));
+				[GBDiscussion.sectionComponents[0] class] should equal(GBClass());
+			});
+		});
+		
 		it(@"should start new paragraph if delimited by empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
@@ -485,7 +500,7 @@ describe(@"warnings and bugs:", ^{
 	describe(@"@warning:", ^{
 		beforeEach(^{
 			[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning";
-			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentWarningSectionInfo class];
+			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentWarningComponentInfo class];
 		});
 		itShouldBehaveLike(@"as part of abstract");
 		itShouldBehaveLike(@"as part of discussion");
@@ -494,7 +509,7 @@ describe(@"warnings and bugs:", ^{
 	describe(@"@bug:", ^{
 		beforeEach(^{
 			[[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug";
-			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentBugSectionInfo class];
+			[[SpecHelper specHelper] sharedExampleContext][@"type"] = [CommentBugComponentInfo class];
 		});
 		itShouldBehaveLike(@"as part of abstract");
 		itShouldBehaveLike(@"as part of discussion");

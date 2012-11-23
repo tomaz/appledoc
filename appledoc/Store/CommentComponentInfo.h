@@ -25,10 +25,10 @@
 
 /** Concrete comment component describing a @warning section.
  */
-@interface CommentWarningSectionInfo : CommentComponentInfo
+@interface CommentWarningComponentInfo : CommentComponentInfo
 @end
 
 /** Concrete comment component describing a @bug section.
  */
-@interface CommentBugSectionInfo : CommentComponentInfo
+@interface CommentBugComponentInfo : CommentComponentInfo
 @end

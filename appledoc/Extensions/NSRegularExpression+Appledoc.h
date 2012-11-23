@@ -17,7 +17,7 @@ typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx,
 + (NSRegularExpression *)gb_paramMatchingExpression;	// @param name
 + (NSRegularExpression *)gb_exceptionMatchingExpression; // @exception name
 + (NSRegularExpression *)gb_returnMatchingExpression; // @return
-+ (NSRegularExpression *)gb_sectionDelimiterMatchingExpression; // @warning|@bug|@param|@exception|@return
++ (NSRegularExpression *)gb_styledSectionDelimiterMatchingExpression; // @warning|@bug
 + (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression; // @param|@exception|@return
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock;
@@ -38,5 +38,6 @@ typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx,
 - (NSString *)gb_prefixFromIndex:(NSUInteger)index in:(NSString *)string;
 - (NSString *)gb_remainingStringIn:(NSString *)string;
 - (NSRange)gb_remainingRangeIn:(NSString *)string;
+- (BOOL)gb_isMatchedAtStart;
 
 @end
