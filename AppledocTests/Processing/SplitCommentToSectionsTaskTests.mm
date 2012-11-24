@@ -356,5 +356,132 @@ describe(@"warnings and bugs:", ^{
 	});
 });
 
+describe(@"method parameters:", ^{
+	it(@"should register single parameter:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@param name description");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(2);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@param name description");
+		});
+	});
+
+	it(@"should register multiple parameters:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@param name1 description 1\n@param name2 description 2");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(3);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@param name1 description 1");
+			GBSections[2] should equal(@"@param name2 description 2");
+		});
+	});
+
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@param name1 description1\nin multiple\n\nlines and paragraphs\n\n@param name2 description 2");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(3);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@param name1 description1\nin multiple\n\nlines and paragraphs");
+			GBSections[2] should equal(@"@param name2 description 2");
+		});
+	});
+});
+
+describe(@"method exceptions:", ^{
+	it(@"should register single exception:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@exception name description");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(2);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@exception name description");
+		});
+	});
+
+	it(@"should register multiple exceptions:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@exception name1 description 1\n@exception name2 description 2");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(3);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@exception name1 description 1");
+			GBSections[2] should equal(@"@exception name2 description 2");
+		});
+	});
+
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@exception name1 description1\nin multiple\n\nlines and paragraphs\n\n@exception name2 description 2");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(3);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@exception name1 description1\nin multiple\n\nlines and paragraphs");
+			GBSections[2] should equal(@"@exception name2 description 2");
+		});
+	});
+});
+
+describe(@"method return:", ^{
+	it(@"should register single return:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@return description");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(2);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@return description");
+		});
+	});
+
+	it(@"should register all detected return sections:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@return description 1\n@return description 2");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(3);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@return description 1");
+			GBSections[2] should equal(@"@return description 2");
+		});
+	});
+
+	it(@"should take all paragraphs following directive as part of directive:", ^{
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+			// setup
+			setupComment(comment, @"abstract\n\n@return description\nin multiple\n\nlines and paragraphs");
+			// execute
+			[task processComment:comment];
+			// verify
+			GBSections.count should equal(2);
+			GBSections[0] should equal(@"abstract");
+			GBSections[1] should equal(@"@return description\nin multiple\n\nlines and paragraphs");
+		});
+	});
+});
 
 TEST_END
