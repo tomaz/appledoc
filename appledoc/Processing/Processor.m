@@ -71,8 +71,8 @@
 	if (!object.comment) return GBResultOk;
 	LogDebug(@"Processing comment for %@", object);
 	NSInteger result = GBResultOk;
-	GB_PROCESS([self.splitCommentToSectionsTask processCommentForObject:object context:context])
-	GB_PROCESS([self.registerCommentComponentsTask processCommentForObject:object context:context])
+	GB_PROCESS([self.splitCommentToSectionsTask processCommentForObject:object context:context]);
+	GB_PROCESS([self.registerCommentComponentsTask processCommentForObject:object context:context]);
 	return result;
 }
 
