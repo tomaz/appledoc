@@ -123,12 +123,12 @@ describe(@"normal text:", ^{
 });
 
 describe(@"block code:", ^{
-#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
+#define GBReplace(t) [t gb_stringByReplacing:@{ @"[": info[@"start"], @"]": info[@"end"], @"--": info[@"marker"] }]
 	sharedExamplesFor(@"block code", ^(NSDictionary *info){
 		it(@"should append block code to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--block code"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--block code]"));
 				// execute
 				[task processComment:comment];
 				// verify
@@ -136,7 +136,7 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--block code"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--block code]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
@@ -145,7 +145,7 @@ describe(@"block code:", ^{
 		it(@"should append all block code lines to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--line 2"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--line 2]"));
 				// execute
 				[task processComment:comment];
 				// verify
@@ -153,7 +153,7 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1\n--line 2"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1\n--line 2]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
@@ -162,7 +162,7 @@ describe(@"block code:", ^{
 		it(@"should append multiple block code sections to previous paragraph", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n\n--line 2\n--line 3"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1]\n\n[--line 2\n--line 3]"));
 				// execute
 				[task processComment:comment];
 				// verify
@@ -170,8 +170,8 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(3);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1"));
-				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"--line 2\n--line 3"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1]"));
+				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"[--line 2\n--line 3]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 				[GBDiscussion.sectionComponents[2] class] should equal([CommentCodeBlockComponentInfo class]);
@@ -181,7 +181,7 @@ describe(@"block code:", ^{
 		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n--line 1\n\nnormal line 2\n\n--line 2"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n[--line 1]\n\nnormal line 2\n\n[--line 2]"));
 				// execute
 				[task processComment:comment];
 				// verify
@@ -189,9 +189,9 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(4);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1"));
-				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1]"));
 				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"normal line 2"));
-				[GBDiscussion.sectionComponents[3] sourceString] should equal(GBReplace(@"--line 2"));
+				[GBDiscussion.sectionComponents[3] sourceString] should equal(GBReplace(@"[--line 2]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 				[GBDiscussion.sectionComponents[2] class] should equal([CommentComponentInfo class]);
@@ -202,14 +202,14 @@ describe(@"block code:", ^{
 		it(@"should continue normal paragraph if not delimited with empty line", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n--continue line"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n[--continue line]"));
 				// execute
 				[task processComment:comment];
 				// verify
 				GBAbstract.sourceString should equal(@"abstract");
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(1);
-				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n--continue line"));
+				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n[--continue line]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 			});
 		});
@@ -217,7 +217,7 @@ describe(@"block code:", ^{
 		it(@"should keep all formatting after initial code block marker", ^{
 			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n--line 1\n--\tline 2\n--    line 3"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--\tline 2\n--    line 3]"));
 				// execute
 				[task processComment:comment];
 				// verify
@@ -225,7 +225,7 @@ describe(@"block code:", ^{
 				[GBAbstract class] should equal([CommentComponentInfo class]);
 				GBDiscussion.sectionComponents.count should equal(2);
 				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"--line 1\n--\tline 2\n--    line 3"));
+				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1\n--\tline 2\n--    line 3]"));
 				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
 				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
 			});
@@ -233,12 +233,29 @@ describe(@"block code:", ^{
 	});
 	
 	describe(@"delimited with tab:", ^{
-		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t"; });
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
+		});
 		itShouldBehaveLike(@"block code");
 	});
 	
-	describe(@"delimited with spaces", ^{
-		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    "; });
+	describe(@"delimited with spaces:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    ";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
+		});
+		itShouldBehaveLike(@"block code");
+	});
+	
+	describe(@"fenced code blocks:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"```";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"```";
+		});
 		itShouldBehaveLike(@"block code");
 	});
 });

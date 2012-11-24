@@ -15,6 +15,7 @@
 - (NSString *)gb_stringByStandardizingCurrentDir;
 - (NSString *)gb_stringByStandardizingCurrentDirAndPath;
 - (NSString *)gb_stringByReplacingWhitespaceWithSpaces;
+- (NSString *)gb_stringByReplacing:(NSDictionary *)info;
 - (NSString *)gb_stringByTrimmingNewLines;
 - (NSString *)gb_stringByTrimmingWhitespaceAndNewLine;
 - (NSUInteger)gb_indexOfString:(NSString *)string;

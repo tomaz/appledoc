@@ -237,6 +237,11 @@
 
 - (BOOL)isStringCodeBlock:(NSString *)string {
 	if (string.length == 0) return NO;
+	
+	// Is fenced code block?
+	if ([string hasPrefix:@"```"] && [string hasSuffix:@"```"]) return YES;
+	
+	// Is tab/four space prefixed code block?
 	__block BOOL result = YES;
 	[string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
 		if ([line hasPrefix:@"\t"] || [line hasPrefix:@"    "]) return;

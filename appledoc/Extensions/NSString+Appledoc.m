@@ -60,6 +60,14 @@
 	return [self gb_descriptionWithLength:self.length];
 }
 
+- (NSString *)gb_stringByReplacing:(NSDictionary *)info {
+	__block NSString *result = self;
+	[info enumerateKeysAndObjectsUsingBlock:^(NSString *find, NSString *replace, BOOL *stop) {
+		result = [result stringByReplacingOccurrencesOfString:find withString:replace];
+	}];
+	return result;
+}
+
 - (NSString *)gb_stringByTrimmingNewLines {
 	return [self stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
 }
