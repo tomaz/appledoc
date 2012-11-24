@@ -9,6 +9,7 @@
 #import "Objects.h"
 #import "Store.h"
 #import "SplitCommentToSectionsTask.h"
+#import "RegisterCommentComponentsTask.h"
 #import "Processor.h"
 
 @implementation Processor
@@ -71,6 +72,7 @@
 	LogDebug(@"Processing comment for %@", object);
 	NSInteger result = GBResultOk;
 	GB_PROCESS([self.splitCommentToSectionsTask processCommentForObject:object context:context])
+	GB_PROCESS([self.registerCommentComponentsTask processCommentForObject:object context:context])
 	return result;
 }
 
@@ -81,6 +83,13 @@
 	LogDebug(@"Initializing split comment to sections task due to first acces...");
 	_splitCommentToSectionsTask = [[SplitCommentToSectionsTask alloc] init];
 	return _splitCommentToSectionsTask;
+}
+
+- (ProcessorTask *)registerCommentComponentsTask {
+	if (_registerCommentComponentsTask) return _registerCommentComponentsTask;
+	LogDebug(@"Initializing register comment components task due to first access...");
+	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] init];
+	return _registerCommentComponentsTask;
 }
 
 @end

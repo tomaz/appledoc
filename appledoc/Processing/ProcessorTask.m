@@ -38,6 +38,7 @@
 #pragma mark - Processing
 
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)context {
+	if (!object.comment || !object.comment.sourceString) return GBResultOk;
 	self.processingObject = object;
 	self.processingContext = context;
 	return [self processComment:object.comment];

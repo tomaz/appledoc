@@ -26,6 +26,7 @@
 #pragma mark - Processing
 
 - (NSInteger)processComment:(CommentInfo *)comment {
+	return GBResultOk;
 	LogVerbose(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
 	
 	// Prepare internal data.
