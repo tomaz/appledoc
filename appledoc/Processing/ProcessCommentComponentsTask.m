@@ -42,6 +42,7 @@
 	[self registerAbstractFromData:data toComment:comment];
 	[self registerDiscussionFromData:data toComment:comment];
 	[self registerMethodFromData:data toComment:comment];
+	return GBResultOk;
 }
 
 #pragma mark - Splitting source string to sections
