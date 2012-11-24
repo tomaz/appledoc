@@ -106,24 +106,24 @@ describe(@"normal text:", ^{
 	});
 });
 
-describe(@"block code:", ^{
+describe(@"code block:", ^{
 #define GBReplace(t) [t gb_stringByReplacing:@{ @"[": info[@"start"], @"]": info[@"end"], @"--": info[@"marker"] }]
-	sharedExamplesFor(@"block code", ^(NSDictionary *info){
-		it(@"should append block code to previous paragraph", ^{
+	sharedExamplesFor(@"code block", ^(NSDictionary *info){
+		it(@"should append code block to previous paragraph", ^{
 			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
-				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--block code]"));
+				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--code block]"));
 				// execute
 				[task processComment:comment];
 				// verify
 				GBSections.count should equal(3);
 				GBSections[0] should equal(@"abstract");
 				GBSections[1] should equal(@"normal line");
-				GBSections[2] should equal(GBReplace(@"[--block code]"));
+				GBSections[2] should equal(GBReplace(@"[--code block]"));
 			});
 		});
 
-		it(@"should append all block code lines to previous paragraph", ^{
+		it(@"should append all code block lines to previous paragraph", ^{
 			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--line 2]"));
@@ -137,7 +137,7 @@ describe(@"block code:", ^{
 			});
 		});
 
-		it(@"should append multiple block code sections to previous paragraph", ^{
+		it(@"should append multiple code block sections to previous paragraph", ^{
 			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1]\n\n[--line 2\n--line 3]"));
@@ -152,7 +152,7 @@ describe(@"block code:", ^{
 			});
 		});
 
-		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
+		it(@"should append multiple code block sections delimited with normal paragraphs", ^{
 			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n[--line 1]\n\nnormal line 2\n\n[--line 2]"));
@@ -202,7 +202,7 @@ describe(@"block code:", ^{
 			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t";
 			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
 		});
-		itShouldBehaveLike(@"block code");
+		itShouldBehaveLike(@"code block");
 	});
 
 	describe(@"delimited with spaces:", ^{
@@ -211,7 +211,7 @@ describe(@"block code:", ^{
 			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    ";
 			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
 		});
-		itShouldBehaveLike(@"block code");
+		itShouldBehaveLike(@"code block");
 	});
 
 	describe(@"fenced code blocks:", ^{
@@ -220,7 +220,7 @@ describe(@"block code:", ^{
 			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"";
 			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"```";
 		});
-		itShouldBehaveLike(@"block code");
+		itShouldBehaveLike(@"code block");
 	});
 });
 

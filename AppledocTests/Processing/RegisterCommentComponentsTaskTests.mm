@@ -48,6 +48,8 @@ static void setupComment(id comment, NSString *first ...) {
 #define GBExceptionsCount(c) [[comment commentExceptions] count] should equal(c);
 #define GBReturnCount(c) [[[comment commentReturn] sectionComponents] count] should equal(c)
 
+#define GBMethodSectionsEmpty() GBParametersCount(0); GBExceptionsCount(0); GBReturnCount(0)
+
 #pragma mark -
 
 TEST_BEGIN(RegisterCommentComponentsTaskTests)
@@ -62,9 +64,7 @@ describe(@"normal text:", ^{
 			// verify
 			GBAbstract(@"section 1", CommentComponentInfo);
 			GBDiscussionsCount(0);
-			GBParametersCount(0);
-			GBExceptionsCount(0);
-			GBReturnCount(0);
+			GBMethodSectionsEmpty();
 		});
 	});
 
@@ -79,302 +79,90 @@ describe(@"normal text:", ^{
 			GBDiscussionsCount(2);
 			GBDiscussion(0, @"section 2", CommentComponentInfo);
 			GBDiscussion(1, @"section 3", CommentComponentInfo);
-			GBParametersCount(0);
-			GBExceptionsCount(0);
-			GBReturnCount(0);
+			GBMethodSectionsEmpty();
 		});
 	});
 });
 
-//describe(@"block code:", ^{
-//#define GBReplace(t) [t gb_stringByReplacing:@{ @"[": info[@"start"], @"]": info[@"end"], @"--": info[@"marker"] }]
-//	sharedExamplesFor(@"block code", ^(NSDictionary *info){
-//		it(@"should append block code to previous paragraph", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--block code]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(2);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-//				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--block code]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should append all block code lines to previous paragraph", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--line 2]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(2);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-//				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1\n--line 2]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should append multiple block code sections to previous paragraph", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1]\n\n[--line 2\n--line 3]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(3);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-//				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1]"));
-//				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"[--line 2\n--line 3]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
-//				[GBDiscussion.sectionComponents[2] class] should equal([CommentCodeBlockComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n[--line 1]\n\nnormal line 2\n\n[--line 2]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(4);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line 1"));
-//				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1]"));
-//				[GBDiscussion.sectionComponents[2] sourceString] should equal(GBReplace(@"normal line 2"));
-//				[GBDiscussion.sectionComponents[3] sourceString] should equal(GBReplace(@"[--line 2]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
-//				[GBDiscussion.sectionComponents[2] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[3] class] should equal([CommentCodeBlockComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should continue normal paragraph if not delimited with empty line", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n[--continue line]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(1);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n[--continue line]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should keep all formatting after initial code block marker", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--\tline 2\n--    line 3]"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(2);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line"));
-//				[GBDiscussion.sectionComponents[1] sourceString] should equal(GBReplace(@"[--line 1\n--\tline 2\n--    line 3]"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//				[GBDiscussion.sectionComponents[1] class] should equal([CommentCodeBlockComponentInfo class]);
-//			});
-//		});
-//	});
-//	
-//	describe(@"delimited with tab:", ^{
-//		beforeEach(^{
-//			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
-//			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t";
-//			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
-//		});
-//		itShouldBehaveLike(@"block code");
-//	});
-//	
-//	describe(@"delimited with spaces:", ^{
-//		beforeEach(^{
-//			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
-//			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    ";
-//			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
-//		});
-//		itShouldBehaveLike(@"block code");
-//	});
-//	
-//	describe(@"fenced code blocks:", ^{
-//		beforeEach(^{
-//			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"```";
-//			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"";
-//			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"```";
-//		});
-//		itShouldBehaveLike(@"block code");
-//	});
-//});
-//
-//describe(@"block quote:", ^{
-//	it(@"should append block quote to previous paragraph", ^{
-//		runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//			// setup
-//			setupComment(comment, @"abstract\n\nnormal line\n\n> block quote");
-//			// execute
-//			[task processComment:comment];
-//			// verify
-//			GBAbstract.sourceString should equal(@"abstract");
-//			[GBAbstract class] should equal([CommentComponentInfo class]);
-//			GBDiscussion.sectionComponents.count should equal(1);
-//			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> block quote");
-//			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//		});
-//	});
-//
-//	it(@"should append all block quotes to previous paragraph", ^{
-//		runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//			// setup
-//			setupComment(comment, @"abstract\n\nnormal line\n\n> line 1\n> line 2\n\n> line 3");
-//			// execute
-//			[task processComment:comment];
-//			// verify
-//			GBAbstract.sourceString should equal(@"abstract");
-//			[GBAbstract class] should equal([CommentComponentInfo class]);
-//			GBDiscussion.sectionComponents.count should equal(1);
-//			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> line 1\n> line 2\n\n> line 3");
-//			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//		});
-//	});
-//	
-//	it(@"should handle nested block quotes", ^{
-//		runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//			// setup
-//			setupComment(comment, @"abstract\n\nnormal line\n\n> level 1\n> > level 2\n> back to 1");
-//			// execute
-//			[task processComment:comment];
-//			// verify
-//			GBAbstract.sourceString should equal(@"abstract");
-//			[GBAbstract class] should equal([CommentComponentInfo class]);
-//			GBDiscussion.sectionComponents.count should equal(1);
-//			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\n> level 1\n> > level 2\n> back to 1");
-//			[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//		});
-//	});
-//	
-//	it(@"should take block quote for abstract", ^{
-//		runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//			// setup
-//			setupComment(comment, @"> block quote");
-//			// execute
-//			[task processComment:comment];
-//			// verify
-//			GBAbstract.sourceString should equal(@"> block quote");
-//			[GBAbstract class] should equal([CommentComponentInfo class]);
-//			GBDiscussion.sectionComponents.count should equal(0);
-//		});
-//	});
-//});
-//
-//describe(@"lists:", ^{
-//#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
-//	sharedExamplesFor(@"lists", ^(NSDictionary *info) {
-//		it(@"should append list to previous paragraph", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- list item"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(1);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- list item"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should append all list items to previous paragraph", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				[GBAbstract class] should equal([CommentComponentInfo class]);
-//				GBDiscussion.sectionComponents.count should equal(1);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should handle nested lists", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(@"abstract");
-//				GBDiscussion.sectionComponents.count should equal(1);
-//				[GBDiscussion.sectionComponents[0] sourceString] should equal(GBReplace(@"normal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
-//				[GBDiscussion.sectionComponents[0] class] should equal([CommentComponentInfo class]);
-//			});
-//		});
-//
-//		it(@"should take list for abstract", ^{
-//			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//				// setup
-//				setupComment(comment, GBReplace(@"-- item"));
-//				// execute
-//				[task processComment:comment];
-//				// verify
-//				GBAbstract.sourceString should equal(GBReplace(@"-- item"));
-//				GBDiscussion.sectionComponents.count should equal(0);
-//			});
-//		});
-//	});
-//
-//	describe(@"unordered lists with minus:", ^{
-//		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"-"; });
-//		itShouldBehaveLike(@"lists");
-//	});
-//	
-//	describe(@"unordered lists with star:", ^{
-//		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"*"; });
-//		itShouldBehaveLike(@"lists");
-//	});
-//	
-//	describe(@"ordered lists:", ^{
-//		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"1."; });
-//		itShouldBehaveLike(@"lists");
-//	});
-//});
-//
-//describe(@"tables:", ^{
-//	it(@"should append table to previous paragraph", ^{
-//		runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
-//			// setup
-//			setupComment(comment, @"abstract\n\nnormal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
-//			// execute
-//			[task processComment:comment];
-//			// verify
-//			GBAbstract.sourceString should equal(@"abstract");
-//			GBDiscussion.sectionComponents.count should equal(1);
-//			[GBDiscussion.sectionComponents[0] sourceString] should equal(@"normal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
-//		});
-//	});
-//});
-//
+describe(@"code blocks:", ^{
+#define GBReplace(t) [t gb_stringByReplacing:@{ @"[": info[@"start"], @"]": info[@"end"], @"--": info[@"marker"] }]
+	sharedExamplesFor(@"code block", ^(NSDictionary *info) {
+		it(@"should append code block section to previous paragraph", ^{
+			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, @"abstract", @"normal line", GBReplace(@"[--code line]"), nil);
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract(@"abstract", CommentComponentInfo);
+				GBDiscussionsCount(2);
+				GBDiscussion(0, @"normal line", CommentComponentInfo);
+				GBDiscussion(1, GBReplace(@"[--code line]"), CommentCodeBlockComponentInfo);
+				GBMethodSectionsEmpty();
+			});
+		});
+
+		it(@"should append all code block sections to previous paragraph", ^{
+			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, @"abstract", @"normal line", GBReplace(@"[--code section 1]"), GBReplace(@"[--code section 2]"), nil);
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract(@"abstract", CommentComponentInfo);
+				GBDiscussionsCount(3);
+				GBDiscussion(0, @"normal line", CommentComponentInfo);
+				GBDiscussion(1, GBReplace(@"[--code section 1]"), CommentCodeBlockComponentInfo);
+				GBDiscussion(2, GBReplace(@"[--code section 2]"), CommentCodeBlockComponentInfo);
+				GBMethodSectionsEmpty();
+			});
+		});
+		
+		it(@"should append mixed code block sections to previous paragraph", ^{
+			runWithTask(^(RegisterCommentComponentsTask *task, id comment) {
+				// setup
+				setupComment(comment, @"abstract", @"normal line 1", GBReplace(@"[--code section 1]"), @"normal line 2", GBReplace(@"[--code section 2]"), nil);
+				// execute
+				[task processComment:comment];
+				// verify
+				GBAbstract(@"abstract", CommentComponentInfo);
+				GBDiscussionsCount(4);
+				GBDiscussion(0, @"normal line 1", CommentComponentInfo);
+				GBDiscussion(1, GBReplace(@"[--code section 1]"), CommentCodeBlockComponentInfo);
+				GBDiscussion(2, @"normal line 2", CommentComponentInfo);
+				GBDiscussion(3, GBReplace(@"[--code section 2]"), CommentCodeBlockComponentInfo);
+				GBMethodSectionsEmpty();
+			});
+		});
+	});
+	
+	describe(@"delimited with tab:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"\t";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
+		});
+		itShouldBehaveLike(@"code block");
+	});
+	
+	describe(@"delimited with spaces:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"    ";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"";
+		});
+		itShouldBehaveLike(@"code block");
+	});
+	
+	describe(@"fenced code blocks:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"start"] = @"```";
+			[[SpecHelper specHelper] sharedExampleContext][@"marker"] = @"";
+			[[SpecHelper specHelper] sharedExampleContext][@"end"] = @"```";
+		});
+		itShouldBehaveLike(@"code block");
+	});
+});
 //describe(@"warnings and bugs:", ^{
 //#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
 //#define GBClass() info[@"type"]
