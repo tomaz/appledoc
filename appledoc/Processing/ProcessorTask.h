@@ -35,6 +35,7 @@
  */
 @interface ProcessorTask (Subclass)
 - (NSInteger)processComment:(CommentInfo *)comment;
+- (BOOL)isStringCodeBlock:(NSString *)string;
 @property (nonatomic, strong) Store *store;
 @property (nonatomic, strong) GBSettings *settings;
 @property (nonatomic, strong) ObjectInfoBase *processingObject;

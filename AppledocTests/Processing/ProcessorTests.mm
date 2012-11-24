@@ -30,7 +30,8 @@ describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithProcessor(^(Processor *processor) {
 			// execute & verify
-			processor.processCommentComponentsTask should_not be_nil();
+			processor.splitCommentToSectionsTask should_not be_nil();
+			processor.registerCommentComponentsTask should_not be_nil();
 		});
 	});
 });
@@ -175,19 +176,21 @@ describe(@"running:", ^{
 describe(@"processing comments:", ^{
 	__block id context;
 	__block id object;
+	__block id comment;
 	__block id componentsTask;
 	
 	beforeEach(^{
+		comment = [[CommentInfo alloc] init];
 		context = mock([ObjectInfoBase class]);
 		object = mock([ObjectInfoBase class]);
 		componentsTask = mock([ProcessorTask class]);
 	});
 	
-	it(@"should invoke all required tasks if comment is given", ^{
+	it(@"should invoke split comment to sections task if comment given", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
-			[given([object comment]) willReturn:@""];
-			processor.processCommentComponentsTask = componentsTask;
+			[given([object comment]) willReturn:comment];
+			processor.splitCommentToSectionsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify
@@ -195,11 +198,23 @@ describe(@"processing comments:", ^{
 		});
 	});
 
+	it(@"should invoke register comment components task if comment given", ^{
+		runWithProcessor(^(Processor *processor) {
+			// setup
+			[given([object comment]) willReturn:comment];
+			processor.registerCommentComponentsTask = componentsTask;
+			// execute
+			[processor processCommentForObject:object context:context];
+			// verify
+			gbcatch([verify(componentsTask) processCommentForObject:object context:context]);
+		});
+	});
+	
 	it(@"should ignore all required tasks if comment is not given", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
 			[given([object comment]) willReturn:nil];
-			processor.processCommentComponentsTask = componentsTask;
+			processor.splitCommentToSectionsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify - we should fail because the method should not be invoked when comment is nil.

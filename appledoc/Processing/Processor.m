@@ -8,7 +8,8 @@
 
 #import "Objects.h"
 #import "Store.h"
-#import "ProcessCommentComponentsTask.h"
+#import "SplitCommentToSectionsTask.h"
+#import "RegisterCommentComponentsTask.h"
 #import "Processor.h"
 
 @implementation Processor
@@ -70,17 +71,25 @@
 	if (!object.comment) return GBResultOk;
 	LogDebug(@"Processing comment for %@", object);
 	NSInteger result = GBResultOk;
-	GB_PROCESS([self.processCommentComponentsTask processCommentForObject:object context:context])
+	GB_PROCESS([self.splitCommentToSectionsTask processCommentForObject:object context:context])
+	GB_PROCESS([self.registerCommentComponentsTask processCommentForObject:object context:context])
 	return result;
 }
 
 #pragma mark - Lazy loading properties
 
-- (ProcessorTask *)processCommentComponentsTask {
-	if (_processCommentComponentsTask) return _processCommentComponentsTask;
-	LogDebug(@"Initializing comment components processor task due to first acces...");
-	_processCommentComponentsTask = [[ProcessCommentComponentsTask alloc] init];
-	return _processCommentComponentsTask;
+- (ProcessorTask *)splitCommentToSectionsTask {
+	if (_splitCommentToSectionsTask) return _splitCommentToSectionsTask;
+	LogDebug(@"Initializing split comment to sections task due to first acces...");
+	_splitCommentToSectionsTask = [[SplitCommentToSectionsTask alloc] init];
+	return _splitCommentToSectionsTask;
+}
+
+- (ProcessorTask *)registerCommentComponentsTask {
+	if (_registerCommentComponentsTask) return _registerCommentComponentsTask;
+	LogDebug(@"Initializing register comment components task due to first access...");
+	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] init];
+	return _registerCommentComponentsTask;
 }
 
 @end
