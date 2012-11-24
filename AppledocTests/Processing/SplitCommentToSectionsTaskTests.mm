@@ -14,14 +14,6 @@
 
 #pragma mark -
 
-static void runWithMockTask(void(^handler)(SplitCommentToSectionsTask *task, id comment)) {
-	// SplitCommentToSectionsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
-	SplitCommentToSectionsTask *task = [[SplitCommentToSectionsTask alloc] init];
-	id mock = mock([CommentInfo class]);
-	handler(task, mock);
-	[task release];
-}
-
 static void runWithTask(void(^handler)(SplitCommentToSectionsTask *task, id comment)) {
 	// SplitCommentToSectionsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
 	SplitCommentToSectionsTask *task = [[SplitCommentToSectionsTask alloc] init];

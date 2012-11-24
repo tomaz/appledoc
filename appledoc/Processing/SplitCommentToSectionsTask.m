@@ -25,7 +25,7 @@
 #pragma mark - Processing
 
 - (NSInteger)processComment:(CommentInfo *)comment {
-	LogVerbose(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
+	LogVerbose(@"Splitting '%@' to sections...", [comment.sourceString gb_description]);
 	self.comment = comment;
 	self.comment.sourceSections = [@[] mutableCopy];
 	[self resetBuilder];
