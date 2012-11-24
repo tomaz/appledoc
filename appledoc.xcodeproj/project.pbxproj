@@ -132,6 +132,9 @@
 		73D540281525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
 		73D5402A1525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D5402C1525D59600C57E1B /* ObjectiveCEnumStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73D76C5B1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */; };
+		73D76C5C1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */; };
+		73D76C5E1660BF9A00B611AB /* RegisterCommentComponentsTask.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTask.mm */; };
 		73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73DC6D2F164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
 		73DC6D30164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
@@ -334,6 +337,9 @@
 		73D540261525A8BA00C57E1B /* StoreConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreConstants.m; sourceTree = "<group>"; };
 		73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCPragmaMarkStateTests.mm; sourceTree = "<group>"; };
 		73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCEnumStateTests.mm; sourceTree = "<group>"; };
+		73D76C591660BBD900B611AB /* RegisterCommentComponentsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterCommentComponentsTask.h; sourceTree = "<group>"; };
+		73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterCommentComponentsTask.m; sourceTree = "<group>"; };
+		73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTask.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RegisterCommentComponentsTask.mm; sourceTree = "<group>"; };
 		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodArgumentInfoTests.mm; sourceTree = "<group>"; };
 		73DC6D2D164800B800C1AA0D /* CommentSectionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentSectionInfo.h; sourceTree = "<group>"; };
 		73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentSectionInfo.m; sourceTree = "<group>"; };
@@ -636,6 +642,8 @@
 				73A0268815D6E35F0077D204 /* ProcessorTask.m */,
 				73A3E48915D8288D00769863 /* SplitCommentToSectionsTask.h */,
 				73A3E48A15D8288D00769863 /* SplitCommentToSectionsTask.m */,
+				73D76C591660BBD900B611AB /* RegisterCommentComponentsTask.h */,
+				73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */,
 				73AEC5C715DAB33700830AC7 /* MarkdownParser.h */,
 				73AEC5C815DAB33700830AC7 /* MarkdownParser.m */,
 			);
@@ -648,6 +656,7 @@
 				73A0268D15D6EFB50077D204 /* ProcessorTests.mm */,
 				73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */,
 				73A3E48D15D8369500769863 /* SplitCommentToSectionsTask.mm */,
+				73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTask.mm */,
 			);
 			path = Processing;
 			sourceTree = "<group>";
@@ -952,6 +961,8 @@
 				738F2CA6164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 				738F2CAE1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
 				73DC6D30164800B900C1AA0D /* CommentSectionInfo.m in Sources */,
+				73D76C5C1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */,
+				73D76C5E1660BF9A00B611AB /* RegisterCommentComponentsTask.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1015,6 +1026,7 @@
 				738F2CA5164301E500BEC518 /* PKToken+Appledoc.m in Sources */,
 				738F2CAD1643035C00BEC518 /* NSRegularExpression+Appledoc.m in Sources */,
 				73DC6D2F164800B900C1AA0D /* CommentSectionInfo.m in Sources */,
+				73D76C5B1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
