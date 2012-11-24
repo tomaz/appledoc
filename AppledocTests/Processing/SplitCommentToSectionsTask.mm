@@ -1,5 +1,5 @@
 //
-//  ProcessCommentComponentsTaskTests.m
+//  SplitCommentToSectionsTaskTests.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 8/11/12.
@@ -7,7 +7,7 @@
 //
 
 #import "Store.h"
-#import "ProcessCommentComponentsTask.h"
+#import "SplitCommentToSectionsTask.h"
 #import "TestCaseBase.hh"
 
 #define GBAbstract ((CommentComponentInfo *)[comment commentAbstract])
@@ -15,17 +15,17 @@
 
 #pragma mark -
 
-static void runWithMockTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
-	// ProcessCommentComponentsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
-	ProcessCommentComponentsTask *task = [[ProcessCommentComponentsTask alloc] init];
+static void runWithMockTask(void(^handler)(SplitCommentToSectionsTask *task, id comment)) {
+	// SplitCommentToSectionsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
+	SplitCommentToSectionsTask *task = [[SplitCommentToSectionsTask alloc] init];
 	id mock = mock([CommentInfo class]);
 	handler(task, mock);
 	[task release];
 }
 
-static void runWithTask(void(^handler)(ProcessCommentComponentsTask *task, id comment)) {
-	// ProcessCommentComponentsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
-	ProcessCommentComponentsTask *task = [[ProcessCommentComponentsTask alloc] init];
+static void runWithTask(void(^handler)(SplitCommentToSectionsTask *task, id comment)) {
+	// SplitCommentToSectionsTask doesn't need store/settings/object/context, so we can get away with only giving it the comment.
+	SplitCommentToSectionsTask *task = [[SplitCommentToSectionsTask alloc] init];
 	CommentInfo *comment = [[CommentInfo alloc] init];
 	handler(task, comment);
 	[task release];
@@ -40,17 +40,17 @@ static void setupComment(id comment, NSString *text) {
 
 #pragma mark -
 
-@interface ProcessCommentComponentsTask (UnitTestingPrivateAPI)
+@interface SplitCommentToSectionsTask (UnitTestingPrivateAPI)
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)parent;
 @end
 
 #pragma mark -
 
-TEST_BEGIN(ProcessCommentComponentsTaskTests)
+TEST_BEGIN(SplitCommentToSectionsTaskTests)
 
 describe(@"abstract:", ^{
 	it(@"should convert single line to abstract", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"line");
 			// execute
@@ -63,7 +63,7 @@ describe(@"abstract:", ^{
 	});
 	
 	it(@"should convert single paragraph composed of multiple lines to abstract", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"line one\nline two\nline three");
 			// execute
@@ -77,7 +77,7 @@ describe(@"abstract:", ^{
 
 describe(@"normal text:", ^{
 	it(@"should convert second paragraph to discussion", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nsecond");
 			// execute
@@ -92,7 +92,7 @@ describe(@"normal text:", ^{
 	});
 	
 	it(@"should convert second and subsequent paragraphs to discussion", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nsecond\n\nthird");
 			// execute
@@ -107,7 +107,7 @@ describe(@"normal text:", ^{
 	});
 	
 	it(@"should handle multiple paragraphs with mutliple lines", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nline one\nline two\nline three\n\nthird paragraph\nand line two");
 			// execute
@@ -126,7 +126,7 @@ describe(@"block code:", ^{
 #define GBReplace(t) [t gb_stringByReplacing:@{ @"[": info[@"start"], @"]": info[@"end"], @"--": info[@"marker"] }]
 	sharedExamplesFor(@"block code", ^(NSDictionary *info){
 		it(@"should append block code to previous paragraph", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--block code]"));
 				// execute
@@ -143,7 +143,7 @@ describe(@"block code:", ^{
 		});
 
 		it(@"should append all block code lines to previous paragraph", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--line 2]"));
 				// execute
@@ -160,7 +160,7 @@ describe(@"block code:", ^{
 		});
 
 		it(@"should append multiple block code sections to previous paragraph", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1]\n\n[--line 2\n--line 3]"));
 				// execute
@@ -179,7 +179,7 @@ describe(@"block code:", ^{
 		});
 
 		it(@"should append multiple block code sections delimited with normal paragraphs", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line 1\n\n[--line 1]\n\nnormal line 2\n\n[--line 2]"));
 				// execute
@@ -200,7 +200,7 @@ describe(@"block code:", ^{
 		});
 
 		it(@"should continue normal paragraph if not delimited with empty line", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n[--continue line]"));
 				// execute
@@ -215,7 +215,7 @@ describe(@"block code:", ^{
 		});
 
 		it(@"should keep all formatting after initial code block marker", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n[--line 1\n--\tline 2\n--    line 3]"));
 				// execute
@@ -262,7 +262,7 @@ describe(@"block code:", ^{
 
 describe(@"block quote:", ^{
 	it(@"should append block quote to previous paragraph", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nnormal line\n\n> block quote");
 			// execute
@@ -277,7 +277,7 @@ describe(@"block quote:", ^{
 	});
 
 	it(@"should append all block quotes to previous paragraph", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nnormal line\n\n> line 1\n> line 2\n\n> line 3");
 			// execute
@@ -292,7 +292,7 @@ describe(@"block quote:", ^{
 	});
 	
 	it(@"should handle nested block quotes", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nnormal line\n\n> level 1\n> > level 2\n> back to 1");
 			// execute
@@ -307,7 +307,7 @@ describe(@"block quote:", ^{
 	});
 	
 	it(@"should take block quote for abstract", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"> block quote");
 			// execute
@@ -324,7 +324,7 @@ describe(@"lists:", ^{
 #define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"--" withString:info[@"marker"]]
 	sharedExamplesFor(@"lists", ^(NSDictionary *info) {
 		it(@"should append list to previous paragraph", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- list item"));
 				// execute
@@ -339,7 +339,7 @@ describe(@"lists:", ^{
 		});
 
 		it(@"should append all list items to previous paragraph", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- line 1\n-- line 2\n\n-- line 3"));
 				// execute
@@ -354,7 +354,7 @@ describe(@"lists:", ^{
 		});
 
 		it(@"should handle nested lists", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nnormal line\n\n-- level 1\n\t-- level 2\n-- back to 1"));
 				// execute
@@ -368,7 +368,7 @@ describe(@"lists:", ^{
 		});
 
 		it(@"should take list for abstract", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"-- item"));
 				// execute
@@ -398,7 +398,7 @@ describe(@"lists:", ^{
 
 describe(@"tables:", ^{
 	it(@"should append table to previous paragraph", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\nnormal line\n\nheader 1 | header 2\n-------|------\ni11|i12\ni21|i22");
 			// execute
@@ -416,7 +416,7 @@ describe(@"warnings and bugs:", ^{
 #define GBClass() info[@"type"]
 	sharedExamplesFor(@"as part of abstract", ^(NSDictionary *info) {
 		it(@"should take as part of abstract if not delimited by empty line", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n@id text"));
 				// execute
@@ -428,7 +428,7 @@ describe(@"warnings and bugs:", ^{
 		});
 
 		it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n@id text\n\nparagraph"));
 				// execute
@@ -443,7 +443,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		it(@"should make abstract special component if started with directive", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"@id text"));
 				// execute
@@ -457,7 +457,7 @@ describe(@"warnings and bugs:", ^{
 
 	sharedExamplesFor(@"as part of discussion", ^(NSDictionary *info) {
 		it(@"should take as part of discussion if found as first paragraph after abstract", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\n@id text"));
 				// execute
@@ -472,7 +472,7 @@ describe(@"warnings and bugs:", ^{
 		});
 
 		it(@"should continue section if not delimited by empty line", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\n@id text\n@id continuation"));
 				// execute
@@ -487,7 +487,7 @@ describe(@"warnings and bugs:", ^{
 		});
 		
 		it(@"should start new paragraph if delimited by empty line", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text"));
 				// execute
@@ -503,7 +503,7 @@ describe(@"warnings and bugs:", ^{
 		});
 
 		it(@"should take all subsequent paragraphs as part of section", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text\n\nnext paragraph"));
 				// execute
@@ -519,7 +519,7 @@ describe(@"warnings and bugs:", ^{
 		});
 
 		it(@"should start new paragraph with next section directive", ^{
-			runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 				// setup
 				setupComment(comment, GBReplace(@"abstract\n\n@id first\n\n@id second"));
 				// execute
@@ -560,7 +560,7 @@ describe(@"method parameters:", ^{
 #define GBParameter(i) GBParameters[i]
 #define GBComponent(i,n) [GBParameters[i] sectionComponents][n]
 	it(@"should register single parameter:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@param name description");
 			// execute
@@ -577,7 +577,7 @@ describe(@"method parameters:", ^{
 	});
 	
 	it(@"should register multiple parameters:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@param name1 description 1\n@param name2 description 2");
 			// execute
@@ -598,7 +598,7 @@ describe(@"method parameters:", ^{
 	});
 	
 	it(@"should take all paragraphs following directive as part of directive:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@param name1 description1\nin multiple\n\nlines and paragraphs\n\n@param name2 description 2");
 			// execute
@@ -624,7 +624,7 @@ describe(@"method exceptions:", ^{
 #define GBException(i) GBExceptions[i]
 #define GBComponent(i,n) [GBExceptions[i] sectionComponents][n]
 	it(@"should register single exception:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@exception name description");
 			// execute
@@ -641,7 +641,7 @@ describe(@"method exceptions:", ^{
 	});
 	
 	it(@"should register multiple exceptions:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@exception name1 description 1\n@exception name2 description 2");
 			// execute
@@ -662,7 +662,7 @@ describe(@"method exceptions:", ^{
 	});
 	
 	it(@"should take all paragraphs following directive as part of directive:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@exception name1 description1\nin multiple\n\nlines and paragraphs\n\n@exception name2 description 2");
 			// execute
@@ -686,7 +686,7 @@ describe(@"method exceptions:", ^{
 describe(@"method return:", ^{
 #define GBReturn ((CommentSectionInfo *)[comment commentReturn])
 	it(@"should register single return:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@return description");
 			// execute
@@ -701,7 +701,7 @@ describe(@"method return:", ^{
 	});
 	
 	it(@"should use last return if multiple found:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@return description 1\n@return description 2");
 			// execute
@@ -716,7 +716,7 @@ describe(@"method return:", ^{
 	});
 	
 	it(@"should take all paragraphs following directive as part of directive:", ^{
-		runWithTask(^(ProcessCommentComponentsTask *task, id comment) {
+		runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
 			// setup
 			setupComment(comment, @"abstract\n\n@return description\nin multiple\n\nlines and paragraphs");
 			// execute

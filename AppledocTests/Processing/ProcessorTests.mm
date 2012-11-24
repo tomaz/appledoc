@@ -30,7 +30,7 @@ describe(@"lazy accessors:", ^{
 	it(@"should initialize objects", ^{
 		runWithProcessor(^(Processor *processor) {
 			// execute & verify
-			processor.processCommentComponentsTask should_not be_nil();
+			processor.splitCommentToSectionsTask should_not be_nil();
 		});
 	});
 });
@@ -187,7 +187,7 @@ describe(@"processing comments:", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
 			[given([object comment]) willReturn:@""];
-			processor.processCommentComponentsTask = componentsTask;
+			processor.SplitCommentToSectionsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify
@@ -199,7 +199,7 @@ describe(@"processing comments:", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
 			[given([object comment]) willReturn:nil];
-			processor.processCommentComponentsTask = componentsTask;
+			processor.SplitCommentToSectionsTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify - we should fail because the method should not be invoked when comment is nil.

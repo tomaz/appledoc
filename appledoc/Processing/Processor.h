@@ -18,6 +18,6 @@
 */
 @interface Processor : AppledocTask
 
-@property (nonatomic, strong) ProcessorTask *processCommentComponentsTask;
+@property (nonatomic, strong) ProcessorTask *splitCommentToSectionsTask;
 
 @end

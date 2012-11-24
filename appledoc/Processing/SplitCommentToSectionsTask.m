@@ -1,5 +1,5 @@
 //
-//  ProcessCommentComponentsTask.m
+//  SplitCommentToSectionsTask.m
 //  appledoc
 //
 //  Created by Tomaz Kragelj on 8/12/12.
@@ -10,7 +10,7 @@
 #import "CommentInfo.h"
 #import "CommentComponentInfo.h"
 #import "CommentNamedSectionInfo.h"
-#import "ProcessCommentComponentsTask.h"
+#import "SplitCommentToSectionsTask.h"
 
 @interface ProcessComponentsData : NSObject
 @property (nonatomic, strong) NSMutableString *builder;
@@ -21,7 +21,7 @@
 
 #pragma mark -
 
-@implementation ProcessCommentComponentsTask
+@implementation SplitCommentToSectionsTask
 
 #pragma mark - Processing
 
@@ -51,7 +51,7 @@
 	LogDebug(@"Parsing comment string into sections...");
 	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
 	NSString *sourceString = comment.sourceString;
-	__weak ProcessCommentComponentsTask *bself = self;
+	__weak SplitCommentToSectionsTask *bself = self;
 	__block NSUInteger index = 0;
 	[expression gb_allMatchesIn:sourceString match:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
 		NSRange range = NSMakeRange(index, match.range.location - index);
@@ -108,7 +108,7 @@
 	NSArray *sectionMatches = [expression gb_allMatchesIn:sectionString];
 	if (sectionMatches.count == 0 || ![sectionMatches[0] gb_isMatchedAtStart]) return NO;
 	
-	__weak ProcessCommentComponentsTask *bself = self;
+	__weak SplitCommentToSectionsTask *bself = self;
 	__block NSUInteger lastMatchLocation = 0;
 	[self registerSectionFromBuilderInDataIfNeeded:data startNewSection:YES];
 	[sectionMatches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
@@ -234,22 +234,6 @@
 	if ([string hasPrefix:@"@bug"]) return [CommentBugComponentInfo componentWithSourceString:string];
 	if ([self isStringCodeBlock:string]) return [CommentCodeBlockComponentInfo componentWithSourceString:string];
 	return [CommentComponentInfo componentWithSourceString:string];
-}
-
-- (BOOL)isStringCodeBlock:(NSString *)string {
-	if (string.length == 0) return NO;
-	
-	// Is fenced code block?
-	if ([string hasPrefix:@"```"] && [string hasSuffix:@"```"]) return YES;
-	
-	// Is tab/four space prefixed code block?
-	__block BOOL result = YES;
-	[string enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-		if ([line hasPrefix:@"\t"] || [line hasPrefix:@"    "]) return;
-		result = NO;
-		*stop = YES;
-	}];
-	return result;
 }
 
 @end
