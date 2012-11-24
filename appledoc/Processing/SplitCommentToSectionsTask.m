@@ -14,6 +14,8 @@
 
 @interface SplitCommentToSectionsTask ()
 @property (nonatomic, strong) CommentInfo *comment;
+@property (nonatomic, strong) NSMutableString *builder;
+@property (nonatomic, strong) NSString *lastRegisteredSection;
 @end
 
 #pragma mark -
@@ -24,17 +26,17 @@
 
 - (NSInteger)processComment:(CommentInfo *)comment {
 	LogVerbose(@"Processing comment '%@' for components...", [comment.sourceString gb_description]);
-	NSMutableString *builder = [@"" mutableCopy];
 	self.comment = comment;
 	self.comment.sourceSections = [@[] mutableCopy];
-	[self parseSectionsWithBuilder:builder];
-	[self registerSectionFromBuilder:builder startNewSection:NO];
+	[self resetBuilder];
+	[self parseSectionsFromBuilder];
+	[self registerSectionFromBuilderAndStartNew:NO];
 	return GBResultOk;
 }
 
 #pragma mark - Splitting source string to sections
 
-- (void)parseSectionsWithBuilder:(NSMutableString *)builder {
+- (void)parseSectionsFromBuilder {
 	LogDebug(@"Parsing comment string into sections...");
 	NSRegularExpression *expression = [NSRegularExpression gb_emptyLineMatchingExpression];
 	NSString *sourceString = self.comment.sourceString;
@@ -43,53 +45,53 @@
 	[expression gb_allMatchesIn:sourceString match:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
 		NSRange range = NSMakeRange(index, match.range.location - index);
 		NSString *section = [sourceString substringWithRange:range];
-		[bself parseSectionsFromString:section toBuilder:builder];
+		[bself parseSectionsToBuilderFromString:section];
 		index = match.range.location + match.range.length;
 	}];
 	NSString *remainingString = [sourceString substringFromIndex:index];
-	[self parseSectionsFromString:remainingString toBuilder:builder];
+	[self parseSectionsToBuilderFromString:remainingString];
 }
 
-- (void)parseSectionsFromString:(NSString *)sectionString toBuilder:(NSMutableString *)builder {
+- (void)parseSectionsToBuilderFromString:(NSString *)sectionString {
 	if (sectionString.length == 0) return;
-	if ([self parseCodeBlockFromString:sectionString toBuilder:builder]) return;
-	if ([self parseStyledSectionFromString:sectionString toBuilder:builder]) return;
-	if ([self parseMethodSectionFromString:sectionString toBuilder:builder]) return;
+	if ([self parseCodeBlockToBuilderFromString:sectionString]) return;
+	if ([self parseStyledSectionToBuilderFromString:sectionString]) return;
+	if ([self parseMethodSectionToBuilderFromString:sectionString]) return;
 	
 	// If this is the first paragraph to be registered, take it as abstract and create single section out of it.
 	if (self.comment.sourceSections.count == 0) {
 		LogDebug(@"Detected abstract '%@'...", [sectionString gb_description]);
-		[builder appendString:sectionString];
-		[self registerSectionFromBuilder:builder startNewSection:YES];
+		[self appendStringToBuilder:sectionString];
+		[self registerSectionFromBuilderAndStartNew:YES];
 		return;
 	}
 	
 	// Otherwise append "normal" paragraph to current section builder to be registered later on.
 	LogDebug(@"Appending paragraph '%@'...", [sectionString gb_description]);
-	if (builder.length > 0) [builder appendString:@"\n\n"];
-	[builder appendString:[sectionString gb_stringByTrimmingNewLines]];
+	if (self.builder.length > 0) [self appendStringToBuilder:@"\n\n"];
+	[self appendStringToBuilder:[sectionString gb_stringByTrimmingNewLines]];
 }
 
-- (BOOL)parseCodeBlockFromString:(NSString *)sectionString toBuilder:(NSMutableString *)builder {
+- (BOOL)parseCodeBlockToBuilderFromString:(NSString *)sectionString {
 	// If current section represents code block, tread whole section as code block. Note that this doesn't work for empty strings!
 	if (![self isStringCodeBlock:sectionString]) return NO;
-	[self registerSectionFromBuilderIfNeeded:builder startNewSection:YES];
-	[builder appendString:sectionString];
-	[self registerSectionFromBuilder:builder startNewSection:YES];
+	[self registerSectionFromBuilderIfNeededAndStartNew:YES];
+	[self appendStringToBuilder:sectionString];
+	[self registerSectionFromBuilderAndStartNew:YES];
 	return YES;
 }
 
-- (BOOL)parseStyledSectionFromString:(NSString *)sectionString toBuilder:(NSMutableString *)builder {
+- (BOOL)parseStyledSectionToBuilderFromString:(NSString *)sectionString {
 	// If current section represents @warning and @bug, treat whole section string as styled section.
 	NSTextCheckingResult *styledSectionMatch = [[NSRegularExpression gb_styledSectionDelimiterMatchingExpression] gb_firstMatchIn:sectionString];
 	if (![styledSectionMatch gb_isMatchedAtStart]) return NO;
-	[self registerSectionFromBuilderIfNeeded:builder startNewSection:YES];
-	[builder appendString:sectionString];
-	[self registerSectionFromBuilder:builder startNewSection:NO];
+	[self registerSectionFromBuilderIfNeededAndStartNew:YES];
+	[self appendStringToBuilder:sectionString];
+	[self registerSectionFromBuilderAndStartNew:NO];
 	return YES;
 }
 
-- (BOOL)parseMethodSectionFromString:(NSString *)sectionString toBuilder:(NSMutableString *)builder {
+- (BOOL)parseMethodSectionToBuilderFromString:(NSString *)sectionString {
 	// If current "paragraph" starts with method section directive, we must split the whole string into individual sections, each directive starting new section.
 	NSRegularExpression *expression = [NSRegularExpression gb_methodSectionDelimiterMatchingExpression];
 	NSArray *sectionMatches = [expression gb_allMatchesIn:sectionString];
@@ -97,36 +99,45 @@
 	
 	__weak SplitCommentToSectionsTask *bself = self;
 	__block NSUInteger lastMatchLocation = 0;
-	[self registerSectionFromBuilderIfNeeded:builder startNewSection:YES];
+	[self registerSectionFromBuilderIfNeededAndStartNew:YES];
 	[sectionMatches enumerateObjectsUsingBlock:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
 		if (idx == 0) return;
 		NSString *currentSectionString = [[match gb_prefixFromIndex:lastMatchLocation in:sectionString] gb_stringByTrimmingNewLines];
-		[builder appendString:currentSectionString];
-		[bself registerSectionFromBuilder:builder startNewSection:YES];
+		[bself appendStringToBuilder:currentSectionString];
+		[bself registerSectionFromBuilderAndStartNew:YES];
 		lastMatchLocation = match.range.location;
 	}];
 	
 	// Register remaining section, but keep the string so we can append subsequent paragraphs to it.
 	NSString *remainingSectionString = [[sectionString substringFromIndex:lastMatchLocation] gb_stringByTrimmingNewLines];
-	[builder appendString:remainingSectionString];
-	[self registerSectionFromBuilder:builder startNewSection:NO];
+	[bself appendStringToBuilder:remainingSectionString];
+	[self registerSectionFromBuilderAndStartNew:NO];
 	return YES;
 }
 
-- (BOOL)registerSectionFromBuilderIfNeeded:(NSMutableString *)builder startNewSection:(BOOL)startNew {
+- (BOOL)registerSectionFromBuilderIfNeededAndStartNew:(BOOL)startNew {
 	// Returns YES if section was registered, NO otherwise.
- 	if (builder.length == 0) return NO;
-	[self registerSectionFromBuilder:builder startNewSection:startNew];
+ 	if (self.builder.length == 0) return NO;
+	[self registerSectionFromBuilderAndStartNew:startNew];
 	return YES;
 }
 
-- (void)registerSectionFromBuilder:(NSMutableString *)builder startNewSection:(BOOL)startNew {
+- (void)registerSectionFromBuilderAndStartNew:(BOOL)startNew {
 	// Note that we need to handle special case where current builder string is the same pointer as last object; in such case we can ignore it, but we do need to clear the string!
-	if (builder.length == 0) return;
-	if (builder == self.comment.sourceSections.lastObject) { [builder setString:@""]; return; }
-	LogDebug(@"Registering section '%@'...", [builder gb_description]);
-	[self.comment.sourceSections addObject:[builder copy]];
-	if (startNew) [builder setString:@""];
+	if (self.builder.length == 0) return;
+	if (self.builder == self.lastRegisteredSection) { [self resetBuilder]; return; }
+	LogDebug(@"Registering section '%@'...", [self.builder gb_description]);
+	[self.comment.sourceSections addObject:self.builder];
+	self.lastRegisteredSection = self.builder;
+	if (startNew) [self resetBuilder];
+}
+
+- (void)appendStringToBuilder:(NSString *)string {
+	[self.builder appendString:string];
+}
+
+- (void)resetBuilder {
+	self.builder = [@"" mutableCopy];
 }
 
 @end

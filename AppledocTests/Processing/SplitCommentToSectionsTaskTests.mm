@@ -232,4 +232,129 @@ describe(@"block code:", ^{
 	});
 });
 
+describe(@"warnings and bugs:", ^{
+#define GBReplace(t) [t stringByReplacingOccurrencesOfString:@"@id" withString:info[@"id"]]
+	sharedExamplesFor(@"as part of abstract", ^(NSDictionary *info) {
+		it(@"should take as part of abstract if not delimited by empty line", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(1);
+				GBSections[0] should equal(GBReplace(@"abstract\n@id text"));
+			});
+		});
+
+		it(@"should take as part of abstract and take next paragraph as discussion if not delimited by empty line", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n@id text\n\nparagraph"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(2);
+				GBSections[0] should equal(GBReplace(@"abstract\n@id text"));
+				GBSections[1] should equal(@"paragraph");
+			});
+		});
+
+		it(@"should make abstract special component if started with directive", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(1);
+				GBSections[0] should equal(GBReplace(@"@id text"));
+			});
+		});
+	});
+
+	sharedExamplesFor(@"as part of discussion", ^(NSDictionary *info) {
+		it(@"should take as part of discussion if found as first paragraph after abstract", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(2);
+				GBSections[0] should equal(@"abstract");
+				GBSections[1] should equal(GBReplace(@"@id text"));
+			});
+		});
+
+		it(@"should continue section if not delimited by empty line", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id text\n@id continuation"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(2);
+				GBSections[0] should equal(@"abstract");
+				GBSections[1] should equal(GBReplace(@"@id text\n@id continuation"));
+			});
+		});
+
+		it(@"should start new paragraph if delimited by empty line", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(3);
+				GBSections[0] should equal(@"abstract");
+				GBSections[1] should equal(@"paragraph");
+				GBSections[2] should equal(GBReplace(@"@id text"));
+			});
+		});
+
+		it(@"should take all subsequent paragraphs as part of section", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\nparagraph\n\n@id text\n\nnext paragraph"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(3);
+				GBSections[0] should equal(@"abstract");
+				GBSections[1] should equal(@"paragraph");
+				GBSections[2] should equal(GBReplace(@"@id text\n\nnext paragraph"));
+			});
+		});
+
+		it(@"should start new paragraph with next section directive", ^{
+			runWithTask(^(SplitCommentToSectionsTask *task, id comment) {
+				// setup
+				setupComment(comment, GBReplace(@"abstract\n\n@id first\n\n@id second"));
+				// execute
+				[task processComment:comment];
+				// verify
+				GBSections.count should equal(3);
+				GBSections[0] should equal(@"abstract");
+				GBSections[1] should equal(GBReplace(@"@id first"));
+				GBSections[2] should equal(GBReplace(@"@id second"));
+			});
+		});
+	});
+
+	describe(@"@warning:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@warning"; });
+		itShouldBehaveLike(@"as part of abstract");
+		itShouldBehaveLike(@"as part of discussion");
+	});
+
+	describe(@"@bug:", ^{
+		beforeEach(^{ [[SpecHelper specHelper] sharedExampleContext][@"id"] = @"@bug"; });
+		itShouldBehaveLike(@"as part of abstract");
+		itShouldBehaveLike(@"as part of discussion");
+	});
+});
+
+
 TEST_END
