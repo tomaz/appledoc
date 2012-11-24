@@ -32,6 +32,7 @@ describe(@"lazy accessors:", ^{
 			// execute & verify
 			processor.splitCommentToSectionsTask should_not be_nil();
 			processor.registerCommentComponentsTask should_not be_nil();
+			processor.detectCrossReferencesTask should_not be_nil();
 		});
 	});
 });
@@ -203,6 +204,18 @@ describe(@"processing comments:", ^{
 			// setup
 			[given([object comment]) willReturn:comment];
 			processor.registerCommentComponentsTask = componentsTask;
+			// execute
+			[processor processCommentForObject:object context:context];
+			// verify
+			gbcatch([verify(componentsTask) processCommentForObject:object context:context]);
+		});
+	});
+	
+	it(@"should invoke detect cross references task if comment given", ^{
+		runWithProcessor(^(Processor *processor) {
+			// setup
+			[given([object comment]) willReturn:comment];
+			processor.detectCrossReferencesTask = componentsTask;
 			// execute
 			[processor processCommentForObject:object context:context];
 			// verify

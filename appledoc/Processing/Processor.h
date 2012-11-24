@@ -20,5 +20,6 @@
 
 @property (nonatomic, strong) ProcessorTask *splitCommentToSectionsTask;
 @property (nonatomic, strong) ProcessorTask *registerCommentComponentsTask;
+@property (nonatomic, strong) ProcessorTask *detectCrossReferencesTask;
 
 @end

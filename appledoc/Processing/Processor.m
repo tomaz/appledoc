@@ -73,6 +73,7 @@
 	NSInteger result = GBResultOk;
 	GB_PROCESS([self.splitCommentToSectionsTask processCommentForObject:object context:context]);
 	GB_PROCESS([self.registerCommentComponentsTask processCommentForObject:object context:context]);
+	GB_PROCESS([self.detectCrossReferencesTask processCommentForObject:object context:context]);
 	return result;
 }
 
@@ -90,6 +91,13 @@
 	LogDebug(@"Initializing register comment components task due to first access...");
 	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] init];
 	return _registerCommentComponentsTask;
+}
+
+- (ProcessorTask *)detectCrossReferencesTask {
+	if (_detectCrossReferencesTask) return _detectCrossReferencesTask;
+	LogDebug(@"Initializing detect cross references task due to first access...");
+	_detectCrossReferencesTask = [[ProcessorTask alloc] init];
+	return _detectCrossReferencesTask;
 }
 
 @end
