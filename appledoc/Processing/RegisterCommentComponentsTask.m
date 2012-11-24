@@ -14,6 +14,7 @@
 
 @interface RegisterCommentComponentsTask ()
 @property (nonatomic, strong) NSMutableArray *sections;
+@property (nonatomic, strong) CommentSectionInfo *lastSection;
 @end
 
 #pragma mark - 
@@ -23,6 +24,7 @@
 #pragma mark - Processing
 
 - (NSInteger)processComment:(CommentInfo *)comment {
+	if (comment.sourceSections.count == 0) return GBResultOk;
 	LogVerbose(@"Registering '%@' components...", [comment.sourceString gb_description]);
 	self.sections = [comment.sourceSections mutableCopy];
 	[self registerAbstractForComment:comment];
@@ -34,7 +36,7 @@
 #pragma mark - Registering sections to comment
 
 - (void)registerAbstractForComment:(CommentInfo *)comment {
-	LogDebug(@"Registering abstract...");
+	LogDebug(@"Registering '%@' as abstract...", [self.sections[0] gb_description]);
 	CommentComponentInfo *component = [self componentInfoFromString:self.sections[0]];
 	[comment setCommentAbstract:component];
 	[self.sections removeObjectAtIndex:0];
@@ -48,6 +50,7 @@
 		NSString *sectionString = self.sections[0];
 		NSTextCheckingResult *match = [expression gb_firstMatchIn:sectionString];
 		if ([match gb_isMatchedAtStart]) break;
+		LogDebug(@"Registering '%@' as discussion...", [sectionString gb_description]);
 		if (!discussion) discussion = [[CommentSectionInfo alloc] init];
 		CommentComponentInfo *component = [self componentInfoFromString:sectionString];
 		[discussion.sectionComponents addObject:component];
@@ -66,11 +69,17 @@
 		if ([self matchParameterSectionFromString:sectionString toArray:&parameters]) continue;
 		if ([self matchExceptionSectionFromString:sectionString toArray:&exceptions]) continue;
 		if ([self matchReturnSectionFromString:sectionString toInfo:&result]) continue;
-		break;
+		[self registerComponentToLastSectionFromString:sectionString];
 	}
 	if (parameters) [comment setCommentParameters:parameters];
 	if (exceptions) [comment setCommentExceptions:exceptions];
 	if (result) [comment setCommentReturn:result];
+}
+
+- (void)registerComponentToLastSectionFromString:(NSString *)sectionString {
+	CommentComponentInfo *component = [self componentInfoFromString:sectionString];
+	[self.lastSection.sectionComponents addObject:component];
+	[self.sections removeObjectAtIndex:0];
 }
 
 #pragma mark - Matching method directives
@@ -94,6 +103,7 @@
 	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
 	if (!match) return NO;
 	NSString *description = [match gb_remainingStringIn:string];
+	LogDebug(@"Registering %@ '%@'...", [match gb_stringAtIndex:1 in:string], [description gb_description]);
 	CommentComponentInfo *component = [self componentInfoFromString:description];
 	CommentNamedSectionInfo *info = [[CommentNamedSectionInfo alloc] init];
 	[info setSectionName:[match gb_stringAtIndex:2 in:string]];
@@ -101,6 +111,7 @@
 	if (!*array) *array = [@[] mutableCopy];
 	[*array addObject:info];
 	[self.sections removeObjectAtIndex:0];
+	self.lastSection = info;
 	return YES;
 }
 
@@ -108,18 +119,20 @@
 	NSTextCheckingResult *match = [expression gb_firstMatchIn:string];
 	if (!match) return NO;
 	NSString *description = [match gb_remainingStringIn:string];
+	LogDebug(@"Registering %@ '%@'...", [match gb_stringAtIndex:1 in:string], [description gb_description]);
 	CommentComponentInfo *component = [self componentInfoFromString:description];
 	CommentSectionInfo *info = [[CommentSectionInfo alloc] init];
 	[info.sectionComponents addObject:component];
 	*dest = info;
 	[self.sections removeObjectAtIndex:0];
+	self.lastSection = info;
 	return YES;
 }
 
 #pragma mark - Comment components handling
 
 - (CommentComponentInfo *)componentInfoFromString:(NSString *)string {
-	LogDebug(@"Creating component for %@...", string);
+	LogDebug(@"Creating component for '%@'...", [string gb_description]);
 	if ([string hasPrefix:@"@warning"]) return [CommentWarningComponentInfo componentWithSourceString:string];
 	if ([string hasPrefix:@"@bug"]) return [CommentBugComponentInfo componentWithSourceString:string];
 	if ([self isStringCodeBlock:string]) return [CommentCodeBlockComponentInfo componentWithSourceString:string];
