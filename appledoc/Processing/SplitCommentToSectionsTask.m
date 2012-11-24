@@ -125,7 +125,7 @@
 	if (builder.length == 0) return;
 	if (builder == self.comment.sourceSections.lastObject) { [builder setString:@""]; return; }
 	LogDebug(@"Registering section '%@'...", [builder gb_description]);
-	[self.comment.sourceSections addObject:builder];
+	[self.comment.sourceSections addObject:[builder copy]];
 	if (startNew) [builder setString:@""];
 }
 
