@@ -61,6 +61,7 @@ static NSString *kGBArgWarnOnMissingOutputPath = @"warn-missing-output-path";
 static NSString *kGBArgWarnOnMissingCompanyIdentifier = @"warn-missing-company-id";
 static NSString *kGBArgWarnOnUndocumentedObject = @"warn-undocumented-object";
 static NSString *kGBArgWarnOnUndocumentedMember = @"warn-undocumented-member";
+static NSString *kGBArgWarnOnUndocumentedParam = @"warn-undocumented-param";
 static NSString *kGBArgWarnOnEmptyDescription = @"warn-empty-description";
 static NSString *kGBArgWarnOnUnknownDirective = @"warn-unknown-directive";
 static NSString *kGBArgWarnOnInvalidCrossReference = @"warn-invalid-crossref";
@@ -301,6 +302,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedObject,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUndocumentedMember,									0,		DDGetoptNoArgument },
+		{ kGBArgWarnOnUndocumentedParam,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnEmptyDescription,										0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnUnknownDirective,										0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnInvalidCrossReference,								0,		DDGetoptNoArgument },
@@ -925,6 +927,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedMember, PRINT_BOOL(self.settings.warnOnUndocumentedMember));
+	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedParam, PRINT_BOOL(self.settings.warnOnUndocumentedParam));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnEmptyDescription, PRINT_BOOL(self.settings.warnOnEmptyDescription));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUnknownDirective, PRINT_BOOL(self.settings.warnOnUnknownDirective));
 	ddprintf(@"--%@ = %@\n", kGBArgWarnOnInvalidCrossReference, PRINT_BOOL(self.settings.warnOnInvalidCrossReference));
@@ -993,6 +996,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"", @"[b] Warn if company ID is not given");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedObject, @"", @"[b] Warn on undocumented object");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedMember, @"", @"[b] Warn on undocumented member");
+	PRINT_USAGE(@"   ", kGBArgWarnOnUndocumentedParam, @"", @"[b] Warn on undocumented method parameter");
 	PRINT_USAGE(@"   ", kGBArgWarnOnEmptyDescription, @"", @"[b] Warn on empty description block");
 	PRINT_USAGE(@"   ", kGBArgWarnOnUnknownDirective, @"", @"[b] Warn on unknown directive or format");
 	PRINT_USAGE(@"   ", kGBArgWarnOnInvalidCrossReference, @"", @"[b] Warn on invalid cross reference");
