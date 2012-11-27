@@ -29,7 +29,8 @@
 @property (nonatomic, strong) NSMutableArray *commentParameters; // CommentNamedSectionInfo
 @property (nonatomic, strong) NSMutableArray *commentExceptions; // CommentNamedSectionInfo
 @property (nonatomic, strong) CommentSectionInfo *commentReturn;
-@property (nonatomic, strong) NSMutableArray *sourceSections;
+
+@property (nonatomic, strong) NSMutableArray *sourceSections; // NSString
 @property (nonatomic, strong) PKToken *sourceToken;
 @property (nonatomic, copy) NSString *sourceString;
 

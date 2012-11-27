@@ -10,6 +10,7 @@
 #import "Store.h"
 #import "SplitCommentToSectionsTask.h"
 #import "RegisterCommentComponentsTask.h"
+#import "DetectCrossReferencesTask.h"
 #import "Processor.h"
 
 @implementation Processor
@@ -21,27 +22,27 @@
 	__weak Processor *blockSelf = self;
 	__block GBResult result = GBResultOk;
 
-	LogVerbose(@"Processing classes...");
+	LogDebug(@"Processing classes...");
 	[self.store.storeClasses enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogVerbose(@"Processing extensions...");
+	LogDebug(@"Processing extensions...");
 	[self.store.storeExtensions enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogVerbose(@"Processing categories...");
+	LogDebug(@"Processing categories...");
 	[self.store.storeCategories enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogVerbose(@"Processing protocols...");
+	LogDebug(@"Processing protocols...");
 	[self.store.storeProtocols enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
 		GB_PROCESS([blockSelf processInterface:info]);
 	}];
 	
-	LogVerbose(@"Processing finished.");
+	LogDebug(@"Processing finished.");
 	return result;
 }
 
@@ -96,7 +97,7 @@
 - (ProcessorTask *)detectCrossReferencesTask {
 	if (_detectCrossReferencesTask) return _detectCrossReferencesTask;
 	LogDebug(@"Initializing detect cross references task due to first access...");
-	_detectCrossReferencesTask = [[ProcessorTask alloc] init];
+	_detectCrossReferencesTask = [[DetectCrossReferencesTask alloc] init];
 	return _detectCrossReferencesTask;
 }
 
