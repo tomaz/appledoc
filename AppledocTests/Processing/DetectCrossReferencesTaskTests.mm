@@ -10,10 +10,23 @@
 #import "DetectCrossReferencesTask.h"
 #import "TestCaseBase.hh"
 
+@interface DetectCrossReferencesTask (UnitTestingPrivateAPI)
+- (void)processCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder;
+@end
+
+#pragma mark -
+
 static void runWithTask(void(^handler)(DetectCrossReferencesTask *task, id comment)) {
 	DetectCrossReferencesTask *task = [[DetectCrossReferencesTask alloc] init];
 	CommentInfo *comment = [[CommentInfo alloc] init];
 	handler(task, comment);
+	[task release];
+}
+
+static void runWithBuilder(void(^handler)(DetectCrossReferencesTask *task, id builder)) {
+	DetectCrossReferencesTask *task = [[DetectCrossReferencesTask alloc] init];
+	NSMutableString *builder = [@"" mutableCopy];
+	handler(task, builder);
 	[task release];
 }
 
@@ -68,9 +81,39 @@ describe(@"comment components processing:", ^{
 });
 
 describe(@"markdown links:", ^{
-	it(@"should handle simple link", ^{
-		runWithTask(^(DetectCrossReferencesTask *task, id comment) {
-			// setup
+	it(@"should handle simple link only string", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"[text](path)" toBuilder:builder];
+			// verify
+			builder should equal(@"[text](path)");
+		});
+	});
+
+	it(@"should handle simple link only string", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"[text](path \"title\")" toBuilder:builder];
+			// verify
+			builder should equal(@"[text](path \"title\")");
+		});
+	});
+	
+	it(@"should keep prefix", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"prefix [text](path)" toBuilder:builder];
+			// verify
+			builder should equal(@"prefix [text](path)");
+		});
+	});
+	
+	it(@"should keep prefix and suffix", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"prefix [text](path) suffix" toBuilder:builder];
+			// verify
+			builder should equal(@"prefix [text](path) suffix");
 		});
 	});
 });
