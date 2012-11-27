@@ -80,41 +80,69 @@ describe(@"comment components processing:", ^{
 	});
 });
 
-describe(@"markdown links:", ^{
-	it(@"should handle simple link only string", ^{
-		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-			// execute
-			[task processCrossRefsInString:@"[text](path)" toBuilder:builder];
-			// verify
-			builder should equal(@"[text](path)");
+describe(@"unrecognized cross references:", ^{
+	describe(@"markdown links:", ^{
+		it(@"should handle simple link only string", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"[text](path)" toBuilder:builder];
+				// verify
+				builder should equal(@"[text](path)");
+			});
+		});
+
+		it(@"should keep prefix and suffix", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"prefix [text](path) suffix" toBuilder:builder];
+				// verify
+				builder should equal(@"prefix [text](path) suffix");
+			});
 		});
 	});
 
-	it(@"should handle simple link only string", ^{
-		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-			// execute
-			[task processCrossRefsInString:@"[text](path \"title\")" toBuilder:builder];
-			// verify
-			builder should equal(@"[text](path \"title\")");
+	describe(@"remote member crossrefs:", ^{
+		it(@"should keep unrecognized crossref", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"prefix [class member:method:] suffix" toBuilder:builder];
+				// verify
+				builder should equal(@"prefix [class member:method:] suffix");
+			});
+		});
+
+		it(@"should keep unrecognized crossref for instance method", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"prefix -[class member:method:] suffix" toBuilder:builder];
+				// verify
+				builder should equal(@"prefix -[class member:method:] suffix");
+			});
+		});
+
+		it(@"should keep unrecognized crossref for class method", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"prefix +[class member:method:] suffix" toBuilder:builder];
+				// verify
+				builder should equal(@"prefix +[class member:method:] suffix");
+			});
+		});
+		
+		it(@"should keep unrecognized crossref for property", ^{
+			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+				// execute
+				[task processCrossRefsInString:@"prefix +[class property] suffix" toBuilder:builder];
+				// verify
+				builder should equal(@"prefix +[class property] suffix");
+			});
 		});
 	});
-	
-	it(@"should keep prefix", ^{
-		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-			// execute
-			[task processCrossRefsInString:@"prefix [text](path)" toBuilder:builder];
-			// verify
-			builder should equal(@"prefix [text](path)");
-		});
-	});
-	
-	it(@"should keep prefix and suffix", ^{
-		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-			// execute
-			[task processCrossRefsInString:@"prefix [text](path) suffix" toBuilder:builder];
-			// verify
-			builder should equal(@"prefix [text](path) suffix");
-		});
+});
+
+describe(@"actual cross references:", ^{
+	describe(@"inline:", ^{
+		
 	});
 });
 
