@@ -10,6 +10,11 @@
 #import "ClassInfo.h"
 
 @implementation ClassInfo
+
+- (id)uniqueObjectID {
+	return self.nameOfClass;
+}
+
 @end
 
 #pragma mark - 
@@ -18,7 +23,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfClass) return @"class";
-	return [NSString gb_format:@"@interface %@ w/ %@", self.nameOfClass, [super description]];
+	return [NSString gb_format:@"@interface %@ w/ %@", [self uniqueObjectID], [super description]];
 }
 
 - (NSString *)debugDescription {

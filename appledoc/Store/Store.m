@@ -15,6 +15,7 @@
 @property (nonatomic, strong) PKToken *currentSourceInfo;
 @property (nonatomic, copy) NSString *commentTextForNextObject;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
+@property (nonatomic, strong) NSMutableDictionary *topLevelObjectsCache;
 @end
 
 #pragma mark - 
@@ -157,6 +158,27 @@
 	LogDebug(@"Initializing store constants array due to first access...");
 	_storeConstants = [[NSMutableArray alloc] init];
 	return _storeConstants;
+}
+
+@end
+
+#pragma mark - 
+
+@implementation Store (Cache)
+
+- (id)topLevelObjectWithName:(NSString *)name {
+	return self.topLevelObjectsCache[name];
+}
+
+- (NSMutableDictionary *)topLevelObjectsCache {
+	// Don't use this until ALL objects are registered; it'll only create cache once, from current data!
+	if (_topLevelObjectsCache) return _topLevelObjectsCache;
+	_topLevelObjectsCache = [@{} mutableCopy];
+	[self.storeClasses enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID]] = obj; }];
+	[self.storeExtensions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
+	[self.storeCategories enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
+	[self.storeProtocols enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
+	return _topLevelObjectsCache;
 }
 
 @end

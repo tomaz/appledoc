@@ -1069,4 +1069,47 @@ describe(@"registration stack handling:", ^{
 	});
 });
 
+describe(@"cache handling:", ^{
+	describe(@"top level objects:", ^{
+		it(@"should return class", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginClassWithName:@"name" derivedFromClassWithName:@"super"];
+				// execute
+				ClassInfo *object = [store topLevelObjectWithName:@"name"];
+				// verify
+				object should be_instance_of([ClassInfo class]);
+				object.nameOfClass should equal(@"name");
+				object.nameOfSuperClass should equal(@"super");
+			});
+		});
+
+		it(@"should return extension", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginExtensionForClassWithName:@"name"];
+				// execute
+				CategoryInfo *object = [store topLevelObjectWithName:@"name()"];
+				// verify
+				object should be_instance_of([CategoryInfo class]);
+				object.nameOfClass should equal(@"name");
+				object.nameOfCategory should be_nil();
+			});
+		});
+		
+		it(@"should return category", ^{
+			runWithStore(^(Store *store) {
+				// setup
+				[store beginCategoryWithName:@"category" forClassWithName:@"name"];
+				// execute
+				CategoryInfo *object = [store topLevelObjectWithName:@"name(category)"];
+				// verify
+				object should be_instance_of([CategoryInfo class]);
+				object.nameOfClass should equal(@"name");
+				object.nameOfCategory should equal(@"category");
+			});
+		});
+	});
+});
+
 TEST_END

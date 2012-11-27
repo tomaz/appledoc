@@ -10,6 +10,11 @@
 #import "ProtocolInfo.h"
 
 @implementation ProtocolInfo
+
+- (id)uniqueObjectID {
+	return self.nameOfProtocol;
+}
+
 @end
 
 #pragma mark - 
@@ -18,7 +23,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfProtocol) return @"protocol";
-	return [NSString gb_format:@"@protocol %@ w/ %@", self.nameOfProtocol, [super description]];
+	return [NSString gb_format:@"@protocol %@ w/ %@", [self uniqueObjectID], [super description]];
 }
 
 - (NSString *)debugDescription {

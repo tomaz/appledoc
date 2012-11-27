@@ -11,6 +11,10 @@
 
 @implementation CategoryInfo
 
+- (id)uniqueObjectID {
+	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.isCategory ? self.nameOfCategory : @""];
+}
+
 #pragma mark - Properties
 
 - (BOOL)isCategory {
@@ -29,7 +33,7 @@
 
 - (NSString *)description {
 	if (!self.nameOfClass) return @"category";
-	return [NSString gb_format:@"@interface %@(%@) w/ %@", self.nameOfClass, self.isCategory ? self.nameOfCategory : @"", [super description]];
+	return [NSString gb_format:@"@interface %@ w/ %@", [self uniqueObjectID], [super description]];
 }
 
 - (NSString *)debugDescription {
