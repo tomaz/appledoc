@@ -43,8 +43,6 @@
  */
 @interface Store : NSObject <StoreRegistrar>
 
-- (id)topLevelObjectWithName:(NSString *)name;
-
 @property (nonatomic, strong) NSMutableArray *storeClasses;
 @property (nonatomic, strong) NSMutableArray *storeExtensions;
 @property (nonatomic, strong) NSMutableArray *storeCategories;
@@ -52,5 +50,8 @@
 @property (nonatomic, strong) NSMutableArray *storeEnumerations;
 @property (nonatomic, strong) NSMutableArray *storeStructs;
 @property (nonatomic, strong) NSMutableArray *storeConstants;
+
+@property (nonatomic, strong) NSMutableDictionary *topLevelObjectsCache;
+@property (nonatomic, strong) NSMutableDictionary *memberObjectsCache;
 
 @end

@@ -37,6 +37,10 @@
 	return result;
 }
 
+- (id)uniqueObjectID {
+	return self.propertyName;
+}
+
 #pragma mark - Properties
 
 - (TypeInfo *)propertyType {

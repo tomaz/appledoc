@@ -39,6 +39,47 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
+describe(@"selector & unique ID:", ^{
+	it(@"should handle single argument", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			MethodArgumentInfo *argument = [[MethodArgumentInfo alloc] init];
+			argument.argumentSelector = @"method";
+			[info.methodArguments addObject:argument];
+			// execute & verify
+			info.uniqueObjectID should equal(@"method");
+		});
+	});
+
+	it(@"should handle single argument with variable", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			MethodArgumentInfo *argument = [[MethodArgumentInfo alloc] init];
+			argument.argumentSelector = @"method";
+			argument.argumentVariable = @"var";
+			[info.methodArguments addObject:argument];
+			// execute & verify
+			info.uniqueObjectID should equal(@"method:");
+		});
+	});
+	
+	it(@"should handle multiple arguments", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			MethodArgumentInfo *argument1 = [[MethodArgumentInfo alloc] init];
+			argument1.argumentSelector = @"method";
+			argument1.argumentVariable = @"var";
+			[info.methodArguments addObject:argument1];
+			MethodArgumentInfo *argument2 = [[MethodArgumentInfo alloc] init];
+			argument2.argumentSelector = @"withArg";
+			argument2.argumentVariable = @"var";
+			[info.methodArguments addObject:argument2];
+			// execute & verify
+			info.uniqueObjectID should equal(@"method:withArg:");
+		});
+	});
+});
+
 describe(@"class or interface method helpers:", ^{
 	it(@"should work for class method", ^{
 		runWithMethodInfo(^(MethodInfo *info) {			

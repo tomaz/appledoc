@@ -15,14 +15,11 @@
 @property (nonatomic, strong) PKToken *currentSourceInfo;
 @property (nonatomic, copy) NSString *commentTextForNextObject;
 @property (nonatomic, strong) NSMutableArray *registrationStack;
-@property (nonatomic, strong) NSMutableDictionary *topLevelObjectsCache;
 @end
 
 #pragma mark - 
 
 @implementation Store
-
-#pragma mark - StoreRegistrar and related stuff
 
 - (BOOL)expectCurrentRegistrationObjectRespondTo:(SEL)selector {
 	if (self.registrationStack.count == 0) {
@@ -160,28 +157,55 @@
 	return _storeConstants;
 }
 
-@end
-
-#pragma mark - 
-
-@implementation Store (Cache)
-
-- (id)topLevelObjectWithName:(NSString *)name {
-	return self.topLevelObjectsCache[name];
-}
+#pragma mark - Cache handling
 
 - (NSMutableDictionary *)topLevelObjectsCache {
 	// Don't use this until ALL objects are registered; it'll only create cache once, from current data!
 	if (_topLevelObjectsCache) return _topLevelObjectsCache;
 	_topLevelObjectsCache = [@{} mutableCopy];
-	[self.storeClasses enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID]] = obj; }];
-	[self.storeExtensions enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
-	[self.storeCategories enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
-	[self.storeProtocols enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) { _topLevelObjectsCache[[obj uniqueObjectID] ] = obj; }];
+	[self addTopLevelObjectsFromArray:self.storeClasses toCache:_topLevelObjectsCache];
+	[self addTopLevelObjectsFromArray:self.storeExtensions toCache:_topLevelObjectsCache];
+	[self addTopLevelObjectsFromArray:self.storeCategories toCache:_topLevelObjectsCache];
+	[self addTopLevelObjectsFromArray:self.storeProtocols toCache:_topLevelObjectsCache];
 	return _topLevelObjectsCache;
 }
 
+- (NSMutableDictionary *)memberObjectsCache {
+	if (_memberObjectsCache) return _memberObjectsCache;
+	_memberObjectsCache = [@{} mutableCopy];
+	[self addMemberObjectsFromTopLevelObjectsArray:self.storeClasses toCache:_memberObjectsCache];
+	[self addMemberObjectsFromTopLevelObjectsArray:self.storeExtensions toCache:_memberObjectsCache];
+	[self addMemberObjectsFromTopLevelObjectsArray:self.storeCategories toCache:_memberObjectsCache];
+	[self addMemberObjectsFromTopLevelObjectsArray:self.storeProtocols toCache:_memberObjectsCache];
+	return _memberObjectsCache;
+}
+
+- (void)addTopLevelObjectsFromArray:(NSArray *)array toCache:(NSMutableDictionary *)cache {
+	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSString *name = [obj uniqueObjectID];
+		cache[name] = obj;
+	}];
+}
+
+- (void)addMemberObjectsFromTopLevelObjectsArray:(NSArray *)array toCache:(NSMutableDictionary *)cache {
+	__weak Store *bself = self;
+	[array enumerateObjectsUsingBlock:^(InterfaceInfoBase *interfaceInfo, NSUInteger idx, BOOL *stop) {
+		[bself addObjectsFromArray:interfaceInfo.interfaceClassMethods parent:interfaceInfo format:@"+[%@ %@]" toCache:cache];
+		[bself addObjectsFromArray:interfaceInfo.interfaceInstanceMethods parent:interfaceInfo format:@"-[%@ %@]" toCache:cache];
+		[bself addObjectsFromArray:interfaceInfo.interfaceProperties parent:interfaceInfo format:@"[%@ %@]" toCache:cache];
+	}];
+}
+
+- (void)addObjectsFromArray:(NSArray *)array parent:(InterfaceInfoBase *)parent format:(NSString *)format toCache:(NSMutableDictionary *)cache {
+	[array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+		NSString *name = [NSString stringWithFormat:format, [parent uniqueObjectID], [obj uniqueObjectID]];
+		cache[name] = obj;
+	}];
+}
+
 @end
+
+#pragma mark - 
 
 #pragma mark - 
 

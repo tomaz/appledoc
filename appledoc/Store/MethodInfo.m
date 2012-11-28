@@ -15,6 +15,12 @@
 #import "MethodArgumentInfo.h"
 #import "MethodInfo.h"
 
+@interface MethodInfo ()
+@property (nonatomic, strong) NSString *methodSelector;
+@end
+
+#pragma mark -
+
 @implementation MethodInfo
 
 #pragma mark - Properties
@@ -38,6 +44,21 @@
 	LogDebug(@"Initializing method arguments array due to first access...");
 	_methodArguments = [[NSMutableArray alloc] init];
 	return _methodArguments;
+}
+
+- (NSString *)methodSelector {
+	if (_methodSelector) return _methodSelector;
+	NSMutableString *result = [@"" mutableCopy];
+	[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argumentInfo, NSUInteger idx, BOOL *stop) {
+		[result appendString:argumentInfo.argumentSelector];
+		if (argumentInfo.isUsingVariable) [result appendString:@":"];
+	}];
+	_methodSelector = result;
+	return _methodSelector;
+}
+
+- (id)uniqueObjectID {
+	return self.methodSelector;
 }
 
 - (BOOL)isClassMethod {

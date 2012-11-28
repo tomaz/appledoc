@@ -1076,7 +1076,7 @@ describe(@"cache handling:", ^{
 				// setup
 				[store beginClassWithName:@"name" derivedFromClassWithName:@"super"];
 				// execute
-				ClassInfo *object = [store topLevelObjectWithName:@"name"];
+				ClassInfo *object = store.topLevelObjectsCache[@"name"];
 				// verify
 				object should be_instance_of([ClassInfo class]);
 				object.nameOfClass should equal(@"name");
@@ -1089,7 +1089,7 @@ describe(@"cache handling:", ^{
 				// setup
 				[store beginExtensionForClassWithName:@"name"];
 				// execute
-				CategoryInfo *object = [store topLevelObjectWithName:@"name()"];
+				CategoryInfo *object = store.topLevelObjectsCache[@"name()"];
 				// verify
 				object should be_instance_of([CategoryInfo class]);
 				object.nameOfClass should equal(@"name");
@@ -1102,12 +1102,137 @@ describe(@"cache handling:", ^{
 				// setup
 				[store beginCategoryWithName:@"category" forClassWithName:@"name"];
 				// execute
-				CategoryInfo *object = [store topLevelObjectWithName:@"name(category)"];
+				CategoryInfo *object = store.topLevelObjectsCache[@"name(category)"];
 				// verify
 				object should be_instance_of([CategoryInfo class]);
 				object.nameOfClass should equal(@"name");
 				object.nameOfCategory should equal(@"category");
 			});
+		});
+	});
+	
+	describe(@"remote members:", ^{
+		sharedExamplesFor(@"examples", ^(NSDictionary *info) {
+			beforeEach(^{
+				// initialize argument for method
+				MethodArgumentInfo *methodArgument = [[MethodArgumentInfo alloc] init];
+				methodArgument.argumentSelector = @"method";
+				methodArgument.argumentVariable = @"var";
+
+				// initialize method "+method:(int)var"
+				MethodInfo *classMethodInfo = [[MethodInfo alloc] init];
+				classMethodInfo.methodType = GBStoreTypes.classMethod;
+				[classMethodInfo.methodArguments addObject:methodArgument];
+				
+				// initialize method "-method:(int)var"
+				MethodInfo *instanceMethodInfo = [[MethodInfo alloc] init];
+				instanceMethodInfo.methodType = GBStoreTypes.instanceMethod;
+				[instanceMethodInfo.methodArguments addObject:methodArgument];
+				
+				// initialize property "property"
+				PropertyInfo *propertyInfo = [[PropertyInfo alloc] init];
+				propertyInfo.propertyName = @"property";
+				
+				// register method & property to interface
+				InterfaceInfoBase *interfaceInfo = info[@"object"];
+				[interfaceInfo.interfaceClassMethods addObject:classMethodInfo];
+				[interfaceInfo.interfaceInstanceMethods addObject:instanceMethodInfo];
+				[interfaceInfo.interfaceProperties addObject:propertyInfo];
+				
+				// register interface to store
+				NSMutableArray *interfacesArray = info[@"interfaces"];
+				[interfacesArray addObject:interfaceInfo];
+			});
+			
+			it(@"should return class method", ^{
+				// setup
+				Store *store = info[@"store"];
+				NSString *name = [NSString stringWithFormat:@"+[%@ method:]", info[@"name"]];
+				// execute
+				MethodInfo *object = store.memberObjectsCache[name];
+				// verify
+				object should be_instance_of([MethodInfo class]);
+				object.methodType should equal(GBStoreTypes.classMethod);
+			});
+			
+			it(@"should return instance method", ^{
+				// setup
+				Store *store = info[@"store"];
+				NSString *name = [NSString stringWithFormat:@"-[%@ method:]", info[@"name"]];
+				// execute
+				MethodInfo *object = store.memberObjectsCache[name];
+				// verify
+				object should be_instance_of([MethodInfo class]);
+				object.methodType should equal(GBStoreTypes.instanceMethod);
+			});
+			
+			it(@"should return property", ^{
+				// setup
+				Store *store = info[@"store"];
+				NSString *name = [NSString stringWithFormat:@"[%@ property]", info[@"name"]];
+				// execute
+				PropertyInfo *object = store.memberObjectsCache[name];
+				// verify
+				object should be_instance_of([PropertyInfo class]);
+			});
+		});
+
+		describe(@"classes:", ^{
+			beforeEach(^{
+				runWithStore(^(Store *store) {
+					ClassInfo *classInfo = [[ClassInfo alloc] init];
+					classInfo.nameOfClass = @"MyClass";
+					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+					[[SpecHelper specHelper] sharedExampleContext][@"object"] = classInfo;
+					[[SpecHelper specHelper] sharedExampleContext][@"interfaces"] = store.storeClasses;
+					[[SpecHelper specHelper] sharedExampleContext][@"name"] = classInfo.uniqueObjectID;
+				});
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"extensions:", ^{
+			beforeEach(^{
+				runWithStore(^(Store *store) {
+					CategoryInfo *categoryInfo = [[CategoryInfo alloc] init];
+					categoryInfo.nameOfClass = @"MyClass";
+					categoryInfo.nameOfCategory = @"";
+					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+					[[SpecHelper specHelper] sharedExampleContext][@"object"] = categoryInfo;
+					[[SpecHelper specHelper] sharedExampleContext][@"interfaces"] = store.storeExtensions;
+					[[SpecHelper specHelper] sharedExampleContext][@"name"] = categoryInfo.uniqueObjectID;
+				});
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"categories:", ^{
+			beforeEach(^{
+				runWithStore(^(Store *store) {
+					CategoryInfo *categoryInfo = [[CategoryInfo alloc] init];
+					categoryInfo.nameOfClass = @"MyClass";
+					categoryInfo.nameOfCategory = @"MyCategory";
+					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+					[[SpecHelper specHelper] sharedExampleContext][@"object"] = categoryInfo;
+					[[SpecHelper specHelper] sharedExampleContext][@"interfaces"] = store.storeCategories;
+					[[SpecHelper specHelper] sharedExampleContext][@"name"] = categoryInfo.uniqueObjectID;
+				});
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"protocols:", ^{
+			beforeEach(^{
+				runWithStore(^(Store *store) {
+					ProtocolInfo *protocolInfo = [[ProtocolInfo alloc] init];
+					protocolInfo.nameOfProtocol = @"MyProtocol";
+					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+					[[SpecHelper specHelper] sharedExampleContext][@"object"] = protocolInfo;
+					[[SpecHelper specHelper] sharedExampleContext][@"interfaces"] = store.storeProtocols;
+					[[SpecHelper specHelper] sharedExampleContext][@"name"] = protocolInfo.uniqueObjectID;
+				});
+			});
+			itShouldBehaveLike(@"examples");
 		});
 	});
 });

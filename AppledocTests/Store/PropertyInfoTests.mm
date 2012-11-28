@@ -75,6 +75,17 @@ describe(@"getter and setter selectors:", ^{
 	});
 });
 
+describe(@"unique ID:", ^{
+	it(@"should return property name", ^{
+		runWithPropertyInfo(^(PropertyInfo *info) {
+			// setup
+			info.propertyName = @"name";
+			// execute & verify
+			info.uniqueObjectID should equal(@"name");
+		});
+	});
+});
+
 describe(@"property descriptors registration:", ^{
 	it(@"should push descriptors info to registration stack", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
