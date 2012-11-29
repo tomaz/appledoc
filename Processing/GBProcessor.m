@@ -196,7 +196,7 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = [parameters objectForKey:name];
 		if (!parameter) {
-            if (method.includeInOutput)
+            if (self.settings.warnOnUndocumentedParam && method.includeInOutput)
                 GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
 		}

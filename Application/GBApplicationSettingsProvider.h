@@ -391,6 +391,12 @@ extern id kGBCustomDocumentIndexDescKey;
  */
 @property (assign) BOOL warnOnUndocumentedMember;
 
+/** Indicates whether appledoc will warn if it encounters an undocumented method parameter
+ 
+ @see warnOnUndocumentedMember
+ */
+@property (assign) BOOL warnOnUndocumentedParam;
+
 /** Indicates whether appledoc will warn if it encounters an empty description (@bug, @warning, example section etc.).
  */
 @property (assign) BOOL warnOnEmptyDescription;
