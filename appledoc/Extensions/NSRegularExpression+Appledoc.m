@@ -30,6 +30,10 @@
 	GBPattern(@"\\s+", NSRegularExpressionAnchorsMatchLines)
 }
 
++ (NSRegularExpression *)gb_remoteMemberMatchingExpression {
+	GBPattern(@"([+-]?)\\[([^\\s]+)[ \\t]+([^\\s\\]]+)\\]", 0);
+}
+
 + (NSRegularExpression *)gb_paramMatchingExpression {
 	GBPattern(@"^(@param)\\s+(\\S+)\\s+", 0) // only at start of string!
 }

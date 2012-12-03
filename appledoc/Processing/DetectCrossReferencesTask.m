@@ -64,10 +64,37 @@
 - (void)processAppledocCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
 	// Finds all appledoc cross references in given string. It works by splitting the work into first finding remote member cross refs, and finding inline cross refs in remaining string.
 	__weak DetectCrossReferencesTask *bself = self;
-	[self enumerateMatchesOf:nil in:string prefix:^(NSString *prefix) {
+	NSDictionary *remoteMembersCache = self.store.memberObjectsCache;
+	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
+	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
 		[bself processInlineCrossRefsInString:prefix toBuilder:builder];
 	} match:^(NSTextCheckingResult *match) {
-		[builder appendString:[match gb_stringAtIndex:0 in:string]];		
+		// Get match data.
+		NSString *description = [match gb_stringAtIndex:0 in:string];
+		NSString *prefix = [match gb_stringAtIndex:1 in:string];
+		NSString *objectName = [match gb_stringAtIndex:2 in:string];
+		NSString *memberName = [match gb_stringAtIndex:3 in:string];
+		
+		// Find remote member cross reference in cache. If no prefix is given also try class and instance method variants. Give class precedence...
+		NSString *key = [NSString stringWithFormat:@"%@[%@ %@]", prefix, objectName, memberName];
+		ObjectInfoBase *object = remoteMembersCache[key];
+		if (!object && prefix.length == 0) {
+			key = [NSString stringWithFormat:@"+[%@ %@]", objectName, memberName];
+			object = remoteMembersCache[key];
+			if (!object) {
+				key = [NSString stringWithFormat:@"-[%@ %@]", objectName, memberName];
+				object = remoteMembersCache[key];
+			}
+		}
+		
+		// If found, convert it to cross reference.
+		if (object) {
+			[builder appendString:[bself stringForCrossRefTo:object description:description]];
+			return;
+		}
+		
+		// If not found, just append the given match.
+		[builder appendString:description];
 	}];
 }
 
@@ -80,14 +107,21 @@
 	}
 
 	__weak DetectCrossReferencesTask *bself = self;
-	[self enumerateMatchesOf:[NSRegularExpression gb_wordMatchingExpression] in:string prefix:^(NSString *word) {
+	NSRegularExpression *expression = [NSRegularExpression gb_wordMatchingExpression];
+	[self enumerateMatchesOf:expression in:string prefix:^(NSString *word) {
+		// Find cross referenced object.
 		ObjectInfoBase *object = topLevelObjectsCache[word];
+		
+		// If found, convert it to cross reference.
 		if (object) {
 			[builder appendString:[bself stringForCrossRefTo:object description:word]];
 			return;
 		}
+		
+		// If not found, just append the word plain as it is.
 		[builder appendString:word];
 	} match:^(NSTextCheckingResult *match) {
+		// Append matched whitespace.
 		[builder appendString:[match gb_stringAtIndex:0 in:string]];
 	}];
 }
