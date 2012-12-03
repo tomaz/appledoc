@@ -14,6 +14,7 @@ typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx,
 @interface NSRegularExpression (Appledoc)
 
 + (NSRegularExpression *)gb_emptyLineMatchingExpression;
++ (NSRegularExpression *)gb_wordMatchingExpression;
 + (NSRegularExpression *)gb_paramMatchingExpression;	// @param name
 + (NSRegularExpression *)gb_exceptionMatchingExpression; // @exception name
 + (NSRegularExpression *)gb_returnMatchingExpression; // @return

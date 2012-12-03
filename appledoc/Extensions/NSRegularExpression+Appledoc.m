@@ -26,6 +26,10 @@
 	GBPattern(@"\\n?^\\s*$\\n?", NSRegularExpressionAnchorsMatchLines)
 }
 
++ (NSRegularExpression *)gb_wordMatchingExpression {
+	GBPattern(@"\\s+", NSRegularExpressionAnchorsMatchLines)
+}
+
 + (NSRegularExpression *)gb_paramMatchingExpression {
 	GBPattern(@"^(@param)\\s+(\\S+)\\s+", 0) // only at start of string!
 }

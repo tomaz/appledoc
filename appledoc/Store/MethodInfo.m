@@ -57,7 +57,7 @@
 	return _methodSelector;
 }
 
-- (id)uniqueObjectID {
+- (NSString *)uniqueObjectID {
 	return self.methodSelector;
 }
 

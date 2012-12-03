@@ -11,8 +11,13 @@
 
 @implementation CategoryInfo
 
-- (id)uniqueObjectID {
+- (NSString *)uniqueObjectID {
 	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.isCategory ? self.nameOfCategory : @""];
+}
+
+- (NSString *)objectCrossRefPathTemplate {
+	NSString *descriptor = self.isExtension ? self.nameOfClass : self.uniqueObjectID;
+	return [NSString stringWithFormat:@"$CATEGORIES/%@.$EXT", descriptor];
 }
 
 #pragma mark - Properties

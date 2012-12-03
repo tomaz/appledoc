@@ -11,8 +11,12 @@
 
 @implementation ProtocolInfo
 
-- (id)uniqueObjectID {
+- (NSString *)uniqueObjectID {
 	return self.nameOfProtocol;
+}
+
+- (NSString *)objectCrossRefPathTemplate {
+	return [NSString stringWithFormat:@"$PROTOCOLS/%@.$EXT", self.uniqueObjectID];
 }
 
 @end

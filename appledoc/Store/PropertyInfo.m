@@ -37,7 +37,7 @@
 	return result;
 }
 
-- (id)uniqueObjectID {
+- (NSString *)uniqueObjectID {
 	return self.propertyName;
 }
 

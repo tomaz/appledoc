@@ -20,7 +20,8 @@
 @interface ObjectInfoBase : NSObject <StoreRegistrar>
 
 - (id)initWithRegistrar:(id<StoreRegistrar>)registrar;
-- (id)uniqueObjectID;
+- (NSString *)uniqueObjectID;
+- (NSString *)objectCrossRefPathTemplate;
 
 @property (nonatomic, strong) CommentInfo *comment;
 @property (nonatomic, strong) PKToken *sourceToken;

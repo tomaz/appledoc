@@ -11,8 +11,12 @@
 
 @implementation ClassInfo
 
-- (id)uniqueObjectID {
+- (NSString *)uniqueObjectID {
 	return self.nameOfClass;
+}
+
+- (NSString *)objectCrossRefPathTemplate {
+	return [NSString stringWithFormat:@"$CLASSES/%@.$EXT", self.uniqueObjectID];
 }
 
 @end

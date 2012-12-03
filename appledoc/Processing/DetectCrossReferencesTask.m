@@ -62,7 +62,7 @@
 }
 
 - (void)processAppledocCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
-	// Finds all appledoc cross references in given string. If works by splitting the work into first finding remote member cross refs, and finding inline cross refs in remaining string.
+	// Finds all appledoc cross references in given string. It works by splitting the work into first finding remote member cross refs, and finding inline cross refs in remaining string.
 	__weak DetectCrossReferencesTask *bself = self;
 	[self enumerateMatchesOf:nil in:string prefix:^(NSString *prefix) {
 		[bself processInlineCrossRefsInString:prefix toBuilder:builder];
@@ -72,7 +72,23 @@
 }
 
 - (void)processInlineCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
-	[builder appendString:string];
+	// Small optimization; if there's no registered object, no need to scan the string, just append it to builder and exit.
+	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
+	if (topLevelObjectsCache.count == 0) {
+		[builder appendString:string];
+		return;
+	}
+
+	__weak DetectCrossReferencesTask *bself = self;
+	[self enumerateMatchesOf:[NSRegularExpression gb_wordMatchingExpression] in:string prefix:^(NSString *word) {
+		ObjectInfoBase *object = topLevelObjectsCache[word];
+		if (object) {
+			[builder appendString:[bself stringForCrossRefTo:object description:word]];
+			return;
+		}
+	} match:^(NSTextCheckingResult *match) {
+		[builder appendString:[match gb_stringAtIndex:0 in:string]];
+	}];
 }
 
 #pragma mark - Helper methods
@@ -90,6 +106,10 @@
 		NSString *remainingString = [string substringWithRange:searchRange];
 		prefixBlock(remainingString);
 	}
+}
+
+- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description {
+	return [NSString stringWithFormat:@"[%@](%@)", description, object.objectCrossRefPathTemplate];
 }
 
 @end

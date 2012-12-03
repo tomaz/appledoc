@@ -58,6 +58,16 @@
 	return self.objectRegistrar.currentRegistrationObject;
 }
 
+#pragma mark - Helper methods
+
+- (NSString *)uniqueObjectID {
+	return nil;
+}
+
+- (NSString *)objectCrossRefPathTemplate {
+	return nil;
+}
+
 @end
 
 #pragma mark - 

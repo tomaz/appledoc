@@ -30,6 +30,26 @@ static void runWithBuilder(void(^handler)(DetectCrossReferencesTask *task, id bu
 	[task release];
 }
 
+static void runWithDefaultObjects(void(^handler)(DetectCrossReferencesTask *task, id store, id builder)) {
+#define GBObject(o,t,c) id o = mock([t class]); [given([o objectCrossRefPathTemplate]) willReturn:c]
+	runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+		id store = mock([Store class]);
+		GBObject(classInfo, InterfaceInfoBase, @"$CLASSES/MyClass.$EXT");
+		GBObject(extensionInfo, InterfaceInfoBase, @"$CATEGORIES/MyClass.$EXT");
+		GBObject(categoryInfo, InterfaceInfoBase, @"$CATEGORIES/MyClass(MyCategory).$EXT");
+		GBObject(protocolInfo, InterfaceInfoBase, @"$PROTOCOLS/MyProtocol.$EXT");
+		NSDictionary *toplevel = @{ @"MyClass":classInfo, @"MyClass()":extensionInfo, @"MyClass(MyCategory)":categoryInfo, @"MyProtocol":protocolInfo };
+		[given([store topLevelObjectsCache]) willReturn:toplevel];
+		GBObject(classMethod, MethodInfo, @"");
+		GBObject(instanceMethod, MethodInfo, @"");
+		GBObject(property, PropertyInfo, @"");
+		NSDictionary *members = @{ @"+[MyClass method:]":classMethod, @"-[MyClass method:]":instanceMethod, @"[MyClass method]":property };
+		[given([store memberObjectsCache]) willReturn:members];
+		task.store = store;
+		handler(task, store, builder);
+	});
+}
+
 static id setupComponent(id component, NSString *string) {
 	if ([component isKindOfClass:[CommentComponentInfo class]])
 		[component setSourceString:string];
@@ -80,27 +100,27 @@ describe(@"comment components processing:", ^{
 	});
 });
 
-describe(@"unrecognized cross references:", ^{
-	describe(@"markdown links:", ^{
-		it(@"should handle simple link only string", ^{
-			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-				// execute
-				[task processCrossRefsInString:@"[text](path)" toBuilder:builder];
-				// verify
-				builder should equal(@"[text](path)");
-			});
-		});
-
-		it(@"should keep prefix and suffix", ^{
-			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
-				// execute
-				[task processCrossRefsInString:@"prefix [text](path) suffix" toBuilder:builder];
-				// verify
-				builder should equal(@"prefix [text](path) suffix");
-			});
+describe(@"markdown links:", ^{
+	it(@"should handle simple link only string", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"[text](path)" toBuilder:builder];
+			// verify
+			builder should equal(@"[text](path)");
 		});
 	});
+	
+	it(@"should keep prefix and suffix", ^{
+		runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
+			// execute
+			[task processCrossRefsInString:@"prefix [text](path) suffix" toBuilder:builder];
+			// verify
+			builder should equal(@"prefix [text](path) suffix");
+		});
+	});
+});
 
+describe(@"unrecognized cross references:", ^{
 	describe(@"remote member crossrefs:", ^{
 		it(@"should keep unrecognized crossref", ^{
 			runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
@@ -140,9 +160,53 @@ describe(@"unrecognized cross references:", ^{
 	});
 });
 
-describe(@"actual cross references:", ^{
-	describe(@"inline:", ^{
+describe(@"recognized cross references:", ^{
+#define GBReplace(t) [t gb_stringByReplacing:@{ @"$$":info[@"name"], @"%%":info[@"path"] }]
+	describe(@"top level objects:", ^{
+		sharedExamplesFor(@"examples", ^(NSDictionary *info) {
+			it(@"should detect as only word", ^{
+				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+					// setup
+					NSString *text = GBReplace(@"$$");
+					// execute
+					[task processCrossRefsInString:text toBuilder:builder];
+					// verify
+					builder should equal(GBReplace(@"[$$](%%)"));
+				});
+			});
+		});
 		
+		describe(@"classes:", ^{
+			beforeEach(^{
+				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass";
+				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT";
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"extensions:", ^{
+			beforeEach(^{
+				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass()";
+				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CATEGORIES/MyClass.$EXT";
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"categories:", ^{
+			beforeEach(^{
+				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass(MyCategory)";
+				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CATEGORIES/MyClass(MyCategory).$EXT";
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"protocols:", ^{
+			beforeEach(^{
+				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyProtocol";
+				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$PROTOCOLS/MyProtocol.$EXT";
+			});
+			itShouldBehaveLike(@"examples");
+		});
 	});
 });
 

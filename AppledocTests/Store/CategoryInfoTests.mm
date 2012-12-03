@@ -40,13 +40,36 @@ describe(@"category or extension helpers:", ^{
 		});
 	});
 	
-	it(@"should woirk if name of category is not nil and not empty string", ^{
+	it(@"should work if name of category is not nil and not empty string", ^{
 		runWithCategoryInfo(^(CategoryInfo *info) {
 			// setup
 			info.nameOfCategory = @"a";
 			// execute & verify
 			info.isExtension should equal(NO);
 			info.isCategory should equal(YES);
+		});
+	});
+});
+
+describe(@"descriptions:", ^{
+	it(@"should handle extension", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.nameOfClass = @"MyClass";
+			// execute & verify
+			info.uniqueObjectID should equal(@"MyClass()");
+			info.objectCrossRefPathTemplate should equal(@"$CATEGORIES/MyClass.$EXT");
+		});
+	});
+
+	it(@"should handle category", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.nameOfClass = @"MyClass";
+			info.nameOfCategory = @"MyCategory";
+			// execute & verify
+			info.uniqueObjectID should equal(@"MyClass(MyCategory)");
+			info.objectCrossRefPathTemplate should equal(@"$CATEGORIES/MyClass(MyCategory).$EXT");
 		});
 	});
 });
