@@ -10,6 +10,12 @@
 #import "Store.h"
 #import "DetectCrossReferencesTask.h"
 
+@interface DetectCrossReferencesTask ()
+@property (nonatomic, strong) NSMutableDictionary *localMembersCache;
+@end
+
+#pragma mark -
+
 @implementation DetectCrossReferencesTask
 
 #pragma mark - Processing
@@ -23,10 +29,22 @@
 	return GBResultOk;
 }
 
+#pragma mark - Overriden methods
+
+- (void)setProcessingContext:(ObjectInfoBase *)value {
+	// When context changes, we should reset local members cache.
+	if (value != self.processingContext) {
+		LogDebug(@"Processing context changed, resetting local members cache...");
+		self.localMembersCache = nil;
+	}
+	[super setProcessingContext:value];
+}
+
 #pragma mark - Comment components handling
 
 - (void)processCommentSections:(NSArray *)sections {
 	__weak DetectCrossReferencesTask *bself = self;
+	LogDebug(@"Processing %lu sections...", sections.count);
 	[sections enumerateObjectsUsingBlock:^(CommentSectionInfo *section, NSUInteger idx, BOOL *stop) {
 		[bself processCommentSection:section];
 	}];
@@ -34,6 +52,7 @@
 
 - (void)processCommentSection:(CommentSectionInfo *)section {
 	__weak DetectCrossReferencesTask *bself = self;
+	LogDebug(@"Processing section %@...", section);
 	[section.sectionComponents enumerateObjectsUsingBlock:^(CommentComponentInfo *component, NSUInteger idx, BOOL *stop) {
 		[bself processCommentComponent:component];
 	}];
@@ -41,9 +60,11 @@
 
 - (void)processCommentComponent:(CommentComponentInfo *)component {
 	if ([component isKindOfClass:[CommentCodeBlockComponentInfo class]]) {
+		LogDebug(@"Skipping component %@...", component);
 		component.componentMarkdown = component.sourceString;
 		return;
 	}
+	LogDebug(@"Processing component %@...", component);
 	NSMutableString *builder = [@"" mutableCopy];
 	[self processCrossRefsInString:component.sourceString toBuilder:builder];
 	component.componentMarkdown = builder;
@@ -77,18 +98,11 @@
 		
 		// Find remote member cross reference in cache. If no prefix is given also try class and instance method variants. Give class precedence...
 		NSString *key = [NSString stringWithFormat:@"%@[%@ %@]", prefix, objectName, memberName];
-		ObjectInfoBase *object = remoteMembersCache[key];
-		if (!object && prefix.length == 0) {
-			key = [NSString stringWithFormat:@"+[%@ %@]", objectName, memberName];
-			object = remoteMembersCache[key];
-			if (!object) {
-				key = [NSString stringWithFormat:@"-[%@ %@]", objectName, memberName];
-				object = remoteMembersCache[key];
-			}
-		}
+		ObjectInfoBase *object = [bself memberWithKey:key fromCache:remoteMembersCache];
 		
 		// If found, convert it to cross reference.
 		if (object) {
+			LogDebug(@"Matched cross reference '%@'.", description);
 			[builder appendString:[bself stringForCrossRefTo:object description:description]];
 			return;
 		}
@@ -101,7 +115,8 @@
 - (void)processInlineCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
 	// Small optimization; if there's no registered object, no need to scan the string, just append it to builder and exit.
 	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
-	if (topLevelObjectsCache.count == 0) {
+	NSDictionary *localMembersCache = self.localMembersCache;
+	if (topLevelObjectsCache.count == 0 || localMembersCache.count == 0) {
 		[builder appendString:string];
 		return;
 	}
@@ -111,9 +126,11 @@
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *word) {
 		// Find cross referenced object.
 		ObjectInfoBase *object = topLevelObjectsCache[word];
+		if (!object) object = [bself memberWithKey:word fromCache:localMembersCache];
 		
 		// If found, convert it to cross reference.
 		if (object) {
+			LogDebug(@"Matched cross reference '%@'.", object.uniqueObjectID);
 			[builder appendString:[bself stringForCrossRefTo:object description:word]];
 			return;
 		}
@@ -133,7 +150,7 @@
 	__block NSRange searchRange = NSMakeRange(0, string.length);
 	[expression gb_allMatchesIn:string match:^(NSTextCheckingResult *match, NSUInteger idx, BOOL *stop) {
 		NSString *prefixString = [match gb_prefixFromIndex:searchRange.location in:string];
-		prefixBlock(prefixString);
+		if (prefixString.length > 0) prefixBlock(prefixString);
 		matchBlock(match);
 		searchRange = [match gb_remainingRangeIn:string];
 	}];
@@ -141,6 +158,24 @@
 		NSString *remainingString = [string substringWithRange:searchRange];
 		prefixBlock(remainingString);
 	}
+}
+
+- (ObjectInfoBase *)memberWithKey:(NSString *)key fromCache:(NSDictionary *)cache {
+	// Searches the given cache for a member with the given key. This automatically tries class/instance method prefix if given key is not prefixes.
+	ObjectInfoBase *object = cache[key];
+	if (object) return object;
+
+	// If given key is not found, check if the key is prefixed with +/-. If yes, we can assume member doesn't exist (cache uses prefixed keys!)
+	if ([key hasPrefix:@"+"] || [key hasPrefix:@"-"]) return nil;
+	
+	// So, the key is not prefixed, try with class variation first.
+	NSString *classKey = [NSString stringWithFormat:@"+%@", key];
+	ObjectInfoBase *classMember = cache[classKey];
+	if (classMember) return classMember;
+	
+	// If class method wasn't found, try instance method or return nil if not found.
+	NSString *instanceKey = [NSString stringWithFormat:@"-%@", key];
+	return cache[instanceKey];
 }
 
 - (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description {
