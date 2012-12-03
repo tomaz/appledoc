@@ -187,48 +187,48 @@ describe(@"unrecognized cross references:", ^{
 
 describe(@"recognized cross references:", ^{
 #define GBReplace(t) [t gb_stringByReplacing:@{ @"$$":info[@"name"], @"%%":info[@"path"] }]
-	describe(@"top level objects:", ^{
-		sharedExamplesFor(@"top level examples", ^(NSDictionary *info) {
-			it(@"should detect as only word", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"$$");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"[$$](%%)"));
-				});
-			});
-			
-			it(@"should detect inside sentence", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$\tsuffix");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%)\tsuffix"));
-				});
-			});
-			
-			it(@"should detect all references", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$ and $$ end");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
-				});
+	sharedExamplesFor(@"examples", ^(NSDictionary *info) {
+		it(@"should detect as only word", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"$$");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@"[$$](%%)"));
 			});
 		});
 		
+		it(@"should detect inside sentence", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"prefix $$\tsuffix");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@"prefix [$$](%%)\tsuffix"));
+			});
+		});
+		
+		it(@"should detect all references", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"prefix $$ and $$ end");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
+			});
+		});
+	});
+
+	describe(@"top level objects:", ^{
 		describe(@"classes:", ^{
 			beforeEach(^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT";
 			});
-			itShouldBehaveLike(@"top level examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		describe(@"extensions:", ^{
@@ -236,7 +236,7 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass()";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CATEGORIES/MyClass.$EXT";
 			});
-			itShouldBehaveLike(@"top level examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		describe(@"categories:", ^{
@@ -244,7 +244,7 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyClass(MyCategory)";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CATEGORIES/MyClass(MyCategory).$EXT";
 			});
-			itShouldBehaveLike(@"top level examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		describe(@"protocols:", ^{
@@ -252,7 +252,7 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"MyProtocol";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$PROTOCOLS/MyProtocol.$EXT";
 			});
-			itShouldBehaveLike(@"top level examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		it(@"should detect mixed cases", ^{
@@ -267,49 +267,14 @@ describe(@"recognized cross references:", ^{
 		});
 	});
 	
-	describe(@"remote members:", ^{
-		sharedExamplesFor(@"remote member examples", ^(NSDictionary *info) {
-			it(@"should detect as only word", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"$$");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"[$$](%%)"));
-				});
-			});
-
-			it(@"should detect inside sentence", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$\tsuffix");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%)\tsuffix"));
-				});
-			});
-			
-			it(@"should detect all references", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$ and $$ end");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
-				});
-			});
-		});
-		
+	describe(@"remote members:", ^{		
 		describe(@"class methods:", ^{
 			describe(@"class methods w/ prefix:", ^{
 				beforeEach(^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"+[MyClass class:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#+class:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"class methods w/o prefix:", ^{
@@ -317,7 +282,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"[MyClass class:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#+class:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 		
@@ -327,7 +292,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"-[MyClass instance:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#-instance:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"instance methods w/o prefix:", ^{
@@ -335,7 +300,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"[MyClass instance:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#-instance:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 
@@ -345,7 +310,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"[MyClass method:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#+method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 
 			describe(@"uses class method if prefix given:", ^{
@@ -353,7 +318,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"+[MyClass method:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#+method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 
 			describe(@"uses instance method if prefix given:", ^{
@@ -361,7 +326,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"-[MyClass method:]";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#-method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 		
@@ -370,7 +335,7 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"[MyClass property]";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$CLASSES/MyClass.$EXT#property";
 			});
-			itShouldBehaveLike(@"remote member examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		it(@"should detect mixed cases", ^{
@@ -386,48 +351,13 @@ describe(@"recognized cross references:", ^{
 	});
 	
 	describe(@"local members:", ^{
-		sharedExamplesFor(@"remote member examples", ^(NSDictionary *info) {
-			it(@"should detect as only word", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"$$");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"[$$](%%)"));
-				});
-			});
-			
-			it(@"should detect inside sentence", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$\tsuffix");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%)\tsuffix"));
-				});
-			});
-			
-			it(@"should detect all references", ^{
-				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
-					// setup
-					NSString *text = GBReplace(@"prefix $$ and $$ end");
-					// execute
-					[task processCrossRefsInString:text toBuilder:builder];
-					// verify
-					builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
-				});
-			});
-		});
-		
 		describe(@"class methods:", ^{
 			describe(@"class methods w/ prefix:", ^{
 				beforeEach(^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"+class:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#+class:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"class methods w/o prefix:", ^{
@@ -435,7 +365,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"class:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#+class:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 		
@@ -445,7 +375,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"-instance:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#-instance:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"instance methods w/o prefix:", ^{
@@ -453,7 +383,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"instance:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#-instance:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 		
@@ -463,7 +393,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"method:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#+method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"uses class method if prefix given:", ^{
@@ -471,7 +401,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"+method:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#+method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 			
 			describe(@"uses instance method if prefix given:", ^{
@@ -479,7 +409,7 @@ describe(@"recognized cross references:", ^{
 					[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"-method:";
 					[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#-method:";
 				});
-				itShouldBehaveLike(@"remote member examples");
+				itShouldBehaveLike(@"examples");
 			});
 		});
 		
@@ -488,7 +418,7 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"name"] = @"property";
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"#property";
 			});
-			itShouldBehaveLike(@"remote member examples");
+			itShouldBehaveLike(@"examples");
 		});
 		
 		it(@"should detect mixed cases", ^{
