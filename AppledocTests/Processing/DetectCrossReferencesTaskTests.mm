@@ -174,6 +174,28 @@ describe(@"recognized cross references:", ^{
 					builder should equal(GBReplace(@"[$$](%%)"));
 				});
 			});
+			
+			it(@"should detect inside sentence", ^{
+				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+					// setup
+					NSString *text = GBReplace(@"prefix $$\tsuffix");
+					// execute
+					[task processCrossRefsInString:text toBuilder:builder];
+					// verify
+					builder should equal(GBReplace(@"prefix [$$](%%)\tsuffix"));
+				});
+			});
+			
+			it(@"should detect all references", ^{
+				runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+					// setup
+					NSString *text = GBReplace(@"prefix $$ and $$ end");
+					// execute
+					[task processCrossRefsInString:text toBuilder:builder];
+					// verify
+					builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
+				});
+			});
 		});
 		
 		describe(@"classes:", ^{
@@ -206,6 +228,17 @@ describe(@"recognized cross references:", ^{
 				[[SpecHelper specHelper] sharedExampleContext][@"path"] = @"$PROTOCOLS/MyProtocol.$EXT";
 			});
 			itShouldBehaveLike(@"examples");
+		});
+		
+		it(@"should detect mixed cases", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = @"MyClass MyClass() MyClass(MyCategory) MyProtocol";
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(@"[MyClass]($CLASSES/MyClass.$EXT) [MyClass()]($CATEGORIES/MyClass.$EXT) [MyClass(MyCategory)]($CATEGORIES/MyClass(MyCategory).$EXT) [MyProtocol]($PROTOCOLS/MyProtocol.$EXT)");
+			});
 		});
 	});
 });

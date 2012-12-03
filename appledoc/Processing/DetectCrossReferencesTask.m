@@ -86,6 +86,7 @@
 			[builder appendString:[bself stringForCrossRefTo:object description:word]];
 			return;
 		}
+		[builder appendString:word];
 	} match:^(NSTextCheckingResult *match) {
 		[builder appendString:[match gb_stringAtIndex:0 in:string]];
 	}];
