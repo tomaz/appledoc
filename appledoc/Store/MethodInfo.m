@@ -61,6 +61,11 @@
 	return self.methodSelector;
 }
 
+- (NSString *)objectCrossRefPathTemplate {
+	NSString *prefix = (self.methodType == GBStoreTypes.classMethod) ? @"+" : @"-";
+	return [NSString stringWithFormat:@"#%@%@", prefix, self.methodSelector];
+}
+
 - (BOOL)isClassMethod {
 	return (self.methodType == GBStoreTypes.classMethod);
 }

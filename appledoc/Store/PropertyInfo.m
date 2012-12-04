@@ -41,6 +41,10 @@
 	return self.propertyName;
 }
 
+- (NSString *)objectCrossRefPathTemplate {
+	return [NSString stringWithFormat:@"#%@", self.propertyName];
+}
+
 #pragma mark - Properties
 
 - (TypeInfo *)propertyType {

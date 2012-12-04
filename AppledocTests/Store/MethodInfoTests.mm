@@ -39,7 +39,7 @@ describe(@"lazy accessors:", ^{
 	});
 });
 
-describe(@"selector & unique ID:", ^{
+describe(@"selector, unique ID & cross reference template:", ^{
 	it(@"should handle single argument", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
@@ -48,6 +48,7 @@ describe(@"selector & unique ID:", ^{
 			[info.methodArguments addObject:argument];
 			// execute & verify
 			info.uniqueObjectID should equal(@"method");
+			info.objectCrossRefPathTemplate should equal(@"#-method");
 		});
 	});
 
@@ -60,6 +61,7 @@ describe(@"selector & unique ID:", ^{
 			[info.methodArguments addObject:argument];
 			// execute & verify
 			info.uniqueObjectID should equal(@"method:");
+			info.objectCrossRefPathTemplate should equal(@"#-method:");
 		});
 	});
 	
@@ -76,6 +78,7 @@ describe(@"selector & unique ID:", ^{
 			[info.methodArguments addObject:argument2];
 			// execute & verify
 			info.uniqueObjectID should equal(@"method:withArg:");
+			info.objectCrossRefPathTemplate should equal(@"#-method:withArg:");
 		});
 	});
 });

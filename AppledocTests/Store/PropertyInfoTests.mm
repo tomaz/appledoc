@@ -75,13 +75,14 @@ describe(@"getter and setter selectors:", ^{
 	});
 });
 
-describe(@"unique ID:", ^{
+describe(@"unique ID & cross reference template:", ^{
 	it(@"should return property name", ^{
 		runWithPropertyInfo(^(PropertyInfo *info) {
 			// setup
 			info.propertyName = @"name";
 			// execute & verify
 			info.uniqueObjectID should equal(@"name");
+			info.objectCrossRefPathTemplate should equal(@"#name");
 		});
 	});
 });
