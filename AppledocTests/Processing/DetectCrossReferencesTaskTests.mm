@@ -52,11 +52,11 @@ static void runWithDefaultObjects(void(^handler)(DetectCrossReferencesTask *task
 		
 		// Setup remote members cache.
 		NSDictionary *members = @{
-			@"+[MyClass method:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#+method:"),
-			@"+[MyClass class:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#+class:"),
-			@"-[MyClass method:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#-method:"),
-			@"-[MyClass instance:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#-instance:"),
-			@"[MyClass property]":mockObject([PropertyInfo class], @"", @"$CLASSES/MyClass.$EXT#property")
+			@"+[MyClass method:]":mockObject([MethodInfo class], @"", @"#+method:"),
+			@"+[MyClass class:]":mockObject([MethodInfo class], @"", @"#+class:"),
+			@"-[MyClass method:]":mockObject([MethodInfo class], @"", @"#-method:"),
+			@"-[MyClass instance:]":mockObject([MethodInfo class], @"", @"#-instance:"),
+			@"[MyClass property]":mockObject([PropertyInfo class], @"", @"#property")
 		};
 		[given([store memberObjectsCache]) willReturn:members];
 

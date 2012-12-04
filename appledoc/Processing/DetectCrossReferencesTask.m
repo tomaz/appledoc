@@ -104,6 +104,7 @@
 - (void)processAppledocCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
 	// Finds all appledoc cross references in given string. It works by splitting the work into first finding remote member cross refs, and finding inline cross refs in remaining string.
 	__weak DetectCrossReferencesTask *bself = self;
+	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
 	NSDictionary *remoteMembersCache = self.store.memberObjectsCache;
 	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
@@ -122,7 +123,9 @@
 		// If found, convert it to cross reference.
 		if (object) {
 			LogDebug(@"Matched cross reference '%@'.", description);
-			[builder appendString:[bself stringForCrossRefTo:object description:description]];
+			InterfaceInfoBase *interface = topLevelObjectsCache[objectName];
+			NSString *format = [NSString stringWithFormat:@"%@%%@", interface.objectCrossRefPathTemplate];
+			[builder appendString:[bself stringForCrossRefTo:object description:description format:format]];
 			return;
 		}
 		
@@ -150,7 +153,7 @@
 		// If found, convert it to cross reference.
 		if (object) {
 			LogDebug(@"Matched cross reference '%@'.", object.uniqueObjectID);
-			[builder appendString:[bself stringForCrossRefTo:object description:word]];
+			[builder appendString:[bself stringForCrossRefTo:object description:word format:@"%@"]];
 			return;
 		}
 		
@@ -197,8 +200,10 @@
 	return cache[instanceKey];
 }
 
-- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description {
-	return [NSString stringWithFormat:@"[%@](%@)", description, object.objectCrossRefPathTemplate];
+- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description format:(NSString *)format {
+	// Prepares Markdown link to the given object using the given description and link format.
+	NSString *link = [NSString stringWithFormat:format, object.objectCrossRefPathTemplate];
+	return [NSString stringWithFormat:@"[%@](%@)", description, link];
 }
 
 @end
