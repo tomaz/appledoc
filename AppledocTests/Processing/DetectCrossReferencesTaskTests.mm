@@ -112,9 +112,9 @@ describe(@"local members cache:", ^{
 	__block id property;
 	
 	beforeEach(^{
-		classMethod = mockObject([MethodInfo class], @"+method:", @"#+method:");
-		instanceMethod = mockObject([MethodInfo class], @"-method:", @"#-method:");
-		property = mockObject([PropertyInfo class], @"property", @"#property");
+		classMethod = mockObject([MethodInfo class], @"method:", @"+method:");
+		instanceMethod = mockObject([MethodInfo class], @"method:", @"-method:");
+		property = mockObject([PropertyInfo class], @"property", @"property");
 		[given([property propertyGetterSelector]) willReturn:@"isProperty"];
 		[given([property propertySetterSelector]) willReturn:@"setProperty:"];
 		interfaceInfo = mock([InterfaceInfoBase class]);

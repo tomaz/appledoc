@@ -44,9 +44,9 @@
 - (NSMutableDictionary *)localMembersCache {
 	if (_localMembersCache) return _localMembersCache;
 	NSDictionary *cache = [ObjectsCacher cacheMembersFromInterface:self.processingContext classMethod:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
-		return obj.uniqueObjectID;
+		return [NSString stringWithFormat:@"+%@", obj.uniqueObjectID];
 	} instanceMethod:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
-		return obj.uniqueObjectID;
+		return [NSString stringWithFormat:@"-%@", obj.uniqueObjectID];
 	} property:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
 		PropertyInfo *property = (PropertyInfo *)obj;
 		return @[
