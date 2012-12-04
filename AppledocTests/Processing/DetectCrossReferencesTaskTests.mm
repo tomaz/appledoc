@@ -251,6 +251,17 @@ describe(@"recognized cross references:", ^{
 			});
 		});
 		
+		it(@"should detect single char suffix", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"$$ ");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@"[$$](%%) "));
+			});
+		});
+		
 		it(@"should detect inside sentence", ^{
 			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
 				// setup

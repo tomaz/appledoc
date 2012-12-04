@@ -176,7 +176,7 @@
 		matchBlock(match);
 		searchRange = [match gb_remainingRangeIn:string];
 	}];
-	if (searchRange.location < string.length - 1) {
+	if (searchRange.location < string.length) {
 		NSString *remainingString = [string substringWithRange:searchRange];
 		prefixBlock(remainingString);
 	}
