@@ -21,6 +21,7 @@ typedef id(^GBMemberCacheBlock)(InterfaceInfoBase *interface, ObjectInfoBase *ob
 
 + (NSDictionary *)cacheTopLevelObjectsFromStore:(Store *)store interface:(GBCacheBlock)block;
 + (NSDictionary *)cacheMembersFromStore:(Store *)store classMethod:(GBMemberCacheBlock)classBlock instanceMethod:(GBMemberCacheBlock)instanceBlock property:(GBMemberCacheBlock)propertyBlock;
-+ (NSDictionary *)cacheMembersFromInterface:(InterfaceInfoBase *)store classMethod:(GBMemberCacheBlock)classBlock instanceMethod:(GBMemberCacheBlock)instanceBlock property:(GBMemberCacheBlock)propertyBlock;
++ (NSDictionary *)cacheMembersFromInterface:(InterfaceInfoBase *)interface classMethod:(GBMemberCacheBlock)classBlock instanceMethod:(GBMemberCacheBlock)instanceBlock property:(GBMemberCacheBlock)propertyBlock;
++ (NSDictionary *)cacheMembersFromInterface:(InterfaceInfoBase *)interface member:(GBMemberCacheBlock)block;
 
 @end

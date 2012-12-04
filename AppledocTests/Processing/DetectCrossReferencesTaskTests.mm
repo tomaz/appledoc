@@ -31,8 +31,9 @@ static void runWithBuilder(void(^handler)(DetectCrossReferencesTask *task, id bu
 	[task release];
 }
 
-static id mockObject(Class t, NSString *c) {
+static id mockObject(Class t, NSString *u, NSString *c) {
 	id result = mock(t);
+	[given([result uniqueObjectID]) willReturn:u];
 	[given([result objectCrossRefPathTemplate]) willReturn:c];
 	return result;
 }
@@ -41,31 +42,31 @@ static void runWithDefaultObjects(void(^handler)(DetectCrossReferencesTask *task
 	runWithBuilder(^(DetectCrossReferencesTask *task, id builder) {
 		// Setup top level objects cache.
 		NSDictionary *toplevel = @{
-			@"MyClass":mockObject([InterfaceInfoBase class], @"$CLASSES/MyClass.$EXT"),
-			@"MyClass()":mockObject([InterfaceInfoBase class], @"$CATEGORIES/MyClass.$EXT"),
-			@"MyClass(MyCategory)":mockObject([InterfaceInfoBase class], @"$CATEGORIES/MyClass(MyCategory).$EXT"),
-			@"MyProtocol":mockObject([InterfaceInfoBase class], @"$PROTOCOLS/MyProtocol.$EXT")
+			@"MyClass":mockObject([InterfaceInfoBase class], @"", @"$CLASSES/MyClass.$EXT"),
+			@"MyClass()":mockObject([InterfaceInfoBase class], @"", @"$CATEGORIES/MyClass.$EXT"),
+			@"MyClass(MyCategory)":mockObject([InterfaceInfoBase class], @"", @"$CATEGORIES/MyClass(MyCategory).$EXT"),
+			@"MyProtocol":mockObject([InterfaceInfoBase class], @"", @"$PROTOCOLS/MyProtocol.$EXT")
 		};
 		id store = mock([Store class]);
 		[given([store topLevelObjectsCache]) willReturn:toplevel];
 		
 		// Setup remote members cache.
 		NSDictionary *members = @{
-			@"+[MyClass method:]":mockObject([MethodInfo class], @"$CLASSES/MyClass.$EXT#+method:"),
-			@"+[MyClass class:]":mockObject([MethodInfo class], @"$CLASSES/MyClass.$EXT#+class:"),
-			@"-[MyClass method:]":mockObject([MethodInfo class], @"$CLASSES/MyClass.$EXT#-method:"),
-			@"-[MyClass instance:]":mockObject([MethodInfo class], @"$CLASSES/MyClass.$EXT#-instance:"),
-			@"[MyClass property]":mockObject([PropertyInfo class], @"$CLASSES/MyClass.$EXT#property")
+			@"+[MyClass method:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#+method:"),
+			@"+[MyClass class:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#+class:"),
+			@"-[MyClass method:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#-method:"),
+			@"-[MyClass instance:]":mockObject([MethodInfo class], @"", @"$CLASSES/MyClass.$EXT#-instance:"),
+			@"[MyClass property]":mockObject([PropertyInfo class], @"", @"$CLASSES/MyClass.$EXT#property")
 		};
 		[given([store memberObjectsCache]) willReturn:members];
 
 		// Setup local members cache.
 		NSDictionary *locals = @{
-			@"+method:":mockObject([MethodInfo class], @"#+method:"),
-			@"+class:":mockObject([MethodInfo class], @"#+class:"),
-			@"-method:":mockObject([MethodInfo class], @"#-method:"),
-			@"-instance:":mockObject([MethodInfo class], @"#-instance:"),
-			@"property":mockObject([PropertyInfo class], @"#property")
+			@"+method:":mockObject([MethodInfo class], @"", @"#+method:"),
+			@"+class:":mockObject([MethodInfo class], @"", @"#+class:"),
+			@"-method:":mockObject([MethodInfo class], @"", @"#-method:"),
+			@"-instance:":mockObject([MethodInfo class], @"", @"#-instance:"),
+			@"property":mockObject([PropertyInfo class], @"", @"#property")
 		};
 		task.localMembersCache = locals;
 		
@@ -103,6 +104,53 @@ static id setupSection(id section, NSString *first ...) {
 #pragma mark -
 
 TEST_BEGIN(DetectCrossReferencesTaskTests)
+
+describe(@"local members cache:", ^{
+	__block id interfaceInfo;
+	__block id classMethod;
+	__block id instanceMethod;
+	__block id property;
+	
+	beforeEach(^{
+		classMethod = mockObject([MethodInfo class], @"+method:", @"#+method:");
+		instanceMethod = mockObject([MethodInfo class], @"-method:", @"#-method:");
+		property = mockObject([PropertyInfo class], @"property", @"#property");
+		interfaceInfo = mock([InterfaceInfoBase class]);
+		[given([interfaceInfo interfaceClassMethods]) willReturn:[@[classMethod] mutableCopy]];
+		[given([interfaceInfo interfaceInstanceMethods]) willReturn:[@[instanceMethod] mutableCopy]];
+		[given([interfaceInfo interfaceProperties]) willReturn:[@[property] mutableCopy]];
+	});
+	
+	it(@"should initialize cache on first use", ^{
+		runWithTask(^(DetectCrossReferencesTask *task, CommentInfo *comment) {
+			// setup
+			comment.commentAbstract = setupComponent(mock([CommentComponentInfo class]), @"method:");
+			task.processingContext = interfaceInfo;
+			// execute
+			[task processComment:comment];
+			// verify
+			task.localMembersCache should_not be_nil();
+			task.localMembersCache.count should equal(3);
+			task.localMembersCache[@"+method:"] should equal(classMethod);
+			task.localMembersCache[@"-method:"] should equal(instanceMethod);
+			task.localMembersCache[@"property"] should equal(property);
+		});
+	});
+
+	it(@"should re-initialize cache after changing context", ^{
+		runWithTask(^(DetectCrossReferencesTask *task, CommentInfo *comment) {
+			// setup - assign empty dictionary which will have to be reset when assigning context.
+			comment.commentAbstract = setupComponent(mock([CommentComponentInfo class]), @"method:");
+			task.localMembersCache = [@{} mutableCopy];
+			// execute
+			task.processingContext = interfaceInfo;
+			[task processComment:comment];
+			// verify
+			task.localMembersCache should_not be_nil();
+			task.localMembersCache.count should equal(3);
+		});
+	});
+});
 
 describe(@"comment components processing:", ^{
 	it(@"should process all components", ^{

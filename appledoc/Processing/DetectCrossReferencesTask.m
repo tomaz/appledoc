@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "Store.h"
+#import "ObjectsCacher.h"
 #import "DetectCrossReferencesTask.h"
 
 @interface DetectCrossReferencesTask ()
@@ -29,7 +30,7 @@
 	return GBResultOk;
 }
 
-#pragma mark - Overriden methods
+#pragma mark - Properties
 
 - (void)setProcessingContext:(ObjectInfoBase *)value {
 	// When context changes, we should reset local members cache.
@@ -38,6 +39,13 @@
 		self.localMembersCache = nil;
 	}
 	[super setProcessingContext:value];
+}
+
+- (NSMutableDictionary *)localMembersCache {
+	if (_localMembersCache) return _localMembersCache;
+	NSDictionary *cache = [ObjectsCacher cacheMembersFromInterface:self.processingContext member:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) { return obj.uniqueObjectID; }];
+	_localMembersCache = [cache mutableCopy];
+	return _localMembersCache;
 }
 
 #pragma mark - Comment components handling
