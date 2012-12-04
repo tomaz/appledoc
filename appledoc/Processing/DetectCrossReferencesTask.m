@@ -11,6 +11,12 @@
 #import "ObjectsCacher.h"
 #import "DetectCrossReferencesTask.h"
 
+typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
+	GBCrossRefOptionLinkGenerationPathOnly = 1 << 0,
+};
+
+#pragma mark -
+
 @interface DetectCrossReferencesTask ()
 @property (nonatomic, strong) NSMutableDictionary *localMembersCache;
 @end
@@ -94,21 +100,30 @@
 - (void)processCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
 	// Finds all regular Markdown links. For each, it processes preceeding string for appledoc cross refs, then checks if given Markdown link also contains path to one of known objects and parses it accordingly (note that in case no markdown link is found, the rest of the given string is processed). It then repeats until the end of string.
 	__weak DetectCrossReferencesTask *bself = self;
-	[self enumerateMatchesOf:nil in:string prefix:^(NSString *prefix) {
-		[bself processAppledocCrossRefsInString:prefix toBuilder:builder];
+	NSRegularExpression *expression = [NSRegularExpression gb_markdownLinkMatchingExpression];
+	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
+		[bself processAppledocCrossRefsInString:prefix toBuilder:builder options:0];
 	} match:^(NSTextCheckingResult *match) {
-		[builder appendString:[match gb_stringAtIndex:0 in:string]];
+		NSString *markdown = [match gb_stringAtIndex:0 in:string];
+		NSString *link = [match gb_stringAtIndex:1 in:string];
+		NSRange markdownRange = [match rangeAtIndex:0];
+		NSRange linkRange = [match rangeAtIndex:1];
+		NSRange prefixRange = NSMakeRange(markdownRange.location, linkRange.location - markdownRange.location);
+		NSRange suffixRange = NSMakeRange(linkRange.location + linkRange.length, markdownRange.length - linkRange.length - prefixRange.length);
+		[builder appendString:[string substringWithRange:prefixRange]];
+		[bself processAppledocCrossRefsInString:link toBuilder:builder options:GBCrossRefOptionLinkGenerationPathOnly];
+		[builder appendString:[string substringWithRange:suffixRange]];
 	}];
 }
 
-- (void)processAppledocCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
+- (void)processAppledocCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder options:(GBCrossRefOptions)options {
 	// Finds all appledoc cross references in given string. It works by splitting the work into first finding remote member cross refs, and finding inline cross refs in remaining string.
 	__weak DetectCrossReferencesTask *bself = self;
 	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
 	NSDictionary *remoteMembersCache = self.store.memberObjectsCache;
 	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
-		[bself processInlineCrossRefsInString:prefix toBuilder:builder];
+		[bself processInlineCrossRefsInString:prefix toBuilder:builder options:options];
 	} match:^(NSTextCheckingResult *match) {
 		// Get match data.
 		NSString *description = [match gb_stringAtIndex:0 in:string];
@@ -125,7 +140,7 @@
 			LogDebug(@"Matched cross reference '%@'.", description);
 			InterfaceInfoBase *interface = topLevelObjectsCache[objectName];
 			NSString *format = [NSString stringWithFormat:@"%@%%@", interface.objectCrossRefPathTemplate];
-			[builder appendString:[bself stringForCrossRefTo:object description:description format:format]];
+			[builder appendString:[bself stringForCrossRefTo:object description:description options:options format:format]];
 			return;
 		}
 		
@@ -134,7 +149,7 @@
 	}];
 }
 
-- (void)processInlineCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder {
+- (void)processInlineCrossRefsInString:(NSString *)string toBuilder:(NSMutableString *)builder options:(GBCrossRefOptions)options {
 	// Small optimization; if there's no registered object, no need to scan the string, just append it to builder and exit.
 	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
 	NSDictionary *localMembersCache = self.localMembersCache;
@@ -153,7 +168,7 @@
 		// If found, convert it to cross reference.
 		if (object) {
 			LogDebug(@"Matched cross reference '%@'.", object.uniqueObjectID);
-			[builder appendString:[bself stringForCrossRefTo:object description:word format:@"%@"]];
+			[builder appendString:[bself stringForCrossRefTo:object description:word options:options format:@"%@"]];
 			return;
 		}
 		
@@ -200,9 +215,10 @@
 	return cache[instanceKey];
 }
 
-- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description format:(NSString *)format {
+- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description options:(GBCrossRefOptions)options format:(NSString *)format {
 	// Prepares Markdown link to the given object using the given description and link format.
 	NSString *link = [NSString stringWithFormat:format, object.objectCrossRefPathTemplate];
+	if ((options & GBCrossRefOptionLinkGenerationPathOnly) > 0) return link;
 	return [NSString stringWithFormat:@"[%@](%@)", description, link];
 }
 

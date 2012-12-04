@@ -31,7 +31,11 @@
 }
 
 + (NSRegularExpression *)gb_remoteMemberMatchingExpression {
-	GBPattern(@"([+-]?)\\[([^\\s]+)[ \\t]+([^\\s\\]]+)\\]", 0);
+	GBPattern(@"([+-]?)\\[([^\\s]+)[ \\t]+([^\\s\\]]+)\\]", 0)
+}
+
++ (NSRegularExpression *)gb_markdownLinkMatchingExpression {
+	GBPattern(@"\\[[^]]+\\]\\(([^\"]+)(?:\\s\"[^\"]*\")?\\)", 0)
 }
 
 + (NSRegularExpression *)gb_paramMatchingExpression {

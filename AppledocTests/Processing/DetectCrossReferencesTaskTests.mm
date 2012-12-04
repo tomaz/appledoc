@@ -294,6 +294,28 @@ describe(@"recognized cross references:", ^{
 				builder should equal(GBReplace(@"prefix [$$](%%) and [$$](%%) end"));
 			});
 		});
+		
+		it(@"should detect inside markdown link", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"[desc]($$)");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@"[desc](%%)"));
+			});
+		});
+		
+		it(@"should detect inside markdown link with title", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@"[desc]($$ \"$$\")");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify - note that we don't replace inside title!
+				builder should equal(GBReplace(@"[desc](%% \"$$\")"));
+			});
+		});
 	});
 
 	describe(@"top level objects:", ^{
