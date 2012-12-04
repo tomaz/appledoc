@@ -511,6 +511,13 @@ static NSString *kGBArgHelp = @"help";
 #pragma mark Xcode, Global and project settings handling
 
 - (void)injectXcodeSettingsFromArguments:(NSArray *)arguments {
+
+    if([arguments count] == 1)
+    {
+      [self printHelp];
+      return;
+    }
+
     //check if even deal with a project
     NSString *path = [arguments objectAtIndex:1];
     if(![path.pathExtension isEqualToString:@"xcodeproj"])
