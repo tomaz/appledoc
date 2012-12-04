@@ -83,21 +83,21 @@
 - (ProcessorTask *)splitCommentToSectionsTask {
 	if (_splitCommentToSectionsTask) return _splitCommentToSectionsTask;
 	LogDebug(@"Initializing split comment to sections task due to first acces...");
-	_splitCommentToSectionsTask = [[SplitCommentToSectionsTask alloc] init];
+	_splitCommentToSectionsTask = [[SplitCommentToSectionsTask alloc] initWithStore:self.store settings:self.settings];
 	return _splitCommentToSectionsTask;
 }
 
 - (ProcessorTask *)registerCommentComponentsTask {
 	if (_registerCommentComponentsTask) return _registerCommentComponentsTask;
 	LogDebug(@"Initializing register comment components task due to first access...");
-	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] init];
+	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] initWithStore:self.store settings:self.settings];
 	return _registerCommentComponentsTask;
 }
 
 - (ProcessorTask *)detectCrossReferencesTask {
 	if (_detectCrossReferencesTask) return _detectCrossReferencesTask;
 	LogDebug(@"Initializing detect cross references task due to first access...");
-	_detectCrossReferencesTask = [[DetectCrossReferencesTask alloc] init];
+	_detectCrossReferencesTask = [[DetectCrossReferencesTask alloc] initWithStore:self.store settings:self.settings];
 	return _detectCrossReferencesTask;
 }
 

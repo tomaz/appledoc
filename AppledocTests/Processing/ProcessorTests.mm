@@ -20,6 +20,8 @@ static void runWithProcessor(void(^handler)(Processor *processor)) {
 
 @interface Processor (UnitTestingPrivateAPI)
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)parent;
+@property (nonatomic, strong) Store *store;
+@property (nonatomic, strong) GBSettings *settings;
 @end
 
 #pragma mark -
@@ -27,13 +29,41 @@ static void runWithProcessor(void(^handler)(Processor *processor)) {
 TEST_BEGIN(ProcessorTests)
 
 describe(@"lazy accessors:", ^{
-	it(@"should initialize objects", ^{
-		runWithProcessor(^(Processor *processor) {
-			// execute & verify
-			processor.splitCommentToSectionsTask should_not be_nil();
-			processor.registerCommentComponentsTask should_not be_nil();
-			processor.detectCrossReferencesTask should_not be_nil();
+	sharedExamplesFor(@"tasks", ^(NSDictionary *info) {
+		it(@"should initialize task", ^{
+			runWithProcessor(^(Processor *processor) {
+				// setup
+				processor.store = mock([Store class]);
+				processor.settings = mock([GBSettings class]);
+				// execute
+				ProcessorTask *task = [processor valueForKey:info[@"task"]];
+				// verify
+				task should_not be_nil();
+				[task store] should equal(processor.store);
+				[task settings] should equal(processor.settings);
+			});
 		});
+	});
+	
+	describe(@"split comment to sections task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"splitCommentToSectionsTask";
+		});
+		itShouldBehaveLike(@"tasks");
+	});
+	
+	describe(@"register comment components task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"registerCommentComponentsTask";
+		});
+		itShouldBehaveLike(@"tasks");
+	});
+	
+	describe(@"detect cross references task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"detectCrossReferencesTask";
+		});
+		itShouldBehaveLike(@"tasks");
 	});
 });
 
