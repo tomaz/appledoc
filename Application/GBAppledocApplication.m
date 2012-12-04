@@ -814,6 +814,10 @@ static NSString *kGBArgHelp = @"help";
 - (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
 - (void)setWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = value; }
 - (void)setWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = value; }
+- (void)setWarnUndocumentedParam:(BOOL)value { self.settings.warnOnUndocumentedParam = value; }
+
+
+
 - (void)setWarnEmptyDescription:(BOOL)value { self.settings.warnOnEmptyDescription = value; }
 - (void)setWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = value; }
 - (void)setWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = value; }
@@ -822,6 +826,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
 - (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
 - (void)setNoWarnUndocumentedMember:(BOOL)value { self.settings.warnOnUndocumentedMember = !value; }
+- (void)setNoWarnUndocumentedParam:(BOOL)value { self.settings.warnOnUndocumentedParam = !value; }
+
 - (void)setNoWarnEmptyDescription:(BOOL)value { self.settings.warnOnEmptyDescription = !value; }
 - (void)setNoWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = !value; }
 - (void)setNoWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = !value; }
