@@ -27,7 +27,7 @@
 }
 
 + (NSRegularExpression *)gb_wordMatchingExpression {
-	GBPattern(@"\\s+", NSRegularExpressionAnchorsMatchLines)
+	GBPattern(@"[\\s.,;!?]+", 0)
 }
 
 + (NSRegularExpression *)gb_remoteMemberMatchingExpression {

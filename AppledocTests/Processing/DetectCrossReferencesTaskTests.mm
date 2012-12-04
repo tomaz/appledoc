@@ -273,6 +273,17 @@ describe(@"recognized cross references:", ^{
 			});
 		});
 		
+		it(@"should detect delimited with punctuation", ^{
+			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+				// setup
+				NSString *text = GBReplace(@",$$.$$;$$!$$?");
+				// execute
+				[task processCrossRefsInString:text toBuilder:builder];
+				// verify
+				builder should equal(GBReplace(@",[$$](%%).[$$](%%);[$$](%%)![$$](%%)?"));
+			});
+		});
+		
 		it(@"should detect all references", ^{
 			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
 				// setup
