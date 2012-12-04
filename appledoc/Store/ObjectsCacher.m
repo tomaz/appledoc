@@ -39,10 +39,6 @@
 	return result;
 }
 
-+ (NSDictionary *)cacheMembersFromInterface:(InterfaceInfoBase *)interface member:(GBMemberCacheBlock)block {
-	return [self cacheMembersFromInterface:interface classMethod:block instanceMethod:block property:block];
-}
-
 #pragma mark - Helper methods
 
 + (NSDictionary *)cacheMembersFromInterfaces:(NSArray *)interfaces classMethod:(GBMemberCacheBlock)classBlock instanceMethod:(GBMemberCacheBlock)instanceBlock property:(GBMemberCacheBlock)propertyBlock {

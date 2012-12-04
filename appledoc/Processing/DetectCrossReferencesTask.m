@@ -43,7 +43,18 @@
 
 - (NSMutableDictionary *)localMembersCache {
 	if (_localMembersCache) return _localMembersCache;
-	NSDictionary *cache = [ObjectsCacher cacheMembersFromInterface:self.processingContext member:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) { return obj.uniqueObjectID; }];
+	NSDictionary *cache = [ObjectsCacher cacheMembersFromInterface:self.processingContext classMethod:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
+		return obj.uniqueObjectID;
+	} instanceMethod:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
+		return obj.uniqueObjectID;
+	} property:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
+		PropertyInfo *property = (PropertyInfo *)obj;
+		return @[
+			property.uniqueObjectID,
+			[NSString stringWithFormat:@"-%@", property.propertyGetterSelector],
+			[NSString stringWithFormat:@"-%@", property.propertySetterSelector],
+		];
+	}];
 	_localMembersCache = [cache mutableCopy];
 	return _localMembersCache;
 }

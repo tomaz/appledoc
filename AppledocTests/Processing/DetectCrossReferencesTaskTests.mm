@@ -115,6 +115,8 @@ describe(@"local members cache:", ^{
 		classMethod = mockObject([MethodInfo class], @"+method:", @"#+method:");
 		instanceMethod = mockObject([MethodInfo class], @"-method:", @"#-method:");
 		property = mockObject([PropertyInfo class], @"property", @"#property");
+		[given([property propertyGetterSelector]) willReturn:@"isProperty"];
+		[given([property propertySetterSelector]) willReturn:@"setProperty:"];
 		interfaceInfo = mock([InterfaceInfoBase class]);
 		[given([interfaceInfo interfaceClassMethods]) willReturn:[@[classMethod] mutableCopy]];
 		[given([interfaceInfo interfaceInstanceMethods]) willReturn:[@[instanceMethod] mutableCopy]];
@@ -130,10 +132,12 @@ describe(@"local members cache:", ^{
 			[task processComment:comment];
 			// verify
 			task.localMembersCache should_not be_nil();
-			task.localMembersCache.count should equal(3);
+			task.localMembersCache.count should equal(5);
 			task.localMembersCache[@"+method:"] should equal(classMethod);
 			task.localMembersCache[@"-method:"] should equal(instanceMethod);
 			task.localMembersCache[@"property"] should equal(property);
+			task.localMembersCache[@"-isProperty"] should equal(property);
+			task.localMembersCache[@"-setProperty:"] should equal(property);
 		});
 	});
 
@@ -147,7 +151,7 @@ describe(@"local members cache:", ^{
 			[task processComment:comment];
 			// verify
 			task.localMembersCache should_not be_nil();
-			task.localMembersCache.count should equal(3);
+			task.localMembersCache.count should equal(5);
 		});
 	});
 });
