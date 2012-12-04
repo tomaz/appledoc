@@ -56,9 +56,7 @@
 + (NSDictionary *)cacheTopLevelObjectsFromArray:(NSArray *)array block:(GBCacheBlock)block {
 	NSMutableDictionary *result = [@{} mutableCopy];
 	[array enumerateObjectsUsingBlock:^(InterfaceInfoBase *interface, NSUInteger idx, BOOL *stop) {
-		id key = block(interface);
-		if (!key) return;
-		result[key] = interface;
+		[self addKeysFromArray:block(interface) forObject:interface toCache:result];
 	}];
 	return result;
 }
@@ -66,11 +64,20 @@
 + (NSDictionary *)cacheMembersFromParent:(InterfaceInfoBase *)parent array:(NSArray *)array block:(GBMemberCacheBlock)block {
 	NSMutableDictionary *result = [@{} mutableCopy];
 	[array enumerateObjectsUsingBlock:^(ObjectInfoBase *obj, NSUInteger idx, BOOL *stop) {
-		id key = block(parent, obj);
-		if (!key) return;
-		result[key] = obj;
+		[self addKeysFromArray:block(parent, obj) forObject:obj toCache:result];
 	}];
 	return result;
+}
+
++ (void)addKeysFromArray:(id)keys forObject:(id)object toCache:(NSMutableDictionary *)cache {
+	if (!keys) return;
+	if ([keys isKindOfClass:[NSArray class]]) {
+		[keys enumerateObjectsUsingBlock:^(id key, NSUInteger idx, BOOL *stop) {
+			cache[key] = object;
+		}];
+	} else {
+		cache[keys] = object;
+	}
 }
 
 @end

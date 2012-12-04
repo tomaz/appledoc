@@ -163,7 +163,9 @@
 - (NSMutableDictionary *)topLevelObjectsCache {
 	// Don't use this until ALL objects are registered; it'll only create cache once, from current data!
 	if (_topLevelObjectsCache) return _topLevelObjectsCache;
-	NSDictionary *cache = [ObjectsCacher cacheTopLevelObjectsFromStore:self interface:^id(ObjectInfoBase *obj) { return obj.uniqueObjectID; }];
+	NSDictionary *cache = [ObjectsCacher cacheTopLevelObjectsFromStore:self interface:^id(ObjectInfoBase *obj) {
+		return obj.uniqueObjectID;
+	}];
 	_topLevelObjectsCache = [cache mutableCopy];
 	return _topLevelObjectsCache;
 }
@@ -175,7 +177,12 @@
 	} instanceMethod:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
 		return [NSString stringWithFormat:@"-[%@ %@]", interface.uniqueObjectID, obj.uniqueObjectID];
 	} property:^id(InterfaceInfoBase *interface, ObjectInfoBase *obj) {
-		return [NSString stringWithFormat:@"[%@ %@]", interface.uniqueObjectID, obj.uniqueObjectID];
+		PropertyInfo *property = (PropertyInfo *)obj;
+		return @[
+			[NSString stringWithFormat:@"[%@ %@]", interface.uniqueObjectID, property.uniqueObjectID],
+			[NSString stringWithFormat:@"-[%@ %@]", interface.uniqueObjectID, property.propertyGetterSelector],
+			[NSString stringWithFormat:@"-[%@ %@]", interface.uniqueObjectID, property.propertySetterSelector]
+		];
 	}];
 	_memberObjectsCache = [cache mutableCopy];
 	return _memberObjectsCache;

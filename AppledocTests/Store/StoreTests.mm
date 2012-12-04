@@ -1112,68 +1112,69 @@ describe(@"cache handling:", ^{
 	});
 	
 	describe(@"remote members:", ^{
+	#define GBStore ((Store *)info[@"store"])
+	#define GBReplace(t) [t gb_stringByReplacing:@{ @"$$":info[@"name"] }]
 		sharedExamplesFor(@"examples", ^(NSDictionary *info) {
+			__block MethodInfo *classMethod;
+			__block MethodInfo *instanceMethod;
+			__block PropertyInfo *property;
+			__block PropertyInfo *customProperty;
+			
 			beforeEach(^{
-				// initialize argument for method
-				MethodArgumentInfo *methodArgument = [[MethodArgumentInfo alloc] init];
-				methodArgument.argumentSelector = @"method";
-				methodArgument.argumentVariable = @"var";
-
-				// initialize method "+method:(int)var"
-				MethodInfo *classMethodInfo = [[MethodInfo alloc] init];
-				classMethodInfo.methodType = GBStoreTypes.classMethod;
-				[classMethodInfo.methodArguments addObject:methodArgument];
+				// initialize method "+method:"
+				classMethod = mock([MethodInfo class]);
+				[given([classMethod uniqueObjectID]) willReturn:@"method:"];
 				
-				// initialize method "-method:(int)var"
-				MethodInfo *instanceMethodInfo = [[MethodInfo alloc] init];
-				instanceMethodInfo.methodType = GBStoreTypes.instanceMethod;
-				[instanceMethodInfo.methodArguments addObject:methodArgument];
+				// initialize method "-method:"
+				instanceMethod = mock([MethodInfo class]);
+				[given([instanceMethod uniqueObjectID]) willReturn:@"method:"];
 				
 				// initialize property "property"
-				PropertyInfo *propertyInfo = [[PropertyInfo alloc] init];
-				propertyInfo.propertyName = @"property";
+				property = mock([PropertyInfo class]);
+				[given([property uniqueObjectID]) willReturn:@"property"];
+				[given([property propertyGetterSelector]) willReturn:@"property"];
+				[given([property propertySetterSelector]) willReturn:@"setProperty:"];
+				
+				// initialize property "value"
+				customProperty = mock([PropertyInfo class]);
+				[given([customProperty uniqueObjectID]) willReturn:@"value"];
+				[given([customProperty propertyGetterSelector]) willReturn:@"isValue"];
+				[given([customProperty propertySetterSelector]) willReturn:@"doSomething:"];
 				
 				// register method & property to interface
 				InterfaceInfoBase *interfaceInfo = info[@"object"];
-				[interfaceInfo.interfaceClassMethods addObject:classMethodInfo];
-				[interfaceInfo.interfaceInstanceMethods addObject:instanceMethodInfo];
-				[interfaceInfo.interfaceProperties addObject:propertyInfo];
+				[interfaceInfo.interfaceClassMethods addObject:classMethod];
+				[interfaceInfo.interfaceInstanceMethods addObject:instanceMethod];
+				[interfaceInfo.interfaceProperties addObject:property];
+				[interfaceInfo.interfaceProperties addObject:customProperty];
 				
 				// register interface to store
 				NSMutableArray *interfacesArray = info[@"interfaces"];
 				[interfacesArray addObject:interfaceInfo];
 			});
 			
-			it(@"should return class method", ^{
-				// setup
-				Store *store = info[@"store"];
-				NSString *name = [NSString stringWithFormat:@"+[%@ method:]", info[@"name"]];
-				// execute
-				MethodInfo *object = store.memberObjectsCache[name];
-				// verify
-				object should be_instance_of([MethodInfo class]);
-				object.methodType should equal(GBStoreTypes.classMethod);
+			it(@"should handle class method", ^{
+				// execute & verify
+				GBStore.memberObjectsCache[GBReplace(@"+[$$ method:]")] should equal(classMethod);
 			});
 			
-			it(@"should return instance method", ^{
-				// setup
-				Store *store = info[@"store"];
-				NSString *name = [NSString stringWithFormat:@"-[%@ method:]", info[@"name"]];
-				// execute
-				MethodInfo *object = store.memberObjectsCache[name];
-				// verify
-				object should be_instance_of([MethodInfo class]);
-				object.methodType should equal(GBStoreTypes.instanceMethod);
+			it(@"should handle instance method", ^{
+				// execute & verify
+				GBStore.memberObjectsCache[GBReplace(@"-[$$ method:]")] should equal(instanceMethod);
 			});
 			
-			it(@"should return property", ^{
-				// setup
-				Store *store = info[@"store"];
-				NSString *name = [NSString stringWithFormat:@"[%@ property]", info[@"name"]];
-				// execute
-				PropertyInfo *object = store.memberObjectsCache[name];
-				// verify
-				object should be_instance_of([PropertyInfo class]);
+			it(@"should handle property", ^{
+				// execute & verify
+				GBStore.memberObjectsCache[GBReplace(@"[$$ property]")] should equal(property);
+				GBStore.memberObjectsCache[GBReplace(@"-[$$ property]")] should equal(property);
+				GBStore.memberObjectsCache[GBReplace(@"-[$$ setProperty:]")] should equal(property);
+			});
+			
+			it(@"should handle custom property getters and setters", ^{
+				// execute & verify
+				GBStore.memberObjectsCache[GBReplace(@"[$$ value]")] should equal(customProperty);
+				GBStore.memberObjectsCache[GBReplace(@"-[$$ isValue]")] should equal(customProperty);
+				GBStore.memberObjectsCache[GBReplace(@"-[$$ doSomething:]")] should equal(customProperty);
 			});
 		});
 
