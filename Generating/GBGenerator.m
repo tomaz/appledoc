@@ -60,8 +60,9 @@
 	[self.outputGenerators addObject:[GBHTMLOutputGenerator generatorWithSettingsProvider:self.settings]];
 	if (!self.settings.createDocSet) return;
 	[self.outputGenerators addObject:[GBDocSetOutputGenerator generatorWithSettingsProvider:self.settings]];
-	if (!self.settings.installDocSet) return;
-	[self.outputGenerators addObject:[GBDocSetInstallGenerator generatorWithSettingsProvider:self.settings]];
+	if (self.settings.installDocSet) {
+        [self.outputGenerators addObject:[GBDocSetInstallGenerator generatorWithSettingsProvider:self.settings]];
+    }
 	if (!self.settings.publishDocSet) return;
 	[self.outputGenerators addObject:[GBDocSetPublishGenerator generatorWithSettingsProvider:self.settings]];
 }
