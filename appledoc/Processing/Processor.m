@@ -21,6 +21,7 @@
 - (NSInteger)runTask {
 	LogNormal(@"Processing...");
 	__block GBResult result = GBResultOk;
+	GB_PROCESS([self.mergeKnownObjectsTask runTask]);
 	GB_PROCESS([self processInterfaces:self.store.storeClasses]);
 	GB_PROCESS([self processInterfaces:self.store.storeExtensions]);
 	GB_PROCESS([self processInterfaces:self.store.storeCategories]);

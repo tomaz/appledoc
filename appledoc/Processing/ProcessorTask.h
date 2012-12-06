@@ -21,6 +21,8 @@
 
 - (id)initWithStore:(Store *)store settings:(GBSettings *)settings;
 
+- (NSInteger)runTask;
+
 @end
 
 #pragma mark -

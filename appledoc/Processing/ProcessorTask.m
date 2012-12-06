@@ -29,4 +29,10 @@
 	return self;
 }
 
+#pragma mark - Invoking task
+
+- (NSInteger)runTask {
+	return GBResultOk;
+}
+
 @end
