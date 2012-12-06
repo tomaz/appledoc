@@ -9,8 +9,6 @@
 #import "MarkdownParser.h"
 
 @class GBSettings;
-@class ObjectInfoBase;
-@class CommentInfo;
 @class Store;
 
 /** Helper base class for handling processor task.
@@ -23,8 +21,6 @@
 
 - (id)initWithStore:(Store *)store settings:(GBSettings *)settings;
 
-- (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)context;
-
 @end
 
 #pragma mark -
@@ -34,11 +30,6 @@
  This is sent internally by ProcessorTask and should not be used otherwise.
  */
 @interface ProcessorTask (Subclass)
-- (NSInteger)processComment:(CommentInfo *)comment;
-- (BOOL)isStringCodeBlock:(NSString *)string;
 @property (nonatomic, strong) Store *store;
 @property (nonatomic, strong) GBSettings *settings;
-@property (nonatomic, strong) ObjectInfoBase *processingObject;
-@property (nonatomic, strong) ObjectInfoBase *processingContext;
-@property (nonatomic, strong) MarkdownParser *markdownParser;
 @end

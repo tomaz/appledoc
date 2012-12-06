@@ -214,7 +214,7 @@ describe(@"processing comments:", ^{
 		comment = [[CommentInfo alloc] init];
 		context = mock([ObjectInfoBase class]);
 		object = mock([ObjectInfoBase class]);
-		componentsTask = mock([ProcessorTask class]);
+		componentsTask = mock([ProcessorCommentTask class]);
 	});
 	
 	it(@"should invoke split comment to sections task if comment given", ^{

@@ -125,6 +125,8 @@
 		73B6595F1588B7A900AE2314 /* CommentParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73B6595D1588B7A900AE2314 /* CommentParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73C0A83B166CD7EF00101C7F /* ObjectsCacher.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C0A83A166CD7EF00101C7F /* ObjectsCacher.m */; };
 		73C0A83C166CD7EF00101C7F /* ObjectsCacher.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C0A83A166CD7EF00101C7F /* ObjectsCacher.m */; };
+		73C903E116713F1500B7D14F /* ProcessorCommentTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C903E016713F1500B7D14F /* ProcessorCommentTask.m */; };
+		73C903E216713F1500B7D14F /* ProcessorCommentTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C903E016713F1500B7D14F /* ProcessorCommentTask.m */; };
 		73CDF8B815E9415E0046C8E1 /* ProcessorTaskTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D274B2150E05DA004D27F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D274B1150E05DA004D27F4 /* Foundation.framework */; };
 		73D274B5150E05DA004D27F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D274B4150E05DA004D27F4 /* main.m */; };
@@ -332,6 +334,8 @@
 		73B6595D1588B7A900AE2314 /* CommentParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; lineEnding = 0; path = CommentParserTests.mm; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		73C0A839166CD7EF00101C7F /* ObjectsCacher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectsCacher.h; sourceTree = "<group>"; };
 		73C0A83A166CD7EF00101C7F /* ObjectsCacher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectsCacher.m; sourceTree = "<group>"; };
+		73C903DF16713F1500B7D14F /* ProcessorCommentTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessorCommentTask.h; sourceTree = "<group>"; };
+		73C903E016713F1500B7D14F /* ProcessorCommentTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProcessorCommentTask.m; sourceTree = "<group>"; };
 		73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ProcessorTaskTests.mm; sourceTree = "<group>"; };
 		73D274AD150E05DA004D27F4 /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73D274B1150E05DA004D27F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -652,6 +656,8 @@
 				73A0268415D6DC830077D204 /* Processor.m */,
 				73A0268715D6E35F0077D204 /* ProcessorTask.h */,
 				73A0268815D6E35F0077D204 /* ProcessorTask.m */,
+				73C903DF16713F1500B7D14F /* ProcessorCommentTask.h */,
+				73C903E016713F1500B7D14F /* ProcessorCommentTask.m */,
 				73A3E48915D8288D00769863 /* SplitCommentToSectionsTask.h */,
 				73A3E48A15D8288D00769863 /* SplitCommentToSectionsTask.m */,
 				73D76C591660BBD900B611AB /* RegisterCommentComponentsTask.h */,
@@ -981,6 +987,7 @@
 				73D76C6A16613B5D00B611AB /* DetectCrossReferencesTask.m in Sources */,
 				73D76C6D16613C4700B611AB /* DetectCrossReferencesTaskTests.mm in Sources */,
 				73C0A83C166CD7EF00101C7F /* ObjectsCacher.m in Sources */,
+				73C903E216713F1500B7D14F /* ProcessorCommentTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1047,6 +1054,7 @@
 				73D76C5B1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */,
 				73D76C6916613B5D00B611AB /* DetectCrossReferencesTask.m in Sources */,
 				73C0A83B166CD7EF00101C7F /* ObjectsCacher.m in Sources */,
+				73C903E116713F1500B7D14F /* ProcessorCommentTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

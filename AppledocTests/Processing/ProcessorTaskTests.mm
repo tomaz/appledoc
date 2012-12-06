@@ -20,13 +20,4 @@ static void runWithTask(void(^handler)(ProcessorTask *task)) {
 
 TEST_BEGIN(ProcessorTaskTests)
 
-describe(@"lazy accessors:", ^{
-	it(@"should initialize objects", ^{
-		runWithTask(^(ProcessorTask *task) {
-			// execute & verify
-			task.markdownParser should_not be_nil();
-		});
-	});
-});
-
 TEST_END

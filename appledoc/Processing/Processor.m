@@ -19,34 +19,26 @@
 
 - (NSInteger)runTask {
 	LogNormal(@"Processing...");
-	__weak Processor *blockSelf = self;
 	__block GBResult result = GBResultOk;
-
-	LogDebug(@"Processing classes...");
-	[self.store.storeClasses enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
-		GB_PROCESS([blockSelf processInterface:info]);
-	}];
-	
-	LogDebug(@"Processing extensions...");
-	[self.store.storeExtensions enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
-		GB_PROCESS([blockSelf processInterface:info]);
-	}];
-	
-	LogDebug(@"Processing categories...");
-	[self.store.storeCategories enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
-		GB_PROCESS([blockSelf processInterface:info]);
-	}];
-	
-	LogDebug(@"Processing protocols...");
-	[self.store.storeProtocols enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
-		GB_PROCESS([blockSelf processInterface:info]);
-	}];
-	
+	GB_PROCESS([self processInterfaces:self.store.storeClasses]);
+	GB_PROCESS([self processInterfaces:self.store.storeExtensions]);
+	GB_PROCESS([self processInterfaces:self.store.storeCategories]);
+	GB_PROCESS([self processInterfaces:self.store.storeProtocols]);
 	LogDebug(@"Processing finished.");
 	return result;
 }
 
 #pragma mark - Processor helpers
+
+- (NSInteger)processInterfaces:(NSArray *)interfaces {
+	LogDebug(@"Processing %@...", interfaces.count);
+	__weak Processor *bself = self;
+	__block NSInteger result = GBResultOk;
+	[interfaces enumerateObjectsUsingBlock:^(InterfaceInfoBase *info, NSUInteger idx, BOOL *stop) {
+		GB_PROCESS([bself processInterface:info]);
+	}];
+	return result;
+}
 
 - (NSInteger)processInterface:(InterfaceInfoBase *)interface {
 	LogNormal(@"%@", interface);
@@ -80,21 +72,21 @@
 
 #pragma mark - Lazy loading properties
 
-- (ProcessorTask *)splitCommentToSectionsTask {
+- (ProcessorCommentTask *)splitCommentToSectionsTask {
 	if (_splitCommentToSectionsTask) return _splitCommentToSectionsTask;
 	LogDebug(@"Initializing split comment to sections task due to first acces...");
 	_splitCommentToSectionsTask = [[SplitCommentToSectionsTask alloc] initWithStore:self.store settings:self.settings];
 	return _splitCommentToSectionsTask;
 }
 
-- (ProcessorTask *)registerCommentComponentsTask {
+- (ProcessorCommentTask *)registerCommentComponentsTask {
 	if (_registerCommentComponentsTask) return _registerCommentComponentsTask;
 	LogDebug(@"Initializing register comment components task due to first access...");
 	_registerCommentComponentsTask = [[RegisterCommentComponentsTask alloc] initWithStore:self.store settings:self.settings];
 	return _registerCommentComponentsTask;
 }
 
-- (ProcessorTask *)detectCrossReferencesTask {
+- (ProcessorCommentTask *)detectCrossReferencesTask {
 	if (_detectCrossReferencesTask) return _detectCrossReferencesTask;
 	LogDebug(@"Initializing detect cross references task due to first access...");
 	_detectCrossReferencesTask = [[DetectCrossReferencesTask alloc] initWithStore:self.store settings:self.settings];
