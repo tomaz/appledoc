@@ -102,6 +102,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	__weak DetectCrossReferencesTask *bself = self;
 	NSRegularExpression *expression = [NSRegularExpression gb_markdownLinkMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
+		LogDebug(@"Appending '%@'...", [prefix gb_description]);
 		[bself processAppledocCrossRefsInString:prefix toBuilder:builder options:0];
 	} match:^(NSTextCheckingResult *match) {
 		NSString *markdown = [match gb_stringAtIndex:0 in:string];
@@ -110,6 +111,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		NSRange linkRange = [match rangeAtIndex:1];
 		NSRange prefixRange = NSMakeRange(markdownRange.location, linkRange.location - markdownRange.location);
 		NSRange suffixRange = NSMakeRange(linkRange.location + linkRange.length, markdownRange.length - linkRange.length - prefixRange.length);
+		LogDebug(@"Matched Markdown link '%@'...", markdown);
 		[builder appendString:[string substringWithRange:prefixRange]];
 		[bself processAppledocCrossRefsInString:link toBuilder:builder options:GBCrossRefOptionInsideMarkdownLink];
 		[builder appendString:[string substringWithRange:suffixRange]];
@@ -123,6 +125,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	NSDictionary *remoteMembersCache = self.store.memberObjectsCache;
 	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
+		LogDebug(@"Appending '%@'...", [prefix gb_description]);
 		[bself processInlineCrossRefsInString:prefix toBuilder:builder options:options];
 	} match:^(NSTextCheckingResult *match) {
 		// Get match data.
@@ -130,6 +133,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		NSString *prefix = [match gb_stringAtIndex:1 in:string];
 		NSString *objectName = [match gb_stringAtIndex:2 in:string];
 		NSString *memberName = [match gb_stringAtIndex:3 in:string];
+		LogDebug(@"Matched possible appledoc cross ref '%@'...", description);
 		
 		// Find remote member cross reference in cache. If no prefix is given also try class and instance method variants. Give class precedence...
 		NSString *key = [NSString stringWithFormat:@"%@[%@ %@]", prefix, objectName, memberName];
@@ -137,7 +141,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		
 		// If found, convert it to cross reference.
 		if (object) {
-			LogDebug(@"Matched cross reference '%@'.", description);
+			LogVerbose(@"Matched cross reference '%@'.", description);
 			InterfaceInfoBase *interface = topLevelObjectsCache[objectName];
 			NSString *format = [NSString stringWithFormat:@"%@%%@", interface.objectCrossRefPathTemplate];
 			[builder appendString:[bself stringForCrossRefTo:object description:description options:options format:format]];
@@ -154,6 +158,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
 	NSDictionary *localMembersCache = self.localMembersCache;
 	if (topLevelObjectsCache.count == 0 || localMembersCache.count == 0) {
+		LogDebug(@"Appending '%@'...", [string gb_description]);
 		[builder appendString:string];
 		return;
 	}
@@ -162,7 +167,9 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	NSRegularExpression *expression = [NSRegularExpression gb_wordMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *word) {
 		[builder appendString:word];
+		LogDebug(@"Appending '%@'...", [delimiter gb_description]);
 	} match:^(NSTextCheckingResult *match) {
+		LogDebug(@"Testing '%@' for cross ref to known objects...", [match gb_stringAtIndex:0 in:string]);
 		// Find cross referenced object.
 		NSString *word = [match gb_stringAtIndex:0 in:string];
 		ObjectInfoBase *object = topLevelObjectsCache[word];
@@ -170,8 +177,8 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		
 		// If found, convert it to cross reference.
 		if (object) {
-			LogDebug(@"Matched cross reference '%@'.", object.uniqueObjectID);
 			[builder appendString:[bself stringForCrossRefTo:object description:word options:options format:@"%@"]];
+			LogVerbose(@"Matched cross reference '%@'.", object.uniqueObjectID);
 			return;
 		}
 		
