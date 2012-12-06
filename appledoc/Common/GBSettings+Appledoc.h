@@ -35,6 +35,10 @@
 @property (nonatomic, strong) NSArray *ignoredPaths;
 @property (nonatomic, copy) NSString *templatesPath;
 
+#pragma mark - Comments
+
+@property (nonatomic, copy) NSString *crossRefsFormat;
+
 #pragma mark - Debugging aid
 
 @property (nonatomic, assign) BOOL printSettings;
@@ -62,6 +66,8 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *inputPaths;
 	__unsafe_unretained NSString *ignoredPaths;
 	__unsafe_unretained NSString *templatesPath;
+	
+	__unsafe_unretained NSString *crossRefsFormat;
 	
 	__unsafe_unretained NSString *printSettings;
 	__unsafe_unretained NSString *printVersion;

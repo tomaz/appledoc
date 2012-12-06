@@ -28,7 +28,7 @@ describe(@"initializer:", ^{
 	});
 });
 
-context(@"cmd line switches", ^{
+describe(@"cmd line switches", ^{
 	it(@"should work for project related settings", ^{
 		runWithSettings(^(GBSettings *settings) {
 			// execute
@@ -56,6 +56,15 @@ context(@"cmd line switches", ^{
 			settings.ignoredPaths.count should equal(1);
 			settings.ignoredPaths should contain(@"ignore");
 			settings.templatesPath should equal(@"template");
+		});
+	});
+	
+	it(@"should work for comment related settings", ^{
+		runWithSettings(^(GBSettings *settings) {
+			// execute
+			[settings setObject:@"crossrefs" forKey:GBOptions.crossRefsFormat];
+			// verify
+			settings.crossRefsFormat should equal(@"crossrefs");
 		});
 	});
 	

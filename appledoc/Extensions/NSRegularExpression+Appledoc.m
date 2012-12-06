@@ -27,7 +27,7 @@
 }
 
 + (NSRegularExpression *)gb_wordMatchingExpression {
-	GBPattern(@"[\\s.,;!?]+", 0)
+	GBPattern(@"([^\\s.,;!?@#$%^&*`'\"<>]+)", 0)
 }
 
 + (NSRegularExpression *)gb_remoteMemberMatchingExpression {
@@ -56,6 +56,10 @@
 
 + (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression {
 	GBPattern(@"^(@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
+}
+
++ (NSRegularExpression *)gb_crossRefOutputFormatMatchingExpression {
+	GBPattern(@":/(.*)/", 0);
 }
 
 #pragma mark - First match handling
