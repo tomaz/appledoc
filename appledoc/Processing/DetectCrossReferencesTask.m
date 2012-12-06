@@ -12,7 +12,7 @@
 #import "DetectCrossReferencesTask.h"
 
 typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
-	GBCrossRefOptionLinkGenerationPathOnly = 1 << 0,
+	GBCrossRefOptionInsideMarkdownLink = 1 << 0,
 };
 
 #pragma mark -
@@ -111,7 +111,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		NSRange prefixRange = NSMakeRange(markdownRange.location, linkRange.location - markdownRange.location);
 		NSRange suffixRange = NSMakeRange(linkRange.location + linkRange.length, markdownRange.length - linkRange.length - prefixRange.length);
 		[builder appendString:[string substringWithRange:prefixRange]];
-		[bself processAppledocCrossRefsInString:link toBuilder:builder options:GBCrossRefOptionLinkGenerationPathOnly];
+		[bself processAppledocCrossRefsInString:link toBuilder:builder options:GBCrossRefOptionInsideMarkdownLink];
 		[builder appendString:[string substringWithRange:suffixRange]];
 	}];
 }
@@ -161,7 +161,10 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	__weak DetectCrossReferencesTask *bself = self;
 	NSRegularExpression *expression = [NSRegularExpression gb_wordMatchingExpression];
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *word) {
+		[builder appendString:word];
+	} match:^(NSTextCheckingResult *match) {
 		// Find cross referenced object.
+		NSString *word = [match gb_stringAtIndex:0 in:string];
 		ObjectInfoBase *object = topLevelObjectsCache[word];
 		if (!object) object = [bself memberWithKey:word fromCache:localMembersCache];
 		
@@ -174,9 +177,6 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		
 		// If not found, just append the word plain as it is.
 		[builder appendString:word];
-	} match:^(NSTextCheckingResult *match) {
-		// Append matched whitespace.
-		[builder appendString:[match gb_stringAtIndex:0 in:string]];
 	}];
 }
 
@@ -218,7 +218,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 - (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description options:(GBCrossRefOptions)options format:(NSString *)format {
 	// Prepares Markdown link to the given object using the given description and link format.
 	NSString *link = [NSString stringWithFormat:format, object.objectCrossRefPathTemplate];
-	if ((options & GBCrossRefOptionLinkGenerationPathOnly) > 0) return link;
+	if ((options & GBCrossRefOptionInsideMarkdownLink) > 0) return link;
 	return [NSString stringWithFormat:@"[%@](%@)", description, link];
 }
 
