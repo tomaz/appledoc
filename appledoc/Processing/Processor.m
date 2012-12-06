@@ -8,6 +8,7 @@
 
 #import "Objects.h"
 #import "Store.h"
+#import "MergeKnownObjectsTask.h"
 #import "SplitCommentToSectionsTask.h"
 #import "RegisterCommentComponentsTask.h"
 #import "DetectCrossReferencesTask.h"
@@ -71,6 +72,13 @@
 }
 
 #pragma mark - Lazy loading properties
+
+- (ProcessorTask *)mergeKnownObjectsTask {
+	if (_mergeKnownObjectsTask) return _mergeKnownObjectsTask;
+	LogDebug(@"Initializing merge known objects task due to first access...");
+	_mergeKnownObjectsTask = [[MergeKnownObjectsTask alloc] initWithStore:self.store settings:self.settings];
+	return _mergeKnownObjectsTask;
+}
 
 - (ProcessorCommentTask *)splitCommentToSectionsTask {
 	if (_splitCommentToSectionsTask) return _splitCommentToSectionsTask;

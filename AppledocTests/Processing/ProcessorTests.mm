@@ -45,6 +45,13 @@ describe(@"lazy accessors:", ^{
 		});
 	});
 	
+	describe(@"merge known objects task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"mergeKnownObjectsTask";
+		});
+		itShouldBehaveLike(@"tasks");
+	});
+	
 	describe(@"split comment to sections task:", ^{
 		beforeEach(^{
 			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"splitCommentToSectionsTask";
