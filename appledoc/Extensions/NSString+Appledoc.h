@@ -20,6 +20,7 @@
 - (NSString *)gb_stringByTrimmingWhitespaceAndNewLine;
 - (NSUInteger)gb_indexOfString:(NSString *)string;
 - (NSRange)gb_range;
+- (BOOL)gb_contains:(NSString *)string;
 - (BOOL)gb_stringContainsOnlyWhitespace;
 - (BOOL)gb_stringContainsOnlyCharactersFromSet:(NSCharacterSet *)set;
 

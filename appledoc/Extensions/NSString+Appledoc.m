@@ -85,6 +85,10 @@
 	return NSMakeRange(0, self.length);
 }
 
+- (BOOL)gb_contains:(NSString *)string {
+	return ([self rangeOfString:string].location != NSNotFound);
+}
+
 - (BOOL)gb_stringContainsOnlyWhitespace {
 	return [self gb_stringContainsOnlyCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 }
