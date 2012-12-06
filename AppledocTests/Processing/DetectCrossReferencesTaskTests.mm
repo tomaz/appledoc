@@ -276,11 +276,11 @@ describe(@"recognized cross references:", ^{
 		it(@"should detect delimited with punctuation", ^{
 			runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
 				// setup
-				NSString *text = GBReplace(@",$$.$$;$$!$$?");
+				NSString *text = GBReplace(@",$$.$$;$$!$$?$$'$$`$$\"$$#$$%$$^$$&$$*$$@$$<$$>");
 				// execute
 				[task processCrossRefsInString:text toBuilder:builder];
 				// verify
-				builder should equal(GBReplace(@",[$$](%%).[$$](%%);[$$](%%)![$$](%%)?"));
+				builder should equal(GBReplace(@",[$$](%%).[$$](%%);[$$](%%)![$$](%%)?[$$](%%)'[$$](%%)`[$$](%%)\"[$$](%%)#[$$](%%)%[$$](%%)^[$$](%%)&[$$](%%)*[$$](%%)@[$$](%%)<[$$](%%)>"));
 			});
 		});
 		
@@ -526,6 +526,66 @@ describe(@"recognized cross references:", ^{
 				// verify
 				builder should equal(@"[method:](#+method:) [-method:](#-method:) [class:](#+class:) [instance:](#-instance:) [property](#property)");
 			});
+		});
+	});
+});
+
+describe(@"different formats:", ^{
+	__block id settings;
+	
+	beforeEach(^{
+		settings = mock([GBSettings class]);
+	});
+	
+	it(@"should work with plain format", ^{
+		runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+			// setup
+			NSString *text = @"MyClass <MyClass>";
+			[given([settings crossRefsFormat]) willReturn:@"plain"];
+			task.settings = settings;
+			// execute
+			[task processCrossRefsInString:text toBuilder:builder];
+			// verify
+			builder should equal(@"[MyClass]($CLASSES/MyClass.$EXT) <[MyClass]($CLASSES/MyClass.$EXT)>");
+		});
+	});
+
+	it(@"should work with explicit format", ^{
+		runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+			// setup
+			NSString *text = @"MyClass <MyClass>";
+			[given([settings crossRefsFormat]) willReturn:@"explicit"];
+			task.settings = settings;
+			// execute
+			[task processCrossRefsInString:text toBuilder:builder];
+			// verify
+			builder should equal(@"MyClass [MyClass]($CLASSES/MyClass.$EXT)");
+		});
+	});
+	
+	it(@"should work with code span format", ^{
+		runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+			// setup
+			NSString *text = @"MyClass `MyClass`";
+			[given([settings crossRefsFormat]) willReturn:@"codespan"];
+			task.settings = settings;
+			// execute
+			[task processCrossRefsInString:text toBuilder:builder];
+			// verify
+			builder should equal(@"MyClass [`MyClass`]($CLASSES/MyClass.$EXT)");
+		});
+	});
+	
+	it(@"should work with custom format", ^{
+		runWithDefaultObjects(^(DetectCrossReferencesTask *task, id store, id builder) {
+			// setup
+			NSString *text = @"MyClass #MyClass#";
+			[given([settings crossRefsFormat]) willReturn:@"#%@#"];
+			task.settings = settings;
+			// execute
+			[task processCrossRefsInString:text toBuilder:builder];
+			// verify
+			builder should equal(@"MyClass [MyClass]($CLASSES/MyClass.$EXT)");
 		});
 	});
 });
