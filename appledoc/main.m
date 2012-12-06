@@ -28,6 +28,9 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		{ 't',	GBOptions.templatesPath,			@"Template files path",											GBValueRequired },
 		{ 'i',	GBOptions.ignoredPaths,				@"[a] Ignore given path",										GBValueRequired },
 		
+		{ 0,	nil,								@"COMMENTS",													GBOptionSeparator },
+		{ 0,	GBOptions.crossRefsFormat,			@"Cross references format",										GBValueRequired },
+		
 		{ 0,	nil,								@"LOGGING",														GBOptionSeparator },
 		{ 0,	GBOptions.loggingLevel,				@"Log verbosity",												GBValueOptional },
 		{ 0,	GBOptions.loggingFormat,			@"Log format (0-3)",											GBValueRequired },

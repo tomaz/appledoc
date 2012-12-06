@@ -27,6 +27,7 @@
 
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
+	self.crossRefsFormat = @"plain";
 	self.loggingFormat = 0;
 	self.loggingCommonEnabled = YES;
 	self.loggingStoreEnabled = NO;

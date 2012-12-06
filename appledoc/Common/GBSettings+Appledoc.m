@@ -34,6 +34,10 @@ GB_SYNTHESIZE_OBJECT(NSArray *, inputPaths, setInputPaths, GBOptions.inputPaths)
 GB_SYNTHESIZE_OBJECT(NSArray *, ignoredPaths, setIgnoredPaths, GBOptions.ignoredPaths)
 GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templatesPath)
 
+#pragma mark - Comments
+
+GB_SYNTHESIZE_COPY(NSString *, crossRefsFormat, setCrossRefsFormat, GBOptions.crossRefsFormat)
+
 #pragma mark - Debugging aid
 
 GB_SYNTHESIZE_BOOL(printSettings, setPrintSettings, GBOptions.printSettings)
@@ -61,6 +65,8 @@ const struct GBOptions GBOptions = {
 	.inputPaths = @"input",
 	.templatesPath = @"templates",
 	.ignoredPaths = @"ignore",
+	
+	.crossRefsFormat = @"crossrefs",
 	
 	.printSettings = @"print-settings",
 	.printVersion = @"version",
