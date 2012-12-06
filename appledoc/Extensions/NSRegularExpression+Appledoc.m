@@ -58,6 +58,10 @@
 	GBPattern(@"^(@param|@exception|@return)", NSRegularExpressionAnchorsMatchLines)
 }
 
++ (NSRegularExpression *)gb_crossRefOutputFormatMatchingExpression {
+	GBPattern(@":/(.*)/", 0);
+}
+
 #pragma mark - First match handling
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock {

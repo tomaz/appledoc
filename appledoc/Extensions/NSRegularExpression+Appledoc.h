@@ -22,6 +22,7 @@ typedef void(^GBRegexAllMatchBlock)(NSTextCheckingResult *match, NSUInteger idx,
 + (NSRegularExpression *)gb_returnMatchingExpression; // @return
 + (NSRegularExpression *)gb_styledSectionDelimiterMatchingExpression; // @warning|@bug
 + (NSRegularExpression *)gb_methodSectionDelimiterMatchingExpression; // @param|@exception|@return
++ (NSRegularExpression *)gb_crossRefOutputFormatMatchingExpression; // matching output format from given --crossrefs string.
 
 - (BOOL)gb_firstMatchIn:(NSString *)string match:(GBRegexMatchBlock)matchBlock;
 - (BOOL)gb_firstMatchIn:(NSString *)string options:(NSRegularExpressionOptions)options match:(GBRegexMatchBlock)matchBlock;

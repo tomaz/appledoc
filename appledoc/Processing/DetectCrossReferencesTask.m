@@ -19,6 +19,9 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 
 @interface DetectCrossReferencesTask ()
 @property (nonatomic, strong) NSMutableDictionary *localMembersCache;
+@property (nonatomic, strong) NSRegularExpression *remoteMemberCrossRefMatchingExpression;
+@property (nonatomic, strong) NSRegularExpression *inlineCrossRefMatchingExpression;
+@property (nonatomic, strong) NSString *inlineCrossRefOutputFormat;
 @end
 
 #pragma mark -
@@ -123,7 +126,7 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	__weak DetectCrossReferencesTask *bself = self;
 	NSDictionary *topLevelObjectsCache = self.store.topLevelObjectsCache;
 	NSDictionary *remoteMembersCache = self.store.memberObjectsCache;
-	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
+	NSRegularExpression *expression = self.remoteMemberCrossRefMatchingExpression;
 	[self enumerateMatchesOf:expression in:string prefix:^(NSString *prefix) {
 		LogDebug(@"Appending '%@'...", [prefix gb_description]);
 		[bself processInlineCrossRefsInString:prefix toBuilder:builder options:options];
@@ -143,8 +146,8 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 		if (object) {
 			LogVerbose(@"Matched cross reference '%@'.", description);
 			InterfaceInfoBase *interface = topLevelObjectsCache[objectName];
-			NSString *format = [NSString stringWithFormat:@"%@%%@", interface.objectCrossRefPathTemplate];
-			[builder appendString:[bself stringForCrossRefTo:object description:description options:options format:format]];
+			NSString *crossref = [bself stringForCrossRefToObject:interface member:object description:description format:nil options:options];
+			[builder appendString:crossref];
 			return;
 		}
 		
@@ -164,27 +167,117 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	}
 
 	__weak DetectCrossReferencesTask *bself = self;
-	NSRegularExpression *expression = [NSRegularExpression gb_wordMatchingExpression];
-	[self enumerateMatchesOf:expression in:string prefix:^(NSString *word) {
-		[builder appendString:word];
+	NSRegularExpression *expression = self.inlineCrossRefMatchingExpression;
+	NSString *inlineOutputFormat = self.inlineCrossRefOutputFormat;
+	[self enumerateMatchesOf:expression in:string prefix:^(NSString *delimiter) {
 		LogDebug(@"Appending '%@'...", [delimiter gb_description]);
+		[builder appendString:delimiter];
 	} match:^(NSTextCheckingResult *match) {
 		LogDebug(@"Testing '%@' for cross ref to known objects...", [match gb_stringAtIndex:0 in:string]);
+		
 		// Find cross referenced object.
-		NSString *word = [match gb_stringAtIndex:0 in:string];
+		NSString *word = [match gb_stringAtIndex:1 in:string];
 		ObjectInfoBase *object = topLevelObjectsCache[word];
 		if (!object) object = [bself memberWithKey:word fromCache:localMembersCache];
 		
 		// If found, convert it to cross reference.
 		if (object) {
-			[builder appendString:[bself stringForCrossRefTo:object description:word options:options format:@"%@"]];
 			LogVerbose(@"Matched cross reference '%@'.", object.uniqueObjectID);
+			NSString *crossref = [bself stringForCrossRefToObject:nil member:object description:word format:inlineOutputFormat options:options];
+			[builder appendString:crossref];
 			return;
 		}
 		
 		// If not found, just append the word plain as it is.
 		[builder appendString:word];
 	}];
+}
+
+#pragma mark - Detection regex and parameters handling
+
+- (NSRegularExpression *)remoteMemberCrossRefMatchingExpression {
+	if (_remoteMemberCrossRefMatchingExpression) return _remoteMemberCrossRefMatchingExpression;
+	LogDebug(@"Initializing remote member cross reference matching regex due to first access...");
+	NSRegularExpression *expression = [NSRegularExpression gb_remoteMemberMatchingExpression];
+	_remoteMemberCrossRefMatchingExpression = [self crossRefExpressionFromSource:expression outputFormat:^(NSString *format) { }];
+	return _remoteMemberCrossRefMatchingExpression;
+}
+
+- (NSRegularExpression *)inlineCrossRefMatchingExpression {
+	if (_inlineCrossRefMatchingExpression) return _inlineCrossRefMatchingExpression;
+	LogDebug(@"Initializing inline cross reference matching regex due to first access...");
+	__weak DetectCrossReferencesTask *bself = self;
+	NSRegularExpression *expression = [NSRegularExpression gb_wordMatchingExpression];
+	_inlineCrossRefMatchingExpression = [self crossRefExpressionFromSource:expression outputFormat:^(NSString *format) {
+		bself.inlineCrossRefOutputFormat = format;
+	}];
+	return _inlineCrossRefMatchingExpression;
+}
+
+- (NSRegularExpression *)crossRefExpressionFromSource:(NSRegularExpression *)source outputFormat:(void(^)(NSString *format))outputFormat {
+	// Prepare cross references format from settings. Note that in case of custom format, we simply use the given string. If the user doesn't include `%@` inside the format, we assume it's plain format and use default one.
+	NSString *format = self.settings.crossRefsFormat;
+	if ([self.settings.crossRefsFormat isEqualToString:@"explicit"])
+		format = @"<%@>:/[$](%)/";
+	else if ([self.settings.crossRefsFormat isEqualToString:@"codespan"])
+		format = @"`%@`:/[`$`](%)/";
+	else if (![self.settings.crossRefsFormat gb_contains:@"%@"])
+		format = nil;
+	
+	// If format is not given, just use default regex.
+	if (!format) return source;
+	
+	// We only need the pattern, ignore output format here, but do report it to the given block.
+	__block NSString *matcherFormat = nil;
+	[self crossRefFormatFrom:format matcher:^(NSString *format) {
+		matcherFormat = format;
+	} output:^(NSString *format) {
+		outputFormat(format);
+	}];
+
+	// If format is given, extract the pattern and options out of the given source regex and create new one with derived pattern and same options. If new regex creation fails (i.e. invalid pattern given by user), log the error and revert to source regex.
+	NSError *error = nil;
+	NSString *pattern = [NSString stringWithFormat:matcherFormat, source.pattern];
+	NSRegularExpressionOptions options = source.options;
+	NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:pattern options:options error:&error];
+	if (!expression) {
+		LogNSError(error, @"Invalid cross reference pattern '%@' (derived from format '%@')!", pattern, format);
+		return source;
+	}
+	
+	// We now have valid derived regex, so use it.
+	return expression;
+}
+
+- (void)crossRefFormatFrom:(NSString *)string matcher:(void(^)(NSString *format))matcherBlock output:(void(^)(NSString *format))outputBlock {
+	LogDebug(@"Initializing cross reference regex from format '%@'...", string);
+	
+	// Find output format in the given string. If not found, report the whole string as the matcher.
+	NSRegularExpression *formatRegex = [NSRegularExpression gb_crossRefOutputFormatMatchingExpression];
+	NSArray *matches = [formatRegex gb_allMatchesIn:string];
+	if (matches.count == 0) {
+		matcherBlock(string);
+		return;
+	}
+
+	// If multiple matches are found, take the last one. If it starts at the beginning of the string, assume it's just the format user wants and report it as such.
+	NSTextCheckingResult *match = [matches lastObject];
+	if (match.range.location == 0) {
+		matcherBlock(string);
+		return;
+	}
+
+	// So we have both, the matcher and output formats. Validate output for required placeholders; if either is missing, report error and take the whole string as format.
+	NSString *outputFormat = [match gb_stringAtIndex:1 in:string];
+	if (![outputFormat gb_contains:@"$"] && ![outputFormat gb_contains:@"%"]) {
+		LogError(@"Missing $ or % placeholder in output format '%@' (specified through cross ref format '%@')!", outputFormat, string);
+		matcherBlock(string);
+		return;
+	}
+	
+	// Both formats are valid, report both.
+	matcherBlock([string substringToIndex:match.range.location]);
+	outputBlock(outputFormat);
 }
 
 #pragma mark - Helper methods
@@ -222,11 +315,13 @@ typedef NS_OPTIONS(NSUInteger, GBCrossRefOptions) {
 	return cache[instanceKey];
 }
 
-- (NSString *)stringForCrossRefTo:(ObjectInfoBase *)object description:(NSString *)description options:(GBCrossRefOptions)options format:(NSString *)format {
-	// Prepares Markdown link to the given object using the given description and link format.
-	NSString *link = [NSString stringWithFormat:format, object.objectCrossRefPathTemplate];
+- (NSString *)stringForCrossRefToObject:(ObjectInfoBase *)object member:(ObjectInfoBase *)member description:(NSString *)description format:(NSString *)format options:(GBCrossRefOptions)options {
+	// Prepares Markdown link to the given member of the given object (optional) using the given description and link format.
+	NSString *link = member.objectCrossRefPathTemplate;
+	if (object) link = [NSString stringWithFormat:@"%@%@", object.objectCrossRefPathTemplate, link];
 	if ((options & GBCrossRefOptionInsideMarkdownLink) > 0) return link;
-	return [NSString stringWithFormat:@"[%@](%@)", description, link];
+	if (!format) format = @"[$](%)";
+	return [format gb_stringByReplacing:@{ @"$":description, @"%":link }];
 }
 
 @end
