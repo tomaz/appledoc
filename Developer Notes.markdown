@@ -9,7 +9,7 @@ All low level key components are covered with unit tests, however some higher le
 - Create HTML and validate few pages to see it's ok.
 - Create documention set and make sure no warning is emitted by appledoc.
 - Install documentation set and make sure it's available in Xcode.
-- Publish documentatino set and make sure atom file is updated with new versions and xar file is generated.
+- Publish documentation set and make sure atom file is updated with new versions and xar file is generated.
 - Update build number with `ruby ~/Dropbox/Scripts/Custom/git-version.rb` (copy result to GBAppledocStringsProvider's appledocData).
 
 This should provide level of quality big enough to ensure the biggest bugs are caught.
