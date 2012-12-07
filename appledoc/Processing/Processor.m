@@ -21,6 +21,7 @@
 - (NSInteger)runTask {
 	LogNormal(@"Processing...");
 	__block GBResult result = GBResultOk;
+	GB_PROCESS([self.linkKnownObjectsTask runTask]);
 	GB_PROCESS([self.mergeKnownObjectsTask runTask]);
 	GB_PROCESS([self processInterfaces:self.store.storeClasses]);
 	GB_PROCESS([self processInterfaces:self.store.storeExtensions]);
@@ -73,6 +74,13 @@
 }
 
 #pragma mark - Lazy loading properties
+
+- (ProcessorTask *)linkKnownObjectsTask {
+	if (_linkKnownObjectsTask) return _linkKnownObjectsTask;
+	LogDebug(@"Initializing link known objects task due to first access...");
+	_linkKnownObjectsTask = [[ProcessorTask alloc] initWithStore:self.store settings:self.settings];
+	return _linkKnownObjectsTask;
+}
 
 - (ProcessorTask *)mergeKnownObjectsTask {
 	if (_mergeKnownObjectsTask) return _mergeKnownObjectsTask;

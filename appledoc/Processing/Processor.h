@@ -19,6 +19,7 @@
 */
 @interface Processor : AppledocTask
 
+@property (nonatomic, strong) ProcessorTask *linkKnownObjectsTask;
 @property (nonatomic, strong) ProcessorTask *mergeKnownObjectsTask;
 @property (nonatomic, strong) ProcessorCommentTask *splitCommentToSectionsTask;
 @property (nonatomic, strong) ProcessorCommentTask *registerCommentComponentsTask;

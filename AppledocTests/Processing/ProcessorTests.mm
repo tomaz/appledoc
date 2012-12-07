@@ -45,6 +45,13 @@ describe(@"lazy accessors:", ^{
 		});
 	});
 	
+	describe(@"link known objects task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"linkKnownObjectsTask";
+		});
+		itShouldBehaveLike(@"tasks");
+	});
+	
 	describe(@"merge known objects task:", ^{
 		beforeEach(^{
 			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"mergeKnownObjectsTask";
@@ -75,6 +82,20 @@ describe(@"lazy accessors:", ^{
 });
 
 describe(@"objects processing:", ^{
+	it(@"should invoke link known objects task", ^{
+		runWithProcessor(^(Processor *processor) {
+			// setup
+			id settings = mock([GBSettings class]);
+			id store = mock([Store class]);
+			id task = mock([ProcessorTask class]);
+			processor.linkKnownObjectsTask = task;
+			// execute
+			[processor runWithSettings:settings store:store];
+			// verify
+			gbcatch([verify(task) runTask]);
+		});
+	});
+	
 	it(@"should invoke merge known objects task", ^{
 		runWithProcessor(^(Processor *processor) {
 			// setup
