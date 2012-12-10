@@ -203,7 +203,7 @@
 	ClassInfo *info = [[ClassInfo alloc] initWithRegistrar:self];
 	info.sourceToken = self.currentSourceInfo;
 	info.nameOfClass = name;
-	info.nameOfSuperClass = derived;
+	info.classSuperClass.nameOfObject = derived;
 	[self.storeClasses addObject:info];
 	[self pushRegistrationObject:info];
 }
@@ -212,7 +212,7 @@
 	LogVerbose(@"Starting class extenstion for class %@...", name);
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.sourceToken = self.currentSourceInfo;
-	info.nameOfClass = name;
+	info.categoryClass.nameOfObject = name;
 	info.nameOfCategory = nil;
 	[self.storeExtensions addObject:info];
 	[self pushRegistrationObject:info];
@@ -222,7 +222,7 @@
 	LogVerbose(@"Starting category %@ for class %@...", category, name);
 	CategoryInfo *info = [[CategoryInfo alloc] initWithRegistrar:self];
 	info.sourceToken = self.currentSourceInfo;
-	info.nameOfClass = name;
+	info.categoryClass.nameOfObject = name;
 	info.nameOfCategory = category;
 	[self.storeCategories addObject:info];
 	[self pushRegistrationObject:info];

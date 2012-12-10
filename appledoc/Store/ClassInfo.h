@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class ObjectLinkInfo;
+
 #import "InterfaceInfoBase.h"
 
 /** Holds information about a class.
@@ -13,6 +15,7 @@
 @interface ClassInfo : InterfaceInfoBase
 
 @property (nonatomic, copy) NSString *nameOfClass;
-@property (nonatomic, copy) NSString *nameOfSuperClass;
+@property (nonatomic, readonly) NSString *nameOfSuperClass;
+@property (nonatomic, strong) ObjectLinkInfo *classSuperClass;
 
 @end

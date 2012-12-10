@@ -6,13 +6,16 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
+@class ObjectLinkInfo;
+
 #import "InterfaceInfoBase.h"
 
 /** Holds information about class categories and extensions.
  */
 @interface CategoryInfo : InterfaceInfoBase
 
-@property (nonatomic, copy) NSString *nameOfClass;
+@property (nonatomic, strong) ObjectLinkInfo *categoryClass;
+@property (nonatomic, readonly) NSString *nameOfClass;
 @property (nonatomic, copy) NSString *nameOfCategory;
 
 @property (nonatomic, readonly) BOOL isCategory;

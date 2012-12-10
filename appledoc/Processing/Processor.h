@@ -9,6 +9,7 @@
 #import "AppledocTask.h"
 
 @class ProcessorTask;
+@class ProcessorCommentTask;
 
 /** Data processing entry point.
  
@@ -18,8 +19,10 @@
 */
 @interface Processor : AppledocTask
 
-@property (nonatomic, strong) ProcessorTask *splitCommentToSectionsTask;
-@property (nonatomic, strong) ProcessorTask *registerCommentComponentsTask;
-@property (nonatomic, strong) ProcessorTask *detectCrossReferencesTask;
+@property (nonatomic, strong) ProcessorTask *linkKnownObjectsTask;
+@property (nonatomic, strong) ProcessorTask *mergeKnownObjectsTask;
+@property (nonatomic, strong) ProcessorCommentTask *splitCommentToSectionsTask;
+@property (nonatomic, strong) ProcessorCommentTask *registerCommentComponentsTask;
+@property (nonatomic, strong) ProcessorCommentTask *detectCrossReferencesTask;
 
 @end
