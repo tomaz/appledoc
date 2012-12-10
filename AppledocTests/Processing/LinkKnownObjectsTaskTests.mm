@@ -27,10 +27,32 @@ static id createInterface(void(^handler)(InterfaceInfoBase *interface)) {
 	return result;
 }
 
+static id createClass(void(^handler)(ClassInfo *info)) {
+	ClassInfo *result = [[ClassInfo alloc] init];
+	handler(result);
+	return result;
+}
+
+static id createClass(NSString *name) {
+	id result = mock([ClassInfo class]);
+	[given([result nameOfClass]) willReturn:name];
+	return result;
+}
+
+static id createProtocol(void(^handler)(ProtocolInfo *info)) {
+	ProtocolInfo *result = [[ProtocolInfo alloc] init];
+	handler(result);
+	return result;
+}
+
 static id createProtocol(NSString *name) {
 	id result = mock([ProtocolInfo class]);
 	[given([result nameOfProtocol]) willReturn:name];
 	return result;
+}
+
+static void derive(ClassInfo *object, NSString *name) {
+	object.classSuperClass.nameOfObject = name;
 }
 
 static void adopt(InterfaceInfoBase *interface, NSString *first, ...) {
@@ -111,19 +133,60 @@ describe(@"adopted protocols:", ^{
 	it(@"should link protocols to known protocols", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			InterfaceInfoBase *protocol1 = createInterface(^(InterfaceInfoBase *interface) {
-				adopt(interface, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
+			ProtocolInfo *protocol1 = createProtocol(^(ProtocolInfo *info) {
+				adopt(info, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
 			});
 			id protocol2 = createProtocol(@"MyProtocol1");
 			id protocol3 = createProtocol(@"MyProtocol2");
-			[given([store storeProtocols]) willReturn:@[ protocol2, protocol3 ]];
-			[given([store storeClasses]) willReturn:@[ protocol1 ]];
+			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2, protocol3 ]];
 			// execute
 			[task runTask];
 			// verify
 			[protocol1.interfaceAdoptedProtocols[0] linkToObject] should equal(protocol2);
 			[protocol1.interfaceAdoptedProtocols[1] linkToObject] should equal(protocol3);
 			[protocol1.interfaceAdoptedProtocols[2] linkToObject] should be_nil();
+		});
+	});
+});
+
+describe(@"super classes:", ^{
+	it(@"should link to known super classes", ^{
+		runWithTask(^(LinkKnownObjectsTask *task, id store) {
+			// setup
+			ClassInfo *class1 = createClass(^(ClassInfo *info) {
+				derive(info, @"MyBaseClass");
+			});
+			id class2 = createClass(@"MyBaseClass");
+			[given([store storeClasses]) willReturn:@[ class1, class2 ]];
+			// execute
+			[task runTask];
+			// verify
+			class1.classSuperClass.linkToObject should equal(class2);
+		});
+	});
+
+	it(@"should handle multiple depths of class hierarchies", ^{
+		runWithTask(^(LinkKnownObjectsTask *task, id store) {
+			// setup
+			ClassInfo *class1 = createClass(^(ClassInfo *info) {
+				info.nameOfClass = @"Class1";
+				derive(info, @"Class2");
+			});
+			ClassInfo *class2 = createClass(^(ClassInfo *info) {
+				info.nameOfClass = @"Class2";
+				derive(info, @"Class3");
+			});
+			ClassInfo *class3 = createClass(^(ClassInfo *info) {
+				info.nameOfClass = @"Class3";
+				derive(info, @"Unknown");
+			});
+			[given([store storeClasses]) willReturn:@[ class1, class2, class3 ]];
+			// execute
+			[task runTask];
+			// verify
+			class1.classSuperClass.linkToObject should equal(class2);
+			class2.classSuperClass.linkToObject should equal(class3);
+			class3.classSuperClass.linkToObject should be_nil();
 		});
 	});
 });
