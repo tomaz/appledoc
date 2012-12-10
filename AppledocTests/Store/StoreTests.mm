@@ -94,7 +94,7 @@ describe(@"class registration:", ^{
 		   [store beginClassWithName:@"name" derivedFromClassWithName:@"derived"];
 		   // verify
 		   store.currentRegistrationObject should be_instance_of([ClassInfo class]);
-		   [store.currentRegistrationObject nameOfSuperClass] should equal(@"derived");
+		   [[store.currentRegistrationObject classSuperClass] nameOfObject] should equal(@"derived");
 		   [store.currentRegistrationObject objectRegistrar] should equal(store);
 	   });
 	});
@@ -1080,7 +1080,7 @@ describe(@"cache handling:", ^{
 				// verify
 				object should be_instance_of([ClassInfo class]);
 				object.nameOfClass should equal(@"name");
-				object.nameOfSuperClass should equal(@"super");
+				object.classSuperClass.nameOfObject should equal(@"super");
 			});
 		});
 

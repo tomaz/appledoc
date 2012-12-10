@@ -7,9 +7,19 @@
 //
 
 #import "Objects.h"
+#import "ObjectLinkInfo.h"
 #import "ClassInfo.h"
 
 @implementation ClassInfo
+
+- (ObjectLinkInfo *)classSuperClass {
+	if (_classSuperClass) return _classSuperClass;
+	LogDebug(@"Initializing %@ super class link due to first access...", self);
+	_classSuperClass = [[ObjectLinkInfo alloc] init];
+	return _classSuperClass;
+}
+
+#pragma mark - Object identification
 
 - (NSString *)uniqueObjectID {
 	return self.nameOfClass;
@@ -33,7 +43,7 @@
 - (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
 	[result appendFormat:@"@interface %@", self.nameOfClass];
-	if (self.nameOfSuperClass) [result appendFormat:@" : %@", self.nameOfSuperClass];
+	if (self.classSuperClass.nameOfObject) [result appendFormat:@" : %@", self.classSuperClass.nameOfObject];
 	[result appendString:[super debugDescription]];
 	return result;
 }

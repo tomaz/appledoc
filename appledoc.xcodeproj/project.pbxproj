@@ -141,6 +141,7 @@
 		73D540281525A8BA00C57E1B /* StoreConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D540261525A8BA00C57E1B /* StoreConstants.m */; };
 		73D5402A1525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D5402C1525D59600C57E1B /* ObjectiveCEnumStateTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		73D72A081675F1FD007912F1 /* ClassInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D72A071675F1FD007912F1 /* ClassInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D76C5B1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */; };
 		73D76C5C1660BBE900B611AB /* RegisterCommentComponentsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */; };
 		73D76C5E1660BF9A00B611AB /* RegisterCommentComponentsTaskTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTaskTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -358,6 +359,7 @@
 		73D540261525A8BA00C57E1B /* StoreConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreConstants.m; sourceTree = "<group>"; };
 		73D540291525CBB700C57E1B /* ObjectiveCPragmaMarkStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCPragmaMarkStateTests.mm; sourceTree = "<group>"; };
 		73D5402B1525D59600C57E1B /* ObjectiveCEnumStateTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ObjectiveCEnumStateTests.mm; sourceTree = "<group>"; };
+		73D72A071675F1FD007912F1 /* ClassInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ClassInfoTests.mm; sourceTree = "<group>"; };
 		73D76C591660BBD900B611AB /* RegisterCommentComponentsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterCommentComponentsTask.h; sourceTree = "<group>"; };
 		73D76C5A1660BBE900B611AB /* RegisterCommentComponentsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterCommentComponentsTask.m; sourceTree = "<group>"; };
 		73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RegisterCommentComponentsTaskTests.mm; sourceTree = "<group>"; };
@@ -562,6 +564,7 @@
 				73A58A00154940DC003838E0 /* DescriptorsInfoTests.mm */,
 				735CD2C21538126400CADD4E /* InterfaceInfoBaseTests.mm */,
 				73F5C87015480DFF005BE2D6 /* CategoryInfoTests.mm */,
+				73D72A071675F1FD007912F1 /* ClassInfoTests.mm */,
 				73E416DB1541A14700600606 /* EnumInfoTests.mm */,
 				73E416E61541E12200600606 /* StructInfoTests.mm */,
 				733E445C153D516E0039010F /* MethodInfoTests.mm */,
@@ -1006,6 +1009,7 @@
 				73C903E7167144B600B7D14F /* MergeKnownObjectsTask.m in Sources */,
 				733A93131671ED9800734F0A /* LinkKnownObjectsTask.m in Sources */,
 				733A93161671EF0600734F0A /* LinkKnownObjectsTaskTests.mm in Sources */,
+				73D72A081675F1FD007912F1 /* ClassInfoTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

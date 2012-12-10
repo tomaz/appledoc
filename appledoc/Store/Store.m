@@ -203,7 +203,7 @@
 	ClassInfo *info = [[ClassInfo alloc] initWithRegistrar:self];
 	info.sourceToken = self.currentSourceInfo;
 	info.nameOfClass = name;
-	info.nameOfSuperClass = derived;
+	info.classSuperClass.nameOfObject = derived;
 	[self.storeClasses addObject:info];
 	[self pushRegistrationObject:info];
 }
