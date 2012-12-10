@@ -7,9 +7,24 @@
 //
 
 #import "Objects.h"
+#import "ObjectLinkInfo.h"
 #import "CategoryInfo.h"
 
 @implementation CategoryInfo
+
+- (NSString *)nameOfClass {
+	if (!_categoryClass) return nil;
+	return self.categoryClass.nameOfObject;
+}
+
+- (ObjectLinkInfo *)categoryClass {
+	if (_categoryClass) return _categoryClass;
+	LogDebug(@"Initializing %@ class link due to first access...");
+	_categoryClass = [[ObjectLinkInfo alloc] init];
+	return _categoryClass;
+}
+
+#pragma mark - Category identification
 
 - (NSString *)uniqueObjectID {
 	return [NSString stringWithFormat:@"%@(%@)", self.nameOfClass, self.isCategory ? self.nameOfCategory : @""];

@@ -1196,7 +1196,7 @@ describe(@"cache handling:", ^{
 			beforeEach(^{
 				runWithStore(^(Store *store) {
 					CategoryInfo *categoryInfo = [[CategoryInfo alloc] init];
-					categoryInfo.nameOfClass = @"MyClass";
+					categoryInfo.categoryClass.nameOfObject = @"MyClass";
 					categoryInfo.nameOfCategory = @"";
 					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
 					[[SpecHelper specHelper] sharedExampleContext][@"object"] = categoryInfo;
@@ -1211,7 +1211,7 @@ describe(@"cache handling:", ^{
 			beforeEach(^{
 				runWithStore(^(Store *store) {
 					CategoryInfo *categoryInfo = [[CategoryInfo alloc] init];
-					categoryInfo.nameOfClass = @"MyClass";
+					categoryInfo.categoryClass.nameOfObject = @"MyClass";
 					categoryInfo.nameOfCategory = @"MyCategory";
 					[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
 					[[SpecHelper specHelper] sharedExampleContext][@"object"] = categoryInfo;

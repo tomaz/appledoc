@@ -19,6 +19,26 @@ static void runWithCategoryInfo(void(^handler)(CategoryInfo *info)) {
 
 TEST_BEGIN(CategoryInfoTests)
 
+describe(@"lazy properties:", ^{
+	it(@"should initialize objects on first access", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// execute & verify
+			info.categoryClass should be_instance_of([ObjectLinkInfo class]);
+		});
+	});
+});
+
+describe(@"convenience properties:", ^{
+	it(@"should return name of super class", ^{
+		runWithCategoryInfo(^(CategoryInfo *info) {
+			// setup
+			info.categoryClass.nameOfObject = @"SomeClass";
+			// execute & verify
+			info.nameOfClass should equal(@"SomeClass");
+		});
+	});
+});
+
 describe(@"category or extension helpers:", ^{
 	it(@"should work if name of category is nil", ^{
 		runWithCategoryInfo(^(CategoryInfo *info) {
@@ -55,7 +75,7 @@ describe(@"descriptions:", ^{
 	it(@"should handle extension", ^{
 		runWithCategoryInfo(^(CategoryInfo *info) {
 			// setup
-			info.nameOfClass = @"MyClass";
+			info.categoryClass.nameOfObject = @"MyClass";
 			// execute & verify
 			info.uniqueObjectID should equal(@"MyClass()");
 			info.objectCrossRefPathTemplate should equal(@"$CATEGORIES/MyClass.$EXT");
@@ -65,7 +85,7 @@ describe(@"descriptions:", ^{
 	it(@"should handle category", ^{
 		runWithCategoryInfo(^(CategoryInfo *info) {
 			// setup
-			info.nameOfClass = @"MyClass";
+			info.categoryClass.nameOfObject = @"MyClass";
 			info.nameOfCategory = @"MyCategory";
 			// execute & verify
 			info.uniqueObjectID should equal(@"MyClass(MyCategory)");
