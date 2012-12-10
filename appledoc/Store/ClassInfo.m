@@ -12,6 +12,11 @@
 
 @implementation ClassInfo
 
+- (NSString *)nameOfSuperClass {
+	if (!_classSuperClass) return nil;
+	return self.classSuperClass.nameOfObject;
+}
+
 - (ObjectLinkInfo *)classSuperClass {
 	if (_classSuperClass) return _classSuperClass;
 	LogDebug(@"Initializing %@ super class link due to first access...", self);

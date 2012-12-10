@@ -28,4 +28,15 @@ describe(@"lazy properties:", ^{
 	});
 });
 
+describe(@"convenience properties:", ^{
+	it(@"should return name of super class", ^{
+		runWithClassInfo(^(ClassInfo *info) {
+			// setup
+			info.classSuperClass.nameOfObject = @"SomeClass";
+			// execute & verify
+			info.nameOfSuperClass should equal(@"SomeClass");
+		});
+	});
+});
+
 TEST_END

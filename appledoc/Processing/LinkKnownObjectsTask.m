@@ -28,10 +28,10 @@
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *class, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", class);
-		if (class.classSuperClass.nameOfObject.length > 0) {
+		if (class.nameOfSuperClass > 0) {
 			[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger testedIdx, BOOL *testStop) {
 				if (testedClass == class) return;
-				if (![testedClass.nameOfClass isEqualToString:class.classSuperClass.nameOfObject]) return;
+				if (![testedClass.nameOfClass isEqualToString:class.nameOfSuperClass]) return;
 				LogDebug(@"Found link to super class %@.", testedClass);
 				class.classSuperClass.linkToObject = testedClass;
 			}];

@@ -15,6 +15,7 @@
 @interface ClassInfo : InterfaceInfoBase
 
 @property (nonatomic, copy) NSString *nameOfClass;
+@property (nonatomic, readonly) NSString *nameOfSuperClass;
 @property (nonatomic, strong) ObjectLinkInfo *classSuperClass;
 
 @end
