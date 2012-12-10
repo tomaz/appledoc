@@ -28,14 +28,7 @@
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *class, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", class);
-		if (class.nameOfSuperClass > 0) {
-			[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger testedIdx, BOOL *testStop) {
-				if (testedClass == class) return;
-				if (![testedClass.nameOfClass isEqualToString:class.nameOfSuperClass]) return;
-				LogDebug(@"Found link to super class %@.", testedClass);
-				class.classSuperClass.linkToObject = testedClass;
-			}];
-		}
+		[bself handleSuperClassesForClass:class store:store];
 		[bself handleAdoptedProtocolsForInterface:class store:store];
 	}];
 }
@@ -68,6 +61,17 @@
 }
 
 #pragma mark - Common functionality
+
+- (void)handleSuperClassesForClass:(ClassInfo *)class store:(Store *)store {
+	if (class.nameOfSuperClass.length == 0) return;
+	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger idx, BOOL *stop) {
+		if (testedClass == class) return;
+		if (![testedClass.nameOfClass isEqualToString:class.nameOfSuperClass]) return;
+		LogDebug(@"Found link to super class %@.", testedClass);
+		class.classSuperClass.linkToObject = testedClass;
+		*stop = YES;
+	}];
+}
 
 - (void)handleAdoptedProtocolsForInterface:(InterfaceInfoBase *)interface store:(Store *)store {
 	LogDebug(@"Handling adopted protocols...");
