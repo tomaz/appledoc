@@ -27,9 +27,21 @@
 	task.reportIndividualLines = YES;
 	
 	// Get the path to the installed documentation set and extract the name. Then replace the name's extension with .xar.
-	NSString *installedDocSetPath = self.inputUserPath;
+	NSString *inputDocSetPath = self.inputUserPath;
 	NSString *packageName = self.settings.docsetPackageFilename;
 	NSString *atomName = self.settings.docsetAtomFilename;
+    NSString *installedDocSetPath = inputDocSetPath;
+    
+    // If installation was skipped, move the docset folder to a .docset bundle.
+    if (!self.settings.installDocSet) {
+        installedDocSetPath = [self.settings.outputPath stringByAppendingPathComponent:self.settings.docsetBundleFilename];
+        installedDocSetPath = [installedDocSetPath stringByStandardizingPath];
+        GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", inputDocSetPath, installedDocSetPath);
+        if (![self copyOrMoveItemFromPath:inputDocSetPath toPath:installedDocSetPath error:error]) {
+            GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", inputDocSetPath, installedDocSetPath);
+            return  NO;
+        }
+    }
 	
 	// Prepare command line arguments for packaging.
 	NSString *outputDir = self.outputUserPath;
