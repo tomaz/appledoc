@@ -36,18 +36,20 @@
 - (void)handleExtensionsFromStore:(Store *)store {
 	LogDebug(@"Preparing links for classes...");
 	__weak LinkKnownObjectsTask *bself = self;
-	[store.storeExtensions enumerateObjectsUsingBlock:^(CategoryInfo *class, NSUInteger idx, BOOL *stop) {
-		LogDebug(@"Handling %@...", class);
-		[bself handleAdoptedProtocolsForInterface:class store:store];
+	[store.storeExtensions enumerateObjectsUsingBlock:^(CategoryInfo *extension, NSUInteger idx, BOOL *stop) {
+		LogDebug(@"Handling %@...", extension);
+		[bself handleExtendedClassesForCategory:extension store:store];
+		[bself handleAdoptedProtocolsForInterface:extension store:store];
 	}];
 }
 
 - (void)handleCategoriesFromStore:(Store *)store {
 	LogDebug(@"Preparing links for classes...");
 	__weak LinkKnownObjectsTask *bself = self;
-	[store.storeCategories enumerateObjectsUsingBlock:^(CategoryInfo *class, NSUInteger idx, BOOL *stop) {
-		LogDebug(@"Handling %@...", class);
-		[bself handleAdoptedProtocolsForInterface:class store:store];
+	[store.storeCategories enumerateObjectsUsingBlock:^(CategoryInfo *category, NSUInteger idx, BOOL *stop) {
+		LogDebug(@"Handling %@...", category);
+		[bself handleExtendedClassesForCategory:category store:store];
+		[bself handleAdoptedProtocolsForInterface:category store:store];
 	}];
 }
 
@@ -69,6 +71,16 @@
 		if (![testedClass.nameOfClass isEqualToString:class.nameOfSuperClass]) return;
 		LogDebug(@"Found link to super class %@.", testedClass);
 		class.classSuperClass.linkToObject = testedClass;
+		*stop = YES;
+	}];
+}
+
+- (void)handleExtendedClassesForCategory:(CategoryInfo *)category store:(Store *)store {
+	if (category.categoryClass.nameOfObject.length == 0) return;
+	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger idx, BOOL *stop) {
+		if (![testedClass.nameOfClass isEqualToString:category.nameOfClass]) return;
+		LogDebug(@"Found link to extended class %@.", testedClass);
+		category.categoryClass.linkToObject = testedClass;
 		*stop = YES;
 	}];
 }
