@@ -12,10 +12,10 @@
  */
 @interface InterfaceInfoBase : ObjectInfoBase
 
-@property (nonatomic, strong) NSMutableArray *interfaceAdoptedProtocols;
-@property (nonatomic, strong) NSMutableArray *interfaceMethodGroups;
-@property (nonatomic, strong) NSMutableArray *interfaceProperties;
-@property (nonatomic, strong) NSMutableArray *interfaceInstanceMethods;
-@property (nonatomic, strong) NSMutableArray *interfaceClassMethods;
+@property (nonatomic, strong) NSMutableArray *interfaceAdoptedProtocols; // ObjectLinkInfo
+@property (nonatomic, strong) NSMutableArray *interfaceMethodGroups; // MethodGroupInfo
+@property (nonatomic, strong) NSMutableArray *interfaceProperties; // PropertyInfo
+@property (nonatomic, strong) NSMutableArray *interfaceInstanceMethods; // MethodInfo
+@property (nonatomic, strong) NSMutableArray *interfaceClassMethods; // MethodInfo
 
 @end

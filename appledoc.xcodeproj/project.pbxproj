@@ -54,6 +54,7 @@
 		7336652915457BF7000F7AFF /* ConstantInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7336652815457BF7000F7AFF /* ConstantInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		733A93121671ED9800734F0A /* LinkKnownObjectsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A93111671ED9800734F0A /* LinkKnownObjectsTask.m */; };
 		733A93131671ED9800734F0A /* LinkKnownObjectsTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 733A93111671ED9800734F0A /* LinkKnownObjectsTask.m */; };
+		733A93161671EF0600734F0A /* LinkKnownObjectsTaskTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 733A93151671EF0600734F0A /* LinkKnownObjectsTaskTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		733E445D153D516E0039010F /* MethodInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 733E445C153D516E0039010F /* MethodInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		734425131517631F00B6EC33 /* ParserTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 734425121517631F00B6EC33 /* ParserTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		734425161517645A00B6EC33 /* AppledocTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 734425151517645A00B6EC33 /* AppledocTask.m */; };
@@ -262,6 +263,7 @@
 		7336652815457BF7000F7AFF /* ConstantInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ConstantInfoTests.mm; sourceTree = "<group>"; };
 		733A93101671ED9800734F0A /* LinkKnownObjectsTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinkKnownObjectsTask.h; sourceTree = "<group>"; };
 		733A93111671ED9800734F0A /* LinkKnownObjectsTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LinkKnownObjectsTask.m; sourceTree = "<group>"; };
+		733A93151671EF0600734F0A /* LinkKnownObjectsTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LinkKnownObjectsTaskTests.mm; sourceTree = "<group>"; };
 		733E445C153D516E0039010F /* MethodInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodInfoTests.mm; sourceTree = "<group>"; };
 		734425121517631F00B6EC33 /* ParserTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ParserTests.mm; sourceTree = "<group>"; };
 		734425141517645A00B6EC33 /* AppledocTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppledocTask.h; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 			children = (
 				73A0268D15D6EFB50077D204 /* ProcessorTests.mm */,
 				73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */,
+				733A93151671EF0600734F0A /* LinkKnownObjectsTaskTests.mm */,
 				73A3E48D15D8369500769863 /* SplitCommentToSectionsTaskTests.mm */,
 				73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTaskTests.mm */,
 				73D76C6C16613C4600B611AB /* DetectCrossReferencesTaskTests.mm */,
@@ -1002,6 +1005,7 @@
 				73C903E216713F1500B7D14F /* ProcessorCommentTask.m in Sources */,
 				73C903E7167144B600B7D14F /* MergeKnownObjectsTask.m in Sources */,
 				733A93131671ED9800734F0A /* LinkKnownObjectsTask.m in Sources */,
+				733A93161671EF0600734F0A /* LinkKnownObjectsTaskTests.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
