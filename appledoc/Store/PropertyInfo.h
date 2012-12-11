@@ -16,6 +16,7 @@
  */
 @interface PropertyInfo : ObjectInfoBase
 
+- (NSString *)descriptionWithInterface:(ObjectInfoBase *)interface;
 - (NSString *)propertyGetterSelector;
 - (NSString *)propertySetterSelector;
 

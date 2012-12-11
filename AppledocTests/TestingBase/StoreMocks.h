@@ -15,11 +15,20 @@
 + (CategoryInfo *)createCategory:(void(^)(CategoryInfo *object))handler;
 + (ProtocolInfo *)createProtocol:(void(^)(ProtocolInfo *object))handler;
 
-+ (ObjectLinkInfo *)link:(NSString *)name;
++ (MethodInfo *)createMethod:(NSString *)uniqueID;
++ (PropertyInfo *)createProperty:(NSString *)uniqueID;
++ (ObjectLinkInfo *)link:(id)nameOrObject;
 
 + (id)mockClass:(NSString *)name;
 + (id)mockCategory:(NSString *)name onClass:(NSString *)className;
 + (id)mockProtocol:(NSString *)name;
+
++ (id)mockMethod:(NSString *)uniqueID;
++ (id)mockCommentedMethod:(NSString *)uniqueID;
++ (id)mockProperty:(NSString *)uniqueID;
++ (id)mockCommentedProperty:(NSString *)uniqueID;
+
++ (void)addCommentToMock:(id)mock;
 
 @end
 

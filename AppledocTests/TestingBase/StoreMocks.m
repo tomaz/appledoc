@@ -8,6 +8,7 @@
 
 #define MOCKITO_SHORTHAND
 #import <OCMockito/OCMockito.h>
+#import "Objects.h"
 #import "StoreMocks.h"
 
 @implementation StoreMocks
@@ -38,9 +39,34 @@
 	return result;
 }
 
-+ (ObjectLinkInfo *)link:(NSString *)name {
++ (MethodInfo *)createMethod:(NSString *)uniqueID {
+	MethodInfo *result = [[MethodInfo alloc] init];
+	NSRange range = NSMakeRange(1, uniqueID.length - 1);
+	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"([^:]+)(:?)" options:0 error:nil];
+	[regex enumerateMatchesInString:uniqueID options:0 range:range usingBlock:^(NSTextCheckingResult *match, NSMatchingFlags flags, BOOL *stop) {
+		NSString *selector = [match gb_stringAtIndex:1 in:uniqueID];
+		NSString *colon = [match gb_stringAtIndex:2 in:uniqueID];
+		MethodArgumentInfo *argument = [[MethodArgumentInfo alloc] init];
+		argument.argumentSelector = selector;
+		argument.argumentVariable = (colon.length > 0) ? selector : nil;
+		[result.methodArguments addObject:argument];
+	}];
+	result.methodType = ([uniqueID characterAtIndex:0] == '+') ? GBStoreTypes.classMethod : GBStoreTypes.instanceMethod;
+	return result;
+}
+
++ (PropertyInfo *)createProperty:(NSString *)uniqueID {
+	PropertyInfo *result = [[PropertyInfo alloc] init];
+	result.propertyName = uniqueID;
+	return result;
+}
+
++ (ObjectLinkInfo *)link:(id)nameOrObject {
 	ObjectLinkInfo *result = [[ObjectLinkInfo alloc] init];
-	result.nameOfObject = name;
+	if ([nameOrObject isKindOfClass:[NSString class]])
+		result.nameOfObject = nameOrObject;
+	else
+		result.linkToObject = nameOrObject;
 	return result;
 }
 
@@ -63,6 +89,35 @@
 + (id)mockProtocol:(NSString *)name {
 	id result = mock([ProtocolInfo class]);
 	[given([result nameOfProtocol]) willReturn:name];
+	return result;
+}
+
++ (id)mockMethod:(NSString *)uniqueID {
+	id result = mock([MethodInfo class]);
+	[given([result uniqueObjectID]) willReturn:uniqueID];
+	return result;
+}
+
++ (id)mockProperty:(NSString *)uniqueID {
+	id result = mock([PropertyInfo class]);
+	[given([result uniqueObjectID]) willReturn:uniqueID];
+	return result;
+}
+
++ (void)addCommentToMock:(id)mock {
+	id comment = mock([CommentInfo class]);
+	[given([mock comment]) willReturn:comment];
+}
+
++ (id)mockCommentedMethod:(NSString *)uniqueID {
+	id result = [self mockMethod:uniqueID];
+	[self addCommentToMock:result];
+	return result;
+}
+
++ (id)mockCommentedProperty:(NSString *)uniqueID {
+	id result = [self mockProperty:uniqueID];
+	[self addCommentToMock:result];
 	return result;
 }
 

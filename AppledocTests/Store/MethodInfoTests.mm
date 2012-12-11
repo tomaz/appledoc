@@ -40,6 +40,19 @@ describe(@"lazy accessors:", ^{
 });
 
 describe(@"selector, unique ID & cross reference template:", ^{
+	it(@"should handle class method", ^{
+		runWithMethodInfo(^(MethodInfo *info) {
+			// setup
+			MethodArgumentInfo *argument = [[MethodArgumentInfo alloc] init];
+			argument.argumentSelector = @"method";
+			[info.methodArguments addObject:argument];
+			info.methodType = GBStoreTypes.classMethod;
+			// execute & verify
+			info.uniqueObjectID should equal(@"+method");
+			info.objectCrossRefPathTemplate should equal(@"#+method");
+		});
+	});
+	
 	it(@"should handle single argument", ^{
 		runWithMethodInfo(^(MethodInfo *info) {
 			// setup
@@ -47,7 +60,7 @@ describe(@"selector, unique ID & cross reference template:", ^{
 			argument.argumentSelector = @"method";
 			[info.methodArguments addObject:argument];
 			// execute & verify
-			info.uniqueObjectID should equal(@"method");
+			info.uniqueObjectID should equal(@"-method");
 			info.objectCrossRefPathTemplate should equal(@"#-method");
 		});
 	});
@@ -60,7 +73,7 @@ describe(@"selector, unique ID & cross reference template:", ^{
 			argument.argumentVariable = @"var";
 			[info.methodArguments addObject:argument];
 			// execute & verify
-			info.uniqueObjectID should equal(@"method:");
+			info.uniqueObjectID should equal(@"-method:");
 			info.objectCrossRefPathTemplate should equal(@"#-method:");
 		});
 	});
@@ -77,7 +90,7 @@ describe(@"selector, unique ID & cross reference template:", ^{
 			argument2.argumentVariable = @"var";
 			[info.methodArguments addObject:argument2];
 			// execute & verify
-			info.uniqueObjectID should equal(@"method:withArg:");
+			info.uniqueObjectID should equal(@"-method:withArg:");
 			info.objectCrossRefPathTemplate should equal(@"#-method:withArg:");
 		});
 	});

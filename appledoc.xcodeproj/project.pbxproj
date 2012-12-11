@@ -49,6 +49,7 @@
 		73297915151899CA00592A9D /* ObjectiveCParserState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73297913151899CA00592A9D /* ObjectiveCParserState.m */; };
 		7329791815189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
 		7329791915189D1B00592A9D /* ObjectiveCFileState.m in Sources */ = {isa = PBXBuildFile; fileRef = 7329791715189D1B00592A9D /* ObjectiveCFileState.m */; };
+		733256F11677269800CA90E1 /* StoreMocks.m in Sources */ = {isa = PBXBuildFile; fileRef = 733256F01677269800CA90E1 /* StoreMocks.m */; };
 		7335020F167601D100C514AB /* FetchDocumentationTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335020E167601D100C514AB /* FetchDocumentationTask.m */; };
 		73350210167601D100C514AB /* FetchDocumentationTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 7335020E167601D100C514AB /* FetchDocumentationTask.m */; };
 		7336652515457A2E000F7AFF /* ConstantInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7336652415457A2E000F7AFF /* ConstantInfo.m */; };
@@ -153,6 +154,7 @@
 		73D8651B153FEBD900BDAAFE /* MethodArgumentInfoTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73DC6D2F164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
 		73DC6D30164800B900C1AA0D /* CommentSectionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */; };
+		73DF1FB916760BD300CFDF89 /* FetchDocumentationTaskTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = 73DF1FB816760BD300CFDF89 /* FetchDocumentationTaskTests.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73E289F21518E24D00D53484 /* ObjectiveCPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989B71518C63D0068697C /* ObjectiveCPropertyState.m */; };
 		73E289F31518E24D00D53484 /* ObjectiveCMethodState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BB1518C6530068697C /* ObjectiveCMethodState.m */; };
 		73E289F41518E24D00D53484 /* ObjectiveCPragmaMarkState.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F989BF1518C6AE0068697C /* ObjectiveCPragmaMarkState.m */; };
@@ -261,6 +263,8 @@
 		73297913151899CA00592A9D /* ObjectiveCParserState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCParserState.m; sourceTree = "<group>"; };
 		7329791615189D1B00592A9D /* ObjectiveCFileState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectiveCFileState.h; sourceTree = "<group>"; };
 		7329791715189D1B00592A9D /* ObjectiveCFileState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObjectiveCFileState.m; sourceTree = "<group>"; };
+		733256EF1677269800CA90E1 /* StoreMocks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StoreMocks.h; sourceTree = "<group>"; };
+		733256F01677269800CA90E1 /* StoreMocks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StoreMocks.m; sourceTree = "<group>"; };
 		7335020D167601D100C514AB /* FetchDocumentationTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FetchDocumentationTask.h; sourceTree = "<group>"; };
 		7335020E167601D100C514AB /* FetchDocumentationTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FetchDocumentationTask.m; sourceTree = "<group>"; };
 		7336652315457A2E000F7AFF /* ConstantInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantInfo.h; sourceTree = "<group>"; };
@@ -373,6 +377,7 @@
 		73D8651A153FEBD900BDAAFE /* MethodArgumentInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MethodArgumentInfoTests.mm; sourceTree = "<group>"; };
 		73DC6D2D164800B800C1AA0D /* CommentSectionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentSectionInfo.h; sourceTree = "<group>"; };
 		73DC6D2E164800B800C1AA0D /* CommentSectionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommentSectionInfo.m; sourceTree = "<group>"; };
+		73DF1FB816760BD300CFDF89 /* FetchDocumentationTaskTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FetchDocumentationTaskTests.mm; sourceTree = "<group>"; };
 		73DFDD4115527F2D007746D4 /* TestCaseBase.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestCaseBase.hh; sourceTree = "<group>"; };
 		73E416DB1541A14700600606 /* EnumInfoTests.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EnumInfoTests.mm; sourceTree = "<group>"; };
 		73E416DE1541A8B100600606 /* EnumItemInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumItemInfo.h; sourceTree = "<group>"; };
@@ -453,6 +458,8 @@
 				73DFDD4115527F2D007746D4 /* TestCaseBase.hh */,
 				737C82A1152307AE0064DC46 /* TestStrings.h */,
 				737C82A2152307AE0064DC46 /* TestStrings.m */,
+				733256EF1677269800CA90E1 /* StoreMocks.h */,
+				733256F01677269800CA90E1 /* StoreMocks.m */,
 				731F83DA15109D5F00112FD1 /* Objects+TestingPrivateAPI.h */,
 			);
 			name = "Testing Base";
@@ -699,6 +706,7 @@
 				73A0268D15D6EFB50077D204 /* ProcessorTests.mm */,
 				73CDF8B715E9415E0046C8E1 /* ProcessorTaskTests.mm */,
 				733A93151671EF0600734F0A /* LinkKnownObjectsTaskTests.mm */,
+				73DF1FB816760BD300CFDF89 /* FetchDocumentationTaskTests.mm */,
 				73A3E48D15D8369500769863 /* SplitCommentToSectionsTaskTests.mm */,
 				73D76C5D1660BF9A00B611AB /* RegisterCommentComponentsTaskTests.mm */,
 				73D76C6C16613C4600B611AB /* DetectCrossReferencesTaskTests.mm */,
@@ -1017,6 +1025,8 @@
 				733A93161671EF0600734F0A /* LinkKnownObjectsTaskTests.mm in Sources */,
 				73D72A081675F1FD007912F1 /* ClassInfoTests.mm in Sources */,
 				73350210167601D100C514AB /* FetchDocumentationTask.m in Sources */,
+				73DF1FB916760BD300CFDF89 /* FetchDocumentationTaskTests.mm in Sources */,
+				733256F11677269800CA90E1 /* StoreMocks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

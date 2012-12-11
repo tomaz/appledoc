@@ -15,10 +15,13 @@
  */
 @interface MethodInfo : ObjectInfoBase
 
+- (NSString *)descriptionWithInterface:(ObjectInfoBase *)interface;
+
 @property (nonatomic, copy) NSString *methodType;
 @property (nonatomic, strong) TypeInfo *methodResult;
 @property (nonatomic, strong) DescriptorsInfo *methodDescriptors;
 @property (nonatomic, strong) NSMutableArray *methodArguments;
+@property (nonatomic, readonly, copy) NSString *methodSelector;
 
 @property (nonatomic, readonly) BOOL isClassMethod;
 @property (nonatomic, readonly) BOOL isInstanceMethod;
