@@ -589,6 +589,46 @@
 	assertThat(result4, is(@"[text](docs/document.html)"));
 }
 
+- (void)testStringByConvertingCrossReferencesInString_shouldKeepManualObjectMethodLinksAndUpdateAddress {
+ 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
+	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
+	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
+	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"c" path:@"document.ext"];
+    
+    GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:@"method"];
+	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithArguments:argument, nil];
+	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"doSomething", @"withVars", nil];
+	GBMethodData *property = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
+	[class.methods registerMethod:method1];
+	[class.methods registerMethod:method2];
+	[class.methods registerMethod:property];
+    
+	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, protocol, document, nil];
+	GBCommentsProcessor *processor = [self processorWithStore:store];
+
+    NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](+[Class method])" withFlags:0];
+    NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[text]([Class doSomething:withVars:])" withFlags:0];
+    NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"[text](-[Class value])" withFlags:0];
+    NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[text with space](+[Class method])" withFlags:0];
+    NSString *result4b = [processor stringByConvertingCrossReferencesInString:@"[text onlyOneSpace]([Class method])" withFlags:0];
+    NSString *result4c = [processor stringByConvertingCrossReferencesInString:@"[text](+[Class method]), [text onlyOneSpace]([Class method])" withFlags:0];
+    NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:])" withFlags:0];
+    NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:]), [text]([Class method])" withFlags:0];
+    NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:]), [text with space]([Class method])" withFlags:0];
+    NSString *result8 = [processor stringByConvertingCrossReferencesInString:@"[text](<-[Class value]>)" withFlags:0];
+    
+	assertThat(result1, is(@"[text](Classes/Class.html#//api/name/method)"));
+    assertThat(result2, is(@"[text](Classes/Class.html#//api/name/doSomething:withVars:)"));
+    assertThat(result3, is(@"[text](Classes/Class.html#//api/name/value)"));
+	assertThat(result4, is(@"[text with space](Classes/Class.html#//api/name/method)"));
+    assertThat(result4b, is(@"[text onlyOneSpace](Classes/Class.html#//api/name/method)"));
+    assertThat(result4c, is(@"[text](Classes/Class.html#//api/name/method), [text onlyOneSpace](Classes/Class.html#//api/name/method)"));
+	assertThat(result5, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:)"));
+    assertThat(result6, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:), [text](Classes/Class.html#//api/name/method)"));
+    assertThat(result7, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:), [text with space](Classes/Class.html#//api/name/method)"));
+    assertThat(result8, is(@"[text](Classes/Class.html#//api/name/value)"));
+}
+
 - (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {
 	// setup
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];

@@ -63,7 +63,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:class];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML for class %@ to '%@'!", class, path);
+			GBLogWarn(@"Failed writing HTML for class %@ to '%@'!", class, path);
 			return NO;
 		}
 		GBLogDebug(@"Finished generating output for class %@.", class);
@@ -80,7 +80,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:category];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML for category %@ to '%@'!", category, path);
+			GBLogWarn(@"Failed writing HTML for category %@ to '%@'!", category, path);
 			return NO;
 		}
 		GBLogDebug(@"Finished generating output for category %@.", category);
@@ -97,7 +97,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:protocol];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML for protocol %@ to '%@'!", protocol, path);
+			GBLogWarn(@"Failed writing HTML for protocol %@ to '%@'!", protocol, path);
 			return NO;
 		}
 		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
@@ -126,7 +126,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:document];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML for document %@ to '%@'!", document, path);
+			GBLogWarn(@"Failed writing HTML for document %@ to '%@'!", document, path);
 			return NO;
 		}
 		GBLogDebug(@"Finished generating output for document %@.", document);
@@ -142,7 +142,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForIndex] stringByStandardizingPath];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML index to '%@'!", path);
+			GBLogWarn(@"Failed writing HTML index to '%@'!", path);
 			return NO;
 		}
 	}
@@ -158,7 +158,7 @@
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForHierarchy] stringByStandardizingPath];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting HTML hierarchy to '%@'!", path);
+			GBLogWarn(@"Failed writing HTML hierarchy to '%@'!", path);
 			return NO;
 		}
 	}

@@ -44,6 +44,14 @@
 
 #pragma mark Sections detection
 
+- (NSString *)abstractRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(abstract|brief)"]);
+}
+
+- (NSString *)discussionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"(discussion|details)"]);
+}
+
 - (NSString *)noteSectionRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"note"]);
 }
@@ -54,6 +62,10 @@
 
 - (NSString *)bugSectionRegex {
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
+}
+
+- (NSString *)deprecatedSectionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"deprecated"]);
 }
 
 #pragma mark Method specific detection
@@ -99,7 +111,7 @@
 	if (templated) {
 		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self remoteMemberCrossReferenceRegex:NO]]);
 	} else {
-		GBRETURN_ON_DEMAND(@"([+-]?)\\[(\\S+)\\s+(\\S+)\\]");
+        GBRETURN_ON_DEMAND(@"\\[([^\\]]+)\\]\\([<]?[+-]?\\[([^]\\s]+)\\s+([^]\\s]+)\\][>]?\\)|[<]?([+-]?)\\[([^]\\s]+)\\s+([^]\\s]+)\\][>]?");
 	}
 }
 

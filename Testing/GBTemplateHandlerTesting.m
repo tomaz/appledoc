@@ -16,7 +16,12 @@
 @end
 
 @implementation GBTemplateHandler (TestingAPI)
+//method below is intenionally overwritten so we want to silent the warning
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 - (NSString *)templateString { return [self valueForKey:@"_templateString"]; }
+#pragma clang diagnostic pop
+
 - (NSDictionary *)templateSections { return [self valueForKey:@"_templateSections"]; }
 - (GRMustacheTemplate *)template { return [self valueForKey:@"_template"]; }
 @end

@@ -84,7 +84,7 @@
 
 - (BOOL)processInfoPlist:(NSError **)error {
 #define addVarUnlessEmpty(var,key) if ([var length] > 0) [vars setObject:var forKey:key]
-	GBLogInfo(@"Writting DocSet Info.plist...");
+	GBLogInfo(@"Writing DocSet Info.plist...");
 	NSString *templateFilename = @"info-template.plist";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
@@ -117,14 +117,14 @@
 	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Info.plist"];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-		GBLogWarn(@"Failed writting Info.plist to '%@'!", filename);
+		GBLogWarn(@"Failed wrtting Info.plist to '%@'!", filename);
 		return NO;
 	}
 	return YES;
 }
 
 - (BOOL)processNodesXml:(NSError **)error {
-	GBLogInfo(@"Writting DocSet Nodex.xml file...");
+	GBLogInfo(@"Writing DocSet Nodex.xml file...");
 	NSString *templateFilename = @"nodes-template.xml";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
@@ -154,14 +154,14 @@
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Nodes.xml"];
 	[self.temporaryFiles addObject:filename];
 	if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-		GBLogWarn(@"Failed writting Nodes.xml to '%@'!", filename);
+		GBLogWarn(@"Failed writing Nodes.xml to '%@'!", filename);
 		return NO;
 	}
 	return YES;
 }
 
 - (BOOL)processTokensXml:(NSError **)error {
-	GBLogInfo(@"Writting DocSet Tokens.xml files...");
+	GBLogInfo(@"Writing DocSet Tokens.xml files...");
 	
 	// Get the template and prepare single Tokens.xml file for each object.
 	NSString *templatePath = [self templatePathForTemplateEndingWith:@"tokens-template.xml"];
@@ -183,8 +183,8 @@
 	GBLogInfo(@"Indexing DocSet...");
 	GBTask *task = [GBTask task];
 	task.reportIndividualLines = YES;
-	NSArray *args = [NSArray arrayWithObjects:@"index", [self.outputUserPath stringByStandardizingPath], nil];
-	BOOL result = [task runCommand:self.settings.docsetUtilPath arguments:args block:^(NSString *output, NSString *error) {
+	NSArray *args = [NSArray arrayWithObjects:@"docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil];
+	BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
 	}];
@@ -253,7 +253,7 @@
 		NSString *filename = [outputPath stringByAppendingPathComponent:indexName];
 		[self.temporaryFiles addObject:filename];
 		if (![self writeString:output toFile:[filename stringByStandardizingPath] error:error]) {
-			GBLogWarn(@"Failed writting tokens file '%@'!", filename);
+			GBLogWarn(@"Failed writing tokens file '%@'!", filename);
 			*index = idx;
 			return NO;
 		}

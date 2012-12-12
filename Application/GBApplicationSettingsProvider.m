@@ -69,10 +69,10 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.outputPath = @"";
 		self.templatesPath = nil;
 		self.docsetInstallPath = [NSHomeDirectory() stringByAppendingPathComponent:@"Library/Developer/Shared/Documentation/DocSets"];
-		self.docsetUtilPath = @"/Developer/usr/bin/docsetutil";
-		if (![[NSFileManager defaultManager] fileExistsAtPath:self.docsetUtilPath]) {
+		self.xcrunPath = @"/usr/bin/xcrun";
+		if (![[NSFileManager defaultManager] fileExistsAtPath:self.xcrunPath]) {
 			NSString *xcodePath = [[NSWorkspace sharedWorkspace] fullPathForApplication:@"Xcode"];
-			self.docsetUtilPath = [xcodePath stringByAppendingPathComponent:@"Contents/Developer/usr/bin/docsetutil"];
+			self.xcrunPath = [xcodePath stringByAppendingPathComponent:@"Contents/Developer/usr/bin/xcrun"];
 		}
 		self.indexDescriptionPath = nil;
 		self.includePaths = [NSMutableSet set];
@@ -575,7 +575,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 
 @synthesize outputPath;
 @synthesize docsetInstallPath;
-@synthesize docsetUtilPath;
+@synthesize xcrunPath;
 @synthesize templatesPath;
 @synthesize includePaths;
 @synthesize indexDescriptionPath;

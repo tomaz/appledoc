@@ -24,10 +24,15 @@ do
 	case $OPTION in
 		h) usage
 		   exit 0;;
-		b) 
+		b)
 		   BINARY_DIR=$OPTARG;;
-		t) 
-		   TEMPLATES_DIR=$OPTARG;;
+		t)
+		   INSTALL_TEMPLATES="YES"
+           echo "arg is = $OPTARG"
+		   if [ $OPTARG != "default" ]; then
+		      TEMPLATES_DIR=$OPTARG
+		   fi
+		   ;;
 		[?])
 			usage
 			exit 1;;
@@ -40,5 +45,7 @@ xcodebuild -target appledoc -configuration Release install
 echo "Installing binary to $BINARY_DIR"
 cp /tmp/appledoc.dst/usr/local/bin/appledoc "$BINARY_DIR"
 
-echo "Copying templates to $TEMPLATES_DIR"
-cp -R Templates/ "$TEMPLATES_DIR"
+if [ "$INSTALL_TEMPLATES" == "YES" ]; then
+    echo "Copying templates to $TEMPLATES_DIR"
+    cp -R Templates/ "$TEMPLATES_DIR"
+fi
