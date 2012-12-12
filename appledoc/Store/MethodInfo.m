@@ -12,11 +12,13 @@
 #import "CommentInfo.h"
 #import "TypeInfo.h"
 #import "DescriptorsInfo.h"
+#import "InterfaceInfoBase.h"
 #import "MethodArgumentInfo.h"
 #import "MethodInfo.h"
 
 @interface MethodInfo ()
-@property (nonatomic, strong) NSString *methodSelector;
+@property (nonatomic, readwrite, copy) NSString *methodSelector;
+@property (nonatomic, readonly) NSString *methodPrefix;
 @end
 
 #pragma mark -
@@ -57,13 +59,20 @@
 	return _methodSelector;
 }
 
+- (NSString *)methodPrefix {
+	return (self.methodType == GBStoreTypes.classMethod) ? @"+" : @"-";
+}
+
+- (NSString *)descriptionWithParent {
+	return [NSString stringWithFormat:@"%@[%@ %@]", self.methodPrefix, self.memberParent.uniqueObjectID, self.methodSelector];
+}
+
 - (NSString *)uniqueObjectID {
-	return self.methodSelector;
+	return [NSString stringWithFormat:@"%@%@", self.methodPrefix, self.methodSelector];
 }
 
 - (NSString *)objectCrossRefPathTemplate {
-	NSString *prefix = (self.methodType == GBStoreTypes.classMethod) ? @"+" : @"-";
-	return [NSString stringWithFormat:@"#%@%@", prefix, self.methodSelector];
+	return [NSString stringWithFormat:@"#%@", self.uniqueObjectID];
 }
 
 - (BOOL)isClassMethod {
@@ -116,7 +125,7 @@
 - (NSString *)description {
 	if (!_methodArguments) return @"method";
 	NSMutableString *result = [NSMutableString string];
-	[result appendString:self.isClassMethod ? @"+" : @"-"];
+	[result appendString:self.methodPrefix];
 	if (_methodArguments) {
 		[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argument, NSUInteger idx, BOOL *stop) {
 			if (idx > 0) [result appendString:@" "];
@@ -128,7 +137,7 @@
 
 - (NSString *)debugDescription {
 	NSMutableString *result = [self descriptionStringWithComment];
-	[result appendString:self.isClassMethod ? @"+ " : @"- "];
+	[result appendString:self.methodPrefix];
 	if (_methodResult) [result appendFormat:@"(%@)", self.methodResult];
 	if (_methodArguments) {
 		[self.methodArguments enumerateObjectsUsingBlock:^(MethodArgumentInfo *argument, NSUInteger idx, BOOL *stop) {

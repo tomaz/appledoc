@@ -37,6 +37,7 @@
 
 #pragma mark - Comments
 
+@property (nonatomic, assign) BOOL searchForMissingComments;
 @property (nonatomic, copy) NSString *crossRefsFormat;
 
 #pragma mark - Debugging aid
@@ -47,11 +48,6 @@
 
 @property (nonatomic, assign) NSUInteger loggingLevel;
 @property (nonatomic, assign) NSUInteger loggingFormat;
-@property (nonatomic, assign) BOOL loggingInternalEnabled;
-@property (nonatomic, assign) BOOL loggingCommonEnabled;
-@property (nonatomic, assign) BOOL loggingStoreEnabled;
-@property (nonatomic, assign) BOOL loggingParsingEnabled;
-@property (nonatomic, assign) BOOL loggingProcessingEnabled;
 
 @end
 
@@ -67,6 +63,7 @@ extern const struct GBOptions {
 	__unsafe_unretained NSString *ignoredPaths;
 	__unsafe_unretained NSString *templatesPath;
 	
+	__unsafe_unretained NSString *searchMissingComments;
 	__unsafe_unretained NSString *crossRefsFormat;
 	
 	__unsafe_unretained NSString *printSettings;
@@ -75,9 +72,4 @@ extern const struct GBOptions {
 	
 	__unsafe_unretained NSString *loggingLevel;
 	__unsafe_unretained NSString *loggingFormat;
-	__unsafe_unretained NSString *loggingInternalEnabled;
-	__unsafe_unretained NSString *loggingCommonEnabled;
-	__unsafe_unretained NSString *loggingStoreEnabled;
-	__unsafe_unretained NSString *loggingParsingEnabled;
-	__unsafe_unretained NSString *loggingProcessingEnabled;
 } GBOptions;

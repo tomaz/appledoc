@@ -62,8 +62,10 @@ describe(@"cmd line switches", ^{
 	it(@"should work for comment related settings", ^{
 		runWithSettings(^(GBSettings *settings) {
 			// execute
+			[settings setBool:YES forKey:GBOptions.searchMissingComments];
 			[settings setObject:@"crossrefs" forKey:GBOptions.crossRefsFormat];
 			// verify
+			settings.searchForMissingComments should equal(YES);
 			settings.crossRefsFormat should equal(@"crossrefs");
 		});
 	});
@@ -73,19 +75,9 @@ describe(@"cmd line switches", ^{
 			// execute
 			[settings setInteger:2 forKey:GBOptions.loggingFormat];
 			[settings setInteger:3 forKey:GBOptions.loggingLevel];
-			[settings setBool:YES forKey:GBOptions.loggingInternalEnabled];
-			[settings setBool:YES forKey:GBOptions.loggingCommonEnabled];
-			[settings setBool:YES forKey:GBOptions.loggingStoreEnabled];
-			[settings setBool:YES forKey:GBOptions.loggingParsingEnabled];
-			[settings setBool:YES forKey:GBOptions.loggingProcessingEnabled];
 			// verify
 			settings.loggingFormat should equal(2);
 			settings.loggingLevel should equal(3);
-			settings.loggingInternalEnabled should equal(YES);
-			settings.loggingCommonEnabled should equal(YES);
-			settings.loggingStoreEnabled should equal(YES);
-			settings.loggingParsingEnabled should equal(YES);
-			settings.loggingProcessingEnabled should equal(YES);
 		});
 	});
 	

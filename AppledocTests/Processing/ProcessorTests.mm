@@ -10,13 +10,22 @@
 #import "Processor.h"
 #import "TestCaseBase.hh"
 
-static void runWithProcessor(void(^handler)(Processor *processor)) {
+static void runWithProcessor(BOOL mockedTasks, void(^handler)(Processor *processor)) {
 	Processor *processor = [[Processor alloc] init];
+	if (mockedTasks) {
+		processor.linkKnownObjectsTask = mock([ProcessorTask class]);
+		processor.mergeKnownObjectsTask = mock([ProcessorTask class]);
+		processor.fetchDocumentationTask = mock([ProcessorTask class]);
+	}
 	handler(processor);
 	[processor release];
 }
 
-#pragma mark - 
+static void runWithProcessor(void(^handler)(Processor *processor)) {
+	runWithProcessor(NO, handler);
+}
+
+#pragma mark -
 
 @interface Processor (UnitTestingPrivateAPI)
 - (NSInteger)processCommentForObject:(ObjectInfoBase *)object context:(ObjectInfoBase *)parent;
@@ -55,6 +64,13 @@ describe(@"lazy accessors:", ^{
 	describe(@"merge known objects task:", ^{
 		beforeEach(^{
 			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"mergeKnownObjectsTask";
+		});
+		itShouldBehaveLike(@"tasks");
+	});
+	
+	describe(@"fetch documentation task:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"task"] = @"fetchDocumentationTask";
 		});
 		itShouldBehaveLike(@"tasks");
 	});
@@ -109,146 +125,23 @@ describe(@"objects processing:", ^{
 			gbcatch([verify(task) runTask]);
 		});
 	});
+	
+	it(@"should invoke fetch documentation task", ^{
+		runWithProcessor(^(Processor *processor) {
+			// setup
+			id settings = mock([GBSettings class]);
+			id store = mock([Store class]);
+			id task = mock([ProcessorTask class]);
+			processor.fetchDocumentationTask = task;
+			// execute
+			[processor runWithSettings:settings store:store];
+			// verify
+			gbcatch([verify(task) runTask]);
+		});
+	});
 });
 
 describe(@"comment processing:", ^{
-	describe(@"enumerating objects:", ^{
-		describe(@"top level objects:", ^{
-			it(@"should enumerate classes", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id classes = mock([NSArray class]);
-					id store = mock([Store class]);
-					[given([store storeClasses]) willReturn:classes];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(classes) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-
-			it(@"should enumerate extensions", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id extensions = mock([NSArray class]);
-					id store = mock([Store class]);
-					[given([store storeExtensions]) willReturn:extensions];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(extensions) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-			
-			it(@"should enumerate categories", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id categories = mock([NSArray class]);
-					id store = mock([Store class]);
-					[given([store storeCategories]) willReturn:categories];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(categories) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-			
-			it(@"should enumerate protocols", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id protocols = mock([NSArray class]);
-					id store = mock([Store class]);
-					[given([store storeProtocols]) willReturn:protocols];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(protocols) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-		});
-		
-		describe(@"members:", ^{
-			__block InterfaceInfoBase *object;
-			__block id classMethods;
-			__block id interfaceMethods;
-			__block id properties;
-			
-			beforeEach(^{
-				classMethods = mock([NSArray class]);
-				interfaceMethods = mock([NSArray class]);
-				properties = mock([NSArray class]);
-				object = [[[InterfaceInfoBase alloc] init] autorelease];
-				object.interfaceClassMethods = classMethods;
-				object.interfaceInstanceMethods = interfaceMethods;
-				object.interfaceProperties = properties;
-			});
-			
-			it(@"should enumerate class members", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id store = mock([Store class]);
-					[given([store storeClasses]) willReturn:@[object]];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-			
-			it(@"should enumerate extension members", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id store = mock([Store class]);
-					[given([store storeExtensions]) willReturn:@[object]];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-
-			it(@"should enumerate category members", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id store = mock([Store class]);
-					[given([store storeCategories]) willReturn:@[object]];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-			
-			it(@"should enumerate protocol members", ^{
-				runWithProcessor(^(Processor *processor) {
-					// setup
-					id settings = mock([GBSettings class]);
-					id store = mock([Store class]);
-					[given([store storeProtocols]) willReturn:@[object]];
-					// execute
-					[processor runWithSettings:settings store:store];
-					// verify
-					gbcatch([verify(classMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(interfaceMethods) enumerateObjectsUsingBlock:(id)anything()]);
-					gbcatch([verify(properties) enumerateObjectsUsingBlock:(id)anything()]);
-				});
-			});
-		});
-	});
-
 	describe(@"processing comments:", ^{
 		__block id context;
 		__block id object;

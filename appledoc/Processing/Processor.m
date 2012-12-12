@@ -8,7 +8,9 @@
 
 #import "Objects.h"
 #import "Store.h"
+#import "LinkKnownObjectsTask.h"
 #import "MergeKnownObjectsTask.h"
+#import "FetchDocumentationTask.h"
 #import "SplitCommentToSectionsTask.h"
 #import "RegisterCommentComponentsTask.h"
 #import "DetectCrossReferencesTask.h"
@@ -20,9 +22,10 @@
 
 - (NSInteger)runTask {
 	LogNormal(@"Processing...");
-	__block GBResult result = GBResultOk;
+	GBResult result = GBResultOk;
 	GB_PROCESS([self.linkKnownObjectsTask runTask]);
 	GB_PROCESS([self.mergeKnownObjectsTask runTask]);
+	GB_PROCESS([self.fetchDocumentationTask runTask]);
 	GB_PROCESS([self processInterfaces:self.store.storeClasses]);
 	GB_PROCESS([self processInterfaces:self.store.storeExtensions]);
 	GB_PROCESS([self processInterfaces:self.store.storeCategories]);
@@ -78,7 +81,7 @@
 - (ProcessorTask *)linkKnownObjectsTask {
 	if (_linkKnownObjectsTask) return _linkKnownObjectsTask;
 	LogDebug(@"Initializing link known objects task due to first access...");
-	_linkKnownObjectsTask = [[ProcessorTask alloc] initWithStore:self.store settings:self.settings];
+	_linkKnownObjectsTask = [[LinkKnownObjectsTask alloc] initWithStore:self.store settings:self.settings];
 	return _linkKnownObjectsTask;
 }
 
@@ -87,6 +90,13 @@
 	LogDebug(@"Initializing merge known objects task due to first access...");
 	_mergeKnownObjectsTask = [[MergeKnownObjectsTask alloc] initWithStore:self.store settings:self.settings];
 	return _mergeKnownObjectsTask;
+}
+
+- (ProcessorTask *)fetchDocumentationTask {
+	if (_fetchDocumentationTask) return _fetchDocumentationTask;
+	LogDebug(@"Initializing fetch documentation task due to first access...");
+	_fetchDocumentationTask = [[FetchDocumentationTask alloc] initWithStore:self.store settings:self.settings];
+	return _fetchDocumentationTask;
 }
 
 - (ProcessorCommentTask *)splitCommentToSectionsTask {

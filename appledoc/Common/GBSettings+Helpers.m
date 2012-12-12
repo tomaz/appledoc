@@ -28,10 +28,8 @@
 - (void)applyFactoryDefaults {
 	self.projectVersion = @"1.0";
 	self.crossRefsFormat = @"plain";
+	self.searchForMissingComments = YES;
 	self.loggingFormat = 0;
-	self.loggingCommonEnabled = YES;
-	self.loggingStoreEnabled = NO;
-	self.loggingParsingEnabled = NO;
 }
 
 - (BOOL)applyGlobalSettingsFromCmdLineSettings:(GBSettings *)settings {

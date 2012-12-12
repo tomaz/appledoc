@@ -24,7 +24,7 @@
 #pragma mark - Top level objects handling
 
 - (void)handleClassesFromStore:(Store *)store {
-	LogDebug(@"Preparing links for classes...");
+	LogDebug(@"Handling classes...");
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *class, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", class);
@@ -34,7 +34,7 @@
 }
 
 - (void)handleExtensionsFromStore:(Store *)store {
-	LogDebug(@"Preparing links for classes...");
+	LogDebug(@"Handling extensions...");
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeExtensions enumerateObjectsUsingBlock:^(CategoryInfo *extension, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", extension);
@@ -44,7 +44,7 @@
 }
 
 - (void)handleCategoriesFromStore:(Store *)store {
-	LogDebug(@"Preparing links for classes...");
+	LogDebug(@"Handling categories...");
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeCategories enumerateObjectsUsingBlock:^(CategoryInfo *category, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", category);
@@ -54,7 +54,7 @@
 }
 
 - (void)handleProtocolsFromStore:(Store *)store {
-	LogDebug(@"Preparing links for classes...");
+	LogDebug(@"Handling protocols...");
 	__weak LinkKnownObjectsTask *bself = self;
 	[store.storeProtocols enumerateObjectsUsingBlock:^(ProtocolInfo *class, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", class);
@@ -69,7 +69,7 @@
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger idx, BOOL *stop) {
 		if (testedClass == class) return;
 		if (![testedClass.nameOfClass isEqualToString:class.nameOfSuperClass]) return;
-		LogDebug(@"Found link to super class %@.", testedClass);
+		LogVerbose(@"Found link to super class %@.", testedClass);
 		class.classSuperClass.linkToObject = testedClass;
 		*stop = YES;
 	}];
@@ -79,7 +79,7 @@
 	if (category.categoryClass.nameOfObject.length == 0) return;
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *testedClass, NSUInteger idx, BOOL *stop) {
 		if (![testedClass.nameOfClass isEqualToString:category.nameOfClass]) return;
-		LogDebug(@"Found link to extended class %@.", testedClass);
+		LogVerbose(@"Found link to extended class %@.", testedClass);
 		category.categoryClass.linkToObject = testedClass;
 		*stop = YES;
 	}];
@@ -90,7 +90,7 @@
 	[interface.interfaceAdoptedProtocols enumerateObjectsUsingBlock:^(ObjectLinkInfo *link, NSUInteger idx, BOOL *stop) {
 		[store.storeProtocols enumerateObjectsUsingBlock:^(ProtocolInfo *protocol, NSUInteger idx, BOOL *stop) {
 			if (![protocol.nameOfProtocol isEqualToString:link.nameOfObject]) return;
-			LogDebug(@"Found link to %@.", protocol);
+			LogVerbose(@"Found link to %@.", protocol);
 			link.linkToObject = protocol;
 			*stop = YES;
 		}];

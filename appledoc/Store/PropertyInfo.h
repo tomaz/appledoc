@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "ObjectInfoBase.h"
+#import "MemberInfoBase.h"
 
 @class AttributesInfo;
 @class DescriptorsInfo;
@@ -14,7 +14,7 @@
 
 /** Holds data for an Objective C property.
  */
-@interface PropertyInfo : ObjectInfoBase
+@interface PropertyInfo : MemberInfoBase
 
 - (NSString *)propertyGetterSelector;
 - (NSString *)propertySetterSelector;

@@ -7,8 +7,9 @@
 //
 
 #import "Store.h"
-#import "LinkKnownObjectsTask.h"
 #import "TestCaseBase.hh"
+#import "StoreMocks.h"
+#import "LinkKnownObjectsTask.h"
 
 #define GBSections [comment sourceSections]
 
@@ -21,59 +22,25 @@ static void runWithTask(void(^handler)(LinkKnownObjectsTask *task, id store)) {
 	[task release];
 }
 
-static id createInterface(void(^handler)(InterfaceInfoBase *interface)) {
-	InterfaceInfoBase *result = [[InterfaceInfoBase alloc] init];
-	handler(result);
-	return result;
-}
-
-static id createClass(void(^handler)(ClassInfo *info)) {
-	ClassInfo *result = [[ClassInfo alloc] init];
-	handler(result);
-	return result;
-}
-
 static id createClass(NSString *name) {
-	id result = mock([ClassInfo class]);
-	[given([result nameOfClass]) willReturn:name];
-	return result;
-}
-
-static id createCategory(void(^handler)(CategoryInfo *info)) {
-	CategoryInfo *result = [[CategoryInfo alloc] init];
-	handler(result);
-	return result;
-}
-
-static id createProtocol(void(^handler)(ProtocolInfo *info)) {
-	ProtocolInfo *result = [[ProtocolInfo alloc] init];
-	handler(result);
-	return result;
+	return [StoreMocks mockClass:name block:^(id object) { }];
 }
 
 static id createProtocol(NSString *name) {
-	id result = mock([ProtocolInfo class]);
-	[given([result nameOfProtocol]) willReturn:name];
-	return result;
+	return [StoreMocks mockProtocol:name block:^(id object) { }];
 }
 
-static void deriveClass(ClassInfo *object, NSString *name) {
-	object.classSuperClass.nameOfObject = name;
+static id createDerivedClass(NSString *name, NSString *baseName) {
+	return [StoreMocks createClass:^(ClassInfo *object) {
+		object.nameOfClass = name;
+		[object derive:baseName];
+	}];
 }
 
-static void extendClass(CategoryInfo *object, NSString *name) {
-	object.categoryClass.nameOfObject = name;
-}
-
-static void adoptProtocols(InterfaceInfoBase *interface, NSString *first, ...) {
-	va_list args;
-	va_start(args, first);
-	for (NSString *arg=first; arg!=nil; arg=va_arg(args, NSString *)) {
-		ObjectLinkInfo *link = [[ObjectLinkInfo alloc] init];
-		link.nameOfObject = arg;
-		[interface.interfaceAdoptedProtocols addObject:link];
-	}
-	va_end(args);
+static id createCategory(NSString *className) {
+	return [StoreMocks createCategory:^(CategoryInfo *object) {
+		[object extend:className];
+	}];
 }
 
 #pragma mark -
@@ -85,9 +52,9 @@ describe(@"adopted protocols:", ^{
 		it(@"should link classes to known protocols", ^{
 			runWithTask(^(LinkKnownObjectsTask *task, id store) {
 				// setup
-				InterfaceInfoBase *class1 = createInterface(^(InterfaceInfoBase *interface) {
-					adoptProtocols(interface, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
-				});
+				ClassInfo *class1 = [StoreMocks createClass:^(ClassInfo *object) {
+					[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
+				}];
 				id protocol1 = createProtocol(@"MyProtocol1");
 				id protocol2 = createProtocol(@"MyProtocol2");
 				[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
@@ -104,10 +71,9 @@ describe(@"adopted protocols:", ^{
 	
 	it(@"should link extensions to known protocols", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
-			// setup
-			InterfaceInfoBase *extension1 = createCategory(^(CategoryInfo *interface) {
-				adoptProtocols(interface, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
-			});
+			CategoryInfo *extension1 = [StoreMocks createCategory:^(CategoryInfo *object) {
+				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
+			}];
 			id protocol1 = createProtocol(@"MyProtocol1");
 			id protocol2 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
@@ -124,9 +90,9 @@ describe(@"adopted protocols:", ^{
 	it(@"should link categories to known protocols", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			InterfaceInfoBase *category1 = createCategory(^(CategoryInfo *interface) {
-				adoptProtocols(interface, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
-			});
+			CategoryInfo *category1 = [StoreMocks createCategory:^(CategoryInfo *object) {
+				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
+			}];
 			id protocol1 = createProtocol(@"MyProtocol1");
 			id protocol2 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
@@ -143,9 +109,9 @@ describe(@"adopted protocols:", ^{
 	it(@"should link protocols to known protocols", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			ProtocolInfo *protocol1 = createProtocol(^(ProtocolInfo *info) {
-				adoptProtocols(info, @"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil);
-			});
+			ProtocolInfo *protocol1 = [StoreMocks createProtocol:^(ProtocolInfo *object) {
+				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
+			}];
 			id protocol2 = createProtocol(@"MyProtocol1");
 			id protocol3 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2, protocol3 ]];
@@ -163,9 +129,7 @@ describe(@"super classes:", ^{
 	it(@"should link to known super classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			ClassInfo *class1 = createClass(^(ClassInfo *info) {
-				deriveClass(info, @"MyBaseClass");
-			});
+			ClassInfo *class1 = createDerivedClass(@"MyClass", @"MyBaseClass");
 			id class2 = createClass(@"MyBaseClass");
 			[given([store storeClasses]) willReturn:@[ class1, class2 ]];
 			// execute
@@ -178,18 +142,9 @@ describe(@"super classes:", ^{
 	it(@"should handle multiple depths of class hierarchies", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			ClassInfo *class1 = createClass(^(ClassInfo *info) {
-				info.nameOfClass = @"Class1";
-				deriveClass(info, @"Class2");
-			});
-			ClassInfo *class2 = createClass(^(ClassInfo *info) {
-				info.nameOfClass = @"Class2";
-				deriveClass(info, @"Class3");
-			});
-			ClassInfo *class3 = createClass(^(ClassInfo *info) {
-				info.nameOfClass = @"Class3";
-				deriveClass(info, @"Unknown");
-			});
+			ClassInfo *class1 = createDerivedClass(@"Class1", @"Class2");
+			ClassInfo *class2 = createDerivedClass(@"Class2", @"Class3");
+			ClassInfo *class3 = createDerivedClass(@"Class3", @"UnknownClass");
 			[given([store storeClasses]) willReturn:@[ class1, class2, class3 ]];
 			// execute
 			[task runTask];
@@ -205,12 +160,8 @@ describe(@"category classes:", ^{
 	it(@"should link extensions to known classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			CategoryInfo *extension1 = createCategory(^(CategoryInfo *info) {
-				extendClass(info, @"Class1");
-			});
-			CategoryInfo *extension2 = createCategory(^(CategoryInfo *info) {
-				extendClass(info, @"UnknownClass");
-			});
+			CategoryInfo *extension1 = createCategory(@"Class1");
+			CategoryInfo *extension2 = createCategory(@"UnknownClass");
 			ClassInfo *class1 = createClass(@"Class1");
 			[given([store storeExtensions]) willReturn:@[ extension1, extension2 ]];
 			[given([store storeClasses]) willReturn:@[ class1 ]];
@@ -225,12 +176,8 @@ describe(@"category classes:", ^{
 	it(@"should link categories to known classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			CategoryInfo *category1 = createCategory(^(CategoryInfo *info) {
-				extendClass(info, @"Class1");
-			});
-			CategoryInfo *category2 = createCategory(^(CategoryInfo *info) {
-				extendClass(info, @"UnknownClass");
-			});
+			CategoryInfo *category1 = createCategory(@"Class1");
+			CategoryInfo *category2 = createCategory(@"UnknownClass");
 			ClassInfo *class1 = createClass(@"Class1");
 			[given([store storeCategories]) willReturn:@[ category1, category2 ]];
 			[given([store storeClasses]) willReturn:@[ class1 ]];
