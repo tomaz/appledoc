@@ -15,6 +15,7 @@ typedef void(^GBFetchBlock)(id member);
 @implementation FetchDocumentationTask
 
 - (GBResult)runTask {
+	if (!self.settings.searchForMissingComments) return GBResultOk;
 	LogDebug(@"Fetching documentation from related objects...");
 	[self handleClassesFromStore:self.store];
 	[self handleExtensionsFromStore:self.store];
@@ -30,49 +31,51 @@ typedef void(^GBFetchBlock)(id member);
 	__weak FetchDocumentationTask *bself = self;
 	[store.storeClasses enumerateObjectsUsingBlock:^(ClassInfo *class, NSUInteger idx, BOOL *stop) {
 		LogDebug(@"Handling %@...", class);
-		[bself fetchDocumentationForMembersOf:class block:^(id member) {
-			
+		[bself fetchDocumentationFromAdoptedProtocolsOf:class missingBlock:^(id member) {
+			// Note that we want to log undocumented members; users may disable warnings but if they turn verbosity to debug, they should still see what's going on.
+			LogDebug(@"Documentation for %@ not found in adopted protocols, checking superclasses...", member);
+			[bself fetchDocumentationFromSuperClassesOf:class forMember:member];
 		}];
 	}];
 }
 
 - (void)handleExtensionsFromStore:(Store *)store {
 	LogDebug(@"Handling extensions...");
-	__weak FetchDocumentationTask *bself = self;
-	[store.storeExtensions enumerateObjectsUsingBlock:^(CategoryInfo *extension, NSUInteger idx, BOOL *stop) {
-		LogDebug(@"Handling %@...", extension);
-		[bself fetchDocumentationForMembersOf:extension block:^(id member) { }];
-	}];
+	[self fetchDocumentationFromAdoptedProtocolsForInterfaces:store.storeExtensions];
 }
 
 - (void)handleCategoriesFromStore:(Store *)store {
 	LogDebug(@"Handling categories...");
-	__weak FetchDocumentationTask *bself = self;
-	[store.storeCategories enumerateObjectsUsingBlock:^(CategoryInfo *category, NSUInteger idx, BOOL *stop) {
-		LogDebug(@"Handling %@...", category);
-		[bself fetchDocumentationForMembersOf:category block:^(id member) { }];
-	}];
+	[self fetchDocumentationFromAdoptedProtocolsForInterfaces:store.storeCategories];
 }
 
 - (void)handleProtocolsFromStore:(Store *)store {
 	LogDebug(@"Handling protocols...");
+	[self fetchDocumentationFromAdoptedProtocolsForInterfaces:store.storeProtocols];
+}
+
+#pragma mark - Adopted protocols handling
+
+- (void)fetchDocumentationFromAdoptedProtocolsForInterfaces:(NSArray *)interfaces {
 	__weak FetchDocumentationTask *bself = self;
-	[store.storeProtocols enumerateObjectsUsingBlock:^(ProtocolInfo *protocol, NSUInteger idx, BOOL *stop) {
-		LogDebug(@"Handling %@...", protocol);
-		[bself fetchDocumentationForMembersOf:protocol block:^(id member) { }];
+	[interfaces enumerateObjectsUsingBlock:^(InterfaceInfoBase *interface, NSUInteger idx, BOOL *stop) {
+		LogDebug(@"Handling %@...", interface);
+		[bself fetchDocumentationFromAdoptedProtocolsOf:interface missingBlock:^(id member) {
+			// Similar to handleClassesFromStore: we want to always log undocumented members as debug messages...
+			LogDebug(@"Member %@ is undocumented!", member);
+			[bself reportUndocumentedMember:member];
+		}];
 	}];
 }
 
-#pragma mark - Members handling
-
-- (void)fetchDocumentationForMembersOf:(InterfaceInfoBase *)interface block:(GBFetchBlock)handler {
-	if (interface.interfaceAdoptedProtocols.count == 0) return;
-	[self fetchDocumentationForMembersOf:interface members:@selector(interfaceClassMethods) block:handler];
-	[self fetchDocumentationForMembersOf:interface members:@selector(interfaceInstanceMethods) block:handler];
-	[self fetchDocumentationForMembersOf:interface members:@selector(interfaceProperties) block:handler];
+- (void)fetchDocumentationFromAdoptedProtocolsOf:(InterfaceInfoBase *)interface missingBlock:(GBFetchBlock)handler {
+	[self fetchDocumentationFromAdoptedProtocolsOf:interface members:@selector(interfaceClassMethods) missingBlock:handler];
+	[self fetchDocumentationFromAdoptedProtocolsOf:interface members:@selector(interfaceInstanceMethods) missingBlock:handler];
+	[self fetchDocumentationFromAdoptedProtocolsOf:interface members:@selector(interfaceProperties) missingBlock:handler];
 }
 
-- (void)fetchDocumentationForMembersOf:(InterfaceInfoBase *)interface members:(SEL)selector block:(GBFetchBlock)handler {
+- (void)fetchDocumentationFromAdoptedProtocolsOf:(InterfaceInfoBase *)interface members:(SEL)selector missingBlock:(GBFetchBlock)handler {
+	__weak FetchDocumentationTask *bself = self;
 	NSArray *interfaceMembers = [interface performSelector:selector];
 	[interfaceMembers enumerateObjectsUsingBlock:^(ObjectInfoBase *member, NSUInteger idx, BOOL *stop) {
 		if (member.comment) return;
@@ -81,16 +84,54 @@ typedef void(^GBFetchBlock)(id member);
 			if (!adoptedProtocol) return;
 			NSArray *adoptedMembers = [adoptedProtocol performSelector:selector];
 			[adoptedMembers enumerateObjectsUsingBlock:^(ObjectInfoBase *adoptedMember, NSUInteger j, BOOL *jstop) {
-				if (![adoptedMember.uniqueObjectID isEqualToString:member.uniqueObjectID]) return;
 				if (!adoptedMember.comment) return;
-				LogVerbose(@"Fetching documentation for %@ from %@.", [(id)member descriptionWithInterface:interface], [(id)adoptedMember descriptionWithInterface:adoptedProtocol]);
-				member.comment = adoptedMember.comment;
+				if (![adoptedMember.uniqueObjectID isEqualToString:member.uniqueObjectID]) return;
+				[bself copyDocumentationFrom:adoptedMember to:member];
 				*jstop = YES;
 				*istop = YES;
 			}];
 		}];
 		if (!member.comment) handler(member);
 	}];
+}
+
+#pragma mark - Super classes handling
+
+- (void)fetchDocumentationFromSuperClassesOf:(ClassInfo *)class forMember:(id)member {
+	ClassInfo *superClass = class.classSuperClass.linkToObject;
+	while (superClass) {
+		LogDebug(@"Checking super class %@...", superClass);
+		if ([self fetchDocumentationFromSuperClassMembers:superClass.interfaceClassMethods forMember:member]) break;
+		if ([self fetchDocumentationFromSuperClassMembers:superClass.interfaceInstanceMethods forMember:member]) break;
+		if ([self fetchDocumentationFromSuperClassMembers:superClass.interfaceProperties forMember:member]) break;
+		superClass = superClass.classSuperClass.linkToObject;
+	}
+	if (![member comment]) {
+		LogDebug(@"Member %@ is undocumented!", [member descriptionWithParent]);
+		[self reportUndocumentedMember:member];
+	}
+}
+
+- (BOOL)fetchDocumentationFromSuperClassMembers:(NSArray *)superMembers forMember:(ObjectInfoBase *)member {
+	__weak FetchDocumentationTask *bself = self;
+	[superMembers enumerateObjectsUsingBlock:^(ObjectInfoBase *superMember, NSUInteger idx, BOOL *stop) {
+		if (!superMember.comment) return;
+		if (![superMember.uniqueObjectID isEqualToString:member.uniqueObjectID]) return;
+		[bself copyDocumentationFrom:superMember to:member];
+	}];
+}
+
+#pragma mark - Copying documentation
+
+- (void)copyDocumentationFrom:(MemberInfoBase *)source to:(MemberInfoBase *)dest {
+	LogVerbose(@"Fetching documentation for %@ from %@.", [dest descriptionWithParent], [source descriptionWithParent]);
+	dest.comment = source.comment;
+}
+
+#pragma mark - Undocumented objects handling
+
+- (void)reportUndocumentedMember:(id)object {
+	LogWarn(@"%@ is undocumented!", [object descriptionWithParent]);
 }
 
 @end

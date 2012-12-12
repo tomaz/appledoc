@@ -14,130 +14,253 @@
 
 #pragma mark -
 
-static void runWithTask(void(^handler)(FetchDocumentationTask *task, id store)) {
+static void runWithTask(id store, id settings, void(^handler)(FetchDocumentationTask *task, id store, id settings)) {
 	FetchDocumentationTask *task = [[FetchDocumentationTask alloc] init];
-	task.store = mock([Store class]);
-	handler(task, task.store);
+	task.settings = settings ? settings : mock([GBSettings class]);
+	task.store = store ? store : mock([Store class]);
+	handler(task, task.store, task.settings);
 	[task release];
 }
+
+static void runWithTask(void(^handler)(FetchDocumentationTask *task, id store, id settings)) {
+	runWithTask(nil, nil, handler);
+}
+
+static id createBaseClass() {
+	return [StoreMocks mockClass:@"BaseClass" block:^(id object) { }];
+}
+
+static id createDerivedClass(id baseClass) {
+	return [StoreMocks mockClass:@"DerivedClass" block:^(id object) {
+		[StoreMocks add:object asDerivedClassFrom:baseClass];
+	}];
+}
+
+static id createAdoptedProtocol(NSString *name, id adoptedInObject) {
+	return [StoreMocks mockProtocol:name block:^(id object) {
+		[StoreMocks add:adoptedInObject asAdopting:object];
+	}];
+}
+
+static id createMethod(NSString *selector, id parent) {
+	BOOL isClassMethod = [selector hasPrefix:@"+"];
+	return [StoreMocks createMethod:selector block:^(MethodInfo *object) {
+		if (isClassMethod)
+			[StoreMocks add:object asClassMethodOf:parent];
+		else
+			[StoreMocks add:object asInstanceMethodOf:parent];
+	}];
+}
+
+static id createCommentedMethod(NSString *selector, id parent) {
+	id result = createMethod(selector, parent);
+	[StoreMocks addMockCommentTo:result];
+	return result;
+}
+
+static id createProperty(NSString *name, id parent) {
+	return [StoreMocks createProperty:name block:^(PropertyInfo *object) {
+		[StoreMocks add:object asPropertyOf:parent];
+	}];
+}
+
+static id createCommentedProperty(NSString *name, id parent) {
+	id result = createProperty(name, parent);
+	[StoreMocks addMockCommentTo:result];
+	return result;
+}
+
+#define GBSearch [info[@"search"] boolValue]
+#define GBVerify(d,b) if (GBSearch) d.comment should equal(b.comment); else d.comment should be_nil()
 
 #pragma mark -
 
 TEST_BEGIN(FetchDocumentationTaskTests)
 
-describe(@"adopted protocols:", ^{
+describe(@"copy documentation from super classes:", ^{
 	sharedExamplesFor(@"examples", ^(NSDictionary *info) {
-		__block id protocol;
-		__block id object;
-		__block id realStore;
+		__block id settings;
 		
 		beforeEach(^{
-			// get objects from info dictionary
-			realStore = info[@"store"];
-			object = info[@"object"];
-			// setup protocol and assign it to store; note that we need to append our protocol to existing ones!
-			protocol = [StoreMocks mockProtocol:@"Protocol"];
-			NSMutableArray *actualProtocols = [NSMutableArray arrayWithArray:[realStore storeProtocols]];
-			[actualProtocols addObject:protocol];
-			[given([realStore storeProtocols]) willReturn:actualProtocols];
-			// adopt the protocol
-			[given([object interfaceAdoptedProtocols]) willReturn:@[ [StoreMocks link:protocol] ]];
+			settings = mock([GBSettings class]);
+			[given([settings searchForMissingComments]) willReturnBool:GBSearch];
 		});
-		
-		it(@"should fetch for class methods", ^{
-			runWithTask(^(FetchDocumentationTask *task, id store) {
-				// setup class methods in protocol
-				ObjectInfoBase *protocolClassMethod = [StoreMocks mockCommentedMethod:@"+method"];
-				[given([protocol interfaceClassMethods]) willReturn:@[ protocolClassMethod ]];
-				// setup class methods in object
-				MethodInfo *objectClassMethod = [StoreMocks createMethod:@"+method"];
-				[given([object interfaceClassMethods]) willReturn:@[ objectClassMethod ]];
-				// setup task
-				task.store = realStore;
+
+		it(@"should handle class method", ^{
+			runWithTask(nil, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id baseClass = createBaseClass();
+				id derivedClass = createDerivedClass(baseClass);
+				MethodInfo *baseMethod = createCommentedMethod(@"+method", baseClass);
+				MethodInfo *derivedMethod = createMethod(@"+method", derivedClass);
+				[given([store storeClasses]) willReturn:@[ baseClass, derivedClass ]];
 				// execute
 				[task runTask];
 				// verify
-				objectClassMethod.comment should equal(protocolClassMethod.comment);
+				GBVerify(derivedMethod, baseMethod);
+			});
+		});
+		
+		it(@"should handle instance method", ^{
+			runWithTask(nil, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id baseClass = createBaseClass();
+				id derivedClass = createDerivedClass(baseClass);
+				MethodInfo *baseMethod = createCommentedMethod(@"-method", baseClass);
+				MethodInfo *derivedMethod = createMethod(@"-method", derivedClass);
+				[given([store storeClasses]) willReturn:@[ baseClass, derivedClass ]];
+				// execute
+				[task runTask];
+				// verify
+				GBVerify(derivedMethod, baseMethod);
+			});
+		});
+		
+		it(@"should copy property from base class", ^{
+			runWithTask(nil, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id baseClass = createBaseClass();
+				id derivedClass = createDerivedClass(baseClass);
+				PropertyInfo *baseProperty = createCommentedProperty(@"property", baseClass);
+				PropertyInfo *derivedProperty = createProperty(@"property", derivedClass);
+				[given([store storeClasses]) willReturn:@[ baseClass, derivedClass ]];
+				// execute
+				[task runTask];
+				// verify
+				GBVerify(derivedProperty, baseProperty);
+			});
+		});
+	});
+	
+	describe(@"search enabled:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"search"] = @(YES);
+		});
+		itShouldBehaveLike(@"examples");
+	});
+	
+	describe(@"search disabled:", ^{
+		beforeEach(^{
+			[[SpecHelper specHelper] sharedExampleContext][@"search"] = @(NO);
+		});
+		itShouldBehaveLike(@"examples");
+	});
+});
+
+describe(@"adopted protocols:", ^{
+	// This block describes actual unit tests.
+	sharedExamplesFor(@"examples", ^(NSDictionary *info) {
+		__block id store;
+		__block id settings;
+		
+		beforeEach(^{
+			store = info[@"store"];
+			settings = mock([GBSettings class]);
+			[given([settings searchForMissingComments]) willReturnBool:GBSearch];
+		});
+		
+		it(@"should fetch for class methods", ^{
+			runWithTask(store, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id object = info[@"object"];
+				id protocol = createAdoptedProtocol(@"Protocol", object);
+				MethodInfo *objectClassMethod = createMethod(@"+method", object);
+				ObjectInfoBase *protocolClassMethod = createCommentedMethod(@"+method", protocol);
+				// execute
+				[task runTask];
+				// verify
+				GBVerify(objectClassMethod, protocolClassMethod);
 			});
 		});
 		
 		it(@"should fetch for instance methods", ^{
-			runWithTask(^(FetchDocumentationTask *task, id store) {
-				// setup instance methods in protocol
-				ObjectInfoBase *protocolInstanceMethod = [StoreMocks mockCommentedMethod:@"+method"];
-				[given([protocol interfaceInstanceMethods]) willReturn:@[ protocolInstanceMethod ]];
-				// setup instance methods in object
-				MethodInfo *objectInstanceMethod = [StoreMocks createMethod:@"+method"];
-				[given([object interfaceInstanceMethods]) willReturn:@[ objectInstanceMethod ]];
-				// setup task
-				task.store = realStore;
+			runWithTask(store, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id object = info[@"object"];
+				id protocol = createAdoptedProtocol(@"Protocol", object);
+				MethodInfo *objectInstanceMethod = createMethod(@"-method", object);
+				ObjectInfoBase *protocolInstanceMethod = createCommentedMethod(@"-method", protocol);
 				// execute
 				[task runTask];
 				// verify
-				objectInstanceMethod.comment should equal(protocolInstanceMethod.comment);
+				GBVerify(objectInstanceMethod, protocolInstanceMethod);
 			});
 		});
 
 		it(@"should fetch for properties", ^{
-			runWithTask(^(FetchDocumentationTask *task, id store) {
-				// setup properties in protocol
-				ObjectInfoBase *protocolProperty = [StoreMocks mockCommentedProperty:@"property"];
-				[given([protocol interfaceProperties]) willReturn:@[ protocolProperty ]];
-				// setup properties in object
-				PropertyInfo *objectProperty = [StoreMocks createProperty:@"property"];
-				[given([object interfaceProperties]) willReturn:@[ objectProperty ]];
-				// setup task
-				task.store = realStore;
+			runWithTask(store, settings, ^(FetchDocumentationTask *task, id store, id settings) {
+				// setup
+				id object = info[@"object"];
+				id protocol = createAdoptedProtocol(@"Protocol", object);
+				PropertyInfo *objectProperty = createProperty(@"property", object);
+				ObjectInfoBase *protocolProperty = createCommentedProperty(@"property", protocol);
 				// execute
 				[task runTask];
 				// verify
-				objectProperty.comment should equal(protocolProperty.comment);
+				GBVerify(objectProperty, protocolProperty);
 			});
 		});
 	});
 	
-	describe(@"classes:", ^{
-		beforeEach(^{
-			id store = mock([Store class]);
-			id object = mock([ClassInfo class]);
-			[given([store storeClasses]) willReturn:@[ object ]];
-			[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
-			[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+	// This block described variants for above tests (repeats the tests for different types of objects).
+	sharedExamplesFor(@"variants", ^(NSDictionary *info) {
+		describe(@"classes:", ^{
+			beforeEach(^{
+				id store = mock([Store class]);
+				id object = mock([ClassInfo class]);
+				[given([store storeClasses]) willReturn:@[ object ]];
+				[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+				[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			});
+			itShouldBehaveLike(@"examples");
 		});
-		itShouldBehaveLike(@"examples");
+		
+		describe(@"extensions:", ^{
+			beforeEach(^{
+				id store = mock([Store class]);
+				id object = mock([CategoryInfo class]);
+				[given([store storeExtensions]) willReturn:@[ object ]];
+				[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+				[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"categories:", ^{
+			beforeEach(^{
+				id store = mock([Store class]);
+				id object = mock([CategoryInfo class]);
+				[given([store storeCategories]) willReturn:@[ object ]];
+				[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+				[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			});
+			itShouldBehaveLike(@"examples");
+		});
+		
+		describe(@"protocols:", ^{
+			beforeEach(^{
+				id store = mock([Store class]);
+				id object = mock([ProtocolInfo class]);
+				[given([store storeProtocols]) willReturn:@[ object ]];
+				[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
+				[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			});
+			itShouldBehaveLike(@"examples");
+		});
 	});
 	
-	describe(@"extensions:", ^{
+	// These two blocks repeat all the variants, for all the examples, for search enabled or disabled.
+	describe(@"search enabled:", ^{
 		beforeEach(^{
-			id store = mock([Store class]);
-			id object = mock([CategoryInfo class]);
-			[given([store storeExtensions]) willReturn:@[ object ]];
-			[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
-			[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			[[SpecHelper specHelper] sharedExampleContext][@"search"] = @(YES);
 		});
-		itShouldBehaveLike(@"examples");
+		itShouldBehaveLike(@"variants");
 	});
-	
-	describe(@"categories:", ^{
+	describe(@"search disabled:", ^{
 		beforeEach(^{
-			id store = mock([Store class]);
-			id object = mock([CategoryInfo class]);
-			[given([store storeCategories]) willReturn:@[ object ]];
-			[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
-			[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
+			[[SpecHelper specHelper] sharedExampleContext][@"search"] = @(NO);
 		});
-		itShouldBehaveLike(@"examples");
-	});
-	
-	describe(@"protocols:", ^{
-		beforeEach(^{
-			id store = mock([Store class]);
-			id object = mock([ProtocolInfo class]);
-			[given([store storeProtocols]) willReturn:@[ object ]];
-			[[SpecHelper specHelper] sharedExampleContext][@"store"] = store;
-			[[SpecHelper specHelper] sharedExampleContext][@"object"] = object;
-		});
-		itShouldBehaveLike(@"examples");
+		itShouldBehaveLike(@"variants");
 	});
 });
 

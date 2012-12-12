@@ -141,12 +141,20 @@
 		[objectOrMock setComment:comment];
 }
 
-+ (void)add:(id)classOrMock asBaseClassOf:(id)baseOrMock {
-	ObjectLinkInfo *link = [StoreMocks link:baseOrMock];
++ (void)add:(id)classOrMock asDerivedClassFrom:(id)baseOrMock {
+	ObjectLinkInfo *link = [self link:baseOrMock];
 	if ([self isMock:classOrMock])
 		[given([classOrMock classSuperClass]) willReturn:link];
 	else
 		[classOrMock setClassSuperClass:link];
+}
+
++ (void)add:(id)objectOrMock asAdopting:(id)protocolOrMock {
+	ObjectLinkInfo *link = [self link:protocolOrMock];
+	if ([self isMock:objectOrMock])
+		[given([objectOrMock interfaceAdoptedProtocols]) willReturn:@[ link ]];
+	else
+		[[objectOrMock interfaceAdoptedProtocols] addObject:link];
 }
 
 + (void)add:(id)methodOrMock asClassMethodOf:(id)interfaceOrMock {

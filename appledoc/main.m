@@ -25,20 +25,16 @@ static void registerOptionDefinitions(GBOptionsHelper *options) {
 		
 		{ 0,	nil,								@"PATHS",														GBOptionSeparator },
 		{ 0,	GBOptions.inputPaths,				@"[a] Array of input paths for global and project settings",	GBValueRequired|GBOptionNoCmdLine|GBOptionInvisible },
-		{ 't',	GBOptions.templatesPath,			@"Template files path",											GBValueRequired },
 		{ 'i',	GBOptions.ignoredPaths,				@"[a] Ignore given path",										GBValueRequired },
+		{ 't',	GBOptions.templatesPath,			@"Template files path",											GBValueRequired },
 		
 		{ 0,	nil,								@"COMMENTS",													GBOptionSeparator },
+		{ 0,	GBOptions.searchMissingComments,	@"[b] Search for missing comments",								GBValueNone },
 		{ 0,	GBOptions.crossRefsFormat,			@"Cross references format",										GBValueRequired },
 		
 		{ 0,	nil,								@"LOGGING",														GBOptionSeparator },
-		{ 0,	GBOptions.loggingLevel,				@"Log verbosity",												GBValueOptional },
+		{ 0,	GBOptions.loggingLevel,				@"Log verbosity (1-2)",											GBValueOptional },
 		{ 0,	GBOptions.loggingFormat,			@"Log format (0-3)",											GBValueRequired },
-		{ 0,	GBOptions.loggingCommonEnabled,		@"[b] Enable common logging",									GBValueNone|GBOptionNoHelp },
-		{ 0,	GBOptions.loggingStoreEnabled,		@"[b] Enable store logging",									GBValueNone|GBOptionNoHelp },
-		{ 0,	GBOptions.loggingParsingEnabled,	@"[b] Enable parser logging",									GBValueNone|GBOptionNoHelp },
-		{ 0,	GBOptions.loggingProcessingEnabled,	@"[b] Enable processing logging",								GBValueNone|GBOptionNoHelp },
-		{ 0,	GBOptions.loggingInternalEnabled,	@"[b] Enable internal logging",									GBValueNone|GBOptionNoHelp },
 
 		{ 0,	nil,								@"MISCELLANEOUS",												GBOptionSeparator },
 		{ 0,	GBOptions.printSettings,			@"[b] Print settings for current run",							GBValueNone },

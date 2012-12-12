@@ -36,6 +36,7 @@ GB_SYNTHESIZE_COPY(NSString *, templatesPath, setTemplatesPath, GBOptions.templa
 
 #pragma mark - Comments
 
+GB_SYNTHESIZE_BOOL(searchForMissingComments, setSearchForMissingComments, GBOptions.searchMissingComments);
 GB_SYNTHESIZE_COPY(NSString *, crossRefsFormat, setCrossRefsFormat, GBOptions.crossRefsFormat)
 
 #pragma mark - Debugging aid
@@ -46,11 +47,6 @@ GB_SYNTHESIZE_BOOL(printHelp, setPrintHelp, GBOptions.printHelp)
 
 GB_SYNTHESIZE_UINT(loggingFormat, setLoggingFormat, GBOptions.loggingFormat)
 GB_SYNTHESIZE_UINT(loggingLevel, setLoggingLevel, GBOptions.loggingLevel)
-GB_SYNTHESIZE_BOOL(loggingInternalEnabled, setLoggingInternalEnabled, GBOptions.loggingInternalEnabled)
-GB_SYNTHESIZE_BOOL(loggingCommonEnabled, setLoggingCommonEnabled, GBOptions.loggingCommonEnabled)
-GB_SYNTHESIZE_BOOL(loggingStoreEnabled, setLoggingStoreEnabled, GBOptions.loggingStoreEnabled)
-GB_SYNTHESIZE_BOOL(loggingParsingEnabled, setLoggingParsingEnabled, GBOptions.loggingParsingEnabled)
-GB_SYNTHESIZE_BOOL(loggingProcessingEnabled, setLoggingProcessingEnabled, GBOptions.loggingProcessingEnabled)
 
 @end
 
@@ -66,6 +62,7 @@ const struct GBOptions GBOptions = {
 	.templatesPath = @"templates",
 	.ignoredPaths = @"ignore",
 	
+	.searchMissingComments = @"search-comments",
 	.crossRefsFormat = @"crossrefs",
 	
 	.printSettings = @"print-settings",
@@ -74,9 +71,4 @@ const struct GBOptions GBOptions = {
 	
 	.loggingLevel = @"verbose",
 	.loggingFormat = @"log-format",
-	.loggingInternalEnabled = @"log-internal",
-	.loggingCommonEnabled = @"log-common",
-	.loggingStoreEnabled = @"log-store",
-	.loggingParsingEnabled = @"log-parsing",
-	.loggingProcessingEnabled = @"log-processing",
 };

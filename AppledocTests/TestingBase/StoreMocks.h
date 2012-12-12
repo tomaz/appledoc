@@ -33,7 +33,8 @@ typedef void(^GBCreateObjectBlock)(id object);
 + (id)mockProperty:(NSString *)uniqueID block:(GBCreateObjectBlock)handler;
 
 + (void)addMockCommentTo:(id)objectOrMock;
-+ (void)add:(id)classOrMock asBaseClassOf:(id)baseOrMock;
++ (void)add:(id)classOrMock asDerivedClassFrom:(id)baseOrMock;
++ (void)add:(id)objectOrMock asAdopting:(id)protocolOrMock;
 + (void)add:(id)methodOrMock asClassMethodOf:(id)interfaceOrMock;
 + (void)add:(id)methodOrMock asInstanceMethodOf:(id)interfaceOrMock;
 + (void)add:(id)propertyOrMock asPropertyOf:(id)interfaceOrMock;
