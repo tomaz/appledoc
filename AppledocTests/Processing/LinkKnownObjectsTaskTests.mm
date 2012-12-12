@@ -22,6 +22,27 @@ static void runWithTask(void(^handler)(LinkKnownObjectsTask *task, id store)) {
 	[task release];
 }
 
+static id createClass(NSString *name) {
+	return [StoreMocks mockClass:name block:^(id object) { }];
+}
+
+static id createProtocol(NSString *name) {
+	return [StoreMocks mockProtocol:name block:^(id object) { }];
+}
+
+static id createDerivedClass(NSString *name, NSString *baseName) {
+	return [StoreMocks createClass:^(ClassInfo *object) {
+		object.nameOfClass = name;
+		[object derive:baseName];
+	}];
+}
+
+static id createCategory(NSString *className) {
+	return [StoreMocks createCategory:^(CategoryInfo *object) {
+		[object extend:className];
+	}];
+}
+
 #pragma mark -
 
 TEST_BEGIN(LinkKnownObjectsTaskTests)
@@ -34,8 +55,8 @@ describe(@"adopted protocols:", ^{
 				ClassInfo *class1 = [StoreMocks createClass:^(ClassInfo *object) {
 					[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
 				}];
-				id protocol1 = [StoreMocks mockProtocol:@"MyProtocol1"];
-				id protocol2 = [StoreMocks mockProtocol:@"MyProtocol2"];
+				id protocol1 = createProtocol(@"MyProtocol1");
+				id protocol2 = createProtocol(@"MyProtocol2");
 				[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
 				[given([store storeClasses]) willReturn:@[ class1 ]];
 				// execute
@@ -53,8 +74,8 @@ describe(@"adopted protocols:", ^{
 			CategoryInfo *extension1 = [StoreMocks createCategory:^(CategoryInfo *object) {
 				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
 			}];
-			id protocol1 = [StoreMocks mockProtocol:@"MyProtocol1"];
-			id protocol2 = [StoreMocks mockProtocol:@"MyProtocol2"];
+			id protocol1 = createProtocol(@"MyProtocol1");
+			id protocol2 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
 			[given([store storeExtensions]) willReturn:@[ extension1 ]];
 			// execute
@@ -72,8 +93,8 @@ describe(@"adopted protocols:", ^{
 			CategoryInfo *category1 = [StoreMocks createCategory:^(CategoryInfo *object) {
 				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
 			}];
-			id protocol1 = [StoreMocks mockProtocol:@"MyProtocol1"];
-			id protocol2 = [StoreMocks mockProtocol:@"MyProtocol2"];
+			id protocol1 = createProtocol(@"MyProtocol1");
+			id protocol2 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2 ]];
 			[given([store storeCategories]) willReturn:@[ category1 ]];
 			// execute
@@ -91,8 +112,8 @@ describe(@"adopted protocols:", ^{
 			ProtocolInfo *protocol1 = [StoreMocks createProtocol:^(ProtocolInfo *object) {
 				[object adopt:@"MyProtocol1", @"MyProtocol2", @"UnknownProtocol", nil];
 			}];
-			id protocol2 = [StoreMocks mockProtocol:@"MyProtocol1"];
-			id protocol3 = [StoreMocks mockProtocol:@"MyProtocol2"];
+			id protocol2 = createProtocol(@"MyProtocol1");
+			id protocol3 = createProtocol(@"MyProtocol2");
 			[given([store storeProtocols]) willReturn:@[ protocol1, protocol2, protocol3 ]];
 			// execute
 			[task runTask];
@@ -108,10 +129,8 @@ describe(@"super classes:", ^{
 	it(@"should link to known super classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			ClassInfo *class1 = [StoreMocks createClass:^(ClassInfo *object) {
-				[object derive:@"MyBaseClass"];
-			}];
-			id class2 = [StoreMocks mockClass:@"MyBaseClass"];
+			ClassInfo *class1 = createDerivedClass(@"MyClass", @"MyBaseClass");
+			id class2 = createClass(@"MyBaseClass");
 			[given([store storeClasses]) willReturn:@[ class1, class2 ]];
 			// execute
 			[task runTask];
@@ -123,18 +142,9 @@ describe(@"super classes:", ^{
 	it(@"should handle multiple depths of class hierarchies", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			ClassInfo *class1 = [StoreMocks createClass:^(ClassInfo *object) {
-				object.nameOfClass = @"Class1";
-				[object derive:@"Class2"];
-			}];
-			ClassInfo *class2 = [StoreMocks createClass:^(ClassInfo *object) {
-				object.nameOfClass = @"Class2";
-				[object derive:@"Class3"];
-			}];
-			ClassInfo *class3 = [StoreMocks createClass:^(ClassInfo *object) {
-				object.nameOfClass = @"Class3";
-				[object derive:@"Unknown"];
-			}];
+			ClassInfo *class1 = createDerivedClass(@"Class1", @"Class2");
+			ClassInfo *class2 = createDerivedClass(@"Class2", @"Class3");
+			ClassInfo *class3 = createDerivedClass(@"Class3", @"UnknownClass");
 			[given([store storeClasses]) willReturn:@[ class1, class2, class3 ]];
 			// execute
 			[task runTask];
@@ -150,13 +160,9 @@ describe(@"category classes:", ^{
 	it(@"should link extensions to known classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			CategoryInfo *extension1 = [StoreMocks createCategory:^(CategoryInfo *object) {
-				[object extend:@"Class1"];
-			}];
-			CategoryInfo *extension2 = [StoreMocks createCategory:^(CategoryInfo *object) {
-				[object extend:@"UnknownClass"];
-			}];
-			ClassInfo *class1 = [StoreMocks mockClass:@"Class1"];
+			CategoryInfo *extension1 = createCategory(@"Class1");
+			CategoryInfo *extension2 = createCategory(@"UnknownClass");
+			ClassInfo *class1 = createClass(@"Class1");
 			[given([store storeExtensions]) willReturn:@[ extension1, extension2 ]];
 			[given([store storeClasses]) willReturn:@[ class1 ]];
 			// execute
@@ -170,13 +176,9 @@ describe(@"category classes:", ^{
 	it(@"should link categories to known classes", ^{
 		runWithTask(^(LinkKnownObjectsTask *task, id store) {
 			// setup
-			CategoryInfo *category1 = [StoreMocks createCategory:^(CategoryInfo *object) {
-				[object extend:@"Class1"];
-			}];
-			CategoryInfo *category2 = [StoreMocks createCategory:^(CategoryInfo *object) {
-				[object extend:@"UnknownClass"];
-			}];
-			ClassInfo *class1 = [StoreMocks mockClass:@"Class1"];
+			CategoryInfo *category1 = createCategory(@"Class1");
+			CategoryInfo *category2 = createCategory(@"UnknownClass");
+			ClassInfo *class1 = createClass(@"Class1");
 			[given([store storeCategories]) willReturn:@[ category1, category2 ]];
 			[given([store storeClasses]) willReturn:@[ class1 ]];
 			// execute

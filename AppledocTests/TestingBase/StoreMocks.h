@@ -8,6 +8,8 @@
 
 #import "Store.h"
 
+typedef void(^GBCreateObjectBlock)(id object);
+
 @interface StoreMocks : NSObject
 
 + (InterfaceInfoBase *)createInterface:(void(^)(InterfaceInfoBase *object))handler;
@@ -16,19 +18,25 @@
 + (ProtocolInfo *)createProtocol:(void(^)(ProtocolInfo *object))handler;
 
 + (MethodInfo *)createMethod:(NSString *)uniqueID;
++ (MethodInfo *)createMethod:(NSString *)uniqueID block:(void(^)(MethodInfo *object))handler;
 + (PropertyInfo *)createProperty:(NSString *)uniqueID;
++ (PropertyInfo *)createProperty:(NSString *)uniqueID block:(void(^)(PropertyInfo *object))handler;
 + (ObjectLinkInfo *)link:(id)nameOrObject;
 
-+ (id)mockClass:(NSString *)name;
-+ (id)mockCategory:(NSString *)name onClass:(NSString *)className;
-+ (id)mockProtocol:(NSString *)name;
++ (id)mockClass:(NSString *)name block:(GBCreateObjectBlock)handler;
++ (id)mockCategory:(NSString *)name onClass:(NSString *)className block:(GBCreateObjectBlock)handler;
++ (id)mockProtocol:(NSString *)name block:(GBCreateObjectBlock)handler;
 
 + (id)mockMethod:(NSString *)uniqueID;
-+ (id)mockCommentedMethod:(NSString *)uniqueID;
++ (id)mockMethod:(NSString *)uniqueID block:(GBCreateObjectBlock)handler;
 + (id)mockProperty:(NSString *)uniqueID;
-+ (id)mockCommentedProperty:(NSString *)uniqueID;
++ (id)mockProperty:(NSString *)uniqueID block:(GBCreateObjectBlock)handler;
 
-+ (void)addCommentToMock:(id)mock;
++ (void)addMockCommentTo:(id)objectOrMock;
++ (void)add:(id)classOrMock asBaseClassOf:(id)baseOrMock;
++ (void)add:(id)methodOrMock asClassMethodOf:(id)interfaceOrMock;
++ (void)add:(id)methodOrMock asInstanceMethodOf:(id)interfaceOrMock;
++ (void)add:(id)propertyOrMock asPropertyOf:(id)interfaceOrMock;
 
 @end
 
