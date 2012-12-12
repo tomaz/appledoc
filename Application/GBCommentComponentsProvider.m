@@ -64,6 +64,10 @@
 	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"bug"]);
 }
 
+- (NSString *)deprecatedSectionRegex {
+	GBRETURN_ON_DEMAND([self descriptionCaptureRegexForKeyword:@"deprecated"]);
+}
+
 #pragma mark Method specific detection
 
 - (NSString *)methodGroupRegex {

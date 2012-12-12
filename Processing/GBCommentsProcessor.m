@@ -65,6 +65,7 @@ typedef NSUInteger GBProcessingFlag;
 
 - (BOOL)processWarningBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processBugBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
+- (BOOL)processDeprecatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processParamBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processExceptionBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
 - (BOOL)processReturnBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange;
@@ -205,6 +206,7 @@ typedef NSUInteger GBProcessingFlag;
 		if ([self processNoteBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processWarningBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processBugBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
+		if ([self processDeprecatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processParamBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processExceptionBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processReturnBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
@@ -308,6 +310,24 @@ typedef NSUInteger GBProcessingFlag;
 	component.stringValue = string;
 	component.markdownValue = [self stringByConvertingLinesToBlockquoteFromString:component.markdownValue class:@"warning"];
 	[self.currentComment.longDescription registerComponent:component];
+	return YES;
+}
+
+- (BOOL)processDeprecatedBlockInString:(NSString *)string lines:(NSArray *)lines blockRange:(NSRange)blockRange shortRange:(NSRange)shortRange {
+	NSArray *components = [string captureComponentsMatchedByRegex:self.components.deprecatedSectionRegex];
+	if ([components count] == 0) return NO;
+	
+	// Get data from captures. Index 1 is directive, index 2 description text.
+	NSString *directive = [components objectAtIndex:1];
+	NSString *description = [components objectAtIndex:2];
+	GBLogDebug(@"- Registering DEPRECATED block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
+	
+	// Convert to markdown and register everything. We always use the whole text for directive.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:description withFlags:0];
+	component.stringValue = [self.currentComment.shortDescription.stringValue stringByAppendingFormat:@" (%@)", string];
+	component.markdownValue = [self.currentComment.shortDescription.markdownValue stringByAppendingFormat:@" (<b class=\"deprecated\">Deprecated:</b><span class=\"deprecated\"> %@</span>)", description];
+	self.currentComment.shortDescription = component;
 	return YES;
 }
 
@@ -527,6 +547,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string isMatchedByRegex:self.components.noteSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.warningSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.bugSectionRegex]) return YES;
+	if ([string isMatchedByRegex:self.components.deprecatedSectionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.parameterDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.exceptionDescriptionRegex]) return YES;
 	if ([string isMatchedByRegex:self.components.returnDescriptionRegex]) return YES;
