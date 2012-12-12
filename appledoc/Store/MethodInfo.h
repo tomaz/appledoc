@@ -6,16 +6,14 @@
 //  Copyright (c) 2012 Tomaz Kragelj. All rights reserved.
 //
 
-#import "ObjectInfoBase.h"
+#import "MemberInfoBase.h"
 
 @class TypeInfo;
 @class DescriptorsInfo;
 
 /** Holds data for a class or interface Objective C method.
  */
-@interface MethodInfo : ObjectInfoBase
-
-- (NSString *)descriptionWithInterface:(ObjectInfoBase *)interface;
+@interface MethodInfo : MemberInfoBase
 
 @property (nonatomic, copy) NSString *methodType;
 @property (nonatomic, strong) TypeInfo *methodResult;

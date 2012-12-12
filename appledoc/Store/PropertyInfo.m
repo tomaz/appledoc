@@ -37,10 +37,6 @@
 	return result;
 }
 
-- (NSString *)descriptionWithInterface:(ObjectInfoBase *)interface {
-	return [NSString stringWithFormat:@"[%@ %@]", interface.uniqueObjectID, self.propertyName];
-}
-
 - (NSString *)uniqueObjectID {
 	return self.propertyName;
 }

@@ -12,6 +12,7 @@
 #import "CommentInfo.h"
 #import "TypeInfo.h"
 #import "DescriptorsInfo.h"
+#import "InterfaceInfoBase.h"
 #import "MethodArgumentInfo.h"
 #import "MethodInfo.h"
 
@@ -62,8 +63,8 @@
 	return (self.methodType == GBStoreTypes.classMethod) ? @"+" : @"-";
 }
 
-- (NSString *)descriptionWithInterface:(ObjectInfoBase *)interface {
-	return [NSString stringWithFormat:@"%@[%@ %@]", self.methodPrefix, interface.uniqueObjectID, self.methodSelector];
+- (NSString *)descriptionWithParent {
+	return [NSString stringWithFormat:@"%@[%@ %@]", self.methodPrefix, self.memberParent.uniqueObjectID, self.methodSelector];
 }
 
 - (NSString *)uniqueObjectID {

@@ -117,6 +117,15 @@ describe(@"properties registration:", ^{
 		});
 	});
 	
+	it(@"should set self as parent of created property", ^{
+		runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+			// exexute
+			[info beginPropertyDefinition];
+			// verify
+			[info.currentRegistrationObject memberParent] should equal(info);
+		});
+	});
+	
 	it(@"should set current source info to class", ^{
 		runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
 			// setup
@@ -179,6 +188,15 @@ describe(@"methods registration:", ^{
 			});
 		});
 		
+		it(@"should set self as parent of created method", ^{
+			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+				// exexute
+				[info beginMethodDefinitionWithType:GBStoreTypes.classMethod];
+				// verify
+				[info.currentRegistrationObject memberParent] should equal(info);
+			});
+		});
+		
 		it(@"should set current source info to class", ^{
 			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
 				// setup
@@ -237,6 +255,15 @@ describe(@"methods registration:", ^{
 				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
 				// verify
 				gbcatch([verify(mock) pushRegistrationObject:instanceOf([MethodInfo class])]);
+			});
+		});
+		
+		it(@"should set self as parent of created method", ^{
+			runWithInterfaceInfoBaseWithRegistrar(^(InterfaceInfoBase *info, Store *store) {
+				// exexute
+				[info beginMethodDefinitionWithType:GBStoreTypes.instanceMethod];
+				// verify
+				[info.currentRegistrationObject memberParent] should equal(info);
 			});
 		});
 		

@@ -109,6 +109,7 @@
 	LogVerbose(@"Starting property definition...");
 	PropertyInfo *info = [[PropertyInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.sourceToken = self.currentSourceInfo;
+	info.memberParent = self;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];
 	[self.interfaceProperties addObject:info];
@@ -124,6 +125,7 @@
 	MethodInfo *info = [[MethodInfo alloc] initWithRegistrar:self.objectRegistrar];
 	info.sourceToken = self.currentSourceInfo;
 	info.methodType = type;
+	info.memberParent = self;
 	[[self.interfaceMethodGroups.lastObject methodGroupMethods] addObject:info];
 	[self.interfaceMethodsAndPropertiesInRegistrationOrder addObject:info];
 	[[self methodsArrayForType:type] addObject:info];
