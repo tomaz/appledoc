@@ -66,10 +66,10 @@ static NSInteger BOOLPropertyType = NSNotFound;
 		classes = [[NSMutableDictionary dictionaryWithCapacity:12] retain];
 	}
 	
-	NSMutableDictionary *propertyNames = [classes objectForKey:class];
+	NSMutableDictionary *propertyNames = [classes objectForKey:NSStringFromClass(class)];
 	if (propertyNames == nil) {
 		propertyNames = [[NSMutableDictionary dictionaryWithCapacity:4] retain];
-		[classes setObject:propertyNames forKey:class];
+		[classes setObject:propertyNames forKey:NSStringFromClass(class)];
 	}
 	
 	NSNumber *boolNumber = [propertyNames objectForKey:propertyName];

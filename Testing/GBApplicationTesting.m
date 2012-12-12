@@ -65,13 +65,13 @@
 	assertThat(settings2.docsetInstallPath, is(self.currentPath));
 }
 
-- (void)testDocsetUtilPath_shouldAssignValueToSettings {
+- (void)testXcrunPath_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--docsetutil-path", @"path", nil];
-	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--docsetutil-path", @".", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--xcrun-path", @"path", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--xcrun-path", @".", nil];
 	// verify
-	assertThat(settings1.docsetUtilPath, is(@"path"));
-	assertThat(settings2.docsetUtilPath, is(self.currentPath));
+	assertThat(settings1.xcrunPath, is(@"path"));
+	assertThat(settings2.xcrunPath, is(self.currentPath));
 }
 
 - (void)testIndexDesc_shouldAssignValueToSettings {

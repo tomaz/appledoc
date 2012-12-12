@@ -51,6 +51,9 @@
 /** Returns the regex used for matching bug section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *bugSectionRegex;
 
+/** Returns the regex used for matching deprecated section with capture 1 containing directive and capture 2 description text. */
+@property (readonly) NSString *deprecatedSectionRegex;
+
 /** Returns the regex used for matching note section with capture 1 containing directive and capture 2 description text. */
 @property (readonly) NSString *noteSectionRegex;
 
@@ -76,6 +79,9 @@
 
 /** Returns the regex used for matching cross reference directive with capture 1 containing directive, capture 2 description text. */
 @property (readonly) NSString *availabilityRegex;
+
+@property (readonly) NSString *abstractRegex;
+@property (readonly) NSString *discussionRegex;
 
 ///---------------------------------------------------------------------------------------
 /// @name Markdown specific definitions

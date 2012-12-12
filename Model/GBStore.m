@@ -33,7 +33,7 @@
 #pragma mark Overriden methods
 
 - (NSString *)debugDescription {
-	return [NSString stringWithFormat:@"%@{ %u classes, %u categories, %u protocols }", [self className], [self.classes count], [self.categories count], [self.protocols count]];
+	return [NSString stringWithFormat:@"%@{ %lu classes, %lu categories, %lu protocols }", [self className], [self.classes count], [self.categories count], [self.protocols count]];
 }
 
 #pragma mark Helper methods
