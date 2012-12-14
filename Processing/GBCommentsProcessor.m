@@ -233,9 +233,9 @@ typedef NSUInteger GBProcessingFlag;
 	if ([blockString length] == 0) return;
 	
 	// Process the string and register long description component.
-	//GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
-	
-	//[self.currentComment.longDescription registerComponent:component];
+	// **IMPORTANT CONTRIBUTORS NOTE:** do NOT comment or change following two lines. Doing so will brake overview section being created for classes, categories and protocols! Most often this happens with folks wanting to bring in better HeaderDoc support, but it brakes "standard" appledoc way of dealing comments. While I symphatize with ideas of supporting as wide audience as possible, native appledoc users are still larger audience than HeaderDoc, so please find another way. My suggestion would be via cmd line switch that would change behavior from appledoc to HeaderDoc, then opt out with an if statement.
+	GBCommentComponent *component = [self commentComponentByPreprocessingString:blockString withFlags:0];
+	[self.currentComment.longDescription registerComponent:component];
 }
 
 - (void)registerShortDescriptionFromLines:(NSArray *)lines range:(NSRange)range removePrefix:(NSString *)remove {
