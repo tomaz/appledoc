@@ -87,8 +87,8 @@ If you wish to contribute, see Developer Notes file for short overview of how ap
 Minimum system requirements
 ---------------------------
 
-- Xcode 3.2 or greater for compiling
-- OS X 10.6 for running
+- Xcode 4.5 or greater for compiling
+- OS X 10.7 for compiling and running
 
 
 LICENSE
