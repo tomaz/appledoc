@@ -457,7 +457,7 @@ typedef NSUInteger GBProcessingFlag;
 	index = [description rangeOfString:@"@discussion"];
 	
 	if (index.location == NSNotFound) {
-		index = [description rangeOfString:@"\s+"];
+		index = [description rangeOfString:@"\\s+"];
 	}
 	
 	NSRange range;
