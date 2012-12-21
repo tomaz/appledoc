@@ -169,6 +169,10 @@ th {
 	position: absolute;
 }
 
+#libraryTitle {
+        left: 0;
+}
+
 #top_header #library #developerHome {
 	color: #92979E;
 	right: 15px;
