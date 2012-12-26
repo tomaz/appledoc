@@ -10,6 +10,8 @@
 #import "GBMethodArgument.h"
 #import "GBMethodSectionData.h"
 #import "GBMethodData.h"
+#import "GBClassData.h"
+#import "GBProtocolData.h"
 #import "RegexKitLite.h"
 
 @interface GBMethodData ()
@@ -364,6 +366,21 @@
 }
 
 #pragma mark Properties
+
+- (NSString *)methodTypeString {
+    BOOL isInterfaceParent = (![self.parentObject isKindOfClass:[GBClassData class]] &&
+                              ![self.parentObject isKindOfClass:[GBProtocolData class]]);
+    switch (self.methodType)
+    {
+        case GBMethodTypeClass:
+            return isInterfaceParent ? @"intfcm" : @"clm";
+        case GBMethodTypeInstance:
+            return isInterfaceParent ? @"intfm" : @"instm";
+        case GBMethodTypeProperty:
+            return isInterfaceParent ? @"intfp" : @"instp";
+    }
+    return @"";
+}
 
 - (BOOL)isInstanceMethod {
 	return (self.methodType == GBMethodTypeInstance);

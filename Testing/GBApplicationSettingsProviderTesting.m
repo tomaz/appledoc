@@ -178,9 +178,9 @@
 	[class.methods registerMethod:method2];
 	[class.methods registerMethod:property];
 	// execute & verify
-	assertThat([settings htmlReferenceNameForObject:method1], is(@"//api/name/method"));
-	assertThat([settings htmlReferenceNameForObject:method2], is(@"//api/name/doSomething:withVars:"));
-	assertThat([settings htmlReferenceNameForObject:property], is(@"//api/name/value"));
+	assertThat([settings htmlReferenceNameForObject:method1], is(@"//apple_ref/occ/instm/Class/method"));
+	assertThat([settings htmlReferenceNameForObject:method2], is(@"//apple_ref/occ/instm/Class/doSomething:withVars:"));
+	assertThat([settings htmlReferenceNameForObject:property], is(@"//apple_ref/occ/instp/Class/value"));
 }
 
 #pragma mark HTML href references handling - index
@@ -194,7 +194,7 @@
 	[class.methods registerMethod:method];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:class fromSource:nil], is(@"Classes/Class.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//api/name/method:"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//apple_ref/occ/instm/Class/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForCategoryFromIndex {
@@ -206,7 +206,7 @@
 	[category.methods registerMethod:method];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class+Category.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//api/name/method:"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//apple_ref/occ/intfm/Class(Category)/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForProtocolFromIndex {
@@ -218,7 +218,7 @@
 	[protocol.methods registerMethod:method];
 	// execute & verify
 	assertThat([settings htmlReferenceForObject:protocol fromSource:nil], is(@"Protocols/Protocol.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//api/name/method:"));
+	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//apple_ref/occ/instm/Protocol/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForDocumentFromIndex {
@@ -352,7 +352,7 @@
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method fromSource:class], is(@"#//api/name/value"));
+	assertThat([settings htmlReferenceForObject:method fromSource:class], is(@"#//apple_ref/occ/instp/Class/value"));
 	assertThat([settings htmlReferenceForObject:class fromSource:method], is(@"Class.html"));
 }
 
@@ -365,8 +365,8 @@
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class1.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//api/name/value"));
-	assertThat([settings htmlReferenceForObject:method fromSource:class1], is(@"#//api/name/value"));
+	assertThat([settings htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//apple_ref/occ/instp/Class1/value"));
+	assertThat([settings htmlReferenceForObject:method fromSource:class1], is(@"#//apple_ref/occ/instp/Class1/value"));
 	assertThat([settings htmlReferenceForObject:class1 fromSource:method], is(@"Class1.html"));
 	assertThat([settings htmlReferenceForObject:class2 fromSource:method], is(@"../Classes/Class2.html"));
 }
@@ -382,8 +382,8 @@
 	[class.methods registerMethod:method1];
 	[protocol.methods registerMethod:method2];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//api/name/value1"));
-	assertThat([settings htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//api/name/value2"));
+	assertThat([settings htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//apple_ref/occ/instp/Class/value1"));
+	assertThat([settings htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//apple_ref/occ/instp/Protocol/value2"));
 }
 
 #pragma mark Template files handling

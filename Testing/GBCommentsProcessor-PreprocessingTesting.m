@@ -184,10 +184,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method:](#//api/name/method:)"));
-	assertThat(result2, is(@"[method:](#//api/name/method:)"));
-	assertThat(result3, is(@"[method:](#//api/name/method:)"));
-	assertThat(result4, is(@"[method:](#//api/name/method:)"));
+	assertThat(result1, is(@"[method:](#//apple_ref/occ/instm/Class/method:)"));
+	assertThat(result2, is(@"[method:](#//apple_ref/occ/instm/Class/method:)"));
+	assertThat(result3, is(@"[method:](#//apple_ref/occ/instm/Class/method:)"));
+	assertThat(result4, is(@"[method:](#//apple_ref/occ/instm/Class/method:)"));
 	assertThat(result5, is(@"another:"));
 	assertThat(result6, is(@"<another:>"));
 }
@@ -205,10 +205,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another:" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another:>" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method:](#//api/name/method:)"));
-	assertThat(result2, is(@"[method:](#//api/name/method:)"));
-	assertThat(result3, is(@"[method:](#//api/name/method:)"));
-	assertThat(result4, is(@"[method:](#//api/name/method:)"));
+	assertThat(result1, is(@"[method:](#//apple_ref/occ/clm/Class/method:)"));
+	assertThat(result2, is(@"[method:](#//apple_ref/occ/clm/Class/method:)"));
+	assertThat(result3, is(@"[method:](#//apple_ref/occ/clm/Class/method:)"));
+	assertThat(result4, is(@"[method:](#//apple_ref/occ/clm/Class/method:)"));
 	assertThat(result5, is(@"another:"));
 	assertThat(result6, is(@"<another:>"));
 }
@@ -226,8 +226,8 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"another" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"<another>" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method](#//api/name/method)"));
-	assertThat(result2, is(@"[method](#//api/name/method)"));
+	assertThat(result1, is(@"[method](#//apple_ref/occ/instp/Class/method)"));
+	assertThat(result2, is(@"[method](#//apple_ref/occ/instp/Class/method)"));
 	assertThat(result3, is(@"method:"));
 	assertThat(result4, is(@"<method:>"));
 	assertThat(result5, is(@"another"));
@@ -251,11 +251,11 @@
 	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>" withFlags:0];
 	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
-	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result1, is(@"[method1:](#//apple_ref/occ/intfm/Class(Category)/method1:)"));
+	assertThat(result2, is(@"[method1:](#//apple_ref/occ/intfm/Class(Category)/method1:)"));
 	assertThat(result3, is(@"method2:"));
-	assertThat(result4, is(@"[method2:](#//api/name/method2:)"));
-	assertThat(result5, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result4, is(@"[method2:](#//apple_ref/occ/instm/Protocol/method2:)"));
+	assertThat(result5, is(@"[method2:](#//apple_ref/occ/instm/Protocol/method2:)"));
 	assertThat(result6, is(@"method1:"));
 }
 
@@ -276,11 +276,11 @@
 	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2:>" withFlags:0];
 	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1:" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method1:](#//api/name/method1:)"));
-	assertThat(result2, is(@"[method1:](#//api/name/method1:)"));
+	assertThat(result1, is(@"[method1:](#//apple_ref/occ/intfcm/Class(Category)/method1:)"));
+	assertThat(result2, is(@"[method1:](#//apple_ref/occ/intfcm/Class(Category)/method1:)"));
 	assertThat(result3, is(@"method2:"));
-	assertThat(result4, is(@"[method2:](#//api/name/method2:)"));
-	assertThat(result5, is(@"[method2:](#//api/name/method2:)"));
+	assertThat(result4, is(@"[method2:](#//apple_ref/occ/clm/Protocol/method2:)"));
+	assertThat(result5, is(@"[method2:](#//apple_ref/occ/clm/Protocol/method2:)"));
 	assertThat(result6, is(@"method1:"));
 }
 
@@ -301,11 +301,11 @@
 	NSString *result5 = [processor2 stringByConvertingCrossReferencesInString:@"<method2>" withFlags:0];
 	NSString *result6 = [processor2 stringByConvertingCrossReferencesInString:@"method1" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[method1](#//api/name/method1)"));
-	assertThat(result2, is(@"[method1](#//api/name/method1)"));
+	assertThat(result1, is(@"[method1](#//apple_ref/occ/intfp/Class(Category)/method1)"));
+	assertThat(result2, is(@"[method1](#//apple_ref/occ/intfp/Class(Category)/method1)"));
 	assertThat(result3, is(@"method2"));
-	assertThat(result4, is(@"[method2](#//api/name/method2)"));
-	assertThat(result5, is(@"[method2](#//api/name/method2)"));
+	assertThat(result4, is(@"[method2](#//apple_ref/occ/instp/Protocol/method2)"));
+	assertThat(result5, is(@"[method2](#//apple_ref/occ/instp/Protocol/method2)"));
 	assertThat(result6, is(@"method1"));
 }
 
@@ -325,10 +325,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
-	assertThat(result2, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
-	assertThat(result3, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
-	assertThat(result4, is(@"[[Class1 method:]](../Classes/Class1.html#//api/name/method:)"));
+	assertThat(result1, is(@"[[Class1 method:]](../Classes/Class1.html#//apple_ref/occ/instm/Class1/method:)"));
+	assertThat(result2, is(@"[[Class1 method:]](../Classes/Class1.html#//apple_ref/occ/instm/Class1/method:)"));
+	assertThat(result3, is(@"[[Class1 method:]](../Classes/Class1.html#//apple_ref/occ/instm/Class1/method:)"));
+	assertThat(result4, is(@"[[Class1 method:]](../Classes/Class1.html#//apple_ref/occ/instm/Class1/method:)"));
 	assertThat(result5, is(@"[Unknown method:]"));
 	assertThat(result6, is(@"method:"));
 }
@@ -347,10 +347,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Class(Unknown) method:]" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[Unknown(Category) method:]" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
-	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
-	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
-	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//api/name/method:)"));
+	assertThat(result1, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//apple_ref/occ/intfm/Class(Category)/method:)"));
+	assertThat(result2, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//apple_ref/occ/intfm/Class(Category)/method:)"));
+	assertThat(result3, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//apple_ref/occ/intfm/Class(Category)/method:)"));
+	assertThat(result4, is(@"[[Class(Category) method:]](../Categories/Class+Category.html#//apple_ref/occ/intfm/Class(Category)/method:)"));
 	assertThat(result5, is(@"[Class(Unknown) method:]"));
 	assertThat(result6, is(@"[Unknown(Category) method:]"));
 }
@@ -369,10 +369,10 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[Unknown method:]" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"method:" withFlags:0];
 	// verify
-	assertThat(result1, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
-	assertThat(result2, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
-	assertThat(result3, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
-	assertThat(result4, is(@"[[Protocol method:]](../Protocols/Protocol.html#//api/name/method:)"));
+	assertThat(result1, is(@"[[Protocol method:]](../Protocols/Protocol.html#//apple_ref/occ/instm/Protocol/method:)"));
+	assertThat(result2, is(@"[[Protocol method:]](../Protocols/Protocol.html#//apple_ref/occ/instm/Protocol/method:)"));
+	assertThat(result3, is(@"[[Protocol method:]](../Protocols/Protocol.html#//apple_ref/occ/instm/Protocol/method:)"));
+	assertThat(result4, is(@"[[Protocol method:]](../Protocols/Protocol.html#//apple_ref/occ/instm/Protocol/method:)"));
 	assertThat(result5, is(@"[Unknown method:]"));
 	assertThat(result6, is(@"method:"));
 }
@@ -617,16 +617,16 @@
     NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[doSomething:withVars:]([Class doSomething:withVars:]), [text with space]([Class method])" withFlags:0];
     NSString *result8 = [processor stringByConvertingCrossReferencesInString:@"[text](<-[Class value]>)" withFlags:0];
     
-	assertThat(result1, is(@"[text](Classes/Class.html#//api/name/method)"));
-    assertThat(result2, is(@"[text](Classes/Class.html#//api/name/doSomething:withVars:)"));
-    assertThat(result3, is(@"[text](Classes/Class.html#//api/name/value)"));
-	assertThat(result4, is(@"[text with space](Classes/Class.html#//api/name/method)"));
-    assertThat(result4b, is(@"[text onlyOneSpace](Classes/Class.html#//api/name/method)"));
-    assertThat(result4c, is(@"[text](Classes/Class.html#//api/name/method), [text onlyOneSpace](Classes/Class.html#//api/name/method)"));
-	assertThat(result5, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:)"));
-    assertThat(result6, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:), [text](Classes/Class.html#//api/name/method)"));
-    assertThat(result7, is(@"[doSomething:withVars:](Classes/Class.html#//api/name/doSomething:withVars:), [text with space](Classes/Class.html#//api/name/method)"));
-    assertThat(result8, is(@"[text](Classes/Class.html#//api/name/value)"));
+	assertThat(result1, is(@"[text](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+    assertThat(result2, is(@"[text](Classes/Class.html#//apple_ref/occ/instm/Class/doSomething:withVars:)"));
+    assertThat(result3, is(@"[text](Classes/Class.html#//apple_ref/occ/instp/Class/value)"));
+	assertThat(result4, is(@"[text with space](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+    assertThat(result4b, is(@"[text onlyOneSpace](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+    assertThat(result4c, is(@"[text](Classes/Class.html#//apple_ref/occ/instm/Class/method), [text onlyOneSpace](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+	assertThat(result5, is(@"[doSomething:withVars:](Classes/Class.html#//apple_ref/occ/instm/Class/doSomething:withVars:)"));
+    assertThat(result6, is(@"[doSomething:withVars:](Classes/Class.html#//apple_ref/occ/instm/Class/doSomething:withVars:), [text](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+    assertThat(result7, is(@"[doSomething:withVars:](Classes/Class.html#//apple_ref/occ/instm/Class/doSomething:withVars:), [text with space](Classes/Class.html#//apple_ref/occ/instm/Class/method)"));
+    assertThat(result8, is(@"[text](Classes/Class.html#//apple_ref/occ/instp/Class/value)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldIgnoreKnownObjectsInManualLinkDescriptionOrTitle {

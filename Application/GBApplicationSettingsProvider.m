@@ -373,7 +373,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	NSParameterAssert(prefix != nil);
 	if ([member isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)member;
-		return [NSString stringWithFormat:@"%@//api/name/%@", prefix, method.methodSelector];
+		return [NSString stringWithFormat:@"%@//apple_ref/occ/%@/%@/%@", prefix, [method methodTypeString], [method parentObject], method.methodSelector];
 	}
 	return @"";
 }
