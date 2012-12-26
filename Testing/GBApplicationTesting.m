@@ -212,6 +212,15 @@
 	assertThatBool(settings2.publishDocSet, equalToBool(NO));
 }
 
+- (void)testUseAppleAnchors_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--use-apple-anchors", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-use-apple-anchors", nil];
+	// verify
+	assertThatBool(settings1.useAppleAnchors, equalToBool(YES));
+	assertThatBool(settings2.useAppleAnchors, equalToBool(NO));
+}
+
 - (void)testKeepIntermediateFiles_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--keep-intermediate-files", nil];

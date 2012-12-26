@@ -95,9 +95,9 @@
 	[processor processComment:comment2 withContext:context store:store];
 	[processor processComment:comment3 withContext:context store:store];
 	// verify
-	[self assertComment:comment1 matchesLongDescMarkdown:@"[instanceMethod:](#//apple_ref/occ/instm/Class/instanceMethod:)", nil];
-	[self assertComment:comment2 matchesLongDescMarkdown:@"[classMethod:](#//apple_ref/occ/clm/Class/classMethod:)", nil];
-	[self assertComment:comment3 matchesLongDescMarkdown:@"[value](#//apple_ref/occ/instp/Class/value)", nil];
+	[self assertComment:comment1 matchesLongDescMarkdown:@"[instanceMethod:](#//api/name/instanceMethod:)", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"[classMethod:](#//api/name/classMethod:)", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"[value](#//api/name/value)", nil];
 }
 
 - (void)testProcessCommentWithContextStore_markdown_shouldKeepInlineRemoteMemberCrossRefsTexts {
@@ -112,9 +112,9 @@
 	[processor processComment:comment2 withContext:nil store:store];
 	[processor processComment:comment3 withContext:nil store:store];
 	// verify
-	[self assertComment:comment1 matchesLongDescMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//apple_ref/occ/instm/Class/instanceMethod:)", nil];
-	[self assertComment:comment2 matchesLongDescMarkdown:@"[[Class classMethod:]](Classes/Class.html#//apple_ref/occ/clm/Class/classMethod:)", nil];
-	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//apple_ref/occ/instp/Class/value)", nil];
+	[self assertComment:comment1 matchesLongDescMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//api/name/instanceMethod:)", nil];
+	[self assertComment:comment2 matchesLongDescMarkdown:@"[[Class classMethod:]](Classes/Class.html#//api/name/classMethod:)", nil];
+	[self assertComment:comment3 matchesLongDescMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
 - (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWithinStandardMarkdownFormattingMarkers {
@@ -216,9 +216,9 @@
 	[processor processComment:comment2 withContext:context store:store];
 	[processor processComment:comment3 withContext:context store:store];
 	// verify
-	[self assertComponents:comment1.relatedItems matchMarkdown:@"[- instanceMethod:](#//apple_ref/occ/instm/Class/instanceMethod:)", nil];
-	[self assertComponents:comment2.relatedItems matchMarkdown:@"[+ classMethod:](#//apple_ref/occ/clm/Class/classMethod:)", nil];
-	[self assertComponents:comment3.relatedItems matchMarkdown:@"[@property value](#//apple_ref/occ/instp/Class/value)", nil];
+	[self assertComponents:comment1.relatedItems matchMarkdown:@"[- instanceMethod:](#//api/name/instanceMethod:)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[+ classMethod:](#//api/name/classMethod:)", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"[@property value](#//api/name/value)", nil];
 }
 
 - (void)testProcessCommentWithContextStore_markdown_shouldKeepRelatedItemsRemoteMemberCrossRefsTexts {
@@ -233,9 +233,9 @@
 	[processor processComment:comment2 withContext:nil store:store];
 	[processor processComment:comment3 withContext:nil store:store];
 	// verify
-	[self assertComponents:comment1.relatedItems matchMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//apple_ref/occ/instm/Class/instanceMethod:)", nil];
-	[self assertComponents:comment2.relatedItems matchMarkdown:@"[[Class classMethod:]](Classes/Class.html#//apple_ref/occ/clm/Class/classMethod:)", nil];
-	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//apple_ref/occ/instp/Class/value)", nil];
+	[self assertComponents:comment1.relatedItems matchMarkdown:@"[[Class instanceMethod:]](Classes/Class.html#//api/name/instanceMethod:)", nil];
+	[self assertComponents:comment2.relatedItems matchMarkdown:@"[[Class classMethod:]](Classes/Class.html#//api/name/classMethod:)", nil];
+	[self assertComponents:comment3.relatedItems matchMarkdown:@"[[Class value]](Classes/Class.html#//api/name/value)", nil];
 }
 
 #pragma mark Making sure reasonably complex stuff gets handled properly
@@ -274,7 +274,7 @@
 	// execute
 	[processor processComment:comment withContext:class store:store];
 	// verify
-	[self assertComment:comment matchesLongDescMarkdown:@"[instanceMethod:](../Classes/Class.html#//apple_ref/occ/instm/Class/instanceMethod:)", nil];
+	[self assertComment:comment matchesLongDescMarkdown:@"[instanceMethod:](../Classes/Class.html#//api/name/instanceMethod:)", nil];
 }
 										 
 - (void)testStringByConvertingCrossReferencesInString_copied_shouldIgnoreCommentIfOriginalContextDoesntMatch {

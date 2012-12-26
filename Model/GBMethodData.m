@@ -369,7 +369,7 @@
 
 - (NSString *)methodTypeString {
     BOOL isInterfaceParent = (![self.parentObject isKindOfClass:[GBClassData class]] &&
-                              ![self.parentObject isKindOfClass:[GBProtocolData class]]);
+                              ![self.parentObject isKindOfClass:[GBCategoryData class]]);
     switch (self.methodType)
     {
         case GBMethodTypeClass:

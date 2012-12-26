@@ -39,6 +39,7 @@ static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
 static NSString *kGBArgPublishDocSet = @"publish-docset";
+static NSString *kGBArgUseAppleAnchors = @"use-apple-anchors";
 static NSString *kGBArgKeepIntermediateFiles = @"keep-intermediate-files";
 static NSString *kGBArgExitCodeThreshold = @"exit-threshold";
 
@@ -266,6 +267,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
 		{ kGBArgPublishDocSet,												'u',	DDGetoptNoArgument },
+        { kGBArgUseAppleAnchors,                                            0,      DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateHTML),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
@@ -765,11 +767,13 @@ static NSString *kGBArgHelp = @"help";
 	//	self.settings.installDocSet = YES;
 	}
 }
+- (void)setUseAppleAnchors:(BOOL)value { self.settings.useAppleAnchors = value; }
 - (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
 - (void)setNoCreateHtml:(BOOL)value { [self setCreateHtml:!value]; }
 - (void)setNoCreateDocset:(BOOL)value { [self setCreateDocset:!value]; }
 - (void)setNoInstallDocset:(BOOL)value { [self setInstallDocset:!value]; }
 - (void)setNoPublishDocset:(BOOL)value { [self setPublishDocset:!value]; }
+- (void)setNoUseAppleAnchors:(BOOL)value { [self setUseAppleAnchors:!value]; }
 
 - (void)setCrossrefFormat:(NSString *)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value; }
 - (void)setExplicitCrossref:(BOOL)value { self.settings.commentComponents.crossReferenceMarkersTemplate = value ? @"<%@>" : @"<?%@>?"; }
@@ -905,6 +909,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
 	ddprintf(@"--%@ = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
+    ddprintf(@"--%@ = %@\n", kGBArgUseAppleAnchors, PRINT_BOOL(self.settings.useAppleAnchors));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepIntermediateFiles, PRINT_BOOL(self.settings.keepIntermediateFiles));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
 	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
@@ -969,6 +974,7 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
 	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
 	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
+    PRINT_USAGE(@"   ", kGBArgUseAppleAnchors, @"", @"[b] Use apple style anchors in docsets");
 	PRINT_USAGE(@"   ", kGBArgCleanOutput, @"", @"[b] Remove contents of output path before starting !!CAUTION!!");
 	ddprintf(@"\n");
 	ddprintf(@"OPTIONS\n");

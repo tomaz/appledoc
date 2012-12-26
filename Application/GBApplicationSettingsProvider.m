@@ -83,6 +83,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.createDocSet = YES;
 		self.installDocSet = YES;
 		self.publishDocSet = NO;
+        self.useAppleAnchors = NO;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.preprocessHeaderDoc = NO;
 		self.printInformationBlockTitles = YES;
@@ -373,7 +374,9 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	NSParameterAssert(prefix != nil);
 	if ([member isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)member;
-		return [NSString stringWithFormat:@"%@//apple_ref/occ/%@/%@/%@", prefix, [method methodTypeString], [method parentObject], method.methodSelector];
+		return (useAppleAnchors ?
+                [NSString stringWithFormat:@"%@//apple_ref/occ/%@/%@/%@", prefix, [method methodTypeString], [method parentObject], method.methodSelector] :
+                [NSString stringWithFormat:@"%@//api/name/%@", prefix, method.methodSelector]);
 	}
 	return @"";
 }
@@ -623,6 +626,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize createDocSet;
 @synthesize installDocSet;
 @synthesize publishDocSet;
+@synthesize useAppleAnchors;
 @synthesize keepIntermediateFiles;
 @synthesize cleanupOutputPathBeforeRunning;
 @synthesize treatDocSetIndexingErrorsAsFatals;
