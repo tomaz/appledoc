@@ -11,7 +11,7 @@
 #import "GBMethodSectionData.h"
 #import "GBMethodData.h"
 #import "GBClassData.h"
-#import "GBProtocolData.h"
+#import "GBCategoryData.h"
 #import "RegexKitLite.h"
 
 @interface GBMethodData ()

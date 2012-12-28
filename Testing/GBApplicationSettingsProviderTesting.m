@@ -171,7 +171,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-    settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:@"method"];
 	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithArguments:argument, nil];
 	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"doSomething", @"withVars", nil];
@@ -197,7 +197,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-    settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[class.methods registerMethod:method];
@@ -214,7 +214,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-    settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[category.methods registerMethod:method];
@@ -231,7 +231,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-    settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[protocol.methods registerMethod:method];
@@ -371,7 +371,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-	settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class.methods registerMethod:method];
@@ -388,7 +388,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-	settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
 	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
@@ -410,7 +410,7 @@
 	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
 	settings1.outputPath = @"anything :)";
 	settings2.outputPath = @"anything :)";
-	settings2.useAppleAnchors = YES;
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBCategoryData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	GBMethodData *method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"value1"];

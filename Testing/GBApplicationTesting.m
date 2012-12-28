@@ -214,11 +214,13 @@
 
 - (void)testUseAppleAnchors_shouldAssignValueToSettings {
 	// setup & execute
-	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--use-apple-anchors", nil];
-	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-use-apple-anchors", nil];
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--html-anchors", @"appledoc", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--html-anchors", @"apple", nil];
+	GBApplicationSettingsProvider *settings3 = [self settingsByRunningWithArgs:nil];
 	// verify
-	assertThatBool(settings1.useAppleAnchors, equalToBool(YES));
-	assertThatBool(settings2.useAppleAnchors, equalToBool(NO));
+	assertThatBool(settings1.htmlAnchorFormat, equalToInt(GBHTMLAnchorFormatAppleDoc));
+	assertThatBool(settings2.htmlAnchorFormat, equalToInt(GBHTMLAnchorFormatApple));
+	assertThatBool(settings3.htmlAnchorFormat, equalToInt(GBHTMLAnchorFormatAppleDoc));
 }
 
 - (void)testKeepIntermediateFiles_shouldAssignValueToSettings {
