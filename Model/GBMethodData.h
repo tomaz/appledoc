@@ -107,6 +107,9 @@ typedef NSUInteger GBMethodType;
  */
 @property (readonly) NSString *methodSelector;
 
+/** Method return type that can be used for shared property/method names. */
+@property (readonly) NSString *methodReturnType;
+
 /** Method selector including prefix.
  
  @see methodSelector
@@ -187,5 +190,13 @@ typedef NSUInteger GBMethodType;
  @return Returns formatted components of the receiver.
  */
 - (NSArray *)formattedComponents;
+
+/** Returns the data type of the property.
+
+ This searches the `methodResultTypes` array and returns the property data type. This only applies to properties, returns `nil` otherwise!
+
+ @see methodResultTypes
+ */
+- (NSString *)propertyType;
 
 @end
