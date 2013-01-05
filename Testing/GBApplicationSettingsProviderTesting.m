@@ -167,8 +167,11 @@
 
 - (void)testHtmlReferenceNameForObject_shouldReturnProperValueForMethods {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:@"method"];
 	GBMethodData *method1 = [GBTestObjectsRegistry instanceMethodWithArguments:argument, nil];
 	GBMethodData *method2 = [GBTestObjectsRegistry instanceMethodWithNames:@"doSomething", @"withVars", nil];
@@ -178,47 +181,65 @@
 	[class.methods registerMethod:method2];
 	[class.methods registerMethod:property];
 	// execute & verify
-	assertThat([settings htmlReferenceNameForObject:method1], is(@"//api/name/method"));
-	assertThat([settings htmlReferenceNameForObject:method2], is(@"//api/name/doSomething:withVars:"));
-	assertThat([settings htmlReferenceNameForObject:property], is(@"//api/name/value"));
+	assertThat([settings1 htmlReferenceNameForObject:method1], is(@"//api/name/method"));
+	assertThat([settings1 htmlReferenceNameForObject:method2], is(@"//api/name/doSomething:withVars:"));
+	assertThat([settings1 htmlReferenceNameForObject:property], is(@"//api/name/value"));
+	assertThat([settings2 htmlReferenceNameForObject:method1], is(@"//apple_ref/occ/instm/Class/method"));
+	assertThat([settings2 htmlReferenceNameForObject:method2], is(@"//apple_ref/occ/instm/Class/doSomething:withVars:"));
+	assertThat([settings2 htmlReferenceNameForObject:property], is(@"//apple_ref/occ/instp/Class/value"));
 }
 
 #pragma mark HTML href references handling - index
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForClassFromIndex {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[class.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:class fromSource:nil], is(@"Classes/Class.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//api/name/method:"));
+	assertThat([settings1 htmlReferenceForObject:class fromSource:nil], is(@"Classes/Class.html"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//api/name/method:"));
+	assertThat([settings2 htmlReferenceForObject:class fromSource:nil], is(@"Classes/Class.html"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:nil], is(@"Classes/Class.html#//apple_ref/occ/instm/Class/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForCategoryFromIndex {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[category.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class+Category.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//api/name/method:"));
+	assertThat([settings1 htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class+Category.html"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//api/name/method:"));
+	assertThat([settings2 htmlReferenceForObject:category fromSource:nil], is(@"Categories/Class+Category.html"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:nil], is(@"Categories/Class+Category.html#//apple_ref/occ/instm/Class(Category)/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForProtocolFromIndex {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"method", nil];
 	[protocol.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:protocol fromSource:nil], is(@"Protocols/Protocol.html"));
-	assertThat([settings htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//api/name/method:"));
+	assertThat([settings1 htmlReferenceForObject:protocol fromSource:nil], is(@"Protocols/Protocol.html"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//api/name/method:"));
+	assertThat([settings2 htmlReferenceForObject:protocol fromSource:nil], is(@"Protocols/Protocol.html"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:nil], is(@"Protocols/Protocol.html#//apple_ref/occ/intfm/Protocol/method:"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForDocumentFromIndex {
@@ -346,35 +367,50 @@
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToItsMemberReference {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method fromSource:class], is(@"#//api/name/value"));
-	assertThat([settings htmlReferenceForObject:class fromSource:method], is(@"Class.html"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:class], is(@"#//api/name/value"));
+	assertThat([settings1 htmlReferenceForObject:class fromSource:method], is(@"Class.html"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:class], is(@"#//apple_ref/occ/instp/Class/value"));
+	assertThat([settings2 htmlReferenceForObject:class fromSource:method], is(@"Class.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToSameTypeRemoteMemberReference {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class1 = [GBClassData classDataWithName:@"Class1"];
 	GBClassData *class2 = [GBClassData classDataWithName:@"Class2"];
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"value"];
 	[class1.methods registerMethod:method];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//api/name/value"));
-	assertThat([settings htmlReferenceForObject:method fromSource:class1], is(@"#//api/name/value"));
-	assertThat([settings htmlReferenceForObject:class1 fromSource:method], is(@"Class1.html"));
-	assertThat([settings htmlReferenceForObject:class2 fromSource:method], is(@"../Classes/Class2.html"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//api/name/value"));
+	assertThat([settings1 htmlReferenceForObject:method fromSource:class1], is(@"#//api/name/value"));
+	assertThat([settings1 htmlReferenceForObject:class1 fromSource:method], is(@"Class1.html"));
+	assertThat([settings1 htmlReferenceForObject:class2 fromSource:method], is(@"../Classes/Class2.html"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:class2], is(@"../Classes/Class1.html#//apple_ref/occ/instp/Class1/value"));
+	assertThat([settings2 htmlReferenceForObject:method fromSource:class1], is(@"#//apple_ref/occ/instp/Class1/value"));
+	assertThat([settings2 htmlReferenceForObject:class1 fromSource:method], is(@"Class1.html"));
+	assertThat([settings2 htmlReferenceForObject:class2 fromSource:method], is(@"../Classes/Class2.html"));
 }
 
 - (void)testHtmlReferenceForObjectFromSource_shouldReturnProperValueForTopLevelObjectToDifferentTypeRemoteMemberReference {
 	// setup
-	GBApplicationSettingsProvider *settings = [GBApplicationSettingsProvider provider];
-	settings.outputPath = @"anything :)";
+	GBApplicationSettingsProvider *settings1 = [GBApplicationSettingsProvider provider];
+	GBApplicationSettingsProvider *settings2 = [GBApplicationSettingsProvider provider];
+	settings1.outputPath = @"anything :)";
+	settings2.outputPath = @"anything :)";
+    settings2.htmlAnchorFormat = GBHTMLAnchorFormatApple;
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	GBCategoryData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	GBMethodData *method1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"value1"];
@@ -382,8 +418,10 @@
 	[class.methods registerMethod:method1];
 	[protocol.methods registerMethod:method2];
 	// execute & verify
-	assertThat([settings htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//api/name/value1"));
-	assertThat([settings htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//api/name/value2"));
+	assertThat([settings1 htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//api/name/value1"));
+	assertThat([settings1 htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//api/name/value2"));
+	assertThat([settings2 htmlReferenceForObject:method1 fromSource:protocol], is(@"../Classes/Class.html#//apple_ref/occ/instp/Class/value1"));
+	assertThat([settings2 htmlReferenceForObject:method2 fromSource:class], is(@"../Protocols/Protocol.html#//apple_ref/occ/intfp/Protocol/value2"));
 }
 
 #pragma mark Template files handling
