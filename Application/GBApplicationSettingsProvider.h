@@ -13,6 +13,15 @@
 
 extern id kGBCustomDocumentIndexDescKey;
 
+typedef enum
+{
+    GBHTMLAnchorFormatAppleDoc = 0,
+    GBHTMLAnchorFormatApple
+} GBHTMLAnchorFormat;
+
+GBHTMLAnchorFormat GBHTMLAnchorFormatFromNSString(NSString *formatString);
+NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
+
 #pragma mark -
 
 /** Main application settings provider.
@@ -212,6 +221,16 @@ extern id kGBCustomDocumentIndexDescKey;
  @see installDocSet
  */
 @property (assign) BOOL publishDocSet;
+
+/** Specifies the format docsets should use for their html anchors.
+ 
+ If `appledoc`, docset HTML files will use the format `//api/name/symbol_name` for anchor names.
+ 
+ If `apple`, docset HTML files will use the format `//apple_ref/occ/symbol_type/parent_symbol/symbol_name/`.
+ 
+ @see createDocSet
+ */
+@property (assign) GBHTMLAnchorFormat htmlAnchorFormat;
 
 /** Specifies whether intermediate files should be kept in `outputPath` or not.
  

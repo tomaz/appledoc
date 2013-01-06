@@ -28,6 +28,24 @@ NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
 
 NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 
+GBHTMLAnchorFormat GBHTMLAnchorFormatFromNSString(NSString *formatString) {
+    NSString *lowercaseFormatString = [formatString lowercaseString];
+    if ([lowercaseFormatString isEqualToString:@"apple"]) {
+        return GBHTMLAnchorFormatApple;
+    }
+    // We default to appledoc format if the option is not recognised
+    return GBHTMLAnchorFormatAppleDoc;
+}
+
+NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
+    switch (format) {
+        case GBHTMLAnchorFormatAppleDoc:
+            return @"appledoc";
+        case GBHTMLAnchorFormatApple:
+            return @"apple";
+    }
+}
+
 #pragma mark -
 
 @interface GBApplicationSettingsProvider ()
@@ -83,6 +101,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 		self.createDocSet = YES;
 		self.installDocSet = YES;
 		self.publishDocSet = NO;
+        self.htmlAnchorFormat = GBHTMLAnchorFormatAppleDoc;
 		self.repeatFirstParagraphForMemberDescription = YES;
 		self.preprocessHeaderDoc = NO;
 		self.printInformationBlockTitles = YES;
@@ -373,7 +392,12 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 	NSParameterAssert(prefix != nil);
 	if ([member isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)member;
-		return [NSString stringWithFormat:@"%@//api/name/%@", prefix, method.methodSelector];
+        switch (htmlAnchorFormat) {
+            case GBHTMLAnchorFormatApple:
+                return [NSString stringWithFormat:@"%@//apple_ref/occ/%@/%@/%@", prefix, [method methodTypeString], [method parentObject], method.methodSelector];
+            case GBHTMLAnchorFormatAppleDoc:
+                return [NSString stringWithFormat:@"%@//api/name/%@", prefix, method.methodSelector];
+        }
 	}
 	return @"";
 }
@@ -623,6 +647,7 @@ NSString *kGBCustomDocumentIndexDescKey = @"index-description";
 @synthesize createDocSet;
 @synthesize installDocSet;
 @synthesize publishDocSet;
+@synthesize htmlAnchorFormat;
 @synthesize keepIntermediateFiles;
 @synthesize cleanupOutputPathBeforeRunning;
 @synthesize treatDocSetIndexingErrorsAsFatals;

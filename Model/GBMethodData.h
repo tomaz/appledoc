@@ -122,6 +122,10 @@ typedef NSUInteger GBMethodType;
  */
 @property (retain) GBMethodSectionData *methodSection;
 
+/** A string representing the type of the method
+ */
+@property (readonly) NSString *methodTypeString;
+
 ///---------------------------------------------------------------------------------------
 /// @name Helper properties
 ///---------------------------------------------------------------------------------------
