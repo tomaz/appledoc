@@ -512,6 +512,8 @@ static NSString *kGBArgHelp = @"help";
 
 - (void)injectXcodeSettingsFromArguments:(NSArray *)arguments {
     //check if even deal with a project
+    if([arguments count] < 2)
+        return;
     NSString *path = [arguments objectAtIndex:1];
     if(![path.pathExtension isEqualToString:@"xcodeproj"])
         return;
