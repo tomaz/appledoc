@@ -204,7 +204,7 @@
 		if (isLast || isPointer) appendSpace = NO;
 		
 		// We should not add space between components of a protocol (i.e. id<ProtocolName> should be written without any space). Because we've alreay
-		if (!isLast && [[types objectAtIndex:idx+1] isEqualToString:@"<"])
+		if (!isLast && idx+1 < [types count] && [[types objectAtIndex:idx+1] isEqualToString:@"<"])
 			insideProtocol = YES;
 		else if ([type isEqualToString:@">"])
 			insideProtocol = NO;
