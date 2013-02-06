@@ -51,19 +51,18 @@
     NSString *outputXMLPath = [outputDir stringByAppendingPathComponent:xmlName];
 	NSString *signer = self.settings.docsetCertificateSigner;
 	NSString *url = self.settings.docsetPackageURL;
-    //TODO: Check for export formats and show this one in this message
     
-    NSString *outputPaths = @"";
+    NSMutableArray *outputPaths = [NSMutableArray arrayWithCapacity:2];
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
     {
-        outputPaths = [outputPaths stringByAppendingString:outputAtomPath];
+        [outputPaths addObject:outputAtomPath];
     }
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatXML)
     {
-        outputPaths = [outputPaths stringByAppendingString:outputXMLPath];
+        [outputPaths addObject:outputXMLPath];
     }
     
-	if ([url length] == 0) GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", outputPaths);
+	if ([url length] == 0) GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", [outputPaths componentsJoinedByString:@", "]);
 	
 	// Create destination directory.
 	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {
