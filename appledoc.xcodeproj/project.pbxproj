@@ -549,6 +549,7 @@
 		B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
+		F59056EC16C1C6DC00391620 /* publish */ = {isa = PBXFileReference; lastKnownFileType = folder; path = publish; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -736,6 +737,7 @@
 		739AD36F1254449D00B642C3 /* Templates */ = {
 			isa = PBXGroup;
 			children = (
+				F59056EC16C1C6DC00391620 /* publish */,
 				7367298112A3BD9D00879D1B /* docset */,
 				73D2524312A2EA340024F9F9 /* html */,
 			);

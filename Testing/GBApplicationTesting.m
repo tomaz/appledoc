@@ -463,6 +463,14 @@
 	assertThat(settings.docsetFeedURL, is(@"value"));
 }
 
+- (void)testDocSetFeedFormat_shouldAssignValueToSettings {
+    
+    // setup & execute
+    GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"value", nil];
+    // verify
+    assertThat(settings.docsetFeedFormats, is(@"value"));
+}
+
 - (void)testDocSetPackageURL_shouldAssignValueToSettings {
 	// setup & execute
 	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-package-url", @"value", nil];
@@ -531,6 +539,13 @@
 	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-atom-filename", @"value", nil];
 	// verify
 	assertThat(settings.docsetAtomFilename, is(@"value"));
+}
+
+- (void)testDocSetXMLFilename_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-xml-filename", @"value", nil];
+	// verify
+	assertThat(settings.docsetXMLFilename, is(@"value"));
 }
 
 - (void)testDocSetPackageFilename_shouldAssignValueToSettings {
