@@ -36,6 +36,7 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
+    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
@@ -44,6 +45,7 @@
 	settings.docsetCopyrightMessage = template;
 	settings.docsetBundleFilename = template;
 	settings.docsetAtomFilename = template;
+    settings.docsetXMLFilename = template;
 	settings.docsetPackageFilename = template;
 	// setup expected values; this might break sometimes as it's based on time...
 	NSDate *date = [NSDate date];
@@ -61,6 +63,7 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
+    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
@@ -69,6 +72,7 @@
 	assertThat(settings.docsetCopyrightMessage, is(expected));
 	assertThat(settings.docsetBundleFilename, is(expected));
 	assertThat(settings.docsetAtomFilename, is(expected));
+    assertThat(settings.docsetXMLFilename, is(expected));
 	assertThat(settings.docsetPackageFilename, is(expected));
 }
 
@@ -81,8 +85,9 @@
 	settings.companyIdentifier = @"<CI>";
 	settings.docsetBundleFilename = @"<DSB>";
 	settings.docsetAtomFilename = @"<DSA>";
+    settings.docsetXMLFilename = @"<DSA>";
 	settings.docsetPackageFilename = @"<DSP>";
-	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETPACKAGEFILENAME";
+	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETXMLFILENAME/%DOCSETPACKAGEFILENAME";
 	settings.docsetBundleIdentifier = template;
 	settings.docsetBundleName = template;
 	settings.docsetCertificateIssuer = template;
@@ -91,6 +96,7 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
+    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
@@ -109,6 +115,7 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
+    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));

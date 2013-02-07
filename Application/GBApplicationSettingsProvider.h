@@ -22,6 +22,15 @@ typedef enum
 GBHTMLAnchorFormat GBHTMLAnchorFormatFromNSString(NSString *formatString);
 NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
 
+typedef enum
+{
+    GBPublishedFeedFormatAtom = 1,
+    GBPublishedFeedFormatXML = 2
+} GBPublishedFeedFormats;
+
+GBPublishedFeedFormats GBPublishedFeedFormatsFromNSString(NSString *formatString);
+NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
+
 #pragma mark -
 
 /** Main application settings provider.
@@ -104,6 +113,18 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
 /** Documentation set feed URL. */
 @property (copy) NSString *docsetFeedURL;
 
+/** Specifies the format docsets should be published in.
+ 
+ If `atom`, docset will be published using the standard Xcode atom feed format
+ 
+ If `xml`, docset will be published using the xml format specified by the xml-template.xml found in Templates/publish
+ 
+ Multiple values can be included in this parameter separated by a comma
+ 
+ @see publishDocSet
+ */
+@property (assign) GBPublishedFeedFormats docsetFeedFormats;
+
 /** Documentation set package URL. */
 @property (copy) NSString *docsetPackageURL;
 
@@ -130,6 +151,9 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
 
 /** The name of the documentation set atom file when generating publishing files. The file is generated in `outputPath`. */
 @property (copy) NSString *docsetAtomFilename;
+
+/** The name of the documentation set xml file when generating publishing files. The file is generated in `outputPath`. */
+@property (copy) NSString *docsetXMLFilename;
 
 /** The name of the documentation set compressed package file when generating publishing files. The file is generated in `outputPath`. */
 @property (copy) NSString *docsetPackageFilename;
@@ -637,6 +661,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
  - `%VERSIONID`: Replaced by `versionIdentifier` value.
  - `%DOCSETBUNDLEFILENAME`: Replaced by `docsetBundleFilename` value.
  - `%DOCSETATOMFILENAME`: Replaced by `docsetAtomFilename` value.
+ - `%DOCSETXMLFILENAME`: Replaced by `docsetXMLFilename` value.
  - `%DOCSETPACKAGEFILENAME`: Replaced by `docsetPackageFilename` value.
  - `%YEAR`: Replaced by current year as four digit string.
  - `%UPDATEDATE`: Replaced by current date in the form of year, month and day with format `YYYY-MM-DD`. For example `2010-11-30`.
@@ -669,6 +694,7 @@ extern NSString *kGBTemplatePlaceholderCompany;
 extern NSString *kGBTemplatePlaceholderVersion;
 extern NSString *kGBTemplatePlaceholderDocSetBundleFilename;
 extern NSString *kGBTemplatePlaceholderDocSetAtomFilename;
+extern NSString *kGBTemplatePlaceholderDocSetXMLFilename;
 extern NSString *kGBTemplatePlaceholderDocSetPackageFilename;
 extern NSString *kGBTemplatePlaceholderYear;
 extern NSString *kGBTemplatePlaceholderUpdateDate;

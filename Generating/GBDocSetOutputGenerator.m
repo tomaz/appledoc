@@ -104,6 +104,7 @@
 	addVarUnlessEmpty(self.settings.docsetFallbackURL, @"fallbackURL");
 	addVarUnlessEmpty(self.settings.docsetFeedName, @"feedName");
 	addVarUnlessEmpty(self.settings.docsetFeedURL, @"feedURL");
+    addVarUnlessEmpty(NSStringFromGBPublishedFeedFormats(self.settings.docsetFeedFormats), @"feedFormats");
 	addVarUnlessEmpty(self.settings.docsetMinimumXcodeVersion, @"minimumXcodeVersion");
 	addVarUnlessEmpty(self.settings.docsetPlatformFamily, @"platformFamily");
 	addVarUnlessEmpty(self.settings.docsetPublisherIdentifier, @"publisherIdentifier");

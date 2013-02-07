@@ -22,6 +22,7 @@ NSString *kGBTemplatePlaceholderCompany = @"%COMPANY";
 NSString *kGBTemplatePlaceholderVersion = @"%VERSION";
 NSString *kGBTemplatePlaceholderDocSetBundleFilename = @"%DOCSETBUNDLEFILENAME";
 NSString *kGBTemplatePlaceholderDocSetAtomFilename = @"%DOCSETATOMFILENAME";
+NSString *kGBTemplatePlaceholderDocSetXMLFilename = @"%DOCSETXMLFILENAME";
 NSString *kGBTemplatePlaceholderDocSetPackageFilename = @"%DOCSETPACKAGEFILENAME";
 NSString *kGBTemplatePlaceholderYear = @"%YEAR";
 NSString *kGBTemplatePlaceholderUpdateDate = @"%UPDATEDATE";
@@ -44,6 +45,32 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
         case GBHTMLAnchorFormatApple:
             return @"apple";
     }
+}
+
+GBPublishedFeedFormats GBPublishedFeedFormatsFromNSString(NSString *formatString) {
+    // These items are comma delimited
+    NSArray *formatItems = [[formatString lowercaseString] componentsSeparatedByString:@","];
+    GBPublishedFeedFormats formats;
+    if ([formatItems containsObject:@"xml"]) {
+        formats = formats | GBPublishedFeedFormatXML;
+    }
+    if ([formatItems containsObject:@"atom"]) {
+        formats = formats | GBPublishedFeedFormatAtom;
+    }
+    return formats;
+}
+
+NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
+    NSMutableArray *formatItems = [NSMutableArray array];
+    if(formats & GBPublishedFeedFormatAtom)
+    {
+        [formatItems addObject:@"atom"];
+    }
+    if(formats & GBPublishedFeedFormatXML)
+    {
+        [formatItems addObject:@"xml"];
+    }
+    return [formatItems componentsJoinedByString:@","];
 }
 
 #pragma mark -
@@ -140,6 +167,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 		self.docsetFallbackURL = @"";
 		self.docsetFeedName = self.docsetBundleName;
 		self.docsetFeedURL = @"";
+        self.docsetFeedFormats = GBPublishedFeedFormatAtom;
 		self.docsetPackageURL = @"";
 		self.docsetMinimumXcodeVersion = @"3.0";
 		self.dashDocsetPlatformFamily = @"appledoc"; // this makes docset TOC usable from within Dash - http://kapeli.com/dash/
@@ -150,7 +178,8 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 		
 		self.docsetBundleFilename = [NSString stringWithFormat:@"%@.%@.docset", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
 		self.docsetAtomFilename = [NSString stringWithFormat:@"%@.%@.atom", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
-		self.docsetPackageFilename = [NSString stringWithFormat:@"%@.%@-%@.xar", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID, kGBTemplatePlaceholderVersionID];
+        self.docsetXMLFilename = [NSString stringWithFormat:@"%@.%@.xml", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
+		self.docsetPackageFilename = [NSString stringWithFormat:@"%@.%@-%@", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID, kGBTemplatePlaceholderVersionID];
 		
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
@@ -167,6 +196,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 	// These need to be replaced first as they can be used in other settings!
 	self.docsetBundleFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleFilename];
 	self.docsetAtomFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetAtomFilename];
+    self.docsetXMLFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetXMLFilename];
 	self.docsetPackageFilename = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetPackageFilename];
 	// Handle the rest now.
 	self.docsetBundleIdentifier = [self stringByReplacingOccurencesOfPlaceholdersInString:self.docsetBundleIdentifier];
@@ -548,6 +578,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderVersion withString:self.projectVersion];
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetBundleFilename withString:self.docsetBundleFilename];
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetAtomFilename withString:self.docsetAtomFilename];
+    string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetXMLFilename withString:self.docsetXMLFilename];
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderDocSetPackageFilename withString:self.docsetPackageFilename];
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderYear withString:[self yearStringFromDate:[NSDate date]]];
 	string = [string stringByReplacingOccurrencesOfString:kGBTemplatePlaceholderUpdateDate withString:[self yearToDayStringFromDate:[NSDate date]]];
@@ -614,6 +645,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 @synthesize docsetFallbackURL;
 @synthesize docsetFeedName;
 @synthesize docsetFeedURL;
+@synthesize docsetFeedFormats;
 @synthesize docsetPackageURL;
 @synthesize docsetMinimumXcodeVersion;
 @synthesize dashDocsetPlatformFamily;
@@ -624,6 +656,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 
 @synthesize docsetBundleFilename;
 @synthesize docsetAtomFilename;
+@synthesize docsetXMLFilename;
 @synthesize docsetPackageFilename;
 
 @synthesize repeatFirstParagraphForMemberDescription;
