@@ -459,13 +459,14 @@
 	__block BOOL assertMethod = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
-	GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
+	__block GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement... Note that we skip subsequent - or + tokens so that we can handle stuff like '#pragma mark -' gracefully (note that we also do it for + although that shouldn't be necessary, but feels safer).
 		if (assertMethod) {
 			if ([token matches:@"-"] || [token matches:@"+"]) {
 				[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
+				methodType = [token matches:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 				return;
 			}
 			if (![token matches:@"("]) {
