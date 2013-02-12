@@ -237,6 +237,7 @@
 		for (GBMethodData *method in methodsProvider.methods) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
 			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
+            [data setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
 			[self addTokensXmlModelObjectDataForObject:method toData:data];
 			[self addTokensXmlModelObjectDataForPropertySetterAndGetter:method withData:data toArray:membersData];
 			[membersData addObject:data];            
