@@ -339,6 +339,7 @@
 	[setterData setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
 	[self addTokensXmlModelObjectDataForObject:setterMethod toData:setterData];
 	[setterData setObject:[data objectForKey:@"formattedComponents"] forKey:@"formattedComponents"];
+    [setterData setObject:[data objectForKey:@"refid"] forKey:@"refid"];
 	[members addObject:setterData];
 }
 
