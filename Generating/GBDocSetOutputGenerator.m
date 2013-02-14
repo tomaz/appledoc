@@ -36,6 +36,8 @@
 @property (retain) NSArray *protocols;
 @property (readonly) NSMutableSet *temporaryFiles;
 
+@property (retain) id sectionID; //tmp for class's refid
+
 @end
 
 #pragma mark -
@@ -230,6 +232,8 @@
 		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
 		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
 		[objectData setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
+        // save refid
+        _sectionID = [objectData objectForKey:@"refid"];
 		[self addTokensXmlModelObjectDataForObject:topLevelObject toData:objectData];
 		
 		// Prepare the list of all members.
@@ -237,8 +241,7 @@
 		for (GBMethodData *method in methodsProvider.methods) {
 			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
 			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
-            [data setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
-			[self addTokensXmlModelObjectDataForObject:method toData:data];
+          	[self addTokensXmlModelObjectDataForObject:method toData:data];
 			[self addTokensXmlModelObjectDataForPropertySetterAndGetter:method withData:data toArray:membersData];
 			[membersData addObject:data];            
 		}
@@ -290,6 +293,7 @@
 	if ([object isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)object;
 		[data setObject:method.formattedComponents forKey:@"formattedComponents"];
+        [data setObject:_sectionID forKey:@"refid"];
 		if (method.comment) {
 			if (method.comment.hasMethodParameters) {
 				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.methodParameters count]];
@@ -339,8 +343,7 @@
 	[setterData setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
 	[self addTokensXmlModelObjectDataForObject:setterMethod toData:setterData];
 	[setterData setObject:[data objectForKey:@"formattedComponents"] forKey:@"formattedComponents"];
-    [setterData setObject:[data objectForKey:@"refid"] forKey:@"refid"];
-	[members addObject:setterData];
+  	[members addObject:setterData];
 }
 
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object {
