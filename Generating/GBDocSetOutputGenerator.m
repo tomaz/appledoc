@@ -29,6 +29,7 @@
 - (void)initializeSimplifiedObjects;
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index;
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
+-(void) addGetterSetterToMethods:(GBMethodData *)property for:(NSString *)name withReturnResult:(NSArray*)results withTypes:(NSArray *)types withArguments:(NSArray *)arguments withData:(NSDictionary *)data toArray:(NSMutableArray *)members;
 
 @property (retain) NSArray *documents;
 @property (retain) NSArray *classes;
@@ -324,26 +325,42 @@
 	GBMethodData *property = (GBMethodData *)method;
 	if (!property.isProperty) return;
 		
-	// Setter: returns void, has an argument of the same type as the property, use property's setterSelector as name and avoid duplication of the colon by trimming it. Copy source infos from property.
+	// Setter: returns void, has an argument of the same type as the property, use property's setterSelector as name and avoid duplication of the colon by trimming it. Copy source infos from property.    
 	NSArray *setterResults = [NSArray arrayWithObjects:@"void", nil];
 	NSArray *setterTypes = [property methodResultTypes];
 	NSString *setterName = [property propertySetterSelector];
-	setterName = [setterName stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-	NSArray *setterArgs = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:setterName types:setterTypes var:@"val"]];
-	GBMethodData *setterMethod = [GBMethodData methodDataWithType:GBMethodTypeInstance result:setterResults arguments:setterArgs];
-	GBLogDebug(@"Adding setter method %@ for property: %@", setterMethod, property);
-	setterMethod.parentObject = property.parentObject;
-	setterMethod.comment = property.comment;
-	for (GBSourceInfo *info in property.sourceInfos) {
-		[setterMethod registerSourceInfo:info];
-	}
-	
-	// Add Setter to XML and also copy anchor from property, override declaration with @property one.
-	NSMutableDictionary *setterData = [NSMutableDictionary dictionaryWithCapacity:4];
-	[setterData setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
-	[self addTokensXmlModelObjectDataForObject:setterMethod toData:setterData];
-	[setterData setObject:[data objectForKey:@"formattedComponents"] forKey:@"formattedComponents"];
-  	[members addObject:setterData];
+    setterName = [setterName stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+    NSArray *setterArgs = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:setterName types:setterTypes var:@"val"]];
+    [self addGetterSetterToMethods:property for:setterName withReturnResult:setterResults withTypes:setterTypes withArguments:setterArgs withData:data toArray:members];
+    
+    // Getter: returns the same as property, use property's getterSelector as name, takes no arguments. Copy source infos from property.
+    NSArray *getterResults = [NSArray arrayWithObjects:property.methodReturnType, nil];
+    NSArray *getterTypes = [property methodResultTypes];
+    NSString *getterName = [property propertyGetterSelector];
+    NSArray *getterArgs = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:getterName types:getterTypes var:nil]];
+    [self addGetterSetterToMethods:property for:getterName withReturnResult:getterResults withTypes:getterTypes withArguments:getterArgs withData:data toArray:members];
+}
+
+-(void) addGetterSetterToMethods:(GBMethodData *)property
+                       for:(NSString *)name
+          withReturnResult:(NSArray*)results
+                 withTypes:(NSArray *)types
+             withArguments:(NSArray *)arguments
+               withData:(NSDictionary *)data
+                toArray:(NSMutableArray *)members
+{
+    GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
+    method.parentObject = property.parentObject;
+    method.comment = property.comment;
+    for (GBSourceInfo *info in property.sourceInfos) {
+        [method registerSourceInfo:info];
+    }
+    NSMutableDictionary *methodData = [NSMutableDictionary dictionaryWithCapacity:4];
+    [methodData setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
+    [self addTokensXmlModelObjectDataForObject:method toData:methodData];
+    [methodData setObject:[data objectForKey:@"formattedComponents"] forKey:@"formattedComponents"];
+    [members addObject:methodData];
+    
 }
 
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object {
