@@ -136,18 +136,28 @@
 		// Add the list of attributes.
 		if ([self.methodAttributes count] > 0) {
 			__block BOOL isSetterOrGetter = NO;
+            __block BOOL hasSetter = NO;
 			[result addObject:[self formattedComponentWithValue:@"("]];
 			[self.methodAttributes enumerateObjectsUsingBlock:^(NSString *attribute, NSUInteger idx, BOOL *stop) {
-				[result addObject:[self formattedComponentWithValue:attribute]];
+				if(hasSetter && [attribute isEqualToString:@":"]) //remove previously added "," and " " to keep clean setter=xxx:
+                {
+                    [result removeLastObject];
+                    [result removeLastObject];
+                    hasSetter = NO;
+                }
+                [result addObject:[self formattedComponentWithValue:attribute]];
 				if ([attribute isEqualToString:@"setter"] || [attribute isEqualToString:@"getter"]) {
 					isSetterOrGetter = YES;
+                    if ([attribute isEqualToString:@"setter"]) {
+                        hasSetter = YES;
+                    }
 					return;
 				}
 				if (isSetterOrGetter) {
 					if ([attribute isEqualToString:@"="]) return;
 					isSetterOrGetter = NO;
 				}
-				if (idx < [self.methodAttributes count]-1) {
+				if (idx < [self.methodAttributes count]-1 ) {
 					[result addObject:[self formattedComponentWithValue:@","]];
 					[result addObject:[self formattedComponentWithValue:@" "]];
 				}

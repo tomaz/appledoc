@@ -527,6 +527,7 @@
 		73FC742B11FE274300AAD0B9 /* GBMethodArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodArgument.h; sourceTree = "<group>"; };
 		73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodArgument.m; sourceTree = "<group>"; };
 		73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodDataTesting.m; sourceTree = "<group>"; };
+		75C6C0D416CAA8D900E254F7 /* XcodeIntegrationScript.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = XcodeIntegrationScript.markdown; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4D1FFC015FF5F05009736E2 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		B4D1FFC115FF5F05009736E2 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
@@ -594,6 +595,7 @@
 				B4D1FFF615FF643D009736E2 /* install-appledoc.sh */,
 				73EA656912B7944E00398BD1 /* Readme.markdown */,
 				73EEB7A812CA2BE700E546DB /* Developer Notes.markdown */,
+				75C6C0D416CAA8D900E254F7 /* XcodeIntegrationScript.markdown */,
 				739038301319926400B9CA74 /* AppledocSettings.plist */,
 				73D54C9011F8D18300CCDDB0 /* Classes */,
 				739AD36F1254449D00B642C3 /* Templates */,
