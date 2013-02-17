@@ -102,13 +102,15 @@
     }
     
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatXML)
-    {        
+    {
+        NSString *extension = @"tgz";
+        
         NSMutableArray *args = [NSMutableArray array];
         [args addObject:@"tar"];
         [args addObject:@"--exclude"];
         [args addObject:@".DS_Store"];
         [args addObject:@"-czPf"];
-        [args addObject:[[outputDocSetPath stringByStandardizingPath] stringByAppendingString:@".tgz"]];
+        [args addObject:[[outputDocSetPath stringByStandardizingPath] stringByAppendingPathExtension:extension]];
         [args addObject:installedDocSetPath];
         
         // Run the task.
@@ -130,7 +132,10 @@
             if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:[NSString stringWithFormat:@"failed to read the xml template document in %@!", xmlTemplatePath] reason:task.lastStandardError];
             return NO;
         }
-        xmlString = [xmlString stringByReplacingOccurrencesOfString:@"${DOCSET_FEED_URL}" withString:self.settings.docsetFeedURL];
+        NSString *tarURL = self.settings.docsetPackageURL;
+        tarURL = [[tarURL stringByDeletingPathExtension] stringByAppendingPathExtension:extension];
+        
+        xmlString = [xmlString stringByReplacingOccurrencesOfString:@"${DOCSET_PACKAGE_URL}" withString:tarURL];
         xmlString = [xmlString stringByReplacingOccurrencesOfString:@"${DOCSET_FEED_VERSION}" withString:self.settings.projectVersion];
         result = [self writeString:xmlString toFile:[outputXMLPath stringByStandardizingPath] error:error];
         if(!result)
