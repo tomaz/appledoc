@@ -25,6 +25,7 @@
 			</Parameters>{{/hasParameters}}
 			{{#returnValue}}<ReturnValue>{{>Abstract}}</ReturnValue>{{/returnValue}}
 			{{#anchor}}<Anchor>{{anchor}}</Anchor>{{/anchor}}
+            {{#refid}}<NodeRef refid="{{refid}}"/>{{/refid}}
 		</Token>
 		{{/members}}
 	</File>
