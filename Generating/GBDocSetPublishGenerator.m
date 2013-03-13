@@ -71,6 +71,12 @@
 	
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
     {
+        // typical atom enclosure url does not have an extension, add it if it doesn't
+        if (![url hasSuffix:@".xar"])
+        {
+            url = [url stringByAppendingPathExtension:@"xar"];
+        }
+        
         // Create command line arguments array.
         NSMutableArray *args = [NSMutableArray array];
         [args addObject:@"docsetutil"];
