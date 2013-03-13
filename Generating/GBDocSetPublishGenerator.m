@@ -28,7 +28,6 @@
 	
 	// Get the path to the installed documentation set and extract the name. Then replace the name's extension with .xar.
 	NSString *inputDocSetPath = self.inputUserPath;
-	NSString *packageName = [self.settings.docsetPackageFilename stringByDeletingPathExtension];
 	NSString *atomName = self.settings.docsetAtomFilename;
     NSString *xmlName = self.settings.docsetXMLFilename;
     NSString *installedDocSetPath = inputDocSetPath;
@@ -46,7 +45,7 @@
 	
 	// Prepare command line arguments for packaging.
 	NSString *outputDir = self.outputUserPath;
-	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:packageName];
+	NSString *outputDocSetPath = [outputDir stringByAppendingPathComponent:self.settings.docsetPackageFilename];
 	NSString *outputAtomPath = [outputDir stringByAppendingPathComponent:atomName];
     NSString *outputXMLPath = [outputDir stringByAppendingPathComponent:xmlName];
 	NSString *signer = self.settings.docsetCertificateSigner;
@@ -72,6 +71,12 @@
 	
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
     {
+        // typical atom enclosure url does not have an extension, add it if it doesn't
+        if (![url hasSuffix:@".xar"])
+        {
+            url = [url stringByAppendingPathExtension:@"xar"];
+        }
+        
         // Create command line arguments array.
         NSMutableArray *args = [NSMutableArray array];
         [args addObject:@"docsetutil"];
