@@ -148,6 +148,7 @@
 	[page setObject:[self pageTitleForDocument:object] forKey:@"title"];
 	[page setObject:[path stringByAppendingPathComponent:@"css/styles.css"] forKey:@"cssPath"];
 	[page setObject:[path stringByAppendingPathComponent:@"css/stylesPrint.css"] forKey:@"cssPrintPath"];
+    [page setObject:[path stringByAppendingPathComponent:@"index.html"] forKey:@"documentationIndexPath"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
