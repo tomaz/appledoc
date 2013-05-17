@@ -87,7 +87,7 @@
 			return;
 		}
 		if (![generator generateOutputWithStore:aStore error:&error]) {
-			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed generaing output, aborting!", index, stepsCount, [generator className]);
+			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed generating output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;
 		}
