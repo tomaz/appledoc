@@ -233,7 +233,9 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 	const char* input=[markdown cStringUsingEncoding:NSUTF8StringEncoding];
 	
 	if(input) {
-		MMIOT *document = gfm_string((char *)input, (int)strlen(input), 0);
+		// Using gfm_string doesn't properly handle > %class%, so reverting back to original implementation!
+		//MMIOT *document = gfm_string((char *)input, (int)strlen(input), 0);
+		MMIOT *document = mkd_string((char *)input, (int)strlen(input), 0);
 		mkd_compile(document, 0);
 		
 		char *html = NULL;
