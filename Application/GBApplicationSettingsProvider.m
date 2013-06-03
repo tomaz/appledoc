@@ -50,7 +50,7 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format) {
 GBPublishedFeedFormats GBPublishedFeedFormatsFromNSString(NSString *formatString) {
     // These items are comma delimited
     NSArray *formatItems = [[formatString lowercaseString] componentsSeparatedByString:@","];
-    GBPublishedFeedFormats formats;
+    GBPublishedFeedFormats formats = 0;
     if ([formatItems containsObject:@"xml"]) {
         formats = formats | GBPublishedFeedFormatXML;
     }
