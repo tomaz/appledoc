@@ -161,7 +161,11 @@
 	[self matchSuperclassForClass:class];
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
-	[self matchMethodDefinitionsForProvider:class.methods defaultsRequired:NO];
+
+    GBMethodsProvider *methodsProvider = class.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
+	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
 	[self.store registerClass:class];
 }
 
@@ -176,7 +180,11 @@
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:category.methods defaultsRequired:NO];
+
+    GBMethodsProvider *methodsProvider = category.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
+	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
 	[self.store registerCategory:category];
 }
 
@@ -190,7 +198,11 @@
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
 	[self matchAdoptedProtocolForProvider:extension.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:extension.methods defaultsRequired:NO];
+
+    GBMethodsProvider *methodsProvider = extension.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
+	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
 	[self.store registerCategory:extension];
 }
 
@@ -204,7 +216,11 @@
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
 	[self matchAdoptedProtocolForProvider:protocol.adoptedProtocols];
-	[self matchMethodDefinitionsForProvider:protocol.methods defaultsRequired:YES];
+
+    GBMethodsProvider *methodsProvider = protocol.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
+	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:YES];
 	[self.store registerProtocol:protocol];
 }
 
@@ -324,6 +340,10 @@
 	GBLogVerbose(@"Matched %@ class declaration at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
+
+    GBMethodsProvider *methodsProvider = class.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
 	[self matchMethodDeclarationsForProvider:class.methods defaultsRequired:NO];
 	[self.store registerClass:class];
 }
@@ -338,7 +358,11 @@
 	GBLogVerbose(@"Matched %@(%@) category declaration at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
-	[self matchMethodDeclarationsForProvider:category.methods defaultsRequired:NO];
+
+    GBMethodsProvider *methodsProvider = category.methods;
+    methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+
+    [self matchMethodDeclarationsForProvider:methodsProvider defaultsRequired:NO];
 	[self.store registerCategory:category];
 }
 

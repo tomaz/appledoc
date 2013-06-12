@@ -54,6 +54,7 @@ static NSString *kGBArgMergeCategoriesToClasses = @"merge-categories";
 static NSString *kGBArgMergeCategoryComment = @"merge-category-comment";
 static NSString *kGBArgKeepMergedCategoriesSections = @"keep-merged-sections";
 static NSString *kGBArgPrefixMergedCategoriesSectionsWithCategoryName = @"prefix-merged-sections";
+static NSString *kGBArgUseCodeOrder = @"use-code-order";
 
 static NSString *kGBArgExplicitCrossRef = @"explicit-crossref";
 static NSString *kGBArgCrossRefFormat = @"crossref-format";
@@ -293,6 +294,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
+        { kGBArgUseCodeOrder,                                               0,		DDGetoptNoArgument },
 		{ kGBArgExitCodeThreshold,											0,		DDGetoptRequiredArgument },
 		{ GBNoArg(kGBArgKeepIntermediateFiles),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
@@ -302,6 +304,7 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgMergeCategoriesToClasses),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
+        { GBNoArg(kGBArgUseCodeOrder),	                                    0,		DDGetoptNoArgument },
 		
 		{ kGBArgWarnOnMissingOutputPath,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
@@ -811,6 +814,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoMergeCategoryComment:(BOOL)value { self.settings.mergeCategoryCommentToClass = !value; }
 - (void)setNoKeepMergedSections:(BOOL)value { self.settings.keepMergedCategoriesSections = !value; }
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
+- (void)setUseCodeOrder:(BOOL)value { self.settings.useCodeOrder = value; }
+- (void)setNoUseCodeOrder:(BOOL)value { self.settings.useCodeOrder = !value; }
 
 - (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
 - (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
@@ -936,6 +941,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
 	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
+	ddprintf(@"--%@ = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
 	ddprintf(@"--%@ = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
 	ddprintf(@"\n");
 	
@@ -1003,9 +1009,10 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgMergeCategoryComment, @"", @"[b] Merge category comment to class");
 	PRINT_USAGE(@"   ", kGBArgKeepMergedCategoriesSections, @"", @"[b] Keep merged categories sections");
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");
-	PRINT_USAGE(@"   ", kGBArgExplicitCrossRef, @"", @"[b] Shortcut for explicit default cross ref template");
-	PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
-	PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
+    PRINT_USAGE(@"   ", kGBArgExplicitCrossRef, @"", @"[b] Shortcut for explicit default cross ref template");
+    PRINT_USAGE(@"   ", kGBArgUseCodeOrder, @"", @"[b] Order sections by the order specified in the input files");
+    PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
+    PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
 	ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");

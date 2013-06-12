@@ -145,6 +145,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 		self.mergeCategoryCommentToClass = YES;
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
+        self.useCodeOrder = NO;
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
 		self.embedCrossReferencesWhenProcessingMarkdown = YES;
@@ -673,6 +674,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 @synthesize mergeCategoryCommentToClass;
 @synthesize keepMergedCategoriesSections;
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
+@synthesize useCodeOrder;
 
 @synthesize prefixLocalMembersInRelatedItemsList;
 @synthesize embedCrossReferencesWhenProcessingMarkdown;
