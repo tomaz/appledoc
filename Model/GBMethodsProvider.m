@@ -19,24 +19,26 @@
 #pragma mark -
 
 @implementation GBMethodsProvider
+@synthesize useAlphabeticalOrder = _useAlphabeticalOrder;
 
 #pragma mark Initialization & disposal
 
 - (id)initWithParentObject:(id)parent {
-	NSParameterAssert(parent != nil);
-	GBLogDebug(@"Initializing methods provider for %@...", parent);
-	self = [super init];
-	if (self) {
-		_parent = [parent retain];
-		_sections = [[NSMutableArray alloc] init];
-		_methods = [[NSMutableArray alloc] init];
-		_classMethods = [[NSMutableArray alloc] init];
-		_instanceMethods = [[NSMutableArray alloc] init];
-		_properties = [[NSMutableArray alloc] init];
-		_methodsBySelectors = [[NSMutableDictionary alloc] init];
-		_sectionsByNames = [[NSMutableDictionary alloc] init];
-	}
-	return self;
+    NSParameterAssert(parent != nil);
+    GBLogDebug(@"Initializing methods provider for %@...", parent);
+    self = [super init];
+    if (self) {
+        _parent = [parent retain];
+        _sections = [[NSMutableArray alloc] init];
+        _methods = [[NSMutableArray alloc] init];
+        _classMethods = [[NSMutableArray alloc] init];
+        _instanceMethods = [[NSMutableArray alloc] init];
+        _properties = [[NSMutableArray alloc] init];
+        _methodsBySelectors = [[NSMutableDictionary alloc] init];
+        _sectionsByNames = [[NSMutableDictionary alloc] init];
+        _useAlphabeticalOrder = YES;
+    }
+    return self;
 }
 
 #pragma mark Registration methods
@@ -133,9 +135,11 @@
 
 - (void)addMethod:(GBMethodData *)method toSortedArray:(NSMutableArray *)array {
 	[array addObject:method];
-	[array sortUsingComparator:^(GBMethodData *obj1, GBMethodData *obj2) {
-		return [obj1.methodSelector compare:obj2.methodSelector];
-	}];
+    if (_useAlphabeticalOrder) {
+        [array sortUsingComparator:^(GBMethodData *obj1, GBMethodData *obj2) {
+            return [obj1.methodSelector compare:obj2.methodSelector];
+        }];
+    }
 }
 
 #pragma mark Output generation helpers
