@@ -28,6 +28,7 @@
 	NSMutableDictionary *_sectionsByNames;
 	GBMethodSectionData *_registeringSection;
 	id _parent;
+    BOOL _useAlphabeticalOrder;
 }
 
 ///---------------------------------------------------------------------------------------
@@ -43,6 +44,16 @@
  @exception NSException Thrown if the given parent is `nil`.
  */
 - (id)initWithParentObject:(id)parent;
+
+///---------------------------------------------------------------------------------------
+/// @name Parameters
+///---------------------------------------------------------------------------------------
+
+/** Sets if the provider should register methods in alphabetical order or not.
+
+ This property is initialized with `YES` by default.
+ */
+@property (nonatomic, readwrite) BOOL useAlphabeticalOrder;
 
 ///---------------------------------------------------------------------------------------
 /// @name Sections handling

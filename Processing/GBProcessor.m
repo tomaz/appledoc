@@ -349,14 +349,16 @@
 		}
 		
 		// Merge all methods from category to the class. We can leave methods within the category as we'll delete it later on anyway.
-		if ([category.methods.methods count] > 0) {
+        GBMethodsProvider *classMethodProvider = class.methods;
+        classMethodProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
+        if ([category.methods.methods count] > 0) {
 			// If we should merge all section into a single section per category, create it now. Note that name is different whether this is category or extension.
 			if (!self.settings.keepMergedCategoriesSections) {
 				GBLogDebug(@"Creating single section for methods merged from %@...", category);
 				NSString *key = category.isExtension ? @"mergedExtensionSectionTitle" :  @"mergedCategorySectionTitle";
 				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:key];
 				NSString *name = category.isExtension ? template : [NSString stringWithFormat:template, category.nameOfCategory];
-				[class.methods registerSectionWithName:name];
+				[classMethodProvider registerSectionWithName:name];
 			}
 			
 			// Merge all sections and all the methods, optionally create a separate section for each section from category.
@@ -366,15 +368,15 @@
 					if (self.settings.prefixMergedCategoriesSectionsWithCategoryName && !category.isExtension) {
 						NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedPrefixedCategorySectionTitle"];
 						NSString *name = [NSString stringWithFormat:template, category.nameOfCategory, section.sectionName];
-						[class.methods registerSectionWithName:name];
+						[classMethodProvider registerSectionWithName:name];
 					} else {
-						[class.methods registerSectionWithName:section.sectionName];
+						[classMethodProvider registerSectionWithName:section.sectionName];
 					}
 				}
 				
 				for (GBMethodData *method in section.methods) {
 					GBLogDebug(@"Merging method %@ from %@...", method, category);
-					[class.methods registerMethod:method];
+					[classMethodProvider registerMethod:method];
 				}
 			}
 		}
@@ -390,7 +392,7 @@
 		}
 		
 		// Finally clean all empty sections and remove merged category from the store.
-		[class.methods unregisterEmptySections];
+		[classMethodProvider unregisterEmptySections];
 		[self.store unregisterTopLevelObject:category];
 	}
 }

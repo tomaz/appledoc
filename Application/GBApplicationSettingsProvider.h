@@ -380,6 +380,12 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) BOOL prefixMergedCategoriesSectionsWithCategoryName;
 
+/** Indicates whether methods and properties keep the order specified in input files.
+
+ If `YES`, all method and properties will appear in the documentation in the same order they appear in the input files. If `NO`, the alphabetical order will be kept.
+ */
+@property (assign) BOOL useCodeOrder;
+
 /** Indicates whteher local methods and properties cross references texts should be prefixed when used in related items list.
  
  If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.
