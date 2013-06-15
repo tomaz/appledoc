@@ -661,6 +661,20 @@
 	assertThat(result6, is(@"[1]: something \"Class\""));
 }
 
+#pragma mark Links inside of links testing
+
+- (void) testStringByConvertingCrossReferencesInString_shouldIgnoreLinksInsideOtherLinks {
+    // setup
+    GBClassData *class = [GBTestObjectsRegistry classWithName:@"Class" methods:[GBTestObjectsRegistry classMethodWithNames:@"URLWithString", nil], nil];
+    GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, nil];
+    GBCommentsProcessor *processor = [self processorWithStore:store context:class];
+	// execute
+	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[Class URLWithString:@\"http://gentlebytes.com\"]" withFlags:0];
+	// verify
+	assertThat(result1, is(@"[Class URLWithString:@\"http://gentlebytes.com\"]"));
+}
+
+
 #pragma mark Creation methods
 
 - (GBCommentsProcessor *)defaultProcessor {
