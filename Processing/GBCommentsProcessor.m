@@ -750,6 +750,12 @@ typedef NSUInteger GBProcessingFlag;
 			continue;
 		}
         
+        // When a link falls within another link, such as a URL string within a method call, processing both would
+        // result in the processed URL being appended to the processed method call, duplicating the text from the
+        // URL. Instead, keep track of the links processed, and ignore a link if it's inside of a previously
+        // processed link.
+        NSPointerArray *processedLinks = [NSPointerArray pointerArrayWithWeakObjects];
+        
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
 		while ([links count] > 0) {
 			// Find the lowest index.
@@ -762,6 +768,21 @@ typedef NSUInteger GBProcessingFlag;
 					index = i;
 				}
 			}
+            
+            // Ignore links which fall within a previously processed link
+            BOOL ignoreLink = NO;
+            for (NSUInteger i=0; i<[processedLinks count] && !ignoreLink; i++) {
+                GBCrossRefData *processedLink = [links pointerAtIndex:i];
+                if (NSEqualRanges(linkData->range,
+                                  NSIntersectionRange(processedLink->range, linkData->range))) {
+                    ignoreLink = YES;
+                    break;
+                }
+            }
+            if (ignoreLink) {
+                [links removePointerAtIndex:index];
+                continue;
+            }
 			
 			// If there is some text skipped after previous link (or search range), append it to output first.
 			if (linkData && linkData->range.location > lastUsedLocation) {
@@ -782,6 +803,7 @@ typedef NSUInteger GBProcessingFlag;
 			searchRange.location = location;
 			searchRange.length = searchEndLocation - location;
 			lastUsedLocation = location;
+            [processedLinks addPointer:linkData];
 			[links removePointerAtIndex:index];
 		}
 		
