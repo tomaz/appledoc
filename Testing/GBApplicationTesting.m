@@ -464,11 +464,18 @@
 }
 
 - (void)testDocSetFeedFormat_shouldAssignValueToSettings {
-    
     // setup & execute
-    GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"value", nil];
+    GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"value", nil];
+    GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"atom", nil];
+    GBApplicationSettingsProvider *settings3 = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"xml", nil];
+    GBApplicationSettingsProvider *settings4 = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"atom,xml", nil];
+    GBApplicationSettingsProvider *settings5 = [self settingsByRunningWithArgs:@"--docset-feed-formats", @"xml,atom", nil];
     // verify
-    assertThat(settings.docsetFeedFormats, is(@"value"));
+    assertThatInteger(settings1.docsetFeedFormats, equalToInteger(0));
+    assertThatInteger(settings2.docsetFeedFormats, equalToInteger(GBPublishedFeedFormatAtom));
+    assertThatInteger(settings3.docsetFeedFormats, equalToInteger(GBPublishedFeedFormatXML));
+    assertThatInteger(settings4.docsetFeedFormats, equalToInteger(GBPublishedFeedFormatAtom | GBPublishedFeedFormatXML));
+    assertThatInteger(settings5.docsetFeedFormats, equalToInteger(GBPublishedFeedFormatAtom | GBPublishedFeedFormatXML));
 }
 
 - (void)testDocSetPackageURL_shouldAssignValueToSettings {
@@ -582,6 +589,11 @@
 		if ([arg hasPrefix:@"--"]) {
 			// get the key corresponding to the argument
 			NSString *key = [DDGetoptLongParser keyFromOption:arg];
+            
+            // When passed --docset-xml-filename, +[DDGetoptLongParser keyFromOption:] will
+            // return docsetXmlFilename but we need instead of docsetXMLFilename.
+            key = [key stringByReplacingOccurrencesOfString:@"Xml" withString:@"XML"];
+            key = [key stringByReplacingOccurrencesOfString:@"xcrun" withString:@"xCRun"];
 			
 			// if we have a value following, use it for KVC, otherwise just send YES
 			if (i < [arguments count] - 1) {

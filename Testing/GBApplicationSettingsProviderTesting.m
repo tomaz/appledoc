@@ -36,7 +36,6 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
-    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
@@ -63,7 +62,6 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
-    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
@@ -85,7 +83,7 @@
 	settings.companyIdentifier = @"<CI>";
 	settings.docsetBundleFilename = @"<DSB>";
 	settings.docsetAtomFilename = @"<DSA>";
-    settings.docsetXMLFilename = @"<DSA>";
+    settings.docsetXMLFilename = @"<DSX>";
 	settings.docsetPackageFilename = @"<DSP>";
 	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETXMLFILENAME/%DOCSETPACKAGEFILENAME";
 	settings.docsetBundleIdentifier = template;
@@ -96,14 +94,13 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
-    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
 	settings.docsetPublisherIdentifier = template;
 	settings.docsetPublisherName = template;
 	settings.docsetCopyrightMessage = template;
-	NSString *expected = @"<DSB>/<DSA>/<DSP>";
+	NSString *expected = @"<DSB>/<DSA>/<DSX>/<DSP>";
 	// execute
 	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	// verify
@@ -115,7 +112,6 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
-    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
