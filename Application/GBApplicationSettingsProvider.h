@@ -24,8 +24,8 @@ NSString *NSStringFromGBHTMLAnchorFormat(GBHTMLAnchorFormat format);
 
 typedef enum
 {
-    GBPublishedFeedFormatAtom = 1,
-    GBPublishedFeedFormatXML = 2
+    GBPublishedFeedFormatAtom = 1 << 1,
+    GBPublishedFeedFormatXML = 1 << 2
 } GBPublishedFeedFormats;
 
 GBPublishedFeedFormats GBPublishedFeedFormatsFromNSString(NSString *formatString);
