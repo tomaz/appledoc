@@ -83,7 +83,7 @@
 	settings.companyIdentifier = @"<CI>";
 	settings.docsetBundleFilename = @"<DSB>";
 	settings.docsetAtomFilename = @"<DSA>";
-    settings.docsetXMLFilename = @"<DSA>";
+    settings.docsetXMLFilename = @"<DSX>";
 	settings.docsetPackageFilename = @"<DSP>";
 	NSString *template = @"%DOCSETBUNDLEFILENAME/%DOCSETATOMFILENAME/%DOCSETXMLFILENAME/%DOCSETPACKAGEFILENAME";
 	settings.docsetBundleIdentifier = template;
@@ -100,7 +100,7 @@
 	settings.docsetPublisherIdentifier = template;
 	settings.docsetPublisherName = template;
 	settings.docsetCopyrightMessage = template;
-	NSString *expected = @"<DSB>/<DSA>/<DSP>";
+	NSString *expected = @"<DSB>/<DSA>/<DSX>/<DSP>";
 	// execute
 	[settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	// verify
