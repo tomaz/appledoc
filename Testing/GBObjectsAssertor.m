@@ -212,7 +212,10 @@
 				argList = (char *)malloc(sizeof(char) * [expectedComps count]);
 				[expectedComps getObjects:(id *)argList];				
 			}
-			[self assertCommentComponents:argument.argumentDescription matchesValues:firstExpectedComp values:(__va_list_tag *)argList];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincompatible-pointer-types"
+			[self assertCommentComponents:argument.argumentDescription matchesValues:firstExpectedComp values:argList];
+#pragma clang diagnostic pop
 		}
 	}
 }
