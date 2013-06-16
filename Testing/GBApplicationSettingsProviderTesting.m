@@ -36,7 +36,6 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
-    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
@@ -63,7 +62,6 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
-    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
@@ -96,7 +94,6 @@
 	settings.docsetFallbackURL = template;
 	settings.docsetFeedName = template;
 	settings.docsetFeedURL = template;
-    settings.docsetFeedFormats = template;
 	settings.docsetPackageURL = template;
 	settings.docsetMinimumXcodeVersion = template;
 	settings.docsetPlatformFamily = template;
@@ -115,7 +112,6 @@
 	assertThat(settings.docsetFallbackURL, is(expected));
 	assertThat(settings.docsetFeedName, is(expected));
 	assertThat(settings.docsetFeedURL, is(expected));
-    assertThat(settings.docsetFeedFormats, is(expected));
 	assertThat(settings.docsetPackageURL, is(expected));
 	assertThat(settings.docsetMinimumXcodeVersion, is(expected));
 	assertThat(settings.docsetPlatformFamily, is(expected));
