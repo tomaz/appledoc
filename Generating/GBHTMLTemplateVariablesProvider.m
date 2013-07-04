@@ -215,11 +215,11 @@
 	// Helps handling arrays in template by embedding two keys: "used" as boolean and "items" as the actual array (only if non-empty).
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	if ([array count] > 0) {
-		[result setObject:[GRYes yes] forKey:@"used"];
+		[result setObject:[NSNumber numberWithBool:YES] forKey:@"used"];
 		[result setObject:array forKey:@"values"];
 		return result;
 	}
-	[result setObject:[GRNo no] forKey:@"used"];
+	[result setObject:[NSNumber numberWithBool:NO] forKey:@"used"];
 	return result;
 }
 
@@ -525,7 +525,7 @@
 		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
 		[classData setObject:name forKey:@"name"];
 		[classData setObject:subclasses forKey:@"classes"];
-		[classData setObject:[subclasses count] > 0 ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
+		[classData setObject:[NSNumber numberWithBool:([subclasses count] > 0)] forKey:@"hasClasses"];
 		if (href) [classData setObject:href forKey:@"href"];
 		[result addObject:classData];
 	}];
@@ -539,12 +539,12 @@
 	BOOL documents = [self.store.documents count] > 0;
 	BOOL classes = [self.store.classes count] > 0;
 	BOOL categories = [self.store.categories count] > 0;
-	BOOL protocols = [self.store.protocols count] > 0; 
-	[dict setObject:documents ? [GRYes yes] : [GRNo no] forKey:@"hasDocs"];
-	[dict setObject:classes ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
-	[dict setObject:categories ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
-	[dict setObject:protocols ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
-	[dict setObject:(protocols || categories) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocolsOrCategories"];
+	BOOL protocols = [self.store.protocols count] > 0;
+    [dict setObject:[NSNumber numberWithBool:documents] forKey:@"hasDocs"];
+    [dict setObject:[NSNumber numberWithBool:classes] forKey:@"hasClasses"];
+	[dict setObject:[NSNumber numberWithBool:categories] forKey:@"hasCategories"];
+	[dict setObject:[NSNumber numberWithBool:protocols] forKey:@"hasProtocols"];
+	[dict setObject:[NSNumber numberWithBool:protocols || categories] forKey:@"hasProtocolsOrCategories"];
 }
 
 @end
