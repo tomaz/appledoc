@@ -107,7 +107,7 @@
 		[data setObject:value forKey:@"value"];
 		[data setObject:style forKey:@"style"];
 		[data setObject:href forKey:@"href"];
-		if ([style unsignedIntValue] == 1) [data setObject:[GRYes yes] forKey:@"emphasized"];
+		if ([style unsignedIntValue] == 1) [data setObject:[NSNumber numberWithBool:YES] forKey:@"emphasized"];
 		[arguments addObject:data];
 		
 		value = va_arg(args, NSString *);
