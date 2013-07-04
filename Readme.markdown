@@ -45,9 +45,9 @@ It compiles appledoc and installs its binary to /usr/local/bin and templates (if
 	
 **Alternatively with Homebrew:**
 
-    brew install appledoc (homebrew currently installs templates by default)
+    brew install appledoc
 
-Homebrew puts your templates in `~/Library/Application Support/appledoc`.
+Homebrew does not install templates by default.
 
 Using appledoc
 ==============
