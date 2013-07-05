@@ -141,10 +141,10 @@
 	NSMutableDictionary *vars = [NSMutableDictionary dictionary];
 	[vars setObject:self.settings.projectName forKey:@"projectName"];
 	[vars setObject:@"index.html" forKey:@"indexFilename"];
-	[vars setObject:([self.documents count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasDocs"];
-	[vars setObject:([self.classes count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasClasses"];
-	[vars setObject:([self.categories count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasCategories"];
-	[vars setObject:([self.protocols count] > 0) ? [GRYes yes] : [GRNo no] forKey:@"hasProtocols"];
+	[vars setObject:[NSNumber numberWithBool:([self.documents count] > 0)] forKey:@"hasDocs"];
+	[vars setObject:[NSNumber numberWithBool:([self.classes count] > 0)] forKey:@"hasClasses"];
+	[vars setObject:[NSNumber numberWithBool:([self.categories count] > 0)] forKey:@"hasCategories"];
+	[vars setObject:[NSNumber numberWithBool:([self.protocols count] > 0)] forKey:@"hasProtocols"];
 	[vars setObject:self.documents forKey:@"docs"];
 	[vars setObject:self.classes forKey:@"classes"];
 	[vars setObject:self.categories forKey:@"categories"];
@@ -286,7 +286,7 @@
 				}
 			}
 			if ([related count] > 0) {
-				[data setObject:[GRYes yes] forKey:@"hasRelatedTokens"];
+				[data setObject:[NSNumber numberWithBool:YES] forKey:@"hasRelatedTokens"];
 				[data setObject:related forKey:@"relatedTokens"];
 			}
 		}
@@ -305,7 +305,7 @@
 					[arguments addObject:argData];
 				}
 				[data setObject:arguments forKey:@"parameters"];
-				[data setObject:[GRYes yes] forKey:@"hasParameters"];
+				[data setObject:[NSNumber numberWithBool:YES] forKey:@"hasParameters"];
 			}
 			if (method.comment.hasMethodResult) {
 				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.methodResult forKey:@"abstract"];

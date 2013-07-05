@@ -81,7 +81,7 @@
 - (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)aStore {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(aStore != nil);
-	GBLogVerbose(@"Parsing static documents from %u paths...", [paths count]);
+	GBLogVerbose(@"Parsing static documents from %lu paths...", (unsigned long) [paths count]);
 	self.store = aStore;
 	self.numberOfParsedDocuments = 0;
 	for (NSString *input in paths) {
