@@ -43,20 +43,16 @@
 }
 
 - (BOOL) matchesObject:(id) object {
-	if ([object isTopLevelObject]) {
-		if ([object isKindOfClass:[GBClassData class]]) {
-			if ([self.description isEqualToString:[object nameOfClass]]) return YES;
-        }
-		else if ([object isKindOfClass:[GBCategoryData class]]) {
-			if ([self.description isEqualToString:[object idOfCategory]]) return YES;
-        }
-		else if ([object isKindOfClass:[GBProtocolData class]]) {
-			if ([self.description isEqualToString:[object nameOfProtocol]]) return YES;
-        }
-	} else {
-		if (![object isKindOfClass:[GBDocumentData class]] && [self.description isEqualToString:[object methodSelector]]) return YES;
-	}
-	return NO;
+    if ([object isKindOfClass:[GBClassData class]])
+        return [self.description isEqualToString:[object nameOfClass]];
+    else if ([object isKindOfClass:[GBCategoryData class]])
+        return [self.description isEqualToString:[object idOfCategory]];
+    else if ([object isKindOfClass:[GBProtocolData class]])
+        return [self.description isEqualToString:[object nameOfProtocol]];
+	else if ([object isKindOfClass:[GBDocumentData class]])
+        return NO;
+    else
+		return [[object methodSelector] isEqualToString:self.description];
 }
 
 - (NSComparisonResult) compareLocation:(GBCrossRefData *) object {
