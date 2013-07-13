@@ -784,7 +784,7 @@ typedef NSUInteger GBProcessingFlag;
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
 		while ([links count] > 0) {
 			// Find the lowest index.
-			GBCrossRefData *linkData = NULL;
+			GBCrossRefData *linkData = nil;
 			NSUInteger index = NSNotFound;
 			for (NSUInteger i=0; i<[links count]; i++) {
 				GBCrossRefData *data = [links objectAtIndex:i];
