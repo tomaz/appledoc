@@ -1187,6 +1187,7 @@
 				733EA122122BDD020060CBDE /* Sources */,
 				733EA123122BDD020060CBDE /* Frameworks */,
 				D818BACD15203A9E00B26451 /* CopyFiles */,
+				9E9653391791A3DA0086251B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1256,6 +1257,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		9E9653391791A3DA0086251B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"$GHUNIT_CLI\" = \"\" ]; then\nexit 0\nfi\n\n$TARGET_BUILD_DIR/$EXECUTABLE_PATH";
+		};
 		B4D1FFE715FF60B7009736E2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
