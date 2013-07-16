@@ -757,6 +757,10 @@ typedef NSUInteger GBProcessingFlag;
 		if ([objectData isInsideCrossRef:categoryData]) objectData = nil;
 		if ([objectData isInsideCrossRef:remoteMemberData]) objectData = nil;
 		if ([categoryData isInsideCrossRef:remoteMemberData]) categoryData = nil;
+        
+        // Do the same for a URL inside a method call
+        if ([urlData isInsideCrossRef:localMemberData]) urlData = nil;
+        if ([urlData isInsideCrossRef:remoteMemberData]) urlData = nil;
 		
 		// Prevent forming cross reference to current top-level object. Also prevent forming cross reference to current member.
 		if ([objectData matchesObject:self.currentContext]) objectData = nil;
@@ -779,12 +783,6 @@ typedef NSUInteger GBProcessingFlag;
 			continue;
 		}
         
-        // When a link falls within another link, such as a URL string within a method call, processing both would
-        // result in the processed URL being appended to the processed method call, duplicating the text from the
-        // URL. Instead, keep track of the links processed, and ignore a link if it's inside of a previously
-        // processed link.
-        NSMutableArray *processedLinks = [NSMutableArray array];
-        
 		// Handle all the links starting at the lowest one, adding proper Markdown syntax for each.
 		while ([links count] > 0) {
 			// Find the lowest index.
@@ -797,21 +795,7 @@ typedef NSUInteger GBProcessingFlag;
 					index = i;
 				}
 			}
-            
-            // Ignore links which fall within a previously processed link
-            BOOL ignoreLink = NO;
-            for (NSUInteger i=0; i<[processedLinks count] && !ignoreLink; i++) {
-                GBCrossRefData *processedLink = [links objectAtIndex:i];
-                if ([linkData isInsideCrossRef:processedLink]) {
-                    ignoreLink = YES;
-                    break;
-                }
-            }
-            if (ignoreLink) {
-                [links removeObjectAtIndex:index];
-                continue;
-            }
-			
+            			
 			// If there is some text skipped after previous link (or search range), append it to output first.
 			if (linkData && linkData.range.location > lastUsedLocation) {
 				NSRange skippedRange = NSMakeRange(lastUsedLocation, linkData.range.location - lastUsedLocation);
@@ -831,7 +815,6 @@ typedef NSUInteger GBProcessingFlag;
 			searchRange.location = location;
 			searchRange.length = searchEndLocation - location;
 			lastUsedLocation = location;
-            [processedLinks addObject:linkData];
 			[links removeObjectAtIndex:index];
 		}
 		
