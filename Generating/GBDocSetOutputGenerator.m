@@ -391,8 +391,8 @@
 			objectName = [(GBClassData *)parent nameOfClass];
 			objectID = ([(GBMethodData *)object methodType] == GBMethodTypeClass) ? @"cl" : @"inst";
 		} else if ([parent isKindOfClass:[GBCategoryData class]]) {
-			objectName = [(GBCategoryData *)parent idOfCategory];
-			objectID = @"intf";
+			objectName = [(GBCategoryData *)parent nameOfClass];
+			objectID = @"inst";
 		} else {
 			objectName = [(GBProtocolData *)parent nameOfProtocol];
 			objectID = @"intf";
