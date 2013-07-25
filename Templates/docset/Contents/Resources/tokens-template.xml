@@ -28,6 +28,14 @@
             {{#refid}}<NodeRef refid="{{refid}}"/>{{/refid}}
 		</Token>
 		{{/members}}
+        {{#constants}}
+        <Token>
+            {{>TokenIdentifier}}
+			{{>Abstract}}
+			{{>DeclaredIn}}
+			{{>RelatedTokens}}
+        </Token>
+        {{/constants}}
 	</File>
 </Tokens>
 

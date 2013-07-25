@@ -163,6 +163,8 @@
  */
 - (GBProtocolData *)protocolWithName:(NSString *)name;
 
+- (GBTypedefEnumData *)typedefEnumWithName:(NSString *)name;
+
 /** Returns the document instance that matches the given path.
  
  If no registered document matches the given path, `nil` is returned.
@@ -204,6 +206,14 @@
  */
 @property (readonly) NSSet *protocols;
 
+/** The list of all registered constants 
+ 
+ @see typedefEnumWithName
+ @see registerTypedefEnum
+ */
+@property (readonly) NSSet *constants;
+
+
 /** The list of all registered documents as instances of `GBDocumentData`.
  
  @see documentWithName:
@@ -230,6 +240,9 @@
 
 /** Returns all registered categories sorted by their name. */
 - (NSArray *)categoriesSortedByName;
+
+/** Returns all registered constants sorted by their name. */
+- (NSArray *)constantsSortedByName;
 
 /** Returns all registered protocols sorted by their name. */
 - (NSArray *)protocolsSortedByName;

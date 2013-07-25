@@ -23,7 +23,9 @@
 }
 
 -(void)registerConstant:(GBEnumConstantData *)constant {
-    
+    NSParameterAssert(constant != nil);
+	if (!_constants) _constants = [[NSMutableArray alloc] init];
+	[_constants addObject:constant];
 }
 
 @synthesize constants = _constants;

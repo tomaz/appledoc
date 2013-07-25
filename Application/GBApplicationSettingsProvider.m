@@ -517,6 +517,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 		basePath = @"Protocols";
 		name = [object nameOfProtocol];
 	}
+    else if ([object isKindOfClass:[GBTypedefEnumData class]]) {
+		basePath = @"Constants";
+		name = [object nameOfEnum];
+	}
 	else if ([object isKindOfClass:[GBDocumentData class]]) {
 		GBDocumentData *document = object;
 		

@@ -36,9 +36,11 @@
 - (NSString *)pageTitleForCategory:(GBCategoryData *)object;
 - (NSString *)pageTitleForProtocol:(GBProtocolData *)object;
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object;
+- (NSString *)pageTitleForConstant:(GBTypedefEnumData *)object;
 - (NSDictionary *)specificationsForClass:(GBClassData *)object;
 - (NSDictionary *)specificationsForCategory:(GBCategoryData *)object;
 - (NSDictionary *)specificationsForProtocol:(GBProtocolData *)object;
+- (NSDictionary *)specificationsForConstant:(GBTypedefEnumData *)object;
 
 @end
 
@@ -50,6 +52,8 @@
 - (void)registerObjectConformsToSpecificationForProvider:(id<GBObjectDataProviding>)provider toArray:(NSMutableArray *)array;
 - (void)registerObjectDeclaredInSpecificationForProvider:(GBModelBase *)provider toArray:(NSMutableArray *)array;
 - (void)registerObjectCompanionGuidesSpecificationForObject:(GBModelBase *)object toArray:(NSMutableArray *)array;
+- (void)registerObjectAvailabilitySpecificationForProvider:(GBModelBase *)object toArray:(NSMutableArray *)array;
+- (void)registerObjectReferenceSpecificationForProvider:(GBModelBase *)object toArray:(NSMutableArray *)array;
 
 - (NSDictionary *)objectSpecificationWithValues:(NSArray *)values title:(NSString *)title;
 - (NSDictionary *)objectSpecificationValueWithData:(id)data href:(NSString *)href;
@@ -68,6 +72,7 @@
 - (NSArray *)categoriesForIndex;
 - (NSArray *)protocolsForIndex;
 - (NSArray *)classesForHierarchy;
+- (NSArray *)constantsForIndex;
 - (NSArray *)arrayFromHierarchyLevel:(NSDictionary *)level;
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
 
@@ -141,6 +146,21 @@
 	return result;
 }
 
+- (NSDictionary *)variablesForConstant:(GBTypedefEnumData *)typedefEnum withStore:(id)aStore {
+	self.store = aStore;
+	NSMutableDictionary *page = [NSMutableDictionary dictionary];
+	[page setObject:[self pageTitleForConstant:typedefEnum] forKey:@"title"];
+	[page setObject:[self specificationsForConstant:typedefEnum] forKey:@"specifications"];
+	[self addFooterVarsToDictionary:page];
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
+	[result setObject:page forKey:@"page"];
+	[result setObject:typedefEnum forKey:@"typedefEnum"];
+	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+	[result setObject:self.settings.projectName forKey:@"projectName"];
+	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	return result;
+}
+
 - (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)aStore {
 	self.store = aStore;
 	NSString *path = [self.settings htmlRelativePathToIndexFromObject:object];
@@ -173,6 +193,7 @@
 	[result setObject:[self classesForIndex] forKey:@"classes"];
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
+    [result setObject:[self constantsForIndex]  forKey:@"constants"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
 	[result setObject:self.settings.projectName forKey:@"projectName"];
@@ -192,7 +213,8 @@
 	[result setObject:[self classesForHierarchy] forKey:@"classes"];
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	[result setObject:[self constantsForIndex] forKey:@"constants"];
+    [result setObject:self.settings.stringTemplates forKey:@"strings"];
 	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
 	[result setObject:self.settings.projectName forKey:@"projectName"];
 	
@@ -208,6 +230,7 @@
 	if ([object isKindOfClass:[GBCategoryData class]] && ![[self.store categories] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBProtocolData class]] && ![[self.store protocols] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBDocumentData class]] && ![[self.store documents] containsObject:object]) return nil;
+	if ([object isKindOfClass:[GBTypedefEnumData class]] && ![[self.store constants] containsObject:object]) return nil;
 	return [self.settings htmlReferenceForObject:object fromSource:source];
 }
 
@@ -265,6 +288,11 @@
 	return [NSString stringWithFormat:template, object.nameOfProtocol];
 }
 
+- (NSString *)pageTitleForConstant:(GBTypedefEnumData *)object {
+	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"objectPage.constantTitle"];
+	return [NSString stringWithFormat:template, object.nameOfEnum];
+}
+
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
 	
@@ -299,6 +327,15 @@
 	[self registerObjectConformsToSpecificationForProvider:object toArray:result];
 	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
 	[self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
+	return [self arrayDescriptorForArray:result];
+}
+
+- (NSDictionary *)specificationsForConstant:(GBProtocolData *)object {
+	NSMutableArray *result = [NSMutableArray array];
+	[self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
+	[self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
+    [self registerObjectAvailabilitySpecificationForProvider:object toArray:result];
+	[self registerObjectReferenceSpecificationForProvider:object toArray:result];
 	return [self arrayDescriptorForArray:result];
 }
 
@@ -358,6 +395,41 @@
 	}];
 	NSArray *values = [self delimitObjectSpecificationValues:specifications withDelimiter:@"<br />"];
 	NSString *title = [self.settings.stringTemplates valueForKeyPath:@"objectSpecifications.declaredIn"];
+	NSDictionary *data = [self objectSpecificationWithValues:values title:title];
+	[array addObject:data];
+}
+
+- (void)registerObjectAvailabilitySpecificationForProvider:(GBModelBase *)provider toArray:(NSMutableArray *)array {
+	
+    if([provider.comment.availability.components count] == 0) return;
+    
+    NSMutableArray *specifications = [NSMutableArray arrayWithCapacity:[provider.comment.availability.components count]];
+	NSArray *infos = provider.comment.availability.components;
+    [infos enumerateObjectsUsingBlock:^(GBCommentComponent *info, NSUInteger idx, BOOL *stop) {
+		NSString *name = info.markdownValue;
+		NSDictionary *data = [self objectSpecificationValueWithData:name href:nil];
+		[specifications addObject:data];
+	}];
+	NSArray *values = [self delimitObjectSpecificationValues:specifications withDelimiter:@"<br />"];
+	NSString *title = [self.settings.stringTemplates valueForKeyPath:@"objectSpecifications.availability"];
+	NSDictionary *data = [self objectSpecificationWithValues:values title:title];
+	[array addObject:data];
+}
+
+- (void)registerObjectReferenceSpecificationForProvider:(GBModelBase *)provider toArray:(NSMutableArray *)array {
+	// Prepares declared in specification with all source files the given object is declared in and adds it to the end of the given array. If the object doesn't contain any source information, nothing happens.
+	if ([provider.comment.relatedItems.components count] == 0) return;
+    
+	NSMutableArray *specifications = [NSMutableArray arrayWithCapacity:[provider.comment.relatedItems.components count]];
+	NSArray *infos = provider.comment.relatedItems.components;
+	[infos enumerateObjectsUsingBlock:^(GBCommentComponent *info, NSUInteger idx, BOOL *stop) {
+        NSString *name = [info stringValue];
+        NSString *url = [self hrefForObject:info.relatedItem fromObject:nil];
+		NSDictionary *data = [self objectSpecificationValueWithData:name href:url];
+		[specifications addObject:data];
+	}];
+	NSArray *values = [self delimitObjectSpecificationValues:specifications withDelimiter:@"<br />"];
+    NSString *title = [self.settings.stringTemplates valueForKeyPath:@"objectSpecifications.references"];
 	NSDictionary *data = [self objectSpecificationWithValues:values title:title];
 	[array addObject:data];
 }
@@ -465,6 +537,19 @@
 	return result;
 }
 
+- (NSArray *)constantsForIndex {
+	NSArray *constants = [self.store constantsSortedByName];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[constants count]];
+	for (GBTypedefEnumData *constant in constants) {
+        if (!constant.includeInOutput) continue;
+		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+		[data setObject:[self hrefForObject:constant fromObject:nil] forKey:@"href"];
+		[data setObject:constant.nameOfEnum forKey:@"title"];
+		[result addObject:data];
+	}
+	return result;
+}
+
 - (NSArray *)protocolsForIndex {
 	NSArray *protocols = [self.store protocolsSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[protocols count]];
@@ -540,11 +625,13 @@
 	BOOL classes = [self.store.classes count] > 0;
 	BOOL categories = [self.store.categories count] > 0;
 	BOOL protocols = [self.store.protocols count] > 0;
+    BOOL constants = [self.store.constants count] > 0;
     [dict setObject:[NSNumber numberWithBool:documents] forKey:@"hasDocs"];
     [dict setObject:[NSNumber numberWithBool:classes] forKey:@"hasClasses"];
 	[dict setObject:[NSNumber numberWithBool:categories] forKey:@"hasCategories"];
 	[dict setObject:[NSNumber numberWithBool:protocols] forKey:@"hasProtocols"];
-	[dict setObject:[NSNumber numberWithBool:protocols || categories] forKey:@"hasProtocolsOrCategories"];
+	[dict setObject:[NSNumber numberWithBool:constants] forKey:@"hasConstants"];
+	[dict setObject:[NSNumber numberWithBool:protocols || categories || constants] forKey:@"hasProtocolsOrCategories"];
 }
 
 @end

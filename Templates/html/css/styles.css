@@ -546,6 +546,32 @@ span.tooltip:hover span.tooltip {
 	color: #000;
 }
 
+.termdef {
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+}
+
+.termdef dt {
+    margin: 0;
+    padding: 0;
+}
+
+.termdef dd {
+    margin-bottom: 6px;
+    margin-left: 16px;
+    margin-right: 0px;
+    margin-top: 1px;
+}
+
+.termdef dd p  {
+    margin-bottom: 6px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: -1px;
+}
+
 .argument-def {
 	margin-top: 0.3em;
 	margin-bottom: 0.3em;

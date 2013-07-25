@@ -50,6 +50,12 @@
 	return [[self.classes allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
+
+- (NSArray *)constantsSortedByName {
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfEnum" ascending:YES]];
+	return [[self.constants allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
 - (NSArray *)categoriesSortedByName {
 	NSSortDescriptor *classNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES];
 	NSSortDescriptor *categoryNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"categoryName" ascending:YES];
@@ -176,6 +182,10 @@
 	return [_documentsByName objectForKey:path];
 }
 
+- (GBTypedefEnumData *)typedefEnumWithName:(NSString *)path {
+	return [_typedefEnumsByName objectForKey:path];
+}
+
 - (GBDocumentData *)customDocumentWithKey:(id)key {
 	return [_customDocumentsByKey objectForKey:key];
 }
@@ -183,6 +193,7 @@
 @synthesize classes = _classes;
 @synthesize categories = _categories;
 @synthesize protocols = _protocols;
+@synthesize constants = _typedefEnums;
 @synthesize documents = _documents;
 @synthesize customDocuments = _customDocuments;
 

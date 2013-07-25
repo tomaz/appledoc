@@ -427,13 +427,10 @@
     {
         NSMutableArray *constants = [[NSMutableArray alloc] init];
         
-        //TODO: remember the current comments, we need them later.
-        __block GBComment *typeDefComment;
-        __block GBComment *sectionComment;
-        __block NSString *sectionName;
-        [self updateLastComment:&typeDefComment sectionComment:&sectionComment sectionName:&sectionName];
-
+        // remember the current comments, we need them later.
+        __block GBSourceInfo *filedata = nil;
         GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+        GBComment *lastComment = [tokenizer lastComment];
         
         [self.tokenizer consume:2];
         [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
@@ -444,7 +441,13 @@
             }
             else
             {
+                if(!filedata)
+                {
+                    filedata = [tokenizer sourceInfoForToken:token];
+                }
+                
                 GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
+                [newConstant registerSourceInfo:filedata];
                 [constants addObject:newConstant];
                 
                 [self registerLastCommentToObject:newConstant];
@@ -458,9 +461,9 @@
         
         GBTypedefEnumData *newEnum = [GBTypedefEnumData typedefEnumWithName:typedefName];
         newEnum.includeInOutput = self.includeInOutput;
-        [self registerSourceInfoFromCurrentTokenToObject:newEnum];
-        [self registerComment:typeDefComment toObject:newEnum];
-		        
+        [newEnum registerSourceInfo:startInfo];
+        [self registerComment:lastComment toObject:newEnum];
+		      
         for(GBEnumConstantData *constant in constants)
         {
             [newEnum.constants registerConstant:constant];
