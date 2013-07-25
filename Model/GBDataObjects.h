@@ -16,6 +16,7 @@
 #import "GBProtocolData.h"
 #import "GBDocumentData.h"
 
+#import "GBTypedefEnumData.h"
 #import "GBIvarData.h"
 #import "GBMethodData.h"
 #import "GBMethodArgument.h"

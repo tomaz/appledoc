@@ -24,6 +24,8 @@
 		_protocolsByName = [[NSMutableDictionary alloc] init];
 		_documents = [[NSMutableSet alloc] init];
 		_documentsByName = [[NSMutableDictionary alloc] init];
+        _typedefEnums = [[NSMutableSet alloc] init];
+        _typedefEnumsByName = [[NSMutableDictionary alloc] init];
 		_customDocuments = [[NSMutableSet alloc] init];
 		_customDocumentsByKey = [[NSMutableDictionary alloc] init];
 	}
@@ -100,6 +102,20 @@
 	}
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
+}
+
+-(void)registerTypedefEnum:(GBTypedefEnumData *)typedefEnum
+{
+    NSParameterAssert(typedefEnum != nil);
+	GBLogDebug(@"Registering typedef enum %@...", typedefEnum);
+	if ([_typedefEnums containsObject:typedefEnum]) return;
+	GBProtocolData *existingTypedef = [_typedefEnumsByName objectForKey:typedefEnum.nameOfEnum];
+	if (existingTypedef) {
+		[NSException raise:@"Typedef with name %@ is already registered!", typedefEnum.nameOfEnum];
+		return;
+	}
+	[_typedefEnums addObject:typedefEnum];
+	[_typedefEnumsByName setObject:typedefEnum forKey:typedefEnum.nameOfEnum];
 }
 
 - (void)registerDocument:(GBDocumentData *)document {

@@ -57,6 +57,7 @@
 - (BOOL)matchNextObject;
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
+- (BOOL)matchTypedefEnumDefinition;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
 - (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
@@ -414,7 +415,64 @@
 - (BOOL)matchNextObject {
 	if ([self matchObjectDefinition]) return YES;
 	if ([self matchObjectDeclaration]) return YES;
+    if ([self matchTypedefEnumDefinition]) return YES;
 	return NO;
+}
+
+- (BOOL)matchTypedefEnumDefinition {
+    BOOL isTypeDef = [[self.tokenizer currentToken] matches:@"typedef"];
+    BOOL isTypeDefEnum = [[self.tokenizer lookahead:1] matches:@"enum"];
+    
+    if(isTypeDef && isTypeDefEnum)
+    {
+        NSMutableArray *constants = [[NSMutableArray alloc] init];
+        
+        //TODO: remember the current comments, we need them later.
+        __block GBComment *typeDefComment;
+        __block GBComment *sectionComment;
+        __block NSString *sectionName;
+        [self updateLastComment:&typeDefComment sectionComment:&sectionComment sectionName:&sectionName];
+
+        GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+        
+        [self.tokenizer consume:2];
+        [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+            
+            if([token matches:@","])
+            {
+                //skip
+            }
+            else
+            {
+                GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
+                [constants addObject:newConstant];
+                
+                [self registerLastCommentToObject:newConstant];
+            }
+        }];
+
+        NSString *typedefName = [[self.tokenizer currentToken] stringValue];
+        [self.tokenizer consume:1]; // consume typedef name;
+        
+        GBLogVerbose(@"Matched %@ typedef enum definition at line %lu.", typedefName, startInfo.lineNumber);
+        
+        GBTypedefEnumData *newEnum = [GBTypedefEnumData typedefEnumWithName:typedefName];
+        newEnum.includeInOutput = self.includeInOutput;
+        [self registerSourceInfoFromCurrentTokenToObject:newEnum];
+        [self registerComment:typeDefComment toObject:newEnum];
+		        
+        for(GBEnumConstantData *constant in constants)
+        {
+            [newEnum.constants registerConstant:constant];
+        }
+        
+        //consume ;
+        [self.tokenizer consume:1];
+        
+        [self.store registerTypedefEnum:newEnum];
+        return YES;
+    }
+    return NO;
 }
 
 - (BOOL)matchObjectDefinition {

@@ -230,6 +230,9 @@
 		B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; };
 		B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
+		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
+		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
+		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
 		D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		D818BACE15203AA700B26451 /* GHUnit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 733EA0F1122BDC5B0060CBDE /* GHUnit.framework */; };
 		D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
@@ -550,6 +553,12 @@
 		B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
+		D4B844EA17A121000012C1DC /* GBTypedefEnumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefEnumData.h; sourceTree = "<group>"; };
+		D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefEnumData.m; sourceTree = "<group>"; };
+		D4B844ED17A122640012C1DC /* GBEnumConstantData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBEnumConstantData.h; sourceTree = "<group>"; };
+		D4B844EE17A122650012C1DC /* GBEnumConstantData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBEnumConstantData.m; sourceTree = "<group>"; };
+		D4B844F017A122A40012C1DC /* GBEnumConstantProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBEnumConstantProvider.h; sourceTree = "<group>"; };
+		D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBEnumConstantProvider.m; sourceTree = "<group>"; };
 		F59056EC16C1C6DC00391620 /* publish */ = {isa = PBXFileReference; lastKnownFileType = folder; path = publish; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -921,6 +930,10 @@
 				73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */,
 				735B237F1304024600704844 /* GBDocumentData.h */,
 				735B23801304024600704844 /* GBDocumentData.m */,
+				D4B844EA17A121000012C1DC /* GBTypedefEnumData.h */,
+				D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */,
+				D4B844ED17A122640012C1DC /* GBEnumConstantData.h */,
+				D4B844EE17A122650012C1DC /* GBEnumConstantData.m */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -1123,6 +1136,8 @@
 				736B2BF5124BCBB6009145B1 /* GBSourceInfo.m */,
 				7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */,
 				7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */,
+				D4B844F017A122A40012C1DC /* GBEnumConstantProvider.h */,
+				D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -1516,6 +1531,9 @@
 				B4D1FFE115FF5F05009736E2 /* DDZipWriter.m in Sources */,
 				B4D1FFE315FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE515FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
+				D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */,
+				D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */,
+				D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

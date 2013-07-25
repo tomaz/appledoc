@@ -12,6 +12,7 @@
 @class GBCategoryData;
 @class GBProtocolData;
 @class GBDocumentData;
+@class GBTypedefEnumData;
 
 /** Implements the application's in-memory objects data store.
  
@@ -27,7 +28,9 @@
 	NSMutableDictionary *_protocolsByName;
 	NSMutableSet *_documents;
 	NSMutableDictionary *_documentsByName;
-	NSMutableSet *_customDocuments;
+	NSMutableSet *_typedefEnums;
+	NSMutableDictionary *_typedefEnumsByName;
+    NSMutableSet *_customDocuments;
 	NSMutableDictionary *_customDocumentsByKey;
 }
 
@@ -117,6 +120,8 @@
  @see registerProtocol:
  */
 - (void)unregisterTopLevelObject:(id)object;
+
+-(void)registerTypedefEnum:(GBTypedefEnumData *)typedefEnum;
 
 ///---------------------------------------------------------------------------------------
 /// @name Data handling
