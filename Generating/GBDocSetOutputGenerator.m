@@ -406,14 +406,14 @@
 		}
         else if ([object isKindOfClass:[GBTypedefEnumData class]]){
 			NSString *objectName = [(GBTypedefEnumData *)object nameOfEnum];
-			return [NSString stringWithFormat:@"//apple_ref/occ/tdef/%@", objectName];
+			return [NSString stringWithFormat:@"//apple_ref/c/tdef/%@", objectName];
 		}
 	} else if ([object isKindOfClass:[GBDocumentData class]]){
         NSString *objectName = [(GBDocumentData *)object prettyNameOfDocument];
         return [NSString stringWithFormat:@"//apple_ref/occ/doc/%@", objectName];
     } else if ([object isKindOfClass:[GBEnumConstantData class]]){
         NSString *objectName = [(GBEnumConstantData *)object name];
-        return [NSString stringWithFormat:@"//apple_ref/occ/tag/%@", objectName];
+        return [NSString stringWithFormat:@"//apple_ref/c/econst/%@", objectName];
     } else if (!object.isStaticDocument) {
 		// Members are slighly more complex - their identifier is different regarding to whether they are part of class or category/protocol. Then it depends on whether they are method or property. Finally their parent object (class/category/protocol) name (again class name for category) and selector should be added.
 		if (!object.parentObject) [NSException raise:@"Can't create token identifier for %@; object is not top level and has no parent assigned!", object];

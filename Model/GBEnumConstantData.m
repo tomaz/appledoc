@@ -24,5 +24,19 @@
     return self;
 }
 
+- (NSString *)description {
+	return self.name;
+}
+
+- (NSString *)debugDescription {
+	return [NSString stringWithFormat:@"%@: %@", [self className], self.name];
+}
+
+- (bool)hasAssignedValue
+{
+    return _assignedValue != nil;
+}
+
 @synthesize name = _name;
+@synthesize assignedValue = _assignedValue;
 @end

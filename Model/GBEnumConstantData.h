@@ -12,8 +12,11 @@
 {
     @private
     NSString *_name;
+    NSString *_assignedValue;
 }
 +(id)constantWithName:(NSString *)name;
 
 @property (readonly) NSString *name;
+@property (copy) NSString *assignedValue;
+@property (readonly) bool hasAssignedValue;
 @end

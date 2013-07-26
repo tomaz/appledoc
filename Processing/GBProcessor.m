@@ -447,6 +447,16 @@
             }
         }
     }
+    
+    if([object isKindOfClass:[GBTypedefEnumData class]])
+    {
+        for(GBEnumConstantData *constant in ((GBTypedefEnumData *)object).constants.constants)
+        {
+            if (![self isCommentValid:constant.comment] && self.settings.warnOnUndocumentedMember) {
+                GBLogXWarn(constant.prefferedSourceInfo, @"%@ is not documented!", constant);
+            }
+        }
+    }
 }
 
 - (BOOL)isCommentValid:(GBComment *)comment {

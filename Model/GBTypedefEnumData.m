@@ -37,6 +37,13 @@
 	return YES;
 }
 
+- (NSString *)enumStyle
+{
+    return _isOptions?@"NS_OPTIONS":@"NS_ENUM";
+}
+
 @synthesize nameOfEnum = _typedefName;
 @synthesize constants = _constants;
+@synthesize isOptions = _isOptions;
+@synthesize enumPrimitive = _enumPrimitive;
 @end
