@@ -122,11 +122,11 @@
                         <!-- display enum values -->
                         {{#constants}}
                         <h4 class="method-subtitle">Definition</h4>
-                        <code>typedef enum {<br/>
+                        <code>typedef {{enumStyle}}({{enumPrimitive}}, {{nameOfEnum}} ) {<br/>
                             {{#constants}}
                             &nbsp;&nbsp; <a href="{{htmlLocalReference}}">{{name}}</a>{{#hasAssignedValue}} = {{assignedValue}}{{/hasAssignedValue}},<br/>
                             {{/constants}}
-                            } {{nameOfEnum}};</code>
+                            };</code>
                     {{/constants}}
                     </div>
                     {{#constants}}

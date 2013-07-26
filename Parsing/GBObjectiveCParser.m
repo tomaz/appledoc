@@ -456,6 +456,8 @@
         
         [newEnum registerSourceInfo:startInfo];
         [self registerComment:lastComment toObject:newEnum];
+        [self.tokenizer resetComments];
+        
         
         //[self.tokenizer consume:1];
         [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop)
@@ -463,9 +465,11 @@
              GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
              GBSourceInfo *filedata = [tokenizer sourceInfoForToken:token];
              [newConstant registerSourceInfo:filedata];
+             [newConstant setParentObject:newEnum];
              [self registerLastCommentToObject:newConstant];
              [self.tokenizer consume:1];
-
+             [self.tokenizer resetComments];
+             
              if([[self.tokenizer currentToken] matches:@"="])
              {
                  [self.tokenizer consume:1];
@@ -495,6 +499,16 @@
         [self.tokenizer consume:1];
         [self.store registerTypedefEnum:newEnum];
         return YES;
+    }
+    else
+    {
+        BOOL isRegularEnum = [[self.tokenizer lookahead:1] matches:@"enum"];
+    
+        if(isRegularEnum)
+        {
+            GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+            GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
+        }
     }
     return NO;
 }

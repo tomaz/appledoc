@@ -271,6 +271,7 @@
             for (GBEnumConstantData *constant in typedefEnum.constants) {
                 NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
                 [data setObject:[self.settings htmlReferenceNameForObject:constant] forKey:@"anchor"];
+                [data setObject:constant.name forKey:@"declaration"];
                 [self addTokensXmlModelObjectDataForObject:constant toData:data];
                 [constantsData addObject:data];
             }
@@ -278,7 +279,7 @@
             // Prepare the variables for the template.
             [vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
             [vars setObject:objectData forKey:@"object"];
-            [vars setObject:constantsData forKey:@"members"];
+            [vars setObject:constantsData forKey:@"constants"];
         }
 		
 		// Run the template and save the results.
@@ -304,6 +305,11 @@
 			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
 			[components registerComponent:object.comment.shortDescription];
 			[data setObject:components forKey:@"abstract"];
+		}
+        if (object.comment.availability && object.comment.availability.components.count > 0) {
+			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
+			[components registerComponent:object.comment.availability.components];
+			[data setObject:components forKey:@"availability"];
 		}
 		if ([object.comment.relatedItems.components count] > 0) {
 			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.relatedItems.components count]];
