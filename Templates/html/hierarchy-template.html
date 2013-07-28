@@ -47,6 +47,14 @@
 							{{/protocols}}
 						</ul>
 						{{/hasProtocols}}
+                        {{#hasConstants}}
+						<h2 class="index-title">{{strings/hierarchyPage/constantsTitle}}</h2>
+						<ul>
+                            {{#constants}}
+                            <li><a href="{{href}}">{{title}}</a></li>
+                            {{/constants}}
+						</ul>
+						{{/hasConstants}}
 						{{#hasCategories}}
 						<h2 class="index-title">{{strings/hierarchyPage/categoriesTitle}}</h2>
 						<ul>

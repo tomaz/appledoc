@@ -57,6 +57,7 @@
 - (BOOL)matchNextObject;
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
+- (BOOL)matchTypedefEnumDefinition;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
 - (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
@@ -414,7 +415,102 @@
 - (BOOL)matchNextObject {
 	if ([self matchObjectDefinition]) return YES;
 	if ([self matchObjectDeclaration]) return YES;
+    if ([self matchTypedefEnumDefinition]) return YES;
 	return NO;
+}
+
+- (BOOL)matchTypedefEnumDefinition {
+    BOOL isTypeDef = [[self.tokenizer currentToken] matches:@"typedef"];
+    BOOL isTypeDefEnum = [[self.tokenizer lookahead:1] matches:@"NS_ENUM"];
+    BOOL isTypeDefOptions = [[self.tokenizer lookahead:1] matches:@"NS_OPTIONS"];
+    BOOL hasOpenBracket = [[self.tokenizer lookahead:2] matches:@"("];
+    
+    //ONLY SUPPORTED ARE typedef enum { } name; because that is the only way to bind the name to the enum values.
+    
+    if(isTypeDef && (isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
+    {
+        [self.tokenizer consume:3];  //consume 'typedef' 'NS_ENUM' and '('
+        
+        //get the enum type
+        NSString *typedefType = [[self.tokenizer currentToken] stringValue];
+        [self.tokenizer consume:1];
+        
+        //consume ','
+        [self.tokenizer consume:1];
+        
+        //get the typename
+        NSString *typedefName = [[self.tokenizer currentToken] stringValue];
+        [self.tokenizer consume:1];
+        
+        //consume ')'
+        [self.tokenizer consume:1];
+        
+        GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+        GBComment *lastComment = [tokenizer lastComment];
+        GBLogVerbose(@"Matched %@ typedef enum definition at line %lu.", typedefName, startInfo.lineNumber);
+        
+        GBTypedefEnumData *newEnum = [GBTypedefEnumData typedefEnumWithName:typedefName];
+        newEnum.includeInOutput = self.includeInOutput;
+        newEnum.enumPrimitive = typedefType;
+        newEnum.isOptions = isTypeDefOptions;
+        
+        [newEnum registerSourceInfo:startInfo];
+        [self registerComment:lastComment toObject:newEnum];
+        [self.tokenizer resetComments];
+        
+        
+        //[self.tokenizer consume:1];
+        [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop)
+         {
+             GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
+             GBSourceInfo *filedata = [tokenizer sourceInfoForToken:token];
+             [newConstant registerSourceInfo:filedata];
+             [newConstant setParentObject:newEnum];
+             [self registerLastCommentToObject:newConstant];
+             [self.tokenizer consume:1];
+             [self.tokenizer resetComments];
+             
+             if([[self.tokenizer currentToken] matches:@"="])
+             {
+                 [self.tokenizer consume:1];
+                 
+                 //collect the stringvalues until a ',' is detected.
+                 NSMutableString *value = [[NSMutableString alloc] init];
+                 while(![[tokenizer currentToken] matches:@","] && ![[tokenizer currentToken] matches:@"}"])
+                 {
+                     [value appendString:[[tokenizer currentToken] stringValue]];
+                     [tokenizer consume:1];
+                 }
+                 
+                 [newConstant setAssignedValue:value];
+            }
+             
+             if([[self.tokenizer currentToken] matches:@","])
+             {
+                 [tokenizer consume:1];
+             }
+             
+             *consume = NO;
+             
+             [newEnum.constants registerConstant:newConstant];
+         }];
+        
+        //consume ;
+        [self.tokenizer consume:1];
+        [self.store registerTypedefEnum:newEnum];
+        return YES;
+    }
+    else
+    {
+        BOOL isRegularEnum = [[self.tokenizer lookahead:1] matches:@"enum"];
+    
+        if(isRegularEnum)
+        {
+            GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+            GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
+        }
+    }
+    return NO;
 }
 
 - (BOOL)matchObjectDefinition {

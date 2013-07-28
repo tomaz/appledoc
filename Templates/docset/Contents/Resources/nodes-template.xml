@@ -35,7 +35,7 @@
 					</Subnodes>
 				</Node>
 				{{/hasCategories}}
-				{{#hasProtocols}}
+                {{#hasProtocols}}
 				<Node type="folder">
 					<Name>{{strings/docset/protocolsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
@@ -45,6 +45,16 @@
 					</Subnodes>
 				</Node>
 				{{/hasProtocols}}
+                {{#hasConstants}}
+				<Node type="folder">
+					<Name>{{strings/docset/constantsTitle}}</Name>
+					<Path>{{indexFilename}}</Path>
+					<Subnodes>
+						{{#constants}}{{>NodeRef}}
+						{{/constants}}
+					</Subnodes>
+				</Node>
+				{{/hasConstants}}
 			</Subnodes>
         </Node>
     </TOC>
@@ -55,8 +65,10 @@
 		{{/classes}}
 		{{#categories}}{{>Node}}
 		{{/categories}}
-		{{#protocols}}{{>Node}}
+        {{#protocols}}{{>Node}}
 		{{/protocols}}
+        {{#constants}}{{>Node}}
+		{{/constants}}
 	</Library>
 </DocSetNodes>
 

@@ -35,6 +35,7 @@
 @property (retain) NSArray *classes;
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
+@property (retain) NSArray *constants;
 @property (readonly) NSMutableSet *temporaryFiles;
 
 @property (retain) id sectionID; //tmp for class's refid
@@ -145,10 +146,12 @@
 	[vars setObject:[NSNumber numberWithBool:([self.classes count] > 0)] forKey:@"hasClasses"];
 	[vars setObject:[NSNumber numberWithBool:([self.categories count] > 0)] forKey:@"hasCategories"];
 	[vars setObject:[NSNumber numberWithBool:([self.protocols count] > 0)] forKey:@"hasProtocols"];
+    [vars setObject:[NSNumber numberWithBool:([self.constants count] > 0)] forKey:@"hasConstants"];
 	[vars setObject:self.documents forKey:@"docs"];
 	[vars setObject:self.classes forKey:@"classes"];
 	[vars setObject:self.categories forKey:@"categories"];
 	[vars setObject:self.protocols forKey:@"protocols"];
+    [vars setObject:self.constants forKey:@"constants"];
 	[vars setObject:self.settings.stringTemplates forKey:@"strings"];
 	
 	// Run the template and save the results.
@@ -180,6 +183,7 @@
 	if (![self processTokensXmlForObjects:self.classes type:@"cl" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.categories type:@"cat" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.protocols type:@"intf" template:templatePath index:&index error:error]) return NO;
+    if (![self processTokensXmlForObjects:self.constants type:@"tdef" template:templatePath index:&index error:error]) return NO;
 	return YES;
 }
 
@@ -228,7 +232,7 @@
 	for (NSMutableDictionary *simplifiedObjectData in objects) {
 		// Get the object's methods provider and prepare the array of all methods.
 		GBModelBase *topLevelObject = [simplifiedObjectData objectForKey:@"object"];
-		GBMethodsProvider *methodsProvider = [topLevelObject valueForKey:@"methods"];
+		
 		
 		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
 		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
@@ -237,21 +241,46 @@
         _sectionID = [objectData objectForKey:@"refid"];
 		[self addTokensXmlModelObjectDataForObject:topLevelObject toData:objectData];
 		
-		// Prepare the list of all members.
-		NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
-		for (GBMethodData *method in methodsProvider.methods) {
-			NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-			[data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
-          	[self addTokensXmlModelObjectDataForObject:method toData:data];
-			[self addTokensXmlModelObjectDataForPropertySetterAndGetter:method withData:data toArray:membersData];
-			[membersData addObject:data];            
-		}
-		
-		// Prepare the variables for the template.
 		NSMutableDictionary *vars = [NSMutableDictionary dictionary];
-		[vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
-		[vars setObject:objectData forKey:@"object"];
-		[vars setObject:membersData forKey:@"members"];
+        
+        // Prepare the list of all members.
+        if([topLevelObject respondsToSelector:@selector(methods)])
+        {
+            GBMethodsProvider *methodsProvider = [topLevelObject valueForKey:@"methods"];
+            NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
+            for (GBMethodData *method in methodsProvider.methods) {
+                NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+                [data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
+                [self addTokensXmlModelObjectDataForObject:method toData:data];
+                [self addTokensXmlModelObjectDataForPropertySetterAndGetter:method withData:data toArray:membersData];
+                [membersData addObject:data];
+                
+            }
+            
+            // Prepare the variables for the template.
+            [vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
+            [vars setObject:objectData forKey:@"object"];
+            [vars setObject:membersData forKey:@"members"];
+        }
+        
+        //if the object is a enum typedef, use this enumerator for the values.
+        if([topLevelObject isKindOfClass:[GBTypedefEnumData class]])
+        {
+            GBEnumConstantProvider *typedefEnum = [topLevelObject valueForKey:@"constants"];
+            NSMutableArray *constantsData = [NSMutableArray arrayWithCapacity:[typedefEnum.constants count]];
+            for (GBEnumConstantData *constant in typedefEnum.constants) {
+                NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
+                [data setObject:[self.settings htmlReferenceNameForObject:constant] forKey:@"anchor"];
+                [data setObject:constant.name forKey:@"declaration"];
+                [self addTokensXmlModelObjectDataForObject:constant toData:data];
+                [constantsData addObject:data];
+            }
+            
+            // Prepare the variables for the template.
+            [vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
+            [vars setObject:objectData forKey:@"object"];
+            [vars setObject:constantsData forKey:@"constants"];
+        }
 		
 		// Run the template and save the results.
 		NSString *output = [handler renderObject:vars];
@@ -276,6 +305,11 @@
 			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
 			[components registerComponent:object.comment.shortDescription];
 			[data setObject:components forKey:@"abstract"];
+		}
+        if (object.comment.availability && object.comment.availability.components.count > 0) {
+			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
+			[components registerComponent:object.comment.availability.components];
+			[data setObject:components forKey:@"availability"];
 		}
 		if ([object.comment.relatedItems.components count] > 0) {
 			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.relatedItems.components count]];
@@ -376,9 +410,16 @@
 			NSString *objectName = [(GBProtocolData *)object nameOfProtocol];
 			return [NSString stringWithFormat:@"//apple_ref/occ/intf/%@", objectName];
 		}
+        else if ([object isKindOfClass:[GBTypedefEnumData class]]){
+			NSString *objectName = [(GBTypedefEnumData *)object nameOfEnum];
+			return [NSString stringWithFormat:@"//apple_ref/c/tdef/%@", objectName];
+		}
 	} else if ([object isKindOfClass:[GBDocumentData class]]){
         NSString *objectName = [(GBDocumentData *)object prettyNameOfDocument];
         return [NSString stringWithFormat:@"//apple_ref/occ/doc/%@", objectName];
+    } else if ([object isKindOfClass:[GBEnumConstantData class]]){
+        NSString *objectName = [(GBEnumConstantData *)object name];
+        return [NSString stringWithFormat:@"//apple_ref/c/econst/%@", objectName];
     } else if (!object.isStaticDocument) {
 		// Members are slighly more complex - their identifier is different regarding to whether they are part of class or category/protocol. Then it depends on whether they are method or property. Finally their parent object (class/category/protocol) name (again class name for category) and selector should be added.
 		if (!object.parentObject) [NSException raise:@"Can't create token identifier for %@; object is not top level and has no parent assigned!", object];
@@ -416,6 +457,7 @@
 	self.classes = [self simplifiedObjectsFromObjects:[self.store classesSortedByName] value:@"nameOfClass" index:&index];
 	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
 	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
+    self.constants = [self simplifiedObjectsFromObjects:[self.store constantsSortedByName] value:@"nameOfEnum" index:&index];
 }
 
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
@@ -456,5 +498,6 @@
 @synthesize classes;
 @synthesize categories;
 @synthesize protocols;
+@synthesize constants;
 
 @end

@@ -25,6 +25,7 @@
 		[result setObject:@"%@ Class Reference" forKey:@"classTitle"];
 		[result setObject:@"%1$@(%2$@) Category Reference" forKey:@"categoryTitle"];
 		[result setObject:@"%@ Protocol Reference" forKey:@"protocolTitle"];
+		[result setObject:@"%@ Constants Reference" forKey:@"constantTitle"];
 		[result setObject:@"%@ Methods" forKey:@"mergedCategorySectionTitle"];
 		[result setObject:@"Extension Methods" forKey:@"mergedExtensionSectionTitle"];
 		[result setObject:@"%2$@ from %1$@" forKey:@"mergedPrefixedCategorySectionTitle"];
@@ -38,6 +39,8 @@
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"Inherits from" forKey:@"inheritsFrom"];
 		[result setObject:@"Conforms to" forKey:@"conformsTo"];
+        [result setObject:@"References" forKey:@"references"];
+        [result setObject:@"Availability" forKey:@"availability"];
 		[result setObject:@"Declared in" forKey:@"declaredIn"];
 		[result setObject:@"Companion guide" forKey:@"companionGuide"];
 	}
@@ -105,6 +108,7 @@
 		[result setObject:@"Class References" forKey:@"classesTitle"];
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
+        [result setObject:@"Constant References" forKey:@"constantsTitle"];
 	}
 	return result;
 }
@@ -117,6 +121,7 @@
 		[result setObject:@"Class Hierarchy" forKey:@"classesTitle"];
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
+        [result setObject:@"Constant References" forKey:@"constantsTitle"];
 	}
 	return result;
 }
@@ -131,6 +136,7 @@
 		[result setObject:@"Classes" forKey:@"classesTitle"];
 		[result setObject:@"Categories" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocols" forKey:@"protocolsTitle"];
+        [result setObject:@"Constants" forKey:@"constantsTitle"];
 	}
 	return result;
 }
