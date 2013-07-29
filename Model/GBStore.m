@@ -24,6 +24,8 @@
 		_protocolsByName = [[NSMutableDictionary alloc] init];
 		_documents = [[NSMutableSet alloc] init];
 		_documentsByName = [[NSMutableDictionary alloc] init];
+        _typedefEnums = [[NSMutableSet alloc] init];
+        _typedefEnumsByName = [[NSMutableDictionary alloc] init];
 		_customDocuments = [[NSMutableSet alloc] init];
 		_customDocumentsByKey = [[NSMutableDictionary alloc] init];
 	}
@@ -46,6 +48,12 @@
 - (NSArray *)classesSortedByName {
 	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES]];
 	return [[self.classes allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
+
+- (NSArray *)constantsSortedByName {
+	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfEnum" ascending:YES]];
+	return [[self.constants allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 
 - (NSArray *)categoriesSortedByName {
@@ -100,6 +108,20 @@
 	}
 	[_protocols addObject:protocol];
 	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
+}
+
+-(void)registerTypedefEnum:(GBTypedefEnumData *)typedefEnum
+{
+    NSParameterAssert(typedefEnum != nil);
+	GBLogDebug(@"Registering typedef enum %@...", typedefEnum);
+	if ([_typedefEnums containsObject:typedefEnum]) return;
+	GBProtocolData *existingTypedef = [_typedefEnumsByName objectForKey:typedefEnum.nameOfEnum];
+	if (existingTypedef) {
+		[NSException raise:@"Typedef with name %@ is already registered!", typedefEnum.nameOfEnum];
+		return;
+	}
+	[_typedefEnums addObject:typedefEnum];
+	[_typedefEnumsByName setObject:typedefEnum forKey:typedefEnum.nameOfEnum];
 }
 
 - (void)registerDocument:(GBDocumentData *)document {
@@ -160,6 +182,10 @@
 	return [_documentsByName objectForKey:path];
 }
 
+- (GBTypedefEnumData *)typedefEnumWithName:(NSString *)path {
+	return [_typedefEnumsByName objectForKey:path];
+}
+
 - (GBDocumentData *)customDocumentWithKey:(id)key {
 	return [_customDocumentsByKey objectForKey:key];
 }
@@ -167,6 +193,7 @@
 @synthesize classes = _classes;
 @synthesize categories = _categories;
 @synthesize protocols = _protocols;
+@synthesize constants = _typedefEnums;
 @synthesize documents = _documents;
 @synthesize customDocuments = _customDocuments;
 

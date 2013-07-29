@@ -49,6 +49,8 @@
         return [self.description isEqualToString:[object idOfCategory]];
     else if ([object isKindOfClass:[GBProtocolData class]])
         return [self.description isEqualToString:[object nameOfProtocol]];
+	else if ([object isKindOfClass:[GBTypedefEnumData class]])
+        return [self.description isEqualToString:[object nameOfEnum]];
 	else if ([object isKindOfClass:[GBDocumentData class]])
         return NO;
     else
@@ -747,11 +749,12 @@ typedef NSUInteger GBProcessingFlag;
 		GBCrossRefData *categoryData = [self dataForCategoryLinkInString:string searchRange:searchRange flags:flags];
 		GBCrossRefData *localMemberData = [self dataForLocalMemberLinkInString:string searchRange:searchRange flags:flags];
 		GBCrossRefData *remoteMemberData = [self dataForRemoteMemberLinkInString:string searchRange:searchRange flags:flags];
+        GBCrossRefData *constantData = [self dataForConstantLinkInString:string searchRange:searchRange flags:flags];
 		GBCrossRefData *documentData = [self dataForDocumentLinkInString:string searchRange:searchRange flags:flags];
 		
 		// If we find class or protocol link at the same location as category, ignore class/protocol. This prevents marking text up to open parenthesis being converted to a class/protocol where in fact it's category. The same goes for remote member data!
 		if ([objectData isInsideCrossRef:categoryData]) objectData = nil;
-		if ([objectData isInsideCrossRef:remoteMemberData]) objectData = nil;
+        if ([objectData isInsideCrossRef:remoteMemberData]) objectData = nil;
 		if ([categoryData isInsideCrossRef:remoteMemberData]) categoryData = nil;
         
         // Do the same for a URL inside a method call
@@ -762,13 +765,15 @@ typedef NSUInteger GBProcessingFlag;
 		if ([objectData matchesObject:self.currentContext]) objectData = nil;
 		if ([categoryData matchesObject:self.currentContext]) categoryData = nil;
 		if ([localMemberData matchesObject:self.currentObject]) localMemberData = nil;
-		
+		if ([constantData matchesObject:self.currentObject]) objectData = nil;
+        
 		// Add objects to handler array. Note that we don't add class/protocol if category is found on the same index! If no link was found, proceed with next char. If there's no other word, exit (we'll deal with remaining text later on).
 		if (urlData) [links addObject:urlData];
 		if (objectData) [links addObject:objectData];
 		if (categoryData) [links addObject:categoryData];
 		if (localMemberData) [links addObject:localMemberData];
 		if (remoteMemberData) [links addObject:remoteMemberData];
+        if (constantData) [links addObject:constantData];
 		if (documentData) [links addObject:documentData];
 		if ([links count] == 0) {
 			if (isInsideMarkdown) return string;
@@ -916,6 +921,30 @@ typedef NSUInteger GBProcessingFlag;
 	return result;
 }
 
+- (GBCrossRefData *)dataForConstantLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
+    BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
+	NSString *regex = [self.components objectCrossReferenceRegex:templated];
+	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
+	if ([components count] == 0) return nil;
+    
+	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
+	NSString *linkText = [components objectAtIndex:0];
+	NSString *objectName = [components objectAtIndex:1];
+	
+	// Validate object name with a class or protocol.
+	id referencedObject = [self.store typedefEnumWithName:objectName];
+	if (!referencedObject) return nil;
+	self.lastReferencedObject = referencedObject;
+	
+	// Create link data and return.
+    GBCrossRefData *result = [GBCrossRefData crossRefData];
+	result.range = [string rangeOfString:linkText options:0 range:searchRange];
+	result.address = [self.settings htmlReferenceForObject:referencedObject fromSource:self.currentContext];
+	result.description = objectName;
+	result.markdown = [self markdownLinkWithDescription:result.description address:result.address flags:flags];
+	return result;
+}
+
 - (GBCrossRefData *)dataForLocalMemberLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first local member cross reference in the given search range of the given string. if found, link data otherwise empty data is returned.
 	if (!self.currentContext) return nil;
@@ -930,6 +959,11 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *selector = [components objectAtIndex:2];
 	
 	// Validate selected within current context.
+    // can we grab method data?
+    if(! [[self currentContext] respondsToSelector:@selector(methods)])
+    {
+        return nil;
+    }
 	GBMethodData *referencedObject = [[[self currentContext] methods] methodBySelector:selector];
 	if (!referencedObject) return nil;
 	self.lastReferencedObject = referencedObject;

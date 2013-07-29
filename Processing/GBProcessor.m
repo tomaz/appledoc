@@ -17,6 +17,7 @@
 - (void)processClasses;
 - (void)processCategories;
 - (void)processProtocols;
+- (void)processConstants;
 - (void)processDocuments;
 
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
@@ -76,6 +77,7 @@
 	[self processClasses];
 	[self processCategories];
 	[self processProtocols];
+    [self processConstants];
 	[self processDocuments];
 }
 
@@ -125,6 +127,21 @@
 	}
 }
 
+- (void)processConstants {
+	NSArray *constants = [self.store.constants allObjects];
+	for (GBTypedefEnumData *enumData in constants) {
+		GBLogInfo(@"Processing constants %@...", enumData);
+		self.currentContext = enumData;
+		[self processConstantsFromProvider:enumData.constants];
+		if (![self removeUndocumentedObject:enumData]) {
+			[self processCommentForObject:enumData];
+			[self validateCommentsForObjectAndMembers:enumData];
+			[self processHtmlReferencesForObject:enumData];
+		}
+		GBLogDebug(@"Finished processing constant %@.", enumData);
+	}
+}
+
 - (void)processDocuments {
 	for (GBDocumentData *document in self.store.documents) {
 		GBLogInfo(@"Processing static document %@...", document);
@@ -153,6 +170,19 @@
 			[self processHtmlReferencesForObject:method];
 		}
 		GBLogDebug(@"Finished processing method %@.", method);
+	}
+}
+
+- (void)processConstantsFromProvider:(GBEnumConstantProvider *)provider {
+	NSArray *constants = [provider.constants copy];
+	for (GBEnumConstantData *constant in constants) {
+		GBLogVerbose(@"Processing constant %@...", constant);
+		
+        //if (![self removeUndocumentedMember:method]) {
+        [self processCommentForObject:constant];
+        [self processHtmlReferencesForObject:constant];
+		//}
+		GBLogDebug(@"Finished processing method %@.", constant);
 	}
 }
 
@@ -262,21 +292,24 @@
 	if ([self isCommentValid:[(GBModelBase *)object comment]]) return NO;
 	
 	// Only remove if all methods are uncommented. Note that this also removes methods regardless of keepUndocumentedMembers setting, however if the object itself is commented, we'll keep methods.
-	GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
-	BOOL hasCommentedMethods = NO;
-	for (GBMethodData *method in provider.methods) {
-		if ([self isCommentValid:method.comment]) {
-			hasCommentedMethods = YES;
-			break;
-		}
+	if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
+    {
+        GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
+        BOOL hasCommentedMethods = NO;
+        for (GBMethodData *method in provider.methods) {
+            if ([self isCommentValid:method.comment]) {
+                hasCommentedMethods = YES;
+                break;
+            }
+        }
+        // Remove the object if it only has uncommented methods.
+        if (!hasCommentedMethods) {
+            GBLogVerbose(@"Removing undocumented object %@...", object);
+            [self.store unregisterTopLevelObject:object];
+            return YES;
+        }
 	}
 	
-	// Remove the object if it only has uncommented methods.
-	if (!hasCommentedMethods) {
-		GBLogVerbose(@"Removing undocumented object %@...", object);
-		[self.store unregisterTopLevelObject:object];
-		return YES;
-	}
 	return NO;
 }
 
@@ -406,11 +439,24 @@
 	if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
 	
 	// Handle methods.
-	for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
-		if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
-			GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
-		}
-	}
+    if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
+    {
+        for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
+            if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
+                GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
+            }
+        }
+    }
+    
+    if([object isKindOfClass:[GBTypedefEnumData class]])
+    {
+        for(GBEnumConstantData *constant in ((GBTypedefEnumData *)object).constants.constants)
+        {
+            if (![self isCommentValid:constant.comment] && self.settings.warnOnUndocumentedMember) {
+                GBLogXWarn(constant.prefferedSourceInfo, @"%@ is not documented!", constant);
+            }
+        }
+    }
 }
 
 - (BOOL)isCommentValid:(GBComment *)comment {
