@@ -426,8 +426,12 @@
     BOOL hasOpenBracket = [[self.tokenizer lookahead:2] matches:@"("];
     
     //ONLY SUPPORTED ARE typedef enum { } name; because that is the only way to bind the name to the enum values.
+    if(!isTypeDef)
+    {
+        return NO;
+    }
     
-    if(isTypeDef && (isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
+    if((isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
     {
         [self.tokenizer consume:3];  //consume 'typedef' 'NS_ENUM' and '('
         
