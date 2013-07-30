@@ -508,6 +508,9 @@
              [newEnum.constants registerConstant:newConstant];
          }];
         
+        //if there is a macro, consume it.
+        [self consumeMacro];
+        
         //consume ;
         [self.tokenizer consume:1];
         [self.store registerTypedefEnum:newEnum];
