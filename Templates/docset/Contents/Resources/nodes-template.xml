@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<DocSetNodes version="1.0">
+<DocSetNodes version="1.1">
     <TOC>
         <Node type="folder">
             <Name>{{projectName}}</Name>
@@ -26,7 +26,7 @@
 				</Node>
 				{{/hasClasses}}
 				{{#hasCategories}}
-				<Node type="folder">
+				<Node>
 					<Name>{{strings/docset/categoriesTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
@@ -36,7 +36,7 @@
 				</Node>
 				{{/hasCategories}}
                 {{#hasProtocols}}
-				<Node type="folder">
+				<Node>
 					<Name>{{strings/docset/protocolsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
@@ -46,7 +46,7 @@
 				</Node>
 				{{/hasProtocols}}
                 {{#hasConstants}}
-				<Node type="folder">
+				<Node>
 					<Name>{{strings/docset/constantsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
@@ -73,10 +73,45 @@
 </DocSetNodes>
 
 Section Node
-		<Node id="{{id}}"{{#type}} type="{{type}}"{{/type}}>
-			<Name>{{name}}</Name>
-			<Path>{{path}}</Path>
-		</Node>
+        <Node id="{{id}}"{{#type}} type="{{type}}"{{/type}}{{#docType}} documentType="{{docType}}"{{/docType}}>
+            <Name>{{name}}</Name>
+            <Path>{{path}}</Path>
+            {{#hasSubNodes}}
+                <Subnodes>
+                <Node type="section">
+                    <Path>{{path}}</Path>
+                    <Name>Overview</Name>
+                    <Anchor>overview</Anchor>
+                </Node>
+                <Node type="section">
+                    <Path>{{path}}</Path>
+                    <Name>Tasks</Name>
+                    <Anchor>tasks</Anchor>
+                </Node>
+                {{#hasProperties}}
+                <Node type="section">
+                    <Path>{{path}}</Path>
+                    <Name>Properties</Name>
+                    <Anchor>properties</Anchor>
+                </Node>
+                {{/hasProperties}}
+                {{#hasClassMethods}}
+                <Node type="section">
+                    <Path>{{path}}</Path>
+                    <Name>Class Methods</Name>
+                    <Anchor>class_methods</Anchor>
+                </Node>
+                {{/hasClassMethods}}
+                {{#hasInstanceMethods}}
+                <Node type="section">
+                    <Path>{{path}}</Path>
+                    <Name>Instance Methods</Name>
+                    <Anchor>instance_methods</Anchor>
+                </Node>
+                {{/hasInstanceMethods}}
+            </Subnodes>
+            {{/hasSubNodes}}
+        </Node>
 EndSection
 
 Section NodeRef
