@@ -351,6 +351,11 @@
 			}
 		}
 	}
+    
+    if( [object isKindOfClass:[GBEnumConstantData class]])
+    {
+        [data setObject:_sectionID forKey:@"refid"];
+    }
 }
 
 - (void)addTokensXmlModelObjectDataForPropertySetterAndGetter:(GBModelBase *)method withData:(NSDictionary *)data toArray:(NSMutableArray *)members {
