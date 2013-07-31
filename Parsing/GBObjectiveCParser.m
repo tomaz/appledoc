@@ -426,8 +426,12 @@
     BOOL hasOpenBracket = [[self.tokenizer lookahead:2] matches:@"("];
     
     //ONLY SUPPORTED ARE typedef enum { } name; because that is the only way to bind the name to the enum values.
+    if(!isTypeDef)
+    {
+        return NO;
+    }
     
-    if(isTypeDef && (isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
+    if((isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
     {
         [self.tokenizer consume:3];  //consume 'typedef' 'NS_ENUM' and '('
         
@@ -462,6 +466,8 @@
         //[self.tokenizer consume:1];
         [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop)
          {
+             /* ALWAYS start with the name of the Constant */
+              
              GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
              GBSourceInfo *filedata = [tokenizer sourceInfoForToken:token];
              [newConstant registerSourceInfo:filedata];
@@ -470,20 +476,27 @@
              [self.tokenizer consume:1];
              [self.tokenizer resetComments];
              
+             [self consumeMacro];
+             
              if([[self.tokenizer currentToken] matches:@"="])
              {
                  [self.tokenizer consume:1];
                  
                  //collect the stringvalues until a ',' is detected.
-                 NSMutableString *value = [[NSMutableString alloc] init];
+                 NSMutableArray *values = [NSMutableArray array];
+                 
                  while(![[tokenizer currentToken] matches:@","] && ![[tokenizer currentToken] matches:@"}"])
                  {
-                     [value appendString:[[tokenizer currentToken] stringValue]];
-                     [tokenizer consume:1];
+                     if(![self consumeMacro])
+                     {
+                         [values addObject:[[tokenizer currentToken] stringValue]];
+                         [tokenizer consume:1];
+                     }
                  }
                  
+                 NSString *value = [values componentsJoinedByString:@" "];
                  [newConstant setAssignedValue:value];
-            }
+             }
              
              if([[self.tokenizer currentToken] matches:@","])
              {
@@ -494,6 +507,9 @@
              
              [newEnum.constants registerConstant:newConstant];
          }];
+        
+        //if there is a macro, consume it.
+        [self consumeMacro];
         
         //consume ;
         [self.tokenizer consume:1];
@@ -510,6 +526,32 @@
             GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
             GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
         }
+    }
+    return NO;
+}
+
+-(bool)isTokenUppercaseOnly:(NSString *)token
+{
+    return [token isEqualToString:[token uppercaseString]];
+}
+
+-(bool)consumeMacro
+{
+    //Eat away and MACRO
+    if( ![[self.tokenizer currentToken] matches:@"="]
+          && ![[self.tokenizer currentToken] matches:@"}"]
+          && ![[self.tokenizer currentToken] matches:@","]
+          && [[self.tokenizer currentToken] isWord]
+          && [self isTokenUppercaseOnly:[[self.tokenizer currentToken] stringValue]])
+    {
+        [self.tokenizer consume:1];
+        
+        //now a macro may come with bracketed arguments.
+        if([[self.tokenizer currentToken] matches:@"("])
+        {
+            [self.tokenizer consumeTo:@")" usingBlock:nil];
+        }
+        return YES;
     }
     return NO;
 }

@@ -129,7 +129,7 @@
 }
 
 - (BOOL)processNodesXml:(NSError **)error {
-	GBLogInfo(@"Writing DocSet Nodex.xml file...");
+	GBLogInfo(@"Writing DocSet Nodes.xml file...");
 	NSString *templateFilename = @"nodes-template.xml";
 	NSString *templatePath = [self templatePathForTemplateEndingWith:templateFilename];
 	if (!templatePath) {
@@ -470,6 +470,37 @@
 		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
 		[data setObject:[object valueForKey:value] forKey:@"name"];
 		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
+        
+        if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
+        {
+            GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
+            
+            //if the model or document has multiple members, expand those members
+            if(provider.methods.count > 0)
+            {
+                [data setObject:@"file" forKey:@"type"];
+                [data setObject:@"reference" forKey:@"docType"];
+                [data setObject:[NSNumber numberWithBool:YES] forKey:@"hasSubNodes"];
+                [data setObject:[NSNumber numberWithBool:provider.hasProperties] forKey:@"hasProperties"];
+                [data setObject:[NSNumber numberWithBool:provider.hasClassMethods] forKey:@"hasClassMethods"];
+                [data setObject:[NSNumber numberWithBool:provider.hasInstanceMethods] forKey:@"hasInstanceMethods"];
+            }
+            else
+            {
+                [data setObject:@"section" forKey:@"type"];
+            }
+        }
+        else if([object isKindOfClass:[GBTypedefEnumData class]])
+        {
+            [data setObject:@"file" forKey:@"type"];
+            [data setObject:@"reference" forKey:@"docType"];
+        }
+        else
+        {
+            //not a member providing node: just use the 'section' icon.
+            [data setObject:@"section" forKey:@"type"];
+        }
+    
 		[result addObject:data];
 	}
 	*index = idx;
