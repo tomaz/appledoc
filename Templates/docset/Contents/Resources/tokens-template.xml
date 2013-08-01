@@ -36,7 +36,8 @@
             <Declaration>{{declaration}}</Declaration>
             {{>Availability}}
             {{>DeclaredIn}}
-			{{>RelatedTokens}}
+            {{>RelatedTokens}}
+            {{>Reference}}
         </Token>
         {{/constants}}
 	</File>
@@ -64,7 +65,11 @@ Section Abstract
 EndSection
 
 Section Availability
-<Availability type="html">{{#availability}}{{>GBCommentComponentsList}}{{/availability}}</Availability>
+{{#availability}}<Availability type="html">{{>GBCommentComponentsList}}</Availability>{{/availability}}
+EndSection
+
+Section Reference
+{{#refid}}<NodeRef refid="{{refid}}"/>{{/refid}}
 EndSection
 
 Section MethodDeclaration
