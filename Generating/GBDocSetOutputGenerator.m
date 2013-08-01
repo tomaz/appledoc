@@ -15,6 +15,14 @@
 #import "GBTemplateHandler.h"
 #import "GBDocSetOutputGenerator.h"
 
+typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
+{
+    FolderIcon,
+    FileIcon,
+    ReferenceIcon,
+    BundleIcon
+};
+
 @interface GBDocSetOutputGenerator ()
 
 - (BOOL)copyOrMoveSourceFilesToDocuments:(NSError **)error;
@@ -476,34 +484,47 @@
 		[data setObject:[object valueForKey:value] forKey:@"name"];
 		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
         
-        if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
+        GBDocSetNavigationTreeIconKind icon = FileIcon;
+        
+        if([object isKindOfClass:[GBTypedefEnumData class]])
         {
+            icon = ReferenceIcon;
+        }
+        else if([object isKindOfClass:[GBDocumentData class]])
+        {
+            icon = FileIcon;
+        }
+        else if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
+        {
+            icon = ReferenceIcon;
+            
             GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
             
             //if the model or document has multiple members, expand those members
             if(provider.methods.count > 0)
             {
-                [data setObject:@"file" forKey:@"type"];
-                [data setObject:@"reference" forKey:@"docType"];
                 [data setObject:[NSNumber numberWithBool:YES] forKey:@"hasSubNodes"];
                 [data setObject:[NSNumber numberWithBool:provider.hasProperties] forKey:@"hasProperties"];
                 [data setObject:[NSNumber numberWithBool:provider.hasClassMethods] forKey:@"hasClassMethods"];
                 [data setObject:[NSNumber numberWithBool:provider.hasInstanceMethods] forKey:@"hasInstanceMethods"];
             }
-            else
-            {
+        }
+                
+        switch(icon)
+        {
+            case ReferenceIcon:
+                [data setObject:@"file" forKey:@"type"];
+                [data setObject:@"reference" forKey:@"docType"];
+                break;
+            case FolderIcon:
+                [data setObject:@"folder" forKey:@"type"];
+                break;
+            case FileIcon:
                 [data setObject:@"section" forKey:@"type"];
-            }
-        }
-        else if([object isKindOfClass:[GBTypedefEnumData class]])
-        {
-            [data setObject:@"file" forKey:@"type"];
-            [data setObject:@"reference" forKey:@"docType"];
-        }
-        else
-        {
-            //not a member providing node: just use the 'section' icon.
-            [data setObject:@"section" forKey:@"type"];
+                break;
+            case BundleIcon:
+                [data setObject:@"bundle" forKey:@"type"];
+                break;
         }
     
 		[result addObject:data];
