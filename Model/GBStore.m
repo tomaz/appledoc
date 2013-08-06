@@ -117,7 +117,7 @@
 	if ([_typedefEnums containsObject:typedefEnum]) return;
 	GBProtocolData *existingTypedef = [_typedefEnumsByName objectForKey:typedefEnum.nameOfEnum];
 	if (existingTypedef) {
-		[NSException raise:@"Typedef with name %@ is already registered!", typedefEnum.nameOfEnum];
+        // Ignore typedef in already refined elsewhere.
 		return;
 	}
 	[_typedefEnums addObject:typedefEnum];
