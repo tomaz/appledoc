@@ -65,6 +65,16 @@ To keep up to date, just go to Terminal and cd into appledoc directory, issue `g
 
 If you also want to compile and run AppledocTests (unit tests) target, you need to copy all the frameworks indicated within Libraries & Frameworks group to shared frameworks directory before building unit tests target! This is not required for building the appledoc tool itself.
 
+Docset usage tips
+-----------------
+
+Pre-generated documentation and docsets for most Cocoa frameworks are available at:
+- [CocoaDocs](http://cocoadocs.org)
+
+Once you have a docset, you might want to use it with a documentation browser:
+- [Xcode](https://developer.apple.com/xcode/)
+- [Dash](http://kapeli.com/dash)
+
 Troubleshooting
 ---------------
 
@@ -89,7 +99,6 @@ Minimum system requirements
 
 - Xcode 4.5 or greater for compiling
 - OS X 10.7 for compiling and running
-
 
 LICENSE
 =======
