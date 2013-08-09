@@ -65,16 +65,18 @@ To keep up to date, just go to Terminal and cd into appledoc directory, issue `g
 
 If you also want to compile and run AppledocTests (unit tests) target, you need to copy all the frameworks indicated within Libraries & Frameworks group to shared frameworks directory before building unit tests target! This is not required for building the appledoc tool itself.
 
-You can also setup Xcode to automate appledoc documentation creation. [Find out how](https://github.com/iRareMedia/appledoc/blob/master/XcodeIntegrationScript.markdown).
+Integrating with Xcode
+-----------------
+You can setup Xcode to automate appledoc document creation. [Find out how](https://github.com/tomaz/appledoc/blob/master/XcodeIntegrationScript.markdown) using a Run Script and your project's Build Phases.
 
 Docset usage tips
 -----------------
 
-Pre-generated documentation and docsets for most Cocoa frameworks are available at:
+Pre-generated documentation and docsets for most Cocoa frameworks are available at:  
 - [CocoaDocs](http://cocoadocs.org)
 
-Once you have a docset, you might want to use it with a documentation browser:
-- [Xcode](https://developer.apple.com/xcode/)
+Once you have a docset, you might want to use it with a documentation browser:  
+- [Xcode](https://developer.apple.com/xcode/)  
 - [Dash](http://kapeli.com/dash)
 
 Troubleshooting
