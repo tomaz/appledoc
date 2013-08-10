@@ -95,7 +95,7 @@ Have problems? This is what you can do to troubleshoot:
 Developer notes
 ---------------
 
-If you wish to contribute, see the [Developer Notes file](https://github.com/iRareMedia/appledoc/blob/master/Developer%20Notes.markdown) for short overview of how appledoc works internally.
+If you wish to contribute, see the [Developer Notes file](https://github.com/tomaz/appledoc/blob/master/Developer%20Notes.markdown) for short overview of how appledoc works internally.
 
 
 Minimum system requirements

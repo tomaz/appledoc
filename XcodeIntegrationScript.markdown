@@ -1,6 +1,6 @@
 Xcode Integration Script
 ==========================================
-Sample Script to automoate documentation creation using a run script in Xcode. appledoc can be integrated with Xcode in many ways. Below is one of those to get you up and running quickly on Xcode 4.6
+Sample Script to automate documentation creation using a run script in Xcode. appledoc can be integrated with Xcode in many ways. Below is one of those ways to get you up and running quickly on Xcode 4.6
 
 1.  Select top of your project in Project Navigator
 2.  Click Add Target
