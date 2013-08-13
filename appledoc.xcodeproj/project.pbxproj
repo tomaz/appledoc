@@ -209,6 +209,9 @@
 		73FC741111FE1FDF00AAD0B9 /* GBMethodsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741011FE1FDF00AAD0B9 /* GBMethodsProvider.m */; };
 		73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC741C11FE215E00AAD0B9 /* GBMethodData.m */; };
 		73FC742D11FE274300AAD0B9 /* GBMethodArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */; };
+		7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
+		7D11DEC617BA622B0027DC2D /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
+		7D11DEC717BA62420027DC2D /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		B4D1FFD515FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
 		B4D1FFD615FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
@@ -1440,6 +1443,9 @@
 				B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */,
 				B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
+				7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */,
+				7D11DEC617BA622B0027DC2D /* GBTypedefEnumData.m in Sources */,
+				7D11DEC717BA62420027DC2D /* GBEnumConstantProvider.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
