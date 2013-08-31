@@ -109,4 +109,12 @@
  */
 - (NSUInteger)numberOfLinesInRange:(NSRange)range;
 
+
+/** Glob matching
+ 
+ @param glob The glob to match against the receiver. '*' matches any number of characters, '?' matches any one character
+ @return Returns whether glob matches the receiver
+ */
+- (BOOL)matchesGlob:(NSString *)glob;
+
 @end

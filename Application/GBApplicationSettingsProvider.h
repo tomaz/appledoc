@@ -386,6 +386,11 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) BOOL useCodeOrder;
 
+/** A set of globs to be matched against each input symbol to determine whether the symbol should be ignored
+
+ */
+@property (retain) NSMutableSet* ignoredSymbols;
+
 /** Indicates whteher local methods and properties cross references texts should be prefixed when used in related items list.
  
  If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.

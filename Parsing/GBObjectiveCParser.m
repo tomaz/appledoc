@@ -29,6 +29,7 @@
 
 @interface GBObjectiveCParser (DefinitionParsing)
 
+- (BOOL)isIgnoredSymbol:(NSString*)symbol;
 - (void)matchClassDefinition;
 - (void)matchCategoryDefinition;
 - (void)matchExtensionDefinition;
@@ -150,9 +151,24 @@
 
 @implementation GBObjectiveCParser (DefinitionParsing)
 
+- (BOOL)isIgnoredSymbol:(NSString*)symbol {
+    for (NSString* glob in settings.ignoredSymbols) {
+        if ([symbol matchesGlob:glob]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
 - (void)matchClassDefinition {
 	// @interface CLASSNAME
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+    if ([self isIgnoredSymbol:className]) {
+        GBLogInfo(@"Skipping ignored class %@", className);
+        [self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) { }];
+        return;
+    }
+    
 	GBClassData *class = [GBClassData classDataWithName:className];
     class.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:class];
@@ -174,6 +190,12 @@
 	// @interface CLASSNAME ( CATEGORYNAME )
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	NSString *categoryName = [[self.tokenizer lookahead:3] stringValue];
+    NSString* fullName = [NSString stringWithFormat:@"%@(%@)",className,categoryName];
+    if ([self isIgnoredSymbol:fullName]) {
+        GBLogInfo(@"Skipping ignored category %@", fullName);
+        [self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) { }];
+        return;
+    }
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
     category.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:category];
@@ -192,6 +214,11 @@
 - (void)matchExtensionDefinition {
 	// @interface CLASSNAME ( )
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
+    if ([self isIgnoredSymbol:className]) {
+        GBLogInfo(@"Skipping ignored class extension %@", className);
+        [self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) { }];
+        return;
+    }
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
     extension.includeInOutput = self.includeInOutput;
 	GBLogVerbose(@"Matched %@() extension definition at line %lu.", className, extension.prefferedSourceInfo.lineNumber);
@@ -210,6 +237,11 @@
 - (void)matchProtocolDefinition {
 	// @protocol PROTOCOLNAME
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
+    if ([self isIgnoredSymbol:protocolName]) {
+        GBLogInfo(@"Skipping ignored protocol %@", protocolName);
+        [self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) { }];
+        return;
+    }
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
     protocol.includeInOutput = self.includeInOutput;
 	GBLogVerbose(@"Matched %@ protocol definition at line %lu.", protocolName, protocol.prefferedSourceInfo.lineNumber);

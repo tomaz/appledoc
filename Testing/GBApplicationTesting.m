@@ -345,6 +345,16 @@
 	assertThatInteger(settings.exitCodeThreshold, equalToInteger(2));
 }
 
+- (void)testIgnoreSymbol_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--ignore-symbol", @"*deprecated*", @"--ignore-symbol", @"DummyClass?", nil];
+	// verify - note that ignore should not convert dot to current path; this would prevent .m being parsed properly!
+	assertThatInteger([settings.ignoredSymbols count], equalToInteger(2));
+	assertThatBool([settings.ignoredSymbols containsObject:@"*deprecated*"], equalToBool(YES));
+	assertThatBool([settings.ignoredSymbols containsObject:@"DummyClass?"], equalToBool(YES));
+}
+
+
 #pragma mark Warnings settings testing
 
 - (void)testWarnOnMissingOutputPath_shouldAssignValueToSettings {
