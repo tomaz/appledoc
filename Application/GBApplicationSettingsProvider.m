@@ -147,6 +147,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
         self.useCodeOrder = NO;
         self.ignoredSymbols = [ NSMutableSet set ];
+        self.requireLeaderForLocalCrossRefs = NO;
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
 		self.embedCrossReferencesWhenProcessingMarkdown = YES;
@@ -681,6 +682,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
 @synthesize useCodeOrder;
 @synthesize ignoredSymbols;
+@synthesize requireLeaderForLocalCrossRefs;
 
 @synthesize prefixLocalMembersInRelatedItemsList;
 @synthesize embedCrossReferencesWhenProcessingMarkdown;

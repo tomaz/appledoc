@@ -56,6 +56,7 @@ static NSString *kGBArgKeepMergedCategoriesSections = @"keep-merged-sections";
 static NSString *kGBArgPrefixMergedCategoriesSectionsWithCategoryName = @"prefix-merged-sections";
 static NSString *kGBArgUseCodeOrder = @"use-code-order";
 static NSString *kGBArgIgnoreSymbol = @"ignore-symbol";
+static NSString *kGBArgRequireLeaderForLocalCrossRefs = @"require-leader-for-local-crossrefs";
 
 static NSString *kGBArgExplicitCrossRef = @"explicit-crossref";
 static NSString *kGBArgCrossRefFormat = @"crossref-format";
@@ -307,6 +308,8 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
         { GBNoArg(kGBArgUseCodeOrder),	                                    0,		DDGetoptNoArgument },
 		{ kGBArgIgnoreSymbol,												0,	    DDGetoptRequiredArgument },
+		{ kGBArgRequireLeaderForLocalCrossRefs,                             0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgRequireLeaderForLocalCrossRefs),                    0,		DDGetoptNoArgument },
 		
 		{ kGBArgWarnOnMissingOutputPath,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
@@ -821,6 +824,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setIgnoreSymbol:(NSString *)glob {
 	[self.settings.ignoredSymbols addObject:glob];
 }
+-(void)setRequireLeaderForLocalCrossrefs:(BOOL)value { self.settings.requireLeaderForLocalCrossRefs = value; }
+-(void)setNoRequireLeaderForLocalCrossrefs:(BOOL)value { self.settings.requireLeaderForLocalCrossRefs = !value; }
 
 - (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
 - (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
@@ -948,6 +953,7 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
 	ddprintf(@"--%@ = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
 	for (NSString *glob in self.settings.ignoredSymbols) ddprintf(@"--%@ = %@\n", kGBArgIgnoreSymbol, glob);
+	ddprintf(@"--%@ = %@\n", kGBArgRequireLeaderForLocalCrossRefs, PRINT_BOOL(self.settings.requireLeaderForLocalCrossRefs));
 	ddprintf(@"--%@ = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
 	ddprintf(@"\n");
 	

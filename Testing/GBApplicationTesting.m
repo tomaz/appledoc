@@ -354,6 +354,15 @@
 	assertThatBool([settings.ignoredSymbols containsObject:@"DummyClass?"], equalToBool(YES));
 }
 
+- (void)testRequireLeaderForLocalCrossRefs_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--require-leader-for-local-crossrefs", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-require-leader-for-local-crossrefs", nil];
+	// verify
+	assertThatBool(settings1.requireLeaderForLocalCrossRefs, equalToBool(YES));
+	assertThatBool(settings2.requireLeaderForLocalCrossRefs, equalToBool(NO));
+}
+
 
 #pragma mark Warnings settings testing
 
