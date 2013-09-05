@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GBEnumConstantData.h"
 
+/** Provides abstract access to enumerated constants withing a typedef'd enum */
 @interface GBEnumConstantProvider : NSObject
 {
     @private
@@ -20,5 +21,6 @@
 - (id)initWithParentObject:(id)parent;
 - (void)registerConstant:(GBEnumConstantData *)constant;
 
+/** the collection of constants defined for this enum */
 @property (readonly) NSArray *constants;
 @end

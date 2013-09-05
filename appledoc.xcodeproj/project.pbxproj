@@ -556,6 +556,7 @@
 		B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
+		D45D15E117D883C700B7976A /* CommentsFormattingStyle.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommentsFormattingStyle.markdown; sourceTree = "<group>"; };
 		D4B844EA17A121000012C1DC /* GBTypedefEnumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefEnumData.h; sourceTree = "<group>"; };
 		D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefEnumData.m; sourceTree = "<group>"; };
 		D4B844ED17A122640012C1DC /* GBEnumConstantData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBEnumConstantData.h; sourceTree = "<group>"; };
@@ -604,6 +605,7 @@
 		08FB7794FE84155DC02AAC07 /* appledoc */ = {
 			isa = PBXGroup;
 			children = (
+				D45D15E117D883C700B7976A /* CommentsFormattingStyle.markdown */,
 				B4D1FFF615FF643D009736E2 /* install-appledoc.sh */,
 				73EA656912B7944E00398BD1 /* Readme.markdown */,
 				73EEB7A812CA2BE700E546DB /* Developer Notes.markdown */,

@@ -10,6 +10,10 @@
 #import "GBObjectDataProviding.h"
 #import "GBEnumConstantProvider.h"
 
+/** Defines a single typedef enumeration, consisting of several constant definitions 
+ *
+ * The parser will populate the structures for use. Currently, only NS_ENUM type definitions are supported.
+ */
 @interface GBTypedefEnumData : GBModelBase
 {
     @private
@@ -24,7 +28,7 @@
 @property (readonly) NSString *nameOfEnum;
 @property (readonly) GBEnumConstantProvider *constants;
 
-/** The type of enum, e.g. NS_ENUM (NSInteger, name), this will be NSInteger */
+/** The type of enum, e.g. for typdef NS_ENUM (NSInteger, name) {..} the value us `NSInteger` */
 @property (copy) NSString *enumPrimitive;
 
 /** True when the enum is defined as NS_OPTIONS */

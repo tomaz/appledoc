@@ -8,6 +8,7 @@
 
 #import "GBModelBase.h"
 
+/** Describes a single enumeration constant */
 @interface GBEnumConstantData : GBModelBase
 {
     @private
@@ -16,7 +17,12 @@
 }
 +(id)constantWithName:(NSString *)name;
 
+/** the name of the constant */
 @property (readonly) NSString *name;
+
+/** An option assigned value for this constant */
 @property (copy) NSString *assignedValue;
+
+/** A boolean indicating if this enum has an assigned value. The boolean is used in the generation phase */
 @property (readonly) bool hasAssignedValue;
 @end
