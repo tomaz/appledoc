@@ -15,9 +15,9 @@ Lines may optionally start with whitespace and a single star char and appledoc w
 
 ```objc
 /** Star prefixed comment
-* spreading over multiple 
-* lines
-*/
+ * spreading over multiple 
+ * lines
+ */
 ```
       
 To make transition from headerdoc a bit simpler, appledoc also accepts headerdoc style multiline comments:
