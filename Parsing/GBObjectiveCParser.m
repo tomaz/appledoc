@@ -434,10 +434,28 @@
     if((isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
     {
         [self.tokenizer consume:3];  //consume 'typedef' 'NS_ENUM' and '('
-        
-        //get the enum type
-        NSString *typedefType = [[self.tokenizer currentToken] stringValue];
-        [self.tokenizer consume:1];
+		
+		// could be typedef NS_ENUM ( type , name ) or typedef NS_ENUM ( unsigned type , name ) so we need to have two variants for a 1 and 2 parameter type
+		BOOL hasTwoParameterTypedefType = [[self.tokenizer lookahead:2] matches:@","];
+		NSString *typedefType = nil;
+		
+		if (hasTwoParameterTypedefType)
+		{
+			//get the enum type first part
+			NSMutableString *twoParameterTypedefType = [NSMutableString stringWithString:[[self.tokenizer currentToken] stringValue]];
+			[self.tokenizer consume:1];
+			[twoParameterTypedefType appendString:@" "];
+			//get the enum type second part
+			[twoParameterTypedefType appendString:[[self.tokenizer currentToken] stringValue]];
+			[self.tokenizer consume:1];
+			typedefType = [NSString stringWithString:twoParameterTypedefType];
+		}
+		else
+		{
+			//get the enum type
+			typedefType = [[self.tokenizer currentToken] stringValue];
+			[self.tokenizer consume:1];
+		}
         
         //consume ','
         [self.tokenizer consume:1];
