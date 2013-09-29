@@ -226,7 +226,7 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = [parameters objectForKey:name];
 		if (!parameter) {
-            if (method.includeInOutput)
+            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
                 GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
 		}
@@ -240,7 +240,7 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
-		if (self.settings.warnOnMissingMethodArgument && method.includeInOutput) GBLogXWarn(comment.sourceInfo, @"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+		if (method.includeInOutput) GBLogXWarn(comment.sourceInfo, @"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
