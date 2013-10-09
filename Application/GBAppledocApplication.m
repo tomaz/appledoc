@@ -37,6 +37,7 @@ static NSString *kGBArgCompanyIdentifier = @"company-id";
 static NSString *kGBArgCleanOutput = @"clean-output";
 static NSString *kGBArgCreateHTML = @"create-html";
 static NSString *kGBArgCreateDocSet = @"create-docset";
+static NSString *kGBArgFinalizeDocSet = @"finalize-docset";
 static NSString *kGBArgInstallDocSet = @"install-docset";
 static NSString *kGBArgPublishDocSet = @"publish-docset";
 static NSString *kGBArgHTMLAnchorFormat = @"html-anchors";
@@ -270,6 +271,7 @@ static NSString *kGBArgHelp = @"help";
 		{ kGBArgCleanOutput,												0,		DDGetoptNoArgument },
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
+		{ kGBArgFinalizeDocSet,												0,	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
 		{ kGBArgPublishDocSet,												'u',	DDGetoptNoArgument },
         { kGBArgHTMLAnchorFormat,                                           0,      DDGetoptRequiredArgument },
@@ -750,6 +752,7 @@ static NSString *kGBArgHelp = @"help";
 	self.settings.createHTML = value; 
 	if (!value) {
 		self.settings.createDocSet = NO;
+		self.settings.finalizeDocSet = NO;
 		self.settings.installDocSet = NO;
 		self.settings.publishDocSet = NO;
 	}
@@ -759,8 +762,20 @@ static NSString *kGBArgHelp = @"help";
 	if (value) {
 		self.settings.createHTML = YES;
 	} else {
+		self.settings.finalizeDocSet = NO;
 		self.settings.installDocSet = NO;
 		self.settings.publishDocSet = NO;
+	}
+}
+- (void)setFinalizeDocset:(BOOL)value {
+	self.settings.finalizeDocSet = value;
+	if (value) {
+		self.settings.createHTML = YES;
+		self.settings.createDocSet = YES;
+		self.settings.installDocSet = NO;
+
+	//	} else {
+	//		self.settings.publishDocSet = NO;
 	}
 }
 - (void)setInstallDocset:(BOOL)value { 
@@ -768,7 +783,8 @@ static NSString *kGBArgHelp = @"help";
 	if (value) {
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
-		
+		self.settings.finalizeDocSet = YES;
+
     //	} else {
     //		self.settings.publishDocSet = NO;
 	}
@@ -787,6 +803,7 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
 - (void)setNoCreateHtml:(BOOL)value { [self setCreateHtml:!value]; }
 - (void)setNoCreateDocset:(BOOL)value { [self setCreateDocset:!value]; }
+- (void)setNoFinalizeDocset:(BOOL)value { [self setFinalizeDocset:!value]; }
 - (void)setNoInstallDocset:(BOOL)value { [self setInstallDocset:!value]; }
 - (void)setNoPublishDocset:(BOOL)value { [self setPublishDocset:!value]; }
 

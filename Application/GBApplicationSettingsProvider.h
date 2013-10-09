@@ -223,16 +223,27 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
  
  @see createHTML
+ @see finalizeDocSet
  @see installDocSet
  @see publishDocSet
  */
 @property (assign) BOOL createDocSet;
 
-/** Specifies whether the documentation set should be installed or not.
- 
- If `YES`, temporary files used for indexing and removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
- 
+/** Specifies whether the documentation set should be created at the install path or not.
+
+ If `YES`, temporary files used for indexing are removed, then documentation set bundle is created from the files from docset output path and is moved to `docsetInstallPath`. If `NO`, all documentation set files are left in output path.
+
  @see createDocSet
+ @see installDocSet
+ */
+@property BOOL finalizeDocSet;
+
+/** Specifies whether the documentation set should be installed or not.
+
+ If `YES`, the finalized documentation set is installed to Xcode. If `NO`, the documentation set is left for the user to install or otherwise dispose of.
+
+ @see createDocSet
+ @see finalizeDocSet
  @see publishDocSet
  */
 @property (assign) BOOL installDocSet;
