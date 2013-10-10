@@ -28,23 +28,10 @@
 	// Prepare for run.
 	if (![super generateOutputWithStore:store error:error]) return NO;
 	
-	// Prepare source and destination paths and file names.
+	// Prepare source path and file name.
 	NSString *sourceUserPath = self.inputUserPath;
-	NSString *destUserPath = self.outputUserPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
-	NSString *destPath = [destUserPath stringByStandardizingPath];
-	
-	// Create destination directory and move files to it.
-	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
-	if (![self initializeDirectoryAtPath:destUserPath error:error]) {
-		GBLogWarn(@"Failed initializing DocSet installation directory '%@'!", destUserPath);
-		return NO;
-	}
-	if (![self copyOrMoveItemFromPath:sourcePath toPath:destPath error:error]) {
-		GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", sourceUserPath, destUserPath);
-		return  NO;
-	}
-	
+
 	// Prepare text file with message on the output path to avoid confusion when empty path is found.
 	[self touchInstallMessageFile];
 	
@@ -52,7 +39,7 @@
 	GBLogVerbose(@"Installing DocSet to Xcode...");
 	NSMutableString* installScript  = [NSMutableString string];
 	[installScript appendString:@"tell application \"Xcode\"\n"];
-	[installScript appendFormat:@"\tload documentation set with path \"%@\"\n", destPath];
+	[installScript appendFormat:@"\tload documentation set with path \"%@\"\n", sourcePath];
 	[installScript appendString:@"end tell"];
 	
 	// Run the AppleScript for loading the documentation into the Xcode.
@@ -82,8 +69,8 @@
 #pragma mark Overriden methods
 
 - (NSString *)outputUserPath {
-	// Note that we use custom location, so can't rely on default implementation using outputSubpath!
-	return [self.settings.docsetInstallPath stringByAppendingPathComponent:self.settings.docsetBundleFilename];
+	// Our output is the documentation set we just installed. (We have to output it in case publishing is in the queue next.)
+	return self.inputUserPath;
 }
 
 @end
