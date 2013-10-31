@@ -72,7 +72,7 @@
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
     {
         // typical atom enclosure url does not have an extension, add it if it doesn't
-        if (![url hasSuffix:@".xar"])
+        if (url && ![url hasSuffix:@".xar"])
         {
             url = [url stringByAppendingPathExtension:@"xar"];
         }

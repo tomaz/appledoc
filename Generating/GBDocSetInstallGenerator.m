@@ -68,6 +68,11 @@
 
 #pragma mark Overriden methods
 
+- (BOOL)copyTemplateFilesToOutputPath:(NSError **)error {
+	// At this stage we must not copy template files as this will overwrite generated docset!
+	return YES;
+}
+
 - (NSString *)outputUserPath {
 	// Our output is the documentation set we just installed. (We have to output it in case publishing is in the queue next.)
 	return self.inputUserPath;
