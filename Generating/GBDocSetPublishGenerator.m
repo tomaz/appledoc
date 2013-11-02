@@ -53,15 +53,14 @@
     
     NSMutableArray *outputPaths = [NSMutableArray arrayWithCapacity:2];
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
-    {
         [outputPaths addObject:outputAtomPath];
-    }
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatXML)
-    {
         [outputPaths addObject:outputXMLPath];
-    }
-    
-	if ([url length] == 0) GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", [outputPaths componentsJoinedByString:@", "]);
+
+	if ([url length] == 0) {
+		url = ([outputPaths count] > 0) ? outputPaths[0] : @"";
+		GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", [outputPaths componentsJoinedByString:@", "]);
+	}
 	
 	// Create destination directory.
 	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {
@@ -72,15 +71,13 @@
     if(self.settings.docsetFeedFormats & GBPublishedFeedFormatAtom)
     {
         // typical atom enclosure url does not have an extension, add it if it doesn't
-        if (url && ![url hasSuffix:@".xar"])
-        {
-            url = [url stringByAppendingPathExtension:@"xar"];
-        }
+        if ([url length] > 0 && ![url hasSuffix:@".xar"]) url = [url stringByAppendingPathExtension:@"xar"];
         
         // Create command line arguments array.
         NSMutableArray *args = [NSMutableArray array];
         [args addObject:@"docsetutil"];
         [args addObject:@"package"];
+		[args addObject:@"-verbose"];
         [args addObject:@"-output"];
         [args addObject:[[outputDocSetPath stringByStandardizingPath] stringByAppendingString:@".xar"]];
         [args addObject:@"-atom"];
