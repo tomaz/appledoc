@@ -29,7 +29,7 @@ do
 		t)
 		   INSTALL_TEMPLATES="YES"
            echo "arg is = $OPTARG"
-		   if [ $OPTARG != "default" ]; then
+		   if [ "$OPTARG" != "default" ]; then
 		      TEMPLATES_DIR=$OPTARG
 		   fi
 		   ;;
