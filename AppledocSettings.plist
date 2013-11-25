@@ -24,7 +24,6 @@
 	<key>--templates</key>
 	<string>./Templates</string>
 	<key>--verbose</key>
-	<integer>3</integer>
+	<string>3</string>
 </dict>
 </plist>
-
