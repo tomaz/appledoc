@@ -117,9 +117,10 @@
 	if ([_typedefEnums containsObject:typedefEnum]) return;
 	GBProtocolData *existingTypedef = [_typedefEnumsByName objectForKey:typedefEnum.nameOfEnum];
 	if (existingTypedef) {
-        // Ignore typedef in already refined elsewhere.
-		return;
-	}
+        GBLogWarn(@"Ignoring typedef enum %@, already defined.", typedefEnum);
+        return;
+    }
+
 	[_typedefEnums addObject:typedefEnum];
 	[_typedefEnumsByName setObject:typedefEnum forKey:typedefEnum.nameOfEnum];
 }
@@ -130,10 +131,11 @@
 	if ([_documents containsObject:document]) return;
 	NSString *name = [document.nameOfDocument stringByDeletingPathExtension];
 	GBDocumentData *existingDocument = [_documentsByName objectForKey:name];
-	if (existingDocument) {
-		[NSException raise:@"Document with name %@ is already registered!", name];
-		return;
-	}
+    if (existingDocument) {
+        GBLogWarn(@"Ignoring document %@, already defined.", document);
+        return;
+    }
+
 	[_documents addObject:document];
 	[_documentsByName setObject:document forKey:name];
 	[_documentsByName setObject:document forKey:[name stringByReplacingOccurrencesOfString:@"-template" withString:@""]];
