@@ -294,6 +294,20 @@
 	assertThat([tokenizer.lastComment stringValue], is(@"line1\nline2"));
 }
 
+- (void)testLastCommentString_shouldGroupSingleLineCommentsIfIndentationMatches {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"    /// line1\n    /// line2\n   ONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment stringValue], is(@"line1\nline2"));
+}
+
+- (void)testLastCommentString_shouldIgnoreSingleLineCommentsIfIndentationDoesNotMatch {
+	// setup & execute
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"    /// line1\n  /// line2\n   ONE"] filename:@"file"];
+	// verify
+	assertThat([tokenizer.lastComment stringValue], is(@"line2"));
+}
+
 - (void)testLastCommentString_shouldIgnoreSingleLineCommentsIfEmptyLineFoundInBetween {
 	// setup & execute
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[PKTokenizer tokenizerWithString:@"/// line1\n\n/// line2\n   ONE"] filename:@"file"];

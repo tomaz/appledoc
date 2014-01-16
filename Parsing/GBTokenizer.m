@@ -20,6 +20,8 @@
 - (NSString *)lineByPreprocessingHeaderDocDirectives:(NSString *)line;
 - (NSArray *)linesByReorderingHeaderDocDirectives:(NSArray *)lines;
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer;
+- (NSUInteger)offsetOfLineContainingOffset:(NSUInteger)offset;
+- (NSInteger)indentationAtOffset:(NSUInteger)offset;
 @property (retain) NSString *filename;
 @property (retain) NSString *input;
 @property (retain) NSArray *tokens;
@@ -182,17 +184,22 @@
 
 	PKToken *startingPreviousToken = nil;
 	PKToken *startingLastToken = nil;
-	NSUInteger previousSingleLineEndOffset = 0;
+	NSUInteger previousSingleLineEndOffset = NSNotFound;
+	NSInteger previousSingleLineIndentation = -1;
 	while (![self eof] && [[self currentToken] isComment]) {
 		PKToken *token = [self currentToken];
 		NSString *value = nil;
 		
-		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment. CAUTION: this algorithm won't group comments unless they start at the beginning of the line!
+		// Match single line comments. Note that we can simplify the code with assumption that there's only one single line comment per match. If regex finds more (should never happen though), we simply combine them together. Then we check if the comment is a continuation of previous single liner by testing the string offset and indentation. If so we group the values together, otherwise we create a new single line comment. Finally we remember current comment offset to allow grouping of next single line comment.
 		NSArray *singleLiners = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentRegex capture:1];
 		if ([singleLiners count] > 0) {
 			value = [NSString string];
 			for (NSString *match in singleLiners) value = [value stringByAppendingString:match];
+			NSInteger tokenIndentation = [self indentationAtOffset:[token offset]];
 			BOOL isContinuingPreviousSingleLiner = ([token offset] == previousSingleLineEndOffset + 1);
+			if (!isContinuingPreviousSingleLiner && previousSingleLineIndentation > 0 && tokenIndentation == previousSingleLineIndentation) {
+				isContinuingPreviousSingleLiner = ([token offset] == previousSingleLineEndOffset + previousSingleLineIndentation + 1);
+			}
 			if (isContinuingPreviousSingleLiner) {
 				[self.lastCommentBuilder appendString:@"\n"];
 			} else {
@@ -204,6 +211,7 @@
 				startingLastToken = token;
 			}
 			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
+			previousSingleLineIndentation = tokenIndentation;
 		}
 		
 		// Match multiple line comments and only process last (in reality we should only have one comment in each mutliline comment token, but let's handle any strange cases graceosly). 
@@ -402,6 +410,43 @@
 	tokenizer.commentState.reportsCommentTokens = reportsComments;
 	return result;
 }
+
+- (NSUInteger)offsetOfLineContainingOffset:(NSUInteger)offset {
+	// This method returns the offset of the first character in the line
+	// containing the character at the specific offset.
+	NSRange newlineRange = [self.input rangeOfCharacterFromSet:[NSCharacterSet newlineCharacterSet]
+	                                                   options:NSBackwardsSearch
+	                                                     range:NSMakeRange(0, offset)];
+	if (newlineRange.location != NSNotFound) {
+		return newlineRange.location + 1;
+	}
+	// First line
+	return 0;
+}
+
+- (NSInteger)indentationAtOffset:(NSUInteger)offset {
+	// This method returns the number of tab or space characters preceding the
+	// offset if and only if it is only preceded by such indentation characters,
+	// otherwise returns -1.
+	NSUInteger lineOffset = [self offsetOfLineContainingOffset:offset];
+	NSRange lineToOffsetRange = NSMakeRange(lineOffset, offset - lineOffset);
+
+	// Short-circuit logic if offset is at the start of the line
+	if (lineToOffsetRange.length == 0) {
+		return 0;
+	}
+	
+	NSCharacterSet * nonWhitespace = [[NSCharacterSet whitespaceCharacterSet] invertedSet];
+	NSRange nonWhitespaceRange = [self.input rangeOfCharacterFromSet:nonWhitespace
+	                                                         options:0
+	                                                           range:lineToOffsetRange];
+	// Line contains only whitespace preceding the offset: indentation
+	if (nonWhitespaceRange.location == NSNotFound) {
+		return lineToOffsetRange.length;
+	}
+	return -1;
+}
+
 
 #pragma mark Properties
 
