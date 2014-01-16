@@ -183,12 +183,12 @@ static NSString *kGBArgHelp = @"help";
 	if (self.printSettings) [self printSettingsAndArguments:inputs];
 	kGBLogBasedResult = GBEXIT_SUCCESS;
 
-	@try {		
+	@try {
 		[self initializeLoggingSystem];
 		[self deleteContentsOfOutputPath];
 		
 		GBLogNormal(@"Initializing...");
-		GBStore *store = [[GBStore alloc] init];		
+		GBStore *store = [[GBStore alloc] init];
 		GBAbsoluteTime startTime = GetCurrentTime();
 		
 		GBLogNormal(@"Parsing source files...");
@@ -214,7 +214,7 @@ static NSString *kGBArgHelp = @"help";
 		NSUInteger timeForGeneration = SubtractTime(generateTime, processTime) * 1000.0;
 		GBLogInfo(@"Finished generating in %ldms.\n", timeForGeneration);
 		
-		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;		
+		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;
 		GBLogNormal(@"Finished in %ldms.", timeForEverything);
 		GBLogInfo(@"Parsing:    %ldms (%ld%%)", timeForParsing, timeForParsing * 100 / timeForEverything);
 		GBLogInfo(@"Processing: %ldms (%ld%%)", timeForProcessing, timeForProcessing * 100 / timeForEverything);
@@ -294,9 +294,10 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgPrintInformationBlockTitles),						0,		DDGetoptNoArgument },
 		{ kGBArgUseSingleStar,												0,		DDGetoptNoArgument },
 		{ kGBArgMergeCategoriesToClasses,									0,		DDGetoptNoArgument },
+		{ kGBArgMergeCategoryComment,										0,		DDGetoptNoArgument },
 		{ kGBArgKeepMergedCategoriesSections,								0,		DDGetoptNoArgument },
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
-        { kGBArgUseCodeOrder,                                               0,		DDGetoptNoArgument },
+    	{ kGBArgUseCodeOrder,                                               0,		DDGetoptNoArgument },
 		{ kGBArgExitCodeThreshold,											0,		DDGetoptRequiredArgument },
 		{ GBNoArg(kGBArgKeepIntermediateFiles),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
@@ -304,6 +305,7 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgFindUndocumentedMembersDocumentation),				0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgRepeatFirstParagraph),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgMergeCategoriesToClasses),							0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgMergeCategoryComment),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
         { GBNoArg(kGBArgUseCodeOrder),	                                    0,		DDGetoptNoArgument },
@@ -497,7 +499,7 @@ static NSString *kGBArgHelp = @"help";
 			*error = [NSError errorWithCode:GBErrorTemplatePathDoesntExist description:desc reason:nil];
 		}
 		return NO;
-	}	
+	}
 	if (!isDirectory) {
 		if (error) {
 			NSString *desc = [NSString stringWithFormat:@"Template path '%@' is not directory!", standardized];
@@ -564,7 +566,7 @@ static NSString *kGBArgHelp = @"help";
 		while ([opt hasPrefix:@"-"]) opt = [opt substringFromIndex:1];
 		if ([opt isEqualToString:@"t"] || [opt isEqualToString:kGBArgTemplatesPath]) {
 			NSError *error = nil;
-			if (![self validateTemplatesPath:path error:&error]) [NSException raiseWithError:error format:@"Path '%@' from %@ is not valid!", path, option];			
+			if (![self validateTemplatesPath:path error:&error]) [NSException raiseWithError:error format:@"Path '%@' from %@ is not valid!", path, option];
 			[self overrideSettingsWithGlobalSettingsFromPath:path];
 			self.templatesFound = YES;
 			*stop = YES;
@@ -584,7 +586,7 @@ static NSString *kGBArgHelp = @"help";
 				self.settings.templatesPath = path;
 				self.templatesFound = YES;
 				return;
-			}		
+			}
 		}
 		
 		path = @"~/.appledoc";
@@ -639,7 +641,7 @@ static NSString *kGBArgHelp = @"help";
 		// If we have a plist file, handle it. Note that we need to handle --templates cmd line switch separately so that it's properly accepted by the application!
 		if ([[filename pathExtension] isEqualToString:@"plist"]) {
 			// Prepare the directory path to the plist file. We'll use it for preparing relative paths.
-			if (!dir) [self.ignoredInputPaths addObject:argument];	
+			if (!dir) [self.ignoredInputPaths addObject:argument];
 			NSString *plistPath = [filename stringByDeletingLastPathComponent];
 
 			// In the first pass, we need to handle --templates option. We need to handle these before any other option from the project settings to prevent global settings overriding project settings! Note how we prevent handling of every option except --templates; we leave that option through to get it set to application settings (that's all the KVC setter does).
@@ -697,14 +699,14 @@ static NSString *kGBArgHelp = @"help";
 
 	NSError* error = nil;
 	NSData* data = [NSData dataWithContentsOfFile:path options:0 error:&error];
-	if (!data) [NSException raise:@"Failed reading settings from '%@'!", path];	
+	if (!data) [NSException raise:@"Failed reading settings from '%@'!", path];
 	NSDictionary *theSettings = [NSPropertyListSerialization propertyListWithData:data options:NSPropertyListImmutable format:NULL error:&error];
 	if (!theSettings) [NSException raiseWithError:error format:@"Failed reading settings plist from '%@'!", path];
 	
 	// We first pass each option and it's value to the block. The block can return YES to allow handling it, NO otherwise. It can also pass back a different value (we're passing a pointer to the value!).
 	[theSettings enumerateKeysAndObjectsUsingBlock:^(NSString *option, id value, BOOL *stop) {
 		while ([option hasPrefix:@"-"]) option = [option substringFromIndex:1];
-		NSString *key = [DDGetoptLongParser keyFromOption:option];		
+		NSString *key = [DDGetoptLongParser keyFromOption:option];
 		if (!block(option, &value, stop)) return;
 
 		// If the value is an array, send as many messages as there are values.
@@ -748,8 +750,8 @@ static NSString *kGBArgHelp = @"help";
 - (void)setCompanyId:(NSString *)value { self.settings.companyIdentifier = value; }
 
 - (void)setCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = value; }
-- (void)setCreateHtml:(BOOL)value { 
-	self.settings.createHTML = value; 
+- (void)setCreateHtml:(BOOL)value {
+	self.settings.createHTML = value;
 	if (!value) {
 		self.settings.createDocSet = NO;
 		self.settings.finalizeDocSet = NO;
@@ -757,7 +759,7 @@ static NSString *kGBArgHelp = @"help";
 		self.settings.publishDocSet = NO;
 	}
 }
-- (void)setCreateDocset:(BOOL)value { 
+- (void)setCreateDocset:(BOOL)value {
 	self.settings.createDocSet = value;
 	if (value) {
 		self.settings.createHTML = YES;
@@ -778,8 +780,8 @@ static NSString *kGBArgHelp = @"help";
 	//		self.settings.publishDocSet = NO;
 	}
 }
-- (void)setInstallDocset:(BOOL)value { 
-	self.settings.installDocSet = value; 
+- (void)setInstallDocset:(BOOL)value {
+	self.settings.installDocSet = value;
 	if (value) {
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
@@ -789,8 +791,8 @@ static NSString *kGBArgHelp = @"help";
     //		self.settings.publishDocSet = NO;
 	}
 }
-- (void)setPublishDocset:(BOOL)value { 
-	self.settings.publishDocSet = value; 
+- (void)setPublishDocset:(BOOL)value {
+	self.settings.publishDocSet = value;
 	if (value) {
 		self.settings.createHTML = YES;
 		self.settings.createDocSet = YES;
