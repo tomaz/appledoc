@@ -105,6 +105,7 @@ typedef NSUInteger GBProcessingFlag;
 - (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (GBCommentComponent *)commentComponentWithStringValue:(NSString *)string;
 - (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags;
+- (NSString *)stringByPreprocessingNonLinkString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags;
@@ -605,6 +606,49 @@ typedef NSUInteger GBProcessingFlag;
 	// Converts all appledoc formatting and cross refs to proper Markdown text suitable for passing to Markdown generator.
 	if ([string length] == 0) return string;
 	
+	// Process all links separately, so that they won't be cut off if the contain _'s (which is a formatting marker)
+	NSString *pattern = @"(\\[.+?\\]\\(.+?\\))";
+	NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"link", 1, nil];
+	NSRange searchRange = NSMakeRange(0, [string length]);
+	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
+	for (NSDictionary *component in components) {
+		NSString *componentLink = [component objectForKey:@"link"];
+		NSRange componentRange = [string rangeOfString:componentLink options:0 range:searchRange];
+
+		if (componentRange.location > searchRange.location) {
+			NSRange skippedRange = NSMakeRange(searchRange.location, componentRange.location - searchRange.location);
+			NSString *skippedText = [string substringWithRange:skippedRange];
+			NSString *preprocessedText = [self stringByPreprocessingNonLinkString:skippedText withFlags:flags];
+			[result appendString:preprocessedText];
+		}
+
+		// Don't process the link using the formatting markers, might contain formatting markers
+		NSString *convertedLink = [self stringByConvertingCrossReferencesInString:componentLink withFlags:flags];
+		[result appendString:convertedLink];
+
+		NSUInteger location = componentRange.location + [componentLink length];
+		searchRange = NSMakeRange(location, [string length] - location);
+	}
+
+	// If there is some remaining text, preprocess it as well.
+	if ([string length] > searchRange.location) {
+		NSString *remainingText = [string substringWithRange:searchRange];
+		NSString *preprocessedText = [self stringByPreprocessingNonLinkString:remainingText withFlags:flags];
+		[result appendString:preprocessedText];
+	}
+
+	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
+	NSString *regex = [NSString stringWithFormat:@"`((?:%@)?\\[`[^`]*`\\]\\(.+?\\)(?:%@)?)`", self.components.codeSpanStartMarker, self.components.codeSpanEndMarker];
+	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+		return capturedStrings[1];
+	}];
+	return clean;
+}
+
+- (NSString *)stringByPreprocessingNonLinkString:(NSString *)string withFlags:(GBProcessingFlag)flags {
+	// Converts all appledoc formatting and cross refs to proper Markdown text suitable for passing to Markdown generator.
+	if ([string length] == 0) return string;
+
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
 	NSString *pattern = @"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)";
 	NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
@@ -677,12 +721,7 @@ typedef NSUInteger GBProcessingFlag;
 		[result appendString:convertedText];
 	}
 	
-	// Finally replace all embedded code span Markdown links to proper ones. Embedded links look like: `[`desc`](address)`.
-	NSString *regex = [NSString stringWithFormat:@"`((?:%@)?\\[`[^`]*`\\]\\(.+?\\)(?:%@)?)`", self.components.codeSpanStartMarker, self.components.codeSpanEndMarker];
-	NSString *clean = [result stringByReplacingOccurrencesOfRegex:regex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {	
-		return capturedStrings[1];
-	}];
-	return clean;
+	return result;
 }
 
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags {

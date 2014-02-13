@@ -119,6 +119,15 @@
 	assertThat(result6, is(@"***text1*** *** marked ***"));
 }
 
+- (void)testStringByPreprocessingString_shouldKeepReferencesWithMarkersIntact {
+	// setup
+	GBCommentsProcessor *processor = [self defaultProcessor];
+	// execute
+	NSString *result = [processor stringByPreprocessingString:@"[test_test](http://www.example.com/test_test.html)" withFlags:0];
+	// verify
+	assertThat(result, is(@"[test_test](http://www.example.com/test_test.html)"));
+}
+
 #pragma mark Class, category and protocol cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertClass {
