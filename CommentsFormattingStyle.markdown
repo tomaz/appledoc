@@ -47,7 +47,7 @@ Paragraphs are simply any number of consecutive rows of text separated by one or
 ```
 First paragraph.
  
-Second paragraph with lot's of
+Second paragraph with lots of
 text spread accross multiple lines.
  
 And another paragraph.
@@ -157,7 +157,7 @@ Any valid URL address starting with `http://`, `https://`, `ftp://`, `file://` o
 Any word that matches known class, category or protocol name is automatically converted to cross reference link to that object. Assuming complete documentation contains class GBClass, it's extension GBClass(), category NSError(GBError) and protocol GBProtocol, the following text will automatically convert text:
 
 ```
-This text contains links to: class GBClass, it's extension GBClass(), 
+This text contains links to: class GBClass, its extension GBClass(), 
 category NSError(GBError) and protocol GBProtocol.
 ```
     
