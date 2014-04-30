@@ -241,6 +241,15 @@
 	assertThat([[tokenizer currentToken] stringValue], is(@"six"));
 }
 
+- (void)testConsumeFromToUsingBlock_shouldAcceptNilBlock {
+	// setup
+	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];
+	// execute
+	[tokenizer consumeFrom:nil to:@"five" usingBlock:nil];
+	// verify
+	assertThat([[tokenizer currentToken] stringValue], is(@"six"));
+}
+
 - (void)testConsumeFromToUsingBlock_shouldQuitAndConsumeCurrentToken {
 	// setup
 	GBTokenizer *tokenizer = [GBTokenizer tokenizerWithSource:[self longTokenizer] filename:@"file"];

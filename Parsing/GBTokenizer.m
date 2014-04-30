@@ -148,7 +148,7 @@
 
 		// Report the token.
 		BOOL consume = YES;
-		block([self currentToken], &consume, &quit);
+		if (block) block([self currentToken], &consume, &quit);
 		if (consume) [self consume:1];
 		if (quit) break;
 	}
