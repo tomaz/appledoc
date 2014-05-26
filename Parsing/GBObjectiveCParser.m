@@ -59,7 +59,7 @@
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchTypedefEnumDefinition;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
-- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object;
+- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object startingWith:(PKToken *)startToken;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object;
 - (NSString *)sectionNameFromComment:(GBComment *)comment;
@@ -275,10 +275,11 @@
 	__block BOOL firstToken = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
-	[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
+	__block PKToken *startToken = [self.tokenizer currentToken];
 	[self.tokenizer consumeFrom:@"@property" to:@";" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if (!filedata) filedata = [self.tokenizer sourceInfoForToken:token];
 		if (firstToken) {
+			[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
 			if (!self.propertyAfterPragma) [self.tokenizer resetComments];
 			self.propertyAfterPragma = NO;
 			firstToken = NO;
@@ -315,7 +316,7 @@
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		[propertyData registerSourceInfo:filedata];
 		GBLogDebug(@"Matched property definition %@ at line %lu.", propertyData, propertyData.prefferedSourceInfo.lineNumber);
-		[self registerComment:comment toObject:propertyData];
+		[self registerComment:comment toObject:propertyData startingWith:startToken];
 		[propertyData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:propertyData];
@@ -433,6 +434,7 @@
     
     if((isTypeDefEnum || isTypeDefOptions) && hasOpenBracket)
     {
+        __block PKToken *startToken = [self.tokenizer currentToken];
         [self.tokenizer consume:3];  //consume 'typedef' 'NS_ENUM' and '('
         
         //get the enum type
@@ -459,20 +461,24 @@
         newEnum.isOptions = isTypeDefOptions;
         
         [newEnum registerSourceInfo:startInfo];
-        [self registerComment:lastComment toObject:newEnum];
+        [self registerComment:lastComment toObject:newEnum startingWith:startToken];
         [self.tokenizer resetComments];
         
         
         //[self.tokenizer consume:1];
+        startToken = [self.tokenizer currentToken];
         [self.tokenizer consumeFrom:@"{" to:@"}" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop)
          {
              /* ALWAYS start with the name of the Constant */
               
+             startToken = token;
              GBEnumConstantData *newConstant = [GBEnumConstantData constantWithName:[token stringValue]];
              GBSourceInfo *filedata = [tokenizer sourceInfoForToken:token];
              [newConstant registerSourceInfo:filedata];
              [newConstant setParentObject:newEnum];
-             [self registerLastCommentToObject:newConstant];
+
+             GBComment *comment = [self.tokenizer lastComment];
+
              [self.tokenizer consume:1];
              [self.tokenizer resetComments];
              
@@ -502,6 +508,9 @@
              {
                  [tokenizer consume:1];
              }
+
+             [self registerComment:comment toObject:newConstant startingWith:startToken];
+             startToken = [self.tokenizer currentToken];
              
              *consume = NO;
              
@@ -624,6 +633,7 @@
 	__block GBSourceInfo *filedata = nil;
 	__block GBMethodType methodType = [start isEqualToString:@"-"] ? GBMethodTypeInstance : GBMethodTypeClass;
 	[self updateLastComment:&comment sectionComment:&sectionComment sectionName:&sectionName];
+	__block PKToken *startToken = [self.tokenizer currentToken];
 	[self.tokenizer consumeFrom:start to:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		// In order to provide at least some assurance the minus or plus actually starts the method, we validate next token is opening parenthesis. Very simple so might need some refinement... Note that we skip subsequent - or + tokens so that we can handle stuff like '#pragma mark -' gracefully (note that we also do it for + although that shouldn't be necessary, but feels safer).
 		if (assertMethod) {
@@ -752,7 +762,7 @@
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		[methodData registerSourceInfo:filedata];		
 		GBLogDebug(@"Matched method %@%@ at line %lu.", start, methodData, methodData.prefferedSourceInfo.lineNumber);
-		[self registerComment:comment toObject:methodData];
+		[self registerComment:comment toObject:methodData startingWith:startToken];
 		[methodData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
 		[provider registerMethod:methodData];
@@ -764,12 +774,28 @@
 }
 
 - (void)registerLastCommentToObject:(GBModelBase *)object {
-	[self registerComment:[self.tokenizer lastComment] toObject:object];
+	[self registerComment:[self.tokenizer lastComment] toObject:object startingWith:nil];
 	[self.tokenizer resetComments];
 }
 
-- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object {
+- (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object startingWith:(PKToken *)startToken {
+	if (startToken) {
+		GBComment *postfixComment = [self.tokenizer postfixCommentFrom:startToken];
+		if (comment && postfixComment) {
+			GBLogInfo(@"Ignored postfix comment '%@' from '%@' in favour of '%@'",
+			          [postfixComment.stringValue normalizedDescription],
+			          object,
+			          [comment.stringValue normalizedDescription]);
+		}
+		if (!comment && postfixComment) {
+			GBLogDebug(@"Using postfix comment '%@' for '%@'",
+			          [postfixComment.stringValue normalizedDescription],
+			          object);
+			comment = postfixComment;
+		}
+	}
 	[object setComment:comment];
+
 	if (comment) GBLogDebug(@"Assigned comment '%@' to '%@'...", [comment.stringValue normalizedDescription], object);
 }
 

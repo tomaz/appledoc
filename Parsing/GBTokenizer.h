@@ -202,4 +202,13 @@
  */
 @property (readonly) GBComment *previousComment;
 
+
+/** Returns a "postfix" comment found between the start token and the current token.
+
+  @param startToken start of the current parsing entity.
+  @see lastComment
+  @see previousComment
+ */
+- (GBComment *)postfixCommentFrom:(PKToken *)startToken;
+
 @end

@@ -30,8 +30,9 @@
 @property (assign) BOOL isPreviousCommentMultiline;
 @property (retain) NSMutableString *lastCommentBuilder;
 @property (retain) NSMutableString *previousCommentBuilder;
-@property (retain) GBSourceInfo *lastCommentSourceInfo;
-@property (retain) GBSourceInfo *previousCommentSourceInfo;
+@property (retain) PKToken *lastCommentToken;
+@property (retain) PKToken *previousCommentToken;
+@property (retain) NSString *singleLineCommentAfterRegex;
 @property (retain) NSString *singleLineCommentRegex;
 @property (retain) NSString *multiLineCommentRegex;
 @property (retain) NSString *commentDelimiterRegex;
@@ -61,7 +62,8 @@
 	self = [super init];
 	if (self) {
 		self.settings = theSettings;
-		self.singleLineCommentRegex = @"(?m-s:\\s*///(.*)$)";
+		self.singleLineCommentAfterRegex = @"(?m-s:\\s*///<(.*)$)";
+		self.singleLineCommentRegex = @"(?m-s:\\s*///([^<].*)$)";
 		self.multiLineCommentRegex = @"(?s:/\\*[*!](.*)\\*/)";
 		self.commentDelimiterRegex = @"^[!@#$%^&*()_=+`~,<.>/?;:'\"-]{3,}$";
 		self.tokenIndex = 0;
@@ -113,6 +115,41 @@
 - (PKToken *)currentToken {
 	if ([self eof]) return [PKToken EOFToken];
 	return [self.tokens objectAtIndex:self.tokenIndex];
+}
+
+- (GBComment *)postfixCommentFrom:(PKToken *)startToken 
+{
+	NSString *postfixValue = nil;
+	BOOL isMultiline = NO;
+	if (self.tokenIndex > 0) {
+		NSUInteger pos = self.tokenIndex;
+		PKToken *token = nil;
+		do {
+			if (pos < self.tokens.count) {
+				token = [self.tokens objectAtIndex:pos];
+	
+				NSArray *postfixLines = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentAfterRegex capture:1];
+				if ([postfixLines count] > 0) {
+					NSString *value = [NSString string];
+					for (NSString *match in postfixLines) value = [value stringByAppendingString:match];
+	
+					if (postfixValue) {
+						postfixValue = [@"\n" stringByAppendingString:postfixValue];
+						postfixValue = [value stringByAppendingString:postfixValue];
+						isMultiline = YES;
+					}
+					else postfixValue = value;
+				}
+			}
+			--pos;
+		} while (pos && startToken != token);
+	}
+	if (!postfixValue) return nil;
+	
+	postfixValue = [self commentValueFromString:postfixValue isMultiline:isMultiline];
+	GBSourceInfo *sourceInfo = [self sourceInfoForToken:startToken];
+	
+	return [GBComment commentWithStringValue:postfixValue sourceInfo:sourceInfo];
 }
 
 - (void)consume:(NSUInteger)count {
@@ -177,10 +214,7 @@
 
 - (BOOL)consumeComments {
 	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
-	self.previousCommentSourceInfo = nil;
-	self.lastCommentSourceInfo = nil;
 	if ([self eof]) return NO;
-	if (![[self currentToken] isComment]) return NO;
 
 	PKToken *startingPreviousToken = nil;
 	PKToken *startingLastToken = nil;
@@ -207,13 +241,15 @@
 				startingPreviousToken = startingLastToken;
 				[self.lastCommentBuilder setString:@""];
 				self.isPreviousCommentMultiline = self.isLastCommentMultiline;
+				self.previousCommentToken = self.lastCommentToken;
 				self.isLastCommentMultiline = NO;
 				startingLastToken = token;
+				self.lastCommentToken = token;
 			}
 			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
 			previousSingleLineIndentation = tokenIndentation;
 		}
-		
+
 		// Match multiple line comments and only process last (in reality we should only have one comment in each mutliline comment token, but let's handle any strange cases graceosly). 
 		else {
 			NSArray *multiLiners = [[token stringValue] componentsMatchedByRegex:self.multiLineCommentRegex capture:1];
@@ -222,33 +258,29 @@
 			startingPreviousToken = startingLastToken;
 			[self.lastCommentBuilder setString:@""];
 			self.isPreviousCommentMultiline = self.isLastCommentMultiline;
+			self.previousCommentToken = self.lastCommentToken;
 			self.isLastCommentMultiline = YES;
 			startingLastToken = token;
-		}
-		
+			self.lastCommentToken = token;
+			}
+
 		// Append string value to current comment and proceed with next token.
         if (value)
             [self.lastCommentBuilder appendString:value];
+
 		self.tokenIndex++;
 	}
-	
+
 	// If last comment contains @name, we should assign it to previous one and reset current! This should ideally be handled by higher level component, but it's simplest to do it here. Note that we don't deal with source info here, we'll do immediately after this as long as we properly setup tokens.
 	if (self.settings && [self.lastCommentBuilder isMatchedByRegex:self.settings.commentComponents.methodGroupRegex]) {
 		self.previousCommentBuilder = [self.lastCommentBuilder mutableCopy];
 		[self.lastCommentBuilder setString:@""];
 		startingPreviousToken = startingLastToken;
 		startingLastToken = nil;
+		self.previousCommentToken = self.lastCommentToken;
+		self.lastCommentToken = nil;
 	}
-	
-	// Assign source information so that we can match comments to file and line number later on.
-	if (startingPreviousToken) {
-		self.previousCommentSourceInfo = [self sourceInfoForToken:startingPreviousToken];
-		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.previousCommentBuilder normalizedDescription], self.previousCommentSourceInfo.lineNumber);
-	}
-	if (startingLastToken) {
-		self.lastCommentSourceInfo = [self sourceInfoForToken:startingLastToken];
-		GBLogDebug(@"Matched comment '%@' at line %lu.", [self.lastCommentBuilder normalizedDescription], self.lastCommentSourceInfo.lineNumber);
-	}
+
 	return YES;
 }
 
@@ -386,13 +418,15 @@
 - (GBComment *)lastComment {
 	if ([self.lastCommentBuilder length] == 0) return nil;
 	NSString *value = [self commentValueFromString:self.lastCommentBuilder isMultiline:self.isLastCommentMultiline];
-	return [GBComment commentWithStringValue:value sourceInfo:self.lastCommentSourceInfo];
+	GBSourceInfo *sourceInfo = [self sourceInfoForToken:self.lastCommentToken];
+	return [GBComment commentWithStringValue:value sourceInfo:sourceInfo];
 }
 
 - (GBComment *)previousComment {
 	if ([self.previousCommentBuilder length] == 0) return nil;
 	NSString *value = [self commentValueFromString:self.previousCommentBuilder isMultiline:self.isPreviousCommentMultiline];
-	return [GBComment commentWithStringValue:value sourceInfo:self.previousCommentSourceInfo];
+	GBSourceInfo *sourceInfo = [self sourceInfoForToken:self.previousCommentToken];
+	return [GBComment commentWithStringValue:value sourceInfo:sourceInfo];
 }
 
 #pragma mark Helper methods
@@ -455,11 +489,10 @@
 @synthesize tokens;
 @synthesize tokenIndex;
 @synthesize lastComment;
-@synthesize lastCommentBuilder;
-@synthesize lastCommentSourceInfo;
+@synthesize lastCommentToken;
 @synthesize previousComment;
 @synthesize previousCommentBuilder;
-@synthesize previousCommentSourceInfo;
+@synthesize previousCommentToken;
 @synthesize isLastCommentMultiline;
 @synthesize isPreviousCommentMultiline;
 @synthesize singleLineCommentRegex;
