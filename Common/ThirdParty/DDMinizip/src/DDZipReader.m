@@ -23,6 +23,7 @@
 -(void) dealloc
 {
 	[self closeZipFile];
+    [super dealloc];
 }
 
 #pragma mark - unzipping 

@@ -14,6 +14,8 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBLog.h"
 
+#import "SynthesizeSingleton.h"
+
 NSString *kGBTemplatePlaceholderCompanyID = @"%COMPANYID";
 NSString *kGBTemplatePlaceholderProjectID = @"%PROJECTID";
 NSString *kGBTemplatePlaceholderVersionID = @"%VERSIONID";
@@ -92,6 +94,8 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 #pragma mark -
 
 @implementation GBApplicationSettingsProvider
+
+SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationSettingsProvider);
 
 #pragma mark Initialization & disposal
 
@@ -521,6 +525,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 		basePath = @"Constants";
 		name = [object nameOfEnum];
 	}
+    else if ([object isKindOfClass:[GBTypedefBlockData class]]) {
+        basePath = @"Blocks";
+        name = [object nameOfBlock];
+    }
 	else if ([object isKindOfClass:[GBDocumentData class]]) {
 		GBDocumentData *document = object;
 		

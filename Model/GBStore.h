@@ -13,6 +13,7 @@
 @class GBProtocolData;
 @class GBDocumentData;
 @class GBTypedefEnumData;
+@class GBTypedefBlockData;
 
 /** Implements the application's in-memory objects data store.
  
@@ -30,9 +31,13 @@
 	NSMutableDictionary *_documentsByName;
 	NSMutableSet *_typedefEnums;
 	NSMutableDictionary *_typedefEnumsByName;
+    NSMutableSet *_typedefBlocks;
+    NSMutableDictionary *_typedefBlocksByName;
     NSMutableSet *_customDocuments;
 	NSMutableDictionary *_customDocumentsByKey;
 }
+
++ (instancetype) sharedStore;
 
 ///---------------------------------------------------------------------------------------
 /// @name Registrations handling
@@ -123,6 +128,8 @@
 
 -(void)registerTypedefEnum:(GBTypedefEnumData *)typedefEnum;
 
+-(void)registerTypedefBlock:(GBTypedefBlockData *)typedefBlock;
+
 ///---------------------------------------------------------------------------------------
 /// @name Data handling
 ///---------------------------------------------------------------------------------------
@@ -164,6 +171,8 @@
 - (GBProtocolData *)protocolWithName:(NSString *)name;
 
 - (GBTypedefEnumData *)typedefEnumWithName:(NSString *)name;
+
+- (GBTypedefBlockData *)typedefBlockWithName:(NSString *)name;
 
 /** Returns the document instance that matches the given path.
  
@@ -213,6 +222,12 @@
  */
 @property (readonly) NSSet *constants;
 
+/** The list of all registered blocks
+ 
+ @see typedefBlockWithName
+ @see registerTypedefBlock
+ */
+@property (readonly) NSSet *blocks;
 
 /** The list of all registered documents as instances of `GBDocumentData`.
  
@@ -243,6 +258,9 @@
 
 /** Returns all registered constants sorted by their name. */
 - (NSArray *)constantsSortedByName;
+
+/** Returns all registered blocks sorted by their name. */
+- (NSArray *)blocksSortedByName;
 
 /** Returns all registered protocols sorted by their name. */
 - (NSArray *)protocolsSortedByName;

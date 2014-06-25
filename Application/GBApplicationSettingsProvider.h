@@ -63,6 +63,8 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 + (id)provider;
 
++ (instancetype) sharedApplicationSettingsProvider;
+
 ///---------------------------------------------------------------------------------------
 /// @name Project values handling
 ///---------------------------------------------------------------------------------------

@@ -44,6 +44,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 @property (retain) NSArray *categories;
 @property (retain) NSArray *protocols;
 @property (retain) NSArray *constants;
+@property (retain) NSArray *blocks;
 @property (readonly) NSMutableSet *temporaryFiles;
 
 @property (retain) id sectionID; //tmp for class's refid
@@ -155,11 +156,13 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	[vars setObject:[NSNumber numberWithBool:([self.categories count] > 0)] forKey:@"hasCategories"];
 	[vars setObject:[NSNumber numberWithBool:([self.protocols count] > 0)] forKey:@"hasProtocols"];
     [vars setObject:[NSNumber numberWithBool:([self.constants count] > 0)] forKey:@"hasConstants"];
+    [vars setObject:[NSNumber numberWithBool:([self.blocks count] > 0)] forKey:@"hasBlocks"];
 	[vars setObject:self.documents forKey:@"docs"];
 	[vars setObject:self.classes forKey:@"classes"];
 	[vars setObject:self.categories forKey:@"categories"];
 	[vars setObject:self.protocols forKey:@"protocols"];
     [vars setObject:self.constants forKey:@"constants"];
+    [vars setObject:self.blocks forKey:@"blocks"];
 	[vars setObject:self.settings.stringTemplates forKey:@"strings"];
 	
 	// Run the template and save the results.
@@ -192,6 +195,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	if (![self processTokensXmlForObjects:self.categories type:@"cat" template:templatePath index:&index error:error]) return NO;
 	if (![self processTokensXmlForObjects:self.protocols type:@"intf" template:templatePath index:&index error:error]) return NO;
     if (![self processTokensXmlForObjects:self.constants type:@"tdef" template:templatePath index:&index error:error]) return NO;
+    if (![self processTokensXmlForObjects:self.blocks type:@"tdef" template:templatePath index:&index error:error]) return NO;
 	return YES;
 }
 
@@ -427,6 +431,10 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 			NSString *objectName = [(GBTypedefEnumData *)object nameOfEnum];
 			return [NSString stringWithFormat:@"//apple_ref/c/tdef/%@", objectName];
 		}
+        else if ([object isKindOfClass:[GBTypedefBlockData class]]){
+            NSString *objectName = [(GBTypedefBlockData *)object nameOfBlock];
+            return [NSString stringWithFormat:@"//apple_ref/c/tdef/%@", objectName];
+        }
 	} else if ([object isKindOfClass:[GBDocumentData class]]){
         NSString *objectName = [(GBDocumentData *)object prettyNameOfDocument];
         return [NSString stringWithFormat:@"//apple_ref/occ/doc/%@", objectName];
@@ -471,6 +479,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	self.categories = [self simplifiedObjectsFromObjects:[self.store categoriesSortedByName] value:@"idOfCategory" index:&index];
 	self.protocols = [self simplifiedObjectsFromObjects:[self.store protocolsSortedByName] value:@"nameOfProtocol" index:&index];
     self.constants = [self simplifiedObjectsFromObjects:[self.store constantsSortedByName] value:@"nameOfEnum" index:&index];
+    self.blocks = [self simplifiedObjectsFromObjects:[self.store blocksSortedByName] value:@"nameOfBlock" index:&index];
 }
 
 - (NSArray *)simplifiedObjectsFromObjects:(NSArray *)objects value:(NSString *)value index:(NSUInteger *)index {
@@ -487,6 +496,10 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
         GBDocSetNavigationTreeIconKind icon = FileIcon;
         
         if([object isKindOfClass:[GBTypedefEnumData class]])
+        {
+            icon = ReferenceIcon;
+        }
+        else if([object isKindOfClass:[GBTypedefBlockData class]])
         {
             icon = ReferenceIcon;
         }
@@ -556,5 +569,6 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 @synthesize categories;
 @synthesize protocols;
 @synthesize constants;
+@synthesize blocks;
 
 @end

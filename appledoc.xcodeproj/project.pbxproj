@@ -235,6 +235,8 @@
 		B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; };
 		B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
+		C56768111958403800E8E4C8 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
+		C5676814195840BD00E8E4C8 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
@@ -560,6 +562,11 @@
 		B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
+		C567680F1958403800E8E4C8 /* GBTypedefBlockData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockData.h; sourceTree = "<group>"; };
+		C56768101958403800E8E4C8 /* GBTypedefBlockData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefBlockData.m; sourceTree = "<group>"; };
+		C5676812195840BD00E8E4C8 /* GBTypedefBlockArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockArgument.h; sourceTree = "<group>"; };
+		C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefBlockArgument.m; sourceTree = "<group>"; };
+		C5996C98195B0E55007E9AAC /* SynthesizeSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SynthesizeSingleton.h; sourceTree = "<group>"; };
 		D45D15E117D883C700B7976A /* CommentsFormattingStyle.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommentsFormattingStyle.markdown; sourceTree = "<group>"; };
 		D4B844EA17A121000012C1DC /* GBTypedefEnumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefEnumData.h; sourceTree = "<group>"; };
 		D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefEnumData.m; sourceTree = "<group>"; };
@@ -861,6 +868,7 @@
 				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 				7359B11E129A59EC00F67AD1 /* GRMustache */,
 				735BCB48124EE91700FB6C4A /* Miscellaneous */,
+				C5996C98195B0E55007E9AAC /* SynthesizeSingleton.h */,
 			);
 			path = ThirdParty;
 			sourceTree = "<group>";
@@ -945,6 +953,10 @@
 				D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */,
 				D4B844ED17A122640012C1DC /* GBEnumConstantData.h */,
 				D4B844EE17A122650012C1DC /* GBEnumConstantData.m */,
+				C567680F1958403800E8E4C8 /* GBTypedefBlockData.h */,
+				C56768101958403800E8E4C8 /* GBTypedefBlockData.m */,
+				C5676812195840BD00E8E4C8 /* GBTypedefBlockArgument.h */,
+				C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */,
 			);
 			name = Store;
 			sourceTree = "<group>";
@@ -1501,8 +1513,10 @@
 				739AD6301255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */,
 				736A2760125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */,
 				7321D0E712944CF500796DEC /* GBTemplateHandler.m in Sources */,
+				C5676814195840BD00E8E4C8 /* GBTypedefBlockArgument.m in Sources */,
 				73734618129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */,
 				7359B149129A5A0700F67AD1 /* GRBoolean.m in Sources */,
+				C56768111958403800E8E4C8 /* GBTypedefBlockData.m in Sources */,
 				7359B14B129A5A0700F67AD1 /* GRMustache.m in Sources */,
 				7359B14D129A5A0700F67AD1 /* GRMustacheBundleTemplateLoader.m in Sources */,
 				7359B14F129A5A0700F67AD1 /* GRMustacheCompiler.m in Sources */,
@@ -1634,7 +1648,6 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_OBJC_GC = required;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -1645,7 +1658,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-licucore";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -1658,7 +1671,6 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_ENABLE_OBJC_GC = required;
 				GCC_PREPROCESSOR_DEFINITIONS = RELEASE;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -1666,7 +1678,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_LDFLAGS = "-licucore";
 				RUN_CLANG_STATIC_ANALYZER = NO;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};

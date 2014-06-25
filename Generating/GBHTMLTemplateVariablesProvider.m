@@ -37,10 +37,12 @@
 - (NSString *)pageTitleForProtocol:(GBProtocolData *)object;
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object;
 - (NSString *)pageTitleForConstant:(GBTypedefEnumData *)object;
+- (NSString *)pageTitleForBlock:(GBTypedefBlockData *)object;
 - (NSDictionary *)specificationsForClass:(GBClassData *)object;
 - (NSDictionary *)specificationsForCategory:(GBCategoryData *)object;
 - (NSDictionary *)specificationsForProtocol:(GBProtocolData *)object;
 - (NSDictionary *)specificationsForConstant:(GBTypedefEnumData *)object;
+- (NSDictionary *)specificationsForBlock:(GBTypedefBlockData *)object;
 
 @end
 
@@ -73,6 +75,7 @@
 - (NSArray *)protocolsForIndex;
 - (NSArray *)classesForHierarchy;
 - (NSArray *)constantsForIndex;
+- (NSArray *)blocksForIndex;
 - (NSArray *)arrayFromHierarchyLevel:(NSDictionary *)level;
 - (void)registerObjectsUsageForIndexInDictionary:(NSMutableDictionary *)dict;
 
@@ -161,6 +164,22 @@
 	return result;
 }
 
+- (NSDictionary *)variablesForBlocks:(GBTypedefBlockData *)typedefBlock withStore:(id)aStore {
+    self.store = aStore;
+    NSMutableDictionary *page = [NSMutableDictionary dictionary];
+    [page setObject:[self pageTitleForBlock:typedefBlock] forKey:@"title"];
+    [page setObject:[self specificationsForBlock:typedefBlock] forKey:@"specifications"];
+    [self addFooterVarsToDictionary:page];
+    NSMutableDictionary *result = [NSMutableDictionary dictionary];
+    [result setObject:page forKey:@"page"];
+    [result setObject:typedefBlock forKey:@"typedefBlock"];
+    [result setObject:self.settings.projectCompany forKey:@"projectCompany"];
+    [result setObject:self.settings.projectName forKey:@"projectName"];
+    [result setObject:self.settings.stringTemplates forKey:@"strings"];
+    return result;
+}
+
+
 - (NSDictionary *)variablesForDocument:(GBDocumentData *)object withStore:(id)aStore {
 	self.store = aStore;
 	NSString *path = [self.settings htmlRelativePathToIndexFromObject:object];
@@ -194,6 +213,7 @@
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
     [result setObject:[self constantsForIndex]  forKey:@"constants"];
+    [result setObject:[self blocksForIndex]  forKey:@"blocks"];
 	[result setObject:self.settings.stringTemplates forKey:@"strings"];
 	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
 	[result setObject:self.settings.projectName forKey:@"projectName"];
@@ -214,6 +234,7 @@
 	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
 	[result setObject:[self categoriesForIndex] forKey:@"categories"];
 	[result setObject:[self constantsForIndex] forKey:@"constants"];
+    [result setObject:[self blocksForIndex] forKey:@"blocks"];
     [result setObject:self.settings.stringTemplates forKey:@"strings"];
 	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
 	[result setObject:self.settings.projectName forKey:@"projectName"];
@@ -231,6 +252,7 @@
 	if ([object isKindOfClass:[GBProtocolData class]] && ![[self.store protocols] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBDocumentData class]] && ![[self.store documents] containsObject:object]) return nil;
 	if ([object isKindOfClass:[GBTypedefEnumData class]] && ![[self.store constants] containsObject:object]) return nil;
+    if ([object isKindOfClass:[GBTypedefBlockData class]] && ![[self.store blocks] containsObject:object]) return nil;
 	return [self.settings htmlReferenceForObject:object fromSource:source];
 }
 
@@ -293,6 +315,12 @@
 	return [NSString stringWithFormat:template, object.nameOfEnum];
 }
 
+- (NSString *)pageTitleForBlock:(GBTypedefBlockData *)object {
+    NSString *template = [self.settings.stringTemplates valueForKeyPath:@"objectPage.blockTitle"];
+    return [NSString stringWithFormat:template, object.nameOfBlock];
+}
+
+
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object {
 	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
 	
@@ -337,6 +365,15 @@
     [self registerObjectAvailabilitySpecificationForProvider:object toArray:result];
 	[self registerObjectReferenceSpecificationForProvider:object toArray:result];
 	return [self arrayDescriptorForArray:result];
+}
+
+- (NSDictionary *)specificationsForBlock:(GBProtocolData *)object {
+    NSMutableArray *result = [NSMutableArray array];
+    [self registerObjectDeclaredInSpecificationForProvider:object toArray:result];
+    [self registerObjectCompanionGuidesSpecificationForObject:object toArray:result];
+    [self registerObjectAvailabilitySpecificationForProvider:object toArray:result];
+    [self registerObjectReferenceSpecificationForProvider:object toArray:result];
+    return [self arrayDescriptorForArray:result];
 }
 
 @end
@@ -550,6 +587,19 @@
 	return result;
 }
 
+- (NSArray *)blocksForIndex {
+    NSArray *blocks = [self.store blocksSortedByName];
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:[blocks count]];
+    for (GBTypedefBlockData *block in blocks) {
+        if (!block.includeInOutput) continue;
+        NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
+        [data setObject:[self hrefForObject:block fromObject:nil] forKey:@"href"];
+        [data setObject:block.nameOfBlock forKey:@"title"];
+        [result addObject:data];
+    }
+    return result;
+}
+
 - (NSArray *)protocolsForIndex {
 	NSArray *protocols = [self.store protocolsSortedByName];
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[protocols count]];
@@ -626,12 +676,14 @@
 	BOOL categories = [self.store.categories count] > 0;
 	BOOL protocols = [self.store.protocols count] > 0;
     BOOL constants = [self.store.constants count] > 0;
+    BOOL blocks = [self.store.blocks count] > 0;
     [dict setObject:[NSNumber numberWithBool:documents] forKey:@"hasDocs"];
     [dict setObject:[NSNumber numberWithBool:classes] forKey:@"hasClasses"];
 	[dict setObject:[NSNumber numberWithBool:categories] forKey:@"hasCategories"];
 	[dict setObject:[NSNumber numberWithBool:protocols] forKey:@"hasProtocols"];
 	[dict setObject:[NSNumber numberWithBool:constants] forKey:@"hasConstants"];
-	[dict setObject:[NSNumber numberWithBool:protocols || categories || constants] forKey:@"hasProtocolsOrCategories"];
+    [dict setObject:[NSNumber numberWithBool:blocks] forKey:@"hasBlocks"];
+	[dict setObject:[NSNumber numberWithBool:protocols || categories || constants || blocks] forKey:@"hasProtocolsOrCategories"];
 }
 
 @end

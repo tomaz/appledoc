@@ -22,6 +22,7 @@
 - (BOOL)processProtocols:(NSError **)error;
 - (BOOL)processDocuments:(NSError **)error;
 - (BOOL)processConstants:(NSError **)error;
+- (BOOL)processBlocks:(NSError **)error;
 - (BOOL)processIndex:(NSError **)error;
 - (BOOL)processHierarchy:(NSError **)error;
 - (NSString *)stringByCleaningHtml:(NSString *)string;
@@ -51,6 +52,7 @@
 	if (![self processProtocols:error]) return NO;
 	if (![self processDocuments:error]) return NO;
     if (![self processConstants:error]) return NO;
+    if (![self processBlocks:error]) return NO;
 	if (![self processIndex:error]) return NO;
 	if (![self processHierarchy:error]) return NO;
 	return YES;
@@ -110,7 +112,7 @@
 - (BOOL)processConstants:(NSError **)error {
 	for (GBTypedefEnumData *enumTypedef in self.store.constants) {
         if (!enumTypedef.includeInOutput) continue;
-		GBLogInfo(@"Generating output for protocol %@...", enumTypedef);
+		GBLogInfo(@"Generating output for constant %@...", enumTypedef);
 		NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
@@ -122,6 +124,23 @@
 		GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
 	}
 	return YES;
+}
+
+- (BOOL)processBlocks:(NSError **)error {
+    for (GBTypedefBlockData *blockTypedef in self.store.blocks) {
+        if (!blockTypedef.includeInOutput) continue;
+        GBLogInfo(@"Generating output for block %@...", blockTypedef);
+        NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
+        NSString *output = [self.htmlObjectTemplate renderObject:vars];
+        NSString *cleaned = [self stringByCleaningHtml:output];
+        NSString *path = [self htmlOutputPathForObject:blockTypedef];
+        if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
+            GBLogWarn(@"Failed writing HTML for block %@ to '%@'!", blockTypedef, path);
+            return NO;
+        }
+        GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
+    }
+    return YES;
 }
 
 - (BOOL)processDocuments:(NSError **)error {	
@@ -155,7 +174,7 @@
 
 - (BOOL)processIndex:(NSError **)error {
 	GBLogInfo(@"Generating output for index...");
-	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0) {
+	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
 		NSString *output = [self.htmlIndexTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
@@ -171,7 +190,7 @@
 
 - (BOOL)processHierarchy:(NSError **)error {
 	GBLogInfo(@"Generating output for hierarchy...");
-	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0) {
+	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
 		NSString *output = [self.htmlHierarchyTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];

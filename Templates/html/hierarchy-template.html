@@ -55,6 +55,14 @@
                             {{/constants}}
 						</ul>
 						{{/hasConstants}}
+                        {{#hasBlocks}}
+                        <h2 class="index-title">{{strings/hierarchyPage/blocksTitle}}</h2>
+                        <ul>
+                            {{#blocks}}
+                            <li><a href="{{href}}">{{title}}</a></li>
+                            {{/blocks}}
+                        </ul>
+                        {{/hasBlocks}}
 						{{#hasCategories}}
 						<h2 class="index-title">{{strings/hierarchyPage/categoriesTitle}}</h2>
 						<ul>
