@@ -38,7 +38,7 @@ Appledoc is selfcontained and contains the necessary template files. IF you want
 You can also use install-appledoc.sh script to perform quick installation. Open Terminal and switch to appledoc directory. Type following command:
 
 	sudo sh install-appledoc.sh (if you need templates add '-t default')
-
+http://www.apple.com/osx/apps/app-store.html?id=675248567
 It compiles appledoc and installs its binary to /usr/local/bin and templates (if wanted) to ~/.appledoc by default. You can override this directories with -b and -t options respectively. For example:
 
 	sudo sh install-appledoc.sh -b /usr/bin -t ~/Library/Application\ Support/appledoc
@@ -128,3 +128,4 @@ Redistribution and use in source, binary forms and generated documentation, with
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Gentle Bytes appledoc@gentlebytes.com
+http://www.apple.com/osx/apps/app-store.html?id=675248567
