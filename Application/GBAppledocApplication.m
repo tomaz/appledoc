@@ -383,7 +383,7 @@ static char *kGBArgHelp = "help";
     
     if ([[NSScanner scannerWithString:self.verbose] scanInt:NULL] == false)
     {
-        [NSException raise:@"--%@ argument or global setting must be numeric!", kGBArgVerbose];
+        [NSException raise:@"--%s argument or global setting must be numeric!", kGBArgVerbose];
     }
 	
 	// Validate we have at least one argument specifying the path to the files to handle. Also validate all given paths are valid.
@@ -395,15 +395,15 @@ static char *kGBArgHelp = "help";
 	}
 	
 	// Now validate we have all required settings specified.
-	if ([self.settings.projectName length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectName];
-	if ([self.settings.projectCompany length] == 0) [NSException raise:@"--%@ argument or global setting is required!", kGBArgProjectCompany];
+	if ([self.settings.projectName length] == 0) [NSException raise:@"--%s argument or global setting is required!", kGBArgProjectName];
+	if ([self.settings.projectCompany length] == 0) [NSException raise:@"--%s argument or global setting is required!", kGBArgProjectCompany];
 	
 	// If output path is not given, revert to current path, but do warn the user.
 	if ([self.settings.outputPath length] == 0) {
 		self.settings.cleanupOutputPathBeforeRunning = NO;
 		self.settings.outputPath = [self.fileManager currentDirectoryPath];
 		if (self.settings.warnOnMissingOutputPathArgument) {
-			ddprintf(@"WARN: --%@ argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
+			ddprintf(@"WARN: --%s argument or global setting not given, will output to current dir '%@'!\n", kGBArgOutputPath, self.settings.outputPath);
 		}
 	}
 	
@@ -414,7 +414,7 @@ static char *kGBArgHelp = "help";
 		value = [value lowercaseString];
 		self.settings.companyIdentifier = value;
 		if (self.settings.warnOnMissingCompanyIdentifier) {
-			ddprintf(@"WARN: --%@ argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+			ddprintf(@"WARN: --%s argument or global setting not given, but creating DocSet is enabled, will use '%@'!\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
 		}
 	}
 	
@@ -422,7 +422,7 @@ static char *kGBArgHelp = "help";
 	[self.settings.includePaths enumerateObjectsUsingBlock:^(NSString *userPath, BOOL *stop) {
 		NSString *path = [userPath stringByStandardizingPath];
 		if (![self.fileManager fileExistsAtPath:path]) {
-			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
+			ddprintf(@"WARN: --%s path '%@' doesn't exist, ignoring!\n", kGBArgIncludePath, userPath);
 		}
 	}];
 	
@@ -431,14 +431,14 @@ static char *kGBArgHelp = "help";
 		BOOL isDir;
 		NSString *path = [self.settings.indexDescriptionPath stringByStandardizingPath];
 		if (![self.fileManager fileExistsAtPath:path isDirectory:&isDir])
-			ddprintf(@"WARN: --%@ path '%@' doesn't exist, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+			ddprintf(@"WARN: --%s path '%@' doesn't exist, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 		else if (isDir)
-			ddprintf(@"WARN: --%@ path '%@' is a directory, file is required, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+			ddprintf(@"WARN: --%s path '%@' is a directory, file is required, ignoring!\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
 	}
 	
 	// If we're using backwards compatibility mode, warn about potential incompatibility with Markdown!
 	if (self.settings.useSingleStarForBold) {
-		ddprintf(@"WARN: --%@ may cause incompatibility with Markdown (* unordered lists etc.)", kGBArgUseSingleStar);
+		ddprintf(@"WARN: --%s may cause incompatibility with Markdown (* unordered lists etc.)", kGBArgUseSingleStar);
 	}
 }
 
@@ -903,85 +903,85 @@ static char *kGBArgHelp = "help";
 
 - (void)printSettingsAndArguments:(NSArray *)arguments {
 #define PRINT_BOOL(v) (v ? @"YES" : @"NO")
-	// This is useful for debugging to see exact set of setting values that are going to be used for this session. Note that this is coupling command line switches to actual settings. Here it's just the opposite than DDCli callbacks.
-	ddprintf(@"Running for files in locations:\n");
-	for (NSString *path in arguments) ddprintf(@"- %@\n", path);
-	ddprintf(@"\n");
-	
-	ddprintf(@"Settings used for this run:\n");
-	ddprintf(@"--%@ = %@\n", kGBArgProjectName, self.settings.projectName);
-	ddprintf(@"--%@ = %@\n", kGBArgProjectVersion, self.settings.projectVersion);
-	ddprintf(@"--%@ = %@\n", kGBArgProjectCompany, self.settings.projectCompany);
-	ddprintf(@"--%@ = %@\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
-	ddprintf(@"\n");
-	
-	ddprintf(@"--%@ = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
-	ddprintf(@"--%@ = %@\n", kGBArgOutputPath, self.settings.outputPath);
-	ddprintf(@"--%@ = %@\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
-	for (NSString *path in self.settings.includePaths) ddprintf(@"--%@ = %@\n", kGBArgIncludePath, path);
-	for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%@ = %@\n", kGBArgIgnorePath, path);
-	for (NSString *path in self.settings.excludeOutputPaths) ddprintf(@"--%@ = %@\n", kGBArgExcludeOutputPath, path);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
-	ddprintf(@"--%@ = %@\n", kGBArgXcrunPath, self.settings.xcrunPath);
-	ddprintf(@"\n");
-	
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleIdentifier, self.settings.docsetBundleIdentifier);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleName, self.settings.docsetBundleName);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetDescription, self.settings.docsetDescription);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetCopyrightMessage, self.settings.docsetCopyrightMessage);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedName, self.settings.docsetFeedName);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedURL, self.settings.docsetFeedURL);
-    ddprintf(@"--%@ = %@\n", kGBArgDocSetFeedFormats, NSStringFromGBPublishedFeedFormats(self.settings.docsetFeedFormats));
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageURL, self.settings.docsetPackageURL);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetFallbackURL, self.settings.docsetFallbackURL);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherIdentifier, self.settings.docsetPublisherIdentifier);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetPublisherName, self.settings.docsetPublisherName);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetMinimumXcodeVersion, self.settings.docsetMinimumXcodeVersion);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetPlatformFamily, self.settings.docsetPlatformFamily);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateIssuer, self.settings.docsetCertificateIssuer);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetCertificateSigner, self.settings.docsetCertificateSigner);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetBundleFilename, self.settings.docsetBundleFilename);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetAtomFilename, self.settings.docsetAtomFilename);
-    ddprintf(@"--%@ = %@\n", kGBArgDocSetXMLFilename, self.settings.docsetXMLFilename);
-	ddprintf(@"--%@ = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
-	ddprintf(@"\n");
-	
-	ddprintf(@"--%@ = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
-	ddprintf(@"--%@ = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
-	ddprintf(@"--%@ = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
-	ddprintf(@"--%@ = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
-	ddprintf(@"--%@ = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
-    ddprintf(@"--%@ = %@\n", kGBArgHTMLAnchorFormat, NSStringFromGBHTMLAnchorFormat(self.settings.htmlAnchorFormat));
-	ddprintf(@"--%@ = %@\n", kGBArgKeepIntermediateFiles, PRINT_BOOL(self.settings.keepIntermediateFiles));
-	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
-	ddprintf(@"--%@ = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
-	ddprintf(@"--%@ = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
-	ddprintf(@"--%@ = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
-	ddprintf(@"--%@ = %@\n", kGBArgPreprocessHeaderDoc, PRINT_BOOL(self.settings.preprocessHeaderDoc));
-	ddprintf(@"--%@ = %@\n", kGBArgPrintInformationBlockTitles, PRINT_BOOL(self.settings.printInformationBlockTitles));
-	ddprintf(@"--%@ = %@\n", kGBArgUseSingleStar, PRINT_BOOL(self.settings.useSingleStarForBold));
-	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
-	ddprintf(@"--%@ = %@\n", kGBArgMergeCategoryComment, PRINT_BOOL(self.settings.mergeCategoryCommentToClass));
-	ddprintf(@"--%@ = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
-	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
-	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
-	ddprintf(@"--%@ = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
-	ddprintf(@"--%@ = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
-	ddprintf(@"\n");
-	
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUndocumentedMember, PRINT_BOOL(self.settings.warnOnUndocumentedMember));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnEmptyDescription, PRINT_BOOL(self.settings.warnOnEmptyDescription));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnUnknownDirective, PRINT_BOOL(self.settings.warnOnUnknownDirective));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnInvalidCrossReference, PRINT_BOOL(self.settings.warnOnInvalidCrossReference));
-	ddprintf(@"--%@ = %@\n", kGBArgWarnOnMissingMethodArgument, PRINT_BOOL(self.settings.warnOnMissingMethodArgument));
-	ddprintf(@"\n");
-	
-	ddprintf(@"--%@ = %@\n", kGBArgLogFormat, self.logformat);
-	ddprintf(@"--%@ = %@\n", kGBArgVerbose, self.verbose);
-	ddprintf(@"\n");
+    // This is useful for debugging to see exact set of setting values that are going to be used for this session. Note that this is coupling command line switches to actual settings. Here it's just the opposite than DDCli callbacks.
+    ddprintf(@"Running for files in locations:\n");
+    for (NSString *path in arguments) ddprintf(@"- %@\n", path);
+    ddprintf(@"\n");
+    
+    ddprintf(@"Settings used for this run:\n");
+    ddprintf(@"--%s = %@\n", kGBArgProjectName, self.settings.projectName);
+    ddprintf(@"--%s = %@\n", kGBArgProjectVersion, self.settings.projectVersion);
+    ddprintf(@"--%s = %@\n", kGBArgProjectCompany, self.settings.projectCompany);
+    ddprintf(@"--%s = %@\n", kGBArgCompanyIdentifier, self.settings.companyIdentifier);
+    ddprintf(@"\n");
+    
+    ddprintf(@"--%s = %@\n", kGBArgTemplatesPath, self.settings.templatesPath);
+    ddprintf(@"--%s = %@\n", kGBArgOutputPath, self.settings.outputPath);
+    ddprintf(@"--%s = %@\n", kGBArgIndexDescPath, self.settings.indexDescriptionPath);
+    for (NSString *path in self.settings.includePaths) ddprintf(@"--%s = %@\n", kGBArgIncludePath, path);
+    for (NSString *path in self.settings.ignoredPaths) ddprintf(@"--%s = %@\n", kGBArgIgnorePath, path);
+    for (NSString *path in self.settings.excludeOutputPaths) ddprintf(@"--%s = %@\n", kGBArgExcludeOutputPath, path);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetInstallPath, self.settings.docsetInstallPath);
+    ddprintf(@"--%s = %@\n", kGBArgXcrunPath, self.settings.xcrunPath);
+    ddprintf(@"\n");
+    
+    ddprintf(@"--%s = %@\n", kGBArgDocSetBundleIdentifier, self.settings.docsetBundleIdentifier);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetBundleName, self.settings.docsetBundleName);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetDescription, self.settings.docsetDescription);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetCopyrightMessage, self.settings.docsetCopyrightMessage);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetFeedName, self.settings.docsetFeedName);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetFeedURL, self.settings.docsetFeedURL);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetFeedFormats, NSStringFromGBPublishedFeedFormats(self.settings.docsetFeedFormats));
+    ddprintf(@"--%s = %@\n", kGBArgDocSetPackageURL, self.settings.docsetPackageURL);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetFallbackURL, self.settings.docsetFallbackURL);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetPublisherIdentifier, self.settings.docsetPublisherIdentifier);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetPublisherName, self.settings.docsetPublisherName);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetMinimumXcodeVersion, self.settings.docsetMinimumXcodeVersion);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetPlatformFamily, self.settings.docsetPlatformFamily);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetCertificateIssuer, self.settings.docsetCertificateIssuer);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetCertificateSigner, self.settings.docsetCertificateSigner);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetBundleFilename, self.settings.docsetBundleFilename);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetAtomFilename, self.settings.docsetAtomFilename);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetXMLFilename, self.settings.docsetXMLFilename);
+    ddprintf(@"--%s = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
+    ddprintf(@"\n");
+    
+    ddprintf(@"--%s = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
+    ddprintf(@"--%s = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
+    ddprintf(@"--%s = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
+    ddprintf(@"--%s = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
+    ddprintf(@"--%s = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
+    ddprintf(@"--%s = %@\n", kGBArgHTMLAnchorFormat, NSStringFromGBHTMLAnchorFormat(self.settings.htmlAnchorFormat));
+    ddprintf(@"--%s = %@\n", kGBArgKeepIntermediateFiles, PRINT_BOOL(self.settings.keepIntermediateFiles));
+    ddprintf(@"--%s = %@\n", kGBArgKeepUndocumentedObjects, PRINT_BOOL(self.settings.keepUndocumentedObjects));
+    ddprintf(@"--%s = %@\n", kGBArgKeepUndocumentedMembers, PRINT_BOOL(self.settings.keepUndocumentedMembers));
+    ddprintf(@"--%s = %@\n", kGBArgFindUndocumentedMembersDocumentation, PRINT_BOOL(self.settings.findUndocumentedMembersDocumentation));
+    ddprintf(@"--%s = %@\n", kGBArgRepeatFirstParagraph, PRINT_BOOL(self.settings.repeatFirstParagraphForMemberDescription));
+    ddprintf(@"--%s = %@\n", kGBArgPreprocessHeaderDoc, PRINT_BOOL(self.settings.preprocessHeaderDoc));
+    ddprintf(@"--%s = %@\n", kGBArgPrintInformationBlockTitles, PRINT_BOOL(self.settings.printInformationBlockTitles));
+    ddprintf(@"--%s = %@\n", kGBArgUseSingleStar, PRINT_BOOL(self.settings.useSingleStarForBold));
+    ddprintf(@"--%s = %@\n", kGBArgMergeCategoriesToClasses, PRINT_BOOL(self.settings.mergeCategoriesToClasses));
+    ddprintf(@"--%s = %@\n", kGBArgMergeCategoryComment, PRINT_BOOL(self.settings.mergeCategoryCommentToClass));
+    ddprintf(@"--%s = %@\n", kGBArgKeepMergedCategoriesSections, PRINT_BOOL(self.settings.keepMergedCategoriesSections));
+    ddprintf(@"--%s = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
+    ddprintf(@"--%s = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
+    ddprintf(@"--%s = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
+    ddprintf(@"--%s = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
+    ddprintf(@"\n");
+    
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnMissingCompanyIdentifier, PRINT_BOOL(self.settings.warnOnMissingCompanyIdentifier));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnUndocumentedObject, PRINT_BOOL(self.settings.warnOnUndocumentedObject));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnUndocumentedMember, PRINT_BOOL(self.settings.warnOnUndocumentedMember));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnEmptyDescription, PRINT_BOOL(self.settings.warnOnEmptyDescription));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnUnknownDirective, PRINT_BOOL(self.settings.warnOnUnknownDirective));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnInvalidCrossReference, PRINT_BOOL(self.settings.warnOnInvalidCrossReference));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnMissingMethodArgument, PRINT_BOOL(self.settings.warnOnMissingMethodArgument));
+    ddprintf(@"\n");
+    
+    ddprintf(@"--%s = %@\n", kGBArgLogFormat, self.logformat);
+    ddprintf(@"--%s = %@\n", kGBArgVerbose, self.verbose);
+    ddprintf(@"\n");
 }
 
 - (void)printVersion {
