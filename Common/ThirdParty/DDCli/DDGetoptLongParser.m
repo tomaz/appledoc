@@ -259,7 +259,12 @@ dd_getopt_long_only(int nargc, char * const *nargv, const char *options,
 	}
 }
 
-- (NSString *)optionToKey:(NSString *)option;
+- (NSString *)optionToKey:(NSString *)option
+{
+    return [DDGetoptLongParser optionToKey:option];
+}
+
++ (NSString *)optionToKey:(NSString *)option;
 {
     NSScanner * scanner = [NSScanner scannerWithString: option];
     [scanner setCharactersToBeSkipped: [NSCharacterSet characterSetWithCharactersInString: @"-"]];

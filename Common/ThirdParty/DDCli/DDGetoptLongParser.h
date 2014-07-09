@@ -211,6 +211,6 @@ typedef struct
  */
 - (void)optionIsMissingArgument:(NSString *)option;
 
-- (NSString *)optionToKey:(NSString *)option;
++ (NSString *)optionToKey:(NSString *)option;
 
 @end

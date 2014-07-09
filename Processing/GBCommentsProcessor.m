@@ -24,6 +24,7 @@
 @end
 
 @implementation GBCrossRefData
+@synthesize description; // Explicitly required to override -[NSObject description](readonly)
 
 + (instancetype) crossRefData {
     GBCrossRefData *result = [[self alloc] init];
