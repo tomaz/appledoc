@@ -32,7 +32,7 @@ static NSString *kGBValueKey = @"value";
 #pragma mark Initialization & disposal
 
 + (id)handler {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 - (NSString*)templateString{

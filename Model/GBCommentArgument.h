@@ -52,10 +52,10 @@
 
 /** The description components of the argument as `GBCommentComponentsList`.
  */
-@property (retain) GBCommentComponentsList *argumentDescription;
+@property (strong) GBCommentComponentsList *argumentDescription;
 
 /** Source file information.
  */
-@property (retain) GBSourceInfo *sourceInfo;
+@property (strong) GBSourceInfo *sourceInfo;
 
 @end

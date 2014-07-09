@@ -18,7 +18,7 @@
 }
 
 + (id)commentWithStringValue:(NSString *)value sourceInfo:(GBSourceInfo *)info {
-	GBComment *result = [[[self alloc] init] autorelease];
+	GBComment *result = [[self alloc] init];
 	result.stringValue = value;
 	result.sourceInfo = info;
 	return result;

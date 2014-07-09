@@ -39,15 +39,17 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 - (NSString *)tokenIdentifierForObject:(GBModelBase *)object;
 -(void) addGetterSetterToMethods:(GBMethodData *)property for:(NSString *)name withReturnResult:(NSArray*)results withTypes:(NSArray *)types withArguments:(NSArray *)arguments withData:(NSDictionary *)data toArray:(NSMutableArray *)members;
 
-@property (retain) NSArray *documents;
-@property (retain) NSArray *classes;
-@property (retain) NSArray *categories;
-@property (retain) NSArray *protocols;
-@property (retain) NSArray *constants;
-@property (retain) NSArray *blocks;
+
+@property (strong) NSArray *documents;
+@property (strong) NSArray *classes;
+@property (strong) NSArray *categories;
+@property (strong) NSArray *protocols;
+@property (strong) NSArray *constants;
+@property (strong) NSArray *blocks;
+
 @property (readonly) NSMutableSet *temporaryFiles;
 
-@property (retain) id sectionID; //tmp for class's refid
+@property (strong) id sectionID; //tmp for class's refid
 
 @end
 

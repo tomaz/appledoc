@@ -19,9 +19,9 @@
 
 - (PKTokenizer *)tokenizerWithInputString:(NSString *)input;
 - (void)updateLastComment:(GBComment **)comment sectionComment:(GBComment **)sectionComment sectionName:(NSString **)sectionName;
-@property (retain) GBTokenizer *tokenizer;
-@property (retain) GBStore *store;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) GBTokenizer *tokenizer;
+@property (strong) GBStore *store;
+@property (strong) GBApplicationSettingsProvider *settings;
 @property (assign) BOOL includeInOutput;
 @property (assign) BOOL propertyAfterPragma;
 
@@ -74,7 +74,7 @@
 #pragma mark ￼Initialization & disposal
 
 + (id)parserWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
@@ -272,9 +272,9 @@
 }
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
-	__block GBComment *comment;
-	__block GBComment *sectionComment;
-	__block NSString *sectionName;
+	GBComment *comment;
+	GBComment *sectionComment;
+	NSString *sectionName;
 	__block BOOL firstToken = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
@@ -787,7 +787,7 @@
 		// Get all arguments. Note that we ignore semicolons which may "happen" in declaration before method opening brace!
 		__block BOOL parseAttribute = NO;
 		__block NSUInteger parenthesisDepth = 0;
-		__block NSMutableArray *methodArgs = [NSMutableArray array];
+		__weak NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			if ([token matches:@"__attribute__"] || [token matches:@"DEPRECATED_ATTRIBUTE"]) {
 				parseAttribute = YES;
@@ -815,8 +815,8 @@
 			[self.tokenizer consume:1];
 			
 			__block NSString *argumentVar = nil;
-			__block NSMutableArray *argumentTypes = [NSMutableArray array];
-			__block NSMutableArray *terminationMacros = [NSMutableArray array];
+			__weak NSMutableArray *argumentTypes = [NSMutableArray array];
+			__weak NSMutableArray *terminationMacros = [NSMutableArray array];
             __block BOOL variableArg = NO;
 			if ([[self.tokenizer currentToken] matches:@":"]) {
 				[self.tokenizer consume:1];

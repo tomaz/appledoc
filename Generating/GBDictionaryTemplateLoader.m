@@ -14,12 +14,12 @@
 #pragma mark Initialization & disposal
 
 + (id)loaderWithDictionary:(NSDictionary *)partials {
-	return [[[self alloc] initWithDictionary:partials] autorelease];
+	return [[self alloc] initWithDictionary:partials];
 }
 
 - (id)initWithDictionary:(NSDictionary *)partials {
 	if ((self = [self initWithExtension:nil encoding:NSUTF8StringEncoding])) {
-		_partials = [partials retain];
+		_partials = partials;
 	}
 	return self;
 }

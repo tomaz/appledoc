@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation

@@ -14,7 +14,7 @@
 #pragma mark Initialization & disposal
 
 + (id)protocolDataWithName:(NSString *)name {
-	return [[[self alloc] initWithName:name] autorelease];
+	return [[self alloc] initWithName:name];
 }
 
 - (id)initWithName:(NSString *)name {

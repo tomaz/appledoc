@@ -31,7 +31,7 @@
 #pragma mark Initialization & disposal
 
 + (id)provider {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 - (id)init {

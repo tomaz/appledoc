@@ -15,7 +15,7 @@
 #pragma mark Initialization & disposal
 
 + (id)documentDataWithContents:(NSString *)contents path:(NSString *)path {
-	return [[[self alloc] initWithContents:contents path:path] autorelease];
+	return [[self alloc] initWithContents:contents path:path];
 }
 
 + (id)documentDataWithContents:(NSString *)contents path:(NSString *)path basePath:(NSString *)basePath {

@@ -56,17 +56,17 @@ void GBLogUpdateResult(NSInteger result) {
 + (id<DDLogFormatter>)logFormatterForLogFormat:(NSString *)level {
 	if ([level isKindOfClass:[NSString class]]) {
 		level = [level lowercaseString];
-		if ([level isEqualToString:@"xcode"]) return [[[GBLogFormatXcodeFormatter alloc] init] autorelease];
+		if ([level isEqualToString:@"xcode"]) return [[GBLogFormatXcodeFormatter alloc] init];
 	}
 	
 	NSInteger value = [level integerValue];
 	if (value < 0) value = 0;
 	if (value > 3) value = 3;
 	switch (value) {
-		case 0: return [[[GBLogFormat0Formatter alloc] init] autorelease];
-		case 1: return [[[GBLogFormat1Formatter alloc] init] autorelease];
-		case 2: return [[[GBLogFormat2Formatter alloc] init] autorelease];
-		case 3: return [[[GBLogFormat3Formatter alloc] init] autorelease];
+		case 0: return [[GBLogFormat0Formatter alloc] init];
+		case 1: return [[GBLogFormat1Formatter alloc] init];
+		case 2: return [[GBLogFormat2Formatter alloc] init];
+		case 3: return [[GBLogFormat3Formatter alloc] init];
 	}
 	return nil;
 }

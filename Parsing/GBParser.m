@@ -24,9 +24,9 @@
 - (BOOL)isDocumentFile:(NSString *)path;
 @property (assign) NSUInteger numberOfParsedFiles;
 @property (assign) NSUInteger numberOfParsedDocuments;
-@property (retain) GBObjectiveCParser *objectiveCParser;
-@property (retain) GBStore *store;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) GBObjectiveCParser *objectiveCParser;
+@property (strong) GBStore *store;
+@property (strong) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -37,7 +37,7 @@
 #pragma mark Initialization & disposal
 
 + (id)parserWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {

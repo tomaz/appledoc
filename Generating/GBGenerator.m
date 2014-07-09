@@ -20,8 +20,8 @@
 - (void)setupGeneratorStepsWithStore:(id)store;
 - (void)runGeneratorStepsWithStore:(id)store;
 @property (readonly) NSMutableArray *outputGenerators;
-@property (retain) GBStore *store;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) GBStore *store;
+@property (strong) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -32,7 +32,7 @@
 #pragma mark Initialization & disposal
 
 + (id)generatorWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {

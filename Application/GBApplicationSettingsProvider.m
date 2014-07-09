@@ -104,7 +104,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 }
 
 + (id)provider {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 - (id)init {
@@ -285,30 +285,30 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	NSString *result = markdown;
 	
 	// Clean Markdown inline links. Note that we need to additionally handle remote member links [[class method]](address), these are not detected by our standard regex, but using common regex for these cases would incorrectly handle multiple links in the same string (it would greedily match the whole content between the first and the last link as the description). Note that the order of processing is important - we first need to handle "simple" links and then continue with remote members.
-	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:self.commentComponents.markdownInlineLinkRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[1];
 	}];
-	result = [result stringByReplacingOccurrencesOfRegex:@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"([^\"]+)\")?\\)" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:@"\\[(.+)\\]\\(([^\\s]+)(?:\\s*\"([^\"]+)\")?\\)" usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[1];
 	}];
 	
 	// Clean formatting directives. Couldn't find single regex matcher for cleaning up all cases, so ended up in doing several phases and finally repeating the last one for any remaining cases... This makes unit tests pass...
-	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*\\*|___|\\*\\*_|_\\*\\*|\\*__|__\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*\\*|___|\\*\\*_|_\\*\\*|\\*__|__\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[2];
 	}];
-	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*|__|\\*_|_\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:@"(\\*\\*|__|\\*_|_\\*)(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[2];
 	}];
-	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[2];
 	}];
-	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:@"([*_`])(.+?)\\1" usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		return capturedStrings[2];
 	}];
 	
 	// Convert hard coded HTML anchor links as these may cause problems with docsetutil. Basically we get address and description and output only description if found. Otherwise we use address.
 	NSString *anchorRegex = @"<a\\s+href\\s*=\\s*([\"'])([^\\1]*)[\"']\\s*(?:(?:>([^>]*)</a>)|(?:/>))";
-	result = [result stringByReplacingOccurrencesOfRegex:anchorRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	result = [result stringByReplacingOccurrencesOfRegex:anchorRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		if (captureCount < 2) return capturedStrings[0];
 		if (captureCount < 3) return capturedStrings[2];
 		NSString *description = capturedStrings[3];
@@ -339,10 +339,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	return result;
 }
 
-- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block {	
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString * __unsafe_unretained *capturedStrings, BOOL insideCode))block {
 	NSString *theRegex = [NSString stringWithFormat:@"<code>|</code>|%@", regex];
 	__block BOOL insideExampleBlock = NO;
-	return [string stringByReplacingOccurrencesOfRegex:theRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
+	return [string stringByReplacingOccurrencesOfRegex:theRegex usingBlock:^NSString *(NSInteger captureCount, NSString *const __unsafe_unretained *capturedStrings, const NSRange *capturedRanges, volatile BOOL *const stop) {
 		// Change flag when inside example block - we need to handle strings differently there!
 		NSString *matchedText = capturedStrings[0];
 		if ([matchedText isEqualToString:@"<code>"]) {
@@ -354,7 +354,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		}
 		
 		// Invoke parent block when matched the given regex
-		NSString **strings = (NSString **)capturedStrings;
+		NSString * __unsafe_unretained *strings = (NSString **)capturedStrings;
 		return block(captureCount, strings, insideExampleBlock);
 	}];
 }

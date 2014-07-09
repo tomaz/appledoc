@@ -65,7 +65,7 @@
  
  @see longDescription
  */
-@property (retain) GBCommentComponent *shortDescription;
+@property (strong) GBCommentComponent *shortDescription;
 
 /** Comments long description, includes the whole description components.
  
@@ -73,13 +73,13 @@
  
  @see shortDescription
  */
-@property (retain) GBCommentComponentsList *longDescription;
+@property (strong) GBCommentComponentsList *longDescription;
 
 /** The list to related items.
  
  This is simply a list of `GBCommentComponent`s, each one containing a cross reference to a single item.
  */
-@property (retain) GBCommentComponentsList *relatedItems;
+@property (strong) GBCommentComponentsList *relatedItems;
 
 /** All registered method parameters, only applicable for methods, empty list is used otherwise.
  
@@ -88,7 +88,7 @@
  @see methodExceptions
  @see methodResult
  */
-@property (retain) NSMutableArray *methodParameters;
+@property (strong) NSMutableArray *methodParameters;
 
 /** All registeres method exceptions, only applicable for methods, empty list if used otherwise.
  
@@ -97,19 +97,19 @@
  @see methodParameters
  @see methodResult
  */
-@property (retain) NSMutableArray *methodExceptions;
+@property (strong) NSMutableArray *methodExceptions;
 
 /** Method result description, only applicable for methods, empty list is used otherwise.
  
  @see methodParameters
  @see methodExceptions
  */
-@property (retain) GBCommentComponentsList *methodResult;
+@property (strong) GBCommentComponentsList *methodResult;
 
 /** Entity availability description.
 
  */
-@property (retain) GBCommentComponentsList *availability;
+@property (strong) GBCommentComponentsList *availability;
 
 ///---------------------------------------------------------------------------------------
 /// @name Output generator helpers
@@ -125,7 +125,7 @@
  
  @see isCopied
  */
-@property (assign) id originalContext;
+@property (unsafe_unretained) id originalContext;
 
 /** Specifies whether the comment is copied from another object or this is the original comment from source code.
 
@@ -192,7 +192,7 @@
 ///---------------------------------------------------------------------------------------
 
 /** Comment's source file info. */
-@property (retain) GBSourceInfo *sourceInfo;
+@property (strong) GBSourceInfo *sourceInfo;
 
 /** Comment's raw string value as declared in source code. */
 @property (copy) NSString *stringValue;

@@ -120,7 +120,7 @@ typedef NSUInteger GBMethodType;
  
  Primarily used so that we can setup proper section name when merging from protocols.
  */
-@property (retain) GBMethodSectionData *methodSection;
+@property (strong) GBMethodSectionData *methodSection;
 
 /** A string representing the type of the method
  */

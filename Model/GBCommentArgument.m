@@ -19,7 +19,7 @@
 }
 
 + (id)argumentWithName:(NSString *)name sourceInfo:(GBSourceInfo *)info {
-	GBCommentArgument *result = [[[self alloc] init] autorelease];
+	GBCommentArgument *result = [[self alloc] init];
 	if (result) {
 		result.argumentName = name;
 		result.sourceInfo = info;

@@ -579,7 +579,7 @@ static NSUInteger GBStoreLine = 0;
 	// The numClasses method now tells us how many classes we have.
 	// So we can allocate our buffer, and get pointers to all the class definitions.
 	
-	Class *classes = malloc(sizeof(Class) * numClasses);
+	Class *classes = (Class*)malloc(sizeof(Class) * numClasses);
 	
 	numClasses = objc_getClassList(classes, numClasses);
 	

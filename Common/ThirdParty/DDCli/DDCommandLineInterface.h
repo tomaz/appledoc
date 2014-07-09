@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -77,10 +77,10 @@
  * 
  * This code also uses #ddprintf which works just like printf, except
  * you can use the %@ format string.  The final part that needs
- * implementing is the main function.  The #DDCliAppRunWithClass
+ * implementing is the main function.  The #DDCliAppRunWithDefaultClass
  * function makes this a one liner:
  *
- * @include simple.m
+ * @include ddcli_main.m
  *
  * Here are a few sample runs of this program:
  *
@@ -101,12 +101,12 @@ Arguments: ()
 @endverbatim
  *
  * The full source for this simple application can be found on @link
- * simple.m @endlink example.
+ * SimpleApp.m @endlink example.
  *
  * Since KVC is used, you can implement a set<option>: method to
  * customize the behavior when options are parsed.  For example, you
  * could use this to store all occurences of an option in an array.
- * See @link example.m @endlink for a more complex example that uses
+ * See @link ExampleApp.m @endlink for a more complex example that uses
  * this technique.
  *
  * @defgroup functions Functions and Global Variables

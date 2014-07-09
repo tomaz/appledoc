@@ -15,7 +15,7 @@
     GBLogDebug(@"Initializing enumConstant provider for %@...", parent);
     self = [super init];
     if (self) {
-        _parent = [parent retain];
+        _parent = parent;
         _constants = [[NSMutableArray alloc] init];
         _useAlphabeticalOrder = YES;
     }

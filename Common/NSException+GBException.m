@@ -30,7 +30,7 @@
 	if (format) {
 		va_list args;
 		va_start(args, format);
-		message = [[[NSString alloc] initWithFormat:format arguments:args] autorelease];
+		message = [[NSString alloc] initWithFormat:format arguments:args];
 		va_end(args);
 	}
 	

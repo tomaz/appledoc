@@ -56,7 +56,7 @@
 @property (copy) NSString *nameOfSuperclass;
 
 /** Superclass object if known object or `nil` if `nameOfSuperclass` is `nil` or doesn't point to a known class. */
-@property (retain) GBClassData *superclass;
+@property (strong) GBClassData *superclass;
 
 /** Class's adopted protocols, available via `GBAdoptedProtocolsProvider`. */
 @property (readonly) GBAdoptedProtocolsProvider *adoptedProtocols;

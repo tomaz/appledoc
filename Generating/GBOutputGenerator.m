@@ -13,7 +13,7 @@
 
 @interface GBOutputGenerator ()
 
-@property (readwrite, retain) GBStore *store;
+@property (readwrite, strong) GBStore *store;
 
 @end
 
@@ -24,7 +24,7 @@
 #pragma mark Initialization & disposal
 
 + (id)generatorWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
