@@ -84,7 +84,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(id)member prefixedWith:(id)prefix;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
-- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode))block;
+- (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString * __unsafe_unretained *capturedStrings, BOOL insideCode))block;
 - (NSString *)stringByNormalizingString:(NSString *)string;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
@@ -259,7 +259,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	// We should properly handle cross references: if outside example block, simply strip prexif/suffix markers, otherwise extract description from Markdown style scross reference (i.e. [description](the rest)) and only use that part.
 	if (self.embedCrossReferencesWhenProcessingMarkdown) {
 		NSString *regex = [self stringByEmbeddingCrossReference:@"(.+?)"];
-		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString **capturedStrings, BOOL insideCode) {
+		result = [self stringByReplacingOccurencesOfRegex:regex inHTML:result usingBlock:^NSString *(NSInteger captureCount, NSString * __unsafe_unretained *capturedStrings, BOOL insideCode) {
 			NSString *linkText = capturedStrings[1];
 			if (!insideCode) return linkText;
 			NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];

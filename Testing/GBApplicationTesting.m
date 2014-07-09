@@ -579,7 +579,7 @@
 	va_end(args);
 	
 	// setup the application and inject settings to it.
-	GBAppledocApplication *application = [[[GBAppledocApplication alloc] init] autorelease];
+	GBAppledocApplication *application = [[GBAppledocApplication alloc] init];
 	GBApplicationSettingsProvider *result = [GBApplicationSettingsProvider provider];
 	[application setValue:result forKey:@"settings"];
 	
@@ -588,7 +588,7 @@
 		NSString *arg = [arguments objectAtIndex:i];
 		if ([arg hasPrefix:@"--"]) {
 			// get the key corresponding to the argument
-			NSString *key = [DDGetoptLongParser keyFromOption:arg];
+			NSString *key = [DDGetoptLongParser optionToKey:arg];
             
             // When passed --docset-xml-filename, +[DDGetoptLongParser keyFromOption:] will
             // return docsetXmlFilename but we need instead of docsetXMLFilename.

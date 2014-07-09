@@ -15,10 +15,10 @@
 		7317CC0C12B10E3F009DAA15 /* GBApplicationTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7317CC0B12B10E3F009DAA15 /* GBApplicationTesting.m */; };
 		7317CC0D12B113A3009DAA15 /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
 		7317CC0E12B113A5009DAA15 /* GBAppledocApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D2811F8D59200CCDDB0 /* GBAppledocApplication.m */; };
-		7317CC0F12B113AE009DAA15 /* DDCliApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */; };
+		7317CC0F12B113AE009DAA15 /* DDCliApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1611F8D53E00CCDDB0 /* DDCliApplication.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7317CC1012B113BF009DAA15 /* GBGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AA9F721253BF4000074152 /* GBGenerator.m */; };
-		7317CC1112B113CC009DAA15 /* DDCliParseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */; };
-		7317CC1212B113CF009DAA15 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; };
+		7317CC1112B113CC009DAA15 /* DDCliParseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1811F8D53E00CCDDB0 /* DDCliParseException.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		7317CC1212B113CF009DAA15 /* DDGetoptLongParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1D11F8D53E00CCDDB0 /* DDGetoptLongParser.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		7317CC1312B113E4009DAA15 /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
 		7317CC1412B113EB009DAA15 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
 		7317CC1512B113ED009DAA15 /* GBDocSetOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 731872C412A3B75C0035509F /* GBDocSetOutputGenerator.m */; };
@@ -87,7 +87,7 @@
 		733EA18E122BE1810060CBDE /* GBParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DB411FCCCC600AAD0B9 /* GBParser.m */; };
 		733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
-		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; };
+		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
@@ -185,13 +185,13 @@
 		73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
 		73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F5689C12A2244200A72BB2 /* SystemConfiguration.framework */; };
 		73F568BF12A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; };
+		73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568B812A22A7900A72BB2 /* DDASLLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73F568C112A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; };
+		73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BA12A22A7900A72BB2 /* DDFileLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73F568C312A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F568C412A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; };
+		73F568C412A22A7900A72BB2 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BC12A22A7900A72BB2 /* DDLog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73F568C512A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; };
+		73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F568BE12A22A7900A72BB2 /* DDTTYLogger.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
 		73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73F568D212A22CFF00A72BB2 /* CoreServices.framework */; };
 		73F70DB71227B34300D19EBA /* GBComment.m in Sources */ = {isa = PBXBuildFile; fileRef = 73F70DB61227B34300D19EBA /* GBComment.m */; };
@@ -224,19 +224,20 @@
 		B4D1FFDB15FF5F05009736E2 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC715FF5F05009736E2 /* zip.c */; };
 		B4D1FFDC15FF5F05009736E2 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC715FF5F05009736E2 /* zip.c */; };
 		B4D1FFDD15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; };
+		B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFDF15FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		B4D1FFE015FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; };
+		B4D1FFE015FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE115FF5F05009736E2 /* DDZipWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */; };
+		B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE315FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */; };
+		B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE515FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; };
+		B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		C56768111958403800E8E4C8 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
 		C5676814195840BD00E8E4C8 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
+		B8BBC0F7196DFAEB006F239D /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
@@ -1344,6 +1345,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8BBC0F7196DFAEB006F239D /* dd_getopt_long-fbsd.m in Sources */,
 				735B23821304083C00704844 /* GBDocumentData.m in Sources */,
 				736314AA12ED7DB900852593 /* GBDocSetPublishGenerator.m in Sources */,
 				736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */,
@@ -1362,15 +1364,12 @@
 				733EA14A122BDECC0060CBDE /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
 				7317CC1412B113EB009DAA15 /* GBOutputGenerator.m in Sources */,
 				733EA14B122BDECC0060CBDE /* GBObjectiveCParser-CategoryParsingTesting.m in Sources */,
-				7317CC1112B113CC009DAA15 /* DDCliParseException.m in Sources */,
 				733EA14C122BDECD0060CBDE /* GBObjectiveCParser-ClassParsingTesting.m in Sources */,
 				7317CC1012B113BF009DAA15 /* GBGenerator.m in Sources */,
-				7317CC1212B113CF009DAA15 /* DDGetoptLongParser.m in Sources */,
 				733EA14D122BDECD0060CBDE /* GBObjectiveCParser-IvarsParsingTesting.m in Sources */,
 				733EA14E122BDECE0060CBDE /* GBObjectiveCParser-MethodsParsingTesting.m in Sources */,
 				7317CC1512B113ED009DAA15 /* GBDocSetOutputGenerator.m in Sources */,
 				7317CC1312B113E4009DAA15 /* GBHTMLOutputGenerator.m in Sources */,
-				7317CC0F12B113AE009DAA15 /* DDCliApplication.m in Sources */,
 				7317CC1712B11424009DAA15 /* NSError+GBError.m in Sources */,
 				733EA14F122BDECE0060CBDE /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */,
 				733EA150122BDECF0060CBDE /* GBObjectsAssertor.m in Sources */,
@@ -1406,8 +1405,6 @@
 				733EA18E122BE1810060CBDE /* GBParser.m in Sources */,
 				733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */,
 				733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */,
-				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
-				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA75123E4161009B406B /* GBProcessor.m in Sources */,
 				7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */,
@@ -1422,7 +1419,11 @@
 				7321D0E812944CF500796DEC /* GBTemplateHandler.m in Sources */,
 				7321D12A1294592200796DEC /* GBTemplateHandlerTesting.m in Sources */,
 				73734619129668340046D6B8 /* GBDictionaryTemplateLoader.m in Sources */,
-				7359B14A129A5A0700F67AD1 /* GRBoolean.m in Sources */,
+				7317CC1112B113CC009DAA15 /* DDCliParseException.m in Sources */,
+				7317CC1212B113CF009DAA15 /* DDGetoptLongParser.m in Sources */,
+				7317CC0F12B113AE009DAA15 /* DDCliApplication.m in Sources */,
+				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
+				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				7359B14C129A5A0700F67AD1 /* GRMustache.m in Sources */,
 				7359B14E129A5A0700F67AD1 /* GRMustacheBundleTemplateLoader.m in Sources */,
 				7359B150129A5A0700F67AD1 /* GRMustacheCompiler.m in Sources */,
@@ -1430,6 +1431,7 @@
 				7359B154129A5A0700F67AD1 /* GRMustacheDirectoryTemplateLoader.m in Sources */,
 				7359B156129A5A0700F67AD1 /* GRMustacheElement.m in Sources */,
 				7359B158129A5A0700F67AD1 /* GRMustacheError.m in Sources */,
+				7359B14A129A5A0700F67AD1 /* GRBoolean.m in Sources */,
 				7359B15A129A5A0700F67AD1 /* GRMustacheLambda.m in Sources */,
 				7359B15C129A5A0700F67AD1 /* GRMustacheSectionElement.m in Sources */,
 				7359B15E129A5A0700F67AD1 /* GRMustacheTemplate.m in Sources */,
@@ -1442,9 +1444,9 @@
 				7359B16C129A5A0700F67AD1 /* GRMustacheVersion.m in Sources */,
 				73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */,
 				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
-				735259D713793ED7003F0D09 /* GBExitCodes.m in Sources */,
 				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
 				73F568C612A22A7900A72BB2 /* DDTTYLogger.m in Sources */,
+				735259D713793ED7003F0D09 /* GBExitCodes.m in Sources */,
 				739C0C4712AC258B00F0130B /* GBProcessor-UndocumentedObjectsTesting.m in Sources */,
 				739C0C4912AC284E00F0130B /* GBProcessor-CategoriesMergingTesting.m in Sources */,
 				7374D91512AE3A9C003CB492 /* GBProcessor-MemberDocCopyingTesting.m in Sources */,
@@ -1590,6 +1592,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
 					Common/ThirdParty/GRMustache,
@@ -1624,6 +1627,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = appledoc_Prefix.pch;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
 					Common/ThirdParty/GRMustache,
@@ -1704,6 +1708,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1717,6 +1722,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = AppledocTests_prefix.pch;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
 					Common/ThirdParty/GRMustache,
@@ -1745,6 +1751,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1756,6 +1763,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				HEADER_SEARCH_PATHS = (
 					Libraries,
 					Common/ThirdParty/GRMustache,

@@ -155,7 +155,7 @@
 #pragma mark GBStore creation methods
 
 + (GBStore *)store {
-	return [[[GBStore alloc] init] autorelease];
+	return [[GBStore alloc] init];
 }
 
 + (GBStore *)storeWithClassWithName:(NSString *)name {
