@@ -30,6 +30,10 @@
 	return [[self alloc] init];
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma Command handling
 
 - (BOOL)runCommand:(NSString *)command, ... {	
