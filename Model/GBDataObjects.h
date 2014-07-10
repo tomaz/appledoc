@@ -17,6 +17,8 @@
 #import "GBDocumentData.h"
 
 #import "GBTypedefEnumData.h"
+#import "GBTypedefBlockData.h"
+#import "GBTypedefBlockArgument.h"
 #import "GBEnumConstantData.h"
 #import "GBIvarData.h"
 #import "GBMethodData.h"

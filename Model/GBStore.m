@@ -8,8 +8,11 @@
 
 #import "GBDataObjects.h"
 #import "GBStore.h"
+#import "SynthesizeSingleton.h"
 
 @implementation GBStore
+
+SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 #pragma mark Initialization & disposal
 
@@ -26,6 +29,8 @@
 		_documentsByName = [[NSMutableDictionary alloc] init];
         _typedefEnums = [[NSMutableSet alloc] init];
         _typedefEnumsByName = [[NSMutableDictionary alloc] init];
+        _typedefBlocks = [[NSMutableSet alloc] init];
+        _typedefBlocksByName = [[NSMutableDictionary alloc] init];
 		_customDocuments = [[NSMutableSet alloc] init];
 		_customDocumentsByKey = [[NSMutableDictionary alloc] init];
 	}
@@ -55,6 +60,12 @@
 	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfEnum" ascending:YES]];
 	return [[self.constants allObjects] sortedArrayUsingDescriptors:descriptors];
 }
+
+- (NSArray *)blocksSortedByName {
+    NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"nameOfBlock" ascending:YES]];
+    return [[self.blocks allObjects] sortedArrayUsingDescriptors:descriptors];
+}
+
 
 - (NSArray *)categoriesSortedByName {
 	NSSortDescriptor *classNameDescription = [NSSortDescriptor sortDescriptorWithKey:@"nameOfClass" ascending:YES];
@@ -125,6 +136,22 @@
 	[_typedefEnumsByName setObject:typedefEnum forKey:typedefEnum.nameOfEnum];
 }
 
+-(void)registerTypedefBlock:(GBTypedefBlockData *)typedefBlock
+{
+    NSParameterAssert(typedefBlock != nil);
+    GBLogDebug(@"Registering typedef block %@...", typedefBlock);
+    if ([_typedefBlocks containsObject:typedefBlock]) return;
+    GBProtocolData *existingTypedef = [_typedefBlocksByName objectForKey:typedefBlock.nameOfBlock];
+    if (existingTypedef) {
+        GBLogWarn(@"Ignoring typedef block %@, already defined.", typedefBlock);
+        return;
+    }
+    
+    [_typedefBlocks addObject:typedefBlock];
+    [_typedefBlocksByName setObject:typedefBlock forKey:typedefBlock.nameOfBlock];
+}
+
+
 - (void)registerDocument:(GBDocumentData *)document {
 	NSParameterAssert(document != nil);
 	GBLogDebug(@"Registering document %@...", document);
@@ -188,6 +215,10 @@
 	return [_typedefEnumsByName objectForKey:path];
 }
 
+- (GBTypedefBlockData *)typedefBlockWithName:(NSString *)path {
+    return [_typedefBlocksByName objectForKey:path];
+}
+
 - (GBDocumentData *)customDocumentWithKey:(id)key {
 	return [_customDocumentsByKey objectForKey:key];
 }
@@ -196,6 +227,7 @@
 @synthesize categories = _categories;
 @synthesize protocols = _protocols;
 @synthesize constants = _typedefEnums;
+@synthesize blocks = _typedefBlocks;
 @synthesize documents = _documents;
 @synthesize customDocuments = _customDocuments;
 

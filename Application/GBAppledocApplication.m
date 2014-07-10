@@ -148,7 +148,7 @@ static NSString *kGBArgHelp = @"help";
 - (id)init {
 	self = [super init];
 	if (self) {
-		self.settings = [GBApplicationSettingsProvider provider];
+		self.settings = [GBApplicationSettingsProvider sharedApplicationSettingsProvider];
 		self.additionalInputPaths = [NSMutableArray array];
 		self.ignoredInputPaths = [NSMutableArray array];
 		self.templatesFound = NO;
@@ -226,7 +226,7 @@ static NSString *kGBArgHelp = @"help";
 	}
 	
 	int result = (kGBLogBasedResult >= self.settings.exitCodeThreshold) ? kGBLogBasedResult : 0;
-	GBLogDebug(@"Exiting with result %d (reported result was %ld)...", result, kGBLogBasedResult);
+	GBLogDebug(@"Exiting with result %d (reported result was %ld - higher than %d)...", result, kGBLogBasedResult, self.settings.exitCodeThreshold);
 	return result;
 }
 

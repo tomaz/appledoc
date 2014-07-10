@@ -9,6 +9,7 @@
 #import "GBMethodData.h"
 #import "GBMethodSectionData.h"
 #import "GBMethodsProvider.h"
+#import "GBTypedefBlockData.h"
 
 @interface GBMethodsProvider ()
 

@@ -36,7 +36,7 @@
 - (void)matchSuperclassForClass:(GBClassData *)class;
 - (void)matchAdoptedProtocolForProvider:(GBAdoptedProtocolsProvider *)provider;
 - (void)matchIvarsForProvider:(GBIvarsProvider *)provider;
-- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required;
+- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider forClass: (GBClassData *) class defaultsRequired:(BOOL)required;
 - (BOOL)matchMethodDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required;
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required;
 
@@ -58,6 +58,7 @@
 - (BOOL)matchObjectDefinition;
 - (BOOL)matchObjectDeclaration;
 - (BOOL)matchTypedefEnumDefinition;
+- (BOOL)matchTypedefBlockDefinitionForProvider;
 - (BOOL)matchMethodDataForProvider:(GBMethodsProvider *)provider from:(NSString *)start to:(NSString *)end required:(BOOL)required;
 - (void)registerComment:(GBComment *)comment toObject:(GBModelBase *)object startingWith:(PKToken *)startToken;
 - (void)registerLastCommentToObject:(GBModelBase *)object;
@@ -162,11 +163,11 @@
 	[self matchSuperclassForClass:class];
 	[self matchAdoptedProtocolForProvider:class.adoptedProtocols];
 	[self matchIvarsForProvider:class.ivars];
-
+    
     GBMethodsProvider *methodsProvider = class.methods;
     methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
 
-	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
+    [self matchMethodDefinitionsForProvider:methodsProvider forClass: class defaultsRequired:NO];
 	[self.store registerClass:class];
 }
 
@@ -185,7 +186,7 @@
     GBMethodsProvider *methodsProvider = category.methods;
     methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
 
-	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
+    [self matchMethodDefinitionsForProvider:methodsProvider forClass: nil defaultsRequired:NO];
 	[self.store registerCategory:category];
 }
 
@@ -203,7 +204,7 @@
     GBMethodsProvider *methodsProvider = extension.methods;
     methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
 
-	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:NO];
+	[self matchMethodDefinitionsForProvider:methodsProvider forClass: nil defaultsRequired:NO];
 	[self.store registerCategory:extension];
 }
 
@@ -221,7 +222,7 @@
     GBMethodsProvider *methodsProvider = protocol.methods;
     methodsProvider.useAlphabeticalOrder = !self.settings.useCodeOrder;
 
-	[self matchMethodDefinitionsForProvider:methodsProvider defaultsRequired:YES];
+	[self matchMethodDefinitionsForProvider:methodsProvider forClass: nil defaultsRequired:YES];
 	[self.store registerProtocol:protocol];
 }
 
@@ -247,7 +248,7 @@
 	}];
 }
 
-- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider defaultsRequired:(BOOL)required {
+- (void)matchMethodDefinitionsForProvider:(GBMethodsProvider *)provider forClass: (GBClassData *) class defaultsRequired:(BOOL)required {
 	__block BOOL isRequired = required;
 	[self.tokenizer consumeTo:@"@end" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([token matches:@"@required"]) {
@@ -258,6 +259,8 @@
 			*consume = NO;
 		} else if ([self matchPropertyDefinitionForProvider:provider required:isRequired]) {
 			*consume = NO;
+        } else if ([self matchTypedefBlockDefinitionForProvider]) {
+            *consume = NO;
 		}
 	}];
 }
@@ -416,9 +419,121 @@
 - (BOOL)matchNextObject {
 	if ([self matchObjectDefinition]) return YES;
 	if ([self matchObjectDeclaration]) return YES;
+    if ([self matchTypedefBlockDefinitionForProvider]) return YES;
     if ([self matchTypedefEnumDefinition]) return YES;
 	return NO;
 }
+
+- (BOOL)matchTypedefBlockDefinitionForProvider {
+    
+    if (![[self.tokenizer currentToken] matches:@"typedef"]) {
+        return NO;
+    }
+    
+    __block BOOL isTypeDefBlock = YES;
+    __block NSString *returnType = nil;
+    __block PKToken *lastToken = nil;
+    NSUInteger currentLine = [[self.tokenizer sourceInfoForCurrentToken] lineNumber];
+    [self.tokenizer lookaheadTo:@"^" usingBlock:^(PKToken *token, BOOL *stop) {
+
+        // break and cancel everything if new line token found before block token could be find
+        if ([[self.tokenizer sourceInfoForToken: token] lineNumber] != currentLine) {
+            isTypeDefBlock = NO;
+            *stop = YES;
+            return;
+        }
+        
+        if (returnType == nil) {
+            
+            if (![token matches: @"typedef"]) {
+                returnType = [token stringValue];
+            }
+            
+        } else {
+            if ([token matches: @"*"]) {
+                returnType = [returnType stringByAppendingString: [token stringValue]];
+                
+            } else if ([token matches: @"("]) {
+                // can be ignored, we seem to be at the end
+                
+            } else {
+                // typedef started with two return type tokens -> cannot be -> cancel!
+                isTypeDefBlock = NO;
+                *stop = YES;
+                return;
+            }
+
+        }
+        lastToken = token;
+    }];
+    
+    // last token must have been a "("
+    if (isTypeDefBlock && ![lastToken matches: @"("]) {
+        return NO;
+    }
+    
+    if (isTypeDefBlock)
+    {
+        
+        [self.tokenizer consumeTo: @"^" usingBlock: nil];
+        NSString *blockName = [[self.tokenizer currentToken] stringValue];
+        
+        GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
+        GBComment *lastComment = [tokenizer lastComment];
+        GBLogVerbose(@"Matched %@ typedef block definition at line %lu.", blockName, startInfo.lineNumber);
+
+        [self.tokenizer consume:2];
+        
+        NSMutableArray *values = nil;
+        
+        if (![[self.tokenizer lookahead: 2] matches: @"void"]) {
+            values = [NSMutableArray array];
+            [self.tokenizer consumeFrom:@"(" to:@")" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop)
+             {
+                 NSString *className = [[self.tokenizer currentToken] stringValue];
+                 [self.tokenizer consume: 1];
+                 
+                 NSMutableString *argName = [NSMutableString string];
+                 while([[self.tokenizer currentToken] matches:@"*"])
+                 {
+                     [argName appendString: [[self.tokenizer currentToken] stringValue]];
+                     [tokenizer consume:1];
+                 }
+                 
+                 [argName appendString: [[self.tokenizer currentToken] stringValue]];
+                 [self.tokenizer consume: 1];
+                 
+                 if([[self.tokenizer currentToken] matches:@","])
+                 {
+                     [tokenizer consume:1];
+                 }
+                 
+                 GBTypedefBlockArgument *newArg = [GBTypedefBlockArgument typedefBlockArgumentWithName: argName className: className];
+                 
+                 [values addObject: newArg];
+                 
+                 *consume = NO;
+             }];
+        }
+        
+        GBTypedefBlockData *newBlock = [GBTypedefBlockData typedefBlockWithName: blockName returnType: returnType parameters: values];
+        newBlock.includeInOutput = self.includeInOutput;
+
+        [newBlock registerSourceInfo:startInfo];
+        [self registerComment:lastComment toObject:newBlock];
+        [self.tokenizer resetComments];
+
+        //consume ;
+        [self.tokenizer consume:1];
+
+        [self.store registerTypedefBlock: newBlock];
+        
+        return YES;
+
+    }
+    return NO;
+}
+
 
 - (BOOL)matchTypedefEnumDefinition {
     BOOL isTypeDef = [[self.tokenizer currentToken] matches:@"typedef"];

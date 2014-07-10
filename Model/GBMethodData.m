@@ -14,6 +14,9 @@
 #import "GBCategoryData.h"
 #import "RegexKitLite.h"
 
+#import "GBStore.h"
+#import "GBApplicationSettingsProvider.h"
+
 @interface GBMethodData ()
 
 - (NSString *)selectorFromAssignedData;
@@ -228,7 +231,29 @@
 }
 
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value {
-	return [self formattedComponentWithValue:value style:0 href:nil];
+    
+    NSString *href = nil;
+    id referencedObject = nil;
+    if (!(referencedObject = [[GBStore sharedStore] classWithName: value])) {
+        if (!(referencedObject = [[GBStore sharedStore] categoryWithName: value])) {
+            if (!(referencedObject = [[GBStore sharedStore] protocolWithName: value])) {
+                if (!(referencedObject = [[GBStore sharedStore] typedefEnumWithName: value])) {
+                    if (!(referencedObject = [[GBStore sharedStore] typedefBlockWithName: value])) {
+                        referencedObject = [[GBStore sharedStore] documentWithName: value];
+                    }
+                }
+            }
+        }
+    }
+    
+    if (referencedObject != nil) {
+        NSString *relPath = [[GBApplicationSettingsProvider sharedApplicationSettingsProvider] htmlRelativePathToIndexFromObject: self];
+        NSString *linkPath = [[GBApplicationSettingsProvider sharedApplicationSettingsProvider] htmlReferenceForObject:referencedObject fromSource: nil];
+        
+        href = [relPath stringByAppendingPathComponent: linkPath];
+    }
+    
+	return [self formattedComponentWithValue:value style:0 href:href];
 }
 
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href {

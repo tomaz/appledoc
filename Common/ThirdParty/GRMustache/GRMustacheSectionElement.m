@@ -91,12 +91,23 @@
 					}
 				}
 			} else {
-				for (id object in value) {
-					GRMustacheContext *innerContext = [GRMustacheContext contextWithObject:object parent:context];
-					for (NSObject<GRMustacheElement> *elem in elems) {
-						[buffer appendString:[elem renderContext:innerContext]];
-					}
-				}
+                [value enumerateObjectsUsingBlock:^(id object, NSUInteger index, BOOL *stop) {
+                    GRMustacheContext *innerContext = [GRMustacheContext contextWithObject:object parent:context];
+                    for (NSObject<GRMustacheElement> *elem in elems) {
+                        NSString *rendered = [elem renderContext:innerContext];
+                        
+                        // check for optional enumeration delimiter
+                        if ([rendered hasPrefix: @"[["] && [rendered hasSuffix: @"]]"]) {
+                            if (index < ([value count] - 1)) {
+                                rendered = [rendered substringWithRange: NSMakeRange(2, rendered.length-4)];
+                            } else {
+                                rendered = nil;
+                            }
+                        }
+                        
+                        if (rendered != nil) [buffer appendString: rendered];
+                    }
+                }];
 			}
 			break;
 			

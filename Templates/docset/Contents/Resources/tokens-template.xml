@@ -40,6 +40,17 @@
             {{>Reference}}
         </Token>
         {{/constants}}
+        {{#blocks}}
+        <Token>
+            {{>TokenIdentifier}}
+            {{>Abstract}}
+            <Declaration>{{declaration}}</Declaration>
+            {{>Availability}}
+            {{>DeclaredIn}}
+            {{>RelatedTokens}}
+            {{>Reference}}
+        </Token>
+        {{/blocks}}
 	</File>
 </Tokens>
 

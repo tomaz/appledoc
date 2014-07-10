@@ -26,6 +26,7 @@
 		[result setObject:@"%1$@(%2$@) Category Reference" forKey:@"categoryTitle"];
 		[result setObject:@"%@ Protocol Reference" forKey:@"protocolTitle"];
 		[result setObject:@"%@ Constants Reference" forKey:@"constantTitle"];
+        [result setObject:@"%@ Block Reference" forKey:@"blockTitle"];
 		[result setObject:@"%@ Methods" forKey:@"mergedCategorySectionTitle"];
 		[result setObject:@"Extension Methods" forKey:@"mergedExtensionSectionTitle"];
 		[result setObject:@"%2$@ from %1$@" forKey:@"mergedPrefixedCategorySectionTitle"];
@@ -74,6 +75,7 @@
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"Class Methods" forKey:@"classMethodsTitle"];
 		[result setObject:@"Instance Methods" forKey:@"instanceMethodsTitle"];
+        [result setObject:@"Block Definition" forKey:@"blockDefTitle"];
 		[result setObject:@"Properties" forKey:@"propertiesTitle"];
 		[result setObject:@"Parameters" forKey:@"parametersTitle"];
 		[result setObject:@"Return Value" forKey:@"resultTitle"];
@@ -109,6 +111,7 @@
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
         [result setObject:@"Constant References" forKey:@"constantsTitle"];
+        [result setObject:@"Block References" forKey:@"blocksTitle"];
 	}
 	return result;
 }
@@ -122,6 +125,7 @@
 		[result setObject:@"Category References" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocol References" forKey:@"protocolsTitle"];
         [result setObject:@"Constant References" forKey:@"constantsTitle"];
+        [result setObject:@"Block References" forKey:@"blocksTitle"];
 	}
 	return result;
 }
@@ -137,6 +141,7 @@
 		[result setObject:@"Categories" forKey:@"categoriesTitle"];
 		[result setObject:@"Protocols" forKey:@"protocolsTitle"];
         [result setObject:@"Constants" forKey:@"constantsTitle"];
+        [result setObject:@"Blocks" forKey:@"blocksTitle"];
 	}
 	return result;
 }

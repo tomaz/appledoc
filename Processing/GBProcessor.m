@@ -18,6 +18,7 @@
 - (void)processCategories;
 - (void)processProtocols;
 - (void)processConstants;
+- (void)processBlocks;
 - (void)processDocuments;
 
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider;
@@ -78,6 +79,7 @@
 	[self processCategories];
 	[self processProtocols];
     [self processConstants];
+    [self processBlocks];
 	[self processDocuments];
 }
 
@@ -142,6 +144,20 @@
 	}
 }
 
+- (void)processBlocks {
+    NSArray *blocks = [self.store.blocks allObjects];
+    for (GBTypedefBlockData *blockData in blocks) {
+        GBLogInfo(@"Processing blocks %@...", blockData);
+        self.currentContext = blockData;
+        if (![self removeUndocumentedObject:blockData]) {
+            [self processCommentForObject:blockData];
+            [self validateCommentsForObjectAndMembers:blockData];
+            [self processHtmlReferencesForObject:blockData];
+        }
+        GBLogDebug(@"Finished processing blocks %@.", blockData);
+    }
+}
+
 - (void)processDocuments {
 	for (GBDocumentData *document in self.store.documents) {
 		GBLogInfo(@"Processing static document %@...", document);
@@ -173,6 +189,15 @@
 	}
 }
 
+- (void)processBlocksForObject:(NSArray *)blocks {
+    for (GBTypedefBlockData *block in blocks) {
+        GBLogVerbose(@"Processing block %@...", block);
+        [self processCommentForObject:block];
+        GBLogDebug(@"Finished processing method %@.", block);
+    }
+}
+
+
 - (void)processConstantsFromProvider:(GBEnumConstantProvider *)provider {
 	NSArray *constants = [provider.constants copy];
 	for (GBEnumConstantData *constant in constants) {
@@ -200,7 +225,7 @@
 	}
 	
 	// Let comments processor parse comment string value into object representation.
-	self.commentsProcessor.alwaysRepeatFirstParagraph = object.isTopLevelObject || object.isStaticDocument;
+	self.commentsProcessor.alwaysRepeatFirstParagraph = (object.isTopLevelObject || object.isStaticDocument) && ![object isKindOfClass: [GBTypedefBlockData class]];
 	[self.commentsProcessor processCommentForObject:object withContext:self.currentContext store:self.store];
 }
 
@@ -294,14 +319,16 @@
 	// Only remove if all methods are uncommented. Note that this also removes methods regardless of keepUndocumentedMembers setting, however if the object itself is commented, we'll keep methods.
 	if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
     {
-        GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
         BOOL hasCommentedMethods = NO;
+        
+        GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object methods];
         for (GBMethodData *method in provider.methods) {
             if ([self isCommentValid:method.comment]) {
                 hasCommentedMethods = YES;
                 break;
             }
         }
+        
         // Remove the object if it only has uncommented methods.
         if (!hasCommentedMethods) {
             GBLogVerbose(@"Removing undocumented object %@...", object);
@@ -436,7 +463,9 @@
     if (!object.includeInOutput) return;
     
 	// Checks if the object is commented and warns if not. This validates given object and all it's members comments! The reason for doing it together is due to the fact that we first process all members and then handle the object. At that point we can even remove the object if not documented. So we can't validate members before as we don't know whether they will be deleted together with their parent object too...
-	if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
+    if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) {
+        GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
+    }
 	
 	// Handle methods.
     if([object conformsToProtocol:@protocol(GBObjectDataProviding)])
@@ -446,6 +475,7 @@
                 GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
             }
         }
+        
     }
     
     if([object isKindOfClass:[GBTypedefEnumData class]])

@@ -55,6 +55,16 @@
 					</Subnodes>
 				</Node>
 				{{/hasConstants}}
+                {{#hasBlocks}}
+                <Node>
+                    <Name>{{strings/docset/blocksTitle}}</Name>
+                    <Path>{{indexFilename}}</Path>
+                    <Subnodes>
+                        {{#blocks}}{{>NodeRef}}
+                        {{/blocks}}
+                    </Subnodes>
+                </Node>
+                {{/hasBlocks}}
 			</Subnodes>
         </Node>
     </TOC>
@@ -69,6 +79,8 @@
 		{{/protocols}}
         {{#constants}}{{>Node}}
 		{{/constants}}
+        {{#blocks}}{{>Node}}
+        {{/blocks}}
 	</Library>
 </DocSetNodes>
 
