@@ -7,7 +7,7 @@
 //
 
 #import "RegexKitLite.h"
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBTask.h"

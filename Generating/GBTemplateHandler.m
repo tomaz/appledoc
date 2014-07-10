@@ -7,8 +7,7 @@
 //
 
 #import "RegexKitLite.h"
-#import "GRMustache.h"
-#import "GBDictionaryTemplateLoader.h"
+#import "GRMustache/GRMustache.h"
 #import "GBTemplateHandler.h"
 
 static NSString *kGBSectionKey = @"section";
@@ -17,7 +16,7 @@ static NSString *kGBValueKey = @"value";
 
 #pragma mark -
 
-@interface GBTemplateHandler ()
+@interface GBTemplateHandler ()<GRMustacheTemplateRepositoryDataSource>
 
 - (void)clearParsedValues;
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template;
@@ -98,8 +97,10 @@ static NSString *kGBValueKey = @"value";
 	
 	// Prepare template that will be used for rendering output.
 	if ([_templateString length] != 0) {
-		GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
-		_template = [loader parseString:_templateString error:error];
+        GRMustacheTemplateRepository *loader = [GRMustacheTemplateRepository templateRepository];
+        loader.dataSource = self;
+        
+        _template = [loader templateFromString:_templateString error:error];
 		return (_template != nil);
 	}
 	return YES;
@@ -113,7 +114,7 @@ static NSString *kGBValueKey = @"value";
 		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
 		return @"";
 	}
-	return [_template renderObject:object];
+	return [_template renderObject:object error:NULL];
 }
 
 #pragma mark Helper methods
@@ -147,6 +148,22 @@ static NSString *kGBValueKey = @"value";
 	_template = nil;
 	_templateString = @"";
 	[_templateSections removeAllObjects];
+}
+
+#pragma mark GRMustache Template Data Source
+
+-(id<NSCopying>)templateRepository:(GRMustacheTemplateRepository *)templateRepository
+                 templateIDForName:(NSString *)name
+              relativeToTemplateID:(id)baseTemplateID
+{
+    return name;
+}
+
+- (NSString *)templateRepository:(GRMustacheTemplateRepository *)templateRepository
+     templateStringForTemplateID:(id)templateID
+                           error:(NSError *__autoreleasing *)error
+{
+	return [_templateSections objectForKey:templateID];
 }
 
 @end
