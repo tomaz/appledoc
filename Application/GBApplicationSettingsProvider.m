@@ -150,6 +150,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		self.keepMergedCategoriesSections = NO;
 		self.prefixMergedCategoriesSectionsWithCategoryName = NO;
         self.useCodeOrder = NO;
+        self.ignoredSymbols = [ NSMutableSet set ];
+        self.requireLeaderForLocalCrossRefs = NO;
 		
 		self.prefixLocalMembersInRelatedItemsList = YES;
 		self.embedCrossReferencesWhenProcessingMarkdown = YES;
@@ -687,6 +689,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize keepMergedCategoriesSections;
 @synthesize prefixMergedCategoriesSectionsWithCategoryName;
 @synthesize useCodeOrder;
+@synthesize ignoredSymbols;
+@synthesize requireLeaderForLocalCrossRefs;
 
 @synthesize prefixLocalMembersInRelatedItemsList;
 @synthesize embedCrossReferencesWhenProcessingMarkdown;

@@ -115,11 +115,23 @@
 	}
 }
 
-- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated {
+- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated requireLeader:(BOOL)requireLeader {
 	if (templated) {
-		GBRETURN_ON_DEMAND([self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO]]);
+        static NSString *regexLeaderRequired = nil;
+        static NSString *regexLeaderNotRequired = nil;
+        if (!regexLeaderRequired) {
+            regexLeaderRequired = [self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO requireLeader:YES]];
+            regexLeaderNotRequired = [ self crossReferenceRegexForRegex:[self localMemberCrossReferenceRegex:NO requireLeader:NO]];
+        }
+        return requireLeader ? regexLeaderRequired : regexLeaderNotRequired;
 	} else {
-		GBRETURN_ON_DEMAND(@"([+-]?)([^>,.;!?()\\s]+)");
+        static NSString *regexLeaderRequired = nil;
+        static NSString *regexLeaderNotRequired = nil;
+        if (!regexLeaderRequired) {
+            regexLeaderRequired = @"([+-])([^>,.;!?()\\s]+)";
+            regexLeaderNotRequired = @"([+-]?)([^>,.;!?()\\s]+)";
+        }
+        return requireLeader ? regexLeaderRequired : regexLeaderNotRequired;
 	}
 }
 

@@ -135,9 +135,10 @@
  The result of the method depends on the templated value: if the value is `YES`, the string includes template from `crossReferenceMarkersTemplate`, otherwise it only contains "pure" regex. The first option should be used for in-text cross references detection, while the second for `crossReferenceRegex` matching.
  
  @param templated If `YES` templated regex is returned, otherwise pure one.
+ @param requireLeader If 'YES', the regex will only match local member cross references with a '+' or '-' leader. Making this a requirement will reduce false links, but may lose some valid links.
  @return Returns the regex used for matching cross reference.
  */
-- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated;
+- (NSString *)localMemberCrossReferenceRegex:(BOOL)templated requireLeader:(BOOL)requireLeader;
 
 /** Returns the regex used for matching (possible) category cross reference with capture 1 containing category name.
  

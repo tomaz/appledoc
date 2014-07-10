@@ -399,6 +399,18 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) BOOL useCodeOrder;
 
+/** A set of globs to be matched against each input symbol to determine whether the symbol should be ignored
+
+ */
+@property (retain) NSMutableSet* ignoredSymbols;
+
+/** Specifies whether auto-linking for 'local' cross references requires the symbol to begin with '-' or '+'
+ 
+ If 'YES' then auto-linking of local symbols will only happen if the symbol is written in the comment with a leading '+' or '-'. This reduces false-positives, where links are created out of common words, because there are local symbols named after common words (e.g 'and')
+
+ */
+@property (assign) BOOL requireLeaderForLocalCrossRefs;
+
 /** Indicates whteher local methods and properties cross references texts should be prefixed when used in related items list.
  
  If `YES`, instance methods are prefixed with `-`, class methods with `+` and properties with `@property` when used as cross reference in related items list (i.e. see also section for methods). If `NO`, no prefix is used.

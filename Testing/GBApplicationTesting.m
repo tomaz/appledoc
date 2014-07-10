@@ -345,6 +345,25 @@
 	assertThatInteger(settings.exitCodeThreshold, equalToInteger(2));
 }
 
+- (void)testIgnoreSymbol_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--ignore-symbol", @"*deprecated*", @"--ignore-symbol", @"DummyClass?", nil];
+	// verify - note that ignore should not convert dot to current path; this would prevent .m being parsed properly!
+	assertThatInteger([settings.ignoredSymbols count], equalToInteger(2));
+	assertThatBool([settings.ignoredSymbols containsObject:@"*deprecated*"], equalToBool(YES));
+	assertThatBool([settings.ignoredSymbols containsObject:@"DummyClass?"], equalToBool(YES));
+}
+
+- (void)testRequireLeaderForLocalCrossRefs_shouldAssignValueToSettings {
+	// setup & execute
+	GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--require-leader-for-local-crossrefs", nil];
+	GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-require-leader-for-local-crossrefs", nil];
+	// verify
+	assertThatBool(settings1.requireLeaderForLocalCrossRefs, equalToBool(YES));
+	assertThatBool(settings2.requireLeaderForLocalCrossRefs, equalToBool(NO));
+}
+
+
 #pragma mark Warnings settings testing
 
 - (void)testWarnOnMissingOutputPath_shouldAssignValueToSettings {

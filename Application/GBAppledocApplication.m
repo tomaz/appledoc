@@ -56,6 +56,8 @@ static NSString *kGBArgMergeCategoryComment = @"merge-category-comment";
 static NSString *kGBArgKeepMergedCategoriesSections = @"keep-merged-sections";
 static NSString *kGBArgPrefixMergedCategoriesSectionsWithCategoryName = @"prefix-merged-sections";
 static NSString *kGBArgUseCodeOrder = @"use-code-order";
+static NSString *kGBArgIgnoreSymbol = @"ignore-symbol";
+static NSString *kGBArgRequireLeaderForLocalCrossRefs = @"require-leader-for-local-crossrefs";
 
 static NSString *kGBArgExplicitCrossRef = @"explicit-crossref";
 static NSString *kGBArgCrossRefFormat = @"crossref-format";
@@ -309,6 +311,9 @@ static NSString *kGBArgHelp = @"help";
 		{ GBNoArg(kGBArgKeepMergedCategoriesSections),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPrefixMergedCategoriesSectionsWithCategoryName),	0,		DDGetoptNoArgument },
         { GBNoArg(kGBArgUseCodeOrder),	                                    0,		DDGetoptNoArgument },
+		{ kGBArgIgnoreSymbol,												0,	    DDGetoptRequiredArgument },
+		{ kGBArgRequireLeaderForLocalCrossRefs,                             0,		DDGetoptNoArgument },
+		{ GBNoArg(kGBArgRequireLeaderForLocalCrossRefs),                    0,		DDGetoptNoArgument },
 		
 		{ kGBArgWarnOnMissingOutputPath,									0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnMissingCompanyIdentifier,								0,		DDGetoptNoArgument },
@@ -840,6 +845,11 @@ static NSString *kGBArgHelp = @"help";
 - (void)setNoPrefixMergedSections:(BOOL)value { self.settings.prefixMergedCategoriesSectionsWithCategoryName = !value; }
 - (void)setUseCodeOrder:(BOOL)value { self.settings.useCodeOrder = value; }
 - (void)setNoUseCodeOrder:(BOOL)value { self.settings.useCodeOrder = !value; }
+- (void)setIgnoreSymbol:(NSString *)glob {
+	[self.settings.ignoredSymbols addObject:glob];
+}
+-(void)setRequireLeaderForLocalCrossrefs:(BOOL)value { self.settings.requireLeaderForLocalCrossRefs = value; }
+-(void)setNoRequireLeaderForLocalCrossrefs:(BOOL)value { self.settings.requireLeaderForLocalCrossRefs = !value; }
 
 - (void)setWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = value; }
 - (void)setWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = value; }
@@ -966,6 +976,8 @@ static NSString *kGBArgHelp = @"help";
 	ddprintf(@"--%@ = %@\n", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, PRINT_BOOL(self.settings.prefixMergedCategoriesSectionsWithCategoryName));
 	ddprintf(@"--%@ = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
 	ddprintf(@"--%@ = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
+	for (NSString *glob in self.settings.ignoredSymbols) ddprintf(@"--%@ = %@\n", kGBArgIgnoreSymbol, glob);
+	ddprintf(@"--%@ = %@\n", kGBArgRequireLeaderForLocalCrossRefs, PRINT_BOOL(self.settings.requireLeaderForLocalCrossRefs));
 	ddprintf(@"--%@ = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
 	ddprintf(@"\n");
 	
@@ -1035,6 +1047,8 @@ static NSString *kGBArgHelp = @"help";
 	PRINT_USAGE(@"   ", kGBArgPrefixMergedCategoriesSectionsWithCategoryName, @"", @"[b] Prefix merged sections with category name");
     PRINT_USAGE(@"   ", kGBArgExplicitCrossRef, @"", @"[b] Shortcut for explicit default cross ref template");
     PRINT_USAGE(@"   ", kGBArgUseCodeOrder, @"", @"[b] Order sections by the order specified in the input files");
+    PRINT_USAGE(@"   ", kGBArgIgnoreSymbol, @"<glob>", @"[*] A glob to match against symbols. If a symbol matches, it will not be included in the output.");
+    PRINT_USAGE(@"   ", kGBArgRequireLeaderForLocalCrossRefs, @"", @"[b] If true, only auto-link local symbol references that begin with '-' or '+'.");
     PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
     PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
 	ddprintf(@"\n");

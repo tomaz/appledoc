@@ -126,6 +126,50 @@
 	return [lines count];
 }
 
+- (BOOL)matchesGlob:(NSString *)glob
+{
+    NSUInteger strIdxForCurrentStarMatch = 0, afterLastStarIdx = NSNotFound;
+    NSUInteger strIdx = 0, globIdx = 0;
+    NSUInteger strLen = self.length;
+    NSUInteger globLen = glob.length;
+
+    while (strIdx < strLen && ([glob characterAtIndex:globIdx] != '*')) {
+        if (([glob characterAtIndex:globIdx] != [self characterAtIndex:strIdx]) &&
+            ([glob characterAtIndex:globIdx] != '?')) {
+            return NO;
+        }
+        globIdx++;
+        strIdx++;
+    }
+
+    while (strIdx < strLen) {
+        if ([glob characterAtIndex:globIdx] == '*') {
+            globIdx++;
+            if (globIdx == globLen) {
+                return YES;
+            }
+            afterLastStarIdx = globIdx;
+            strIdxForCurrentStarMatch = strIdx + 1;
+        }
+        else if (([glob characterAtIndex:globIdx] == [self characterAtIndex:strIdx]) ||
+                 ([glob characterAtIndex:globIdx] == '?')) {
+            globIdx++;
+            strIdx++;
+        }
+        else if (afterLastStarIdx != NSNotFound) {
+            globIdx = afterLastStarIdx;
+            strIdx = strIdxForCurrentStarMatch++;
+        }
+        else {
+            return NO;
+        }
+    }
+
+    while (globIdx < globLen && [glob characterAtIndex:globIdx] == '*') {
+        globIdx++;
+    }
+    return (globIdx == globLen);
+}
 @end
 
 #pragma mark -

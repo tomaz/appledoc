@@ -1020,7 +1020,7 @@ typedef NSUInteger GBProcessingFlag;
 	if (!self.currentContext) return nil;
 
 	BOOL templated = (flags & GBProcessingFlagRelatedItem) == 0;
-	NSString *regex = [self.components localMemberCrossReferenceRegex:templated];
+	NSString *regex = [self.components localMemberCrossReferenceRegex:templated requireLeader:self.settings.requireLeaderForLocalCrossRefs ];
 	NSArray *components = [string captureComponentsMatchedByRegex:regex range:searchRange];
 	if ([components count] == 0) return nil;
 		
