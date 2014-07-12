@@ -16,7 +16,7 @@ static NSString *kGBValueKey = @"value";
 
 #pragma mark -
 
-@interface GBTemplateHandler ()<GRMustacheTemplateRepositoryDataSource>
+@interface GBTemplateHandler ()
 
 - (void)clearParsedValues;
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template;
@@ -97,9 +97,7 @@ static NSString *kGBValueKey = @"value";
 	
 	// Prepare template that will be used for rendering output.
 	if ([_templateString length] != 0) {
-        GRMustacheTemplateRepository *loader = [GRMustacheTemplateRepository templateRepository];
-        loader.dataSource = self;
-        
+        GRMustacheTemplateRepository *loader = [GRMustacheTemplateRepository templateRepositoryWithDictionary:_templateSections];
         _template = [loader templateFromString:_templateString error:error];
 		return (_template != nil);
 	}
@@ -114,7 +112,12 @@ static NSString *kGBValueKey = @"value";
 		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
 		return @"";
 	}
-	return [_template renderObject:object error:NULL];
+    NSError* error = nil;
+    NSString* rendering = [_template renderObject:object error:&error];
+    if (error) {
+        GBLogWarn(@"An error occured when rendering the template: %@", [error localizedDescription]);
+    }
+	return rendering;
 }
 
 #pragma mark Helper methods
@@ -148,22 +151,6 @@ static NSString *kGBValueKey = @"value";
 	_template = nil;
 	_templateString = @"";
 	[_templateSections removeAllObjects];
-}
-
-#pragma mark GRMustache Template Data Source
-
--(id<NSCopying>)templateRepository:(GRMustacheTemplateRepository *)templateRepository
-                 templateIDForName:(NSString *)name
-              relativeToTemplateID:(id)baseTemplateID
-{
-    return name;
-}
-
-- (NSString *)templateRepository:(GRMustacheTemplateRepository *)templateRepository
-     templateStringForTemplateID:(id)templateID
-                           error:(NSError *__autoreleasing *)error
-{
-	return [_templateSections objectForKey:templateID];
 }
 
 @end
