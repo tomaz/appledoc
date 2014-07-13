@@ -14,15 +14,15 @@
 @implementation GBTypedefBlockArgument
 
 + (id)typedefBlockArgumentWithName:(NSString *)name className:(NSString *) className {
-    return [[[self alloc] initWithName:name className: className] autorelease];
+    return [[self alloc] initWithName:name className: className];
 }
 
 - (id)initWithName:(NSString *)name className:(NSString *) className {
     NSParameterAssert(name != nil);
     self = [super init];
     if (self) {
-        _argumentName = [name retain];
-        _argumentClass = [className retain];
+        _argumentName = name;
+        _argumentClass = className;
     }
     return self;
 }

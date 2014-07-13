@@ -197,8 +197,6 @@
 		B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
-		C56768111958403800E8E4C8 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
-		C5676814195840BD00E8E4C8 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
 		B8BBC0F7196DFAEB006F239D /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
@@ -246,6 +244,10 @@
 		DA98B58C19720EF600059171 /* GRMustacheVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = DA98B56719720EF600059171 /* GRMustacheVersion.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA98B58F1972114500059171 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = DA98B58E1972114500059171 /* GBDictionaryTemplateLoader.m */; };
 		DA98B5901972114500059171 /* GBDictionaryTemplateLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = DA98B58E1972114500059171 /* GBDictionaryTemplateLoader.m */; };
+		DA98B5911972151100059171 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
+		DA98B5921972151100059171 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
+		DA98B5931972151100059171 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
+		DA98B5941972151100059171 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -1354,6 +1356,7 @@
 				733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */,
 				DA98B57219720EF600059171 /* GRMustacheContext.m in Sources */,
 				733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */,
+				DA98B5941972151100059171 /* GBTypedefBlockArgument.m in Sources */,
 				733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */,
 				733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */,
 				733EA144122BDEC80060CBDE /* GBCommentTesting.m in Sources */,
@@ -1455,6 +1458,7 @@
 				73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */,
 				73FAC0FA130BCB6F00F22475 /* GBCommentArgument.m in Sources */,
 				DA98B58A19720EF600059171 /* GRMustacheVariableElement.m in Sources */,
+				DA98B5931972151100059171 /* GBTypedefBlockData.m in Sources */,
 				73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */,
 				DA98B57619720EF600059171 /* GRMustacheElement.m in Sources */,
 				73E1B7D6130BE7C000E3D710 /* GBCommentsProcessor-PreprocessingTesting.m in Sources */,
@@ -1522,6 +1526,7 @@
 				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
 				7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
+				DA98B5921972151100059171 /* GBTypedefBlockArgument.m in Sources */,
 				73AA9F731253BF4000074152 /* GBGenerator.m in Sources */,
 				DA98B57B19720EF600059171 /* GRMustacheSectionElement.m in Sources */,
 				DA98B58719720EF600059171 /* GRMustacheURLTemplateLoader.m in Sources */,
@@ -1563,6 +1568,7 @@
 				B4D1FFDF15FF5F05009736E2 /* DDZipReader.m in Sources */,
 				DA98B57919720EF600059171 /* GRMustacheLambda.m in Sources */,
 				B4D1FFE115FF5F05009736E2 /* DDZipWriter.m in Sources */,
+				DA98B5911972151100059171 /* GBTypedefBlockData.m in Sources */,
 				B4D1FFE315FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE515FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
 				D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */,

@@ -272,9 +272,9 @@
 }
 
 - (BOOL)matchPropertyDefinitionForProvider:(GBMethodsProvider *)provider required:(BOOL)required {
-	GBComment *comment;
-	GBComment *sectionComment;
-	NSString *sectionName;
+	__block GBComment *comment;
+	__block GBComment *sectionComment;
+	__block NSString *sectionName;
 	__block BOOL firstToken = YES;
 	__block BOOL result = NO;
 	__block GBSourceInfo *filedata = nil;
@@ -520,7 +520,7 @@
         newBlock.includeInOutput = self.includeInOutput;
 
         [newBlock registerSourceInfo:startInfo];
-        [self registerComment:lastComment toObject:newBlock];
+        [self registerComment:lastComment toObject:newBlock startingWith:nil];
         [self.tokenizer resetComments];
 
         //consume ;
