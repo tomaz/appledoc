@@ -1,6 +1,6 @@
 // The MIT License
 // 
-// Copyright (c) 2014 Gwendal Roué
+// Copyright (c) 2010 Gwendal Roué
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,25 +20,48 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "GRMustacheLambda_private.h"
 
-/**
- * The major component of GRMustache version
- * 
- * @since v1.0
- */
-#define GRMUSTACHE_MAJOR_VERSION 7
 
-/**
- * The minor component of GRMustache version
- * 
- * @since v1.0
- */
-#define GRMUSTACHE_MINOR_VERSION 0
+@interface GRMustacheLambdaBlockWrapper()
++ (id)lambdaWithBlock:(GRMustacheLambdaBlock)block;
+- (id)initWithBlock:(GRMustacheLambdaBlock)block;
+@end
 
-/**
- * The patch-level component of GRMustache version
- * 
- * @since v1.0
- */
-#define GRMUSTACHE_PATCH_VERSION 2
 
+@implementation GRMustacheLambdaBlockWrapper
+
++ (id)lambdaWithBlock:(GRMustacheLambdaBlock)block {
+	return [[[self alloc] initWithBlock:block] autorelease];
+}
+
+- (id)initWithBlock:(GRMustacheLambdaBlock)theBlock {
+	if ((self = [self init])) {
+		block = [theBlock copy];
+	}
+	return self;
+}
+
+- (NSString *)renderObject:(id)object fromString:(NSString *)templateString renderer:(GRMustacheRenderer)renderer {
+	NSString *result = block(renderer, object, templateString);
+	if (result == nil) {
+		return @"";
+	}
+	return result;
+}
+
+- (NSString *)description {
+	return @"<GRMustacheLambda>";
+}
+
+- (void)dealloc {
+	[block release];
+	[super dealloc];
+}
+
+@end
+
+
+GRMustacheLambda GRMustacheLambdaMake(GRMustacheLambdaBlock block) {
+	return [GRMustacheLambdaBlockWrapper lambdaWithBlock:block];
+}
