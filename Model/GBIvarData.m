@@ -13,7 +13,7 @@
 #pragma mark Initialization & disposal
 
 + (id)ivarDataWithComponents:(NSArray *)components {
-	return [[[self alloc] initWithDataFromComponents:components] autorelease];
+	return [[self alloc] initWithDataFromComponents:components];
 }
 
 - (id)initWithDataFromComponents:(NSArray *)components {

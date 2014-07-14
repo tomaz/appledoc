@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,7 +32,7 @@
 @interface DDCliParseException : NSException
 {
     @private
-    int mExitCode;
+    int _exitCode;
 }
 
 /**
@@ -42,8 +42,8 @@
  * @param exitCode Desired exit code
  * @return Autoreleased exception
  */
-+ (DDCliParseException *) parseExceptionWithReason: (NSString *) reason
-                                          exitCode: (int) exitCode;
++ (DDCliParseException *)parseExceptionWithReason:(NSString *)reason
+                                         exitCode:(int)exitCode;
 
 /**
  * Create a new exception with a given reason and exit code.
@@ -52,14 +52,14 @@
  * @param exitCode Desired exit code
  * @return New exception
  */
-- (id) initWithReason: (NSString *) reason
-             exitCode: (int) exitCode;
+- (id)initWithReason:(NSString *)reason
+            exitCode:(int)exitCode;
 
 /**
  * Returns the desired exit code.
  *
  * @return The desired exit code
  */
-- (int) exitCode;
+- (int)exitCode;
 
 @end

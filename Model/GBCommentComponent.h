@@ -81,7 +81,7 @@
 
 /** Source file information.
  */
-@property (retain) GBSourceInfo *sourceInfo;
+@property (strong) GBSourceInfo *sourceInfo;
 
 ///---------------------------------------------------------------------------------------
 /// @name Helper attributes
@@ -89,10 +89,10 @@
 
 /** This is used only for related items to allow creating documentation set identifiers.
  */
-@property (retain) id relatedItem;
+@property (strong) id relatedItem;
 
 /** Settings used for creating various values.
  */
-@property (retain) id settings;
+@property (strong) id settings;
 
 @end

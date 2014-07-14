@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,7 @@
  */
 
 #import <sysexits.h>
+#import <objc/runtime.h>
 #import "DDCliApplication.h"
 #import "DDGetoptLongParser.h"
 #import "DDCliUtil.h"
@@ -30,44 +31,67 @@
 
 DDCliApplication * DDCliApp = nil;
 
+@interface DDCliApplication ()
+
+- (Class)findFirstDelegateClass;
+
+@end
+
 @implementation DDCliApplication
 
-+ (DDCliApplication *) sharedApplication;
++ (DDCliApplication *)sharedApplication;
 {
     if (DDCliApp == nil)
         DDCliApp = [[DDCliApplication alloc] init];
     return DDCliApp;
 }
 
-- (id) init;
+- (id)init;
 {
     self = [super init];
     if (self == nil)
         return nil;
     
     NSProcessInfo * processInfo = [NSProcessInfo processInfo];
-    mName = [[processInfo processName] retain];
+    _name = [[processInfo processName] retain];
     
     return self;
 }
 
-- (NSString *) name;
+- (void)dealloc
 {
-    return mName;
+    [_name release];
+    
+    [super dealloc];
 }
 
-- (int) runWithClass: (Class) delegateClass;
+- (NSString *)name;
 {
-    NSObject<DDCliApplicationDelegate> * delegate = nil;
+    return _name;
+}
+
+- (NSString *)description;
+{
+    return [self name];
+}
+
+- (int)runWithDelegate:(id<DDCliApplicationDelegate>)delegate
+             arguments:(NSArray *)arguments
+{
     int result = EXIT_SUCCESS;
     @try
     {
-        delegate = [[delegateClass alloc] init];
-
         DDGetoptLongParser * optionsParser =
             [DDGetoptLongParser optionsWithTarget: delegate];
         [delegate application: self willParseOptions: optionsParser];
-        NSArray * arguments = [optionsParser parseOptions];
+		if ( arguments == nil )
+		{
+			arguments = [optionsParser parseOptions];
+		}
+		else
+		{
+			arguments = [optionsParser parseOptionsWithArguments:arguments command:[[NSProcessInfo processInfo] processName]];
+		}
         if (arguments == nil)
         {
             return EX_USAGE;
@@ -83,24 +107,58 @@ DDCliApplication * DDCliApp = nil;
     }
     @catch (NSException * e)
     {
-        ddfprintf(stderr, @"ERROR: %@: %@\n", [e name], [e description]);
+        ddfprintf(stderr, @"Caught: %@: %@\n", [e name], [e description]);
         result = EXIT_FAILURE;
-    }
-    @finally
-    {
-        if (delegate != nil)
-        {
-            [delegate release];
-            delegate = nil;
-        }
     }
     
     return result;
 }
 
-- (NSString *) description;
+- (int)runWithClass:(Class)delegateClass
 {
-    return [self name];
+    id<DDCliApplicationDelegate> delegateInstance = nil;
+    @try {
+        if (delegateClass == nil)
+            delegateClass = [self findFirstDelegateClass];
+        if (delegateClass == nil)
+        {
+            ddfprintf(stderr, @"%@: delegate class not found\n", self);
+            return EX_CONFIG;
+        }
+        
+        delegateInstance = [[delegateClass alloc] init];
+        return [self runWithDelegate:delegateInstance arguments:nil];
+    }
+    @finally {
+        [delegateInstance release];
+    }
+    
+}
+
+- (Class)findFirstDelegateClass;
+{
+    Protocol * delegateProtocol = @protocol(DDCliApplicationDelegate);
+    Class delegateClass = nil;
+    
+    Class * classes = NULL;
+    int numClasses = objc_getClassList(NULL, 0);
+    
+    if (numClasses > 0 )
+    {
+        classes = (Class*)alloca(sizeof(Class) * numClasses);
+        numClasses = objc_getClassList(classes, numClasses);
+    }
+    int i;
+    for (i = 0; i < numClasses; i++)
+    {
+        if (class_conformsToProtocol(classes[i], delegateProtocol))
+        {
+            delegateClass = classes[i];
+            break;
+        }
+    }
+    
+    return delegateClass;
 }
 
 @end
@@ -108,9 +166,17 @@ DDCliApplication * DDCliApp = nil;
 int DDCliAppRunWithClass(Class delegateClass)
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+    
     // Initialize singleton/global
     DDCliApplication * app = [DDCliApplication sharedApplication];
     int result = [app runWithClass: delegateClass];
+
     [pool drain];
+    
     return result;
+}
+
+int DDCliAppRunWithDefaultClass()
+{
+    return DDCliAppRunWithClass(nil);
 }

@@ -7,7 +7,7 @@
 //
 
 #import "RegexKitLite.h"
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBObjectDataProviding.h"
@@ -23,8 +23,8 @@
 - (NSDictionary *)arrayDescriptorForArray:(NSArray *)array;
 - (void)addCustomDocumentWithKey:(id)key toDictionary:(NSMutableDictionary *)dict key:(id)dictKey;
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
-@property (retain) GBStore *store;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) GBStore *store;
+@property (strong) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -88,7 +88,7 @@
 #pragma mark Initialization & disposal
 
 + (id)providerWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {

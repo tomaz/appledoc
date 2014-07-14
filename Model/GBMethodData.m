@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBMethodArgument.h"
 #import "GBMethodSectionData.h"
 #import "GBMethodData.h"
@@ -42,7 +42,7 @@
 
 + (id)methodDataWithType:(GBMethodType)type result:(NSArray *)result arguments:(NSArray *)arguments {
 	NSParameterAssert([arguments count] >= 1);
-	return [[[self alloc] initWithType:type attributes:[NSArray array] result:result arguments:arguments] autorelease];
+	return [[self alloc] initWithType:type attributes:[NSArray array] result:result arguments:arguments];
 }
 
 + (id)propertyDataWithAttributes:(NSArray *)attributes components:(NSArray *)components {
@@ -108,21 +108,21 @@
 	if ([results containsObject:propertyName]) [results removeObject:propertyName];
     
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:propertyName];
-	return [[[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]] autorelease];
+	return [[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]];
 }
 
 - (id)initWithType:(GBMethodType)type attributes:(NSArray *)attributes result:(NSArray *)result arguments:(NSArray *)arguments {
 	self = [super init];
 	if (self) {
 		_methodType = type;
-		_methodAttributes = [attributes retain];
-		_methodResultTypes = [result retain];
-		_methodArguments = [arguments retain];
-		_methodPrefix = [[self prefixFromAssignedData] retain];
-		_methodSelectorDelimiter = [[self selectorDelimiterFromAssignedData] retain];
-		_methodSelector = [[self selectorFromAssignedData] retain];
+		_methodAttributes = attributes;
+		_methodResultTypes = result;
+		_methodArguments = arguments;
+		_methodPrefix = [self prefixFromAssignedData];
+		_methodSelectorDelimiter = [self selectorDelimiterFromAssignedData];
+		_methodSelector = [self selectorFromAssignedData];
         _methodReturnType = (NSString *)self.methodResultTypes.firstObject;
-		_prefixedMethodSelector = [[self prefixedSelectorFromAssignedData] retain];
+		_prefixedMethodSelector = [self prefixedSelectorFromAssignedData];
 	}
 	return self;
 }

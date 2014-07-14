@@ -14,7 +14,7 @@
 #pragma mark Initialization & disposal
 
 + (id)categoryDataWithName:(NSString *)name className:(NSString *)className {
-	return [[[self alloc] initWithName:name className:className] autorelease];
+	return [[self alloc] initWithName:name className:className];
 }
 
 - (id)initWithName:(NSString *)name className:(NSString *)className {

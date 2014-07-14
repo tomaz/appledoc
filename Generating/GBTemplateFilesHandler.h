@@ -67,7 +67,7 @@
  
  @see copyTemplateFilesToOutputPath:
  */
-@property (retain) NSMutableDictionary *templateFiles;
+@property (strong) NSMutableDictionary *templateFiles;
 
 /** Returns user-friendly template path string including `outputSubpath`. 
  

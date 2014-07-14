@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 
@@ -207,10 +207,10 @@
 		if ([expectedComps count] > 0) {
 			NSString *firstExpectedComp = [expectedComps firstObject];
 			[expectedComps removeObjectAtIndex:0];
-			char *argList = NULL;
+			void *argList = NULL;
 			if ([expectedComps count] > 0) {
-				argList = (char *)malloc(sizeof(char) * [expectedComps count]);
-				[expectedComps getObjects:(id *)argList];				
+				argList = malloc(sizeof(void*) * [expectedComps count]);
+				[expectedComps getObjects:(id __unsafe_unretained *)argList];
 			}
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincompatible-pointer-types"

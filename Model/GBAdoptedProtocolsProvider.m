@@ -18,7 +18,7 @@
 	GBLogDebug(@"Initializing adopted protocols provider for %@...", parent);
 	self = [super init];
 	if (self) {
-		_parent = [parent retain];
+		_parent = parent;
 		_protocols = [[NSMutableSet alloc] init];
 		_protocolsByName = [[NSMutableDictionary alloc] init];
 	}

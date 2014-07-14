@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -27,26 +27,26 @@
 
 @implementation DDCliParseException
 
-+ (DDCliParseException *) parseExceptionWithReason: (NSString *) reason
-                                          exitCode: (int) exitCode;
++ (DDCliParseException *)parseExceptionWithReason:(NSString *)reason
+                                         exitCode:(int)exitCode;
 {
     return [[[self alloc] initWithReason: reason
                                 exitCode: exitCode] autorelease];
 }
 
-- (id) initWithReason: (NSString *) reason
-             exitCode: (int) exitCode;
+- (id)initWithReason:(NSString *)reason
+            exitCode:(int)exitCode;
 {
     self = [super initWithName: NSStringFromClass([self class])
                         reason: reason
                       userInfo: nil];
-    mExitCode = exitCode;
+    _exitCode = exitCode;
     return self;
 }
 
-- (int) exitCode;
+- (int)exitCode;
 {
-    return mExitCode;
+    return _exitCode;
 }
 
 @end

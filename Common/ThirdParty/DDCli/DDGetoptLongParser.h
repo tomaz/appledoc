@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Dave Dribin
+ * Copyright (c) 2007-2013 Dave Dribin
  * 
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -22,9 +22,16 @@
  * SOFTWARE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 #import <getopt.h>
 #import <libgen.h>
+
+extern int
+dd_getopt_long(int nargc, char * const *nargv, const char *options,
+			   const struct option *long_options, int *idx);
+extern int
+dd_getopt_long_only(int nargc, char * const *nargv, const char *options,
+					const struct option *long_options, int *idx);
 
 /* Function pointer to getopt_long() or getopt_long_only() */
 typedef int (*DDGetoptFunction)(int, char * const *, const char *,
@@ -42,6 +49,8 @@ typedef enum DDGetoptArgumentOptions
     DDGetoptOptionalArgument = optional_argument,
     /** Option takes a mandatory argument */
     DDGetoptRequiredArgument = required_argument,
+	/** Option can be explicitly negated with --no-argname */
+	DDGetoptNoArgumentNegatable = 4,
 } DDGetoptArgumentOptions;
 
 /**
@@ -52,7 +61,7 @@ typedef struct
     /**
      * The long option without the double dash ("--").  This is required.
      */
-    NSString * longOption;
+    char * longOption;
     /** A single character for the short option.  Maybe be null or 0. */
     int shortOption;
     /** Argument options for this option. */
@@ -75,14 +84,14 @@ typedef struct
 @interface DDGetoptLongParser : NSObject
 {
     @private
-    id mTarget;
-    int mNextShortOption;
-    NSMutableString * mOptionString;
-    NSMutableDictionary * mOptionInfoMap;
-    NSMutableData * mOptionsData;
-    int mCurrentOption;
-    NSMutableArray * mUtf8Data;
-    DDGetoptFunction mGetoptFunction;
+    id _target;
+    int _nextShortOption;
+    NSMutableString * _optionString;
+    NSMutableDictionary * _optionInfoMap;
+    NSMutableData * _optionsData;
+    int _currentOption;
+    NSMutableArray * _utf8Data;
+    DDGetoptFunction _getoptFunction;
 }
 
 /**
@@ -90,28 +99,28 @@ typedef struct
  *
  * @param target Object that receives target messages.
  */
-+ (DDGetoptLongParser *) optionsWithTarget: (id) target;
++ (DDGetoptLongParser *)optionsWithTarget:(id)target;
 
 /**
  * Create an option parser with the given target.
  *
  * @param target Object that receives target messages.
  */
-- (id) initWithTarget: (id) target;
+- (id)initWithTarget:(id)target;
 
 /**
  * Returns the target object.
  *
  * @return The target object
  */
-- (id) target;
+- (id)target;
 
 /**
  * Sets the target object.
  *
  * @param target The target object
  */
-- (void) setTarget: (id) target;
+- (void)setTarget:(id)target;
 
 /**
  * If set to YES, parses options with getopt_long_only() instead of
@@ -119,7 +128,7 @@ typedef struct
  *
  * @param getoptLongOnly YES means parse with getopt_long_only()
  */
-- (void) setGetoptLongOnly: (BOOL) getoptLongOnly;
+- (void)setGetoptLongOnly:(BOOL)getoptLongOnly;
 
 /**
  * Add all options from a null terminated option table.  The final
@@ -128,7 +137,7 @@ typedef struct
  *
  * @param optionTable An array of DDGetoptOption.
  */
-- (void) addOptionsFromTable: (DDGetoptOption *) optionTable;
+- (void)addOptionsFromTable:(DDGetoptOption *)optionTable;
 
 /**
  * Add an option with both long and short options.  The long option
@@ -140,10 +149,10 @@ typedef struct
  * @param key The key use when the option is parsed
  * @param argumentOptions Options for this options argument
  */
-- (void) addLongOption: (NSString *) longOption
-           shortOption: (char) shortOption
-                   key: (NSString *) key
-       argumentOptions: (DDGetoptArgumentOptions) argumentOptions;
+- (void)addLongOption:(NSString *)longOption
+          shortOption:(char)shortOption
+                  key:(NSString *)key
+      argumentOptions:(DDGetoptArgumentOptions)argumentOptions;
 
 /**
  * Add an option with no short option.
@@ -152,9 +161,9 @@ typedef struct
  * @param key The key use when the option is parsed
  * @param argumentOptions Options for this options argument
  */
-- (void) addLongOption: (NSString *) longOption
-                   key: (NSString *) key
-       argumentOptions: (DDGetoptArgumentOptions) argumentOptions;
+- (void)addLongOption:(NSString *)longOption
+                  key:(NSString *)key
+      argumentOptions:(DDGetoptArgumentOptions)argumentOptions;
 
 /**
  * Parse the options using the arguments and command name from
@@ -162,7 +171,7 @@ typedef struct
  *
  * @return Arguments left over after option parsing or <code>nil</code>
  */
-- (NSArray *) parseOptions;
+- (NSArray *)parseOptions;
 
 /**
  * Parse the options on an array of arguments.
@@ -171,14 +180,8 @@ typedef struct
  * @param command Command name to use for error messages.
  * @return Arguments left over after option processing or <code>nil</code>
  */
-- (NSArray *) parseOptionsWithArguments: (NSArray *) arguments
-                                command: (NSString *) command;
-
-/**
- * Returns the name of the selector for the given option.
- * This was copied from private methods to allow simpler unit testing!
- */
-+ (NSString *) keyFromOption: (NSString *) option;
+- (NSArray *)parseOptionsWithArguments:(NSArray *)arguments
+                               command:(NSString *)command;
 
 @end
 
@@ -195,7 +198,7 @@ typedef struct
  *
  * @param option The option that was not recognized.
  */
-- (void) optionIsNotRecognized: (NSString *) option;
+- (void)optionIsNotRecognized:(NSString *)option;
 
 /**
  * Called if an argument was not supplied for option that is required
@@ -206,6 +209,8 @@ typedef struct
  *
  * @param option The option that had the missiong argument.
  */
-- (void) optionIsMissingArgument: (NSString *) option;
+- (void)optionIsMissingArgument:(NSString *)option;
+
++ (NSString *)optionToKey:(NSString *)option;
 
 @end

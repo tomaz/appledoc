@@ -6,7 +6,7 @@
 //  Copyright (C) 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBTemplateHandler.h"
 
 @interface GBTemplateHandler (TestingAPI)

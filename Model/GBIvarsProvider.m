@@ -18,7 +18,7 @@
 	GBLogDebug(@"Initializing ivars provider for %@...", parent);
 	self = [super init];
 	if (self) {
-		_parent = [parent retain];
+		_parent = parent;
 		_ivars = [[NSMutableArray alloc] init];
 		_ivarsByName = [[NSMutableDictionary alloc] init];
 	}

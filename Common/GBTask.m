@@ -14,9 +14,9 @@
 - (NSArray *)commandLineArgumentsFromList:(va_list)args;
 - (NSArray *)linesFromString:(NSString *)string;
 @property (copy) GBTaskReportBlock reportBlock;
-@property (readwrite, retain) NSString *lastCommandLine;
-@property (readwrite, retain) NSString *lastStandardOutput;
-@property (readwrite, retain) NSString *lastStandardError;
+@property (readwrite, strong) NSString *lastCommandLine;
+@property (readwrite, strong) NSString *lastStandardOutput;
+@property (readwrite, strong) NSString *lastStandardError;
 
 @end
 
@@ -27,7 +27,11 @@
 #pragma mark Initialization & disposal
 
 + (id)task {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma Command handling
@@ -64,7 +68,7 @@
 	}
 	
 	// Ok, now prepare the NSTask and really run the command... Note that [NSTask launch] raises exception if it can't launch, we just pass it on.
-	NSTask *task = [[[NSTask alloc] init] autorelease];
+	NSTask *task = [[NSTask alloc] init];
 	[task setLaunchPath:command];
 	[task setArguments:arguments];
 	[task setStandardOutput:stdOutPipe];
@@ -121,7 +125,7 @@
 	NSFileHandle *handle = [pipe fileHandleForReading];
 	NSData *data = [handle readDataToEndOfFile];
 	NSString *result = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-	return [result autorelease];
+	return result;
 }
 
 - (NSArray *)commandLineArgumentsFromList:(va_list)args {

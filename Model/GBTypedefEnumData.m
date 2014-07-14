@@ -11,7 +11,7 @@
 @implementation GBTypedefEnumData
 +(id)typedefEnumWithName:(NSString *)name
 {
- return [[[self alloc] initWithName:name] autorelease];
+ return [[self alloc] initWithName:name];
 }
 
 -(id)initWithName:(NSString *)name

@@ -38,10 +38,10 @@
 - (void)validateCommentsForObjectAndMembers:(GBModelBase *)object;
 - (BOOL)isCommentValid:(GBComment *)comment;
 
-@property (retain) GBCommentsProcessor *commentsProcessor;
-@property (retain) id currentContext;
-@property (retain) GBStore *store;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) GBCommentsProcessor *commentsProcessor;
+@property (strong) id currentContext;
+@property (strong) GBStore *store;
+@property (strong) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -52,7 +52,7 @@
 #pragma mark Initialization & disposal
 
 + (id)processorWithSettingsProvider:(id)settingsProvider {
-	return [[[self alloc] initWithSettingsProvider:settingsProvider] autorelease];
+	return [[self alloc] initWithSettingsProvider:settingsProvider];
 }
 
 - (id)initWithSettingsProvider:(id)settingsProvider {

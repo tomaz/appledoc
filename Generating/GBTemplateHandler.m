@@ -7,7 +7,7 @@
 //
 
 #import "RegexKitLite.h"
-#import "GRMustache.h"
+#import "GRMustache/GRMustache.h"
 #import "GBDictionaryTemplateLoader.h"
 #import "GBTemplateHandler.h"
 
@@ -32,7 +32,7 @@ static NSString *kGBValueKey = @"value";
 #pragma mark Initialization & disposal
 
 + (id)handler {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 - (NSString*)templateString{
@@ -113,7 +113,7 @@ static NSString *kGBValueKey = @"value";
 		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
 		return @"";
 	}
-	return [_template renderObject:object];
+    return [_template renderObject:object];
 }
 
 #pragma mark Helper methods

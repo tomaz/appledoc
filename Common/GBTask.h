@@ -95,7 +95,7 @@ typedef void(^GBTaskReportBlock)(NSString *output, NSString *error);
  @see lastStandardOutput
  @see lastStandardError
  */
-@property (readonly, retain) NSString *lastCommandLine;
+@property (readonly, strong) NSString *lastCommandLine;
 
 /** Returns string emited to standard output pipe the last time `runCommand:` was sent. 
  
@@ -103,7 +103,7 @@ typedef void(^GBTaskReportBlock)(NSString *output, NSString *error);
  @see runCommand:arguments:block:
  @see lastStandardError
  */
-@property (readonly, retain) NSString *lastStandardOutput;
+@property (readonly, strong) NSString *lastStandardOutput;
 
 /** Returns string emited to standard error pipe the last time `runCommand:` was sent. 
  
@@ -111,6 +111,6 @@ typedef void(^GBTaskReportBlock)(NSString *output, NSString *error);
  @see runCommand:arguments:block:
  @see lastStandardOutput
  */
-@property (readonly, retain) NSString *lastStandardError;
+@property (readonly, strong) NSString *lastStandardError;
 
 @end

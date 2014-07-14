@@ -13,7 +13,7 @@
 
 +(id)typedefBlockWithName:(NSString *)name returnType: (NSString *) returnType parameters:(NSArray *)parameters
 {
-    return [[[self alloc] initWithName:name returnType: (NSString *) returnType parameters: parameters] autorelease];
+    return [[self alloc] initWithName:name returnType: (NSString *) returnType parameters: parameters];
 }
 
 -(id)initWithName:(NSString *)name returnType: (NSString *) returnType parameters: (NSArray *) parameters
@@ -22,8 +22,8 @@
     if(self)
     {
         _blockName = [name copy];
-        _parameters = [parameters retain];
-        _returnType = [returnType retain];
+        _parameters = parameters;
+        _returnType = returnType;
     }
     return self;
 }

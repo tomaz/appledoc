@@ -63,7 +63,7 @@
 ///---------------------------------------------------------------------------------------
 
 /** The comment associated with this object or `nil` if no comment is associated. */
-@property (retain) GBComment *comment;
+@property (strong) GBComment *comment;
 
 ///---------------------------------------------------------------------------------------
 /// @name Data handling
@@ -93,7 +93,7 @@
  
  This is mostly used for more in-context logging messages.
  */
-@property (retain) id parentObject;
+@property (strong) id parentObject;
 
 /** Specifies whether this is a static object or not.
  

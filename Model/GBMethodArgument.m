@@ -13,7 +13,7 @@
 #pragma mark Initialization & disposal
 
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros {
-	return [[[self alloc] initWithName:name types:types var:var variableArg:variableArg terminationMacros:macros] autorelease];
+	return [[self alloc] initWithName:name types:types var:var variableArg:variableArg terminationMacros:macros];
 }
 
 + (id)methodArgumentWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var {
@@ -30,9 +30,9 @@
 	self = [super init];
 	if (self) {
 		_argumentName = [name copy];
-		_argumentTypes = [types retain];
+		_argumentTypes = types;
 		_argumentVar = [var copy];
-		_terminationMacros = macros ? [macros retain] : [[NSArray alloc] init];
+		_terminationMacros = macros ? macros : [[NSArray alloc] init];
 		self.isVariableArg = variableArg;
 	}
 	return self;
@@ -42,12 +42,12 @@
 
 - (NSString *)description {
 	if ([self.argumentTypes count] && self.argumentVar) {
-		__block NSMutableString *typeValue = [NSMutableString string];
+		NSMutableString *typeValue = [NSMutableString string];
 		[self.argumentTypes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			[typeValue appendFormat:@"%@", obj];
 			if (idx < [self.argumentTypes count] - 1) [typeValue appendString:@" "];
 		}];
-		__block NSMutableString *terminationValue = [NSMutableString string];
+		NSMutableString *terminationValue = [NSMutableString string];
 		[self.terminationMacros enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 			[terminationValue appendFormat:@"%@", obj];
 			if (idx < [self.argumentTypes count] - 1) [typeValue appendString:@" "];

@@ -22,21 +22,21 @@
 - (NSArray *)allTokensFromTokenizer:(PKTokenizer *)tokenizer;
 - (NSUInteger)offsetOfLineContainingOffset:(NSUInteger)offset;
 - (NSInteger)indentationAtOffset:(NSUInteger)offset;
-@property (retain) NSString *filename;
-@property (retain) NSString *input;
-@property (retain) NSArray *tokens;
+@property (strong) NSString *filename;
+@property (strong) NSString *input;
+@property (strong) NSArray *tokens;
 @property (assign) NSUInteger tokenIndex;
 @property (assign) BOOL isLastCommentMultiline;
 @property (assign) BOOL isPreviousCommentMultiline;
-@property (retain) NSMutableString *lastCommentBuilder;
-@property (retain) NSMutableString *previousCommentBuilder;
-@property (retain) PKToken *lastCommentToken;
-@property (retain) PKToken *previousCommentToken;
-@property (retain) NSString *singleLineCommentAfterRegex;
-@property (retain) NSString *singleLineCommentRegex;
-@property (retain) NSString *multiLineCommentRegex;
-@property (retain) NSString *commentDelimiterRegex;
-@property (retain) GBApplicationSettingsProvider *settings;
+@property (strong) NSMutableString *lastCommentBuilder;
+@property (strong) NSMutableString *previousCommentBuilder;
+@property (strong) PKToken *lastCommentToken;
+@property (strong) PKToken *previousCommentToken;
+@property (strong) NSString *singleLineCommentAfterRegex;
+@property (strong) NSString *singleLineCommentRegex;
+@property (strong) NSString *multiLineCommentRegex;
+@property (strong) NSString *commentDelimiterRegex;
+@property (strong) GBApplicationSettingsProvider *settings;
 
 @end
 
@@ -51,7 +51,7 @@
 }
 
 + (id)tokenizerWithSource:(PKTokenizer *)tokenizer filename:(NSString *)filename settings:(id)settings {
-	return [[[self alloc] initWithSourceTokenizer:tokenizer filename:filename settings:settings] autorelease];
+	return [[self alloc] initWithSourceTokenizer:tokenizer filename:filename settings:settings];
 }
 
 - (id)initWithSourceTokenizer:(PKTokenizer *)tokenizer filename:(NSString *)aFilename settings:(id)theSettings {
