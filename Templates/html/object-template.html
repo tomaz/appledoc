@@ -2,21 +2,21 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
-		<title>{{page/title}}</title>
+		<title>{{page.title}}</title>
 		<meta id="xcode-display" name="xcode-display" content="render"/>
 		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
 		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
-		{{#strings/appledocData}}<meta name="generator" content="{{tool}} {{version}} (build {{build}})" />{{/strings/appledocData}}
+		{{#strings.appledocData}}<meta name="generator" content="{{tool}} {{version}} (build {{build}})" />{{/strings.appledocData}}
 	</head>
 	<body>
 		<header id="top_header">
 			<div id="library" class="hideInXcode">
-				{{#page}}<h1><a id="libraryTitle" href="../index.html">{{projectName}} {{strings/objectPage/libraryTitlePostfix}}</a></h1>
+				{{#page}}<h1><a id="libraryTitle" href="../index.html">{{projectName}} {{strings.objectPage.libraryTitlePostfix}}</a></h1>
 				<a id="developerHome" href="../index.html">{{projectCompany}}</a>{{/page}}
 			</div>
 			
 			<div id="title" role="banner">
-				<h1 class="hideInXcode">{{page/title}}</h1>
+				<h1 class="hideInXcode">{{page.title}}</h1>
 			</div>
 			<ul id="headerButtons" role="toolbar">
 				<li id="toc_button">
@@ -34,37 +34,37 @@
 		</nav>
 		<article>
 			<div id="contents" class="isShowingTOC" role="main">
-				<a title="{{page/title}}" name="top"></a>
+				<a title="{{page.title}}" name="top"></a>
 				<div class="main-navigation navigation-top">
 					{{>Navigation}}
 				</div>
 				<div id="header">
 					<div class="section-header">
-						<h1 class="title title-header">{{page/title}}</h1>
+						<h1 class="title title-header">{{page.title}}</h1>
 					</div>		
 				</div>
 				<div id="container">	
-					{{#page/specifications}}
+					{{#page.specifications}}
 					{{#used}}<div class="section section-specification"><table cellspacing="0"><tbody>{{/used}}
 						{{#values}}{{>ObjectSpecification}}{{/values}}
 						{{#used}}</tbody></table></div>{{/used}}
-					{{/page/specifications}}
+					{{/page.specifications}}
                     
-                    {{#object/comment}}
+                    {{#object.comment}}
 					{{#hasLongDescription}}
 					<div class="section section-overview">
-						<a title="{{strings/objectOverview/title}}" name="overview"></a>
-						<h2 class="subtitle subtitle-overview">{{strings/objectOverview/title}}</h2>
+						<a title="{{strings.objectOverview.title}}" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">{{strings.objectOverview.title}}</h2>
 						{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
 					</div>
 					{{/hasLongDescription}}
-					{{/object/comment}}
+					{{/object.comment}}
 					
-					{{#object/methods}}
+					{{#object.methods}}
 					{{#hasSections}}
 					<div class="section section-tasks">
-						<a title="{{strings/objectTasks/title}}" name="tasks"></a>
-						<h2 class="subtitle subtitle-tasks">{{strings/objectTasks/title}}</h2>
+						<a title="{{strings.objectTasks.title}}" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">{{strings.objectTasks.title}}</h2>
 						{{#sections}}
 						
 						{{#sectionName}}<a title="{{#sectionName}}{{.}}{{/sectionName}}" name="task_{{#sectionName}}{{.}}{{/sectionName}}"></a>{{/sectionName}}
@@ -75,13 +75,13 @@
 						{{/sections}}
 					</div>
 					{{/hasSections}}
-					{{/object/methods}}
+					{{/object.methods}}
 					
-					{{#object/methods}}
+					{{#object.methods}}
 					{{#hasProperties}}
 					<div class="section section-methods">
-						<a title="{{strings/objectMethods/propertiesTitle}}" name="properties"></a>
-						<h2 class="subtitle subtitle-methods">{{strings/objectMethods/propertiesTitle}}</h2>
+						<a title="{{strings.objectMethods.propertiesTitle}}" name="properties"></a>
+						<h2 class="subtitle subtitle-methods">{{strings.objectMethods.propertiesTitle}}</h2>
 						{{#properties}}
 						{{>Method}}
 						{{/properties}}
@@ -90,8 +90,8 @@
 					
 					{{#hasClassMethods}}
 					<div class="section section-methods">
-						<a title="{{strings/objectMethods/classMethodsTitle}}" name="class_methods"></a>
-						<h2 class="subtitle subtitle-methods">{{strings/objectMethods/classMethodsTitle}}</h2>
+						<a title="{{strings.objectMethods.classMethodsTitle}}" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">{{strings.objectMethods.classMethodsTitle}}</h2>
 						{{#classMethods}}
 						{{>Method}}
 						{{/classMethods}}
@@ -100,14 +100,14 @@
 					
 					{{#hasInstanceMethods}}
 					<div class="section section-methods">
-						<a title="{{strings/objectMethods/instanceMethodsTitle}}" name="instance_methods"></a>
-						<h2 class="subtitle subtitle-methods">{{strings/objectMethods/instanceMethodsTitle}}</h2>
+						<a title="{{strings.objectMethods.instanceMethodsTitle}}" name="instance_methods"></a>
+						<h2 class="subtitle subtitle-methods">{{strings.objectMethods.instanceMethodsTitle}}</h2>
 						{{#instanceMethods}}
 						{{>Method}}
 						{{/instanceMethods}}
 					</div>
 					{{/hasInstanceMethods}}
-					{{/object/methods}}
+					{{/object.methods}}
                     
                     {{#typedefEnum}}
                     <h3 class="subsubtitle method-title">{{nameOfEnum}}</h3>
@@ -143,25 +143,25 @@
                     {{#comment}}
                     {{#hasAvailability}}
                     <div class="method-subsection availability">
-                        <h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
+                        <h4 class="method-subtitle parameter-title">{{strings.objectMethods.availability}}</h4>
                         {{#availability}}{{>GBCommentComponentsList}}{{/availability}}
                     </div>
                     {{/hasAvailability}}
 
                     {{#hasRelatedItems}}
                     <div class="method-subsection see-also-section">
-                        <h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+                        <h4 class="method-subtitle">{{strings.objectMethods.seeAlsoTitle}}</h4>
                         <ul>
-                            {{#relatedItems/components}}
+                            {{#relatedItems.components}}
                             <li><code>{{>GBCommentComponent}}</code></li>
-                            {{/relatedItems/components}}
+                            {{/relatedItems.components}}
                         </ul>
                     </div>
                     {{/hasRelatedItems}}
                     
                     {{#prefferedSourceInfo}}
                     <div class="method-subsection declared-in-section">
-                        <h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+                        <h4 class="method-subtitle">{{strings.objectMethods.declaredInTitle}}</h4>
                         <code class="declared-in-ref">{{filename}}</code><br />
                     </div>				
                     {{/prefferedSourceInfo}}
@@ -169,8 +169,8 @@
                     {{/typedefEnum}}
                     
                     {{#typedefBlock}}
-                    <a title="{{strings/objectMethods/blockDefTitle}}" name="instance_methods"></a>
-                    <h2 class="subtitle subtitle-methods">{{strings/objectMethods/blockDefTitle}}</h2>
+                    <a title="{{strings.objectMethods.blockDefTitle}}" name="instance_methods"></a>
+                    <h2 class="subtitle subtitle-methods">{{strings.objectMethods.blockDefTitle}}</h2>
                     {{>BlocksDefList}}
                     {{/typedefBlock}}
 
@@ -182,9 +182,9 @@
 					<hr />
 					<div class="footer-copyright">
 						{{#page}}<p><span class="copyright">&copy; {{copyrightDate}} {{copyrightHolder}}. All rights reserved. (Last updated: {{lastUpdatedDate}})</span>{{/page}}<br />
-						{{#strings/appledocData}}
+						{{#strings.appledocData}}
 						<span class="generator">Generated by <a href="{{homepage}}">{{tool}} {{version}} (build {{build}})</a>.</span></p>
-						{{/strings/appledocData}}
+						{{/strings.appledocData}}
 					</div>
 				</div>
 			</div>
@@ -302,7 +302,7 @@ Section Method
     {{#comment}}
 	{{#hasMethodParameters}}
 	<div class="method-subsection arguments-section parameters">
-		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
+		<h4 class="method-subtitle parameter-title">{{strings.objectMethods.parametersTitle}}</h4>
 		{{#methodParameters}}
 		<dl class="argument-def parameter-def">
 			<dt><em>{{argumentName}}</em></dt>
@@ -314,28 +314,28 @@ Section Method
 	
 	{{#hasMethodResult}}
 	<div class="method-subsection return">
-		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
+		<h4 class="method-subtitle parameter-title">{{strings.objectMethods.resultTitle}}</h4>
 		{{#methodResult}}{{>GBCommentComponentsList}}{{/methodResult}}
 	</div>
 	{{/hasMethodResult}}
 	
 	{{#hasAvailability}}
 	<div class="method-subsection availability">
-		<h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
+		<h4 class="method-subtitle parameter-title">{{strings.objectMethods.availability}}</h4>
 		{{#availability}}{{>GBCommentComponentsList}}{{/availability}}
 	</div>
 	{{/hasAvailability}}
 	
 	{{#hasLongDescription}}
 	<div class="method-subsection discussion-section">
-		<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
+		<h4 class="method-subtitle">{{strings.objectMethods.discussionTitle}}</h4>
 		{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
 	</div>
 	{{/hasLongDescription}}
 	
 	{{#hasMethodExceptions}}
 	<div class="method-subsection arguments-section exceptions">
-		<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
+		<h4 class="method-subtitle exception-title">{{strings.objectMethods.exceptionsTitle}}</h4>
 		{{#methodExceptions}}
 		<dl class="argument-def exception-def">
 			<dt><em>{{argumentName}}</em></dt>
@@ -347,18 +347,18 @@ Section Method
 	
 	{{#hasRelatedItems}}
 	<div class="method-subsection see-also-section">
-		<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+		<h4 class="method-subtitle">{{strings.objectMethods.seeAlsoTitle}}</h4>
 		<ul>
-			{{#relatedItems/components}}
+			{{#relatedItems.components}}
 			<li><code>{{>GBCommentComponent}}</code></li>
-			{{/relatedItems/components}}
+			{{/relatedItems.components}}
 		</ul>
 	</div>
 	{{/hasRelatedItems}}
 	
 	{{#prefferedSourceInfo}}
 	<div class="method-subsection declared-in-section">
-		<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+		<h4 class="method-subtitle">{{strings.objectMethods.declaredInTitle}}</h4>
 		<code class="declared-in-ref">{{filename}}</code><br />
 	</div>				
 	{{/prefferedSourceInfo}}
@@ -372,7 +372,7 @@ EndSection
 
 
 Section TaskTitle
-{{#hasMultipleSections}}<h3 class="subsubtitle task-title">{{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings/objectTasks/otherMethodsSectionName}}{{/sectionName}}</h3>{{/hasMultipleSections}}
+{{#hasMultipleSections}}<h3 class="subsubtitle task-title">{{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings.objectTasks.otherMethodsSectionName}}{{/sectionName}}</h3>{{/hasMultipleSections}}
 {{^hasMultipleSections}}{{#sectionName}}<h3 class="subsubtitle task-title">{{.}}</h3>{{/sectionName}}{{/hasMultipleSections}}
 EndSection
 
@@ -381,8 +381,8 @@ Section TaskMethod
 	<span class="tooltip">
 		<code><a href="{{htmlLocalReference}}">{{>TaskSelector}}</a></code>
 	</span>
-	{{#isProperty}}<span class="task-item-suffix">{{strings/objectTasks/property}}</span>{{/isProperty}}
-	{{#isRequired}}<span class="task-item-suffix">{{strings/objectTasks/requiredMethod}}</span>{{/isRequired}}
+	{{#isProperty}}<span class="task-item-suffix">{{strings.objectTasks.property}}</span>{{/isProperty}}
+	{{#isRequired}}<span class="task-item-suffix">{{strings.objectTasks.requiredMethod}}</span>{{/isRequired}}
 </li>
 EndSection
 
@@ -410,7 +410,7 @@ Section BlocksDefList
 {{#comment}}
 {{#hasLongDescription}}
 <div class="method-subsection discussion-section">
-    <h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
+    <h4 class="method-subtitle">{{strings.objectMethods.discussionTitle}}</h4>
     {{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
 </div>
 {{/hasLongDescription}}
@@ -419,25 +419,25 @@ Section BlocksDefList
 {{#comment}}
 {{#hasAvailability}}
 <div class="method-subsection availability">
-    <h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
+    <h4 class="method-subtitle parameter-title">{{strings.objectMethods.availability}}</h4>
     {{#availability}}{{>GBCommentComponentsList}}{{/availability}}
 </div>
 {{/hasAvailability}}
 
 {{#hasRelatedItems}}
 <div class="method-subsection see-also-section">
-    <h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+    <h4 class="method-subtitle">{{strings.objectMethods.seeAlsoTitle}}</h4>
     <ul>
-        {{#relatedItems/components}}
+        {{#relatedItems.components}}
         <li><code>{{>GBCommentComponent}}</code></li>
-        {{/relatedItems/components}}
+        {{/relatedItems.components}}
     </ul>
 </div>
 {{/hasRelatedItems}}
 
 {{#prefferedSourceInfo}}
 <div class="method-subsection declared-in-section">
-    <h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+    <h4 class="method-subtitle">{{strings.objectMethods.declaredInTitle}}</h4>
     <code class="declared-in-ref">{{filename}}</code><br />
 </div>
 {{/prefferedSourceInfo}}
@@ -459,7 +459,7 @@ Section Constant
 {{/comment}}
     {{#prefferedSourceInfo}}
 	<p>
-		{{strings/objectMethods/declaredInTitle}} <code class="declared-in-ref">{{filename}}</code>.
+		{{strings.objectMethods.declaredInTitle}} <code class="declared-in-ref">{{filename}}</code>.
 	</p>
 	{{/prefferedSourceInfo}}
 </dd>
@@ -480,7 +480,7 @@ Section Block
     {{/comment}}
     {{#prefferedSourceInfo}}
     <p>
-    {{strings/objectMethods/declaredInTitle}} <code class="declared-in-ref">{{filename}}</code>.
+    {{strings.objectMethods.declaredInTitle}} <code class="declared-in-ref">{{filename}}</code>.
     </p>
     {{/prefferedSourceInfo}}
 </dd>
@@ -509,59 +509,59 @@ EndSection
 Section JumpTo
 <select id="jumpTo">
 	<option value="top">Jump To&#133;</option>
-	{{#object/comment}}
-	<option value="overview">{{strings/objectOverview/title}}</option>
-	{{/object/comment}}
+	{{#object.comment}}
+	<option value="overview">{{strings.objectOverview.title}}</option>
+	{{/object.comment}}
 	
-	{{#object/methods}}
+	{{#object.methods}}
 	{{#hasSections}}
-	<option value="tasks">{{strings/objectTasks/title}}</option>
+	<option value="tasks">{{strings.objectTasks.title}}</option>
 	{{/hasSections}}
-	{{/object/methods}}
+	{{/object.methods}}
 	
-	{{#object/methods}}
+	{{#object.methods}}
 	{{#hasProperties}}
-	<option value="properties">{{strings/objectMethods/propertiesTitle}}</option>
+	<option value="properties">{{strings.objectMethods.propertiesTitle}}</option>
 	{{#properties}}
 	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{methodSelector}}</option>
 	{{/properties}}
 	{{/hasProperties}}
 	
 	{{#hasClassMethods}}
-	<option value="class_methods">{{strings/objectMethods/classMethodsTitle}}</option>
+	<option value="class_methods">{{strings.objectMethods.classMethodsTitle}}</option>
 	{{#classMethods}}
 	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
 	{{/classMethods}}
 	{{/hasClassMethods}}
 	
 	{{#hasInstanceMethods}}
-	<option value="instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</option>
+	<option value="instance_methods">{{strings.objectMethods.instanceMethodsTitle}}</option>
 	{{#instanceMethods}}
 	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
 	{{/instanceMethods}}
 	{{/hasInstanceMethods}}
-	{{/object/methods}}
+	{{/object.methods}}
 </select>
 EndSection
 
 Section TableOfContents
-{{#object/comment}}
-<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">{{strings/objectOverview/title}}</a></span></li>
-{{/object/comment}}
+{{#object.comment}}
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">{{strings.objectOverview.title}}</a></span></li>
+{{/object.comment}}
 
-{{#object/methods}}
+{{#object.methods}}
 {{#hasSections}}
-<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">{{strings/objectTasks/title}}</a></span><ul>
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">{{strings.objectTasks.title}}</a></span><ul>
 	{{#sections}}{{#sectionName}}
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_{{#sectionName}}{{.}}{{/sectionName}}">{{#sectionName}}{{.}}{{/sectionName}}</a></span></li>
 	{{/sectionName}}{{/sections}}
 </ul></li>
 {{/hasSections}}
-{{/object/methods}}
+{{/object.methods}}
 
-{{#object/methods}}
+{{#object.methods}}
 {{#hasProperties}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">{{strings/objectMethods/propertiesTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">{{strings.objectMethods.propertiesTitle}}</a></span><ul>
 	{{#properties}}
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/properties}}
@@ -569,7 +569,7 @@ Section TableOfContents
 {{/hasProperties}}
 
 {{#hasClassMethods}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">{{strings/objectMethods/classMethodsTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">{{strings.objectMethods.classMethodsTitle}}</a></span><ul>
 	{{#classMethods}}
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/classMethods}}
@@ -577,11 +577,11 @@ Section TableOfContents
 {{/hasClassMethods}}
 
 {{#hasInstanceMethods}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">{{strings.objectMethods.instanceMethodsTitle}}</a></span><ul>
 	{{#instanceMethods}}
 	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/instanceMethods}}
 </ul></li>
 {{/hasInstanceMethods}}
-{{/object/methods}}
+{{/object.methods}}
 EndSection
