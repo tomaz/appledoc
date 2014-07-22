@@ -8,7 +8,6 @@
 
 #import "RegexKitLite.h"
 #import "GRMustache/GRMustache.h"
-#import "GBDictionaryTemplateLoader.h"
 #import "GBTemplateHandler.h"
 
 static NSString *kGBSectionKey = @"section";
@@ -98,8 +97,9 @@ static NSString *kGBValueKey = @"value";
 	
 	// Prepare template that will be used for rendering output.
 	if ([_templateString length] != 0) {
-		GBDictionaryTemplateLoader *loader = [GBDictionaryTemplateLoader loaderWithDictionary:_templateSections];
-		_template = [loader parseString:_templateString error:error];
+        GRMustacheTemplateRepository* loader = [GRMustacheTemplateRepository templateRepositoryWithDictionary:_templateSections];
+        _template = [loader templateFromString:_templateString error:error];
+        _template.baseContext = [_template.baseContext contextWithUnsafeKeyAccess];
 		return (_template != nil);
 	}
 	return YES;
@@ -113,7 +113,12 @@ static NSString *kGBValueKey = @"value";
 		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
 		return @"";
 	}
-    return [_template renderObject:object];
+    NSError* error = nil;
+    NSString* rendering = [_template renderObject:object error:&error];
+    if (error) {
+        GBLogWarn(@"Error occurred when rendering template: %@", [error localizedDescription]);
+    }
+    return rendering;
 }
 
 #pragma mark Helper methods

@@ -7,7 +7,7 @@
 			<Subnodes>
                 {{#hasDocs}}
 				<Node type="folder">
-					<Name>{{strings/docset/docsTitle}}</Name>
+					<Name>{{strings.docset.docsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
 						{{#docs}}{{>NodeRef}}
@@ -17,7 +17,7 @@
 				{{/hasDocs}}
 				{{#hasClasses}}
 				<Node type="folder">
-					<Name>{{strings/docset/classesTitle}}</Name>
+					<Name>{{strings.docset.classesTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
 						{{#classes}}{{>NodeRef}}
@@ -27,7 +27,7 @@
 				{{/hasClasses}}
 				{{#hasCategories}}
 				<Node>
-					<Name>{{strings/docset/categoriesTitle}}</Name>
+					<Name>{{strings.docset.categoriesTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
 						{{#categories}}{{>NodeRef}}
@@ -37,7 +37,7 @@
 				{{/hasCategories}}
                 {{#hasProtocols}}
 				<Node>
-					<Name>{{strings/docset/protocolsTitle}}</Name>
+					<Name>{{strings.docset.protocolsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
 						{{#protocols}}{{>NodeRef}}
@@ -47,7 +47,7 @@
 				{{/hasProtocols}}
                 {{#hasConstants}}
 				<Node>
-					<Name>{{strings/docset/constantsTitle}}</Name>
+					<Name>{{strings.docset.constantsTitle}}</Name>
 					<Path>{{indexFilename}}</Path>
 					<Subnodes>
 						{{#constants}}{{>NodeRef}}
@@ -57,7 +57,7 @@
 				{{/hasConstants}}
                 {{#hasBlocks}}
                 <Node>
-                    <Name>{{strings/docset/blocksTitle}}</Name>
+                    <Name>{{strings.docset.blocksTitle}}</Name>
                     <Path>{{indexFilename}}</Path>
                     <Subnodes>
                         {{#blocks}}{{>NodeRef}}
