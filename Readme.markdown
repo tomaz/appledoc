@@ -52,7 +52,7 @@ Homebrew does not install templates by default.
 Using appledoc
 ==============
 
-Use `appledoc --help` to see the list of all command line switches. Read more about appledoc on [appledoc site](http://gentlebytes.com/appledoc) - don't forget to check short help, documentation and tips while there!
+Use `appledoc --help` to see the list of all command line switches. Read more about appledoc on [appledoc site](http://gentlebytes.com/appledoc). Also read [wiki pages](https://github.com/tomaz/appledoc/wiki/index) for some more in-depth articles.
 
 Use [appledoc Google group](https://groups.google.com/forum/#!forum/appledoc) as a forum for questions on usage or other general questions.
 
@@ -67,6 +67,7 @@ If you also want to compile and run AppledocTests (unit tests) target, you need 
 
 Integrating with Xcode
 -----------------
+
 You can setup Xcode to automate appledoc document creation. [Find out how](https://github.com/tomaz/appledoc/blob/master/XcodeIntegrationScript.markdown) using a Run Script and your project's Build Phases.
 
 Docset usage tips
