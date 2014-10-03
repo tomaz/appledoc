@@ -787,7 +787,7 @@
 		// Get all arguments. Note that we ignore semicolons which may "happen" in declaration before method opening brace!
 		__block BOOL parseAttribute = NO;
 		__block NSUInteger parenthesisDepth = 0;
-		__block NSMutableArray *methodArgs = [NSMutableArray array];
+		NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 			if ([token matches:@"__attribute__"] || [token matches:@"DEPRECATED_ATTRIBUTE"]) {
 				parseAttribute = YES;
@@ -815,8 +815,8 @@
 			[self.tokenizer consume:1];
 			
 			__block NSString *argumentVar = nil;
-			__weak NSMutableArray *argumentTypes = [NSMutableArray array];
-			__weak NSMutableArray *terminationMacros = [NSMutableArray array];
+			NSMutableArray *argumentTypes = [NSMutableArray array];
+			__block NSMutableArray *terminationMacros = [NSMutableArray array];
             __block BOOL variableArg = NO;
 			if ([[self.tokenizer currentToken] matches:@":"]) {
 				[self.tokenizer consume:1];
