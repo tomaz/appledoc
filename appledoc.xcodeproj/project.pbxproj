@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		587398C1322B2FDB1DBD409F /* libPods-appledoc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AB3D2FDA05518D236838183 /* libPods-appledoc.a */; };
+		738DD63919F640D500C57CC1 /* version-auto-generated-on-compile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 738DD63819F640D500C57CC1 /* version-auto-generated-on-compile.swift */; };
 		73E0F28719F5298C007CFB0C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F28619F5298C007CFB0C /* main.swift */; };
 		73E0F28A19F52ACE007CFB0C /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F28919F52ACE007CFB0C /* Settings.swift */; };
 		73E0F28C19F52D2A007CFB0C /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E0F28B19F52D2A007CFB0C /* Options.swift */; };
@@ -17,6 +18,7 @@
 		17F582BC9D04A91A8A92A67E /* Pods-appledoc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appledoc.release.xcconfig"; path = "Pods/Target Support Files/Pods-appledoc/Pods-appledoc.release.xcconfig"; sourceTree = "<group>"; };
 		1C4A5F6E330832C3CA0895F7 /* Pods-appledoc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appledoc.debug.xcconfig"; path = "Pods/Target Support Files/Pods-appledoc/Pods-appledoc.debug.xcconfig"; sourceTree = "<group>"; };
 		4AB3D2FDA05518D236838183 /* libPods-appledoc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-appledoc.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		738DD63819F640D500C57CC1 /* version-auto-generated-on-compile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "version-auto-generated-on-compile.swift"; sourceTree = "<group>"; };
 		73E0F27A19F52607007CFB0C /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		73E0F28519F5298B007CFB0C /* appledoc-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "appledoc-Bridging-Header.h"; sourceTree = "<group>"; };
 		73E0F28619F5298C007CFB0C /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				73E0F28619F5298C007CFB0C /* main.swift */,
+				738DD63819F640D500C57CC1 /* version-auto-generated-on-compile.swift */,
 				73E0F28519F5298B007CFB0C /* appledoc-Bridging-Header.h */,
 			);
 			path = "Support Files";
@@ -106,6 +109,7 @@
 			buildConfigurationList = 73E0F28119F52607007CFB0C /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
 				0665B1B524E6BC1A25AD5034 /* Check Pods Manifest.lock */,
+				738DD63719F63FA900C57CC1 /* Setup version and build number */,
 				73E0F27619F52607007CFB0C /* Sources */,
 				73E0F27719F52607007CFB0C /* Frameworks */,
 				332B3F756AA4EF92917CFDA2 /* Copy Pods Resources */,
@@ -181,6 +185,20 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-appledoc/Pods-appledoc-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		738DD63719F63FA900C57CC1 /* Setup version and build number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Setup version and build number";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export FILENAME=\"${PROJECT_DIR}/appledoc/Support Files/version-auto-generated-on-compile.swift\"\nexport APPLEDOC_VERSION=`git describe --abbrev=0 --tags`\nexport APPLEDOC_BUILD_NUMBER=`git rev-list --all|wc -l`\nexport COMPILE_DATE=\"$(date +'%D')\"\n\necho \"${APPLEDOC_VERSION} ${APPLEDOC_BUILD_NUMBER}\"\n\necho > ${FILENAME} \"/*\"\necho >> ${FILENAME} \"\"\necho >> ${FILENAME} \"AUTO GENERATED FILE - DO NOT EDIT MANUALLY!\"\necho >> ${FILENAME} \"\"\necho >> ${FILENAME} \"Created by Xcode build script on ${COMPILE_DATE}.\"\necho >> ${FILENAME} \"Copyright (c) 2014 Gentle Bytes. All rights reserved.\"\necho >> ${FILENAME} \"\"\necho >> ${FILENAME} \"*/\"\necho >> ${FILENAME} \"\"\necho >> ${FILENAME} \"import Foundation\"\necho >> ${FILENAME} \"\"\necho >> ${FILENAME} \"let GAppledocVersion = \\\"${APPLEDOC_VERSION}\\\"\"\necho >> ${FILENAME} \"let GAppledocBuildNumber = ${APPLEDOC_BUILD_NUMBER}\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -190,6 +208,7 @@
 			files = (
 				73E0F28A19F52ACE007CFB0C /* Settings.swift in Sources */,
 				73E0F28C19F52D2A007CFB0C /* Options.swift in Sources */,
+				738DD63919F640D500C57CC1 /* version-auto-generated-on-compile.swift in Sources */,
 				73E0F28719F5298C007CFB0C /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -3,3 +3,4 @@ build
 xcuserdata
 project.xcworkspace
 xcshareddata
+appledoc/Support Files/version-auto-generated-on-compile.swift

@@ -11,8 +11,8 @@ class Options: GBOptionsHelper {
 	override init() {
 		super.init();
 		
-		self.applicationVersion = { "3.0" }
-		self.applicationBuild = { "99" }
+		self.applicationVersion = { GAppledocVersion }
+		self.applicationBuild = { "\(GAppledocBuildNumber)" }
 		self.printHelpHeader = { "Usage: %APPNAME [OPTIONS] <input paths>" }
 		
 		self.registerSeparator("OPTIONS")
