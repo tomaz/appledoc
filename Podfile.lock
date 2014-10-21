@@ -1,0 +1,10 @@
+PODS:
+  - GBCli (1.1)
+
+DEPENDENCIES:
+  - GBCli
+
+SPEC CHECKSUMS:
+  GBCli: 304718a0ff52cb39ea7ae1bcb3c4cb40c5a48c8d
+
+COCOAPODS: 0.34.4
