@@ -28,7 +28,7 @@ To make transition from headerdoc a bit simpler, appledoc also accepts headerdoc
 
 ## Single line comments:
 
-appledoc also handles single line comments that start with three slashes. Two or more single line comments in consequtive lines are grouped together into a single comment:
+appledoc also handles single line comments that start with three slashes. Two or more single line comments in consecutive lines are grouped together into a single comment:
 
 ```objc
 /// Single line comment spreading
@@ -88,11 +88,11 @@ Ordered lists use a number followed by a dot as a marker in front of each item:
 2. Second item
 ```
 
-Numbers don't need to be consequtive, you can even use the same number for all items; appledoc will simply number the items by their order. All rules for unordered lists also apply for ordered lists: separation with empty lines, nesting etc., so it won't be repeated here.
+Numbers don't need to be consecutive, you can even use the same number for all items; appledoc will simply number the items by their order. All rules for unordered lists also apply for ordered lists: separation with empty lines, nesting etc., so it won't be repeated here.
 
 ##Examples and code blocks
 
-If you want to mark a block of text as an example, simply prefix each line with a tab or 4 (or more) spaces. Appledoc will automatically convert consequtive blocks of prefixed lines into a single code block. Similar to lists and other paragraph blocks, example section needs to be delimited from preceding and following paragraph with an empty line:
+If you want to mark a block of text as an example, simply prefix each line with a tab or 4 (or more) spaces. Appledoc will automatically convert consecutive blocks of prefixed lines into a single code block. Similar to lists and other paragraph blocks, example section needs to be delimited from preceding and following paragraph with an empty line:
 
 ```
 Normal paragraph text
