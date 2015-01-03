@@ -278,7 +278,12 @@
 }
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
-	[dict setObject:self.settings.projectCompany forKey:@"copyrightHolder"];
+    NSString* projectCompanyForFooter = self.settings.projectCompany;
+    if ([projectCompanyForFooter hasSuffix:@"."])
+    {
+        projectCompanyForFooter = [projectCompanyForFooter substringToIndex:projectCompanyForFooter.length - 1];
+    }
+	[dict setObject:projectCompanyForFooter forKey:@"copyrightHolder"];
 	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderYear] forKey:@"copyrightDate"];
 	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderUpdateDate] forKey:@"lastUpdatedDate"];
 }
