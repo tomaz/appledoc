@@ -1,0 +1,18 @@
+.xcode {
+	header, aside {
+		display: none;
+	}
+
+	.container {
+		padding: 0;
+	}
+
+	article {
+		margin-top: 0;
+
+		#content {
+			border: 0;
+			margin: 0;
+		}
+	}
+}

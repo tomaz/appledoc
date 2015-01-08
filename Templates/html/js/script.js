@@ -2,7 +2,7 @@ function $() {
 	return document.querySelector.apply(document, arguments);
 }
 
-if (navigator.userAgent.toLowerCase().indexOf("xcode") != -1) {
+if (navigator.userAgent.indexOf("Xcode") != -1) {
 	document.documentElement.classList.add("xcode");
 }
 
