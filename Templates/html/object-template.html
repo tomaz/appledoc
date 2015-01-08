@@ -330,24 +330,27 @@ Section JumpTo
 
 	{{#object/methods}}
 	{{#hasProperties}}
-	<option value="properties">{{strings/objectMethods/propertiesTitle}}</option>
-	{{#properties}}
-	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{methodSelector}}</option>
-	{{/properties}}
+	<optgroup label="{{strings/objectMethods/propertiesTitle}}">
+		{{#properties}}
+		<option value="{{htmlReferenceName}}">{{methodSelector}}</option>
+		{{/properties}}
+	</optgroup>
 	{{/hasProperties}}
 
 	{{#hasClassMethods}}
-	<option value="class_methods">{{strings/objectMethods/classMethodsTitle}}</option>
-	{{#classMethods}}
-	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
-	{{/classMethods}}
+	<optgroup label="{{strings/objectMethods/classMethodsTitle}}">
+		{{#classMethods}}
+		<option value="{{htmlReferenceName}}">{{prefixedMethodSelector}}</option>
+		{{/classMethods}}
+	</optgroup>
 	{{/hasClassMethods}}
 
 	{{#hasInstanceMethods}}
-	<option value="instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</option>
-	{{#instanceMethods}}
-	<option value="{{htmlReferenceName}}">&nbsp;&nbsp;&nbsp;&nbsp;{{prefixedMethodSelector}}</option>
-	{{/instanceMethods}}
+	<optgroup label="{{strings/objectMethods/instanceMethodsTitle}}">
+		{{#instanceMethods}}
+		<option value="{{htmlReferenceName}}">{{prefixedMethodSelector}}</option>
+		{{/instanceMethods}}
+	</optgroup>
 	{{/hasInstanceMethods}}
 	{{/object/methods}}
 </select>
