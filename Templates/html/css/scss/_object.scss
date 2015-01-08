@@ -1,0 +1,61 @@
+.section-specification {
+	table {
+		width: auto;
+
+		th {
+			text-align: left;
+		}
+	}
+}
+
+.method-title {
+	code {
+		font-weight: 400;
+		font-size: .85em;
+	}
+
+	a {
+		color: inherit;
+	}
+}
+
+.method-info {
+	background: #f9f9f9;
+	border: 1px solid #e9e9e9;
+	border-left: 0;
+	border-right: 0;
+	margin: 0 -25px;
+	padding: 13px 25px 0 25px;
+
+	position: relative;
+
+	.pointy-thing {
+		background: #f9f9f9;
+		border: 1px solid #e9e9e9;
+		border-bottom: 0;
+		border-right: 0;
+		display: inline-block;
+
+		position: absolute;
+		left: 21px;
+		top: -7px;
+		width: 12px;
+		height: 12px;
+		transform: rotate(45deg);
+	}
+
+	.method-subsection {
+		margin-bottom: 15px;
+
+		.argument-name {
+			width: 1px;
+			text-align: right;
+
+			code {
+				color: #808080;
+				font-style: italic;
+				font-weight: 400;
+			}
+		}
+	}
+}
