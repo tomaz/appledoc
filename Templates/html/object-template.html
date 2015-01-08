@@ -358,14 +358,14 @@ EndSection
 
 Section TableOfContents
 {{#object/comment}}
-<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">{{strings/objectOverview/title}}</a></span></li>
+<li role="treeitem"><span class="no-disclosure"></span><span class="section-name"><a href="#overview">{{strings/objectOverview/title}}</a></span></li>
 {{/object/comment}}
 
 {{#object/methods}}
 {{#hasSections}}
-<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">{{strings/objectTasks/title}}</a></span><ul>
+<li role="treeitem" id="task_treeitem"><span class="no-disclosure"></span><span class="section-name"><a href="#tasks">{{strings/objectTasks/title}}</a></span><ul>
 	{{#sections}}{{#sectionName}}
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#task_{{#sectionName}}{{.}}{{/sectionName}}">{{#sectionName}}{{.}}{{/sectionName}}</a></span></li>
+	<li><span class="no-disclosure"></span><span class="section-name"><a href="#task_{{#sectionName}}{{.}}{{/sectionName}}">{{#sectionName}}{{.}}{{/sectionName}}</a></span></li>
 	{{/sectionName}}{{/sections}}
 </ul></li>
 {{/hasSections}}
@@ -373,25 +373,25 @@ Section TableOfContents
 
 {{#object/methods}}
 {{#hasProperties}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#properties">{{strings/objectMethods/propertiesTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="section-name"><a href="#properties">{{strings/objectMethods/propertiesTitle}}</a></span><ul>
 	{{#properties}}
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
+	<li><span class="no-disclosure"></span><span class="section-name"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/properties}}
 </ul></li>
 {{/hasProperties}}
 
 {{#hasClassMethods}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">{{strings/objectMethods/classMethodsTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="section-name"><a href="#class_methods">{{strings/objectMethods/classMethodsTitle}}</a></span><ul>
 	{{#classMethods}}
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
+	<li><span class="no-disclosure"></span><span class="section-name"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/classMethods}}
 </ul></li>
 {{/hasClassMethods}}
 
 {{#hasInstanceMethods}}
-<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</a></span><ul>
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="section-name"><a href="#instance_methods">{{strings/objectMethods/instanceMethodsTitle}}</a></span><ul>
 	{{#instanceMethods}}
-	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
+	<li><span class="no-disclosure"></span><span class="section-name"><a href="#{{htmlReferenceName}}">{{methodSelector}}</a></span></li>
 	{{/instanceMethods}}
 </ul></li>
 {{/hasInstanceMethods}}
