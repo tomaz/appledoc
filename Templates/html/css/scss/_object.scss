@@ -9,39 +9,51 @@
 }
 
 .method-title {
+	margin-left: -15px;
+	margin-bottom: 8px;
+	transition: margin-left .3s ease-out;
+
+	.section-method.hide & {
+		margin-left: 0;
+	}
+
 	code {
 		font-weight: 400;
 		font-size: .85em;
 	}
-
-	a {
-		color: inherit;
-	}
 }
 
 .method-info {
-	background: #f9f9f9;
-	border: 1px solid #e9e9e9;
-	border-left: 0;
-	border-right: 0;
+	background: $object-background;
+	border-bottom: 1px solid $object-border;
 	margin: 0 -25px;
-	padding: 13px 25px 0 25px;
+	padding: 20px 25px 0 25px;
+	transition: height .3s ease-out;
 
 	position: relative;
 
 	.pointy-thing {
-		background: #f9f9f9;
-		border: 1px solid #e9e9e9;
-		border-bottom: 0;
-		border-right: 0;
-		display: inline-block;
+		background: $content-background;
+		height: 10px;
+		border-bottom: 1px solid $object-border;
+		margin: -20px -25px 16px -25px;
 
-		position: absolute;
-		left: 21px;
-		top: -7px;
-		width: 12px;
-		height: 12px;
-		transform: rotate(45deg);
+		&:before {
+			display: inline-block;
+			content: "";
+
+			background: $object-background;
+			border: 1px solid $object-border;
+			border-bottom: 0;
+			border-right: 0;
+
+			position: absolute;
+			left: 21px;
+			top: 3px;
+			width: 12px;
+			height: 12px;
+			transform: rotate(45deg);
+		}
 	}
 
 	.method-subsection {
@@ -57,5 +69,21 @@
 				font-weight: 400;
 			}
 		}
+	}
+}
+
+.section-method {
+	&.hide .method-info {
+		height: 0 !important;
+		overflow: hidden;
+		display: none;
+	}
+
+	&.hide.animating .method-info {
+		display: block;
+	}
+
+	&.animating .method-info {
+		overflow: hidden;
 	}
 }

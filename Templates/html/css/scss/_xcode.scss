@@ -15,4 +15,18 @@
 			margin: 0;
 		}
 	}
+
+	.section-method {
+		&.hide, &.hide.animating, &.animating {
+			.method-info {
+				height: auto !important;
+				overflow: visible;
+				display: block;
+			}
+		}
+
+		&.hide .method-title {
+			margin-left: -15px;
+		}
+	}
 }

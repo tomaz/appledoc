@@ -171,84 +171,86 @@ Section Method
 	<div class="method-info">
 		<div class="pointy-thing"></div>
 
-		{{#comment}}
-		{{#hasShortDescription}}
-		<div class="method-subsection brief-description">
-			{{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}
-		</div>
-		{{/hasShortDescription}}
-	    {{/comment}}
+		<div class="method-info-container">
+			{{#comment}}
+			{{#hasShortDescription}}
+			<div class="method-subsection brief-description">
+				{{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}
+			</div>
+			{{/hasShortDescription}}
+		    {{/comment}}
 
-		<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
+			<div class="method-subsection method-declaration"><code>{{>MethodDeclaration}}</code></div>
 
-	    {{#comment}}
-		{{#hasMethodParameters}}
-		<div class="method-subsection arguments-section parameters">
-			<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
-			<table class="argument-def parameter-def">
-			{{#methodParameters}}
-				<tr>
-					<th scope="row" class="argument-name"><code>{{argumentName}}</code></th>
-					<td>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</td>
-				</tr>
-			{{/methodParameters}}
-			</table>
-		</div>
-		{{/hasMethodParameters}}
+		    {{#comment}}
+			{{#hasMethodParameters}}
+			<div class="method-subsection arguments-section parameters">
+				<h4 class="method-subtitle parameter-title">{{strings/objectMethods/parametersTitle}}</h4>
+				<table class="argument-def parameter-def">
+				{{#methodParameters}}
+					<tr>
+						<th scope="row" class="argument-name"><code>{{argumentName}}</code></th>
+						<td>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</td>
+					</tr>
+				{{/methodParameters}}
+				</table>
+			</div>
+			{{/hasMethodParameters}}
 
-		{{#hasMethodResult}}
-		<div class="method-subsection return">
-			<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
-			{{#methodResult}}{{>GBCommentComponentsList}}{{/methodResult}}
-		</div>
-		{{/hasMethodResult}}
+			{{#hasMethodResult}}
+			<div class="method-subsection return">
+				<h4 class="method-subtitle parameter-title">{{strings/objectMethods/resultTitle}}</h4>
+				{{#methodResult}}{{>GBCommentComponentsList}}{{/methodResult}}
+			</div>
+			{{/hasMethodResult}}
 
-		{{#hasAvailability}}
-		<div class="method-subsection availability">
-			<h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
-			{{#availability}}{{>GBCommentComponentsList}}{{/availability}}
-		</div>
-		{{/hasAvailability}}
+			{{#hasAvailability}}
+			<div class="method-subsection availability">
+				<h4 class="method-subtitle parameter-title">{{strings/objectMethods/availability}}</h4>
+				{{#availability}}{{>GBCommentComponentsList}}{{/availability}}
+			</div>
+			{{/hasAvailability}}
 
-		{{#hasLongDescription}}
-		<div class="method-subsection discussion-section">
-			<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
-			{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
-		</div>
-		{{/hasLongDescription}}
+			{{#hasLongDescription}}
+			<div class="method-subsection discussion-section">
+				<h4 class="method-subtitle">{{strings/objectMethods/discussionTitle}}</h4>
+				{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
+			</div>
+			{{/hasLongDescription}}
 
-		{{#hasMethodExceptions}}
-		<div class="method-subsection arguments-section exceptions">
-			<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
-			<table class="argument-def exception-def">
-			{{#methodExceptions}}
-				<tr>
-					<th scope="row" class="argument-name"><code>{{argumentName}}</code></th>
-					<td>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</td>
-				</tr>
-			{{/methodExceptions}}
-			</table>
-		</div>
-		{{/hasMethodExceptions}}
+			{{#hasMethodExceptions}}
+			<div class="method-subsection arguments-section exceptions">
+				<h4 class="method-subtitle exception-title">{{strings/objectMethods/exceptionsTitle}}</h4>
+				<table class="argument-def exception-def">
+				{{#methodExceptions}}
+					<tr>
+						<th scope="row" class="argument-name"><code>{{argumentName}}</code></th>
+						<td>{{#argumentDescription}}{{>GBCommentComponentsList}}{{/argumentDescription}}</td>
+					</tr>
+				{{/methodExceptions}}
+				</table>
+			</div>
+			{{/hasMethodExceptions}}
 
-		{{#hasRelatedItems}}
-		<div class="method-subsection see-also-section">
-			<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
-			<ul>
-				{{#relatedItems/components}}
-				<li><code>{{>GBCommentComponent}}</code></li>
-				{{/relatedItems/components}}
-			</ul>
-		</div>
-		{{/hasRelatedItems}}
+			{{#hasRelatedItems}}
+			<div class="method-subsection see-also-section">
+				<h4 class="method-subtitle">{{strings/objectMethods/seeAlsoTitle}}</h4>
+				<ul>
+					{{#relatedItems/components}}
+					<li><code>{{>GBCommentComponent}}</code></li>
+					{{/relatedItems/components}}
+				</ul>
+			</div>
+			{{/hasRelatedItems}}
 
-		{{#prefferedSourceInfo}}
-		<div class="method-subsection declared-in-section">
-			<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
-			<p><code class="declared-in-ref">{{filename}}</code></p>
+			{{#prefferedSourceInfo}}
+			<div class="method-subsection declared-in-section">
+				<h4 class="method-subtitle">{{strings/objectMethods/declaredInTitle}}</h4>
+				<p><code class="declared-in-ref">{{filename}}</code></p>
+			</div>
+			{{/prefferedSourceInfo}}
+			{{/comment}}
 		</div>
-		{{/prefferedSourceInfo}}
-		{{/comment}}
 	</div>
 </div>
 EndSection
