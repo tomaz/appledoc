@@ -157,6 +157,10 @@ aside {
 
 	font-size: 1.1em;
 
+	@media (max-width: $mobile-max-width) {
+		position: absolute;
+	}
+
 	#header-buttons {
 		background: rgba(255, 255, 255, .8);
 		margin: 0 1px;
