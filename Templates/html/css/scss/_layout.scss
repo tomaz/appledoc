@@ -97,6 +97,10 @@ th, td {
 	max-width: 980px;
 	padding: 0 10px;
 	margin: 0 auto;
+
+	@media (max-width: $mobile-max-width) {
+		padding: 0;
+	}
 }
 
 header {
@@ -132,6 +136,14 @@ header {
 
 	h1, a {
 		color: inherit;
+	}
+
+	@media (max-width: $mobile-max-width) {
+		position: absolute;
+
+		.container {
+			padding: 0 10px;
+		}
 	}
 }
 
@@ -218,6 +230,10 @@ article {
 		line-height: 1.45;
 
 		position: relative;
+
+		@media (max-width: $mobile-max-width) {
+			padding: 15px 10px 20px 10px;
+		}
 
 		.navigation-top {
 			position: absolute;

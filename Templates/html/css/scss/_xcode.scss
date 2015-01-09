@@ -16,17 +16,14 @@
 		}
 	}
 
-	.section-method {
-		&.hide, &.hide.animating, &.animating {
-			.method-info {
-				height: auto !important;
-				overflow: visible;
+	.method-info {
+		&, .section-method.hide & {
+			max-height: auto;
+			overflow: visible;
+
+			&.hiding {
 				display: block;
 			}
-		}
-
-		&.hide .method-title {
-			margin-left: -15px;
 		}
 	}
 }
