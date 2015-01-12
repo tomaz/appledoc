@@ -151,8 +151,8 @@
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
 		[result setObject:@"appledoc" forKey:@"tool"];
-		[result setObject:@"2.2" forKey:@"version"];
-		[result setObject:@"963" forKey:@"build"];
+		[result setObject:@"2.2.1" forKey:@"version"];
+		[result setObject:@"1333" forKey:@"build"];
 		[result setObject:@"http://appledoc.gentlebytes.com" forKey:@"homepage"];
 	}
 	return result;
