@@ -419,6 +419,15 @@
 	assertThatBool(settings2.warnOnMissingMethodArgument, equalToBool(NO));
 }
 
+- (void)testWarnOnUnsupportedTypedefEnum_shouldAssignValueToSettings {
+    // setup & execute
+    GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--warn-unsupported-typedef-enum", nil];
+    GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-warn-unsupported-typedef-enum", nil];
+    // verify
+    assertThatBool(settings1.warnOnUnsupportedTypedefEnum, equalToBool(YES));
+    assertThatBool(settings2.warnOnUnsupportedTypedefEnum, equalToBool(NO));
+}
+
 #pragma mark Documentation set settings testing
 
 - (void)testDocSetBudnleIdentifier_shouldAssignValueToSettings {

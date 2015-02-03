@@ -68,6 +68,7 @@ static char *kGBArgWarnOnEmptyDescription = "warn-empty-description";
 static char *kGBArgWarnOnUnknownDirective = "warn-unknown-directive";
 static char *kGBArgWarnOnInvalidCrossReference = "warn-invalid-crossref";
 static char *kGBArgWarnOnMissingMethodArgument = "warn-missing-arg";
+static char *kGBArgWarnOnUnsupportedTypedefEnum = "warn-unsupported-typedef-enum";
 
 static char *kGBArgDocSetBundleIdentifier = "docset-bundle-id";
 static char *kGBArgDocSetBundleName = "docset-bundle-name";
@@ -319,6 +320,7 @@ static char *kGBArgHelp = "help";
 		{ kGBArgWarnOnUnknownDirective,										0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnInvalidCrossReference,								0,		DDGetoptNoArgument },
 		{ kGBArgWarnOnMissingMethodArgument,								0,		DDGetoptNoArgument },
+        { kGBArgWarnOnUnsupportedTypedefEnum,								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingOutputPath),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingCompanyIdentifier),					0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnUndocumentedObject),							0,		DDGetoptNoArgument },
@@ -327,6 +329,7 @@ static char *kGBArgHelp = "help";
 		{ GBNoArg(kGBArgWarnOnUnknownDirective),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnInvalidCrossReference),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingMethodArgument),						0,		DDGetoptNoArgument },
+        { GBNoArg(kGBArgWarnOnUnsupportedTypedefEnum),						0,		DDGetoptNoArgument },
 		
 		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
 		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
@@ -849,6 +852,7 @@ static char *kGBArgHelp = "help";
 - (void)setWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = value; }
 - (void)setWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = value; }
 - (void)setWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = value; }
+- (void)setWarnUnsupportedTypedefEnum:(BOOL)value { self.settings.warnOnUnsupportedTypedefEnum = value; }
 - (void)setNoWarnMissingOutputPath:(BOOL)value { self.settings.warnOnMissingOutputPathArgument = !value; }
 - (void)setNoWarnMissingCompanyId:(BOOL)value { self.settings.warnOnMissingCompanyIdentifier = !value; }
 - (void)setNoWarnUndocumentedObject:(BOOL)value { self.settings.warnOnUndocumentedObject = !value; }
@@ -857,6 +861,7 @@ static char *kGBArgHelp = "help";
 - (void)setNoWarnUnknownDirective:(BOOL)value { self.settings.warnOnUnknownDirective = !value; }
 - (void)setNoWarnInvalidCrossref:(BOOL)value { self.settings.warnOnInvalidCrossReference = !value; }
 - (void)setNoWarnMissingArg:(BOOL)value { self.settings.warnOnMissingMethodArgument = !value; }
+- (void)setNoWarnUnsupportedTypedefEnum:(BOOL)value { self.settings.warnOnUnsupportedTypedefEnum = !value; }
 
 - (void)setDocsetBundleId:(NSString *)value { self.settings.docsetBundleIdentifier = value; }
 - (void)setDocsetBundleName:(NSString *)value { self.settings.docsetBundleName = value; }
@@ -977,6 +982,7 @@ static char *kGBArgHelp = "help";
     ddprintf(@"--%s = %@\n", kGBArgWarnOnUnknownDirective, PRINT_BOOL(self.settings.warnOnUnknownDirective));
     ddprintf(@"--%s = %@\n", kGBArgWarnOnInvalidCrossReference, PRINT_BOOL(self.settings.warnOnInvalidCrossReference));
     ddprintf(@"--%s = %@\n", kGBArgWarnOnMissingMethodArgument, PRINT_BOOL(self.settings.warnOnMissingMethodArgument));
+    ddprintf(@"--%s = %@\n", kGBArgWarnOnUnsupportedTypedefEnum, PRINT_BOOL(self.settings.warnOnUnsupportedTypedefEnum));
     ddprintf(@"\n");
     
     ddprintf(@"--%s = %@\n", kGBArgLogFormat, self.logformat);
@@ -1047,6 +1053,7 @@ static char *kGBArgHelp = "help";
 	PRINT_USAGE(@"   ", kGBArgWarnOnUnknownDirective, @"", @"[b] Warn on unknown directive or format");
 	PRINT_USAGE(@"   ", kGBArgWarnOnInvalidCrossReference, @"", @"[b] Warn on invalid cross reference");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingMethodArgument, @"", @"[b] Warn on missing method argument documentation");
+    PRINT_USAGE(@"   ", kGBArgWarnOnUnsupportedTypedefEnum, @"", @"[b] Warn on unsupported typedef enum");
 	ddprintf(@"\n");
 	ddprintf(@"DOCUMENTATION SET INFO\n");
 	PRINT_USAGE(@"   ", kGBArgDocSetBundleIdentifier, @"<string>", @"[*] DocSet bundle identifier");
