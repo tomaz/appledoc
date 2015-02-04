@@ -163,6 +163,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		self.warnOnUnknownDirective = YES;
 		self.warnOnInvalidCrossReference = YES;
 		self.warnOnMissingMethodArgument = YES;
+        self.warnOnUnsupportedTypedefEnum = YES;
 		
 		self.docsetBundleIdentifier = [NSString stringWithFormat:@"%@.%@", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
 		self.docsetBundleName = [NSString stringWithFormat:@"%@ Documentation", kGBTemplatePlaceholderProject];
@@ -710,6 +711,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize warnOnUnknownDirective;
 @synthesize warnOnInvalidCrossReference;
 @synthesize warnOnMissingMethodArgument;
+@synthesize warnOnUnsupportedTypedefEnum;
 
 @synthesize commentComponents;
 @synthesize stringTemplates;

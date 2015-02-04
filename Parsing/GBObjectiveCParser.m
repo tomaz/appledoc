@@ -648,7 +648,7 @@
         BOOL isRegularEnum = [[self.tokenizer lookahead:1] matches:@"enum"];
         BOOL isCurlyBrace = [[self.tokenizer lookahead:2] matches:@"{"];
         
-        if(isRegularEnum && isCurlyBrace)
+        if(isRegularEnum && isCurlyBrace && self.settings.warnOnUnsupportedTypedefEnum)
         {
             GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
             GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
