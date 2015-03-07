@@ -8,6 +8,7 @@
 
 #import "GBModelBase.h"
 
+/** Defines a single typedef block. */
 @interface GBTypedefBlockData : GBModelBase
 {
     @private

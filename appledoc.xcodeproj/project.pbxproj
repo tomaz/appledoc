@@ -176,6 +176,7 @@
 		7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		7D11DEC617BA622B0027DC2D /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		7D11DEC717BA62420027DC2D /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
+		86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		B4D1FFD515FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
 		B4D1FFD615FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
@@ -464,6 +465,7 @@
 		73FC742C11FE274300AAD0B9 /* GBMethodArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodArgument.m; sourceTree = "<group>"; };
 		73FC743511FE2CEB00AAD0B9 /* GBMethodDataTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodDataTesting.m; sourceTree = "<group>"; };
 		75C6C0D416CAA8D900E254F7 /* XcodeIntegrationScript.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = XcodeIntegrationScript.markdown; sourceTree = "<group>"; };
+		86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GObjectiveCParser-BlockParsingTesting.m"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4D1FFC015FF5F05009736E2 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		B4D1FFC115FF5F05009736E2 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
@@ -894,6 +896,7 @@
 				7367B8A811FF001D005ED6CD /* GBObjectiveCParser-MethodsParsingTesting.m */,
 				7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */,
 				73FC702C11FCEDDD00AAD0B9 /* GBTokenizerTesting.m */,
+				86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */,
 			);
 			name = Parsing;
 			sourceTree = "<group>";
@@ -1291,6 +1294,7 @@
 				733EA14F122BDECE0060CBDE /* GBObjectiveCParser-ProtocolParsingTesting.m in Sources */,
 				733EA150122BDECF0060CBDE /* GBObjectsAssertor.m in Sources */,
 				733EA151122BDECF0060CBDE /* GBProcessor-KnownObjectsTesting.m in Sources */,
+				86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */,
 				733EA152122BDED10060CBDE /* GBProcessor-CommentsTesting.m in Sources */,
 				733EA153122BDED10060CBDE /* GBProtocolDataTesting.m in Sources */,
 				7317CC1612B113F8009DAA15 /* GBTask.m in Sources */,
