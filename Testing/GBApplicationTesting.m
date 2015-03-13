@@ -599,9 +599,6 @@
 			// get the key corresponding to the argument
 			NSString *key = [DDGetoptLongParser optionToKey:arg];
             
-            // When passed --docset-xml-filename, +[DDGetoptLongParser keyFromOption:] will
-            // return docsetXmlFilename but we need instead of docsetXMLFilename.
-            key = [key stringByReplacingOccurrencesOfString:@"Xml" withString:@"XML"];
             key = [key stringByReplacingOccurrencesOfString:@"xcrun" withString:@"xCRun"];
 			
 			// if we have a value following, use it for KVC, otherwise just send YES
