@@ -884,7 +884,7 @@ static char *kGBArgHelp = "help";
 
 - (void)setDocsetBundleFilename:(NSString *)value { self.settings.docsetBundleFilename = value; }
 - (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }
-- (void)setDocsetXMLFilename:(NSString *)value { self.settings.docsetXMLFilename = value; }
+- (void)setDocsetXmlFilename:(NSString *)value { self.settings.docsetXMLFilename = value; }
 - (void)setDocsetPackageFilename:(NSString *)value { self.settings.docsetPackageFilename = value; }
 
 @synthesize additionalInputPaths;
