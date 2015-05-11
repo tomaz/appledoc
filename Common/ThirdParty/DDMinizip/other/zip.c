@@ -189,14 +189,6 @@ local void init_linkedlist(ll)
     ll->first_block = ll->last_block = NULL;
 }
 
-local void free_linkedlist(ll)
-    linkedlist_data* ll;
-{
-    free_datablock(ll->first_block);
-    ll->first_block = ll->last_block = NULL;
-}
-
-
 local int add_data_in_datablock(ll,buf,len)
     linkedlist_data* ll;
     const void* buf;
@@ -315,9 +307,8 @@ local void ziplocal_putValue_inmemory (dest, x, nbByte)
 /****************************************************************************/
 
 
-local uLong ziplocal_TmzDateToDosDate(ptm,dosDate)
+local uLong ziplocal_TmzDateToDosDate(ptm)
     const tm_zip* ptm;
-    uLong dosDate;
 {
     uLong year = (uLong)ptm->tm_year;
     if (year>1980)
@@ -513,8 +504,7 @@ extern zipFile ZEXPORT zipOpen2 (pathname, append, globalcomment, pzlib_filefunc
         ziinit.z_filefunc = *pzlib_filefunc_def;
 
     ziinit.filestream = (*(ziinit.z_filefunc.zopen_file))
-                 (ziinit.z_filefunc.opaque,
-                  pathname,
+                 (pathname,
                   (append == APPEND_STATUS_CREATE) ?
                   (ZLIB_FILEFUNC_MODE_READ | ZLIB_FILEFUNC_MODE_WRITE | ZLIB_FILEFUNC_MODE_CREATE) :
                     (ZLIB_FILEFUNC_MODE_READ | ZLIB_FILEFUNC_MODE_WRITE | ZLIB_FILEFUNC_MODE_EXISTING));
@@ -753,7 +743,7 @@ extern int ZEXPORT zipOpenNewFileInZip3 (file, filename, zipfi,
     {
         if (zipfi->dosDate != 0)
             zi->ci.dosDate = zipfi->dosDate;
-        else zi->ci.dosDate = ziplocal_TmzDateToDosDate(&zipfi->tmz_date,zipfi->dosDate);
+        else zi->ci.dosDate = ziplocal_TmzDateToDosDate(&zipfi->tmz_date);
     }
 
     zi->ci.flag = 0;
