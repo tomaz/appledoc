@@ -150,9 +150,9 @@ NSData *_BVMachOSectionFromMachOHeader(char *addr, long bytes_left, char *segnam
 
 #pragma mark - Definition of private functions for error reporting
 NSError *_BVPOSIXError(NSURL *url) {
-    NSError *underlyingError = [[NSError alloc] initWithDomain:NSPOSIXErrorDomain
-                                                          code:errno
-                                                      userInfo:nil];
+    NSError *underlyingError = [NSError errorWithDomain:NSPOSIXErrorDomain
+                                                   code:errno
+                                               userInfo:nil];
     NSString *errorDescription = [NSString stringWithFormat:@"File %@ could not be opened. %s.",
                                   [url path], strerror(errno)];
     NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
