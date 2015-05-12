@@ -143,6 +143,12 @@
                     {{/prefferedSourceInfo}}
                     {{/comment}}
                     {{/typedefEnum}}
+                    
+          {{#typedefBlock}}
+          <a title="{{strings.objectMethods.blockDefTitle}}" name="instance_methods"></a>
+          <h4 class="method-subtitle parameter-title">{{strings.objectMethods.blockDefTitle}}</h4>
+          {{>BlocksDefList}}
+          {{/typedefBlock}}
 				</main>
 
 				<footer>
@@ -279,6 +285,55 @@ EndSection
 Section GBCommentComponentsList
 {{#components}}{{>GBCommentComponent}}{{/components}}
 EndSection
+
+Section BlocksDefList
+<h3 class="subsubtitle method-title">{{nameOfBlock}}</h3>
+{{#comment}}
+{{#hasShortDescription}}
+<div class="method-subsection brief-description">
+  {{#shortDescription}}{{>GBCommentComponent}}{{/shortDescription}}
+</div>
+{{/hasShortDescription}}
+{{/comment}}
+
+<code>typedef {{returnType}} (^{{nameOfBlock}}) ({{&htmlParameterList}})</code>
+  
+  {{#comment}}
+  {{#hasLongDescription}}
+  <div class="method-subsection discussion-section">
+  <h4 class="method-subtitle">{{strings.objectMethods.discussionTitle}}</h4>
+  {{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}
+  </div>
+  {{/hasLongDescription}}
+  {{/comment}}
+  
+  {{#comment}}
+  {{#hasAvailability}}
+  <div class="method-subsection availability">
+  <h4 class="method-subtitle parameter-title">{{strings.objectMethods.availability}}</h4>
+  {{#availability}}{{>GBCommentComponentsList}}{{/availability}}
+  </div>
+  {{/hasAvailability}}
+  
+  {{#hasRelatedItems}}
+  <div class="method-subsection see-also-section">
+  <h4 class="method-subtitle">{{strings.objectMethods.seeAlsoTitle}}</h4>
+  <ul>
+  {{#relatedItems.components}}
+  <li><code>{{>GBCommentComponent}}</code></li>
+  {{/relatedItems.components}}
+  </ul>
+  </div>
+  {{/hasRelatedItems}}
+  
+  {{#prefferedSourceInfo}}
+  <div class="method-subsection declared-in-section">
+  <h4 class="method-subtitle">{{strings.objectMethods.declaredInTitle}}</h4>
+  <code class="declared-in-ref">{{filename}}</code><br />
+  </div>
+  {{/prefferedSourceInfo}}
+  {{/comment}}
+  EndSection
 
 Section Constant
 <dt><a name="{{htmlReferenceName}}" title="{{name}}"></a><code>{{name}}</code></dt>

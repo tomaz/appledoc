@@ -499,7 +499,28 @@
                      [argName appendString: [[self.tokenizer currentToken] stringValue]];
                      [tokenizer consume:1];
                  }
-                 
+               
+                 while([[self.tokenizer currentToken] matches:@"__nonnull"])
+                 {
+                   [argName appendString: [[self.tokenizer currentToken] stringValue]];
+                   [argName appendString:@" "];
+                   [tokenizer consume:1];
+                 }
+
+                while([[self.tokenizer currentToken] matches:@"__nullable"])
+                 {
+                   [argName appendString: [[self.tokenizer currentToken] stringValue]];
+                   [argName appendString:@" "];
+                   [tokenizer consume:1];
+                 }
+
+                 while([[self.tokenizer currentToken] matches:@"__null_unspecified"])
+                 {
+                   [argName appendString: [[self.tokenizer currentToken] stringValue]];
+                   [argName appendString:@" "];                   
+                   [tokenizer consume:1];
+                 }
+               
                  NSString *tokenString = [[self.tokenizer currentToken] stringValue];
                  if (![tokenString isEqualToString:@")"] && ![tokenString isEqualToString:@","])
                  {
