@@ -501,10 +501,15 @@
                  }
                  
                  NSString *tokenString = [[self.tokenizer currentToken] stringValue];
-                 if (tokenString) {
-                     [argName appendString:tokenString];
+                 if (![tokenString isEqualToString:@")"] && ![tokenString isEqualToString:@","])
+                 {
+                     if (tokenString)
+                     {
+                         [argName appendString:tokenString];
+                     }
+                     
+                     [self.tokenizer consume:1];
                  }
-                 [self.tokenizer consume:1];
                  
                  if([[self.tokenizer currentToken] matches:@","])
                  {
