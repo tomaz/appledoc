@@ -420,8 +420,7 @@ extern unzFile ZEXPORT unzOpen2 (path, pzlib_filefunc_def)
     else
         us.z_filefunc = *pzlib_filefunc_def;
 
-    us.filestream= (*(us.z_filefunc.zopen_file))(us.z_filefunc.opaque,
-                                                 path,
+    us.filestream= (*(us.z_filefunc.zopen_file))(path,
                                                  ZLIB_FILEFUNC_MODE_READ |
                                                  ZLIB_FILEFUNC_MODE_EXISTING);
     if (us.filestream==NULL)

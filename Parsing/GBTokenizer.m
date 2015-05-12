@@ -216,8 +216,8 @@
 	// This method checks if current token is a comment and consumes all comments until non-comment token is detected or EOF reached. The result of the method is that current index is positioned on the first non-comment token. If current token is not comment, the method doesn't do anything, but simply returns NO to indicate it didn't find a comment and therefore it didn't move current token. This is also where we do initial comments handling such as removing starting and ending chars etc.
 	if ([self eof]) return NO;
 
-	PKToken *startingPreviousToken = nil;
-	PKToken *startingLastToken = nil;
+	//PKToken *startingPreviousToken = nil;
+	//PKToken *startingLastToken = nil;
 	NSUInteger previousSingleLineEndOffset = NSNotFound;
 	NSInteger previousSingleLineIndentation = -1;
 	while (![self eof] && [[self currentToken] isComment]) {
@@ -238,12 +238,12 @@
 				[self.lastCommentBuilder appendString:@"\n"];
 			} else {
 				[self.previousCommentBuilder setString:self.lastCommentBuilder];
-				startingPreviousToken = startingLastToken;
+				//startingPreviousToken = startingLastToken;
 				[self.lastCommentBuilder setString:@""];
 				self.isPreviousCommentMultiline = self.isLastCommentMultiline;
 				self.previousCommentToken = self.lastCommentToken;
 				self.isLastCommentMultiline = NO;
-				startingLastToken = token;
+				//startingLastToken = token;
 				self.lastCommentToken = token;
 			}
 			previousSingleLineEndOffset = [token offset] + [[token stringValue] length];
@@ -255,12 +255,12 @@
 			NSArray *multiLiners = [[token stringValue] componentsMatchedByRegex:self.multiLineCommentRegex capture:1];
 			value = [multiLiners lastObject];
 			[self.previousCommentBuilder setString:self.lastCommentBuilder];
-			startingPreviousToken = startingLastToken;
+			//startingPreviousToken = startingLastToken;
 			[self.lastCommentBuilder setString:@""];
 			self.isPreviousCommentMultiline = self.isLastCommentMultiline;
 			self.previousCommentToken = self.lastCommentToken;
 			self.isLastCommentMultiline = YES;
-			startingLastToken = token;
+			//startingLastToken = token;
 			self.lastCommentToken = token;
 			}
 
@@ -275,8 +275,8 @@
 	if (self.settings && [self.lastCommentBuilder isMatchedByRegex:self.settings.commentComponents.methodGroupRegex]) {
 		self.previousCommentBuilder = [self.lastCommentBuilder mutableCopy];
 		[self.lastCommentBuilder setString:@""];
-		startingPreviousToken = startingLastToken;
-		startingLastToken = nil;
+		//startingPreviousToken = startingLastToken;
+		//startingLastToken = nil;
 		self.previousCommentToken = self.lastCommentToken;
 		self.lastCommentToken = nil;
 	}

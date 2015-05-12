@@ -35,13 +35,13 @@
 extern "C" {
 #endif
 
-typedef voidpf (ZCALLBACK *open_file_func) OF((voidpf opaque, const char* filename, int mode));
-typedef uLong  (ZCALLBACK *read_file_func) OF((voidpf opaque, voidpf stream, void* buf, uLong size));
-typedef uLong  (ZCALLBACK *write_file_func) OF((voidpf opaque, voidpf stream, const void* buf, uLong size));
-typedef long   (ZCALLBACK *tell_file_func) OF((voidpf opaque, voidpf stream));
-typedef long   (ZCALLBACK *seek_file_func) OF((voidpf opaque, voidpf stream, uLong offset, int origin));
-typedef int    (ZCALLBACK *close_file_func) OF((voidpf opaque, voidpf stream));
-typedef int    (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
+typedef voidpf (ZCALLBACK *open_file_func) OF((const char* filename, int mode));
+typedef uLong  (ZCALLBACK *read_file_func) OF((voidpf stream, void* buf, uLong size));
+typedef uLong  (ZCALLBACK *write_file_func) OF((voidpf stream, const void* buf, uLong size));
+typedef long   (ZCALLBACK *tell_file_func) OF((voidpf stream));
+typedef long   (ZCALLBACK *seek_file_func) OF((voidpf stream, uLong offset, int origin));
+typedef int    (ZCALLBACK *close_file_func) OF((voidpf stream));
+typedef int    (ZCALLBACK *testerror_file_func) OF((voidpf stream));
 
 typedef struct zlib_filefunc_def_s
 {
@@ -59,12 +59,12 @@ typedef struct zlib_filefunc_def_s
 
 void fill_fopen_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def));
 
-#define ZREAD(filefunc,filestream,buf,size) ((*((filefunc).zread_file))((filefunc).opaque,filestream,buf,size))
-#define ZWRITE(filefunc,filestream,buf,size) ((*((filefunc).zwrite_file))((filefunc).opaque,filestream,buf,size))
-#define ZTELL(filefunc,filestream) ((*((filefunc).ztell_file))((filefunc).opaque,filestream))
-#define ZSEEK(filefunc,filestream,pos,mode) ((*((filefunc).zseek_file))((filefunc).opaque,filestream,pos,mode))
-#define ZCLOSE(filefunc,filestream) ((*((filefunc).zclose_file))((filefunc).opaque,filestream))
-#define ZERROR(filefunc,filestream) ((*((filefunc).zerror_file))((filefunc).opaque,filestream))
+#define ZREAD(filefunc,filestream,buf,size) ((*((filefunc).zread_file))(filestream,buf,size))
+#define ZWRITE(filefunc,filestream,buf,size) ((*((filefunc).zwrite_file))(filestream,buf,size))
+#define ZTELL(filefunc,filestream) ((*((filefunc).ztell_file))(filestream))
+#define ZSEEK(filefunc,filestream,pos,mode) ((*((filefunc).zseek_file))(filestream,pos,mode))
+#define ZCLOSE(filefunc,filestream) ((*((filefunc).zclose_file))(filestream))
+#define ZERROR(filefunc,filestream) ((*((filefunc).zerror_file))(filestream))
 
 
 #ifdef __cplusplus

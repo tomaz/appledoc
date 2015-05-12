@@ -115,7 +115,7 @@
 			[fman createDirectoryAtPath:[fullPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
         
         //test
-        DDZippedFileInfo *info = [[DDZippedFileInfo alloc] initWithName:strPath andNativeInfo:fileInfo];
+        DDZippedFileInfo *info = [[[DDZippedFileInfo alloc] initWithName:strPath andNativeInfo:fileInfo] autorelease];
         NSLog(@"%@", info.date);
         
               //ask delegate for overwrite
@@ -205,7 +205,7 @@
 -(BOOL) shouldOverwrite:(NSString*)file withName:(NSString*)name andFileInfo:(unz_file_info)fileInfo
 {
 	if( _delegate && [_delegate respondsToSelector:@selector(zipArchive:shouldOverwriteFile:withZippedFile:)] ) {
-        DDZippedFileInfo *info = [[DDZippedFileInfo alloc] initWithName:name andNativeInfo:fileInfo];    
+        DDZippedFileInfo *info = [[[DDZippedFileInfo alloc] initWithName:name andNativeInfo:fileInfo] autorelease];
 		return [_delegate zipArchive:self shouldOverwriteFile:file withZippedFile:info];
     }
 	return NO;

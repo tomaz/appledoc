@@ -70,7 +70,7 @@
 }
 
 + (id)xcodeProjectFileWithPath:(NSString*)path error:(NSError**)pError {
-    id file = [[[self class] alloc] initWithPath:path];
+    id file = [[[[self class] alloc] initWithPath:path] autorelease];
     if(file) {
         if([file parse:pError]) {
             return file;
@@ -80,7 +80,7 @@
 }
 
 + (id)xcodeProjectFileWithDictionary:(NSDictionary*)dict error:(NSError**)pError {
-    id file = [[[self class] alloc] initWithDictionary:dict];
+    id file = [[[[self class] alloc] initWithDictionary:dict] autorelease];
     if(file) {
         if([file parse:pError]) {
             return file;
@@ -224,7 +224,7 @@
 
 - (NSError*)parsePBXFileReference:(NSDictionary*)dict {
     if(!dict[@"lastKnownFileType"] && dict[@"explicitFileType"]) {
-        NSMutableDictionary *mdict = dict.mutableCopy;
+        NSMutableDictionary *mdict = [[dict mutableCopy] autorelease];
         mdict[@"lastKnownFileType"] = dict[@"explicitFileType"];
         dict = mdict;
     }
