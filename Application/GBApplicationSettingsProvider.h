@@ -421,6 +421,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) int exitCodeThreshold;
 
+/** Title of the documentation section */
+@property (copy) NSString *docsSectionTitle;
+
+
 ///---------------------------------------------------------------------------------------
 /// @name Warnings handling
 ///---------------------------------------------------------------------------------------
