@@ -43,6 +43,7 @@ static char *kGBArgPublishDocSet = "publish-docset";
 static char *kGBArgHTMLAnchorFormat = "html-anchors";
 static char *kGBArgKeepIntermediateFiles = "keep-intermediate-files";
 static char *kGBArgExitCodeThreshold = "exit-threshold";
+static char *kGBArgDocsSectionTitle = "docs-section-title";
 
 static char *kGBArgRepeatFirstParagraph = "repeat-first-par";
 static char *kGBArgPreprocessHeaderDoc = "preprocess-headerdoc";
@@ -301,6 +302,7 @@ static char *kGBArgHelp = "help";
 		{ kGBArgPrefixMergedCategoriesSectionsWithCategoryName,				0,		DDGetoptNoArgument },
     	{ kGBArgUseCodeOrder,                                               0,		DDGetoptNoArgument },
 		{ kGBArgExitCodeThreshold,											0,		DDGetoptRequiredArgument },
+		{ kGBArgDocsSectionTitle,                                           0,		DDGetoptRequiredArgument },
 		{ GBNoArg(kGBArgKeepIntermediateFiles),								0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedObjects),							0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgKeepUndocumentedMembers),							0,		DDGetoptNoArgument },
@@ -817,6 +819,7 @@ static char *kGBArgHelp = "help";
 - (void)setNoExplicitCrossref:(BOOL)value { [self setExplicitCrossref:!value]; }
 
 - (void)setExitThreshold:(int)value { self.settings.exitCodeThreshold = value; }
+- (void)setDocsSectionTitle:(NSString *)value { self.settings.docsSectionTitle = value; }
 - (void)setKeepIntermediateFiles:(BOOL)value { self.settings.keepIntermediateFiles = value;}
 - (void)setKeepUndocumentedObjects:(BOOL)value { self.settings.keepUndocumentedObjects = value; }
 - (void)setKeepUndocumentedMembers:(BOOL)value { self.settings.keepUndocumentedMembers = value; }
@@ -972,6 +975,7 @@ static char *kGBArgHelp = "help";
     ddprintf(@"--%s = %@\n", kGBArgCrossRefFormat, self.settings.commentComponents.crossReferenceMarkersTemplate);
     ddprintf(@"--%s = %@\n", kGBArgUseCodeOrder, self.settings.useCodeOrder);
     ddprintf(@"--%s = %ld\n", kGBArgExitCodeThreshold, self.settings.exitCodeThreshold);
+    ddprintf(@"--%s = %@\n", kGBArgDocsSectionTitle, self.settings.docsSectionTitle);
     ddprintf(@"\n");
     
     ddprintf(@"--%s = %@\n", kGBArgWarnOnMissingOutputPath, PRINT_BOOL(self.settings.warnOnMissingOutputPathArgument));
@@ -1043,7 +1047,8 @@ static char *kGBArgHelp = "help";
     PRINT_USAGE(@"   ", kGBArgUseCodeOrder, @"", @"[b] Order sections by the order specified in the input files");
     PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
     PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
-	ddprintf(@"\n");
+	PRINT_USAGE(@"   ", kGBArgDocsSectionTitle, @"<string>", @"Title of the documentation section (defaults to \"Programming Guides\"");
+    ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingCompanyIdentifier, @"", @"[b] Warn if company ID is not given");

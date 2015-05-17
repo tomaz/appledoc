@@ -144,6 +144,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		self.findUndocumentedMembersDocumentation = YES;
 		self.treatDocSetIndexingErrorsAsFatals = NO;
 		self.exitCodeThreshold = 0;
+        self.docsSectionTitle = nil;
 		
 		self.mergeCategoriesToClasses = YES;
 		self.mergeCategoryCommentToClass = YES;
@@ -702,6 +703,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize cleanupOutputPathBeforeRunning;
 @synthesize treatDocSetIndexingErrorsAsFatals;
 @synthesize exitCodeThreshold;
+@synthesize docsSectionTitle;
 
 @synthesize warnOnMissingOutputPathArgument;
 @synthesize warnOnMissingCompanyIdentifier;

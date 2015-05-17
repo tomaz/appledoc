@@ -69,6 +69,7 @@
 
 - (NSString *)pageTitleForIndex;
 - (NSString *)pageTitleForHierarchy;
+- (NSString *)docsSectionTitleForIndex;
 - (NSArray *)documentsForIndex;
 - (NSArray *)classesForIndex;
 - (NSArray *)categoriesForIndex;
@@ -206,6 +207,7 @@
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
 	[page setObject:[self pageTitleForIndex] forKey:@"title"];
+    [page setObject:[self docsSectionTitleForIndex] forKey:@"docsTitle"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	[result setObject:page forKey:@"page"];
@@ -540,6 +542,15 @@
 - (NSString *)pageTitleForHierarchy {
 	NSString *template = [self.settings.stringTemplates.hierarchyPage objectForKey:@"titleTemplate"];
 	return [NSString stringWithFormat:template, self.settings.projectName];
+}
+
+- (NSString *)docsSectionTitleForIndex {
+    if ([self.settings.docsSectionTitle length] > 0)
+    {
+        return self.settings.docsSectionTitle;
+    }
+    
+    return [self.settings.stringTemplates.indexPage objectForKey:@"docsTitle"];
 }
 
 - (NSArray*)documentsForIndex{
