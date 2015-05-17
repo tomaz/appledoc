@@ -86,6 +86,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
 - (NSString *)stringByReplacingOccurencesOfRegex:(NSString *)regex inHTML:(NSString *)string usingBlock:(NSString *(^)(NSInteger captureCount, NSString * __unsafe_unretained *capturedStrings, BOOL insideCode))block;
 - (NSString *)stringByNormalizingString:(NSString *)string;
+- (NSString *)sanitizeFileNameString:(NSString *)fileName;
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
 
@@ -459,7 +460,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 
 - (NSString *)outputFilenameForTemplatePath:(NSString *)path {
 	NSString *result = [path lastPathComponent];
-	return [result stringByReplacingOccurrencesOfString:@"-template" withString:@""];
+    result = [result stringByReplacingOccurrencesOfString:@"-template" withString:@""];
+    return [self sanitizeFileNameString:result];
 }
 
 - (NSString *)templateFilenameForOutputPath:(NSString *)path {
@@ -604,6 +606,15 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 
 - (NSString *)stringByNormalizingString:(NSString *)string {
 	return [string stringByReplacingOccurrencesOfRegex:@"[ \t]+" withString:@"-"];
+}
+
+- (NSString *)sanitizeFileNameString:(NSString *)fileName {
+    NSString *rawFileName = fileName;
+    NSCharacterSet* illegalFileNameCharacters = [NSCharacterSet characterSetWithCharactersInString:@"/\\?%*|\"<>"];
+    rawFileName = [[rawFileName componentsSeparatedByCharactersInSet:illegalFileNameCharacters] componentsJoinedByString:@""];
+    rawFileName = [[rawFileName componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] componentsJoinedByString:@"-"];
+    
+    return rawFileName;
 }
 
 #pragma mark Overriden methods
