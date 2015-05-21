@@ -330,15 +330,15 @@
 
 
 - (NSString *)pageTitleForDocument:(GBDocumentData *)object {
-	NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
-	
-	//Remove the -template if any
-	NSString *lastComp=[[object.nameOfDocument lastPathComponent] stringByDeletingPathExtension];
-	NSString *suffix=@"-template";
-	if([lastComp hasSuffix:suffix])
-		lastComp=[lastComp substringToIndex:[lastComp length] - [suffix length]];
-	
-	return [NSString stringWithFormat:template, lastComp];
+    NSString *template = [self.settings.stringTemplates valueForKeyPath:@"documentPage.titleTemplate"];
+    
+    //Remove the -template if any
+    NSString *lastComp=[[object.nameOfDocument lastPathComponent] stringByDeletingPathExtension];
+    NSString *suffix=@"-template";
+    if([lastComp hasSuffix:suffix])
+        lastComp=[lastComp substringToIndex:[lastComp length] - [suffix length]];
+    
+    return [NSString stringWithFormat:template, lastComp];
 }
 
 - (NSDictionary *)specificationsForClass:(GBClassData *)object {
