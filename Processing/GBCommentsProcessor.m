@@ -647,7 +647,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([string length] == 0) return string;
 
 	// Formatting markers are fine, except *, which should be converted to **. To simplify cross refs detection, we handle all possible formatting markers though so we can search for cross refs within "clean" formatted text, without worrying about markers interfering with search. Note that we also handle "standard" Markdown nested formats and bold markers here, so that we properly handle cross references within.
-	NSString *pattern = @"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|`)(.+?)\\1)";
+	NSString *pattern = @"(?s:(\\*__|__\\*|\\*\\*_|_\\*\\*|\\*\\*\\*|___|\\*_|_\\*|\\*\\*|__|\\*|_|==!!==|```|`)(.+?)\\1)";
 	NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"marker", 1, @"value", 2, nil];
 	NSRange searchRange = NSMakeRange(0, [string length]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
@@ -669,6 +669,7 @@ typedef NSUInteger GBProcessingFlag;
 		GBProcessingFlag linkFlags = flags;
 		NSString *markdownStartMarker = @"";
 		NSString *markdownEndMarker = nil;
+        BOOL isFencedCodeBlock = NO;
 		if ([componentMarker isEqualToString:@"*"]) {
 			if (self.settings.useSingleStarForBold) {
 				GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
@@ -682,6 +683,12 @@ typedef NSUInteger GBProcessingFlag;
 			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = @"_";
 		}
+        else if ([componentMarker isEqualToString:@"```"]) {
+            GBLogDebug(@"  - Found '%@' formatted as fenced code block at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+            markdownStartMarker = @"```";
+            isFencedCodeBlock = YES;
+            linkFlags |= GBProcessingFlagEmbedMarkdownLink;
+        }
 		else if ([componentMarker isEqualToString:@"`"]) {
 			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = @"`";
@@ -700,8 +707,14 @@ typedef NSUInteger GBProcessingFlag;
 		}
 		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
 		
-		// Get formatted text, convert it's cross references and append proper format markers and string to result.
-		NSString *convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
+        NSString *convertedText = nil;
+        if (!isFencedCodeBlock) {
+            // Get formatted text, convert its cross references and append proper format markers and string to result.
+            convertedText = [self stringByConvertingCrossReferencesInString:componentText withFlags:linkFlags];
+        } else {
+            // Don't process cross references inside fenced code blocks. Code samples frequently use external framework (UIKit, etc.) methods and objects whose references won't be found.
+            convertedText = componentText;
+        }
 		[result appendString:markdownStartMarker];
 		[result appendString:convertedText];
 		[result appendString:markdownEndMarker];
