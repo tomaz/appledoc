@@ -128,6 +128,33 @@
 	assertThat(result, is(@"[test_test](http://www.example.com/test_test.html)"));
 }
 
+- (void)testStringByPreprocessingString_shouldConvertCodeBlockToMarkdownBackticks {
+    // setup
+    GBCommentsProcessor *processor = [self defaultProcessor];
+    // execute
+    NSString *result = [processor stringByPreprocessingString:@"\n  @code  \n[self doSomething];\n  @endcode  \n" withFlags:0];
+    // verify
+    assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
+}
+
+- (void)testStringByPreprocessingString_shouldConvertTildeCodeBlockToMarkdownBackticks {
+    // setup
+    GBCommentsProcessor *processor = [self defaultProcessor];
+    // execute
+    NSString *result = [processor stringByPreprocessingString:@"\n  ~~~  \n[self doSomething];\n  ~~~  \n" withFlags:0];
+    // verify
+    assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
+}
+
+- (void)testStringByPreprocessingString_shouldConvertBacktickCodeBlockToMarkdownBackticks {
+    // setup
+    GBCommentsProcessor *processor = [self defaultProcessor];
+    // execute
+    NSString *result = [processor stringByPreprocessingString:@"\n  ```  \n[self doSomething];\n  ```  \n" withFlags:0];
+    // verify
+    assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
+}
+
 #pragma mark Class, category and protocol cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertClass {
