@@ -32,23 +32,40 @@
  - range the range for the code text, relative to the original @a string
  */
 - (NSArray*)codeComponentsInString:(NSString*)string {
-    NSRange searchRange = NSMakeRange(0, [string length]);
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-
     NSString *pattern = @"\\r?\\n(([ \\t]*(~~~|```|@code)[ \\t]*)\\r?\\n[\\s\\S]*?\\r?\\n([ \\t]*(\\3|@endcode)[ \\t]*)\\r?\\n)";
-    NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"code", 1, @"prefix", 2, @"begin", 3, @"postfix", 4, @"end", 5, nil];
-    for (NSDictionary *d in components) {
-        NSString *begin = [d objectForKey:@"begin"];
-        NSString *end = [d objectForKey:@"end"];
-        if (([begin isEqualToString:@"@code"] && [end isEqualToString:@"@endcode"]) || [begin isEqualToString:end]) {
-            NSString *body = [d objectForKey:@"code"];
-            NSRange range = [string rangeOfString:body options:0 range:searchRange];
-            NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithDictionary:d];
-            [dict setObject:[NSValue valueWithRange:range] forKey:@"range"];
-            [result addObject:[dict copy]];
+    NSUInteger stringLength = [string length];
+    NSRange searchRange = NSMakeRange(0, stringLength);
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    while (searchRange.length > 0) {
+        NSArray *captured = [string captureComponentsMatchedByRegex:pattern range:searchRange];
+        if ([captured count] > 0) {
+            NSAssert([captured count] == 6, @"Match didn't produce right number of components");
+            NSString *code = [captured objectAtIndex:1];
+            NSRange codeRange = [string rangeOfString:code options:0 range:searchRange];
+            NSAssert(codeRange.location != NSNotFound, @"Matched code string should be in original");
+
+            NSString *begin = [captured objectAtIndex:3];
+            NSString *end = [captured objectAtIndex:5];
+            if (([begin isEqualToString:@"@code"] && [end isEqualToString:@"@endcode"]) || [begin isEqualToString:end]) {
+                NSDictionary *component = @{@"code": code,
+                                            @"prefix": [captured objectAtIndex:2],
+                                            @"begin": begin,
+                                            @"postfix": [captured objectAtIndex:4],
+                                            @"end": end,
+                                            @"range": [NSValue valueWithRange:codeRange]};
+                [result addObject:component];
+            }
+
+            NSString *matchedString = [captured objectAtIndex:0];
+            NSRange matchedRange = [string rangeOfString:matchedString options:0 range:searchRange];
+            NSAssert(matchedRange.location != NSNotFound, @"Matched string should be in original");
+            searchRange.location = matchedRange.location + matchedRange.length;
+            searchRange.length = stringLength - searchRange.location;
+        } else {
+            searchRange = NSMakeRange(NSNotFound, 0);
         }
     }
-    return [result copy];
+    return result;    return [result copy];
 }
 
 /**

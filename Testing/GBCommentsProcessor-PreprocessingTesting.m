@@ -155,6 +155,17 @@
     assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
 }
 
+- (void)testStringByPreprocessingString_shouldConvertMultipleCodeBlocksToMarkdownBackticks {
+    // setup
+    GBCommentsProcessor *processor = [self defaultProcessor];
+    NSString *raw = @"\n  @code  \n[self doSomething];\n  @endcode  \n\n  @code  \n[self doSomething];\n  @endcode  \n";
+    NSString *expected = @"\n```\n[self doSomething];\n```\n\n```\n[self doSomething];\n```\n";
+    // execute
+    NSString *result = [processor stringByPreprocessingString:raw withFlags:0];
+    // verify
+    assertThat(result, is(expected));
+}
+
 #pragma mark Class, category and protocol cross references detection
 
 - (void)testStringByConvertingCrossReferencesInString_shouldConvertClass {
