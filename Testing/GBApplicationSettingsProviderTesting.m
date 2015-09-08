@@ -475,14 +475,21 @@
 	settings2.embedCrossReferencesWhenProcessingMarkdown = NO;
 	// execute
 	NSString *result11 = [settings1 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
-	NSString *result12 = [settings1 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+    NSString *result12 = [settings1 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+    NSString *result13 = [settings1 stringByEmbeddingCrossReference:@"![Some Stuff](https://foo.bar/blarg/flip%2flop.xyz)]"];
+
 	NSString *result21 = [settings2 stringByEmbeddingCrossReference:@"[description](address \"title\")"];
 	NSString *result22 = [settings2 stringByEmbeddingCrossReference:@"[`description`](address \"title\")"];
+    NSString *result23 = [settings2 stringByEmbeddingCrossReference:@"![Some Stuff](https://foo.bar/blarg/flip%2flop.xyz)]"];
+
 	// verify
 	assertThat(result11, is(@"~!@[description](address \"title\")@!~"));
-	assertThat(result12, is(@"~!@[`description`](address \"title\")@!~"));
+    assertThat(result12, is(@"~!@[`description`](address \"title\")@!~"));
+    assertThat(result13, is(@"~!@![Some Stuff](https://foo.bar/blarg/flip%2flop.xyz)]@!~"));
+
 	assertThat(result21, is(@"[description](address \"title\")"));
 	assertThat(result22, is(@"[`description`](address \"title\")"));
+    assertThat(result23, is(@"![Some Stuff](https://foo.bar/blarg/flip%2flop.xyz)]"));
 }
 
 #pragma mark Markdown to HTML conversion
@@ -493,9 +500,13 @@
 	// execute
 	NSString *result1 = [settings stringByConvertingMarkdownToHTML:@"~!@[description](address)@!~"];
 	NSString *result2 = [settings stringByConvertingMarkdownToHTML:@"[description](address)"];
+    NSString *result3 = [settings stringByConvertingMarkdownToHTML:@"![alt text](https://xyz/foo.bar)]"];
+    NSString *result4 = [settings stringByConvertingMarkdownToHTML:@"[![alt text](https://xyz/foo.bar)](https://xyz/foo.blarg)"];
 	// verify - Discount converts any kind of link, we just need to strip embedded prefix and suffix!
 	assertThat(result1, is(@"<p><a href=\"address\">description</a></p>"));
-	assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
+    assertThat(result2, is(@"<p><a href=\"address\">description</a></p>"));
+    assertThat(result3, is(@"<p><img src=\"https://xyz/foo.bar\" alt=\"alt text\" />]</p>"));
+    assertThat(result4, is(@"<p><a href=\"https://xyz/foo.blarg\"><img src=\"https://xyz/foo.bar\" alt=\"alt text\" /></a></p>"));
 }
 
 - (void)testStringByConvertingMarkdownToHTML_shouldAllowUsageOfUTF8CharacterSet {

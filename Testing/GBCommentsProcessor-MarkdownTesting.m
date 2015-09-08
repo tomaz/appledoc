@@ -164,6 +164,90 @@
 	[self assertComment:comment2 matchesLongDescMarkdown:@"**~!$[Protocol](Protocols/Protocol.html)$!~**", nil];
 }
 
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatImageReferenceLinks {
+    // setup
+    GBStore *store = [self storeWithDefaultObjects];
+    id settings1 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings1 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+    GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:settings1];
+    GBComment *comment1 = [GBComment commentWithStringValue:@"![alt info](http://foo/bar.blarg)"];
+    id settings2 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings2 setEmbedCrossReferencesWhenProcessingMarkdown:YES];
+    GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:settings2];
+    GBComment *comment2 = [GBComment commentWithStringValue:@"![alt info](http://foo/bar.blarg)"];
+    // execute
+    [processor1 processComment:comment1 withContext:nil store:store];
+    [processor2 processComment:comment2 withContext:nil store:store];
+    // verify
+    [self assertComment:comment1 matchesLongDescMarkdown:@"![alt info](http://foo/bar.blarg)", nil];
+    [self assertComment:comment2 matchesLongDescMarkdown:@"~!@![alt info](http://foo/bar.blarg)@!~", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatImageReferenceLinksWithPercentChars {
+    // setup
+    GBStore *store = [self storeWithDefaultObjects];
+    id settings1 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings1 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+    GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:settings1];
+    NSString *raw = @"![alt info](http://foo/bar.%2.blarg \"foo%20bar\")";
+    GBComment *comment1 = [GBComment commentWithStringValue:raw];
+    id settings2 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings2 setEmbedCrossReferencesWhenProcessingMarkdown:YES];
+    GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:settings2];
+    GBComment *comment2 = [GBComment commentWithStringValue:raw];
+    // execute
+    [processor1 processComment:comment1 withContext:nil store:store];
+    [processor2 processComment:comment2 withContext:nil store:store];
+    // verify
+    [self assertComment:comment1 matchesLongDescMarkdown:raw, nil];
+    [self assertComment:comment2 matchesLongDescMarkdown:[NSString stringWithFormat:@"~!@%@@!~", raw], nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatNestedImageReferenceLinks {
+    // setup
+    GBStore *store = [self storeWithDefaultObjects];
+    id settings1 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings1 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+    GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:settings1];
+    GBComment *comment1 = [GBComment commentWithStringValue:@"[![alt info](http://foo/bar.blarg)](http://foo/bar.blip)"];
+    id settings2 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings2 setEmbedCrossReferencesWhenProcessingMarkdown:YES];
+    GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:settings2];
+    GBComment *comment2 = [GBComment commentWithStringValue:@"[![alt info](http://foo/bar.blarg)](http://foo/bar.blip)"];
+    // execute
+    [processor1 processComment:comment1 withContext:nil store:store];
+    [processor2 processComment:comment2 withContext:nil store:store];
+    // verify
+    [self assertComment:comment1 matchesLongDescMarkdown:@"[![alt info](http://foo/bar.blarg)](http://foo/bar.blip)", nil];
+    [self assertComment:comment2 matchesLongDescMarkdown:@"~!@[![alt info](http://foo/bar.blarg)](http://foo/bar.blip)@!~", nil];
+}
+
+- (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatMultipleNestedImageReferenceLinks {
+    // setup
+    GBStore *store = [self storeWithDefaultObjects];
+    id settings1 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings1 setEmbedCrossReferencesWhenProcessingMarkdown:NO];
+    GBCommentsProcessor *processor1 = [GBCommentsProcessor processorWithSettingsProvider:settings1];
+    NSArray *rawStrings =
+    @[@"[![Foo version](https://foo.io/bar/blarg%2blip.abc)](https://github.com/no%8body/Repo/releases)",
+      @"[![Bar compatible](https://foo.io/bar/blargblip.abc?style=%20)](https://github.com/no%20body/empty%1)",
+      @"[![Baz license](https://foo.io/bar/blargblip.abc)](https://raw.githubusercontent.com/no%20body/empty%1)"];
+    NSString *raw = [rawStrings componentsJoinedByString:@" some text "];
+    GBComment *comment1 = [GBComment commentWithStringValue:raw];
+    id settings2 = [GBTestObjectsRegistry realSettingsProvider];
+    [settings2 setEmbedCrossReferencesWhenProcessingMarkdown:YES];
+    GBCommentsProcessor *processor2 = [GBCommentsProcessor processorWithSettingsProvider:settings2];
+    GBComment *comment2 = [GBComment commentWithStringValue:raw];
+    // execute
+    [processor1 processComment:comment1 withContext:nil store:store];
+    [processor2 processComment:comment2 withContext:nil store:store];
+    // verify
+    NSString *expected = raw;
+    [self assertComment:comment1 matchesLongDescMarkdown:raw, nil];
+    expected = [NSString stringWithFormat:@"~!@%@@!~", [rawStrings componentsJoinedByString:@"@!~ some text ~!@"]];
+    [self assertComment:comment2 matchesLongDescMarkdown:expected, nil];
+}
+
 - (void)testProcessCommentWithContextStore_markdown_shouldProperlyFormatInlineLinksWhenEmbeddingIsTurnedOn {
 	// setup
 	GBStore *store = [self storeWithDefaultObjects];
