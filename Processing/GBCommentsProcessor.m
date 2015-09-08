@@ -107,6 +107,7 @@ typedef NSUInteger GBProcessingFlag;
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags;
 - (NSString *)stringByConvertingSimpleCrossReferencesInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags;
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags prefix:(NSString*)prefix;
 
 - (GBCrossRefData *)dataForClassOrProtocolLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
 - (GBCrossRefData *)dataForCategoryLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags;
@@ -897,13 +898,18 @@ typedef NSUInteger GBProcessingFlag;
 }
 
 - (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags {
-	// Creates Markdown inline style link using the given components. This should be used when converting text to Markdown links as it will prepare special format so that we can later properly format links embedded in code spans!
-	NSString *result = nil;
-	if ((flags & GBProcessingFlagEmbedMarkdownLink) > 0)
-		result = [NSString stringWithFormat:@"[`%@`](%@)", description, address];
-	else
-		result = [NSString stringWithFormat:@"[%@](%@)", description, address];
-	return [self.settings stringByEmbeddingCrossReference:result];
+    return [self markdownLinkWithDescription:description address:address flags:flags prefix:nil];
+}
+
+- (NSString *)markdownLinkWithDescription:(NSString *)description address:(NSString *)address flags:(GBProcessingFlag)flags prefix:(NSString *)prefix {
+    prefix = prefix ?: @"";
+    // Creates Markdown inline style link using the given components. This should be used when converting text to Markdown links as it will prepare special format so that we can later properly format links embedded in code spans!
+    NSString *result = nil;
+    if ((flags & GBProcessingFlagEmbedMarkdownLink) > 0)
+        result = [NSString stringWithFormat:@"%@[`%@`](%@)", prefix, description, address];
+    else
+        result = [NSString stringWithFormat:@"%@[%@](%@)", prefix, description, address];
+    return [self.settings stringByEmbeddingCrossReference:result];
 }
 
 - (NSString *)stringByConvertingLinesToBlockquoteFromString:(NSString *)string class:(NSString *)className {
@@ -1189,6 +1195,10 @@ typedef NSUInteger GBProcessingFlag;
 	return result;
 }
 
+static NSString * escapePercentCharacters(NSString *string) {
+    return [string stringByReplacingOccurrencesOfString:@"%" withString:@"%%"];
+}
+
 - (GBCrossRefData *)dataForFirstMarkdownInlineLinkInString:(NSString *)string searchRange:(NSRange)searchRange flags:(GBProcessingFlag)flags {
 	// Matches the first markdown inline link in the given range of the given string. if found, link data otherwise empty data is returned.
 	NSArray *components = [string captureComponentsMatchedByRegex:self.components.markdownInlineLinkRegex range:searchRange];
@@ -1199,13 +1209,15 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *description = [components objectAtIndex:1];
 	NSString *address = [components objectAtIndex:2];
 	NSString *title = [components objectAtIndex:3];
-	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
+	if ([title length] > 0) title = escapePercentCharacters([NSString stringWithFormat:@" \"%@\"", title]);
+
+    NSString *prefix = [linkText characterAtIndex:0] == '!' ? @"!" : nil;
 	
 	// Create link item, prepare range and return.
     GBCrossRefData *result = [GBCrossRefData crossRefData];
 	result.range = [string rangeOfString:linkText options:0 range:searchRange];
 	result.address = address;
-	result.description = [self markdownLinkWithDescription:description address:[NSString stringWithFormat:@"%%@%@", title] flags:flags];
+	result.description = [self markdownLinkWithDescription:escapePercentCharacters(description) address:[NSString stringWithFormat:@"%%@%@", title] flags:flags prefix:prefix];
 	result.markdown = linkText;
 	return result;
 }

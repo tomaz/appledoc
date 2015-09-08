@@ -123,9 +123,11 @@
 	// setup
 	GBCommentsProcessor *processor = [self defaultProcessor];
 	// execute
-	NSString *result = [processor stringByPreprocessingString:@"[test_test](http://www.example.com/test_test.html)" withFlags:0];
+    NSString *result = [processor stringByPreprocessingString:@"[test_test](http://www.example.com/test_test.html)" withFlags:0];
+    NSString *result2 = [processor stringByPreprocessingString:@"![test_test](http://www.example.com/test_test.html)" withFlags:0];
 	// verify
-	assertThat(result, is(@"[test_test](http://www.example.com/test_test.html)"));
+    assertThat(result, is(@"[test_test](http://www.example.com/test_test.html)"));
+    assertThat(result2, is(@"![test_test](http://www.example.com/test_test.html)"));
 }
 
 - (void)testStringByPreprocessingString_shouldConvertCodeBlockToMarkdownBackticks {
@@ -589,10 +591,14 @@
 	GBCommentsProcessor *processor = [self processorWithStore:nil];
 	// execute
 	NSString *result1 = [processor stringByConvertingCrossReferencesInString:@"[text](something)" withFlags:0];
-	NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[multi word](more words)" withFlags:0];
+    NSString *result2 = [processor stringByConvertingCrossReferencesInString:@"[multi word](more words)" withFlags:0];
+    NSString *result3 = [processor stringByConvertingCrossReferencesInString:@"![multi word](more words)" withFlags:0];
+    NSString *result4 = [processor stringByConvertingCrossReferencesInString:@"[![multi word](more words)](foo)" withFlags:0];
 	// verify
 	assertThat(result1, is(@"[text](something)"));
-	assertThat(result2, is(@"[multi word](more words)"));
+    assertThat(result2, is(@"[multi word](more words)"));
+    assertThat(result3, is(@"![multi word](more words)"));
+    assertThat(result4, is(@"[![multi word](more words)](foo)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldKeepManualURLLinks {
@@ -606,6 +612,9 @@
 	NSString *result5 = [processor stringByConvertingCrossReferencesInString:@"[text](news://ab.com)" withFlags:0];
 	NSString *result6 = [processor stringByConvertingCrossReferencesInString:@"[text](rss://ab.com)" withFlags:0];
 	NSString *result7 = [processor stringByConvertingCrossReferencesInString:@"[text](mailto:a@b.com)" withFlags:0];
+    NSString *result8 = [processor stringByConvertingCrossReferencesInString:@"![text](http://ab.com)" withFlags:0];
+    NSString *result9 = [processor stringByConvertingCrossReferencesInString:@"[![text](https://ab.com)](https://zx.com)" withFlags:0];
+
 	// verify
 	assertThat(result1, is(@"[text](http://ab.com)"));
 	assertThat(result2, is(@"[text](https://ab.com)"));
@@ -613,7 +622,9 @@
 	assertThat(result4, is(@"[text](ftps://ab.com)"));
 	assertThat(result5, is(@"[text](news://ab.com)"));
 	assertThat(result6, is(@"[text](rss://ab.com)"));
-	assertThat(result7, is(@"[text](mailto:a@b.com)"));
+    assertThat(result7, is(@"[text](mailto:a@b.com)"));
+    assertThat(result8, is(@"![text](http://ab.com)"));
+    assertThat(result9, is(@"[![text](https://ab.com)](https://zx.com)"));
 }
 
 - (void)testStringByConvertingCrossReferencesInString_shouldKeepManualObjectLinksAndUpdateAddress {
