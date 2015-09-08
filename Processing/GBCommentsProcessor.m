@@ -11,6 +11,7 @@
 #import "GBStore.h"
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
+#import "GBCommentsProcessor+CodeBlockProcessing.h"
 
 @interface GBCrossRefData : NSObject
 
@@ -602,30 +603,41 @@ typedef NSUInteger GBProcessingFlag;
 - (NSString *)stringByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Converts all appledoc formatting and cross refs to proper Markdown text suitable for passing to Markdown generator.
 	if ([string length] == 0) return string;
-	
-	// Process all links separately, so that they won't be cut off if the contain _'s (which is a formatting marker)
-	NSString *pattern = @"(\\[.+?\\]\\(.+?\\))";
-	NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"link", 1, nil];
-	NSRange searchRange = NSMakeRange(0, [string length]);
+
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
-	for (NSDictionary *component in components) {
-		NSString *componentLink = [component objectForKey:@"link"];
-		NSRange componentRange = [string rangeOfString:componentLink options:0 range:searchRange];
 
-		if (componentRange.location > searchRange.location) {
-			NSRange skippedRange = NSMakeRange(searchRange.location, componentRange.location - searchRange.location);
-			NSString *skippedText = [string substringWithRange:skippedRange];
-			NSString *preprocessedText = [self stringByPreprocessingNonLinkString:skippedText withFlags:flags];
-			[result appendString:preprocessedText];
-		}
+    // Process all links and code blocks separately, so that they won't be cut off if the contain _'s (which is a formatting marker)
 
-		// Don't process the link using the formatting markers, might contain formatting markers
-		NSString *convertedLink = [self stringByConvertingCrossReferencesInString:componentLink withFlags:flags];
-		[result appendString:convertedLink];
+    NSRange searchRange = NSMakeRange(0, [string length]);
+    NSArray *components = [self codeAndLinkComponentsInString:string];
+    for (NSDictionary *component in components) {
+        NSRange componentRange = [component[@"range"] rangeValue];
+        if (componentRange.location > searchRange.location) {
+            NSRange skippedRange = NSMakeRange(searchRange.location, componentRange.location - searchRange.location);
+            NSString *skippedText = [string substringWithRange:skippedRange];
+            NSString *preprocessedText = [self stringByPreprocessingNonLinkString:skippedText withFlags:flags];
+            [result appendString:preprocessedText];
+        }
+        NSString *body = component[@"link"];
+        if (body) {
+            // Don't process the link using the formatting markers, might contain formatting markers
+            NSString *convertedLink = [self stringByConvertingCrossReferencesInString:body withFlags:flags];
+            [result appendString:convertedLink];
+        } else {
+            NSAssert([component objectForKey:@"code"] != nil, @"Should have either link or code");
+            body = [component objectForKey:@"code"];
+            NSString *output = body;
+            NSString *backticks = @"```";
+            NSRange range = [output rangeOfString:[component objectForKey:@"postfix"] options:NSBackwardsSearch];
+            output = [output stringByReplacingCharactersInRange:range withString:backticks];
+            range = [output rangeOfString:[component objectForKey:@"prefix"]];
+            output = [output stringByReplacingCharactersInRange:range withString:backticks];
+            [result appendString:output];
+        }
 
-		NSUInteger location = componentRange.location + [componentLink length];
-		searchRange = NSMakeRange(location, [string length] - location);
-	}
+        NSUInteger location = componentRange.location + [body length];
+        searchRange = NSMakeRange(location, [string length] - location);
+    }
 
 	// If there is some remaining text, preprocess it as well.
 	if ([string length] > searchRange.location) {

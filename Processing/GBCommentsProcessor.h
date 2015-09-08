@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class GBComment;
+@class GBComment, GBModelBase;
 
 /** Implements comments processing.
  

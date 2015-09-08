@@ -201,6 +201,8 @@
 		B8BBC0F7196DFAEB006F239D /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; };
 		B8F381D6197D5AAB002F8B92 /* libGRMustache7-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */; };
 		B8F381D7197D5ABE002F8B92 /* libGRMustache7-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */; };
+		C8005C9D1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */; };
+		C8005C9E1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
@@ -511,6 +513,8 @@
 		C5676812195840BD00E8E4C8 /* GBTypedefBlockArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockArgument.h; sourceTree = "<group>"; };
 		C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefBlockArgument.m; sourceTree = "<group>"; };
 		C5996C98195B0E55007E9AAC /* SynthesizeSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SynthesizeSingleton.h; sourceTree = "<group>"; };
+		C8005C9B1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GBCommentsProcessor+CodeBlockProcessing.h"; sourceTree = "<group>"; };
+		C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBCommentsProcessor+CodeBlockProcessing.m"; sourceTree = "<group>"; };
 		D45D15E117D883C700B7976A /* CommentsFormattingStyle.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CommentsFormattingStyle.markdown; sourceTree = "<group>"; };
 		D4B844EA17A121000012C1DC /* GBTypedefEnumData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefEnumData.h; sourceTree = "<group>"; };
 		D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefEnumData.m; sourceTree = "<group>"; };
@@ -877,6 +881,8 @@
 		73F70DF41227C23900D19EBA /* Processing */ = {
 			isa = PBXGroup;
 			children = (
+				C8005C9B1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.h */,
+				C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */,
 				73F2CA72123E4161009B406B /* GBProcessor.h */,
 				73F2CA73123E4161009B406B /* GBProcessor.m */,
 				73F2CA70123E4161009B406B /* GBCommentsProcessor.h */,
@@ -1329,6 +1335,7 @@
 				73F2CA74123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA75123E4161009B406B /* GBProcessor.m in Sources */,
 				7307B311124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m in Sources */,
+				C8005C9E1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */,
 				7307B31A124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF6124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 				739AD57F1255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
@@ -1420,6 +1427,7 @@
 				73AA9F731253BF4000074152 /* GBGenerator.m in Sources */,
 				DA77C691196BEB2C0018A48F /* dd_getopt_long-fbsd.m in Sources */,
 				739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
+				C8005C9D1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */,
 				739AD6301255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m in Sources */,
 				736A2760125845000078F4FE /* GBApplicationSettingsProvider.m in Sources */,
 				7321D0E712944CF500796DEC /* GBTemplateHandler.m in Sources */,
