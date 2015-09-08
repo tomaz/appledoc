@@ -88,6 +88,23 @@
 }
 
 /**
+ Does the link component and any of the code components overlap?
+
+ @param link a reference-link component
+ @param codeComponents An array of source-code-block component
+
+ @return YES if the link component shares any text in common with the source-code-block component.
+ */
+- (BOOL)linkComponent:(NSDictionary*)link overlapsAnyCodeComponent:(NSArray*)codeComponents {
+    for (NSDictionary *code in codeComponents) {
+        if ([self linkComponent:link overlapsCodeComponent:code]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+/**
  Fetch any reference link components from @a string
 
  This method will search @a string for any recognized reference links - something roughly of the form [foo](bar).
@@ -101,26 +118,35 @@
  - "range" the range for the link text, relative to the original @a string
  */
 - (NSArray*)linkComponentsInString:(NSString*)string withCodeComponents:(NSArray*)codeComponents {
-    NSRange searchRange = NSMakeRange(0, [string length]);
-    NSMutableArray *result = [[NSMutableArray alloc] init];
+    static NSString *pattern;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *brackets = @"(?:\\[[^]]+?\\])";
+        NSString *doubleBrackets = @"(?:\\[\\[[^]]+?\\]\\])";
+        NSString *parens = @"(?:\\([^)\\s]+?(?:\\s*\"[^\"]+?\")*\\))";
+        NSString *simpleLink = [NSString stringWithFormat:@"(?:!?(?:%@|%@)%@)", brackets, doubleBrackets, parens];
+        NSString *nestedLink = [NSString stringWithFormat:@"(?:\\[%@\\]%@)", simpleLink, parens];
+        pattern = [NSString stringWithFormat:@"(%@|%@)", nestedLink, simpleLink];
+    });
 
-    NSString *pattern = @"(\\[.+?\\]\\(.+?\\))";
-    NSArray *components = [string arrayOfDictionariesByMatchingRegex:pattern withKeysAndCaptures:@"link", 1, nil];
-    for (NSDictionary *d in components) {
-        NSString *body = [d objectForKey:@"link"];
-        NSRange range = [string rangeOfString:body options:0 range:searchRange];
-        NSDictionary *link = @{@"link":body, @"range":[NSValue valueWithRange:range]};
-        BOOL overlaps = NO;
-        for (NSDictionary *code in codeComponents) {
-            if ([self linkComponent:link overlapsCodeComponent:code]) {
-                overlaps = YES;
-                break;
+    NSUInteger stringLength = [string length];
+    NSRange searchRange = NSMakeRange(0, stringLength);
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    while (searchRange.length > 0) {
+        NSRange found = [string rangeOfRegex:pattern inRange:searchRange];
+        if (found.length) {
+            searchRange.location = found.location + found.length;
+            searchRange.length = stringLength - searchRange.location;
+            NSDictionary *component = @{@"link":[string substringWithRange:found],
+                                        @"range":[NSValue valueWithRange:found]};
+            if (![self linkComponent:component overlapsAnyCodeComponent:codeComponents]) {
+                [result addObject:component];
             }
-        }
-        if (!overlaps) {
-            [result addObject:link];
+        } else {
+            searchRange = found;
         }
     }
+
     return result;
 }
 
