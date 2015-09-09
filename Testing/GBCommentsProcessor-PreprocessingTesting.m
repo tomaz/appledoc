@@ -130,36 +130,43 @@
     assertThat(result2, is(@"![test_test](http://www.example.com/test_test.html)"));
 }
 
-- (void)testStringByPreprocessingString_shouldConvertCodeBlockToMarkdownBackticks {
+- (void)testStringByPreprocessingString_shouldNotConvertCodeBlockToMarkdownBackticksIfNotInSettings {
     // setup
     GBCommentsProcessor *processor = [self defaultProcessor];
+    // execute
+    NSString *result = [processor stringByPreprocessingString:@"\n  @code  \n[self doSomething];\n  @endcode  \n" withFlags:0];
+    // verify
+    assertThat(result, is(@"\n  @code  \n[self doSomething];\n  @endcode  \n"));
+}
+
+- (void)testStringByPreprocessingString_shouldConvertSkipCodeBlockBeginEndMarkersToMarkdownBackticks {
+    // setup
+    id settings = [GBTestObjectsRegistry realSettingsProvider];
+    [settings addSkipCodeBlockMarker:@"@code/@endcode"];
+    GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
     // execute
     NSString *result = [processor stringByPreprocessingString:@"\n  @code  \n[self doSomething];\n  @endcode  \n" withFlags:0];
     // verify
     assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
 }
 
-- (void)testStringByPreprocessingString_shouldConvertTildeCodeBlockToMarkdownBackticks {
+- (void)testStringByPreprocessingString_shouldConvertSkipCodeBlockSingleMarkerToMarkdownBackticks {
     // setup
-    GBCommentsProcessor *processor = [self defaultProcessor];
+    id settings = [GBTestObjectsRegistry realSettingsProvider];
+    [settings addSkipCodeBlockMarker:@"~~~"];
+    GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
     // execute
     NSString *result = [processor stringByPreprocessingString:@"\n  ~~~  \n[self doSomething];\n  ~~~  \n" withFlags:0];
     // verify
     assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
 }
 
-- (void)testStringByPreprocessingString_shouldConvertBacktickCodeBlockToMarkdownBackticks {
+- (void)testStringByPreprocessingString_shouldConvertSkipCodeBlockMultipleMarkersToMarkdownBackticks {
     // setup
-    GBCommentsProcessor *processor = [self defaultProcessor];
-    // execute
-    NSString *result = [processor stringByPreprocessingString:@"\n  ```  \n[self doSomething];\n  ```  \n" withFlags:0];
-    // verify
-    assertThat(result, is(@"\n```\n[self doSomething];\n```\n"));
-}
-
-- (void)testStringByPreprocessingString_shouldConvertMultipleCodeBlocksToMarkdownBackticks {
-    // setup
-    GBCommentsProcessor *processor = [self defaultProcessor];
+    id settings = [GBTestObjectsRegistry realSettingsProvider];
+    [settings addSkipCodeBlockMarker:@"```"];
+    [settings addSkipCodeBlockMarker:@"@code/@endcode"];
+    GBCommentsProcessor *processor = [GBCommentsProcessor processorWithSettingsProvider:settings];
     NSString *raw = @"\n  @code  \n[self doSomething];\n  @endcode  \n\n  @code  \n[self doSomething];\n  @endcode  \n";
     NSString *expected = @"\n```\n[self doSomething];\n```\n\n```\n[self doSomething];\n```\n";
     // execute

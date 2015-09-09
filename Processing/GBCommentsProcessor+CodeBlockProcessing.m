@@ -7,9 +7,40 @@
 //
 
 #import "GBCommentsProcessor+CodeBlockProcessing.h"
+#import "GBApplicationSettingsProvider.h"
 #import "RegexKitLite.h"
+#import <objc/runtime.h>
+
+@interface GBCommentsProcessor ()
+@property (strong) GBApplicationSettingsProvider *settings;
+@end
 
 @implementation GBCommentsProcessor (CodeBlockProcessing)
+
+/**
+ Get any source-code-blocks that are to skip preprocessing, as defined by the settings.
+
+ @param string the string to search
+ @param range the range of the string to be searched
+
+ @return an array of component extracted from the matched text
+ - Index 0: The entire matched text
+ - Index 1: The source code text
+ - Index 2: The prefix text (stuff matched before the code block)
+ - Index 3: The "begin" marker
+ - Index 4: The postfix text (stuff matched after the code block)
+ - Index 5: The "end" marker
+ */
+- (NSArray*)codeBlockComponentsToSkipInString:(NSString*)string range:(NSRange)searchRange {
+    for (NSString *pattern in self.settings.skipCodeBlockPatterns) {
+        NSArray *captured = [string captureComponentsMatchedByRegex:pattern range:searchRange];
+        if ([captured count]) {
+            NSAssert([captured count] == 6, @"Must match exactly 6 components");
+            return captured;
+        }
+    }
+    return nil;
+}
 
 /**
  Fetch any source-code-block components from @a string
@@ -32,14 +63,12 @@
  - range the range for the code text, relative to the original @a string
  */
 - (NSArray*)codeComponentsInString:(NSString*)string {
-    NSString *pattern = @"\\r?\\n(([ \\t]*(~~~|```|@code)[ \\t]*)\\r?\\n[\\s\\S]*?\\r?\\n([ \\t]*(\\3|@endcode)[ \\t]*)\\r?\\n)";
     NSUInteger stringLength = [string length];
     NSRange searchRange = NSMakeRange(0, stringLength);
     NSMutableArray *result = [[NSMutableArray alloc] init];
     while (searchRange.length > 0) {
-        NSArray *captured = [string captureComponentsMatchedByRegex:pattern range:searchRange];
+        NSArray *captured = [self codeBlockComponentsToSkipInString:string range:searchRange];
         if ([captured count] > 0) {
-            NSAssert([captured count] == 6, @"Match didn't produce right number of components");
             NSString *code = [captured objectAtIndex:1];
             NSRange codeRange = [string rangeOfString:code options:0 range:searchRange];
             NSAssert(codeRange.location != NSNotFound, @"Matched code string should be in original");

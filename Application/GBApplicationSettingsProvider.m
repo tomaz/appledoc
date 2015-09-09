@@ -90,6 +90,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 @property (readonly) NSDateFormatter *yearDateFormatter;
 @property (readonly) NSDateFormatter *yearToDayDateFormatter;
 
+// Make these readwrite internally...
+@property (strong, readwrite) NSArray *skipCodeBlockMarkers;
+@property (strong, readwrite) NSArray *skipCodeBlockPatterns;
+
 @end
 
 #pragma mark -
@@ -128,7 +132,9 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		self.includePaths = [NSMutableSet set];
 		self.ignoredPaths = [NSMutableSet set];
         self.excludeOutputPaths = [NSMutableSet set];
-		
+
+        self.skipCodeBlockMarkers = [NSArray array];
+        self.skipCodeBlockPatterns = [NSArray array];
 		self.createHTML = YES;
 		self.createDocSet = YES;
 		self.installDocSet = YES;
@@ -196,6 +202,24 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 }
 
 #pragma mark Helper methods
+
+- (void)addSkipCodeBlockMarker:(NSString *)marker {
+    NSString *begin, *end;
+    NSRange range = [marker rangeOfString:@"/"];
+    if (range.location == NSNotFound) {
+        begin = end = marker;
+    } else {
+        begin = [marker substringToIndex:range.location];
+        end = [marker substringFromIndex:range.location+1];
+    }
+
+    NSString *pattern = [NSString stringWithFormat:@"\\r?\\n(([ \\t]*(%@)[ \\t]*)\\r?\\n[\\s\\S]*?\\r?\\n([ \\t]*(%@)[ \\t]*)\\r?\\n)", begin, end];
+    NSUInteger index = [self.skipCodeBlockPatterns indexOfObject:pattern];
+    if (index == NSNotFound) {
+        self.skipCodeBlockMarkers = [self.skipCodeBlockMarkers arrayByAddingObject:marker];
+        self.skipCodeBlockPatterns = [self.skipCodeBlockPatterns arrayByAddingObject:pattern];
+    }
+}
 
 - (void)updateHelperClassesWithSettingsValues {	
 }
@@ -687,6 +711,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize docsetXMLFilename;
 @synthesize docsetPackageFilename;
 
+@synthesize skipCodeBlockMarkers;
+@synthesize skipCodeBlockPatterns;
 @synthesize repeatFirstParagraphForMemberDescription;
 @synthesize preprocessHeaderDoc;
 @synthesize printInformationBlockTitles;

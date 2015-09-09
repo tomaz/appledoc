@@ -45,6 +45,7 @@ static char *kGBArgKeepIntermediateFiles = "keep-intermediate-files";
 static char *kGBArgExitCodeThreshold = "exit-threshold";
 static char *kGBArgDocsSectionTitle = "docs-section-title";
 
+static char *kGBArgSkipCodeBlockMarker = "skip-code-block-marker";
 static char *kGBArgRepeatFirstParagraph = "repeat-first-par";
 static char *kGBArgPreprocessHeaderDoc = "preprocess-headerdoc";
 static char *kGBArgPrintInformationBlockTitles = "print-information-block-titles";
@@ -286,7 +287,8 @@ static char *kGBArgHelp = "help";
 		{ kGBArgCrossRefFormat,												0,		DDGetoptRequiredArgument },
 		{ kGBArgExplicitCrossRef,											0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgExplicitCrossRef),									0,		DDGetoptNoArgument },
-		
+
+        { kGBArgSkipCodeBlockMarker,										0,		DDGetoptRequiredArgument },
 		{ kGBArgKeepIntermediateFiles,										0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedObjects,									0,		DDGetoptNoArgument },
 		{ kGBArgKeepUndocumentedMembers,									0,		DDGetoptNoArgument },
@@ -807,6 +809,9 @@ static char *kGBArgHelp = "help";
 - (void)setHtmlAnchors:(NSString *)value {
     self.settings.htmlAnchorFormat = GBHTMLAnchorFormatFromNSString(value);
 }
+- (void)setSkipCodeBlockMarker:(NSString *)marker {
+	[self.settings addSkipCodeBlockMarker:marker];
+}
 - (void)setNoCleanOutput:(BOOL)value { self.settings.cleanupOutputPathBeforeRunning = !value; }
 - (void)setNoCreateHtml:(BOOL)value { [self setCreateHtml:!value]; }
 - (void)setNoCreateDocset:(BOOL)value { [self setCreateDocset:!value]; }
@@ -953,7 +958,8 @@ static char *kGBArgHelp = "help";
     ddprintf(@"--%s = %@\n", kGBArgDocSetXMLFilename, self.settings.docsetXMLFilename);
     ddprintf(@"--%s = %@\n", kGBArgDocSetPackageFilename, self.settings.docsetPackageFilename);
     ddprintf(@"\n");
-    
+
+    for (NSString *marker in self.settings.skipCodeBlockMarkers) ddprintf(@"--%s = %@\n", kGBArgSkipCodeBlockMarker, marker);
     ddprintf(@"--%s = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
     ddprintf(@"--%s = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
     ddprintf(@"--%s = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
@@ -1048,6 +1054,7 @@ static char *kGBArgHelp = "help";
     PRINT_USAGE(@"   ", kGBArgCrossRefFormat, @"<string>", @"Cross reference template regex");
     PRINT_USAGE(@"   ", kGBArgExitCodeThreshold, @"<number>", @"Exit code threshold below which 0 is returned");
 	PRINT_USAGE(@"   ", kGBArgDocsSectionTitle, @"<string>", @"Title of the documentation section (defaults to \"Programming Guides\"");
+    PRINT_USAGE(@"   ", kGBArgSkipCodeBlockMarker, @"<marker>", @"Text to mark begin/end of code block for which preprocessing is skipped");
     ddprintf(@"\n");
 	ddprintf(@"WARNINGS\n");
 	PRINT_USAGE(@"   ", kGBArgWarnOnMissingOutputPath, @"", @"[b] Warn if output path is not given");

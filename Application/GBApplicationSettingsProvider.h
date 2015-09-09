@@ -212,6 +212,31 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
 /// @name Behavior handling
 ///---------------------------------------------------------------------------------------
 
+/** The markers to use when matching source code blocks that will forgo preprocessing.
+
+ Text between these markers will be treated as source-code blocks, and not preprocessed.
+ */
+@property (strong, readonly) NSArray *skipCodeBlockMarkers;
+
+/** The actual regex patterns to use when matching source code blocks that will forgo preprocessing.
+
+ The patterns are computed when the markers are added.
+ */
+@property (strong, readonly) NSArray *skipCodeBlockPatterns;
+
+/**
+ Add a marker to be used when searching for code blocks that should skip preprocessing.
+
+ @param marker A marker.  The marker defines the beginning and ending tokens that deliniate a source-code-block.  The begin/end markers are separated by a forward-slash.  If there is no forward-slash, then the same pattern is used for both the begin and end markers.
+
+ When scanning the source text, any text that is between the two markers will be treated as source code, and will skip the preprocessing step.  Specifically, reference links will not be discovered within that block.  To match, the begin/end markers must be on lines all by themselves with nothing else but whitespace.
+
+ For example, a marker of "@code/@endcode" will mark all the text in between as source code, and will not try to match reference links inside.  Similarly, a marker of "~~~~~" will do the same thing for all the text between two lines with "~~~~~" on them.
+
+ @note Markers are checked in the order in which they are added.  Duplicates are dropped, and not added.
+ */
+- (void)addSkipCodeBlockMarker:(NSString *)marker;
+
 /** Indicates whether HTML files should be generated or not.
  
  If `YES`, HTML files are generated in `outputPath` from parsed and processed data. If `NO`, input files are parsed and processed, but nothing is generated.
