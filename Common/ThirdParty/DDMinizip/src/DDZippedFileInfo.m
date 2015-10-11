@@ -61,14 +61,14 @@
 	[comps setDay:mu_date.tm_mday];
 	[comps setMonth:mu_date.tm_mon];
     [comps setYear:mu_date.tm_year];
-	NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDate *date = [gregorian dateFromComponents:comps];
 	return date;
 }
 
 +(tm_zip) mzDateWithDate:(NSDate*)date
 {
-	NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDateComponents *comps = [gregorian components:NSSecondCalendarUnit | NSMinuteCalendarUnit | NSHourCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
     tm_zip mu_date;
     mu_date.tm_sec = (uInt)comps.second;
@@ -89,7 +89,7 @@
 	[comps setDay:1];
 	[comps setMonth:1];
 	[comps setYear:1980];
-	NSCalendar *gregorian = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDate *date = [gregorian dateFromComponents:comps];
 	
 	return [date dateByAddingTimeInterval:interval];
