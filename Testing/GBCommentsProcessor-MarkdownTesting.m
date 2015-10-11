@@ -410,8 +410,8 @@
 	
 	assertThatInteger([comment.longDescription.components count], equalToInteger([expectations count]));
 	for (NSUInteger i=0; i<[expectations count]; i++) {
-		GBCommentComponent *component = [comment.longDescription.components objectAtIndex:i];
-		NSString *expected = [expectations objectAtIndex:i];
+		GBCommentComponent *component = comment.longDescription.components[i];
+		NSString *expected = expectations[i];
 		assertThat(component.markdownValue, is(expected));
 	}
 }
@@ -427,8 +427,8 @@
 	
 	assertThatInteger([components.components count], equalToInteger([expectations count]));
 	for (NSUInteger i=0; i<[expectations count]; i++) {
-		GBCommentComponent *component = [components.components objectAtIndex:i];
-		NSString *expected = [expectations objectAtIndex:i];
+		GBCommentComponent *component = components.components[i];
+		NSString *expected = expectations[i];
 		assertThat(component.markdownValue, is(expected));
 	}
 }

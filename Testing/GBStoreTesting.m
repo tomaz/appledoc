@@ -25,7 +25,7 @@
 	// verify
 	assertThatBool([store.classes containsObject:class], equalToBool(YES));
 	assertThatInteger([[store.classes allObjects] count], equalToInteger(1));
-	assertThat([[store.classes allObjects] objectAtIndex:0], is(class));
+	assertThat([store.classes allObjects][0], is(class));
 }
 
 - (void)testRegisterClass_shouldIgnoreSameInstance {
@@ -80,7 +80,7 @@
 	// verify
 	assertThatBool([store.categories containsObject:category], equalToBool(YES));
 	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
-	assertThat([[store.categories allObjects] objectAtIndex:0], is(category));
+	assertThat([store.categories allObjects][0], is(category));
 }
 
 - (void)testRegisterCategory_shouldIgnoreSameInstance {
@@ -119,7 +119,7 @@
 	// verify
 	assertThatBool([store.categories containsObject:extension], equalToBool(YES));
 	assertThatInteger([[store.categories allObjects] count], equalToInteger(1));
-	assertThat([[store.categories allObjects] objectAtIndex:0], is(extension));
+	assertThat([store.categories allObjects][0], is(extension));
 }
 
 - (void)testRegisterExtension_shouldIgnoreSameInstance {
@@ -192,7 +192,7 @@
 	// verify
 	assertThatBool([store.protocols containsObject:protocol], equalToBool(YES));
 	assertThatInteger([[store.protocols allObjects] count], equalToInteger(1));
-	assertThat([[store.protocols allObjects] objectAtIndex:0], is(protocol));
+	assertThat([store.protocols allObjects][0], is(protocol));
 }
 
 - (void)testRegisterProtocol_shouldIgnoreSameInstance {
@@ -247,7 +247,7 @@
 	// verify
 	assertThatBool([store.documents containsObject:document], equalToBool(YES));
 	assertThatInteger([[store.documents allObjects] count], equalToInteger(1));
-	assertThat([[store.documents allObjects] objectAtIndex:0], is(document));
+	assertThat([store.documents allObjects][0], is(document));
 }
 
 - (void)testRegisterDocument_shouldIgnoreSameInstance {

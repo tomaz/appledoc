@@ -50,7 +50,7 @@
 	section.sectionName = name;
 	_registeringSection = section;
 	[_sections addObject:section];
-	if (name) [_sectionsByNames setObject:section forKey:name];
+	if (name) _sectionsByNames[name] = section;
 	return section;
 }
 
@@ -65,7 +65,7 @@
 - (void)unregisterEmptySections {
 	GBLogDebug(@"Unregistering empty sections...");
 	for (NSUInteger i=0; i<[_sections count]; i++) {
-		GBMethodSectionData *section = [_sections objectAtIndex:i];
+		GBMethodSectionData *section = _sections[i];
 		if ([section.methods count] == 0) {
 			[_sections removeObject:section];
 			i--;
@@ -78,7 +78,7 @@
 	NSParameterAssert(method != nil);
 	GBLogDebug(@"%@: Registering method %@...", _parent, method);
 	if ([_methods containsObject:method]) return;
-	GBMethodData *existingMethod = [_methodsBySelectors objectForKey:method.methodSelector];
+	GBMethodData *existingMethod = _methodsBySelectors[method.methodSelector];
 	if (existingMethod && existingMethod.methodType == method.methodType) {
 		[existingMethod mergeDataFromObject:method];
 		return;
@@ -105,13 +105,13 @@
 	// Register property getters and setters. Note that we always register setter even if it's just readonly property...
 	if (method.isProperty) {
 		NSString *getterSelector = method.propertyGetterSelector;
-		if (![getterSelector isEqualToString:method.methodSelector]) [_methodsBySelectors setObject:method forKey:getterSelector];
-		[_methodsBySelectors setObject:method forKey:method.propertySetterSelector];
+		if (![getterSelector isEqualToString:method.methodSelector]) _methodsBySelectors[getterSelector] = method;
+		_methodsBySelectors[method.propertySetterSelector] = method;
 	}
 
 	// Register the selector so that we can handle existing methods later on. The first line prefers instance to class methods!
 	if (existingMethod && existingMethod.methodType != GBMethodTypeClass) return;
-	[_methodsBySelectors setObject:method forKey:method.methodSelector];
+	_methodsBySelectors[method.methodSelector] = method;
 }
 
 - (void)unregisterMethod:(GBMethodData *)method {
@@ -194,7 +194,7 @@
 					if (!unnamedSection) unnamedSection = [self registerSectionWithName:nil];
 					_registeringSection = unnamedSection;
 				} else {
-					_registeringSection = [_sectionsByNames objectForKey:sourceSection.sectionName];
+					_registeringSection = _sectionsByNames[sourceSection.sectionName];
 					if (!_registeringSection) _registeringSection = [self registerSectionWithName:sourceSection.sectionName];
 				}
 				[self registerMethod:sourceMethod];
@@ -206,7 +206,7 @@
 }
 
 - (GBMethodData *)methodBySelector:(NSString *)selector {
-	return [_methodsBySelectors objectForKey:selector];
+	return _methodsBySelectors[selector];
 }
 
 #pragma mark Overriden methods

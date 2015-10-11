@@ -36,22 +36,22 @@
 	NSParameterAssert(protocol != nil);
 	GBLogDebug(@"%@: Registering protocol %@...", _parent, protocol);
 	if ([_protocols containsObject:protocol]) return;
-	GBProtocolData *existingProtocol = [_protocolsByName objectForKey:protocol.nameOfProtocol];
+	GBProtocolData *existingProtocol = _protocolsByName[protocol.nameOfProtocol];
 	if (existingProtocol) {
 		[existingProtocol mergeDataFromObject:protocol];
 		return;
 	}
-	if ([_protocolsByName objectForKey:protocol.nameOfProtocol]) 
+	if (_protocolsByName[protocol.nameOfProtocol])
 		[NSException raise:@"Protocol with name %@ is already registered!", protocol.nameOfProtocol];
 	[_protocols addObject:protocol];
-	[_protocolsByName setObject:protocol forKey:protocol.nameOfProtocol];
+	_protocolsByName[protocol.nameOfProtocol] = protocol;
 }
 
 - (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source {
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging adopted protocols from %@...", _parent, source->_parent);
 	for (GBProtocolData *sourceProtocol in source.protocols) {
-		GBProtocolData *existingProtocol = [_protocolsByName objectForKey:sourceProtocol.nameOfProtocol];
+		GBProtocolData *existingProtocol = _protocolsByName[sourceProtocol.nameOfProtocol];
 		if (existingProtocol) {
 			[existingProtocol mergeDataFromObject:sourceProtocol];
 			continue;
@@ -68,7 +68,7 @@
 }
 
 - (NSArray *)protocolsSortedByName {
-	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"protocolName" ascending:YES]];
+	NSArray *descriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"protocolName" ascending:YES]];
 	return [[self.protocols allObjects] sortedArrayUsingDescriptors:descriptors];
 }
 

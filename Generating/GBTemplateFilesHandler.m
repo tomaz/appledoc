@@ -89,7 +89,7 @@
 			GBTemplateHandler *handler = [self templateHandlerFromTemplateFile:path error:error];
 			if (!handler) return NO;
 			GBLogDebug(@"Removing template file '%@' from output...", path);
-			[self.templateFiles setObject:handler forKey:path];
+			self.templateFiles[path] = handler;
 			delete = YES;
 		}
 		
@@ -135,14 +135,12 @@
 
 - (BOOL)isPathRepresentingTemplateFile:(NSString *)path {
 	NSString *filename = [[path lastPathComponent] stringByDeletingPathExtension];
-	if ([filename hasSuffix:@"-template"]) return YES;
-	return NO;
+	return [filename hasSuffix:@"-template"];
 }
 
 - (BOOL)isPathRepresentingIgnoredFile:(NSString *)path {
 	NSString *filename = [path lastPathComponent];
-	if ([filename hasPrefix:@"."]) return YES;
-	return NO;
+	return [filename hasPrefix:@"."];
 }
 
 #pragma mark Properties

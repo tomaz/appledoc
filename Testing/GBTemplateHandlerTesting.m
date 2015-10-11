@@ -69,7 +69,7 @@
 	// verify
 	assertThatBool(result, equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
-	assertThat([loader.templateSections objectForKey:@"name"], is(@"text"));
+	assertThat(loader.templateSections[@"name"], is(@"text"));
 }
 
 - (void)testParseTemplateError_sections_shouldReadAllTemplateSections {
@@ -81,8 +81,8 @@
 	// verify
 	assertThatBool(result, equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(2));
-	assertThat([loader.templateSections objectForKey:@"name1"], is(@"text1"));
-	assertThat([loader.templateSections objectForKey:@"name2"], is(@"text2"));
+	assertThat(loader.templateSections[@"name1"], is(@"text1"));
+	assertThat(loader.templateSections[@"name2"], is(@"text2"));
 }
 
 - (void)testParseTemplate_sections_shouldReadComplexTemplateSectionValue {
@@ -94,7 +94,7 @@
 	// verify
 	assertThatBool(result, equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
-	assertThat([loader.templateSections objectForKey:@"name"], is(@"first line\nsecond line"));
+	assertThat(loader.templateSections[@"name"], is(@"first line\nsecond line"));
 }
 
 - (void)testParseTemplate_sections_shouldClearBeforeReading {
@@ -106,8 +106,8 @@
 	// verify
 	assertThatBool(result, equalToBool(YES));
 	assertThatInteger([loader.templateSections count], equalToInteger(1));
-	assertThat([loader.templateSections objectForKey:@"name1"], is(nil));
-	assertThat([loader.templateSections objectForKey:@"name2"], isNot(nil));
+	assertThat(loader.templateSections[@"name1"], is(nil));
+	assertThat(loader.templateSections[@"name2"], isNot(nil));
 }
 
 #pragma mark Template string
@@ -174,8 +174,8 @@
 	assertThatBool(result, equalToBool(YES));
 	assertThat(loader.templateString, is(@"Some text\nin multiple lines\nFollowed\nby middle\ntext\nAnd by some\n\tprefix"));
 	assertThatInteger([loader.templateSections count], equalToInteger(2));
-	assertThat([loader.templateSections objectForKey:@"name1"], is(@"text\nline2"));
-	assertThat([loader.templateSections objectForKey:@"name2"], is(@"text2\n\tline2"));
+	assertThat(loader.templateSections[@"name1"], is(@"text\nline2"));
+	assertThat(loader.templateSections[@"name2"], is(@"text2\n\tline2"));
 }
 
 #pragma mark Template handling
@@ -216,7 +216,7 @@
 	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix {{var1}}---{{var2}} suffix" error:nil];
 	// execute
-	NSString *result = [loader renderObject:[NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"var1", @"value2", @"var2", nil]];
+	NSString *result = [loader renderObject:@{@"var1" : @"value1", @"var2" : @"value2"}];
 	// verify
 	assertThat(result, is(@"prefix value1---value2 suffix"));
 }
@@ -245,10 +245,10 @@
 	// setup
 	GBTemplateHandler *loader = [GBTemplateHandler handler];
 	[loader parseTemplate:@"prefix {{#var1}}{{>name}}{{/var1}}! {{#var2}}{{>name}}{{/var2}}? Section name {{value}} EndSection" error:nil];
-	NSDictionary *var1 = [NSDictionary dictionaryWithObjectsAndKeys:@"value1", @"value", nil];
-	NSDictionary *var2 = [NSDictionary dictionaryWithObjectsAndKeys:@"value2", @"value", nil];
+	NSDictionary *var1 = @{@"value" : @"value1"};
+	NSDictionary *var2 = @{@"value" : @"value2"};
 	// execute
-	NSString *result = [loader renderObject:[NSDictionary dictionaryWithObjectsAndKeys:var1, @"var1", var2, @"var2", nil]];
+	NSString *result = [loader renderObject:@{@"var1" : var1, @"var2" : var2}];
 	// verify
 	assertThat(result, is(@"prefix value1! value2?"));
 }

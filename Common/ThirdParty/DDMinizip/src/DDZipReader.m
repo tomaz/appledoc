@@ -154,7 +154,7 @@
 			{
 				NSDate* orgDate = [DDZippedFileInfo dateWithMUDate:fileInfo.tmu_date];
 
-				NSDictionary* attr = [NSDictionary dictionaryWithObject:orgDate forKey:NSFileModificationDate]; //[[NSFileManager defaultManager] fileAttributesAtPath:fullPath traverseLink:YES];
+				NSDictionary* attr = @{NSFileModificationDate : orgDate}; //[[NSFileManager defaultManager] fileAttributesAtPath:fullPath traverseLink:YES];
 				if( attr )
 				{
 				//	[attr  setValue:orgDate forKey:NSFileCreationDate];

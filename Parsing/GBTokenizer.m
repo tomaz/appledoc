@@ -85,21 +85,21 @@
 	while (counter <= offset) {
 		NSUInteger index = self.tokenIndex + delta;
 		if (index >= [self.tokens count]) return [PKToken EOFToken];
-		if ([[self.tokens objectAtIndex:index] isComment]) {
+		if ([self.tokens[index] isComment]) {
 			delta++;
 			continue;
 		}
 		delta++;
 		counter++;
 	}
-	return [self.tokens objectAtIndex:self.tokenIndex + delta - 1];
+	return self.tokens[self.tokenIndex + delta - 1];
 }
 
 - (void)lookaheadTo:(NSString *)end usingBlock:(void (^)(PKToken *token, BOOL *stop))block {
     NSUInteger tokenCount = [self.tokens count];
 	BOOL quit = NO;
     for (NSUInteger index = self.tokenIndex; index < tokenCount; ++index) {
-        PKToken *token = [self.tokens objectAtIndex:index];
+        PKToken *token = self.tokens[index];
 		if ([token isComment]) {
 			index++;
 			continue;
@@ -114,7 +114,7 @@
 
 - (PKToken *)currentToken {
 	if ([self eof]) return [PKToken EOFToken];
-	return [self.tokens objectAtIndex:self.tokenIndex];
+	return self.tokens[self.tokenIndex];
 }
 
 - (GBComment *)postfixCommentFrom:(PKToken *)startToken 
@@ -126,7 +126,7 @@
 		PKToken *token = nil;
 		do {
 			if (pos < self.tokens.count) {
-				token = [self.tokens objectAtIndex:pos];
+				token = self.tokens[pos];
 	
 				NSArray *postfixLines = [[token stringValue] componentsMatchedByRegex:self.singleLineCommentAfterRegex capture:1];
 				if ([postfixLines count] > 0) {

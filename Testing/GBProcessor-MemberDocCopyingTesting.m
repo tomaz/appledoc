@@ -149,9 +149,9 @@
 
 - (GBProcessor *)processorWithFind:(BOOL)find keepObjects:(BOOL)objects keepMembers:(BOOL)members {
 	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:find]] findUndocumentedMembersDocumentation];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:objects]] keepUndocumentedObjects];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:members]] keepUndocumentedMembers];
+	[[[settings stub] andReturnValue:@(find)] findUndocumentedMembersDocumentation];
+	[[[settings stub] andReturnValue:@(objects)] keepUndocumentedObjects];
+	[[[settings stub] andReturnValue:@(members)] keepUndocumentedMembers];
 	[GBTestObjectsRegistry settingsProvider:settings keepObjects:YES keepMembers:YES];
 	return [GBProcessor processorWithSettingsProvider:settings];
 }

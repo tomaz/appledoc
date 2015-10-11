@@ -26,11 +26,11 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat(section.sectionName, is(@"Section1"));
 	assertThatInteger([[section methods] count], equalToInteger(2));
-	[self assertMethod:[[section methods] objectAtIndex:0] matchesInstanceComponents:@"id", @"method1", nil];
-	[self assertMethod:[[section methods] objectAtIndex:1] matchesInstanceComponents:@"id", @"method2", nil];
+	[self assertMethod:[section methods][0] matchesInstanceComponents:@"id", @"method1", nil];
+	[self assertMethod:[section methods][1] matchesInstanceComponents:@"id", @"method2", nil];
 }
 
 - (void)testParseObjectsFromString_shouldRegisterUncommentedMethodsToLastSection {
@@ -42,11 +42,11 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat(section.sectionName, is(@"Section1"));
 	assertThatInteger([[section methods] count], equalToInteger(2));
-	[self assertMethod:[[section methods] objectAtIndex:0] matchesInstanceComponents:@"id", @"method1", nil];
-	[self assertMethod:[[section methods] objectAtIndex:1] matchesInstanceComponents:@"id", @"method2", nil];
+	[self assertMethod:[section methods][0] matchesInstanceComponents:@"id", @"method1", nil];
+	[self assertMethod:[section methods][1] matchesInstanceComponents:@"id", @"method2", nil];
 }
 
 - (void)testParseObjectsFromString_shouldDetectLongSectionNames {
@@ -58,7 +58,7 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(@"Long section name"));
+	assertThat([sections[0] sectionName], is(@"Long section name"));
 }
 
 - (void)testParseObjectsFromString_shouldDetectSectionNameOnlyIfAtStartOfComment {
@@ -70,7 +70,7 @@
 	// verify - note that we still create default section!
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(nil));
+	assertThat([sections[0] sectionName], is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldOnlyTakeSectionNameFromTheFirstLineString {
@@ -82,7 +82,7 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	assertThat([[sections objectAtIndex:0] sectionName], is(@"Section"));
+	assertThat([sections[0] sectionName], is(@"Section"));
 }
 
 - (void)testParseObjectsFromString_requiresDetectsSectionEvenIfFollowedByUncommentedMethod {
@@ -94,10 +94,10 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat(section.sectionName, is(@"Section"));
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([[section.methods objectAtIndex:0] comment], is(nil));
+	assertThat([section.methods[0] comment], is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldDetectSectionAndCommentForNextCommentedMethod {
@@ -109,11 +109,11 @@
 	// verify
 	NSArray *sections = [[[[store classes] anyObject] methods] sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat(section.sectionName, is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(2));
-	assertThat([[section.methods objectAtIndex:0] comment], is(nil));
-	assertThat([(GBComment *)[[section.methods objectAtIndex:1] comment] stringValue], is(@"Second"));
+	assertThat([section.methods[0] comment], is(nil));
+	assertThat([(GBComment *)[section.methods[1] comment] stringValue], is(@"Second"));
 }
 
 @end

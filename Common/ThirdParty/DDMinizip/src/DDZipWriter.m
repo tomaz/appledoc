@@ -30,9 +30,7 @@
 -(BOOL) newZipFile:(NSString *)zipFile
 {
 	_zipFile = zipOpen( (const char*)[zipFile UTF8String], 0 );
-	if( !_zipFile ) 
-		return NO;
-	return YES;
+	return _zipFile != NULL;
 }
 
 -(BOOL) addFileToZip:(NSString *)file newname:(NSString *)newname
@@ -48,7 +46,7 @@
 	NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
 	if( attr )
 	{
-		NSDate* fileDate = (NSDate*)[attr objectForKey:NSFileModificationDate];
+		NSDate* fileDate = (NSDate*) attr[NSFileModificationDate];
 		if( fileDate )
 		{
 			zipInfo.dosDate = [fileDate timeIntervalSinceDate:[DDZippedFileInfo dateWithTimeIntervalSince1980:0]];
@@ -85,7 +83,7 @@
 {
 	if( _zipFile==NULL )
 		return NO;
-	BOOL ret =  zipClose( _zipFile,NULL )==Z_OK?YES:NO;
+	BOOL ret = zipClose( _zipFile,NULL )==Z_OK;
 	_zipFile = NULL;
 	return ret;
 }

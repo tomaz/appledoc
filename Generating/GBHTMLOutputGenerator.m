@@ -276,19 +276,19 @@
 }
 
 - (GBTemplateHandler *)htmlObjectTemplate {
-	return [self.templateFiles objectForKey:@"object-template.html"];
+	return self.templateFiles[@"object-template.html"];
 }
 
 - (GBTemplateHandler *)htmlIndexTemplate {
-	return [self.templateFiles objectForKey:@"index-template.html"];
+	return self.templateFiles[@"index-template.html"];
 }
 
 - (GBTemplateHandler *)htmlHierarchyTemplate {
-	return [self.templateFiles objectForKey:@"hierarchy-template.html"];
+	return self.templateFiles[@"hierarchy-template.html"];
 }
 
 - (GBTemplateHandler *)htmlDocumentTemplate {
-	return [self.templateFiles objectForKey:@"document-template.html"];
+	return self.templateFiles[@"document-template.html"];
 }
 
 #pragma mark Overriden methods

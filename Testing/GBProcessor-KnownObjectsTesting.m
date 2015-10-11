@@ -40,8 +40,8 @@
 	// verify
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([protocols objectAtIndex:0], is(realProtocol));
-	assertThat([protocols objectAtIndex:1], is(adoptedProtocol2));
+	assertThat(protocols[0], is(realProtocol));
+	assertThat(protocols[1], is(adoptedProtocol2));
 }
 
 - (void)testProcessObjectsFromStore_shouldReplaceKnownCategoryAdoptedProtocolsWithProtocolsFromStore {
@@ -61,8 +61,8 @@
 	// verify
 	NSArray *protocols = [category.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([protocols objectAtIndex:0], is(realProtocol));
-	assertThat([protocols objectAtIndex:1], is(adoptedProtocol2));
+	assertThat(protocols[0], is(realProtocol));
+	assertThat(protocols[1], is(adoptedProtocol2));
 }
 
 - (void)testProcessObjectsFromStore_shouldReplaceKnownProtocolAdoptedProtocolsWithProtocolsFromStore {
@@ -82,8 +82,8 @@
 	// verify
 	NSArray *protocols = [protocol.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([protocols objectAtIndex:0], is(realProtocol));
-	assertThat([protocols objectAtIndex:1], is(adoptedProtocol2));
+	assertThat(protocols[0], is(realProtocol));
+	assertThat(protocols[1], is(adoptedProtocol2));
 }
 
 #pragma mark Subclasses handling

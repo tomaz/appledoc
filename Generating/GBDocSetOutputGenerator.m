@@ -73,7 +73,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	if (![self processNodesXml:error]) return NO;
 	if (![self processTokensXml:error]) return NO;
 	if (![self indexDocSet:error]) return NO;
-	if (![self removeTemporaryFiles:error]) return NO;	
+	if (![self removeTemporaryFiles:error]) return NO;
 	return YES;
 }
 
@@ -128,7 +128,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	addVarUnlessEmpty(self.settings.dashDocsetPlatformFamily, @"dashPlatformFamily");
 	
 	// Run the template and save the results as Info.plist.
-	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
+	GBTemplateHandler *handler = self.templateFiles[templatePath];
 	NSString *output = [handler renderObject:vars];
 	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Info.plist"];
@@ -151,24 +151,24 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	
 	// Prepare the variables for the template.
 	NSMutableDictionary *vars = [NSMutableDictionary dictionary];
-	[vars setObject:self.settings.projectName forKey:@"projectName"];
-	[vars setObject:@"index.html" forKey:@"indexFilename"];
-	[vars setObject:[NSNumber numberWithBool:([self.documents count] > 0)] forKey:@"hasDocs"];
-	[vars setObject:[NSNumber numberWithBool:([self.classes count] > 0)] forKey:@"hasClasses"];
-	[vars setObject:[NSNumber numberWithBool:([self.categories count] > 0)] forKey:@"hasCategories"];
-	[vars setObject:[NSNumber numberWithBool:([self.protocols count] > 0)] forKey:@"hasProtocols"];
-    [vars setObject:[NSNumber numberWithBool:([self.constants count] > 0)] forKey:@"hasConstants"];
-    [vars setObject:[NSNumber numberWithBool:([self.blocks count] > 0)] forKey:@"hasBlocks"];
-	[vars setObject:self.documents forKey:@"docs"];
-	[vars setObject:self.classes forKey:@"classes"];
-	[vars setObject:self.categories forKey:@"categories"];
-	[vars setObject:self.protocols forKey:@"protocols"];
-    [vars setObject:self.constants forKey:@"constants"];
-    [vars setObject:self.blocks forKey:@"blocks"];
-	[vars setObject:self.settings.stringTemplates forKey:@"strings"];
+	vars[@"projectName"] = self.settings.projectName;
+	vars[@"indexFilename"] = @"index.html";
+	vars[@"hasDocs"] = @([self.documents count] > 0);
+	vars[@"hasClasses"] = @([self.classes count] > 0);
+	vars[@"hasCategories"] = @([self.categories count] > 0);
+	vars[@"hasProtocols"] = @([self.protocols count] > 0);
+    vars[@"hasConstants"] = @([self.constants count] > 0);
+    vars[@"hasBlocks"] = @([self.blocks count] > 0);
+	vars[@"docs"] = self.documents;
+	vars[@"classes"] = self.classes;
+	vars[@"categories"] = self.categories;
+	vars[@"protocols"] = self.protocols;
+    vars[@"constants"] = self.constants;
+    vars[@"blocks"] = self.blocks;
+	vars[@"strings"] = self.settings.stringTemplates;
 	
 	// Run the template and save the results.
-	GBTemplateHandler *handler = [self.templateFiles objectForKey:templatePath];
+	GBTemplateHandler *handler = self.templateFiles[templatePath];
 	NSString *output = [handler renderObject:vars];
 	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSString *filename = [outputPath stringByAppendingPathComponent:@"Nodes.xml"];
@@ -205,7 +205,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	GBLogInfo(@"Indexing DocSet...");
 	GBTask *task = [GBTask task];
 	task.reportIndividualLines = YES;
-	NSArray *args = [NSArray arrayWithObjects:@"docsetutil", @"index", [self.outputUserPath stringByStandardizingPath], nil];
+	NSArray *args = @[@"docsetutil", @"index", [self.outputUserPath stringByStandardizingPath]];
 	BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
 		if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
 		if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
@@ -239,20 +239,20 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 
 - (BOOL)processTokensXmlForObjects:(NSArray *)objects type:(NSString *)type template:(NSString *)template index:(NSUInteger *)index error:(NSError **)error {
 	// Prepare the output path and template handler then generate file for each object.
-	GBTemplateHandler *handler = [self.templateFiles objectForKey:template];
+	GBTemplateHandler *handler = self.templateFiles[template];
 	NSString *templateFilename = [template lastPathComponent];
 	NSString *outputPath = [self outputPathToTemplateEndingWith:templateFilename];
 	NSUInteger idx = *index;
 	for (NSMutableDictionary *simplifiedObjectData in objects) {
 		// Get the object's methods provider and prepare the array of all methods.
-		GBModelBase *topLevelObject = [simplifiedObjectData objectForKey:@"object"];
+		GBModelBase *topLevelObject = simplifiedObjectData[@"object"];
 		
 		
 		// Prepare template variables for object. Note that we reuse the ID assigned while creating the data for Nodes.xml.
 		NSMutableDictionary *objectData = [NSMutableDictionary dictionaryWithCapacity:2];
-		[objectData setObject:[simplifiedObjectData objectForKey:@"id"] forKey:@"refid"];
+		objectData[@"refid"] = simplifiedObjectData[@"id"];
         // save refid
-        _sectionID = [objectData objectForKey:@"refid"];
+        _sectionID = objectData[@"refid"];
 		[self addTokensXmlModelObjectDataForObject:topLevelObject toData:objectData];
 		
 		NSMutableDictionary *vars = [NSMutableDictionary dictionary];
@@ -264,7 +264,7 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
             NSMutableArray *membersData = [NSMutableArray arrayWithCapacity:[methodsProvider.methods count]];
             for (GBMethodData *method in methodsProvider.methods) {
                 NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-                [data setObject:[self.settings htmlReferenceNameForObject:method] forKey:@"anchor"];
+                data[@"anchor"] = [self.settings htmlReferenceNameForObject:method];
                 [self addTokensXmlModelObjectDataForObject:method toData:data];
                 [self addTokensXmlModelObjectDataForPropertySetterAndGetter:method withData:data toArray:membersData];
                 [membersData addObject:data];
@@ -272,9 +272,9 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
             }
             
             // Prepare the variables for the template.
-            [vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
-            [vars setObject:objectData forKey:@"object"];
-            [vars setObject:membersData forKey:@"members"];
+            vars[@"filePath"] = simplifiedObjectData[@"path"];
+            vars[@"object"] = objectData;
+            vars[@"members"] = membersData;
         }
         
         //if the object is a enum typedef, use this enumerator for the values.
@@ -284,16 +284,16 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
             NSMutableArray *constantsData = [NSMutableArray arrayWithCapacity:[typedefEnum.constants count]];
             for (GBEnumConstantData *constant in typedefEnum.constants) {
                 NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-                [data setObject:[self.settings htmlReferenceNameForObject:constant] forKey:@"anchor"];
-                [data setObject:constant.name forKey:@"declaration"];
+                data[@"anchor"] = [self.settings htmlReferenceNameForObject:constant];
+                data[@"declaration"] = constant.name;
                 [self addTokensXmlModelObjectDataForObject:constant toData:data];
                 [constantsData addObject:data];
             }
             
             // Prepare the variables for the template.
-            [vars setObject:[simplifiedObjectData objectForKey:@"path"] forKey:@"filePath"];
-            [vars setObject:objectData forKey:@"object"];
-            [vars setObject:constantsData forKey:@"constants"];
+            vars[@"filePath"] = simplifiedObjectData[@"path"];
+            vars[@"object"] = objectData;
+            vars[@"constants"] = constantsData;
         }
 		
 		// Run the template and save the results.
@@ -312,18 +312,18 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 }
 
 - (void)addTokensXmlModelObjectDataForObject:(GBModelBase *)object toData:(NSMutableDictionary *)data {
-	[data setObject:[self tokenIdentifierForObject:object] forKey:@"identifier"];
-	[data setObject:[[object.sourceInfosSortedByName objectAtIndex:0] filename] forKey:@"declaredin"];
+	data[@"identifier"] = [self tokenIdentifierForObject:object];
+	data[@"declaredin"] = [object.sourceInfosSortedByName[0] filename];
 	if (object.comment) {
 		if (object.comment.hasShortDescription) {
 			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
 			[components registerComponent:object.comment.shortDescription];
-			[data setObject:components forKey:@"abstract"];
+			data[@"abstract"] = components;
 		}
         if (object.comment.availability && object.comment.availability.components.count > 0) {
 			GBCommentComponentsList *components = [GBCommentComponentsList componentsList];
 			[components registerComponent:object.comment.availability.components];
-			[data setObject:components forKey:@"availability"];
+			data[@"availability"] = components;
 		}
 		if ([object.comment.relatedItems.components count] > 0) {
 			NSMutableArray *related = [NSMutableArray arrayWithCapacity:[object.comment.relatedItems.components count]];
@@ -334,41 +334,41 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 				}
 			}
 			if ([related count] > 0) {
-				[data setObject:[NSNumber numberWithBool:YES] forKey:@"hasRelatedTokens"];
-				[data setObject:related forKey:@"relatedTokens"];
+				data[@"hasRelatedTokens"] = @YES;
+				data[@"relatedTokens"] = related;
 			}
 		}
 	}
 	if ([object isKindOfClass:[GBMethodData class]]) {
 		GBMethodData *method = (GBMethodData *)object;
-		[data setObject:method.formattedComponents forKey:@"formattedComponents"];
-        [data setObject:_sectionID forKey:@"refid"];
+		data[@"formattedComponents"] = method.formattedComponents;
+        data[@"refid"] = _sectionID;
 		if (method.comment) {
 			if (method.comment.hasMethodParameters) {
 				NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:[method.comment.methodParameters count]];
 				for (GBCommentArgument *argument in method.comment.methodParameters) {
 					NSMutableDictionary *argData = [NSMutableDictionary dictionaryWithCapacity:2];
-					[argData setObject:argument.argumentName forKey:@"name"];
-					[argData setObject:argument.argumentDescription forKey:@"abstract"];
+					argData[@"name"] = argument.argumentName;
+					argData[@"abstract"] = argument.argumentDescription;
 					[arguments addObject:argData];
 				}
-				[data setObject:arguments forKey:@"parameters"];
-				[data setObject:[NSNumber numberWithBool:YES] forKey:@"hasParameters"];
+				data[@"parameters"] = arguments;
+				data[@"hasParameters"] = @YES;
 			}
 			if (method.comment.hasMethodResult) {
-				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.methodResult forKey:@"abstract"];
-				[data setObject:resultData forKey:@"returnValue"];
+				NSDictionary *resultData = @{@"abstract" : method.comment.methodResult};
+				data[@"returnValue"] = resultData;
 			}
 			if (method.comment.hasAvailability) {
-				NSDictionary *resultData = [NSDictionary dictionaryWithObject:method.comment.availability forKey:@"abstract"];
-				[data setObject:resultData forKey:@"availability"];
+				NSDictionary *resultData = @{@"abstract" : method.comment.availability};
+				data[@"availability"] = resultData;
 			}
 		}
 	}
     
     if( [object isKindOfClass:[GBEnumConstantData class]])
     {
-        [data setObject:_sectionID forKey:@"refid"];
+        data[@"refid"] = _sectionID;
     }
 }
 
@@ -379,18 +379,18 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	if (!property.isProperty) return;
 		
 	// Setter: returns void, has an argument of the same type as the property, use property's setterSelector as name and avoid duplication of the colon by trimming it. Copy source infos from property.    
-	NSArray *setterResults = [NSArray arrayWithObjects:@"void", nil];
+	NSArray *setterResults = @[@"void"];
 	NSArray *setterTypes = [property methodResultTypes];
 	NSString *setterName = [property propertySetterSelector];
     setterName = [setterName stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-    NSArray *setterArgs = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:setterName types:setterTypes var:@"val"]];
+    NSArray *setterArgs = @[[GBMethodArgument methodArgumentWithName:setterName types:setterTypes var:@"val"]];
     [self addGetterSetterToMethods:property for:setterName withReturnResult:setterResults withTypes:setterTypes withArguments:setterArgs withData:data toArray:members];
     
     // Getter: returns the same as property, use property's getterSelector as name, takes no arguments. Copy source infos from property.
-    NSArray *getterResults = [NSArray arrayWithObjects:property.methodReturnType, nil];
+    NSArray *getterResults = @[property.methodReturnType];
     NSArray *getterTypes = [property methodResultTypes];
     NSString *getterName = [property propertyGetterSelector];
-    NSArray *getterArgs = [NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:getterName types:getterTypes var:nil]];
+    NSArray *getterArgs = @[[GBMethodArgument methodArgumentWithName:getterName types:getterTypes var:nil]];
     [self addGetterSetterToMethods:property for:getterName withReturnResult:getterResults withTypes:getterTypes withArguments:getterArgs withData:data toArray:members];
 }
 
@@ -409,9 +409,9 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
         [method registerSourceInfo:info];
     }
     NSMutableDictionary *methodData = [NSMutableDictionary dictionaryWithCapacity:4];
-    [methodData setObject:[self.settings htmlReferenceNameForObject:property] forKey:@"anchor"];
+    methodData[@"anchor"] = [self.settings htmlReferenceNameForObject:property];
     [self addTokensXmlModelObjectDataForObject:method toData:methodData];
-    [methodData setObject:[data objectForKey:@"formattedComponents"] forKey:@"formattedComponents"];
+    methodData[@"formattedComponents"] = data[@"formattedComponents"];
     [members addObject:methodData];
     
 }
@@ -490,10 +490,10 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 	for (id object in objects) {
 		GBLogDebug(@"Initializing simplified representation of %@ with id %ld...", object, idx);
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-		[data setObject:object forKey:@"object"];
-		[data setObject:[NSString stringWithFormat:@"%ld", idx++] forKey:@"id"];
-		[data setObject:[object valueForKey:value] forKey:@"name"];
-		[data setObject:[self.settings htmlReferenceForObjectFromIndex:object] forKey:@"path"];
+		data[@"object"] = object;
+		data[@"id"] = [NSString stringWithFormat:@"%ld", idx++];
+		data[@"name"] = [object valueForKey:value];
+		data[@"path"] = [self.settings htmlReferenceForObjectFromIndex:object];
         
         GBDocSetNavigationTreeIconKind icon = FileIcon;
         
@@ -518,27 +518,27 @@ typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
             //if the model or document has multiple members, expand those members
             if(provider.methods.count > 0)
             {
-                [data setObject:[NSNumber numberWithBool:YES] forKey:@"hasSubNodes"];
-                [data setObject:[NSNumber numberWithBool:provider.hasProperties] forKey:@"hasProperties"];
-                [data setObject:[NSNumber numberWithBool:provider.hasClassMethods] forKey:@"hasClassMethods"];
-                [data setObject:[NSNumber numberWithBool:provider.hasInstanceMethods] forKey:@"hasInstanceMethods"];
+                data[@"hasSubNodes"] = @YES;
+                data[@"hasProperties"] = @(provider.hasProperties);
+                data[@"hasClassMethods"] = @(provider.hasClassMethods);
+                data[@"hasInstanceMethods"] = @(provider.hasInstanceMethods);
             }
         }
                 
         switch(icon)
         {
             case ReferenceIcon:
-                [data setObject:@"file" forKey:@"type"];
-                [data setObject:@"reference" forKey:@"docType"];
+                data[@"type"] = @"file";
+                data[@"docType"] = @"reference";
                 break;
             case FolderIcon:
-                [data setObject:@"folder" forKey:@"type"];
+                data[@"type"] = @"folder";
                 break;
             case FileIcon:
-                [data setObject:@"section" forKey:@"type"];
+                data[@"type"] = @"section";
                 break;
             case BundleIcon:
-                [data setObject:@"bundle" forKey:@"type"];
+                data[@"type"] = @"bundle";
                 break;
         }
     

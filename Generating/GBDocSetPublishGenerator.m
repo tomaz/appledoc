@@ -63,7 +63,7 @@
 	}
 	
 	// Create destination directory.
-	if (![self initializeDirectoryAtPath:outputDir preserve:[NSArray arrayWithObject:atomName] error:error]) {
+	if (![self initializeDirectoryAtPath:outputDir preserve:@[atomName] error:error]) {
 		GBLogWarn(@"Failed initializing DocSet publish directory '%@'!", outputDir);
 		return NO;
 	}

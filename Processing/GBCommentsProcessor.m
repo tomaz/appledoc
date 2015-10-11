@@ -195,7 +195,7 @@ typedef NSUInteger GBProcessingFlag;
 	// First skip all starting empty lines.
 	NSUInteger start = blockRange->location;
 	while (start < [lines count]) {
-		NSString *line = [lines objectAtIndex:start];
+		NSString *line = lines[start];
 		if ([line length] > 0) break;
 		start++;
 	}
@@ -204,7 +204,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSUInteger blockEnd = start;
 	NSUInteger shortEnd = NSNotFound;
 	while (blockEnd < [lines count]) {
-		NSString *line = [lines objectAtIndex:blockEnd];
+		NSString *line = lines[blockEnd];
 		if (blockEnd > start && [self isLineMatchingDirectiveStatement:line]) break;
 		if ([line length] == 0 && shortEnd == NSNotFound) shortEnd = blockEnd;
 		blockEnd++;
@@ -287,9 +287,9 @@ typedef NSUInteger GBProcessingFlag;
 	// Reserves the given short description data for later registration. This is used so that we can properly handle method directives - we only create short description from these if there is no other directive in the comment. So we want to postpone registration until the whole comment text is processed; if another description block is found later on, we'll be registering short description directly from it, so any registered data will not be used. But if after processing the whole block there is still no short description, we'll use registered data. This only registers the data the first time, so the first directive text found in comment is used for short description.
 	if (self.reservedShortDescriptionData) return;
 	self.reservedShortDescriptionData = [NSMutableDictionary dictionaryWithCapacity:3];
-	[self.reservedShortDescriptionData setObject:lines forKey:@"lines"];
-	[self.reservedShortDescriptionData setObject:[NSValue valueWithRange:range] forKey:@"range"];
-	[self.reservedShortDescriptionData setObject:remove forKey:@"remove"];
+	self.reservedShortDescriptionData[@"lines"] = lines;
+	self.reservedShortDescriptionData[@"range"] = [NSValue valueWithRange:range];
+	self.reservedShortDescriptionData[@"remove"] = remove;
 }
 
 - (void)registerReservedShortDescriptionIfNecessary {
@@ -297,9 +297,9 @@ typedef NSUInteger GBProcessingFlag;
 	if (self.currentComment.shortDescription) return;
 	if (!self.reservedShortDescriptionData) return;
 	GBLogDebug(@"- Registering reserved short description...");
-	NSArray *lines = [self.reservedShortDescriptionData objectForKey:@"lines"];
-	NSRange range = [[self.reservedShortDescriptionData objectForKey:@"range"] rangeValue];
-	NSString *remove = [self.reservedShortDescriptionData objectForKey:@"remove"];
+	NSArray *lines = self.reservedShortDescriptionData[@"lines"];
+	NSRange range = [self.reservedShortDescriptionData[@"range"] rangeValue];
+	NSString *remove = self.reservedShortDescriptionData[@"remove"];
 	[self registerShortDescriptionFromLines:lines range:range removePrefix:remove];
 }
 
@@ -310,8 +310,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = components[1];
+	NSString *description = components[2];
 	GBLogDebug(@"- Registering note block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -328,8 +328,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = components[1];
+	NSString *description = components[2];
 	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -346,8 +346,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = components[1];
+	NSString *description = components[2];
 	GBLogDebug(@"- Registering DEPRECATED block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -364,8 +364,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *directive = [components objectAtIndex:1];
-	NSString *description = [components objectAtIndex:2];
+	NSString *directive = components[1];
+	NSString *description = components[2];
 	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
@@ -382,8 +382,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *name = [components objectAtIndex:2];
-	NSString *description = [components objectAtIndex:3];
+	NSString *name = components[2];
+	NSString *description = components[3];
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -408,8 +408,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 name, index 3 description text.
-	NSString *name = [components objectAtIndex:2];
-	NSString *description = [components objectAtIndex:3];
+	NSString *name = components[2];
+	NSString *description = components[3];
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -434,7 +434,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components count] >= 3 ? [components objectAtIndex:2] : @"";
+	NSString *description = [components count] >= 3 ? components[2] : @"";
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -457,7 +457,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components objectAtIndex:3];
+	NSString *description = components[3];
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -480,7 +480,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components objectAtIndex:3];
+	NSString *description = components[3];
 	NSRange index;
 	index = [description rangeOfString:@"@discussion"];
 	
@@ -519,7 +519,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 description text.
-	NSString *description = [components objectAtIndex:2];
+	NSString *description = components[2];
 	NSRange range = [string rangeOfString:description];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -542,7 +542,7 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return NO;
 	
 	// Get data from captures. Index 1 is directive, index 2 reference.
-	NSString *reference = [components objectAtIndex:2];
+	NSString *reference = components[2];
 	NSRange range = [string rangeOfString:reference];
 	NSString *prefix = nil;
 	if (range.location < [string length]) {
@@ -625,13 +625,13 @@ typedef NSUInteger GBProcessingFlag;
             NSString *convertedLink = [self stringByConvertingCrossReferencesInString:body withFlags:flags];
             [result appendString:convertedLink];
         } else {
-            NSAssert([component objectForKey:@"code"] != nil, @"Should have either link or code");
-            body = [component objectForKey:@"code"];
+            NSAssert(component[@"code"] != nil, @"Should have either link or code");
+            body = component[@"code"];
             NSString *output = body;
             NSString *backticks = @"```";
-            NSRange range = [output rangeOfString:[component objectForKey:@"postfix"] options:NSBackwardsSearch];
+            NSRange range = [output rangeOfString:component[@"postfix"] options:NSBackwardsSearch];
             output = [output stringByReplacingCharactersInRange:range withString:backticks];
-            range = [output rangeOfString:[component objectForKey:@"prefix"]];
+            range = [output rangeOfString:component[@"prefix"]];
             output = [output stringByReplacingCharactersInRange:range withString:backticks];
             [result appendString:output];
         }
@@ -666,8 +666,8 @@ typedef NSUInteger GBProcessingFlag;
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	for (NSDictionary *component in components) {
 		// Find marker range within the remaining text. Note that we don't test for marker not found, as this shouldn't happen...
-		NSString *componentMarker = [component objectForKey:@"marker"];
-		NSString *componentText = [component objectForKey:@"value"];
+		NSString *componentMarker = component[@"marker"];
+		NSString *componentText = component[@"value"];
 		NSRange markerRange = [string rangeOfString:componentMarker options:0 range:searchRange];
 		
 		// If we skipped some text, convert all cross refs in it and append to the result.
@@ -855,7 +855,7 @@ typedef NSUInteger GBProcessingFlag;
 			GBCrossRefData *linkData = nil;
 			NSUInteger index = NSNotFound;
 			for (NSUInteger i=0; i<[links count]; i++) {
-				GBCrossRefData *data = [links objectAtIndex:i];
+				GBCrossRefData *data = links[i];
 				if (!linkData || linkData.range.location > data.range.location) {
 					linkData = data;
 					index = i;
@@ -948,8 +948,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
     
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
+	NSString *linkText = components[0];
+	NSString *objectName = components[1];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store classWithName:objectName];
@@ -974,8 +974,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
 
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [[components objectAtIndex:0] stringByTrimmingWhitespaceAndNewLine];
-	NSString *objectName = [[components objectAtIndex:1] stringByTrimmingWhitespaceAndNewLine];
+	NSString *linkText = [components[0] stringByTrimmingWhitespaceAndNewLine];
+	NSString *objectName = [components[1] stringByTrimmingWhitespaceAndNewLine];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store categoryWithName:objectName];
@@ -998,8 +998,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
     
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *objectName = [components objectAtIndex:1];
+	NSString *linkText = components[0];
+	NSString *objectName = components[1];
 	
 	// Validate object name with a class or protocol.
 	id referencedObject = [self.store typedefEnumWithName:objectName];
@@ -1022,8 +1022,8 @@ typedef NSUInteger GBProcessingFlag;
     if ([components count] == 0) return nil;
     
     // Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the object name.
-    NSString *linkText = [components objectAtIndex:0];
-    NSString *objectName = [components objectAtIndex:1];
+    NSString *linkText = components[0];
+    NSString *objectName = components[1];
     
     // Validate object name with a class or protocol.
     id referencedObject = [self.store typedefBlockWithName:objectName];
@@ -1049,8 +1049,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
 		
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 selector.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *selector = [components objectAtIndex:2];
+	NSString *linkText = components[0];
+	NSString *selector = components[2];
 	
 	// Validate selected within current context.
     // can we grab method data?
@@ -1091,19 +1091,19 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 optional prefix, index 2 object name, index 3 selector.
-	NSString *linkText = [components objectAtIndex:0];
-    NSString *linkDisplayText = [components objectAtIndex:1];
-	NSString *objectName = [components objectAtIndex:2];
-	NSString *selector = [components objectAtIndex:3];
+	NSString *linkText = components[0];
+    NSString *linkDisplayText = components[1];
+	NSString *objectName = components[2];
+	NSString *selector = components[3];
     if( [components count] > 5 ) {
         if( [linkDisplayText length] < 2 ) {
-            linkDisplayText = [components objectAtIndex:4];
+            linkDisplayText = components[4];
         }
         if( [objectName length] == 0 ) {
-            objectName = [components objectAtIndex:5];
+            objectName = components[5];
         }
         if( [selector length] == 0 ) {
-            selector = [components objectAtIndex:6];
+            selector = components[6];
         }
     }
     
@@ -1157,8 +1157,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, index 1 document name.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *documentName = [components objectAtIndex:1];
+	NSString *linkText = components[0];
+	NSString *documentName = components[1];
 	
 	// Validate selected within current context.
 	GBDocumentData *referencedDocument = [self.store documentWithName:documentName];
@@ -1182,8 +1182,8 @@ typedef NSUInteger GBProcessingFlag;
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, including optional template prefix/suffix, index 1 just the URL address. Remove mailto from description.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *address = [components objectAtIndex:1];
+	NSString *linkText = components[0];
+	NSString *address = components[1];
 	NSString *description = [address hasPrefix:@"mailto:"] ? [address substringFromIndex:7] : address;
 	
 	// Create link item, prepare range and return.
@@ -1205,10 +1205,10 @@ static NSString * escapePercentCharacters(NSString *string) {
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, index 1 description without brackets, index 2 the address, index 3 optional title.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *description = [components objectAtIndex:1];
-	NSString *address = [components objectAtIndex:2];
-	NSString *title = [components objectAtIndex:3];
+	NSString *linkText = components[0];
+	NSString *description = components[1];
+	NSString *address = components[2];
+	NSString *title = components[3];
 	if ([title length] > 0) title = escapePercentCharacters([NSString stringWithFormat:@" \"%@\"", title]);
 
     NSString *prefix = [linkText characterAtIndex:0] == '!' ? @"!" : nil;
@@ -1228,10 +1228,10 @@ static NSString * escapePercentCharacters(NSString *string) {
 	if ([components count] == 0) return nil;
 	
 	// Get link components. Index 0 contains full text, index 1 reference ID, index 2 address, index 3 optional title.
-	NSString *linkText = [components objectAtIndex:0];
-	NSString *reference = [components objectAtIndex:1];
-	NSString *address = [components objectAtIndex:2];
-	NSString *title = [components objectAtIndex:3];
+	NSString *linkText = components[0];
+	NSString *reference = components[1];
+	NSString *address = components[2];
+	NSString *title = components[3];
 	if ([title length] > 0) title = [NSString stringWithFormat:@" \"%@\"", title];
 
 	// Create link item, prepare range and return.
