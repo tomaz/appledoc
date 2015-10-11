@@ -25,7 +25,7 @@
 	// verify
 	assertThatBool([provider.protocols containsObject:protocol], equalToBool(YES));
 	assertThatInteger([[provider.protocols allObjects] count], equalToInteger(1));
-	assertThat([[provider.protocols allObjects] objectAtIndex:0], is(protocol));
+	assertThat([provider.protocols allObjects][0], is(protocol));
 }
 
 - (void)testRegisterProtocol_shouldIgnoreSameInstance {
@@ -68,9 +68,9 @@
 	// verify - only basic verification here, details within GBProtocolDataTesting!
 	NSArray *protocols = [original protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(3));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P1"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P2"));
-	assertThat([[protocols objectAtIndex:2] nameOfProtocol], is(@"P3"));
+	assertThat([protocols[0] nameOfProtocol], is(@"P1"));
+	assertThat([protocols[1] nameOfProtocol], is(@"P2"));
+	assertThat([protocols[2] nameOfProtocol], is(@"P3"));
 }
 
 - (void)testMergeDataFromProtocolProvider_shouldPreserveSourceData {
@@ -86,8 +86,8 @@
 	// verify - only basic verification here, details within GBProtocolDataTesting!
 	NSArray *protocols = [source protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P1"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P3"));
+	assertThat([protocols[0] nameOfProtocol], is(@"P1"));
+	assertThat([protocols[1] nameOfProtocol], is(@"P3"));
 }
 
 #pragma mark Protocols replacing handling
@@ -105,8 +105,8 @@
 	// verify
 	NSArray *protocols = [provider protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"P2"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"P3"));
+	assertThat([protocols[0] nameOfProtocol], is(@"P2"));
+	assertThat([protocols[1] nameOfProtocol], is(@"P3"));
 }
 
 @end

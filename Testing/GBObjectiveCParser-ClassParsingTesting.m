@@ -28,7 +28,7 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
-	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
+	assertThat([classes[0] nameOfClass], is(@"MyClass"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterClassDefinitionSourceFileAndLineNumber {
@@ -38,7 +38,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store classesSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -51,7 +51,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store classesSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -64,8 +64,8 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
-	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass1"));
-	assertThat([[classes objectAtIndex:1] nameOfClass], is(@"MyClass2"));
+	assertThat([classes[0] nameOfClass], is(@"MyClass1"));
+	assertThat([classes[1] nameOfClass], is(@"MyClass2"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterRootClass {
@@ -101,7 +101,7 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(1));
-	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass"));
+	assertThat([classes[0] nameOfClass], is(@"MyClass"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterClassDeclarationSourceFileAndLineNumber {
@@ -111,7 +111,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@implementation MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store classesSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -124,7 +124,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@implementation MyClass @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store classesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store classesSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -137,8 +137,8 @@
 	// verify
 	NSArray *classes = [store classesSortedByName];
 	assertThatInteger([classes count], equalToInteger(2));
-	assertThat([[classes objectAtIndex:0] nameOfClass], is(@"MyClass1"));
-	assertThat([[classes objectAtIndex:1] nameOfClass], is(@"MyClass2"));
+	assertThat([classes[0] nameOfClass], is(@"MyClass1"));
+	assertThat([classes[1] nameOfClass], is(@"MyClass2"));
 }
 
 #pragma mark Class comments parsing testing
@@ -233,7 +233,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterRootClassAdoptedProtocols {
@@ -246,7 +246,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *protocols = [class.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldIgnoreIvars {
@@ -271,7 +271,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+	assertThat([methods[0] methodSelector], is(@"method"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterProperties {
@@ -284,7 +284,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+	assertThat([methods[0] methodSelector], is(@"name"));
 }
 
 #pragma mark Class declaration components parsing testing
@@ -299,7 +299,7 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+	assertThat([methods[0] methodSelector], is(@"method"));
 }
 
 #pragma mark Merging testing
@@ -316,8 +316,8 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 - (void)testParseObjectsFromString_shouldMergeClassDeclarations {
@@ -332,8 +332,8 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 - (void)testParseObjectsFromString_shouldMergeClassDefinitionAndDeclaration {
@@ -348,8 +348,8 @@
 	GBClassData *class = [[store classes] anyObject];
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Complex parsing testing

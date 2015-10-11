@@ -47,7 +47,7 @@
 	NSAppleScript* script = [[NSAppleScript alloc] initWithSource:installScript];
 	if (![script executeAndReturnError:&errorDict])
 	{
-		NSString *message = [errorDict objectForKey:NSAppleScriptErrorMessage];
+		NSString *message = errorDict[NSAppleScriptErrorMessage];
 		if (error) *error = [NSError errorWithCode:GBErrorDocSetXcodeReloadFailed description:@"Documentation set was installed, but couldn't reload documentation within Xcode." reason:message];
 		return NO;
 	}

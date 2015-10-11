@@ -40,23 +40,23 @@
         NSArray *captured = [string captureComponentsMatchedByRegex:pattern range:searchRange];
         if ([captured count] > 0) {
             NSAssert([captured count] == 6, @"Match didn't produce right number of components");
-            NSString *code = [captured objectAtIndex:1];
+            NSString *code = captured[1];
             NSRange codeRange = [string rangeOfString:code options:0 range:searchRange];
             NSAssert(codeRange.location != NSNotFound, @"Matched code string should be in original");
 
-            NSString *begin = [captured objectAtIndex:3];
-            NSString *end = [captured objectAtIndex:5];
+            NSString *begin = captured[3];
+            NSString *end = captured[5];
             if (([begin isEqualToString:@"@code"] && [end isEqualToString:@"@endcode"]) || [begin isEqualToString:end]) {
                 NSDictionary *component = @{@"code": code,
-                                            @"prefix": [captured objectAtIndex:2],
+                                            @"prefix": captured[2],
                                             @"begin": begin,
-                                            @"postfix": [captured objectAtIndex:4],
+                                            @"postfix": captured[4],
                                             @"end": end,
                                             @"range": [NSValue valueWithRange:codeRange]};
                 [result addObject:component];
             }
 
-            NSString *matchedString = [captured objectAtIndex:0];
+            NSString *matchedString = captured[0];
             NSRange matchedRange = [string rangeOfString:matchedString options:0 range:searchRange];
             NSAssert(matchedRange.location != NSNotFound, @"Matched string should be in original");
             searchRange.location = matchedRange.location + matchedRange.length;
@@ -77,11 +77,11 @@
  @return YES if the link component shares any text in common with the source-code-block component.
  */
 - (BOOL)linkComponent:(NSDictionary*)link overlapsCodeComponent:(NSDictionary*)code {
-    NSRange linkRange = [[link objectForKey:@"range"] rangeValue];
+    NSRange linkRange = [link[@"range"] rangeValue];
     NSUInteger linkBegin = linkRange.location;
     NSUInteger linkEnd = linkRange.location + linkRange.length;
 
-    NSRange codeRange = [[code objectForKey:@"range"] rangeValue];
+    NSRange codeRange = [code[@"range"] rangeValue];
     NSUInteger codeBegin = codeRange.location;
     NSUInteger codeEnd = codeRange.location + codeRange.length;
     return (linkBegin >= codeBegin && linkBegin < codeEnd) || (linkEnd > codeBegin && linkEnd <= codeEnd);

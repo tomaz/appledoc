@@ -54,7 +54,7 @@
     GBTypedefBlockArgument *blockArgument = [[blockData parameters] firstObject];
     assertThat(blockArgument.className, equalTo(@"BOOL"));
     assertThat(blockArgument.name, equalTo(@"boolean"));
-    blockArgument = [[blockData parameters] objectAtIndex:1];
+    blockArgument = [blockData parameters][1];
     assertThat(blockArgument.className, equalTo(@"NSString"));
     assertThat(blockArgument.name, equalTo(@"*string"));
 }
@@ -76,7 +76,7 @@
     GBTypedefBlockArgument *blockArgument = [[blockData parameters] firstObject];
     assertThat(blockArgument.className, equalTo(@"BOOL"));
     assertThat(blockArgument.name, equalTo(@""));
-    blockArgument = [[blockData parameters] objectAtIndex:1];
+    blockArgument = [blockData parameters][1];
     assertThat(blockArgument.className, equalTo(@"NSString"));
     assertThat(blockArgument.name, equalTo(@"*"));
 }

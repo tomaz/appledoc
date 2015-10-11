@@ -25,10 +25,10 @@
 	// execute
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	// verify - just basic tests...
-	assertThat([vars objectForKey:@"page"], isNot(nil));
+	assertThat(vars[@"page"], isNot(nil));
 	assertThat([vars valueForKeyPath:@"page.title"], isNot(nil));
 	assertThat([vars valueForKeyPath:@"page.specifications"], isNot(nil));
-	assertThat([vars objectForKey:@"object"], is(class));
+	assertThat(vars[@"object"], is(class));
 }
 
 - (void)testVariableForClass_shouldPrepareFooterVariables {

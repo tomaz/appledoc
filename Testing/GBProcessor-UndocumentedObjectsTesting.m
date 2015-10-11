@@ -92,7 +92,7 @@
 	// verify
 	NSArray *methods = [class.methods methods];
  	assertThatInteger([methods count], equalToInteger(1));
-	assertThatBool([methods containsObject:[uncommented objectAtIndex:0]], equalToBool(YES));
+	assertThatBool([methods containsObject:uncommented[0]], equalToBool(YES));
 }
 
 - (void)testProcessObjectsFromStore_shouldDeleteUncommentedMethodsIfKeepMembersIsNo {
@@ -107,8 +107,8 @@
 	// verify
 	NSArray *methods = [class.methods methods];
  	assertThatInteger([methods count], equalToInteger(1));
-	assertThatBool([methods containsObject:[commented objectAtIndex:0]], equalToBool(YES));
-	assertThatBool([methods containsObject:[uncommented objectAtIndex:0]], equalToBool(NO));
+	assertThatBool([methods containsObject:commented[0]], equalToBool(YES));
+	assertThatBool([methods containsObject:uncommented[0]], equalToBool(NO));
 }
 
 - (void)testProcessObjectsFromStore_shouldKeepUncommentedObjectIfAllMethodsAreUnregisteredIfKeepObjectIsYes {

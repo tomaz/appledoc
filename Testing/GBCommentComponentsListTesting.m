@@ -32,7 +32,7 @@
 	[list registerComponent:[GBCommentComponent componentWithStringValue:@"a"]];
 	// verify
 	assertThatInteger([list.components count], equalToInteger(1));
-	assertThat([[list.components objectAtIndex:0] stringValue], is(@"a"));
+	assertThat([list.components[0] stringValue], is(@"a"));
 }
 
 - (void)testRegisterComponent_shouldAddComponentsToArrayInOrder {
@@ -44,9 +44,9 @@
 	[list registerComponent:[GBCommentComponent componentWithStringValue:@"c"]];
 	// verify
 	assertThatInteger([list.components count], equalToInteger(3));
-	assertThat([[list.components objectAtIndex:0] stringValue], is(@"a"));
-	assertThat([[list.components objectAtIndex:1] stringValue], is(@"b"));
-	assertThat([[list.components objectAtIndex:2] stringValue], is(@"c"));
+	assertThat([list.components[0] stringValue], is(@"a"));
+	assertThat([list.components[1] stringValue], is(@"b"));
+	assertThat([list.components[2] stringValue], is(@"c"));
 }
 
 @end

@@ -25,7 +25,7 @@
 	[provider registerMethod:method];
 	// verify
 	assertThatInteger([provider.methods count], equalToInteger(1));
-	assertThat([[provider.methods objectAtIndex:0] methodSelector], is(@"method:"));
+	assertThat([provider.methods[0] methodSelector], is(@"method:"));
 }
 
 - (void)testRegisterMethod_shouldSetParentObject {
@@ -59,10 +59,10 @@
 	[provider registerMethod:method2];
 	// verify
 	assertThatInteger([provider.methods count], equalToInteger(2));
-	assertThat([[provider.methods objectAtIndex:0] methodSelector], is(@"method:"));
-	assertThatInteger([[provider.methods objectAtIndex:0] methodType], equalToInteger(GBMethodTypeInstance));
-	assertThat([[provider.methods objectAtIndex:1] methodSelector], is(@"method:"));
-	assertThatInteger([[provider.methods objectAtIndex:1] methodType], equalToInteger(GBMethodTypeClass));
+	assertThat([provider.methods[0] methodSelector], is(@"method:"));
+	assertThatInteger([provider.methods[0] methodType], equalToInteger(GBMethodTypeInstance));
+	assertThat([provider.methods[1] methodSelector], is(@"method:"));
+	assertThatInteger([provider.methods[1] methodType], equalToInteger(GBMethodTypeClass));
 }
 
 - (void)testRegisterMethod_shouldMapMethodBySelectorToInstanceMethodRegardlessOfRegistrationOrder {
@@ -123,7 +123,7 @@
 	[provider registerMethod:method];
 	// verify
 	assertThatInteger([provider.classMethods count], equalToInteger(1));
-	assertThat([provider.classMethods objectAtIndex:0], is(method));
+	assertThat(provider.classMethods[0], is(method));
 }
 
 - (void)testRegisterMethod_shouldRegisterInstanceMethod {
@@ -134,7 +134,7 @@
 	[provider registerMethod:method];
 	// verify
 	assertThatInteger([provider.instanceMethods count], equalToInteger(1));
-	assertThat([provider.instanceMethods objectAtIndex:0], is(method));
+	assertThat(provider.instanceMethods[0], is(method));
 }
 
 - (void)testRegisterMethod_shouldRegisterProperty {
@@ -145,7 +145,7 @@
 	[provider registerMethod:method];
 	// verify
 	assertThatInteger([provider.properties count], equalToInteger(1));
-	assertThat([provider.properties objectAtIndex:0], is(method));
+	assertThat(provider.properties[0], is(method));
 }
 
 - (void)testRegisterMethod_shouldRegisterDifferentTypesOfMethodsAndUseProperSorting {
@@ -166,23 +166,23 @@
 	[provider registerMethod:instance1];
 	// verify
 	assertThatInteger([provider.classMethods count], equalToInteger(2));
-	assertThat([provider.classMethods objectAtIndex:0], is(class1));
-	assertThat([provider.classMethods objectAtIndex:1], is(class2));
+	assertThat(provider.classMethods[0], is(class1));
+	assertThat(provider.classMethods[1], is(class2));
 	assertThatInteger([provider.instanceMethods count], equalToInteger(2));
-	assertThat([provider.instanceMethods objectAtIndex:0], is(instance1));
-	assertThat([provider.instanceMethods objectAtIndex:1], is(instance2));
+	assertThat(provider.instanceMethods[0], is(instance1));
+	assertThat(provider.instanceMethods[1], is(instance2));
 	assertThatInteger([provider.properties count], equalToInteger(2));
-	assertThat([provider.properties objectAtIndex:0], is(property1));
-	assertThat([provider.properties objectAtIndex:1], is(property2));
+	assertThat(provider.properties[0], is(property1));
+	assertThat(provider.properties[1], is(property2));
 }
 
 - (void)testRegisterMethod_shouldProperlyHandlePropertyGettersAndSetters {
 	// setup
 	GBMethodsProvider *provider = [[GBMethodsProvider alloc] initWithParentObject:self];
 	GBMethodData *property1 = [GBTestObjectsRegistry propertyMethodWithArgument:@"name1"];
-	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter",@"=",@"isName2", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name2", nil]];
-	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter",@"=",@"setTheName3:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name3", nil]];
-	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter",@"=",@"isName4", @"setter",@"=",@"setTheName4:", nil] components:[NSArray arrayWithObjects:@"BOOL", @"name4", nil]];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:@[@"getter", @"=", @"isName2"] components:@[@"BOOL", @"name2"]];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:@[@"setter", @"=", @"setTheName3:"] components:@[@"BOOL", @"name3"]];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:@[@"getter", @"=", @"isName4", @"setter", @"=", @"setTheName4:"] components:@[@"BOOL", @"name4"]];
 	// execute
 	[provider registerMethod:property1];
 	[provider registerMethod:property2];
@@ -223,7 +223,7 @@
 	// verify
 	assertThatInteger([[section1 methods] count], equalToInteger(0));
 	assertThatInteger([[section2 methods] count], equalToInteger(1));
-	assertThat([section2.methods objectAtIndex:0], is(method));
+	assertThat(section2.methods[0], is(method));
 }
 
 - (void)testRegisterMethod_shouldCreateDefaultSectionIfNoneExists {
@@ -234,9 +234,9 @@
 	[provider registerMethod:method];
 	// verify
 	assertThatInteger([[provider sections] count], equalToInteger(1));
-	GBMethodSectionData *section = [[provider sections] objectAtIndex:0];
+	GBMethodSectionData *section = [provider sections][0];
 	assertThatInteger([[section methods] count], equalToInteger(1));
-	assertThat([section.methods objectAtIndex:0], is(method));
+	assertThat(section.methods[0], is(method));
 }
 
 - (void)testRegisterSectionWithName_shouldCreateEmptySectionWithGivenName {
@@ -288,7 +288,7 @@
 	[provider unregisterEmptySections];
 	// verify
 	assertThatInteger([[provider sections] count], equalToInteger(1));
-	assertThat([[[provider sections] objectAtIndex:0] sectionName], is(@"Used"));
+	assertThat([[provider sections][0] sectionName], is(@"Used"));
 }
 
 #pragma mark Output helpers testing
@@ -367,9 +367,9 @@
 	// verify - only basic testing here, details at GBMethodDataTesting!
 	NSArray *methods = [original methods];
 	assertThatInteger([methods count], equalToInteger(3));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m2:"));
-	assertThat([[methods objectAtIndex:2] methodSelector], is(@"m3:"));
+	assertThat([methods[0] methodSelector], is(@"m1:"));
+	assertThat([methods[1] methodSelector], is(@"m2:"));
+	assertThat([methods[2] methodSelector], is(@"m3:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldPreserveSourceData {
@@ -385,8 +385,8 @@
 	// verify - only basic testing here, details at GBMethodDataTesting!
 	NSArray *methods = [source methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"m3:"));
+	assertThat([methods[0] methodSelector], is(@"m1:"));
+	assertThat([methods[1] methodSelector], is(@"m3:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldMergeSections {
@@ -406,16 +406,16 @@
 	GBMethodSectionData *section = nil;
 	NSArray *sections = [original sections];
 	assertThatInteger([sections count], equalToInteger(2));
-	section = [sections objectAtIndex:0];
+	section = sections[0];
 	assertThat([section sectionName], is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(2));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m4:"));
-	section = [sections objectAtIndex:1];
+	assertThat([section.methods[0] methodSelector], is(@"m1:"));
+	assertThat([section.methods[1] methodSelector], is(@"m4:"));
+	section = sections[1];
 	assertThat([section sectionName], is(@"Section2"));
 	assertThatInteger([section.methods count], equalToInteger(2));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
-	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
+	assertThat([section.methods[0] methodSelector], is(@"m2:"));
+	assertThat([section.methods[1] methodSelector], is(@"m3:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldAddMergedSectionsToEndOfOriginalSections {
@@ -434,15 +434,15 @@
 	GBMethodSectionData *section = nil;
 	NSArray *sections = [original sections];
 	assertThatInteger([sections count], equalToInteger(2));
-	section = [sections objectAtIndex:0];
+	section = sections[0];
 	assertThat([section sectionName], is(@"Section2"));
 	assertThatInteger([section.methods count], equalToInteger(2));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
-	section = [sections objectAtIndex:1];
+	assertThat([section.methods[0] methodSelector], is(@"m1:"));
+	assertThat([section.methods[1] methodSelector], is(@"m3:"));
+	section = sections[1];
 	assertThat([section sectionName], is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
+	assertThat([section.methods[0] methodSelector], is(@"m2:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldPreserveCurrentSectionForNewMethods {
@@ -461,16 +461,16 @@
 	GBMethodSectionData *section = nil;
 	NSArray *sections = [original sections];
 	assertThatInteger([sections count], equalToInteger(2));
-	section = [sections objectAtIndex:0];
+	section = sections[0];
 	assertThat([section sectionName], is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(3));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
-	assertThat([[section.methods objectAtIndex:1] methodSelector], is(@"m3:"));
-	assertThat([[section.methods objectAtIndex:2] methodSelector], is(@"m4:"));
-	section = [sections objectAtIndex:1];
+	assertThat([section.methods[0] methodSelector], is(@"m1:"));
+	assertThat([section.methods[1] methodSelector], is(@"m3:"));
+	assertThat([section.methods[2] methodSelector], is(@"m4:"));
+	section = sections[1];
 	assertThat([section sectionName], is(@"Section2"));
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m2:"));
+	assertThat([section.methods[0] methodSelector], is(@"m2:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldUseOriginalSectionForExistingMethodsEvenIfFoundInDifferentSection {
@@ -486,10 +486,10 @@
 	// verify
 	NSArray *sections = [original sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat([section sectionName], is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([section.methods[0] methodSelector], is(@"m1:"));
 }
 
 - (void)testMergeDataFromObjectsProvider_shouldUseOriginalSectionForExistingMethodsFromDefaultSection {
@@ -504,10 +504,10 @@
 	// verify
 	NSArray *sections = [original sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThat([section sectionName], is(@"Section1"));
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([[section.methods objectAtIndex:0] methodSelector], is(@"m1:"));
+	assertThat([section.methods[0] methodSelector], is(@"m1:"));
 }
 
 #pragma mark Unregistering handling
@@ -523,7 +523,7 @@
 	[provider unregisterMethod:method1];
 	// verify
 	assertThatInteger([provider.methods count], equalToInteger(1));
-	assertThat([provider.methods objectAtIndex:0], is(method2));
+	assertThat(provider.methods[0], is(method2));
 }
 
 - (void)testUnregisterMethod_shouldRemoveMethodFromMethodsBySelectors {
@@ -548,7 +548,7 @@
 	[provider unregisterMethod:method1];
 	// verify
 	assertThatInteger([provider.classMethods count], equalToInteger(1));
-	assertThat([provider.classMethods objectAtIndex:0], is(method2));
+	assertThat(provider.classMethods[0], is(method2));
 }
 
 - (void)testUnregisterMethod_shouldRemoveMethodFromInstanceMethods {
@@ -562,7 +562,7 @@
 	[provider unregisterMethod:method1];
 	// verify
 	assertThatInteger([provider.instanceMethods count], equalToInteger(1));
-	assertThat([provider.instanceMethods objectAtIndex:0], is(method2));
+	assertThat(provider.instanceMethods[0], is(method2));
 }
 
 - (void)testUnregisterMethod_shouldRemoveMethodFromProperties {
@@ -576,7 +576,7 @@
 	[provider unregisterMethod:method1];
 	// verify
 	assertThatInteger([provider.properties count], equalToInteger(1));
-	assertThat([provider.properties objectAtIndex:0], is(method2));
+	assertThat(provider.properties[0], is(method2));
 }
 
 - (void)testUnregisterMethod_shouldRemoveMethodFromSection {
@@ -591,9 +591,9 @@
 	[provider unregisterMethod:method1];
 	// verify
 	assertThatInteger([provider.sections count], equalToInteger(1));
-	GBMethodSectionData *section = [provider.sections objectAtIndex:0];
+	GBMethodSectionData *section = provider.sections[0];
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThat([section.methods objectAtIndex:0], is(method2));
+	assertThat(section.methods[0], is(method2));
 }
 
 - (void)testUnregisterMethod_shouldRemoveSectionIfItContainsNoMoreMethod {

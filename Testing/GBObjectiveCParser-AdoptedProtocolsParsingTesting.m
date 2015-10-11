@@ -26,7 +26,7 @@
 	// verify
 	NSArray *protocols = [[[[store classes] anyObject] adoptedProtocols] protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"MyProtocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterAllAdoptedProtocols {
@@ -38,8 +38,8 @@
 	// verify
 	NSArray *protocols = [[[[store classes] anyObject] adoptedProtocols] protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol1"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"MyProtocol2"));
+	assertThat([protocols[0] nameOfProtocol], is(@"MyProtocol1"));
+	assertThat([protocols[1] nameOfProtocol], is(@"MyProtocol2"));
 }
 
 @end

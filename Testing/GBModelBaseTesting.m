@@ -28,12 +28,12 @@
 	// verify
 	NSArray *files = [original sourceInfosSortedByName];
 	assertThatInteger([files count], equalToInteger(3));
-	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
-	assertThat([[files objectAtIndex:1] filename], is(@"f2"));
-	assertThat([[files objectAtIndex:2] filename], is(@"f3"));
-	assertThatInteger([[files objectAtIndex:0] lineNumber], equalToInteger(3));
-	assertThatInteger([[files objectAtIndex:1] lineNumber], equalToInteger(2));
-	assertThatInteger([[files objectAtIndex:2] lineNumber], equalToInteger(4));
+	assertThat([files[0] filename], is(@"f1"));
+	assertThat([files[1] filename], is(@"f2"));
+	assertThat([files[2] filename], is(@"f3"));
+	assertThatInteger([files[0] lineNumber], equalToInteger(3));
+	assertThatInteger([files[1] lineNumber], equalToInteger(2));
+	assertThatInteger([files[2] lineNumber], equalToInteger(4));
 }
 
 - (void)testMergeDataFromObject_shouldPreserveSourceDeclaredFiles {
@@ -49,10 +49,10 @@
 	// verify
 	NSArray *files = [source sourceInfosSortedByName];
 	assertThatInteger([files count], equalToInteger(2));
-	assertThat([[files objectAtIndex:0] filename], is(@"f1"));
-	assertThat([[files objectAtIndex:1] filename], is(@"f3"));
-	assertThatInteger([[files objectAtIndex:0] lineNumber], equalToInteger(2));
-	assertThatInteger([[files objectAtIndex:1] lineNumber], equalToInteger(1));
+	assertThat([files[0] filename], is(@"f1"));
+	assertThat([files[1] filename], is(@"f3"));
+	assertThatInteger([files[0] lineNumber], equalToInteger(2));
+	assertThatInteger([files[1] lineNumber], equalToInteger(1));
 }
 
 #pragma mark Comments merging handling

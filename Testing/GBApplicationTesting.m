@@ -594,7 +594,7 @@
 	
 	// send all KVC messages for all options
 	for (NSUInteger i=0; i<[arguments count]; i++) {
-		NSString *arg = [arguments objectAtIndex:i];
+		NSString *arg = arguments[i];
 		if ([arg hasPrefix:@"--"]) {
 			// get the key corresponding to the argument
 			NSString *key = [DDGetoptLongParser optionToKey:arg];
@@ -603,14 +603,14 @@
 			
 			// if we have a value following, use it for KVC, otherwise just send YES
 			if (i < [arguments count] - 1) {
-				NSString *value = [arguments objectAtIndex:i+1];
+				NSString *value = arguments[i + 1];
 				if (![value hasPrefix:@"--"]) {
 					[application setValue:value forKey:key];
 					i++;
 					continue;
 				}
 			}
-			[application setValue:[NSNumber numberWithBool:YES] forKey:key];
+			[application setValue:@YES forKey:key];
 		}
 	}	
 	

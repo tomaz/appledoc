@@ -37,11 +37,11 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(1));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"NSObject"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], is(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"NSObject"));
+	assertThat([values[0] objectForKey:@"href"], is(nil));
 }
 
 - (void)testVariablesForClass_inheritsFrom_shouldPrepareSpecificationForKnownSuperclass {
@@ -57,11 +57,11 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(1));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"Base"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], isNot(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"Base"));
+	assertThat([values[0] objectForKey:@"href"], isNot(nil));
 }
 
 - (void)testVariablesForClass_inheritsFrom_shouldPrepareSpecificationForClassHierarchy {
@@ -82,15 +82,15 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify - note that href is created even if superclass is not registered to store as long as a superclass property is non-nil.
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(3));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"Level1"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], isNot(nil));
-	assertThat([[values objectAtIndex:1] objectForKey:@"string"], is(@"Level2"));
-	assertThat([[values objectAtIndex:1] objectForKey:@"href"], isNot(nil));
-	assertThat([[values objectAtIndex:2] objectForKey:@"string"], is(@"NSObject"));
-	assertThat([[values objectAtIndex:2] objectForKey:@"href"], is(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"Level1"));
+	assertThat([values[0] objectForKey:@"href"], isNot(nil));
+	assertThat([values[1] objectForKey:@"string"], is(@"Level2"));
+	assertThat([values[1] objectForKey:@"href"], isNot(nil));
+	assertThat([values[2] objectForKey:@"string"], is(@"NSObject"));
+	assertThat([values[2] objectForKey:@"href"], is(nil));
 }
 
 #pragma mark Conforms to
@@ -115,11 +115,11 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(1));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"Protocol"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], is(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"Protocol"));
+	assertThat([values[0] objectForKey:@"href"], is(nil));
 }
 
 - (void)testVariablesForClass_conformsTo_shouldPrepareSpecificationForKnownProtocol {
@@ -134,11 +134,11 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(1));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"Protocol"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], isNot(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"Protocol"));
+	assertThat([values[0] objectForKey:@"href"], isNot(nil));
 }
 
 - (void)testVariablesForClass_conformsTo_shouldPrepareSpecificationForComplexProtocolsList {
@@ -158,15 +158,15 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:store];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(3));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"Protocol1"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], isNot(nil));
-	assertThat([[values objectAtIndex:1] objectForKey:@"string"], is(@"Protocol2"));
-	assertThat([[values objectAtIndex:1] objectForKey:@"href"], is(nil));
-	assertThat([[values objectAtIndex:2] objectForKey:@"string"], is(@"Protocol3"));
-	assertThat([[values objectAtIndex:2] objectForKey:@"href"], isNot(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"Protocol1"));
+	assertThat([values[0] objectForKey:@"href"], isNot(nil));
+	assertThat([values[1] objectForKey:@"string"], is(@"Protocol2"));
+	assertThat([values[1] objectForKey:@"href"], is(nil));
+	assertThat([values[2] objectForKey:@"string"], is(@"Protocol3"));
+	assertThat([values[2] objectForKey:@"href"], isNot(nil));
 }
 
 #pragma mark Declared in
@@ -180,11 +180,11 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(1));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"file.h"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], is(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"file.h"));
+	assertThat([values[0] objectForKey:@"href"], is(nil));
 }
 
 - (void)testVariablesForClass_declaredIn_shouldPrepareSpecificationForMultipleSourceInfos {
@@ -197,13 +197,13 @@
 	NSDictionary *vars = [provider variablesForClass:class withStore:[GBTestObjectsRegistry store]];
 	NSArray *specifications = [vars valueForKeyPath:@"page.specifications.values"];
 	// verify
-	NSDictionary *specification = [specifications objectAtIndex:0];
-	NSArray *values = [specification objectForKey:@"values"];
+	NSDictionary *specification = specifications[0];
+	NSArray *values = specification[@"values"];
 	assertThatInteger([values count], equalToInteger(2));
-	assertThat([[values objectAtIndex:0] objectForKey:@"string"], is(@"file1.h"));
-	assertThat([[values objectAtIndex:0] objectForKey:@"href"], is(nil));
-	assertThat([[values objectAtIndex:1] objectForKey:@"string"], is(@"file2.h"));
-	assertThat([[values objectAtIndex:1] objectForKey:@"href"], is(nil));
+	assertThat([values[0] objectForKey:@"string"], is(@"file1.h"));
+	assertThat([values[0] objectForKey:@"href"], is(nil));
+	assertThat([values[1] objectForKey:@"string"], is(@"file2.h"));
+	assertThat([values[1] objectForKey:@"href"], is(nil));
 }
 
 @end

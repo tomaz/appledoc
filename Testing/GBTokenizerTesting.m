@@ -197,10 +197,10 @@
 	}];
 	// verify
 	assertThatInteger([tokens count], equalToInteger(4));
-	assertThat([tokens objectAtIndex:0], is(@"one"));
-	assertThat([tokens objectAtIndex:1], is(@"two"));
-	assertThat([tokens objectAtIndex:2], is(@"three"));
-	assertThat([tokens objectAtIndex:3], is(@"four"));
+	assertThat(tokens[0], is(@"one"));
+	assertThat(tokens[1], is(@"two"));
+	assertThat(tokens[2], is(@"three"));
+	assertThat(tokens[3], is(@"four"));
 }
 
 - (void)testConsumeFromToUsingBlock_shouldReportAllTokensFromTo {
@@ -213,9 +213,9 @@
 	}];
 	// verify
 	assertThatInteger([tokens count], equalToInteger(3));
-	assertThat([tokens objectAtIndex:0], is(@"two"));
-	assertThat([tokens objectAtIndex:1], is(@"three"));
-	assertThat([tokens objectAtIndex:2], is(@"four"));
+	assertThat(tokens[0], is(@"two"));
+	assertThat(tokens[1], is(@"three"));
+	assertThat(tokens[2], is(@"four"));
 }
 
 - (void)testConsumeFromToUsingBlock_shouldReturnIfStartTokenDoesntMatch {

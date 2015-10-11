@@ -243,13 +243,13 @@
 	}];
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.methodParameters count]];
 	[comment.methodParameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
-		[parameters setObject:parameter forKey:parameter.argumentName];
+		parameters[parameter.argumentName] = parameter;
 	}];
 	
 	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
 	NSMutableArray *sorted = [NSMutableArray arrayWithCapacity:[parameters count]];
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
-		GBCommentArgument *parameter = [parameters objectForKey:name];
+		GBCommentArgument *parameter = parameters[name];
 		if (!parameter) {
             if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
                 GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
@@ -416,7 +416,7 @@
 			if (!self.settings.keepMergedCategoriesSections) {
 				GBLogDebug(@"Creating single section for methods merged from %@...", category);
 				NSString *key = category.isExtension ? @"mergedExtensionSectionTitle" :  @"mergedCategorySectionTitle";
-				NSString *template = [self.settings.stringTemplates.objectPage objectForKey:key];
+				NSString *template = self.settings.stringTemplates.objectPage[key];
 				NSString *name = category.isExtension ? template : [NSString stringWithFormat:template, category.nameOfCategory];
 				[classMethodProvider registerSectionWithName:name];
 			}
@@ -426,7 +426,7 @@
 				GBLogDebug(@"Merging section %@ from %@...", section, category);
 				if (self.settings.keepMergedCategoriesSections) {
 					if (self.settings.prefixMergedCategoriesSectionsWithCategoryName && !category.isExtension) {
-						NSString *template = [self.settings.stringTemplates.objectPage objectForKey:@"mergedPrefixedCategorySectionTitle"];
+						NSString *template = self.settings.stringTemplates.objectPage[@"mergedPrefixedCategorySectionTitle"];
 						NSString *name = [NSString stringWithFormat:template, category.nameOfCategory, section.sectionName];
 						[classMethodProvider registerSectionWithName:name];
 					} else {

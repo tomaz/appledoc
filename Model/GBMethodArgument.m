@@ -26,7 +26,7 @@
 
 - (id)initWithName:(NSString *)name types:(NSArray *)types var:(NSString *)var variableArg:(BOOL)variableArg terminationMacros:(NSArray *)macros {
 	NSParameterAssert(name != nil);
-	if ([types count] == 0 && var != nil) types = [NSArray arrayWithObject:@"id"];
+	if ([types count] == 0 && var != nil) types = @[@"id"];
 	self = [super init];
 	if (self) {
 		_argumentName = [name copy];

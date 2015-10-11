@@ -535,7 +535,7 @@ static char *kGBArgHelp = "help";
     //check if even deal with a project
     if([arguments count] < 2)
         return;
-    NSString *path = [arguments objectAtIndex:1];
+    NSString *path = arguments[1];
     if(![path.pathExtension isEqualToString:@"xcodeproj"])
         return;
 
@@ -995,16 +995,16 @@ static char *kGBArgHelp = "help";
 }
 
 - (void)printVersion {
-	NSString *appledocName = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
-	NSString *appledocVersion = [self.settings.stringTemplates.appledocData objectForKey:@"version"];
-	NSString *appledocBuild = [self.settings.stringTemplates.appledocData objectForKey:@"build"];
+	NSString *appledocName = self.settings.stringTemplates.appledocData[@"tool"];
+	NSString *appledocVersion = self.settings.stringTemplates.appledocData[@"version"];
+	NSString *appledocBuild = self.settings.stringTemplates.appledocData[@"build"];
 	ddprintf(@"%@ version: %@ (build %@)\n", appledocName, appledocVersion, appledocBuild);
 	ddprintf(@"\n");
 }
 
 - (void)printHelp {
 #define PRINT_USAGE(short,long,arg,desc) [self printHelpForShortOption:short longOption:[NSString stringWithUTF8String:long] argument:arg description:desc]
-	NSString *name = [self.settings.stringTemplates.appledocData objectForKey:@"tool"];
+	NSString *name = self.settings.stringTemplates.appledocData[@"tool"];
 	ddprintf(@"Usage: %@ [OPTIONS] <paths to source dirs or files>\n", name);
 	ddprintf(@"\n");
 	ddprintf(@"PATHS\n");

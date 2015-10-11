@@ -25,7 +25,7 @@
 	
 	assertThatInteger([[ivar ivarTypes] count], equalToInteger([arguments count] - 1));
 	for (NSUInteger i=0; i<[arguments count] - 1; i++)
-		assertThat([ivar.ivarTypes objectAtIndex:i], is([arguments objectAtIndex:i]));
+		assertThat(ivar.ivarTypes[i], is(arguments[i]));
 	
 	assertThat(ivar.nameOfIvar, is([arguments lastObject]));
 }
@@ -56,7 +56,7 @@
 	// use custom macros instead of hamcrest to get more meaningful description in case of failure :(
 	GHAssertEquals(method.methodType, type, @"Method %@ type doesn't match!", method);
 	
-	NSMutableArray *arguments = [NSMutableArray arrayWithObject:first];
+	NSMutableArray *arguments = [@[first] mutableCopy];
 	NSString *arg;
 	while ((arg = va_arg(args, NSString*))) {
 		[arguments addObject:arg];
@@ -65,27 +65,27 @@
 	NSUInteger i=0;
 
 	for (NSString *attribute in method.methodAttributes) {
-		GHAssertEqualObjects(attribute, [arguments objectAtIndex:i++], @"Property %@ attribute doesn't match at flat idx %ld!", method, i-1);
+		GHAssertEqualObjects(attribute, arguments[i++], @"Property %@ attribute doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (NSString *type in method.methodResultTypes) {
-		GHAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ result doesn't match at flat idx %ld!", method, i-1);
+		GHAssertEqualObjects(type, arguments[i++], @"Method %@ result doesn't match at flat idx %ld!", method, i-1);
 	}
 	
 	for (GBMethodArgument *argument in method.methodArguments) {
-		GHAssertEqualObjects(argument.argumentName, [arguments objectAtIndex:i++], @"Method %@ argument name doesn't match at flat idx %ld!", method, i-1);
+		GHAssertEqualObjects(argument.argumentName, arguments[i++], @"Method %@ argument name doesn't match at flat idx %ld!", method, i-1);
 		if (argument.argumentTypes) {
 			for (NSString *type in argument.argumentTypes) {
-				GHAssertEqualObjects(type, [arguments objectAtIndex:i++], @"Method %@ argument type doesn't match at flat idx %ld!", method, i-1);
+				GHAssertEqualObjects(type, arguments[i++], @"Method %@ argument type doesn't match at flat idx %ld!", method, i-1);
 			}
 		}
 		if (argument.argumentVar) {
-			GHAssertEqualObjects(argument.argumentVar, [arguments objectAtIndex:i++], @"Method %@ argument var doesn't match at flat idx %ld!", method, i-1);
+			GHAssertEqualObjects(argument.argumentVar, arguments[i++], @"Method %@ argument var doesn't match at flat idx %ld!", method, i-1);
 		}
 		if (argument.isVariableArg) {
-			GHAssertEqualObjects(@"...", [arguments objectAtIndex:i++], @"Method %@ argument va_arg ... doesn't match at flat idx %ld!", method, i-1);
+			GHAssertEqualObjects(@"...", arguments[i++], @"Method %@ argument va_arg ... doesn't match at flat idx %ld!", method, i-1);
 			for (NSString *macro in argument.terminationMacros) {
-				GHAssertEqualObjects(macro, [arguments objectAtIndex:i++], @"Method %@ argument va_arg termination macro doesn't match at flat idx %ld!", method, i-1);
+				GHAssertEqualObjects(macro, arguments[i++], @"Method %@ argument va_arg termination macro doesn't match at flat idx %ld!", method, i-1);
 			}
 		}
 	}
@@ -99,15 +99,15 @@
 	va_list args;
 	va_start(args,first);
 	while (YES) {
-		NSNumber *style = [NSNumber numberWithUnsignedInt:va_arg(args, NSUInteger)];
+		NSNumber *style = @(va_arg(args, NSUInteger));
 		NSString *href = va_arg(args, NSString *);
 		if (!href) [NSException raise:@"Href not given for value %@ at index %ld!", value, [arguments count]];
 		
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:4];
-		[data setObject:value forKey:@"value"];
-		[data setObject:style forKey:@"style"];
-		[data setObject:href forKey:@"href"];
-		if ([style unsignedIntValue] == 1) [data setObject:[NSNumber numberWithBool:YES] forKey:@"emphasized"];
+		data[@"value"] = value;
+		data[@"style"] = style;
+		data[@"href"] = href;
+		if ([style unsignedIntValue] == 1) data[@"emphasized"] = @YES;
 		[arguments addObject:data];
 		
 		value = va_arg(args, NSString *);
@@ -117,21 +117,21 @@
 	
 	assertThatInteger([components count], equalToInteger([arguments count]));
 	for (NSUInteger i=0; i<[components count]; i++) {
-		NSDictionary *actual = [components objectAtIndex:i];
-		NSDictionary *expected = [arguments objectAtIndex:i];
+		NSDictionary *actual = components[i];
+		NSDictionary *expected = arguments[i];
 		
-		assertThat([actual objectForKey:@"value"], is([expected objectForKey:@"value"]));
-		assertThat([actual objectForKey:@"emphasized"], is([expected objectForKey:@"emphasized"]));
+		assertThat(actual[@"value"], is(expected[@"value"]));
+		assertThat(actual[@"emphasized"], is(expected[@"emphasized"]));
 		
-		NSNumber *expectedStyle = [expected objectForKey:@"style"];
-		NSNumber *actualStyle = [actual objectForKey:@"style"];
+		NSNumber *expectedStyle = expected[@"style"];
+		NSNumber *actualStyle = actual[@"style"];
 		if ([expectedStyle unsignedIntValue] != 0)
 			assertThat(actualStyle, is(expectedStyle));
 		else
 			assertThat(actualStyle, is(nil));
 		
-		NSString *expectedHref = [expected objectForKey:@"href"];
-		NSString *actualHref = [actual objectForKey:@"href"];
+		NSString *expectedHref = expected[@"href"];
+		NSString *actualHref = actual[@"href"];
 		if ((NSNull *)expectedHref != GBNULL)
 			assertThat(actualHref, is(expectedHref));
 		else
@@ -152,8 +152,8 @@
 	}
 	assertThatInteger([components.components count], equalToInteger([expected count]));
 	for (NSUInteger i=0; i<[components.components count]; i++) {
-		NSString *expectedValue = [expected objectAtIndex:i];
-		NSString *actualValue = [[components.components objectAtIndex:i] stringValue];
+		NSString *expectedValue = expected[i];
+		NSString *actualValue = [components.components[i] stringValue];
 		assertThat(actualValue, is(expectedValue));
 	}
 }
@@ -186,7 +186,7 @@
 			} else if (value != (id)GBEND) {
 				[strings addObject:value];
 			} else {
-				NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:name, @"name", strings, @"comps", nil];
+				NSDictionary *data = @{@"name" : name, @"comps" : strings};
 				[expected addObject:data];
 				[strings removeAllObjects];
 				name = nil;
@@ -197,13 +197,13 @@
 	}
 	assertThatInteger([arguments count], equalToInteger([expected count]));
 	for (NSUInteger i=0; i<[arguments count]; i++) {
-		GBCommentArgument *argument = [arguments objectAtIndex:i];
-		NSDictionary *data = [expected objectAtIndex:i];
+		GBCommentArgument *argument = arguments[i];
+		NSDictionary *data = expected[i];
 		
-		NSString *expectedName = [data objectForKey:@"name"];		
+		NSString *expectedName = data[@"name"];
 		assertThat(argument.argumentName, is(expectedName));
 
-		NSMutableArray *expectedComps = [data objectForKey:@"comps"];
+		NSMutableArray *expectedComps = data[@"comps"];
 		if ([expectedComps count] > 0) {
 			NSString *firstExpectedComp = [expectedComps firstObject];
 			[expectedComps removeObjectAtIndex:0];

@@ -199,8 +199,7 @@
 }
 
 - (BOOL)isFileIgnored:(NSString *)filename {
-	if ([filename isEqualToString:@".DS_Store"]) return YES;
-	return NO;
+	return [filename isEqualToString:@".DS_Store"];
 }
 
 - (BOOL)isDirectoryIgnored:(NSString *)filename {

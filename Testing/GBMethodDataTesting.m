@@ -76,8 +76,8 @@
 
 - (void)testMethodData_shouldInitializePropertyWithSingleComponent {
 	// setup & execute
-	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"UIView", @"*", @"value", nil];
+	NSArray *attributes = @[@"readonly"];
+	NSArray *components = @[@"UIView", @"*", @"value"];
 	GBMethodData *data = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// verify
 	assertThat(data.methodAttributes, onlyContains(@"readonly", nil));
@@ -87,8 +87,8 @@
 
 - (void)testMethodData_shouldInitializePropertyWithMultipleComponents {
 	// setup & execute
-	NSArray *attributes = [NSArray arrayWithObjects:@"nonatomic", @"assign", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"IBOutlet", @"UIView", @"*", @"value", nil];
+	NSArray *attributes = @[@"nonatomic", @"assign"];
+	NSArray *components = @[@"IBOutlet", @"UIView", @"*", @"value"];
 	GBMethodData *data = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// verify
 	assertThat(data.methodAttributes, onlyContains(@"nonatomic", @"assign", nil));
@@ -111,43 +111,43 @@
 
 - (void)testMergeDataFromObject_shouldMergeMethodWithDifferentResultType {
 	// setup
-	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"id"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
-	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"NSString *"] arguments:[NSArray arrayWithObject:[GBMethodArgument methodArgumentWithName:@"method"]]];
+	GBMethodData *original = [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"id"] arguments:@[[GBMethodArgument methodArgumentWithName:@"method"]]];
+	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"NSString *"] arguments:@[[GBMethodArgument methodArgumentWithName:@"method"]]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - should keep original return type
 	assertThatInteger([original.methodResultTypes count], equalToInteger(1));
-	assertThat([original.methodResultTypes objectAtIndex:0], is(@"id"));
+	assertThat(original.methodResultTypes[0], is(@"id"));
 }
 
 - (void)testMergeDataFromObject_shouldMergePropertyWithDifferentResultType {
 	// setup
-	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", @"retain", nil] components:[NSArray arrayWithObjects:@"id", @"value", nil]];
-	GBMethodData *source = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readwrite", @"retain", nil] components:[NSArray arrayWithObjects:@"NSString *", @"value", nil]];
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:@[@"readonly", @"retain"] components:@[@"id", @"value"]];
+	GBMethodData *source = [GBMethodData propertyDataWithAttributes:@[@"readwrite", @"retain"] components:@[@"NSString *", @"value"]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - should keep original return type
 	assertThatInteger([original.methodResultTypes count], equalToInteger(1));
-	assertThat([original.methodResultTypes objectAtIndex:0], is(@"id"));
+	assertThat(original.methodResultTypes[0], is(@"id"));
 }
 
 - (void)testMergeDataFromObject_shouldMergePropertyWithDifferentAttributes {
 	// setup
-	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", @"retain", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
-	GBMethodData *source = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readwrite", @"retain", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:@[@"readonly", @"retain"] components:@[@"BOOL", @"value"]];
+	GBMethodData *source = [GBMethodData propertyDataWithAttributes:@[@"readwrite", @"retain"] components:@[@"BOOL", @"value"]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify - should keep original attributes
-	assertThat([original.methodAttributes objectAtIndex:0], is(@"readonly"));
-	assertThat([original.methodAttributes objectAtIndex:1], is(@"retain"));
+	assertThat(original.methodAttributes[0], is(@"readonly"));
+	assertThat(original.methodAttributes[1], is(@"retain"));
 }
 
 - (void)testMergeDataFromObject_shouldMergeManualPropertyGetterImplementation {
 	// setup
-	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:@[@"readonly"] components:@[@"BOOL", @"value"]];
 	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
 	GBMethodArgument *arg = [GBMethodArgument methodArgumentWithName:@"value"];
-	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"BOOL"] arguments:[NSArray arrayWithObject:arg]];
+	GBMethodData *source = [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"BOOL"] arguments:@[arg]];
 	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
 	// execute
 	[original mergeDataFromObject:source];
@@ -157,7 +157,7 @@
 
 - (void)testMergeDataFromObject_shouldMergeManualPropertySetterImplementation {
 	// setup
-	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:@[@"readonly"] components:@[@"BOOL", @"value"]];
 	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithNames:@"setValue", nil];
 	[source registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
@@ -169,10 +169,10 @@
 
 - (void)testMergeDataFromObject_shouldMergeManualPropertyGetterAndSetterImplementation {
 	// setup
-	GBMethodData *original = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:[NSArray arrayWithObjects:@"BOOL", @"value", nil]];
+	GBMethodData *original = [GBMethodData propertyDataWithAttributes:@[@"readonly"] components:@[@"BOOL", @"value"]];
 	[original registerSourceInfo:[GBSourceInfo infoWithFilename:@"file1" lineNumber:1]];
 	GBMethodArgument *arg = [GBMethodArgument methodArgumentWithName:@"value"];
-	GBMethodData *getter = [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"BOOL"] arguments:[NSArray arrayWithObject:arg]];
+	GBMethodData *getter = [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"BOOL"] arguments:@[arg]];
 	[getter registerSourceInfo:[GBSourceInfo infoWithFilename:@"file2" lineNumber:1]];
 	GBMethodData *setter = [GBTestObjectsRegistry instanceMethodWithNames:@"setValue", nil];
 	[setter registerSourceInfo:[GBSourceInfo infoWithFilename:@"file3" lineNumber:1]];
@@ -185,15 +185,15 @@
 
 - (void)testMergeDataFromObject_shouldUseArgumentNamesFromComment {
 	// setup
-	GBMethodArgument *arg1 = [GBMethodArgument methodArgumentWithName:@"method" types:[NSArray arrayWithObject:@"id"] var:@"var"];
+	GBMethodArgument *arg1 = [GBMethodArgument methodArgumentWithName:@"method" types:@[@"id"] var:@"var"];
 	GBMethodData *original = [GBTestObjectsRegistry instanceMethodWithArguments:arg1, nil];
-	GBMethodArgument *arg2 = [GBMethodArgument methodArgumentWithName:@"method" types:[NSArray arrayWithObject:@"id"] var:@"theVar"];
+	GBMethodArgument *arg2 = [GBMethodArgument methodArgumentWithName:@"method" types:@[@"id"] var:@"theVar"];
 	GBMethodData *source = [GBTestObjectsRegistry instanceMethodWithArguments:arg2, nil];
 	[source setComment:[GBComment commentWithStringValue:@"Comment"]];
 	// execute
 	[original mergeDataFromObject:source];
 	// verify
-	GBMethodArgument *mergedArgument = [original.methodArguments objectAtIndex:0];
+	GBMethodArgument *mergedArgument = original.methodArguments[0];
 	assertThat(mergedArgument.argumentVar, is(@"theVar"));
 }
 
@@ -201,11 +201,11 @@
 
 - (void)testPropertySelectors_shouldReturnProperValueForProperties {
 	// setup & execute
-	NSArray *components = [NSArray arrayWithObjects:@"BOOL", @"value", nil];
-	GBMethodData *property1 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"readonly", nil] components:components];
-	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter", @"=", @"isValue", nil] components:components];
-	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"setter", @"=", @"setTheValue:", nil] components:components];
-	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:[NSArray arrayWithObjects:@"getter", @"=", @"isValue", @"setter", @"=", @"setTheValue:", nil] components:components];
+	NSArray *components = @[@"BOOL", @"value"];
+	GBMethodData *property1 = [GBMethodData propertyDataWithAttributes:@[@"readonly"] components:components];
+	GBMethodData *property2 = [GBMethodData propertyDataWithAttributes:@[@"getter", @"=", @"isValue"] components:components];
+	GBMethodData *property3 = [GBMethodData propertyDataWithAttributes:@[@"setter", @"=", @"setTheValue:"] components:components];
+	GBMethodData *property4 = [GBMethodData propertyDataWithAttributes:@[@"getter", @"=", @"isValue", @"setter", @"=", @"setTheValue:"] components:components];
 	// verify
 	assertThat(property1.propertyGetterSelector, is(@"value"));
 	assertThat(property1.propertySetterSelector, is(@"setValue:"));
@@ -275,8 +275,8 @@
 
 - (void)testFormattedComponents_shouldReturnSimplePropertyComponents {
 	// setup
-	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"BOOL", @"name", nil];
+	NSArray *attributes = @[@"readonly"];
+	NSArray *components = @[@"BOOL", @"name"];
 	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -296,8 +296,8 @@
 
 - (void)testFormattedComponents_shouldReturnComplexPropertyComponents {
 	// setup
-	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", @"nonatomic", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"unsigned", @"int", @"name", nil];
+	NSArray *attributes = @[@"readonly", @"nonatomic"];
+	NSArray *components = @[@"unsigned", @"int", @"name"];
 	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -323,7 +323,7 @@
 - (void)testFormattedComponents_shouldProperlyHandlePropertyWithNoAttributes {
 	// setup
 	NSArray *attributes = [NSArray array];
-	NSArray *components = [NSArray arrayWithObjects:@"NSString", @"*", @"name", nil];
+	NSArray *components = @[@"NSString", @"*", @"name"];
 	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -340,8 +340,8 @@
 
 - (void)testFormattedComponents_shouldReturnPointerPropertyComponents {
 	// setup
-	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"NSString", @"*", @"name", nil];
+	NSArray *attributes = @[@"readonly"];
+	NSArray *components = @[@"NSString", @"*", @"name"];
 	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -362,8 +362,8 @@
 
 - (void)testFormattedComponents_shouldCombineGetterAndSetterAttributes {
 	// setup
-	NSArray *attributes = [NSArray arrayWithObjects:@"readonly", @"getter", @"=", @"isName", @"setter", @"=", @"setName:", nil];
-	NSArray *components = [NSArray arrayWithObjects:@"NSString", @"*", @"name", nil];
+	NSArray *attributes = @[@"readonly", @"getter", @"=", @"isName", @"setter", @"=", @"setName:"];
+	NSArray *components = @[@"NSString", @"*", @"name"];
 	GBMethodData *method = [GBMethodData propertyDataWithAttributes:attributes components:components];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -394,8 +394,8 @@
 
 - (void)testFormattedComponents_shouldReturnSimpleInstanceMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method"], nil];
+	NSArray *results = @[@"void"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -412,9 +412,9 @@
 
 - (void)testFormattedComponents_shouldReturnSingleArgumentInstanceMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"unsigned", @"int", nil];
-	NSArray *types = [NSArray arrayWithObjects:@"bla", @"blu", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"], nil];
+	NSArray *results = @[@"unsigned", @"int"];
+	NSArray *types = @[@"bla", @"blu"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -440,11 +440,10 @@
 
 - (void)testFormattedComponents_shouldReturnMultiArgumentInstanceMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"BOOL", nil];
-	NSArray *types = [NSArray arrayWithObjects:@"int", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:
-						  [GBMethodArgument methodArgumentWithName:@"doSomething" types:types var:@"val"], 
-						  [GBMethodArgument methodArgumentWithName:@"withOperator" types:types var:@"op"], nil];
+	NSArray *results = @[@"BOOL"];
+	NSArray *types = @[@"int"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"doSomething" types:types var:@"val"],
+			[GBMethodArgument methodArgumentWithName:@"withOperator" types:types var:@"op"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -473,9 +472,9 @@
 
 - (void)testFormattedComponents_shouldReturnPointerInstanceMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"NSArray", @"*", nil];
-	NSArray *types = [NSArray arrayWithObjects:@"NSString", @"*", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"], nil];
+	NSArray *results = @[@"NSArray", @"*"];
+	NSArray *types = @[@"NSString", @"*"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -501,10 +500,10 @@
 
 - (void)testFormattedComponents_shouldReturnVariableArgumentInstanceMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
-	NSArray *types = [NSArray arrayWithObjects:@"id", nil];
+	NSArray *results = @[@"void"];
+	NSArray *types = @[@"id"];
 	NSArray *macros = [NSArray array];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"format" variableArg:YES terminationMacros:macros], nil];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"format" variableArg:YES terminationMacros:macros]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -529,8 +528,8 @@
 
 - (void)testFormattedComponents_shouldReturnClassMethodComponents {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"void", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method"], nil];
+	NSArray *results = @[@"void"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeClass result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];
@@ -547,9 +546,9 @@
 
 - (void)testFormattedComponents_shouldNotAddSpaceForProtocols {
 	// setup
-	NSArray *results = [NSArray arrayWithObjects:@"NSArray", @"*", nil];
-	NSArray *types = [NSArray arrayWithObjects:@"id", @"<", @"Protocol", @">", nil];
-	NSArray *arguments = [NSArray arrayWithObjects:[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"], nil];
+	NSArray *results = @[@"NSArray", @"*"];
+	NSArray *types = @[@"id", @"<", @"Protocol", @">"];
+	NSArray *arguments = @[[GBMethodArgument methodArgumentWithName:@"method" types:types var:@"val"]];
 	GBMethodData *method = [GBMethodData methodDataWithType:GBMethodTypeInstance result:results arguments:arguments];
 	// execute
 	NSArray *result = [method formattedComponents];

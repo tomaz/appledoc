@@ -108,7 +108,7 @@
 	if ([results containsObject:propertyName]) [results removeObject:propertyName];
     
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:propertyName];
-	return [[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:[NSArray arrayWithObject:argument]];
+	return [[self alloc] initWithType:GBMethodTypeProperty attributes:attributes result:results arguments:@[argument]];
 }
 
 - (id)initWithType:(GBMethodType)type attributes:(NSArray *)attributes result:(NSArray *)result arguments:(NSArray *)arguments {
@@ -217,7 +217,7 @@
 		if (isLast || isPointer) appendSpace = NO;
 		
 		// We should not add space between components of a protocol (i.e. id<ProtocolName> should be written without any space). Because we've alreay
-		if (!isLast && idx+1 < [types count] && [[types objectAtIndex:idx+1] isEqualToString:@"<"])
+		if (!isLast && idx+1 < [types count] && [types[idx + 1] isEqualToString:@"<"])
 			insideProtocol = YES;
 		else if ([type isEqualToString:@">"])
 			insideProtocol = NO;
@@ -258,12 +258,12 @@
 
 - (NSDictionary *)formattedComponentWithValue:(NSString *)value style:(NSUInteger)style href:(NSString *)href {
 	NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:3];
-	[result setObject:value forKey:@"value"];
+	result[@"value"] = value;
 	if (style > 0) {
-		[result setObject:[NSNumber numberWithUnsignedInt:style] forKey:@"style"];
-		[result setObject:[NSNumber numberWithBool:YES] forKey:@"emphasized"];
+		result[@"style"] = [NSNumber numberWithUnsignedInt:style];
+		result[@"emphasized"] = @YES;
 	}
-	if (href) [result setObject:href forKey:@"href"];
+	if (href) result[@"href"] = href;
 	return result;
 }
 
@@ -385,8 +385,8 @@
 	if ([source comment] && ![self comment]) {
 		GBLogDebug(@"%@: Checking for difference due to comment status...", self);
 		for (NSUInteger i=0; i<[self.methodArguments count]; i++) {
-			GBMethodArgument *ourArgument = [[self methodArguments] objectAtIndex:i];
-			GBMethodArgument *otherArgument = [[source methodArguments] objectAtIndex:i];
+			GBMethodArgument *ourArgument = [self methodArguments][i];
+			GBMethodArgument *otherArgument = [source methodArguments][i];
 			if (![ourArgument.argumentVar isEqualToString:otherArgument.argumentVar]) {
 				GBLogDebug(@"%@: Changing %ld. argument var name from %@ to %@...", self, i+1, ourArgument.argumentVar, otherArgument.argumentVar);
 				ourArgument.argumentVar = otherArgument.argumentVar;

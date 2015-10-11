@@ -33,8 +33,8 @@
 }
 
 + (void)settingsProvider:(OCMockObject *)provider keepObjects:(BOOL)objects keepMembers:(BOOL)members {
-	[[[provider stub] andReturnValue:[NSNumber numberWithBool:objects]] keepUndocumentedObjects];
-	[[[provider stub] andReturnValue:[NSNumber numberWithBool:members]] keepUndocumentedMembers];
+	[[[provider stub] andReturnValue:@(objects)] keepUndocumentedObjects];
+	[[[provider stub] andReturnValue:@(members)] keepUndocumentedMembers];
 }
 
 + (void)registerComment:(id)comment forObject:(GBModelBase *)object {
@@ -70,7 +70,7 @@
 		[arguments addObject:argument];
 	}
 	va_end(args);
-	return [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"void"] arguments:arguments];
+	return [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"void"] arguments:arguments];
 }
 
 + (GBMethodData *)classMethodWithArguments:(GBMethodArgument *)first,... {
@@ -81,7 +81,7 @@
 		[arguments addObject:argument];
 	}
 	va_end(args);
-	return [GBMethodData methodDataWithType:GBMethodTypeClass result:[NSArray arrayWithObject:@"void"] arguments:arguments];
+	return [GBMethodData methodDataWithType:GBMethodTypeClass result:@[@"void"] arguments:arguments];
 }
 
 + (GBMethodData *)instanceMethodWithNames:(NSString *)first,... {
@@ -93,7 +93,7 @@
 		[arguments addObject:argument];
 	}
 	va_end(args);
-	return [GBMethodData methodDataWithType:GBMethodTypeInstance result:[NSArray arrayWithObject:@"void"] arguments:arguments];
+	return [GBMethodData methodDataWithType:GBMethodTypeInstance result:@[@"void"] arguments:arguments];
 }
 
 + (GBMethodData *)classMethodWithNames:(NSString *)first,... {
@@ -105,16 +105,16 @@
 		[arguments addObject:argument];
 	}
 	va_end(args);
-	return [GBMethodData methodDataWithType:GBMethodTypeClass result:[NSArray arrayWithObject:@"void"] arguments:arguments];
+	return [GBMethodData methodDataWithType:GBMethodTypeClass result:@[@"void"] arguments:arguments];
 }
 
 + (GBMethodData *)propertyMethodWithArgument:(NSString *)name {
 	GBMethodArgument *argument = [GBMethodArgument methodArgumentWithName:name];
-	return [GBMethodData methodDataWithType:GBMethodTypeProperty result:[NSArray arrayWithObject:@"int"] arguments:[NSArray arrayWithObject:argument]];
+	return [GBMethodData methodDataWithType:GBMethodTypeProperty result:@[@"int"] arguments:@[argument]];
 }
 
 + (GBMethodArgument *)typedArgumentWithName:(NSString *)name {
-	return [GBMethodArgument methodArgumentWithName:name types:[NSArray arrayWithObject:@"id"] var:name];
+	return [GBMethodArgument methodArgumentWithName:name types:@[@"id"] var:name];
 }
 
 #pragma mark Store objects creation methods

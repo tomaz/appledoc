@@ -155,11 +155,9 @@ NSError *_BVPOSIXError(NSURL *url) {
                                                userInfo:nil];
     NSString *errorDescription = [NSString stringWithFormat:@"File %@ could not be opened. %s.",
                                   [url path], strerror(errno)];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                              errorDescription, NSLocalizedDescriptionKey,
-                              underlyingError, NSUnderlyingErrorKey,
-                              [url path], NSFilePathErrorKey,
-                              nil];
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorDescription,
+            NSUnderlyingErrorKey : underlyingError,
+            NSFilePathErrorKey : [url path]};
     NSError *error = [[NSError alloc] initWithDomain:BVPlistExtractorErrorDomain
                                                 code:BVPlistExtractorErrorOpenFile
                                             userInfo:userInfo];
@@ -169,10 +167,8 @@ NSError *_BVPOSIXError(NSURL *url) {
 
 NSError *_BVGenericError(NSURL *url, NSString *fileQualifier, NSInteger errorCode) {
     NSString *errorDescription = [NSString stringWithFormat:@"File %@ is %@.", [url path], fileQualifier];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                              errorDescription, NSLocalizedDescriptionKey,
-                              [url path], NSFilePathErrorKey,
-                              nil];
+    NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorDescription,
+            NSFilePathErrorKey : [url path]};
     NSError *error = [[NSError alloc] initWithDomain:BVPlistExtractorErrorDomain
                                                 code:errorCode
                                             userInfo:userInfo];

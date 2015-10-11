@@ -267,7 +267,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 			if (!insideCode) return linkText;
 			NSArray *components = [linkText captureComponentsMatchedByRegex:self.commentComponents.markdownInlineLinkRegex];
 			if ([components count] < 1) return linkText;
-			return [components objectAtIndex:1];
+			return components[1];
 		}];
 	}
 
@@ -454,8 +454,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 
 - (BOOL)isPathRepresentingTemplateFile:(NSString *)path {
 	NSString *filename = [[path lastPathComponent] stringByDeletingPathExtension];
-	if ([filename hasSuffix:@"-template"]) return YES;
-	return NO;
+	return [filename hasSuffix:@"-template"];
 }
 
 - (NSString *)outputFilenameForTemplatePath:(NSString *)path {
@@ -583,9 +582,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 #pragma mark Helper methods
 
 - (BOOL)isTopLevelStoreObject:(id)object {
-	if ([object isKindOfClass:[GBClassData class]] || [object isKindOfClass:[GBCategoryData class]] || [object isKindOfClass:[GBProtocolData class]])
-		return YES;
-	return NO;
+	return [object isKindOfClass:[GBClassData class]] || [object isKindOfClass:[GBCategoryData class]] || [object isKindOfClass:[GBProtocolData class]];
 }
 
 - (NSString *)stringByReplacingOccurencesOfPlaceholdersInString:(NSString *)string {

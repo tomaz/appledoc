@@ -28,8 +28,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory"));
+	assertThat([categories[0] nameOfClass], is(@"MyClass"));
+	assertThat([categories[0] nameOfCategory], is(@"MyCategory"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryDefinitionSourceFileAndLineNumber {
@@ -39,7 +39,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -52,7 +52,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -65,8 +65,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory1"));
-	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"MyCategory2"));
+	assertThat([categories[0] nameOfCategory], is(@"MyCategory1"));
+	assertThat([categories[1] nameOfCategory], is(@"MyCategory2"));
 }
 
 #pragma mark Categories declaration data parsing testing
@@ -80,8 +80,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory"));
+	assertThat([categories[0] nameOfClass], is(@"MyClass"));
+	assertThat([categories[0] nameOfCategory], is(@"MyCategory"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryDeclarationSourceFileAndLineNumber {
@@ -91,7 +91,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@implementation MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -104,7 +104,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@implementation MyClass(MyCategory) @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -117,8 +117,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(@"MyCategory1"));
-	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"MyCategory2"));
+	assertThat([categories[0] nameOfCategory], is(@"MyCategory1"));
+	assertThat([categories[1] nameOfCategory], is(@"MyCategory2"));
 }
 
 #pragma mark Extensions common data parsing testing
@@ -132,8 +132,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(1));
-	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass"));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(nil));
+	assertThat([categories[0] nameOfClass], is(@"MyClass"));
+	assertThat([categories[0] nameOfCategory], is(nil));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionSourceFileAndLineNumber {
@@ -143,7 +143,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -156,7 +156,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@interface MyClass() @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store categoriesSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store categoriesSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -169,8 +169,8 @@
 	// verify
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"MyClass1"));
-	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"MyClass2"));
+	assertThat([categories[0] nameOfClass], is(@"MyClass1"));
+	assertThat([categories[1] nameOfClass], is(@"MyClass2"));
 }
 
 #pragma mark Category comments parsing testing
@@ -288,7 +288,7 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *protocols = [category.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryMethods {
@@ -301,7 +301,7 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+	assertThat([methods[0] methodSelector], is(@"method"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryProperties {
@@ -314,7 +314,7 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+	assertThat([methods[0] methodSelector], is(@"name"));
 }
 
 #pragma mark Extension definition components parsing testing
@@ -329,7 +329,7 @@
 	GBCategoryData *extension = [[store categories] anyObject];
 	NSArray *protocols = [extension.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"Protocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionMethods {
@@ -342,7 +342,7 @@
 	GBCategoryData *extension = [[store categories] anyObject];
 	NSArray *methods = [extension.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+	assertThat([methods[0] methodSelector], is(@"method"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterExtensionProperties {
@@ -355,7 +355,7 @@
 	GBCategoryData *extension = [[store categories] anyObject];
 	NSArray *methods = [extension.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"name"));
+	assertThat([methods[0] methodSelector], is(@"name"));
 }
 
 #pragma mark Category declaration components parsing testing
@@ -370,7 +370,7 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(1));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method"));
+	assertThat([methods[0] methodSelector], is(@"method"));
 }
 
 #pragma mark Category merging testing
@@ -387,8 +387,8 @@
 	GBClassData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 - (void)testParseObjectsFromString_shouldMergeCategoryDeclarations {
@@ -403,8 +403,8 @@
 	GBClassData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 - (void)testParseObjectsFromString_shouldMergeCategoryDefinitionAndDeclaration {
@@ -419,8 +419,8 @@
 	GBClassData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Extension merging testing
@@ -437,8 +437,8 @@
 	GBCategoryData *category = [[store categories] anyObject];
 	NSArray *methods = [category.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Complex parsing testing
@@ -452,10 +452,10 @@
 	// verify - we're not going into details here, just checking that top-level objects were properly parsed!
 	NSArray *categories = [store categoriesSortedByName];
 	assertThatInteger([categories count], equalToInteger(2));
-	assertThat([[categories objectAtIndex:0] nameOfClass], is(@"GBCalculator"));
-	assertThat([[categories objectAtIndex:0] nameOfCategory], is(nil));
-	assertThat([[categories objectAtIndex:1] nameOfClass], is(@"GBCalculator"));
-	assertThat([[categories objectAtIndex:1] nameOfCategory], is(@"Multiplication"));
+	assertThat([categories[0] nameOfClass], is(@"GBCalculator"));
+	assertThat([categories[0] nameOfCategory], is(nil));
+	assertThat([categories[1] nameOfClass], is(@"GBCalculator"));
+	assertThat([categories[1] nameOfCategory], is(@"Multiplication"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterCategoryFromRealLifeCodeInput {

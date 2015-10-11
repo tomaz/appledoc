@@ -14,8 +14,8 @@
 	NSMutableDictionary *info = nil;
 	if ([description length] > 0 || [reason length] > 0) {
 		info = [NSMutableDictionary dictionaryWithCapacity:2];
-		if ([description length] > 0) [info setObject:description forKey:NSLocalizedDescriptionKey];
-		if ([reason length] > 0) [info setObject:reason forKey:NSLocalizedFailureReasonErrorKey];
+		if ([description length] > 0) info[NSLocalizedDescriptionKey] = description;
+		if ([reason length] > 0) info[NSLocalizedFailureReasonErrorKey] = reason;
 	}
 	return [self errorWithDomain:@"appledoc" code:code userInfo:info];
 }

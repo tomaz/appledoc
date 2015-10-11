@@ -91,7 +91,7 @@
 
 - (void)outputHandleDataReceived:(NSNotification *)note {
 	// Report anything received to std out.
-	NSData *data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSData *data = [note userInfo][NSFileHandleNotificationDataItem];
 	NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 	self.lastStandardOutput = [self.lastStandardOutput stringByAppendingFormat:@"%@\n", string];
 	if (self.reportIndividualLines) {
@@ -105,7 +105,7 @@
 
 - (void)errorHandleDataReceived:(NSNotification *)note {
 	// Only report if something was received. As notification is posted at least once when the task finishes, we should ignore it at that point!
-	NSData *data = [[note userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSData *data = [note userInfo][NSFileHandleNotificationDataItem];
 	NSString *string = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 	if ([string length] > 0) {
 		self.lastStandardError = [self.lastStandardError stringByAppendingFormat:@"%@\n", string];

@@ -107,76 +107,76 @@
 - (NSDictionary *)variablesForClass:(GBClassData *)object withStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForClass:object] forKey:@"title"];
-	[page setObject:[self specificationsForClass:object] forKey:@"specifications"];
+	page[@"title"] = [self pageTitleForClass:object];
+	page[@"specifications"] = [self specificationsForClass:object];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:object forKey:@"object"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	result[@"page"] = page;
+	result[@"object"] = object;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
+	result[@"strings"] = self.settings.stringTemplates;
 	return result;
 }
 
 - (NSDictionary *)variablesForCategory:(GBCategoryData *)object withStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForCategory:object] forKey:@"title"];
-	[page setObject:[self specificationsForCategory:object] forKey:@"specifications"];
+	page[@"title"] = [self pageTitleForCategory:object];
+	page[@"specifications"] = [self specificationsForCategory:object];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:object forKey:@"object"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
+	result[@"page"] = page;
+	result[@"object"] = object;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
 	
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	result[@"strings"] = self.settings.stringTemplates;
 	return result;
 }
 
 - (NSDictionary *)variablesForProtocol:(GBProtocolData *)object withStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForProtocol:object] forKey:@"title"];
-	[page setObject:[self specificationsForProtocol:object] forKey:@"specifications"];
+	page[@"title"] = [self pageTitleForProtocol:object];
+	page[@"specifications"] = [self specificationsForProtocol:object];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:object forKey:@"object"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	result[@"page"] = page;
+	result[@"object"] = object;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
+	result[@"strings"] = self.settings.stringTemplates;
 	return result;
 }
 
 - (NSDictionary *)variablesForConstant:(GBTypedefEnumData *)typedefEnum withStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForConstant:typedefEnum] forKey:@"title"];
-	[page setObject:[self specificationsForConstant:typedefEnum] forKey:@"specifications"];
+	page[@"title"] = [self pageTitleForConstant:typedefEnum];
+	page[@"specifications"] = [self specificationsForConstant:typedefEnum];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:typedefEnum forKey:@"typedefEnum"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	result[@"page"] = page;
+	result[@"typedefEnum"] = typedefEnum;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
+	result[@"strings"] = self.settings.stringTemplates;
 	return result;
 }
 
 - (NSDictionary *)variablesForBlocks:(GBTypedefBlockData *)typedefBlock withStore:(id)aStore {
     self.store = aStore;
     NSMutableDictionary *page = [NSMutableDictionary dictionary];
-    [page setObject:[self pageTitleForBlock:typedefBlock] forKey:@"title"];
-    [page setObject:[self specificationsForBlock:typedefBlock] forKey:@"specifications"];
+    page[@"title"] = [self pageTitleForBlock:typedefBlock];
+    page[@"specifications"] = [self specificationsForBlock:typedefBlock];
     [self addFooterVarsToDictionary:page];
     NSMutableDictionary *result = [NSMutableDictionary dictionary];
-    [result setObject:page forKey:@"page"];
-    [result setObject:typedefBlock forKey:@"typedefBlock"];
-    [result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-    [result setObject:self.settings.projectName forKey:@"projectName"];
-    [result setObject:self.settings.stringTemplates forKey:@"strings"];
+    result[@"page"] = page;
+    result[@"typedefBlock"] = typedefBlock;
+    result[@"projectCompany"] = self.settings.projectCompany;
+    result[@"projectName"] = self.settings.projectName;
+    result[@"strings"] = self.settings.stringTemplates;
     return result;
 }
 
@@ -185,18 +185,18 @@
 	self.store = aStore;
 	NSString *path = [self.settings htmlRelativePathToIndexFromObject:object];
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForDocument:object] forKey:@"title"];
-	[page setObject:[path stringByAppendingPathComponent:@"css/style.css"] forKey:@"cssPath"];
-	[page setObject:[path stringByAppendingPathComponent:@"css/stylePrint.css"] forKey:@"cssPrintPath"];
-	[page setObject:[path stringByAppendingPathComponent:@"js/script.js"] forKey:@"jsPath"];
-  [page setObject:[path stringByAppendingPathComponent:@"index.html"] forKey:@"documentationIndexPath"];
+	page[@"title"] = [self pageTitleForDocument:object];
+	page[@"cssPath"] = [path stringByAppendingPathComponent:@"css/style.css"];
+	page[@"cssPrintPath"] = [path stringByAppendingPathComponent:@"css/stylePrint.css"];
+	page[@"jsPath"] = [path stringByAppendingPathComponent:@"js/script.js"];
+  page[@"documentationIndexPath"] = [path stringByAppendingPathComponent:@"index.html"];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:object forKey:@"object"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
+	result[@"page"] = page;
+	result[@"object"] = object;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
+	result[@"strings"] = self.settings.stringTemplates;
 	[self addFooterVarsToDictionary:result];
 	return result;
 }
@@ -206,20 +206,20 @@
 - (NSDictionary *)variablesForIndexWithStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForIndex] forKey:@"title"];
-    [page setObject:[self docsSectionTitleForIndex] forKey:@"docsTitle"];
+	page[@"title"] = [self pageTitleForIndex];
+    page[@"docsTitle"] = [self docsSectionTitleForIndex];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:[self documentsForIndex] forKey:@"docs"];
-	[result setObject:[self classesForIndex] forKey:@"classes"];
-	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
-	[result setObject:[self categoriesForIndex] forKey:@"categories"];
-    [result setObject:[self constantsForIndex]  forKey:@"constants"];
-    [result setObject:[self blocksForIndex]  forKey:@"blocks"];
-	[result setObject:self.settings.stringTemplates forKey:@"strings"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
+	result[@"page"] = page;
+	result[@"docs"] = [self documentsForIndex];
+	result[@"classes"] = [self classesForIndex];
+	result[@"protocols"] = [self protocolsForIndex];
+	result[@"categories"] = [self categoriesForIndex];
+    result[@"constants"] = [self constantsForIndex];
+    result[@"blocks"] = [self blocksForIndex];
+	result[@"strings"] = self.settings.stringTemplates;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
 	
 	[self addCustomDocumentWithKey:kGBCustomDocumentIndexDescKey toDictionary:result key:@"indexDescription"];
 	[self registerObjectsUsageForIndexInDictionary:result];
@@ -229,18 +229,18 @@
 - (NSDictionary *)variablesForHierarchyWithStore:(id)aStore {
 	self.store = aStore;
 	NSMutableDictionary *page = [NSMutableDictionary dictionary];
-	[page setObject:[self pageTitleForHierarchy] forKey:@"title"];
+	page[@"title"] = [self pageTitleForHierarchy];
 	[self addFooterVarsToDictionary:page];
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:page forKey:@"page"];
-	[result setObject:[self classesForHierarchy] forKey:@"classes"];
-	[result setObject:[self protocolsForIndex] forKey:@"protocols"];
-	[result setObject:[self categoriesForIndex] forKey:@"categories"];
-	[result setObject:[self constantsForIndex] forKey:@"constants"];
-    [result setObject:[self blocksForIndex] forKey:@"blocks"];
-    [result setObject:self.settings.stringTemplates forKey:@"strings"];
-	[result setObject:self.settings.projectCompany forKey:@"projectCompany"];
-	[result setObject:self.settings.projectName forKey:@"projectName"];
+	result[@"page"] = page;
+	result[@"classes"] = [self classesForHierarchy];
+	result[@"protocols"] = [self protocolsForIndex];
+	result[@"categories"] = [self categoriesForIndex];
+	result[@"constants"] = [self constantsForIndex];
+    result[@"blocks"] = [self blocksForIndex];
+    result[@"strings"] = self.settings.stringTemplates;
+	result[@"projectCompany"] = self.settings.projectCompany;
+	result[@"projectName"] = self.settings.projectName;
 	
 	[self registerObjectsUsageForIndexInDictionary:result];
 	return result;
@@ -263,11 +263,11 @@
 	// Helps handling arrays in template by embedding two keys: "used" as boolean and "items" as the actual array (only if non-empty).
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	if ([array count] > 0) {
-		[result setObject:[NSNumber numberWithBool:YES] forKey:@"used"];
-		[result setObject:array forKey:@"values"];
+		result[@"used"] = @YES;
+		result[@"values"] = array;
 		return result;
 	}
-	[result setObject:[NSNumber numberWithBool:NO] forKey:@"used"];
+	result[@"used"] = @NO;
 	return result;
 }
 
@@ -277,7 +277,7 @@
 	// Adds custom document with the given key to the given dictionary using the given dictionary key. If custom document isn't found, nothing happens.
 	GBDocumentData *document = [self.store customDocumentWithKey:key];
 	if (!document) return;
-	[dict setObject:document forKey:dictKey];
+	dict[dictKey] = document;
 }
 
 - (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict {
@@ -286,9 +286,9 @@
     {
         projectCompanyForFooter = [projectCompanyForFooter substringToIndex:projectCompanyForFooter.length - 1];
     }
-	[dict setObject:projectCompanyForFooter forKey:@"copyrightHolder"];
-	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderYear] forKey:@"copyrightDate"];
-	[dict setObject:[self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderUpdateDate] forKey:@"lastUpdatedDate"];
+	dict[@"copyrightHolder"] = projectCompanyForFooter;
+	dict[@"copyrightDate"] = [self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderYear];
+	dict[@"lastUpdatedDate"] = [self.settings stringByReplacingOccurencesOfPlaceholdersInString:kGBTemplatePlaceholderUpdateDate];
 }
 
 #pragma mark Properties
@@ -487,8 +487,8 @@
 		if ([item.relatedItem isStaticDocument]) {
 			NSArray *components = [item.markdownValue captureComponentsMatchedByRegex:self.settings.commentComponents.markdownInlineLinkRegex];
 			if ([components count] > 0) {
-				NSString *name = [components objectAtIndex:1];
-				NSString *href = [components objectAtIndex:2];
+				NSString *name = components[1];
+				NSString *href = components[2];
 				NSDictionary *data = [self objectSpecificationValueWithData:name href:href];
 				[relatedDocuments addObject:data];
 			}
@@ -506,24 +506,24 @@
 - (NSDictionary *)objectSpecificationWithValues:(NSArray *)values title:(NSString *)title {
 	// Prepares inherits from specification variable with the given array of superclass hierarchy values.
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	[result setObject:title forKey:@"title"];
-	[result setObject:values forKey:@"values"];
+	result[@"title"] = title;
+	result[@"values"] = values;
 	return result;
 }
 
 - (NSDictionary *)objectSpecificationValueWithData:(id)data href:(NSString *)href {
 	// Prepares single specification value.
 	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	if (href) [result setObject:href forKey:@"href"];
-	[result setObject:data forKey:@"string"];
-	[result setObject:@"" forKey:@"delimiter"];
+	if (href) result[@"href"] = href;
+	result[@"string"] = data;
+	result[@"delimiter"] = @"";
 	return result;
 }
 
 - (NSArray *)delimitObjectSpecificationValues:(NSArray *)values withDelimiter:(NSString *)delimiter {
 	// The array should contain mutable dictionaries with keys "data" and "href". We simplt add the delimiter to all but last value and use it to prepare the resulting specification dictionary containing all values.
 	[values enumerateObjectsUsingBlock:^(NSMutableDictionary *data, NSUInteger idx, BOOL *stop) {
-		if (idx < [values count] - 1) [data setObject:delimiter forKey:@"delimiter"];
+		if (idx < [values count] - 1) data[@"delimiter"] = delimiter;
 	}];
 	return values;
 }
@@ -535,12 +535,12 @@
 @implementation GBHTMLTemplateVariablesProvider (IndexVariables)
 
 - (NSString *)pageTitleForIndex {
-	NSString *template = [self.settings.stringTemplates.indexPage objectForKey:@"titleTemplate"];
+	NSString *template = self.settings.stringTemplates.indexPage[@"titleTemplate"];
 	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
 - (NSString *)pageTitleForHierarchy {
-	NSString *template = [self.settings.stringTemplates.hierarchyPage objectForKey:@"titleTemplate"];
+	NSString *template = self.settings.stringTemplates.hierarchyPage[@"titleTemplate"];
 	return [NSString stringWithFormat:template, self.settings.projectName];
 }
 
@@ -550,7 +550,7 @@
         return self.settings.docsSectionTitle;
     }
     
-    return [self.settings.stringTemplates.indexPage objectForKey:@"docsTitle"];
+    return self.settings.stringTemplates.indexPage[@"docsTitle"];
 }
 
 - (NSArray*)documentsForIndex{
@@ -558,8 +558,8 @@
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[documents count]];
 	for (GBDocumentData *document in documents) {
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-		[data setObject:[self hrefForObject:document fromObject:nil] forKey:@"href"];
-		[data setObject:document.prettyNameOfDocument forKey:@"title"];
+		data[@"href"] = [self hrefForObject:document fromObject:nil];
+		data[@"title"] = document.prettyNameOfDocument;
 		[result addObject:data];
 	}
 	return result;
@@ -571,8 +571,8 @@
 	for (GBClassData *class in classes) {
         if (!class.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-		[data setObject:[self hrefForObject:class fromObject:nil] forKey:@"href"];
-		[data setObject:class.nameOfClass forKey:@"title"];
+		data[@"href"] = [self hrefForObject:class fromObject:nil];
+		data[@"title"] = class.nameOfClass;
 		[result addObject:data];
 	}
 	return result;
@@ -584,8 +584,8 @@
 	for (GBCategoryData *category in categories) {
         if (!category.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-		[data setObject:[self hrefForObject:category fromObject:nil] forKey:@"href"];
-		[data setObject:category.idOfCategory forKey:@"title"];
+		data[@"href"] = [self hrefForObject:category fromObject:nil];
+		data[@"title"] = category.idOfCategory;
 		[result addObject:data];
 	}
 	return result;
@@ -597,8 +597,8 @@
 	for (GBTypedefEnumData *constant in constants) {
         if (!constant.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-		[data setObject:[self hrefForObject:constant fromObject:nil] forKey:@"href"];
-		[data setObject:constant.nameOfEnum forKey:@"title"];
+		data[@"href"] = [self hrefForObject:constant fromObject:nil];
+		data[@"title"] = constant.nameOfEnum;
 		[result addObject:data];
 	}
 	return result;
@@ -610,8 +610,8 @@
     for (GBTypedefBlockData *block in blocks) {
         if (!block.includeInOutput) continue;
         NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-        [data setObject:[self hrefForObject:block fromObject:nil] forKey:@"href"];
-        [data setObject:block.nameOfBlock forKey:@"title"];
+        data[@"href"] = [self hrefForObject:block fromObject:nil];
+        data[@"title"] = block.nameOfBlock;
         [result addObject:data];
     }
     return result;
@@ -623,8 +623,8 @@
 	for (GBProtocolData *protocol in protocols) {
         if (!protocol.includeInOutput) continue;
 		NSMutableDictionary *data = [NSMutableDictionary dictionaryWithCapacity:2];
-		[data setObject:[self hrefForObject:protocol fromObject:nil] forKey:@"href"];
-		[data setObject:protocol.nameOfProtocol forKey:@"title"];
+		data[@"href"] = [self hrefForObject:protocol fromObject:nil];
+		data[@"title"] = protocol.nameOfProtocol;
 		[result addObject:data];
 	}
 	return result;
@@ -647,14 +647,14 @@
 		// Now traverse the flat list and add all unknown classes to the dictionary. Then add all subclasses to next level and update the data we'll be matching in the next iteration (i.e. subclasses). This way we always start with the root dictionary and progress the depth on each iteration.
 		NSMutableDictionary *currentLevel = hierarchy;
 		for (NSString *className in flatlist) {
-			NSMutableDictionary *classData = [currentLevel objectForKey:className];
+			NSMutableDictionary *classData = currentLevel[className];
 			if (!classData) {
 				classData = [NSMutableDictionary dictionary];
-				[classData setObject:className forKey:@"name"];
-				[classData setObject:[NSMutableDictionary dictionary] forKey:@"subclasses"];
-				[currentLevel setObject:classData forKey:className];
+				classData[@"name"] = className;
+				classData[@"subclasses"] = [NSMutableDictionary dictionary];
+				currentLevel[className] = classData;
 			}
-			currentLevel = [classData objectForKey:@"subclasses"];
+			currentLevel = classData[@"subclasses"];
 		}
 	}
 	
@@ -667,7 +667,7 @@
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[level count]];
 	[level enumerateKeysAndObjectsUsingBlock:^(NSString *name, NSDictionary *data, BOOL *stop) {
 		// Get all sublasses by recursively descending down the hierarchy.
-		NSArray *subclasses = [self arrayFromHierarchyLevel:[data objectForKey:@"subclasses"]];
+		NSArray *subclasses = [self arrayFromHierarchyLevel:data[@"subclasses"]];
 		
 		// Get current class from the store and href to it.
 		GBClassData *class = [self.store classWithName:name];
@@ -675,15 +675,15 @@
 		
 		// Prepare class data.
 		NSMutableDictionary *classData = [NSMutableDictionary dictionary];
-		[classData setObject:name forKey:@"name"];
-		[classData setObject:subclasses forKey:@"classes"];
-		[classData setObject:[NSNumber numberWithBool:([subclasses count] > 0)] forKey:@"hasClasses"];
-		if (href) [classData setObject:href forKey:@"href"];
+		classData[@"name"] = name;
+		classData[@"classes"] = subclasses;
+		classData[@"hasClasses"] = @([subclasses count] > 0);
+		if (href) classData[@"href"] = href;
 		[result addObject:classData];
 	}];
 	
 	// Sort the array by class names.
-	NSArray *descriptors = [NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+	NSArray *descriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
 	return [result sortedArrayUsingDescriptors:descriptors];
 }
 
@@ -694,13 +694,13 @@
 	BOOL protocols = [self.store.protocols count] > 0;
     BOOL constants = [self.store.constants count] > 0;
     BOOL blocks = [self.store.blocks count] > 0;
-    [dict setObject:[NSNumber numberWithBool:documents] forKey:@"hasDocs"];
-    [dict setObject:[NSNumber numberWithBool:classes] forKey:@"hasClasses"];
-	[dict setObject:[NSNumber numberWithBool:categories] forKey:@"hasCategories"];
-	[dict setObject:[NSNumber numberWithBool:protocols] forKey:@"hasProtocols"];
-	[dict setObject:[NSNumber numberWithBool:constants] forKey:@"hasConstants"];
-    [dict setObject:[NSNumber numberWithBool:blocks] forKey:@"hasBlocks"];
-	[dict setObject:[NSNumber numberWithBool:protocols || categories || constants || blocks] forKey:@"hasProtocolsOrCategories"];
+    dict[@"hasDocs"] = @(documents);
+    dict[@"hasClasses"] = @(classes);
+	dict[@"hasCategories"] = @(categories);
+	dict[@"hasProtocols"] = @(protocols);
+	dict[@"hasConstants"] = @(constants);
+    dict[@"hasBlocks"] = @(blocks);
+	dict[@"hasProtocolsOrCategories"] = @(protocols || categories || constants || blocks);
 }
 
 @end

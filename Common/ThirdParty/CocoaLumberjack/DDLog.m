@@ -550,13 +550,9 @@ static NSUInteger GBStoreLine = 0;
 	
 	Method getter = class_getClassMethod(class, getterSel);
 	Method setter = class_getClassMethod(class, setterSel);
-	
-	if ((getter != NULL) && (setter != NULL))
-	{
-		return YES;
-	}
-	
-	return NO;
+
+	return (getter != NULL) && (setter != NULL);
+
 }
 
 + (NSArray *)registeredClasses

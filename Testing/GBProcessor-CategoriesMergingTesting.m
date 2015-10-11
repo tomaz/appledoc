@@ -82,8 +82,8 @@
 	// verify
 	NSArray *methods = [class.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThatBool([methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES));
-	assertThatBool([methods containsObject:[extension.methods.methods objectAtIndex:0]], equalToBool(YES));
+	assertThatBool([methods containsObject:category.methods.methods[0]], equalToBool(YES));
+	assertThatBool([methods containsObject:extension.methods.methods[0]], equalToBool(YES));
 }
 
 - (void)testProcessObjectsFromStore_shouldUseRegisterMethodOnClassToMergeMethods {
@@ -93,7 +93,7 @@
 	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithNames:@"method", nil]];
 	OCMockObject *class = [OCMockObject niceMockForClass:[GBClassData class]];
 	OCMockObject *provider = [OCMockObject niceMockForClass:[GBMethodsProvider class]];
-	[[provider expect] registerMethod:[category.methods.methods objectAtIndex:0]];
+	[[provider expect] registerMethod:category.methods.methods[0]];
 	[[[class stub] andReturn:@"Class"] nameOfClass];
 	[[[class stub] andReturn:provider] methods];
 	GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, category, nil];
@@ -120,9 +120,9 @@
 	// verify
 	NSArray *sections = [class.methods sections];
 	assertThatInteger([sections count], equalToInteger(2));
-	GBMethodSectionData *section = [sections objectAtIndex:1];
+	GBMethodSectionData *section = sections[1];
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
+	assertThatBool([section.methods containsObject:category.methods.methods[0]], equalToBool(YES));
 }
 
 - (void)testProcessObjectsFromStore_shouldCreateSingleSectionIfKeepSectionsIsNo {
@@ -140,10 +140,10 @@
 	// verify
 	NSArray *sections = [class.methods sections];
 	assertThatInteger([sections count], equalToInteger(1));
-	GBMethodSectionData *section = [sections objectAtIndex:0];
+	GBMethodSectionData *section = sections[0];
 	assertThatInteger([section.methods count], equalToInteger(2));
-	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
-	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:1]], equalToBool(YES));
+	assertThatBool([section.methods containsObject:category.methods.methods[0]], equalToBool(YES));
+	assertThatBool([section.methods containsObject:category.methods.methods[1]], equalToBool(YES));
 }
 
 - (void)testProcessObjectsFromStore_shouldDuplicateSectionsIfKeepSectionsIsYes {
@@ -162,12 +162,12 @@
 	GBMethodSectionData *section;
 	NSArray *sections = [class.methods sections];
 	assertThatInteger([sections count], equalToInteger(2));
-	section = [sections objectAtIndex:0];
+	section = sections[0];
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:0]], equalToBool(YES)); 
-	section = [sections objectAtIndex:1];
+	assertThatBool([section.methods containsObject:category.methods.methods[0]], equalToBool(YES));
+	section = sections[1];
 	assertThatInteger([section.methods count], equalToInteger(1));
-	assertThatBool([section.methods containsObject:[category.methods.methods objectAtIndex:1]], equalToBool(YES));
+	assertThatBool([section.methods containsObject:category.methods.methods[1]], equalToBool(YES));
 }
 
 #pragma mark Section naming testing
@@ -182,7 +182,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	NSString *name = [[class.methods.sections objectAtIndex:0] sectionName];
+	NSString *name = [class.methods.sections[0] sectionName];
 	assertThatBool([name rangeOfString:category.nameOfCategory].location != NSNotFound, equalToBool(YES));
 }
 
@@ -197,7 +197,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat([[class.methods.sections objectAtIndex:0] sectionName], is(@"Section"));
+	assertThat([class.methods.sections[0] sectionName], is(@"Section"));
 }
 
 - (void)testProcessObjectsFromStore_shouldAddCategoryNameToSectionNamesIfPrefixIsYes {
@@ -211,7 +211,7 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	NSString *name = [[class.methods.sections objectAtIndex:0] sectionName];
+	NSString *name = [class.methods.sections[0] sectionName];
 	assertThatBool([name rangeOfString:@"Section"].location != NSNotFound, equalToBool(YES));
 	assertThatBool([name rangeOfString:category.nameOfCategory].location != NSNotFound, equalToBool(YES));
 }
@@ -227,16 +227,16 @@
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
-	assertThat([[class.methods.sections objectAtIndex:0] sectionName], is(@"Section"));
+	assertThat([class.methods.sections[0] sectionName], is(@"Section"));
 }
 
 #pragma mark Creation methods
 
 - (GBProcessor *)processorWithMerge:(BOOL)merge keep:(BOOL)keep prefix:(BOOL)prefix {
 	OCMockObject *settings = [GBTestObjectsRegistry mockSettingsProvider];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:merge]] mergeCategoriesToClasses];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:keep]] keepMergedCategoriesSections];
-	[[[settings stub] andReturnValue:[NSNumber numberWithBool:prefix]] prefixMergedCategoriesSectionsWithCategoryName];
+	[[[settings stub] andReturnValue:@(merge)] mergeCategoriesToClasses];
+	[[[settings stub] andReturnValue:@(keep)] keepMergedCategoriesSections];
+	[[[settings stub] andReturnValue:@(prefix)] prefixMergedCategoriesSectionsWithCategoryName];
 	[GBTestObjectsRegistry settingsProvider:settings keepObjects:YES keepMembers:YES];
 	return [GBProcessor processorWithSettingsProvider:settings];
 }

@@ -195,7 +195,7 @@
 
 - (OCMockObject *)mockSettingsProviderRepeatFirst:(BOOL)repeat {
 	OCMockObject *result = [GBTestObjectsRegistry mockSettingsProvider];
-	[[[result stub] andReturnValue:[NSNumber numberWithBool:repeat]] repeatFirstParagraphForMemberDescription];
+	[[[result stub] andReturnValue:@(repeat)] repeatFirstParagraphForMemberDescription];
 	return result;
 }
 

@@ -31,21 +31,21 @@
 	NSParameterAssert(ivar != nil);
 	GBLogDebug(@"%@: Registering ivar %@...", _parent, ivar);
 	if ([_ivars containsObject:ivar]) return;
-	GBIvarData *existingIvar = [_ivarsByName objectForKey:ivar.nameOfIvar];
+	GBIvarData *existingIvar = _ivarsByName[ivar.nameOfIvar];
 	if (existingIvar) {
 		[existingIvar mergeDataFromObject:ivar];
 		return;
 	}
 	ivar.parentObject = _parent;
 	[_ivars addObject:ivar];
-	[_ivarsByName setObject:ivar forKey:ivar.nameOfIvar];
+	_ivarsByName[ivar.nameOfIvar] = ivar;
 }
 
 - (void)mergeDataFromIvarsProvider:(GBIvarsProvider *)source {
 	if (!source || source == self) return;
 	GBLogDebug(@"%@: Merging ivars from %@...", _parent, source->_parent);
 	for (GBIvarData *sourceIvar in source.ivars) {
-		GBIvarData *existingIvar = [_ivarsByName objectForKey:sourceIvar.nameOfIvar];
+		GBIvarData *existingIvar = _ivarsByName[sourceIvar.nameOfIvar];
 		if (existingIvar) {
 			[existingIvar mergeDataFromObject:sourceIvar];
 			continue;

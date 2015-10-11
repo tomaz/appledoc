@@ -28,7 +28,7 @@
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(1));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol"));
+	assertThat([protocols[0] nameOfProtocol], is(@"MyProtocol"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterProtocolSourceFileAndLineNumber {
@@ -38,7 +38,7 @@
 	// execute
 	[parser parseObjectsFromString:@"@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store protocolsSortedByName][0] sourceInfos];
 	assertThatInteger([files count], equalToInteger(1));
 	assertThat([[files anyObject] filename], is(@"filename.h"));
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(1));
@@ -51,7 +51,7 @@
 	// execute
 	[parser parseObjectsFromString:@"\n// cmt\n\n#define DEBUG\n\n/// hello\n@protocol MyProtocol @end" sourceFile:@"filename.h" toStore:store];
 	// verify
-	NSSet *files = [[[store protocolsSortedByName] objectAtIndex:0] sourceInfos];
+	NSSet *files = [[store protocolsSortedByName][0] sourceInfos];
 	assertThatInteger([[files anyObject] lineNumber], equalToInteger(7));
 }
 
@@ -64,8 +64,8 @@
 	// verify
 	NSArray *protocols = [store protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"MyProtocol1"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"MyProtocol2"));
+	assertThat([protocols[0] nameOfProtocol], is(@"MyProtocol1"));
+	assertThat([protocols[1] nameOfProtocol], is(@"MyProtocol2"));
 }
 
 #pragma mark Protocol comments parsing testing
@@ -136,8 +136,8 @@
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *protocols = [protocol.adoptedProtocols protocolsSortedByName];
 	assertThatInteger([protocols count], equalToInteger(2));
-	assertThat([[protocols objectAtIndex:0] nameOfProtocol], is(@"Protocol1"));
-	assertThat([[protocols objectAtIndex:1] nameOfProtocol], is(@"Protocol2"));
+	assertThat([protocols[0] nameOfProtocol], is(@"Protocol1"));
+	assertThat([protocols[1] nameOfProtocol], is(@"Protocol2"));
 }
 
 - (void)testParseObjectsFromString_shouldRegisterMethods {
@@ -150,8 +150,8 @@
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *methods = [protocol.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Merging testing
@@ -168,8 +168,8 @@
 	GBProtocolData *protocol = [[store protocols] anyObject];
 	NSArray *methods = [protocol.methods methods];
 	assertThatInteger([methods count], equalToInteger(2));
-	assertThat([[methods objectAtIndex:0] methodSelector], is(@"method1"));
-	assertThat([[methods objectAtIndex:1] methodSelector], is(@"method2"));
+	assertThat([methods[0] methodSelector], is(@"method1"));
+	assertThat([methods[1] methodSelector], is(@"method2"));
 }
 
 #pragma mark Complex parsing testing

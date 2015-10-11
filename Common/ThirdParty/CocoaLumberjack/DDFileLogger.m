@@ -196,7 +196,7 @@
     NSString *baseDir = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
 #else
 	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
+    NSString *basePath = ([paths count] > 0) ? paths[0] : NSTemporaryDirectory();
 	
 	NSString *appName = [[NSProcessInfo processInfo] processName];
 	
@@ -885,7 +885,7 @@
 		
 		if ([sortedLogFileInfos count] > 0)
 		{
-			DDLogFileInfo *mostRecentLogFileInfo = [sortedLogFileInfos objectAtIndex:0];
+			DDLogFileInfo *mostRecentLogFileInfo = sortedLogFileInfos[0];
 			
 			BOOL useExistingLogFile = YES;
 			BOOL shouldArchiveMostRecent = NO;
@@ -1069,7 +1069,7 @@
 {
 	if (modificationDate == nil)
 	{
-		modificationDate = [[[self fileAttributes] objectForKey:NSFileModificationDate] retain];
+		modificationDate = [[self fileAttributes][NSFileModificationDate] retain];
 	}
 	
 	return modificationDate;
@@ -1111,7 +1111,7 @@
 		
 	#else
 		
-		creationDate = [[[self fileAttributes] objectForKey:NSFileCreationDate] retain];
+		creationDate = [[self fileAttributes][NSFileCreationDate] retain];
 		
 	#endif
 		
@@ -1123,7 +1123,7 @@
 {
 	if (fileSize == 0)
 	{
-		fileSize = [[[self fileAttributes] objectForKey:NSFileSize] unsignedLongLongValue];
+		fileSize = [[self fileAttributes][NSFileSize] unsignedLongLongValue];
 	}
 	
 	return fileSize;

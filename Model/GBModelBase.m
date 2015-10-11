@@ -32,16 +32,16 @@
 	// Merge declared files.
 	NSArray *sourceFiles = [[source sourceInfos] allObjects];
 	for (GBSourceInfo *filedata in sourceFiles) {
-		GBSourceInfo *ourfiledata = [_sourceInfosByFilenames objectForKey:filedata.filename];
+		GBSourceInfo *ourfiledata = _sourceInfosByFilenames[filedata.filename];
 		if (ourfiledata) {
 			if (ourfiledata.lineNumber < filedata.lineNumber) {
-				[_sourceInfosByFilenames setObject:filedata forKey:filedata.filename];
+				_sourceInfosByFilenames[filedata.filename] = filedata;
 				[_sourceInfos removeObject:ourfiledata];
 				[_sourceInfos addObject:filedata];
 			}
 			continue;
 		}
-		[_sourceInfosByFilenames setObject:filedata forKey:filedata.filename];
+		_sourceInfosByFilenames[filedata.filename] = filedata;
 		[_sourceInfos addObject:filedata];
 	}
 	
@@ -63,11 +63,11 @@
 	if ([_sourceInfos member:data]) return;
 	
 	// Replace data with same filename.
-	GBSourceInfo *existing = [_sourceInfosByFilenames objectForKey:data.filename];
+	GBSourceInfo *existing = _sourceInfosByFilenames[data.filename];
 	if (existing) [_sourceInfos removeObject:existing];
 	
 	// Add object.
-	[_sourceInfosByFilenames setObject:data forKey:data.filename];
+	_sourceInfosByFilenames[data.filename] = data;
 	[_sourceInfos addObject:data];
 }
 
@@ -78,7 +78,7 @@
 		for (GBSourceInfo *info in infos) {
 			if ([[info.filename pathExtension] isEqualToString:@"h"]) return info;
 		}
-		return [infos objectAtIndex:0];
+		return infos[0];
 	}
 	return nil;
 }
