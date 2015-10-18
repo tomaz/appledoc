@@ -1,0 +1,48 @@
+/****************************************************************************/
+/* Localization file */
+
+
+"%@ Class Reference" = "%@ Class Reference";
+"%1$@(%2$@) Category Reference" = "%1$@(%2$@) Category Reference";
+"%@ Protocol Reference" = "%@ Protocol Reference";
+"%@ Constants Reference" = "%@ Constants Reference";
+"%@ Block Reference" = "%@ Block Reference";
+"%@ Methods" = "%@ Methods";
+"Extension Methods" = "Extension Methods";
+"%2$@ from %1$@" = "%2$@ from %1$@";
+"Inherits from" = "Inherits from";
+"Conforms to" = "Conforms to";
+"References" = "References";
+"Availability" = "Availability";
+"Declared in" = "Declared in";
+"Companion guide" = "Companion guide";
+"Overview" = "Overview";
+"Tasks" = "Tasks";
+"Other Methods" = "Other Methods";
+"required method" = "required method";
+"property" = "property";
+"Class Methods" = "Class Methods";
+"Instance Methods" = "Instance Methods";
+"Block Definition" = "Block Definition";
+"Properties" = "Properties";
+"Parameters" = "Parameters";
+"Return Value" = "Return Value";
+"Discussion" = "Discussion";
+"Exceptions" = "Exceptions";
+"See Also" = "See Also";
+"Declared In" = "Declared In";
+"%@ Document" = "%@ Document";
+"%@ Reference" = "%@ Reference";
+"Programming Guides" = "Programming Guides";
+"Class References" = "Class References";
+"Category References" = "Category References";
+"Protocol References" = "Protocol References";
+"Constant References" = "Constant References";
+"Block References" = "Block References";
+"%@ Hierarchy" = "%@ Hierarchy";
+"Class Hierarchy" = "Class Hierarchy";
+"Classes" = "Classes";
+"Categories" = "Categories";
+"Protocols" = "Protocols";
+"Constants" = "Constants";
+"Blocks" = "Blocks";

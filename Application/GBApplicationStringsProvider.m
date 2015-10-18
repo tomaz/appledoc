@@ -22,14 +22,14 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"classTitle"] = @"%@ Class Reference";
-		result[@"categoryTitle"] = @"%1$@(%2$@) Category Reference";
-		result[@"protocolTitle"] = @"%@ Protocol Reference";
-		result[@"constantTitle"] = @"%@ Constants Reference";
-        result[@"blockTitle"] = @"%@ Block Reference";
-		result[@"mergedCategorySectionTitle"] = @"%@ Methods";
-		result[@"mergedExtensionSectionTitle"] = @"Extension Methods";
-		result[@"mergedPrefixedCategorySectionTitle"] = @"%2$@ from %1$@";
+		result[@"classTitle"] = NSLocalizedString(@"%@ Class Reference", @"%@ Class Reference");
+		result[@"categoryTitle"] = NSLocalizedString(@"%1$@(%2$@) Category Reference", @"%1$@(%2$@) Category Reference");
+		result[@"protocolTitle"] = NSLocalizedString(@"%@ Protocol Reference", @"%@ Protocol Reference");
+		result[@"constantTitle"] = NSLocalizedString(@"%@ Constants Reference", @"%@ Constants Reference");
+        result[@"blockTitle"] = NSLocalizedString(@"%@ Block Reference", @"%@ Block Reference");
+		result[@"mergedCategorySectionTitle"] = NSLocalizedString(@"%@ Methods", @"%@ Methods");
+		result[@"mergedExtensionSectionTitle"] = NSLocalizedString(@"Extension Methods", @"Extension Methods");
+		result[@"mergedPrefixedCategorySectionTitle"] = NSLocalizedString(@"%2$@ from %1$@", @"%2$@ from %1$@");
 	}
 	return result;
 }
@@ -38,12 +38,12 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"inheritsFrom"] = @"Inherits from";
-		result[@"conformsTo"] = @"Conforms to";
-        result[@"references"] = @"References";
-        result[@"availability"] = @"Availability";
-		result[@"declaredIn"] = @"Declared in";
-		result[@"companionGuide"] = @"Companion guide";
+		result[@"inheritsFrom"] = NSLocalizedString(@"Inherits from", @"Inherits from");
+		result[@"conformsTo"] = NSLocalizedString(@"Conforms to", @"Conforms to");
+        result[@"references"] = NSLocalizedString(@"References", @"References");
+        result[@"availability"] = NSLocalizedString(@"Availability", @"Availability");
+		result[@"declaredIn"] = NSLocalizedString(@"Declared in", @"Declared in");
+		result[@"companionGuide"] = NSLocalizedString(@"Companion guide", @"Companion guide");
 	}
 	return result;
 }
@@ -52,7 +52,7 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"title"] = @"Overview";
+		result[@"title"] = NSLocalizedString(@"Overview", @"Overview");
 	}
 	return result;
 }
@@ -61,10 +61,10 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"title"] = @"Tasks";
-		result[@"otherMethodsSectionName"] = @"Other Methods";
-		result[@"requiredMethod"] = @"required method";
-		result[@"property"] = @"property";
+		result[@"title"] = NSLocalizedString(@"Tasks", @"Tasks");
+		result[@"otherMethodsSectionName"] = NSLocalizedString(@"Other Methods", @"Other Methods");
+		result[@"requiredMethod"] = NSLocalizedString(@"required method", @"required method");
+		result[@"property"] = NSLocalizedString(@"property", @"property");
 	}
 	return result;
 }
@@ -73,17 +73,17 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"classMethodsTitle"] = @"Class Methods";
-		result[@"instanceMethodsTitle"] = @"Instance Methods";
-        result[@"blockDefTitle"] = @"Block Definition";
-		result[@"propertiesTitle"] = @"Properties";
-		result[@"parametersTitle"] = @"Parameters";
-		result[@"resultTitle"] = @"Return Value";
-		result[@"availability"] = @"Availability";
-		result[@"discussionTitle"] = @"Discussion";
-		result[@"exceptionsTitle"] = @"Exceptions";
-		result[@"seeAlsoTitle"] = @"See Also";
-		result[@"declaredInTitle"] = @"Declared In";
+		result[@"classMethodsTitle"] = NSLocalizedString(@"Class Methods", @"Class Methods");
+		result[@"instanceMethodsTitle"] = NSLocalizedString(@"Instance Methods", @"Instance Methods");
+        result[@"blockDefTitle"] = NSLocalizedString(@"Block Definition", @"Block Definition");
+		result[@"propertiesTitle"] = NSLocalizedString(@"Properties", @"Properties");
+		result[@"parametersTitle"] = NSLocalizedString(@"Parameters", @"Parameters");
+		result[@"resultTitle"] = NSLocalizedString(@"Return Value", @"Return Value");
+		result[@"availability"] = NSLocalizedString(@"Availability", @"Availability");
+		result[@"discussionTitle"] = NSLocalizedString(@"Discussion", @"Discussion");
+		result[@"exceptionsTitle"] = NSLocalizedString(@"Exceptions", @"Exceptions");
+		result[@"seeAlsoTitle"] = NSLocalizedString(@"See Also", @"See Also");
+		result[@"declaredInTitle"] = NSLocalizedString(@"Declared In", @"Declared In");
 	}
 	return result;
 }
@@ -94,7 +94,7 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"titleTemplate"] = @"%@ Document";
+		result[@"titleTemplate"] = NSLocalizedString(@"%@ Document", @"%@ Document");
 	}
 	return result;
 }
@@ -105,13 +105,13 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"titleTemplate"] = @"%@ Reference";
-		result[@"docsTitle"] = @"Programming Guides";
-		result[@"classesTitle"] = @"Class References";
-		result[@"categoriesTitle"] = @"Category References";
-		result[@"protocolsTitle"] = @"Protocol References";
-        result[@"constantsTitle"] = @"Constant References";
-        result[@"blocksTitle"] = @"Block References";
+		result[@"titleTemplate"] = NSLocalizedString(@"%@ Reference", @"%@ Reference");
+		result[@"docsTitle"] = NSLocalizedString(@"Programming Guides", @"Programming Guides");
+		result[@"classesTitle"] = NSLocalizedString(@"Class References", @"Class References");
+		result[@"categoriesTitle"] = NSLocalizedString(@"Category References", @"Category References");
+		result[@"protocolsTitle"] = NSLocalizedString(@"Protocol References", @"Protocol References");
+        result[@"constantsTitle"] = NSLocalizedString(@"Constant References", @"Constant References");
+        result[@"blocksTitle"] = NSLocalizedString(@"Block References", @"Block References");
 	}
 	return result;
 }
@@ -120,12 +120,12 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"titleTemplate"] = @"%@ Hierarchy";
-		result[@"classesTitle"] = @"Class Hierarchy";
-		result[@"categoriesTitle"] = @"Category References";
-		result[@"protocolsTitle"] = @"Protocol References";
-        result[@"constantsTitle"] = @"Constant References";
-        result[@"blocksTitle"] = @"Block References";
+		result[@"titleTemplate"] = NSLocalizedString(@"%@ Hierarchy", @"%@ Hierarchy");
+		result[@"classesTitle"] = NSLocalizedString(@"Class Hierarchy", @"Class Hierarchy");
+		result[@"categoriesTitle"] = NSLocalizedString(@"Category References", @"Category References");
+		result[@"protocolsTitle"] = NSLocalizedString(@"Protocol References", @"Protocol References");
+        result[@"constantsTitle"] = NSLocalizedString(@"Constant References", @"Constant References");
+        result[@"blocksTitle"] = NSLocalizedString(@"Block References", @"Block References");
 	}
 	return result;
 }
@@ -136,12 +136,12 @@
 	static NSMutableDictionary *result = nil;
 	if (!result) {
 		result = [[NSMutableDictionary alloc] init];
-		result[@"docsTitle"] = @"Programming Guides";
-		result[@"classesTitle"] = @"Classes";
-		result[@"categoriesTitle"] = @"Categories";
-		result[@"protocolsTitle"] = @"Protocols";
-        result[@"constantsTitle"] = @"Constants";
-        result[@"blocksTitle"] = @"Blocks";
+		result[@"docsTitle"] = NSLocalizedString(@"Programming Guides", @"Programming Guides");
+		result[@"classesTitle"] = NSLocalizedString(@"Classes", @"Classes");
+		result[@"categoriesTitle"] = NSLocalizedString(@"Categories", @"Categories");
+		result[@"protocolsTitle"] = NSLocalizedString(@"Protocols", @"Protocols");
+        result[@"constantsTitle"] = NSLocalizedString(@"Constants", @"Constants");
+        result[@"blocksTitle"] = NSLocalizedString(@"Blocks", @"Blocks");
 	}
 	return result;
 }
