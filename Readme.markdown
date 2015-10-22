@@ -45,7 +45,7 @@ It compiles appledoc and installs its binary to /usr/local/bin and templates (if
 	
 **Alternatively with Homebrew:**
 
-    brew install appledoc
+    brew install homebrew/boneyard/appledoc
 
 Homebrew does not install templates by default.
 
