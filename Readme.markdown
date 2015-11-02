@@ -1,6 +1,8 @@
 About appledoc
 ==============
 
+**IMPORTANT NOTICE:** [collaborators needed](http://gentlebytes.com/blog/2015/11/02/appledoc-contributors-needed/)
+
 appledoc is command line tool that helps Objective-C developers generate Apple-like source code documentation from specially formatted source code comments. It's designed to take as readable source code comments as possible for the input and use comments as well as surrounding source code to generate visually appealing documentation in the form of HTML as well as fully indexed and browsable Xcode documentation set. Although there are several tools that can create HTML documentation for Objective-C, all of those know to me fall short in meeting the minimum of goals described below.
 
 Main goals of appledoc:
