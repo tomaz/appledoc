@@ -1,5 +1,12 @@
 language: objective-c
-before_install:
-    - brew update
-    - brew install xctool --HEAD
-script: rake test
+
+osx_image: xcode7.1
+xcode_workspace: appledoc.xcworkspace
+xcode_scheme: appledoc
+xcode_sdk: macosx10.11
+
+before_script:
+- gem install xcpretty
+
+script:
+- set -o pipefail && xcodebuild -workspace appledoc.xcworkspace -scheme appledoc test | xcpretty
