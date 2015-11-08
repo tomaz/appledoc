@@ -1,0 +1,4 @@
+module libclang [system] {
+	header "LLVM/Release/include/clang-c/Index.h"
+	export *
+}

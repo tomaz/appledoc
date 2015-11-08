@@ -1,5 +1,10 @@
 language: objective-c
-before_install:
-    - brew update
-    - brew install xctool --HEAD
-script: rake test
+
+osx_image: xcode7.1
+
+script:
+- set -o pipefail
+- xcodebuild -version
+- xcodebuild -showsdks
+- xctool test -scheme appledoc
+
