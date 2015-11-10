@@ -38,6 +38,7 @@
 		73CB252B1BF20D450095381B /* SwiftyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73CB25201BF20D150095381B /* SwiftyOptions.swift */; };
 		73F386DF1BF004520044BDBF /* ExampleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F386DE1BF004520044BDBF /* ExampleSpec.swift */; };
 		73F386E51BF0063A0044BDBF /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734AB7791BEFFEC6007B7A64 /* main.swift */; };
+		BF5E82EF1BF2570F00EF5B84 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5E82EE1BF2570E00EF5B84 /* CoreFoundation.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -200,6 +201,7 @@
 		73F386DE1BF004520044BDBF /* ExampleSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleSpec.swift; sourceTree = "<group>"; };
 		73F386E01BF004520044BDBF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A14907C821B9AD6BFAABC442 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF5E82EE1BF2570E00EF5B84 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,6 +216,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF5E82EF1BF2570F00EF5B84 /* CoreFoundation.framework in Frameworks */,
 				738061281BF22F8C0043B759 /* Nimble.framework in Frameworks */,
 				7380610F1BF22F300043B759 /* Quick.framework in Frameworks */,
 			);
@@ -225,6 +228,7 @@
 		02D10E741F400ACBDD7774F0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF5E82EE1BF2570E00EF5B84 /* CoreFoundation.framework */,
 				A14907C821B9AD6BFAABC442 /* Pods.framework */,
 				552CDB9163AFC0017C08F8AF /* Pods_tests.framework */,
 			);
