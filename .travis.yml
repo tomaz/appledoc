@@ -12,4 +12,4 @@ script:
 - set -o pipefail
 - xcodebuild -version
 - xcodebuild -showsdks
-- xcodebuild test -scheme tests -sdk "macosx10.11" -destination "arch=x86_64" -configuration Debug | xcpretty -c
+- xctool test -scheme tests -sdk "macosx10.11" -destination "arch=x86_64" -configuration Debug
