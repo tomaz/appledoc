@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		734AB77A1BEFFEC6007B7A64 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 734AB7791BEFFEC6007B7A64 /* main.swift */; };
 		7380610F1BF22F300043B759 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738060FE1BF22F0B0043B759 /* Quick.framework */; };
-		738061111BF22F660043B759 /* Quick.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 738060FE1BF22F0B0043B759 /* Quick.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		738061111BF22F660043B759 /* Quick.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 738060FE1BF22F0B0043B759 /* Quick.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		738061281BF22F8C0043B759 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 738061211BF22F850043B759 /* Nimble.framework */; };
-		738061291BF22F980043B759 /* Nimble.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 738061211BF22F850043B759 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		738061291BF22F980043B759 /* Nimble.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 738061211BF22F850043B759 /* Nimble.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		73C609371BF0E50A003085CF /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C609361BF0E50A003085CF /* Application.swift */; };
 		73C609381BF0E50A003085CF /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C609361BF0E50A003085CF /* Application.swift */; };
 		73C6093A1BF0E668003085CF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73C609391BF0E668003085CF /* Settings.swift */; };
