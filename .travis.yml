@@ -9,4 +9,4 @@ before_script:
 - gem install xcpretty
 
 script:
-- xcodebuild test -scheme $XCSCHEME | xcpretty -c && exit ${PIPESTATUS[0]}
+- xcodebuild test -scheme appledoc | xcpretty -c && exit ${PIPESTATUS[0]}
