@@ -9,4 +9,7 @@ before_script:
 - gem install xcpretty
 
 script:
-- xcodebuild test -scheme tests | xcpretty -c && exit ${PIPESTATUS[0]}
+- set -o pipefail
+- xcodebuild -version
+- xcodebuild -showsdks
+- xcodebuild test -scheme tests -sdk "macosx10.11" -destination "arch=x86_64" -configuration Debug | xcpretty -c
