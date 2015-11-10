@@ -9,4 +9,4 @@ before_script:
 - gem install xcpretty
 
 script:
-- set -o pipefail && xcodebuild -project appledoc.xcodeproj -scheme appledoc test | xcpretty
+- xcodebuild test -scheme $XCSCHEME | xcpretty -c && exit ${PIPESTATUS[0]}
