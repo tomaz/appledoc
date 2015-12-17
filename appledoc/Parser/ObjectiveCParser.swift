@@ -45,7 +45,7 @@ class ObjectiveCParser: Task {
 		
 		// Prepare clang translation unit with the given path.
 		let index = clang_createIndex(0, 0)
-		let flags = CXTranslationUnit_Incomplete.rawValue + CXTranslationUnit_SkipFunctionBodies.rawValue + CXTranslationUnit_DetailedPreprocessingRecord.rawValue
+		let flags = CXTranslationUnit_None.rawValue // CXTranslationUnit_Incomplete.rawValue + CXTranslationUnit_SkipFunctionBodies.rawValue + CXTranslationUnit_DetailedPreprocessingRecord.rawValue
 		let translationUnit = clang_parseTranslationUnit(index, parsePath, nil, 0, nil, 0, flags)
 		
 		// Parse all tokens.
@@ -72,19 +72,52 @@ class ObjectiveCParser: Task {
 			// Get object name.
 			let name = self.clangString(clang_getCursorSpelling(cursor))
 			print("\(kind) {\(kindValue.rawValue)} \(name) @ \(startLocation)-\(endLocation)")
-			
-			// Get all object tokens.
-			var tokens = UnsafeMutablePointer<CXToken>()
-			var tokensCount = UInt32(0)
-			clang_tokenize(translationUnit, range, &tokens, &tokensCount)
-			for i: Int in 0..<Int(tokensCount) {
-				let tokenKindValue = clang_getTokenKind(tokens[i])
-				let tokenRange = clang_getTokenExtent(translationUnit, tokens[i])
-				let token = self.clangString(clang_getTokenSpelling(translationUnit, tokens[i]))
-				print("  \(tokenKindValue.rawValue)} \(token)")
+
+			if kindValue == CXCursor_ObjCInterfaceDecl {
+				let classInfo = ClassInfo()
+				classInfo.name = name
+
+				// Get all object tokens.
+				var tokens = UnsafeMutablePointer<CXToken>()
+				var tokensCount = UInt32(0)
+				clang_tokenize(translationUnit, range, &tokens, &tokensCount)
+				for i in 0..<Int(tokensCount) {
+					let tokenKindValue = clang_getTokenKind(tokens[i])
+					let tokenRange = clang_getTokenExtent(translationUnit, tokens[i])
+					let token = self.clangString(clang_getTokenSpelling(translationUnit, tokens[i]))
+					print("  \(tokenKindValue.rawValue)} \(token)")
+
+					if tokenKindValue == CXToken_Punctuation && token == ":" {
+						let superToken = tokens[i + 1]
+						let superclass = ClassCrossReference()
+						superclass.name = self.clangString(clang_getTokenSpelling(translationUnit, superToken))
+						classInfo.superclass = superclass
+					}
+
+					if tokenKindValue == CXToken_Punctuation && token == "<" {
+						var protocols: [ProtocolCrossReference] = []
+						var protocolIndex = i + 1
+						var protocolToken: String
+						repeat {
+							protocolToken = self.clangString(clang_getTokenSpelling(translationUnit, tokens[protocolIndex]))
+							if protocolToken != "," && protocolToken != ">" {
+								let p = ProtocolCrossReference()
+								p.name = protocolToken
+								protocols.append(p)
+							}
+
+							protocolIndex += 1
+						} while (protocolToken != ">")
+
+						classInfo.adoptedProtocols = protocols
+					}
+
+				}
+				clang_disposeTokens(translationUnit, tokens, tokensCount)
+
+				self.store.classes.append(classInfo)
 			}
-			clang_disposeTokens(translationUnit, tokens, tokensCount)
-			
+
 			// Recurse into all children.
 			return CXChildVisit_Recurse
 		}

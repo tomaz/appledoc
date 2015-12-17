@@ -15,3 +15,9 @@
 @interface Name <Protocol1, Protocol2>
 
 @end
+
+### superclass with adopted protocols
+
+@interface Name: SuperClassName <Protocol1, Protocol2>
+
+@end

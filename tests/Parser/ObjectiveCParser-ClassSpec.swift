@@ -14,40 +14,49 @@ class ObjectiveCParserClassSpec: QuickSpec {
 			
 			context("classes") {
 				
-				it("should register class") {
-					// setup
+				it("registers class") {
 					let store = Store()
 					let parser = ObjectiveCParser().withStore(store).withPath("objectivec-class.md", example: "simple interface")
-					// execute
+
 					try! parser.run()
-					// verify
-//					expect(store.classes.count) == 1
-//					expect(store.classes[0].name) == "Name"
-//					expect(store.classes[0].adoptedProtocols.count) == 0
-//					expect(store.classes[0].categories.count) == 0
+
+					expect(store.classes.count) == 1
+					expect(store.classes[0].name) == "Name"
+					expect(store.classes[0].adoptedProtocols.count) == 0
+					expect(store.classes[0].categories.count) == 0
 				}
 				
-				it("should register superclass") {
-					// setup
+				it("registers superclass") {
 					let store = Store()
 					let parser = ObjectiveCParser().withStore(store).withPath("objectivec-class.md", example: "superclass")
-					// execute
+
 					try! parser.run()
-					// verify
-//					expect(store.classes[0].superclass).toNot(beNil())
-//					expect(store.classes[9].superclass!.name) == "SuperClassName"
+
+					expect(store.classes[0].superclass).toNot(beNil())
+					expect(store.classes[0].superclass!.name) == "SuperClassName"
 				}
 				
-				it("should register adopted protocols") {
-					// setup
+				it("registers adopted protocols") {
 					let store = Store()
 					let parser = ObjectiveCParser().withStore(store).withPath("objectivec-class.md", example: "adopted protocols")
-					// execute
+
 					try! parser.run()
-					// verify
-//					expect(store.classes[0].adoptedProtocols.count) == 2
-//					expect(store.classes[0].adoptedProtocols[0].name) == "Protocol1"
-//					expect(store.classes[0].adoptedProtocols[1].name) == "Protocol2"
+
+					expect(store.classes[0].adoptedProtocols.count) == 2
+					expect(store.classes[0].adoptedProtocols[0].name) == "Protocol1"
+					expect(store.classes[0].adoptedProtocols[1].name) == "Protocol2"
+				}
+
+				it("registers superclass with adopted protocols") {
+					let store = Store()
+					let parser = ObjectiveCParser().withStore(store).withPath("objectivec-class.md", example: "superclass with adopted protocols")
+
+					try! parser.run()
+
+					expect(store.classes[0].superclass!.name) == "SuperClassName"
+					expect(store.classes[0].adoptedProtocols.count) == 2
+					expect(store.classes[0].adoptedProtocols[0].name) == "Protocol1"
+					expect(store.classes[0].adoptedProtocols[1].name) == "Protocol2"
 				}
 			}
 		}
