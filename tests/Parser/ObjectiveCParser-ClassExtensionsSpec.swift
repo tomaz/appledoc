@@ -6,7 +6,7 @@
 import Quick
 import Nimble
 
-class ObjectiveCParserClassSpec: QuickSpec {
+class ObjectiveCParserClassExtensionSpec: QuickSpec {
 	
 	override func spec() {
 		
