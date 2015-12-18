@@ -35,7 +35,7 @@ class Loader {
 		let value = contents.substringWithRange(exampleRange)
 		
 		// Prepare temporary path and save the example there.
-		let tempPath = NSTemporaryDirectory().stringByAppendingPathComponent("\(NSUUID())")
+		let tempPath = NSTemporaryDirectory().stringByAppendingPathComponent("\(NSUUID().UUIDString).m")
 		try! value.writeToFile(tempPath, atomically: true, encoding: NSUTF8StringEncoding)
 		
 		return PathInfo(path: tempPath)
