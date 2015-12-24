@@ -9,15 +9,15 @@ import Foundation
 
 Method group is, well, a group of methods, delimited by `@name` or `#pragma mark`.
 */
-class MethodGroupInfo {
+struct MethodGroupInfo {
 	
 	/// The name of the group.
-	lazy var name = ""
+	let name: String
 	
 	/// The range of the method group in the source file.
-	lazy var range = SourceRangeInfo()
+	var range = SourceRangeInfo()
 	
 	/// The array of methods in the order registered.
-	lazy var methods = [MethodInfo]()
+	var methods = [MethodInfo]()
 	
 }

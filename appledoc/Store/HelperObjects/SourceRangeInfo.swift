@@ -7,12 +7,12 @@ import Foundation
 
 /** Describes the range of an object in a source file.
 */
-class SourceRangeInfo {
+struct SourceRangeInfo {
 	
 	/// Starting location of the range.
-	lazy var start = SourceInfo(filename: "", line: 0, column: 0)
+	var start = SourceInfo(filename: "", line: 0, column: 0)
 	
 	/// Ending location of the range.
-	lazy var end = SourceInfo(filename: "", line: 0, column: 0)
+	var end = SourceInfo(filename: "", line: 0, column: 0)
 	
 }

@@ -7,19 +7,7 @@ import Foundation
 
 /** Describes the location of an object in its source file.
 */
-class SourceInfo: CustomStringConvertible {
-	
-	init(filename: String, line: Int, column: Int) {
-		self.filename = filename
-		self.line = line
-		self.column = column
-	}
-	
-	// MARK: - CustomStringConvertible
-	
-	var description: String {
-		return "\(filename.lastPathComponent)[\(line):\(column)]"
-	}
+struct SourceInfo {
 	
 	// MARK: - Derived properties
 	
@@ -31,11 +19,18 @@ class SourceInfo: CustomStringConvertible {
 	// MARK: - Properties
 	
 	/// Full path and filename.
-	private(set) internal var filename: String
+	let filename: String
 	
 	/// Line number within the file.
-	private(set) internal var line: Int
+	let line: Int
 	
 	/// Column number within the line.
-	private(set) internal var column: Int
+	let column: Int
+}
+
+extension SourceInfo: CustomStringConvertible {
+	
+	var description: String {
+		return "\(filename.lastPathComponent)[\(line):\(column)]"
+	}
 }
