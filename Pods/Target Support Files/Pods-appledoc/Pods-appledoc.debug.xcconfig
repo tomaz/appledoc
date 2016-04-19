@@ -1,0 +1,6 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/ParseKit" "${PODS_ROOT}/Headers/Public/RegexKitLite"
+LIBRARY_SEARCH_PATHS = $(inherited) "$CONFIGURATION_BUILD_DIR/ParseKit" "$CONFIGURATION_BUILD_DIR/RegexKitLite"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/ParseKit" -isystem "${PODS_ROOT}/Headers/Public/RegexKitLite"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"ParseKit" -l"RegexKitLite" -l"icucore" -framework "Foundation"
+PODS_ROOT = ${SRCROOT}/Pods

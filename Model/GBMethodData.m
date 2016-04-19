@@ -12,7 +12,7 @@
 #import "GBMethodData.h"
 #import "GBClassData.h"
 #import "GBCategoryData.h"
-#import "RegexKitLite.h"
+#import <RegexKitLite/RegexKitLite.h>
 
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"

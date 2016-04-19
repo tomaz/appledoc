@@ -7,7 +7,7 @@
 //
 
 #import "GBCommentsProcessor+CodeBlockProcessing.h"
-#import "RegexKitLite.h"
+#import <RegexKitLite/RegexKitLite.h>
 
 @implementation GBCommentsProcessor (CodeBlockProcessing)
 

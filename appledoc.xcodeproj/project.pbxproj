@@ -88,7 +88,6 @@
 		733EA18F122BE1810060CBDE /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		733EA190122BE1820060CBDE /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54D1A11F8D53E00CCDDB0 /* DDCliUtil.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		7340F02811FCC63100E712A4 /* NSFileManager+GBFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */; };
 		7340F02911FCC63100E712A4 /* NSObject+GBObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 7340F02711FCC63100E712A4 /* NSObject+GBObject.m */; };
 		73473D3112A38B730011336C /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73473D3012A38B730011336C /* GBHTMLOutputGenerator.m */; };
@@ -125,8 +124,6 @@
 		73AF4ECD130938F3001152DB /* GBCommentComponentsList.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECB130938F3001152DB /* GBCommentComponentsList.m */; };
 		73AF4ECF13093B5A001152DB /* GBCommentComponentsListTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */; };
 		73C4C8611377DFF70024FA77 /* GBExitCodes.m in Sources */ = {isa = PBXBuildFile; fileRef = 73C4C8601377DFF70024FA77 /* GBExitCodes.m */; };
-		73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 73CF8130122D3824005B7E26 /* RegexKitLite.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		73D2524612A2ED610024F9F9 /* GBOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */; };
 		73D54C6211F8CE6D00CCDDB0 /* appledoc.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54C6111F8CE6D00CCDDB0 /* appledoc.m */; };
 		73D54CA911F8D27F00CCDDB0 /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 73D54CA811F8D27F00CCDDB0 /* GBLog.m */; };
@@ -163,7 +160,6 @@
 		73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6DDA11FCCE6B00AAD0B9 /* GBObjectiveCParser.m */; };
 		73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E0E11FCD54400AAD0B9 /* GBStore.m */; };
 		73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */; };
-		73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */; };
 		73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */; };
 		73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC702711FCEB5300AAD0B9 /* GBTokenizer.m */; };
 		73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 73FC729811FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m */; };
@@ -179,6 +175,7 @@
 		86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		9328C127BD1269A1A2447359 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9328CE2BEBC125BF215A96C1 /* Localizable.strings */; };
+		9EFD79D4FF7B57F140A2C3C6 /* libPods-appledoc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 465357EF08B22C54D962E227 /* libPods-appledoc.a */; };
 		B4D1FFD515FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
 		B4D1FFD615FF5F05009736E2 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC115FF5F05009736E2 /* ioapi.c */; };
 		B4D1FFD715FF5F05009736E2 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFC315FF5F05009736E2 /* mztools.c */; };
@@ -216,6 +213,7 @@
 		DA98B5921972151100059171 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
 		DA98B5931972151100059171 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
 		DA98B5941972151100059171 /* GBTypedefBlockArgument.m in Sources */ = {isa = PBXBuildFile; fileRef = C5676813195840BD00E8E4C8 /* GBTypedefBlockArgument.m */; };
+		EA85ADB8B131B163E22EB0AF /* libPods-AppledocTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B4C23992C2D8D7417089FE30 /* libPods-AppledocTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -234,9 +232,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		06C403200BFF26B37F7DEDB3 /* Pods-appledoc.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appledoc.release.xcconfig"; path = "Pods/Target Support Files/Pods-appledoc/Pods-appledoc.release.xcconfig"; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2D399342F95B1BFE6B05510F /* Pods-appledoc.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appledoc.debug.xcconfig"; path = "Pods/Target Support Files/Pods-appledoc/Pods-appledoc.debug.xcconfig"; sourceTree = "<group>"; };
 		31DBC2AC18060C3C002AFE9F /* GBDocSetFinalizeGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBDocSetFinalizeGenerator.h; sourceTree = "<group>"; };
 		31DBC2AD18060C3C002AFE9F /* GBDocSetFinalizeGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBDocSetFinalizeGenerator.m; sourceTree = "<group>"; };
+		465357EF08B22C54D962E227 /* libPods-appledoc.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-appledoc.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F59754EBB8F184F0B18736D /* Pods-AppledocTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppledocTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests.release.xcconfig"; sourceTree = "<group>"; };
 		7307B310124A1929007EC6B8 /* GBObjectiveCParser-SectionsParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-SectionsParsingTesting.m"; sourceTree = "<group>"; };
 		7307B318124A1C2E007EC6B8 /* GBMethodSectionData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMethodSectionData.h; sourceTree = "<group>"; };
 		7307B319124A1C2E007EC6B8 /* GBMethodSectionData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMethodSectionData.m; sourceTree = "<group>"; };
@@ -265,7 +267,6 @@
 		733EA0F1122BDC5B0060CBDE /* GHUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GHUnit.framework; sourceTree = "<group>"; };
 		733EA125122BDD020060CBDE /* AppledocTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppledocTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		733EA138122BDE980060CBDE /* GHUnitTestMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GHUnitTestMain.m; sourceTree = "<group>"; };
-		733EA47D122CE8E70060CBDE /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		7340F02411FCC63100E712A4 /* NSFileManager+GBFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+GBFileManager.h"; sourceTree = "<group>"; };
 		7340F02511FCC63100E712A4 /* NSFileManager+GBFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+GBFileManager.m"; sourceTree = "<group>"; };
 		7340F02611FCC63100E712A4 /* NSObject+GBObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GBObject.h"; sourceTree = "<group>"; };
@@ -328,7 +329,6 @@
 		73AF4ECE13093B5A001152DB /* GBCommentComponentsListTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBCommentComponentsListTesting.m; sourceTree = "<group>"; };
 		73C4C85F1377DFF70024FA77 /* GBExitCodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBExitCodes.h; sourceTree = "<group>"; };
 		73C4C8601377DFF70024FA77 /* GBExitCodes.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBExitCodes.m; sourceTree = "<group>"; };
-		73CF8130122D3824005B7E26 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		73D2524312A2EA340024F9F9 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		73D2524412A2ED610024F9F9 /* GBOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBOutputGenerator.h; sourceTree = "<group>"; };
 		73D2524512A2ED610024F9F9 /* GBOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBOutputGenerator.m; sourceTree = "<group>"; };
@@ -389,61 +389,6 @@
 		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
 		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ClassParsingTesting.m"; sourceTree = "<group>"; };
 		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
-		73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libParseKitLib.a; sourceTree = "<group>"; };
-		73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParseKit.h; sourceTree = "<group>"; };
-		73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAlternation.h; sourceTree = "<group>"; };
-		73FC6FC711FCE9E900AAD0B9 /* PKAny.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAny.h; sourceTree = "<group>"; };
-		73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKAssembly.h; sourceTree = "<group>"; };
-		73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCaseInsensitiveLiteral.h; sourceTree = "<group>"; };
-		73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKChar.h; sourceTree = "<group>"; };
-		73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCharacterAssembly.h; sourceTree = "<group>"; };
-		73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCollectionParser.h; sourceTree = "<group>"; };
-		73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKComment.h; sourceTree = "<group>"; };
-		73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKCommentState.h; sourceTree = "<group>"; };
-		73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitedString.h; sourceTree = "<group>"; };
-		73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDelimitState.h; sourceTree = "<group>"; };
-		73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDifference.h; sourceTree = "<group>"; };
-		73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKDigit.h; sourceTree = "<group>"; };
-		73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmailState.h; sourceTree = "<group>"; };
-		73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKEmpty.h; sourceTree = "<group>"; };
-		73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKIntersection.h; sourceTree = "<group>"; };
-		73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLetter.h; sourceTree = "<group>"; };
-		73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLiteral.h; sourceTree = "<group>"; };
-		73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKLowercaseWord.h; sourceTree = "<group>"; };
-		73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKMultiLineCommentState.h; sourceTree = "<group>"; };
-		73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNegation.h; sourceTree = "<group>"; };
-		73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumber.h; sourceTree = "<group>"; };
-		73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKNumberState.h; sourceTree = "<group>"; };
-		73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParser.h; sourceTree = "<group>"; };
-		73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKParserFactory.h; sourceTree = "<group>"; };
-		73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKPattern.h; sourceTree = "<group>"; };
-		73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuotedString.h; sourceTree = "<group>"; };
-		73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKQuoteState.h; sourceTree = "<group>"; };
-		73FC6FE211FCE9E900AAD0B9 /* PKReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKReader.h; sourceTree = "<group>"; };
-		73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKRepetition.h; sourceTree = "<group>"; };
-		73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSequence.h; sourceTree = "<group>"; };
-		73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSingleLineCommentState.h; sourceTree = "<group>"; };
-		73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSpecificChar.h; sourceTree = "<group>"; };
-		73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbol.h; sourceTree = "<group>"; };
-		73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolNode.h; sourceTree = "<group>"; };
-		73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolRootNode.h; sourceTree = "<group>"; };
-		73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKSymbolState.h; sourceTree = "<group>"; };
-		73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTerminal.h; sourceTree = "<group>"; };
-		73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKToken.h; sourceTree = "<group>"; };
-		73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenArraySource.h; sourceTree = "<group>"; };
-		73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenAssembly.h; sourceTree = "<group>"; };
-		73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizer.h; sourceTree = "<group>"; };
-		73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTokenizerState.h; sourceTree = "<group>"; };
-		73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrack.h; sourceTree = "<group>"; };
-		73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTrackException.h; sourceTree = "<group>"; };
-		73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTwitterState.h; sourceTree = "<group>"; };
-		73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKTypes.h; sourceTree = "<group>"; };
-		73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKUppercaseWord.h; sourceTree = "<group>"; };
-		73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKURLState.h; sourceTree = "<group>"; };
-		73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespace.h; sourceTree = "<group>"; };
-		73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWhitespaceState.h; sourceTree = "<group>"; };
-		73FC6FF911FCE9E900AAD0B9 /* PKWord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWord.h; sourceTree = "<group>"; };
-		73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PKWordState.h; sourceTree = "<group>"; };
 		73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+GBToken.h"; sourceTree = "<group>"; };
 		73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+GBToken.m"; sourceTree = "<group>"; };
 		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
@@ -471,6 +416,7 @@
 		86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GObjectiveCParser-BlockParsingTesting.m"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		9328CE2BEBC125BF215A96C1 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Application/Localizable.strings; sourceTree = "<group>"; };
+		B4C23992C2D8D7417089FE30 /* libPods-AppledocTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AppledocTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4D1FFC015FF5F05009736E2 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
 		B4D1FFC115FF5F05009736E2 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
 		B4D1FFC215FF5F05009736E2 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
@@ -492,6 +438,7 @@
 		B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDXcodeProjectFile.m; sourceTree = "<group>"; };
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
+		B8C6F930DFCAB378D3954337 /* Pods-AppledocTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppledocTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B8F381C4197D5A84002F8B92 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
 		B8F381C5197D5A84002F8B92 /* GRMustacheAvailabilityMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheAvailabilityMacros.h; sourceTree = "<group>"; };
 		B8F381C6197D5A84002F8B92 /* GRMustacheConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheConfiguration.h; sourceTree = "<group>"; };
@@ -538,13 +485,13 @@
 				D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */,
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
 				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
-				733EA1AE122BE1B30060CBDE /* libParseKitLib.a in Frameworks */,
 				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
 				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
 				73F5689E12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D412A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
 				7355E12F1312736D00B9C000 /* libmarkdown.a in Frameworks */,
+				EA85ADB8B131B163E22EB0AF /* libPods-AppledocTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,8 +505,8 @@
 				73E4A42714F51EC400C0620F /* Cocoa.framework in Frameworks */,
 				73F5689D12A2244300A72BB2 /* SystemConfiguration.framework in Frameworks */,
 				73F568D312A22CFF00A72BB2 /* CoreServices.framework in Frameworks */,
-				73FC6FAB11FCE93400AAD0B9 /* libParseKitLib.a in Frameworks */,
 				7355E12E1312736D00B9C000 /* libmarkdown.a in Frameworks */,
+				9EFD79D4FF7B57F140A2C3C6 /* libPods-appledoc.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,6 +529,8 @@
 				08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				9328CE2BEBC125BF215A96C1 /* Localizable.strings */,
+				42A7A0656790A4D33DB97FD3 /* Pods */,
+				B04AE5C03AE0EE2BC7A7F831 /* Frameworks */,
 			);
 			name = appledoc;
 			sourceTree = "<group>";
@@ -591,9 +540,7 @@
 			children = (
 				B8F381C3197D5A84002F8B92 /* GRMustache */,
 				73FC720411FD7FB200AAD0B9 /* Test Target Only */,
-				73FC6FC411FCE9E900AAD0B9 /* ParseKit */,
 				7355E1301312737600B9C000 /* Discount */,
-				73FC6FA911FCE93400AAD0B9 /* libParseKitLib.a */,
 				B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */,
 				7355E12D1312736D00B9C000 /* libmarkdown.a */,
 				B4D1FFF215FF633F009736E2 /* libz.dylib */,
@@ -616,13 +563,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		733EA47C122CE8C40060CBDE /* RegexKitLite */ = {
+		42A7A0656790A4D33DB97FD3 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				733EA47D122CE8E70060CBDE /* RegexKitLite.h */,
-				73CF8130122D3824005B7E26 /* RegexKitLite.m */,
+				B8C6F930DFCAB378D3954337 /* Pods-AppledocTests.debug.xcconfig */,
+				4F59754EBB8F184F0B18736D /* Pods-AppledocTests.release.xcconfig */,
+				2D399342F95B1BFE6B05510F /* Pods-appledoc.debug.xcconfig */,
+				06C403200BFF26B37F7DEDB3 /* Pods-appledoc.release.xcconfig */,
 			);
-			path = RegexKitLite;
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		7340F0AB11FCC87300E712A4 /* Testing */ = {
@@ -770,7 +719,6 @@
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
 				B4D1FFBE15FF5F05009736E2 /* DDMinizip */,
 				B4D1FFD015FF5F05009736E2 /* DDUtils */,
-				733EA47C122CE8C40060CBDE /* RegexKitLite */,
 				735BCB48124EE91700FB6C4A /* Miscellaneous */,
 				C5996C98195B0E55007E9AAC /* SynthesizeSingleton.h */,
 			);
@@ -981,67 +929,6 @@
 			name = Bundle;
 			sourceTree = "<group>";
 		};
-		73FC6FC411FCE9E900AAD0B9 /* ParseKit */ = {
-			isa = PBXGroup;
-			children = (
-				73FC6FC511FCE9E900AAD0B9 /* ParseKit.h */,
-				73FC6FC611FCE9E900AAD0B9 /* PKAlternation.h */,
-				73FC6FC711FCE9E900AAD0B9 /* PKAny.h */,
-				73FC6FC811FCE9E900AAD0B9 /* PKAssembly.h */,
-				73FC6FC911FCE9E900AAD0B9 /* PKCaseInsensitiveLiteral.h */,
-				73FC6FCA11FCE9E900AAD0B9 /* PKChar.h */,
-				73FC6FCB11FCE9E900AAD0B9 /* PKCharacterAssembly.h */,
-				73FC6FCC11FCE9E900AAD0B9 /* PKCollectionParser.h */,
-				73FC6FCD11FCE9E900AAD0B9 /* PKComment.h */,
-				73FC6FCE11FCE9E900AAD0B9 /* PKCommentState.h */,
-				73FC6FCF11FCE9E900AAD0B9 /* PKDelimitedString.h */,
-				73FC6FD011FCE9E900AAD0B9 /* PKDelimitState.h */,
-				73FC6FD111FCE9E900AAD0B9 /* PKDifference.h */,
-				73FC6FD211FCE9E900AAD0B9 /* PKDigit.h */,
-				73FC6FD311FCE9E900AAD0B9 /* PKEmailState.h */,
-				73FC6FD411FCE9E900AAD0B9 /* PKEmpty.h */,
-				73FC6FD511FCE9E900AAD0B9 /* PKIntersection.h */,
-				73FC6FD611FCE9E900AAD0B9 /* PKLetter.h */,
-				73FC6FD711FCE9E900AAD0B9 /* PKLiteral.h */,
-				73FC6FD811FCE9E900AAD0B9 /* PKLowercaseWord.h */,
-				73FC6FD911FCE9E900AAD0B9 /* PKMultiLineCommentState.h */,
-				73FC6FDA11FCE9E900AAD0B9 /* PKNegation.h */,
-				73FC6FDB11FCE9E900AAD0B9 /* PKNumber.h */,
-				73FC6FDC11FCE9E900AAD0B9 /* PKNumberState.h */,
-				73FC6FDD11FCE9E900AAD0B9 /* PKParser.h */,
-				73FC6FDE11FCE9E900AAD0B9 /* PKParserFactory.h */,
-				73FC6FDF11FCE9E900AAD0B9 /* PKPattern.h */,
-				73FC6FE011FCE9E900AAD0B9 /* PKQuotedString.h */,
-				73FC6FE111FCE9E900AAD0B9 /* PKQuoteState.h */,
-				73FC6FE211FCE9E900AAD0B9 /* PKReader.h */,
-				73FC6FE311FCE9E900AAD0B9 /* PKRepetition.h */,
-				73FC6FE411FCE9E900AAD0B9 /* PKSequence.h */,
-				73FC6FE511FCE9E900AAD0B9 /* PKSingleLineCommentState.h */,
-				73FC6FE611FCE9E900AAD0B9 /* PKSpecificChar.h */,
-				73FC6FE711FCE9E900AAD0B9 /* PKSymbol.h */,
-				73FC6FE811FCE9E900AAD0B9 /* PKSymbolNode.h */,
-				73FC6FE911FCE9E900AAD0B9 /* PKSymbolRootNode.h */,
-				73FC6FEA11FCE9E900AAD0B9 /* PKSymbolState.h */,
-				73FC6FEB11FCE9E900AAD0B9 /* PKTerminal.h */,
-				73FC6FEC11FCE9E900AAD0B9 /* PKToken.h */,
-				73FC6FED11FCE9E900AAD0B9 /* PKTokenArraySource.h */,
-				73FC6FEE11FCE9E900AAD0B9 /* PKTokenAssembly.h */,
-				73FC6FEF11FCE9E900AAD0B9 /* PKTokenizer.h */,
-				73FC6FF011FCE9E900AAD0B9 /* PKTokenizerState.h */,
-				73FC6FF111FCE9E900AAD0B9 /* PKTrack.h */,
-				73FC6FF211FCE9E900AAD0B9 /* PKTrackException.h */,
-				73FC6FF311FCE9E900AAD0B9 /* PKTwitterState.h */,
-				73FC6FF411FCE9E900AAD0B9 /* PKTypes.h */,
-				73FC6FF511FCE9E900AAD0B9 /* PKUppercaseWord.h */,
-				73FC6FF611FCE9E900AAD0B9 /* PKURLState.h */,
-				73FC6FF711FCE9E900AAD0B9 /* PKWhitespace.h */,
-				73FC6FF811FCE9E900AAD0B9 /* PKWhitespaceState.h */,
-				73FC6FF911FCE9E900AAD0B9 /* PKWord.h */,
-				73FC6FFA11FCE9E900AAD0B9 /* PKWordState.h */,
-			);
-			path = ParseKit;
-			sourceTree = "<group>";
-		};
 		73FC720411FD7FB200AAD0B9 /* Test Target Only */ = {
 			isa = PBXGroup;
 			children = (
@@ -1071,6 +958,15 @@
 				D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */,
 			);
 			name = Helpers;
+			sourceTree = "<group>";
+		};
+		B04AE5C03AE0EE2BC7A7F831 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B4C23992C2D8D7417089FE30 /* libPods-AppledocTests.a */,
+				465357EF08B22C54D962E227 /* libPods-appledoc.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		B4D1FFBE15FF5F05009736E2 /* DDMinizip */ = {
@@ -1153,11 +1049,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 733EA12A122BDD110060CBDE /* Build configuration list for PBXNativeTarget "AppledocTests" */;
 			buildPhases = (
+				DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */,
 				733EA121122BDD020060CBDE /* Resources */,
 				733EA122122BDD020060CBDE /* Sources */,
 				733EA123122BDD020060CBDE /* Frameworks */,
 				D818BACD15203A9E00B26451 /* CopyFiles */,
 				9E9653391791A3DA0086251B /* ShellScript */,
+				17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */,
+				0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1172,10 +1071,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
+				8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */,
 				B4D1FFE715FF60B7009736E2 /* ShellScript */,
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
 				B4D1FFF515FF637A009736E2 /* ShellScript */,
+				3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1228,6 +1129,66 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-appledoc/Pods-appledoc-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		9E9653391791A3DA0086251B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1266,6 +1227,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "rm default_templates.zip";
+		};
+		DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1354,7 +1330,6 @@
 				7317CC1212B113CF009DAA15 /* DDGetoptLongParser.m in Sources */,
 				7317CC0F12B113AE009DAA15 /* DDCliApplication.m in Sources */,
 				733EA194122BE1A30060CBDE /* DDCliUtil.m in Sources */,
-				73CF8132122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				73F568C012A22A7900A72BB2 /* DDASLLogger.m in Sources */,
 				73F568C212A22A7900A72BB2 /* DDFileLogger.m in Sources */,
 				73F568C412A22A7900A72BB2 /* DDLog.m in Sources */,
@@ -1421,7 +1396,6 @@
 				731D2BF512045A61003180E7 /* NSString+GBString.m in Sources */,
 				73F70DB71227B34300D19EBA /* GBComment.m in Sources */,
 				733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */,
-				73CF8131122D3824005B7E26 /* RegexKitLite.m in Sources */,
 				7367298412A3D7A000879D1B /* NSError+GBError.m in Sources */,
 				73F2CA76123E4161009B406B /* GBCommentsProcessor.m in Sources */,
 				73F2CA77123E4161009B406B /* GBProcessor.m in Sources */,
@@ -1474,6 +1448,7 @@
 /* Begin XCBuildConfiguration section */
 		1DEB927508733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2D399342F95B1BFE6B05510F /* Pods-appledoc.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1495,7 +1470,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
-					"-licucore",
+					"$(inherited)",
 					"-sectcreate",
 					__ZIP,
 					__templates,
@@ -1507,6 +1482,7 @@
 		};
 		1DEB927608733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 06C403200BFF26B37F7DEDB3 /* Pods-appledoc.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1526,7 +1502,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
-					"-licucore",
+					"$(inherited)",
 					"-sectcreate",
 					__ZIP,
 					__templates,
@@ -1563,7 +1539,10 @@
 					"$(SRCROOT)/Common/ThirdParty",
 				);
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "-licucore";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"$(inherited)",
+				);
 				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Debug;
@@ -1592,13 +1571,17 @@
 					"$(SRCROOT)/Libraries",
 					"$(SRCROOT)/Common/ThirdParty",
 				);
-				OTHER_LDFLAGS = "-licucore";
+				OTHER_LDFLAGS = (
+					"-licucore",
+					"$(inherited)",
+				);
 				RUN_CLANG_STATIC_ANALYZER = NO;
 			};
 			name = Release;
 		};
 		733EA127122BDD020060CBDE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8C6F930DFCAB378D3954337 /* Pods-AppledocTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1629,7 +1612,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
-					"-licucore",
+					"$(inherited)",
 				);
 				PRODUCT_NAME = AppledocTests;
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -1638,6 +1621,7 @@
 		};
 		733EA128122BDD020060CBDE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4F59754EBB8F184F0B18736D /* Pods-AppledocTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1666,7 +1650,7 @@
 					Foundation,
 					"-framework",
 					AppKit,
-					"-licucore",
+					"$(inherited)",
 				);
 				PRODUCT_NAME = AppledocTests;
 			};

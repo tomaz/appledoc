@@ -201,9 +201,15 @@ typedef uint32_t RKLLookasideCache_t;
 #pragma mark -
 #pragma mark Utility functions and macros
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+
 RKL_STATIC_INLINE BOOL NSRangeInsideRange(NSRange cin, NSRange win) {
 	return(((cin.location - win.location) <= win.length) && ((NSMaxRange(cin) - win.location) <= win.length));
 }
+
+#pragma clang diagnostic pop
+
 
 #define NSMakeRange(loc, len) ((NSRange){.location = (NSUInteger)(loc),      .length = (NSUInteger)(len)})
 #define CFMakeRange(loc, len) ((CFRange){.location = (CFIndex)(loc),         .length = (CFIndex)(len)})

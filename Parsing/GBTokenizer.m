@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "RegexKitLite.h"
+#import <RegexKitLite/RegexKitLite.h>
 #import "PKToken+GBToken.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBSourceInfo.h"

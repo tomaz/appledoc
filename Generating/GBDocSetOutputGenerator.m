@@ -6,7 +6,7 @@
 //  Copyright 2010 Gentle Bytes. All rights reserved.
 //
 
-#import "RegexKitLite.h"
+//#import <RegexKitLite/RegexKitLite.h>
 #import "GRMustache/GRMustache.h"
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ParseKit.h"
+#import <ParseKit/ParseKit.h>
 
 @class GBSourceInfo;
 @class GBComment;
