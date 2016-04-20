@@ -197,8 +197,6 @@
 		B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B4D1FFF215FF633F009736E2 /* libz.dylib */; };
 		B8BBC0F7196DFAEB006F239D /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; };
-		B8F381D6197D5AAB002F8B92 /* libGRMustache7-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */; };
-		B8F381D7197D5ABE002F8B92 /* libGRMustache7-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */; };
 		C8005C9D1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */; };
 		C8005C9E1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
@@ -439,24 +437,6 @@
 		B4D1FFF215FF633F009736E2 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		B4D1FFF615FF643D009736E2 /* install-appledoc.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "install-appledoc.sh"; sourceTree = "<group>"; };
 		B8C6F930DFCAB378D3954337 /* Pods-AppledocTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AppledocTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests.debug.xcconfig"; sourceTree = "<group>"; };
-		B8F381C4197D5A84002F8B92 /* GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustache.h; sourceTree = "<group>"; };
-		B8F381C5197D5A84002F8B92 /* GRMustacheAvailabilityMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheAvailabilityMacros.h; sourceTree = "<group>"; };
-		B8F381C6197D5A84002F8B92 /* GRMustacheConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheConfiguration.h; sourceTree = "<group>"; };
-		B8F381C7197D5A84002F8B92 /* GRMustacheContentType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheContentType.h; sourceTree = "<group>"; };
-		B8F381C8197D5A84002F8B92 /* GRMustacheContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheContext.h; sourceTree = "<group>"; };
-		B8F381C9197D5A84002F8B92 /* GRMustacheError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheError.h; sourceTree = "<group>"; };
-		B8F381CA197D5A84002F8B92 /* GRMustacheFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheFilter.h; sourceTree = "<group>"; };
-		B8F381CB197D5A84002F8B92 /* GRMustacheLocalizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheLocalizer.h; sourceTree = "<group>"; };
-		B8F381CC197D5A84002F8B92 /* GRMustacheRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheRendering.h; sourceTree = "<group>"; };
-		B8F381CD197D5A84002F8B92 /* GRMustacheSafeKeyAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheSafeKeyAccess.h; sourceTree = "<group>"; };
-		B8F381CE197D5A84002F8B92 /* GRMustacheTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheTag.h; sourceTree = "<group>"; };
-		B8F381CF197D5A84002F8B92 /* GRMustacheTagDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheTagDelegate.h; sourceTree = "<group>"; };
-		B8F381D0197D5A84002F8B92 /* GRMustacheTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheTemplate.h; sourceTree = "<group>"; };
-		B8F381D1197D5A84002F8B92 /* GRMustacheTemplateRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheTemplateRepository.h; sourceTree = "<group>"; };
-		B8F381D2197D5A84002F8B92 /* GRMustacheVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GRMustacheVersion.h; sourceTree = "<group>"; };
-		B8F381D3197D5A84002F8B92 /* NSFormatter+GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFormatter+GRMustache.h"; sourceTree = "<group>"; };
-		B8F381D4197D5A84002F8B92 /* NSValueTransformer+GRMustache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+GRMustache.h"; sourceTree = "<group>"; };
-		B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libGRMustache7-iOS.a"; sourceTree = "<group>"; };
 		C567680F1958403800E8E4C8 /* GBTypedefBlockData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockData.h; sourceTree = "<group>"; };
 		C56768101958403800E8E4C8 /* GBTypedefBlockData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefBlockData.m; sourceTree = "<group>"; };
 		C5676812195840BD00E8E4C8 /* GBTypedefBlockArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockArgument.h; sourceTree = "<group>"; };
@@ -480,7 +460,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8F381D7197D5ABE002F8B92 /* libGRMustache7-iOS.a in Frameworks */,
 				B4D1FFF415FF634F009736E2 /* libz.dylib in Frameworks */,
 				D818BAC0152039DC00B26451 /* GHUnit.framework in Frameworks */,
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
@@ -499,7 +478,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8F381D6197D5AAB002F8B92 /* libGRMustache7-iOS.a in Frameworks */,
 				B4D1FFF315FF633F009736E2 /* libz.dylib in Frameworks */,
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
 				73E4A42714F51EC400C0620F /* Cocoa.framework in Frameworks */,
@@ -538,10 +516,8 @@
 		08FB779DFE84155DC02AAC07 /* Libraries & Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B8F381C3197D5A84002F8B92 /* GRMustache */,
 				73FC720411FD7FB200AAD0B9 /* Test Target Only */,
 				7355E1301312737600B9C000 /* Discount */,
-				B8F381D5197D5AAB002F8B92 /* libGRMustache7-iOS.a */,
 				7355E12D1312736D00B9C000 /* libmarkdown.a */,
 				B4D1FFF215FF633F009736E2 /* libz.dylib */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
@@ -1016,30 +992,6 @@
 				B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */,
 			);
 			path = DDUtils;
-			sourceTree = "<group>";
-		};
-		B8F381C3197D5A84002F8B92 /* GRMustache */ = {
-			isa = PBXGroup;
-			children = (
-				B8F381C4197D5A84002F8B92 /* GRMustache.h */,
-				B8F381C5197D5A84002F8B92 /* GRMustacheAvailabilityMacros.h */,
-				B8F381C6197D5A84002F8B92 /* GRMustacheConfiguration.h */,
-				B8F381C7197D5A84002F8B92 /* GRMustacheContentType.h */,
-				B8F381C8197D5A84002F8B92 /* GRMustacheContext.h */,
-				B8F381C9197D5A84002F8B92 /* GRMustacheError.h */,
-				B8F381CA197D5A84002F8B92 /* GRMustacheFilter.h */,
-				B8F381CB197D5A84002F8B92 /* GRMustacheLocalizer.h */,
-				B8F381CC197D5A84002F8B92 /* GRMustacheRendering.h */,
-				B8F381CD197D5A84002F8B92 /* GRMustacheSafeKeyAccess.h */,
-				B8F381CE197D5A84002F8B92 /* GRMustacheTag.h */,
-				B8F381CF197D5A84002F8B92 /* GRMustacheTagDelegate.h */,
-				B8F381D0197D5A84002F8B92 /* GRMustacheTemplate.h */,
-				B8F381D1197D5A84002F8B92 /* GRMustacheTemplateRepository.h */,
-				B8F381D2197D5A84002F8B92 /* GRMustacheVersion.h */,
-				B8F381D3197D5A84002F8B92 /* NSFormatter+GRMustache.h */,
-				B8F381D4197D5A84002F8B92 /* NSValueTransformer+GRMustache.h */,
-			);
-			path = GRMustache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

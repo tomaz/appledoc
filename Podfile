@@ -2,16 +2,13 @@ platform :osx
 
 def default_pods
     pod 'RegexKitLite', :git => 'https://github.com/inquisitiveSoft/RegexKitLite.git'
-    #ParseKit '0.5' using latest RegexKitLite
+    #ParseKit '0.0.0.2010.4.29' using latest RegexKitLite
     pod 'ParseKit', :podspec => 'parsekit.podspec.json'
+    pod 'GRMustache', '~> 7.0.2'
 end
 
 target 'appledoc' do
     default_pods
-
-    #target 'AppledocTests' do
-    #    inherit! :search_paths
-    #end
 end
 
 target 'AppledocTests' do

@@ -7,7 +7,7 @@
 //
 
 #import <RegexKitLite/RegexKitLite.h>
-#import "GRMustache/GRMustache.h"
+#import <GRMustache/GRMustache.h>
 #import "GBTemplateHandler.h"
 
 static NSString *kGBSectionKey = @"section";
