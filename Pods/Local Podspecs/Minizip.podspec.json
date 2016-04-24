@@ -1,0 +1,41 @@
+{
+  "name": "Minizip",
+  "version": "1.1.0.2016.04.24",
+  "license": "zlib",
+  "summary": "Minizip contrib in zlib with latest bug fixes that supports PKWARE disk spanning, AES encryption, and IO buffering",
+  "description": "Minizip zlib contribution that includes:\n* AES encryption\n* I/O buffering\n* PKWARE disk spanning\nIt also has the latest bug fixes that having been found all over the internet including the minizip forum and zlib developer's mailing list.",
+  "homepage": "http://www.winimage.com/zLibDll/minizip.html",
+  "authors": [
+    "Gilles Vollant",
+    "Nathan Moinvaziri"
+  ],
+  "source": {
+    "git": "https://github.com/nmoinvaz/minizip.git"
+  },
+  "libraries": "z",
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  },
+  "subspecs": [
+    {
+      "name": "Core",
+      "source_files": [
+        "{ioapi,ioapi_mem,ioapi_buf,unzip,zip}.{c,h}",
+        "crypt.h"
+      ],
+      "public_header_files": "{ioapi,unzip,zip}.h"
+    },
+    {
+      "name": "AES",
+      "source_files": [
+        "aes/*.{c,h}",
+        "{ioapi,ioapi_mem,ioapi_buf,unzip,zip}.{c,h}",
+        "crypt.h"
+      ],
+      "public_header_files": "{ioapi,unzip,zip}.h"
+    }
+  ]
+}

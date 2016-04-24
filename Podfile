@@ -7,6 +7,7 @@ def default_pods
     #Discount '2.1.5a' with configure and make
     pod 'Discount', :podspec => 'Specs/Discount.podspec'
     pod 'GRMustache', '~> 7.0.2'
+    pod 'Minizip/Core', :podspec => 'Specs/Minizip.podspec'
 end
 
 target 'appledoc' do
