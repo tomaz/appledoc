@@ -1,4 +1,5 @@
 PODS:
+  - Discount (2.1.5a)
   - GRMustache (7.0.2):
     - JRSwizzle (~> 1.0)
   - JRSwizzle (1.0)
@@ -7,13 +8,16 @@ PODS:
   - RegexKitLite (4.0.6)
 
 DEPENDENCIES:
+  - Discount (from `Specs/Discount.podspec`)
   - GRMustache (~> 7.0.2)
-  - ParseKit (from `parsekit.podspec.json`)
+  - ParseKit (from `Specs/ParseKit.podspec`)
   - RegexKitLite (from `https://github.com/inquisitiveSoft/RegexKitLite.git`)
 
 EXTERNAL SOURCES:
+  Discount:
+    :podspec: Specs/Discount.podspec
   ParseKit:
-    :podspec: parsekit.podspec.json
+    :podspec: Specs/ParseKit.podspec
   RegexKitLite:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
@@ -23,11 +27,12 @@ CHECKOUT OPTIONS:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 SPEC CHECKSUMS:
+  Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  ParseKit: 55703b14df25add83d90d365f5c25c4417cad421
+  ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: dfa8160d1b4b03f05c8d4702cbfd82ca5cd5fb75
+PODFILE CHECKSUM: 1ef840d61fc722c5a2dadeb6663f2b4f7c040e02
 
 COCOAPODS: 1.0.0.beta.8
