@@ -160,32 +160,42 @@
 
 + (GBStore *)storeWithClassWithName:(NSString *)name {
 	GBClassData *class = [GBClassData classDataWithName:name];
-	return [self storeByPerformingSelector:@selector(registerClass:) withObject:class];
+    GBStore *store = [self store];
+    [store registerClass:class];
+    return store;
 }
 
 + (GBStore *)storeWithClassWithComment:(id)comment {
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[self registerComment:comment forObject:class];
-	return [self storeByPerformingSelector:@selector(registerClass:) withObject:class];
+    GBStore *store = [self store];
+    [store registerClass:class];
+    return store;
 }
 
 + (GBStore *)storeWithCategoryWithComment:(id)comment {
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	[self registerComment:comment forObject:category];
-	return [self storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+    GBStore *store = [self store];
+	[store registerCategory:category];
+    return store;
 }
 
 + (GBStore *)storeWithProtocolWithComment:(id)comment {
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	[self registerComment:comment forObject:protocol];
-	return [self storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+    GBStore *store = [self store];
+	[store registerProtocol:protocol];
+    return store;
 }
 
 + (GBStore *)storeWithDocumentWithComment:(id)comment {
 	// Note that we still assign the comment so that we can use mocks for testing - because of that we can safely pass arbitrary string to contents!
 	GBDocumentData *document = [GBDocumentData documentDataWithContents:@"contents" path:@"path"];
 	[self registerComment:comment forObject:document];
-	return [self storeByPerformingSelector:@selector(registerDocument:) withObject:document];
+    GBStore *store = [self store];
+	[store registerDocument:document];
+    return store;
 }
 
 + (GBStore *)storeWithObjects:(id)first, ... {
@@ -204,12 +214,6 @@
 			[result registerClass:object];
 	}
 	va_end(args);
-	return result;
-}
-
-+ (GBStore *)storeByPerformingSelector:(SEL)selector withObject:(id)object {
-	GBStore *result = [self store];
-	[result performSelector:selector withObject:object];
 	return result;
 }
 

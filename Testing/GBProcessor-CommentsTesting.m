@@ -45,7 +45,8 @@
 	GBClassData *class = [GBClassData classDataWithName:@"Class"];
 	[class.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[class.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+    GBStore *store = [GBTestObjectsRegistry store];
+    [store registerClass:class];
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify - we just want to make sure we invoke comments processing!
@@ -85,7 +86,8 @@
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:@"Category" className:@"Class"];
 	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[category.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerCategory:) withObject:category];
+    GBStore *store = [GBTestObjectsRegistry store];
+    [store registerCategory:category];
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify - we just want to make sure we invoke comments processing!
@@ -125,7 +127,8 @@
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:@"Protocol"];
 	[protocol.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method1" comment:comment1]];
 	[protocol.methods registerMethod:[GBTestObjectsRegistry instanceMethodWithName:@"method2" comment:comment2]];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerProtocol:) withObject:protocol];
+    GBStore *store = [GBTestObjectsRegistry store];
+    [store registerProtocol:protocol];
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify - we just want to make sure we invoke comments processing!
@@ -178,7 +181,8 @@
 	GBMethodData *method = [GBTestObjectsRegistry instanceMethodWithNames:@"arg1", @"arg2", @"arg3", nil];
 	[method setComment:comment];
 	[class.methods registerMethod:method];
-	GBStore *store = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
+    GBStore *store = [GBTestObjectsRegistry store];
+    [store registerClass:class];
 	// execute
 	[processor processObjectsFromStore:store];
 	// verify
@@ -211,8 +215,9 @@
 	GBMethodData *method = [GBTestObjectsRegistry propertyMethodWithArgument:@"val"];
 	[method setComment:comment];
 	[class.methods registerMethod:method];
-	GBStore *result = [GBTestObjectsRegistry storeByPerformingSelector:@selector(registerClass:) withObject:class];
-	return result;
+    GBStore *store = [GBTestObjectsRegistry store];
+    [store registerClass:class];
+	return store;
 }
 
 @end
