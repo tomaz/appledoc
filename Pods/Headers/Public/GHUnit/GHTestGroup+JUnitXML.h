@@ -1,0 +1,1 @@
+../../../GHUnit/Classes/GHTest/GHTestGroup+JUnitXML.h

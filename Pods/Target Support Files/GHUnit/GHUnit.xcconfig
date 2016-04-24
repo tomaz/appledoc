@@ -1,0 +1,7 @@
+CONFIGURATION_BUILD_DIR = $PODS_SHARED_BUILD_DIR/GHUnit
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/GHUnit" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Discount" "${PODS_ROOT}/Headers/Public/GHUnit" "${PODS_ROOT}/Headers/Public/GRMustache" "${PODS_ROOT}/Headers/Public/JRSwizzle" "${PODS_ROOT}/Headers/Public/Minizip" "${PODS_ROOT}/Headers/Public/ParseKit" "${PODS_ROOT}/Headers/Public/RegexKitLite"
+PODS_ROOT = ${SRCROOT}
+PODS_SHARED_BUILD_DIR = $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PRODUCT_BUNDLE_IDENTIFIER = org.cocoapods.${PRODUCT_NAME:rfc1034identifier}
+SKIP_INSTALL = YES

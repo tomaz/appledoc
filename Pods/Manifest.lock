@@ -1,5 +1,6 @@
 PODS:
   - Discount (2.1.5a)
+  - GHUnit (0.5.8)
   - GRMustache (7.0.2):
     - JRSwizzle (~> 1.0)
   - JRSwizzle (1.0)
@@ -10,6 +11,7 @@ PODS:
 
 DEPENDENCIES:
   - Discount (from `Specs/Discount.podspec`)
+  - GHUnit (~> 0.5)
   - GRMustache (~> 7.0.2)
   - Minizip/Core (from `Specs/Minizip.podspec`)
   - ParseKit (from `Specs/ParseKit.podspec`)
@@ -35,12 +37,13 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
+  GHUnit: f1397fde79512acb1e38fe7375019bf74f80b0e7
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   Minizip: be754b29296e4bcfefdeae2e4ef91ec9dd35e54b
   ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: 4d76d3d4c3b4356d321fd329b6fe6e118e3d888e
+PODFILE CHECKSUM: 17b4b9e8a135e38746246cb0d9783ba5ef73382e
 
 COCOAPODS: 1.0.0.beta.8

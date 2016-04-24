@@ -243,7 +243,7 @@
     [processor2 processComment:comment2 withContext:nil store:store];
     // verify
     NSString *expected = raw;
-    [self assertComment:comment1 matchesLongDescMarkdown:raw, nil];
+    [self assertComment:comment1 matchesLongDescMarkdown:expected, nil];
     expected = [NSString stringWithFormat:@"~!@%@@!~", [rawStrings componentsJoinedByString:@"@!~ some text ~!@"]];
     [self assertComment:comment2 matchesLongDescMarkdown:expected, nil];
 }
