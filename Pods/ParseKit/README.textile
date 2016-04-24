@@ -1,0 +1,213 @@
+h1. "ParseKit - Cocoa Objective-C Framework for parsing, tokenizing and language processing":http://parsekit.com/
+
+ParseKit is a Mac OS X Framework written by Todd Ditchendorf in Objective-C 2.0 and released under the Apache Open Source License Version 2.0. ParseKit is suitable for use on Mac OS X Leopard, Snow Leopard or "iPhone OS":iphone.html. ParseKit is an Objective-C implementation of the tools described in "Building Parsers with Java":http://www.amazon.com/Building-Parsers-Java-Steven-Metsker/dp/0201719622 by Steven John Metsker. ParseKit includes additional features beyond the designs from the book and also some changes to match common Cocoa/Objective-C conventions. These changes are relatively superficial, however, and Metsker's book is the best documentation available for ParseKit.
+
+The ParseKit Framework offers 3 basic services of general interest to Cocoa developers:
+
+1. **"String Tokenization":http://parsekit.com/tokenization.html** via the Objective-C PKTokenizer and PKToken classes.
+2. **High-Level Language Parsing via Objective-C** - An Objective-C parser-building API (the PKParser class and sublcasses).
+3. **"Objective-C Parser Generation via Grammars":http://parsekit.com/grammars.html** - Generate an Objective-C parser for your custom language using a "BNF":http://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form-style grammar syntax (similar to yacc or ANTLR). While parsing, the parser will provide callbacks to your Objective-C code.
+
+
+h2. More documentation:
+
+* "Instructions for including ParseKit in your iPhone OS app":http://parsekit.com/iphone.html
+
+h2. Projects using ParseKit:
+
+	"Spike":http://lucidmac.com/products/spike: A Rails log file viewer/analyzer by Matt Mower
+	"JSTalk":http://github.com/ccgus/jstalk/tree/master: Interprocess Cocoa scripting with JavaScript by Gus Mueller
+	"Objective-J Port":http://github.com/boucher/tdparsekit/tree/master of ParseKit by Ross Boucher
+	"HTTP Client":http://tr.im/http: HTTP debugging/testing tool
+	"Fluid":http://fluidapp.com: Site-Specific Browser for Mac OS X
+	"Cruz":http://cruzapp.com: Social Browser for Mac OS X
+	"OkudaKit":http://parsekit.com/okudakit: Syntax Highlighting Framework for Mac OS X
+	"Exedore":http://tr.im/exedore: XPath 1.0 implemented in Cocoa (ported from "Saxon":http://saxonica.com/)
+
+h2. Xcode Project
+
+The ParseKit Xcode project consists of 6 targets:
+
+**ParseKit** : the ParseKit Objective-C framework. The central feature/codebase of this project.
+**Tests** : a UnitTest Bundle containing hundreds of unit tests (actually, more correctly, interaction tests) for the framework as well as some example classes that serve as real-world uses of the framework.
+**DemoApp** : A simple Cocoa demo app that gives a visual presentation of the results of tokenizing text using the PKTokenizer class.
+**DebugApp** : A simple Cocoa app that exists only to run arbitrary test code thru GDB with breakpoints for debugging (I was not able to do that with the UnitTest bundle).
+**JSParseKit** : A JavaScriptCore-based scripting interface to ParseKit which can be used to expose the entire framework to JavaScript environments.
+**JSDemoApp**: A simple Cocoa application used for exercising the JavaScript interface provided by JSParseKit. Note that this is the only target which links to the WebKit framework. Neither ParseKit nor JSParseKit requires WebKit.
+
+h2. ParseKit Framework
+
+h3. Tokenization
+
+The API for tokenization is provided by the PKTokenizer class. Cocoa developers will be familiar with the NSScanner class provided by the Foundation Framework which provides a similar service. However, the PKTokenizer class is simpler and more powerful for many use cases.
+Example usage:
+
+
+<pre>
+NSString *s = @""It's 123 blast-off!", she said, // watch out!n"
+              @"and <= 3.5 'ticks' later /* wince */, it's blast-off!";
+PKTokenizer *t = [PKTokenizer tokenizerWithString:s];
+PKToken *eof = [PKToken EOFToken];
+PKToken *tok = nil;
+while ((tok = [t nextToken]) != eof) {
+    NSLog(@" (%@)", tok);
+}
+</pre>
+
+outputs:
+
+<pre> 
+ ("It's 123 blast-off!")
+ (,)
+ (she)
+ (said)
+ (,)
+ (and)
+ (<=)
+ (3.5)
+ ('ticks')
+ (later)
+ (,)
+ (it's)
+ (blast-off)
+ (!)
+</pre>
+
+Each token produced is an object of class PKToken. PKTokens have a tokenType (Word, Symbol, Num, QuotedString, etc.) and both a stringValue and a floatValue.
+More information about a token can be easily discovered using the -debugDescription method instead of the default -description. Replace the line containing NSLog above with this line:
+
+
+<pre>
+NSLog(@" (%@)", [tok debugDescription]);
+</pre>
+
+and each token's type will be printed as well:
+
+<pre>
+ <Quoted String «"It's 123 blast-off!"»>
+ <Symbol «,»>
+ <Word «she»>
+ <Word «said»>
+ <Symbol «,»>
+ <Word «and»>
+ <Symbol «<=»>
+ <Number «3.5»>
+ <Quoted String «'ticks'»>
+ <Word «later»>
+ <Symbol «,»>
+ <Word «it's»>
+ <Word «blast-off»>
+ <Symbol «!»>
+</pre>
+
+As you can see from the output, PKTokenzier is configured by default to properly group characters into tokens including:
+
+* single- and double-quoted string tokens
+* common multiple character symbols (<=)
+* apostrophes, dashes and other symbol chars that should not signal the start of a new Symbol token, but rather be included in the current Word or Num token (it's, blast-off, 3.5)	
+* silently ignoring C- and C++-style comments
+* silently ignoring whitespace
+
+The PKTokenizer class is very flexible, and **all** of those features are configurable. PKTokenizer may be configured to:
+
+* recognize more (or fewer) multi-char symbols. ex: 
+
+<pre>[t.symbolState add:@"!="];</pre>
+
+allows != to be recognized as a single Symbol token rather than two adjacent Symbol tokens
+
+*add new internal symbol chars to be included in the current Word token OR recognize internal symbols like apostrophe and dash to actually signal a new Symbol token rather than being part of the current Word token. ex: 
+
+<pre>[t.wordState setWordChars:YES from:'_' to:'_'];</pre>
+
+allows Word tokens to contain internal underscores	
+
+<pre>[t.wordState setWordChars:NO from:'-' to:'-'];</pre>
+
+disallows Word tokens from containing internal dashes.	
+
+* change which chars singnal the start of a token of any given type. ex: 
+
+<pre>[t setTokenizerState:t.wordState from:'_' to:'_'];</pre>
+
+allows Word tokens to start with underscore
+
+<pre>[t setTokenizerState:t.quoteState from:'*' to:'*'];</pre>
+allows Quoted String tokens to start with an asterisk, effectively making * a new quote symbol (like " or ')
+
+* turn off recognition of single-line "slash-slash" (//) comments. ex: 
+
+<pre>[t setTokenizerState:t.symbolState from:'/' to:'/'];</pre>
+
+slash chars now produce individual Symbol tokens rather than causing the tokenizer to strip text until the next newline char or begin striping for a multiline comment if appropriate (/*)
+
+* turn on recognition of "hash" (#) single-line comments. ex: 
+
+<pre>[t setTokenizerState:t.commentState from:'#' to:'#'];
+[t.commentState addSingleLineStartSymbol:@"#"];</pre>
+
+
+* turn on recognition of "XML/HTML" (<!-- -->) multi-line comments. ex: 
+
+<pre>[t setTokenizerState:t.commentState from:'<' to:'<'];
+[t.commentState addMultiLineStartSymbol:@"<!--" endSymbol:@"-->"];</pre>
+
+
+* report (rather than silently consume) Comment tokens. ex: 
+
+<pre>t.commentState.reportsCommentTokens = YES; // default is NO</pre>
+
+
+* report (rather than silently consume) Whitespace tokens. ex: 
+
+<pre>t.whitespaceState.reportsWhitespaceTokens = YES; // default is NO</pre>
+
+
+* turn on recognition of any characters (say, digits) as whitespace to be silently ignored. ex: 
+
+<pre>[t setTokenizerState:t.whitespaceState from:'0' to:'9'];</pre>
+
+
+
+
+h3. Parsing
+
+ParseKit also includes a collection of token parser subclasses (of the abstract PKParser class) including collection parsers such as PKAlternation, PKSequence, and PKRepetition as well as terminal parsers including PKWord, PKNum, PKSymbol, PKQuotedString, etc. Also included are parser subclasses which work in individual chars such as PKChar, PKDigit, and PKSpecificChar. These char parsers are useful for things like RegEx parsing. Generally speaking though, the token parsers will be more useful and interesting.
+
+The parser classes represent a **Composite** pattern. Programs can build a composite parser, in **Objective-C** (rather than a separate language like with lex&yacc), from a collection of terminal parsers composed into alternations, sequences, and repetitions to represent an infinite number of languages.
+
+Parsers built from ParseKit are **non-deterministic, recursive descent parsers**, which basically means they trade some performance for ease of user programming and simplicity of implementation.
+
+Here is an example of how one might build a parser for a simple voice-search command language (note: ParseKit does not include any kind of speech recognition technology). The language consists of:
+
+<pre>search google for? <search-term></pre>
+
+
+<pre>
+...
+	[self parseString:@"search google 'iphone'"];
+...
+- (void)parseString:(NSString *)s {
+	PKSequence *parser = [PKSequence sequence];
+	[parser add:[[PKLiteral literalWithString:@"search"] discard]];
+	[parser add:[[PKLiteral literalWithString:@"google"] discard]];
+	PKAlternation *optionalFor = [PKAlternation alternation];
+	[optionalFor add:[PKEmpty empty]];
+	[optionalFor add:[PKLiteral literalWithString:@"for"]];
+	[parser add:[optionalFor discard]];
+	PKParser *searchTerm = [PKQuotedString quotedString];
+	[searchTerm setAssembler:self selector:@selector(workOnSearchTermAssembly:)];
+	[parser add:searchTerm];
+	PKAssembly *result = [parser bestMatchFor:[PKTokenAssembly assmeblyWithString:s]];
+	NSLog(@" %@", result);
+	// output:
+	//  ['iphone']search/google/'iphone'^
+}
+...
+- (void)workOnSearchTermAssembly:(PKAssembly *)a {
+	PKToken *t = [a pop]; // a QuotedString token with a stringValue of 'iphone'
+	[self doGoogleSearchForTerm:t.stringValue];
+}
+</pre>
+
+

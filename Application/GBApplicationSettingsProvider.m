@@ -9,7 +9,7 @@
 #include "mkdio.h"
 #import <objc/runtime.h>
 #import <Cocoa/Cocoa.h>
-#import "RegexKitLite.h"
+#import <RegexKitLite/RegexKitLite.h>
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBLog.h"

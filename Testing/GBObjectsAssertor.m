@@ -6,7 +6,7 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GRMustache/GRMustache.h"
+#import <GRMustache/GRMustache.h>
 #import "GBDataObjects.h"
 #import "GBObjectsAssertor.h"
 

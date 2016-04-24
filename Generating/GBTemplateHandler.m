@@ -6,8 +6,8 @@
 //  Copyright (c) 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "RegexKitLite.h"
-#import "GRMustache/GRMustache.h"
+#import <RegexKitLite/RegexKitLite.h>
+#import <GRMustache/GRMustache.h>
 #import "GBTemplateHandler.h"
 
 static NSString *kGBSectionKey = @"section";

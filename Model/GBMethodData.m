@@ -6,13 +6,13 @@
 //  Copyright (C) 2010, Gentle Bytes. All rights reserved.
 //
 
-#import "GRMustache/GRMustache.h"
+#import <GRMustache/GRMustache.h>
 #import "GBMethodArgument.h"
 #import "GBMethodSectionData.h"
 #import "GBMethodData.h"
 #import "GBClassData.h"
 #import "GBCategoryData.h"
-#import "RegexKitLite.h"
+#import <RegexKitLite/RegexKitLite.h>
 
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"

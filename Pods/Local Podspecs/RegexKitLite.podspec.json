@@ -1,0 +1,24 @@
+{
+  "name": "RegexKitLite",
+  "version": "4.0.6",
+  "license": "BSD",
+  "summary": "Lightweight Objective-C Regular Expressions using the ICU Library.",
+  "homepage": "http://regexkit.sourceforge.net/RegexKitLite/",
+  "authors": {
+    "John Engelhart": "regexkitlite@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/inquisitiveSoft/RegexKitLite.git",
+    "tag": "4.0.6"
+  },
+  "source_files": "**/RegexKitLite.{h,m}",
+  "requires_arc": false,
+  "compiler_flags": "-fno-objc-arc",
+  "libraries": "icucore",
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  }
+}

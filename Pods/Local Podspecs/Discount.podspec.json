@@ -1,0 +1,37 @@
+{
+  "name": "Discount",
+  "version": "2.1.5a",
+  "license": "BSD-style",
+  "summary": "C implementation of John Gruber's Markdown markup language",
+  "homepage": "http://www.pell.portland.or.us/~orc/Code/discount",
+  "authors": {
+    "David Parsons": "orc@pell.portland.or.us"
+  },
+  "source": {
+    "git": "https://github.com/Orc/discount.git",
+    "tag": "v2.1.5a"
+  },
+  "prepare_command": "./configure.sh && make blocktags && rm *.in",
+  "source_files": [
+    "amalloc.{h,c}",
+    "blocktags",
+    "config.h",
+    "Csio.c",
+    "cstring.h",
+    "emmatch.c",
+    "generate.c",
+    "markdown.{h,c}",
+    "mkdio.{h,c}",
+    "resource.c",
+    "setup.c",
+    "tags.{h,c}",
+    "xml.c"
+  ],
+  "public_header_files": "mkdio.h",
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  }
+}
