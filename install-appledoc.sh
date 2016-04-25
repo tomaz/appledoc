@@ -40,7 +40,7 @@ do
 done
 
 echo "Building..."
-xcodebuild -target appledoc -configuration Release install
+xcodebuild -workspace appledoc.xcworkspace -scheme appledoc -configuration Release install
 
 echo "Installing binary to $BINARY_DIR"
 cp /tmp/appledoc.dst/usr/local/bin/appledoc "$BINARY_DIR"
