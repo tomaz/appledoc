@@ -29,7 +29,7 @@ The recommended way is to clone GitHub project and compile the tool from Xcode. 
 
 	git clone git://github.com/tomaz/appledoc.git
 
-This creates appledoc directory. Within you can find appledoc.xcodeproj Xcode project; open it and compile appledoc target - this should work out of the box, however your system must meet minimum system requirements, see below. I recommend you copy resulting appledoc executable from build directory to one of the directories in your path (`echo $PATH`) to make it easily accessible.
+This creates appledoc directory. Within you can find appledoc.xcworkspace Xcode workspace; open it and compile appledoc target - this should work out of the box, however your system must meet minimum system requirements, see below. I recommend you copy resulting appledoc executable from build directory to one of the directories in your path (`echo $PATH`) to make it easily accessible.
 
 Optional:
 Appledoc is selfcontained and contains the necessary template files. IF you want to modify these default  from Templates subdirectory to one of the expected locations:
