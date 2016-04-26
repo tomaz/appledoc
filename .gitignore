@@ -6,6 +6,7 @@ build/
 
 # Xcode
 xcuserdata/
+*.xccheckout
 *.xcscmblueprint
 
 # Appcode
