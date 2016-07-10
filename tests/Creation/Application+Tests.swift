@@ -9,7 +9,7 @@ extension Application {
 	
 	// MARK: - Command line parser
 	
-	func withCommandLineParser(parser: CommandLineParser) -> Self {
+	func withCommandLineParser(_ parser: CommandLineParser) -> Self {
 		self.commandLineParser = parser
 		return self
 	}
@@ -20,7 +20,7 @@ extension Application {
 	
 	// MARK: - Parser
 	
-	func withParser(parser: Parser) -> Self {
+	func withParser(_ parser: Parser) -> Self {
 		self.parser = parser
 		return self
 	}
@@ -31,7 +31,7 @@ extension Application {
 	
 	// MARK: - Processor
 	
-	func withProcessor(processor: Processor) -> Self {
+	func withProcessor(_ processor: Processor) -> Self {
 		self.processor = processor
 		return self
 	}
@@ -42,7 +42,7 @@ extension Application {
 	
 	// MARK: - Generator
 	
-	func withGenerator(generator: Generator) -> Self {
+	func withGenerator(_ generator: Generator) -> Self {
 		self.generator = generator
 		return self
 	}
@@ -53,12 +53,12 @@ extension Application {
 	
 	// MARK: - Other properties
 	
-	func withSettings(settings: Settings) -> Self {
+	func withSettings(_ settings: Settings) -> Self {
 		self.settings = settings
 		return self
 	}
 	
-	func withStore(store: Store) -> Self {
+	func withStore(_ store: Store) -> Self {
 		self.store = store
 		return self
 	}

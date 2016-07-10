@@ -7,21 +7,21 @@ import Foundation
 
 extension ObjectiveCParser {
 	
-	func withPath(path: PathInfo) -> Self {
+	func withPath(_ path: PathInfo) -> Self {
 		self.path = path
 		return self
 	}
-	func withPath(filename: String, example: String) -> Self {
+	func withPath(_ filename: String, example: String) -> Self {
 		self.path = Loader.path(filename, example: example)
 		return self
 	}
 	
-	func withSettings(settings: Settings) -> Self {
+	func withSettings(_ settings: Settings) -> Self {
 		self.settings = settings
 		return self
 	}
 	
-	func withStore(store: Store) -> Self {
+	func withStore(_ store: Store) -> Self {
 		self.store = store
 		return self
 	}

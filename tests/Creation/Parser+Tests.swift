@@ -10,14 +10,14 @@ class FakeParser: Parser {
 	// MARK: - run
 	
 	override func run() throws {
-		runNumberOfCalls++
+		runNumberOfCalls += 1
 		
 		if runSimulateFailure {
-			throw Result.Cancel
+			throw Result.cancel
 		}
 	}
 	
-	func runWithFailure(fail: Bool) -> Self {
+	func runWithFailure(_ fail: Bool) -> Self {
 		runSimulateFailure = fail
 		return self
 	}
@@ -32,12 +32,12 @@ class FakeParser: Parser {
 
 extension Parser {
 
-	func withSettings(settings: Settings) -> Self {
+	func withSettings(_ settings: Settings) -> Self {
 		self.settings = settings
 		return self
 	}
 	
-	func withStore(store: Store) -> Self {
+	func withStore(_ store: Store) -> Self {
 		self.store = store
 		return self
 	}

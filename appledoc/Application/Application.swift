@@ -45,7 +45,7 @@ class Application {
 	lazy var commandLineParser: CommandLineParser = {
 		let result = CommandLineParser()
 		result.registerOptions(self.options)
-		result.registerSettings(self.settings)
+		result.register(self.settings)
 		return result
 	}()
 	

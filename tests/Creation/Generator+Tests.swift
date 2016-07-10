@@ -10,14 +10,14 @@ class FakeGenerator: Generator {
 	// MARK: - run
 	
 	override func run() throws {
-		runNumberOfCalls++
+		runNumberOfCalls += 1
 		
 		if runSimulateFailure {
-			throw Result.Cancel
+			throw Result.cancel
 		}
 	}
 	
-	func runWithFailure(fail: Bool) -> Self {
+	func runWithFailure(_ fail: Bool) -> Self {
 		runSimulateFailure = fail
 		return self
 	}
