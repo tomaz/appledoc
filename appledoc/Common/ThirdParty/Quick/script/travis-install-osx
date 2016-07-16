@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+set -e
+
+git submodule update --init --recursive
+
+if [[ "$XCTOOL" -eq 1 ]]; then
+  brew update
+  brew outdated xctool || brew upgrade xctool
+fi
