@@ -9,23 +9,23 @@ import Foundation
 
 This class allows to use convenience functions for options registrations. To use, you need to pass `Options` instance on which to operate to `register` function and then you can call convenience functions for actual registrations inside the block. Using convenience functions outside this block will result in runtime exceptions!
 */
-public class SwiftyOptions {
+open class SwiftyOptions {
 	
 	/// The one and only `OptionsRegistrator` instance
-	public static let sharedInstance = SwiftyOptions()
+	open static let sharedInstance = SwiftyOptions()
 	
 	/** Registers options using helper methods.
 	
 	It's required to wrap all convenience registration method calls the block!
 	*/
-	public func register(options: GBOptionsHelper, block: () -> Void) {
+	open func register(_ options: GBOptionsHelper, block: () -> Void) {
 		self.options = options
 		block()
 		self.options = nil
 	}
 	
 	/// Current `Options` instance on which registration functions will operate.
-	private(set) internal var options: GBOptionsHelper!
+	fileprivate(set) internal var options: GBOptionsHelper!
 }
 
 /** Starts options section with given separator.
@@ -37,7 +37,7 @@ Note this method registers section to last instance of the `Options` class, assi
 @param separator The name of separator to use on help output.
 @param block Block inside which to register all options or groups of this section.
 */
-public func section(separator: String, block: () -> Void) {
+public func section(_ separator: String, block: () -> Void) {
 	SwiftyOptions.sharedInstance.options.registerSeparator(separator)
 	block()
 }
@@ -51,7 +51,7 @@ Register all options inside the given block.
 @param flags Optional group flags - whether there's a value attached etc. Defaults to `.NoValue`.
 @param block Block inside which to register all options of this group.
 */
-public func group(name: String, description: String, flags: GBOptionFlags = .NoValue, block: () -> Void) {
+public func group(_ name: String, description: String, flags: GBOptionFlags = .noValue, block: @escaping () -> Void) {
 	SwiftyOptions.sharedInstance.options.registerGroup(name, description: description, flags: flags) { options in
 		block()
 	}
@@ -64,7 +64,7 @@ public func group(name: String, description: String, flags: GBOptionFlags = .NoV
 @param description The description of the option as shown on help output.
 @param flags Optional option flags - whether there's value required or not etc. Defaults to `.NoValue`
 */
-public func option(short: Character?, long: String, description: String, flags: GBOptionFlags = .NoValue) {
+public func option(_ short: Character?, long: String, description: String, flags: GBOptionFlags = .noValue) {
 	// Convert Character to Int8. Not sure this is the best approach...
 	var shorty = Int8(0)
 	if let short = short {

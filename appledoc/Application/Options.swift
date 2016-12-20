@@ -28,14 +28,14 @@ class Options: GBOptionsHelper {
 
 extension Options {
 
-	private func register() {
+	fileprivate func register() {
 		// Registers all settings for command line parser - this is where
 		SwiftyOptions.sharedInstance.register(self) {
 			section("OPTIONS") {
 				option(nil, long: settingsGeneralValuesKey, description: "Print option values and sources")
 				option(nil, long: settingsGeneralVersionKey, description: "Print version and exit")
 				option(nil, long: settingsGeneralPrintHelpKey, description: "Print this help and exit")
-				option(nil, long: settingsGeneralLoggingVerbosityKey, description: "Logging verbosity [0-5]", flags: .RequiredValue)
+				option(nil, long: settingsGeneralLoggingVerbosityKey, description: "Logging verbosity [0-5]", flags: GBOptionFlags())
 			}
 		}
 	}

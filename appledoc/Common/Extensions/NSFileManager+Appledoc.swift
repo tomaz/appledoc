@@ -5,17 +5,17 @@
 
 import Foundation
 
-extension NSFileManager {
+extension FileManager {
 
 	/** Determines whether the given path exists and represents a directory.
 	
 	@param path Path to examine.
 	@return Returns true if path exists and is directory, false otherwise.
 	*/
-	func isPathDirectory(path: String) -> Bool {
+	func isPathDirectory(_ path: String) -> Bool {
 		var isDirectory = ObjCBool(false)
 		
-		if !fileExistsAtPath(path, isDirectory: &isDirectory) {
+		if !fileExists(atPath: path, isDirectory: &isDirectory) {
 			return false
 		}
 		

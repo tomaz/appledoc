@@ -28,7 +28,7 @@ class ObjectiveCParser: Task {
 	func run() throws {
 		guard let path = path else {
 			gerror("Filename not specified!")
-			throw Result.Cancel
+			throw Result.cancel
 		}
 		
 		gdebug("Starting Objective-C parser on \(path)")
@@ -38,7 +38,7 @@ class ObjectiveCParser: Task {
 		// Clang would skip parsing .h files, so we need to copy them to temporary path.
 		if path.fullPath.pathExtension == ".h" {
 			parsePath = NSTemporaryDirectory().stringByAppendingPathComponent(path.fullPath.lastPathComponent)
-			try NSFileManager.defaultManager().copyItemAtPath(path.fullPath, toPath: parsePath)
+			try FileManager.default.copyItem(atPath: path.fullPath, toPath: parsePath)
 		} else {
 			parsePath = path.fullPath
 		}
@@ -74,15 +74,18 @@ class ObjectiveCParser: Task {
 			print("\(kind) {\(kindValue.rawValue)} \(name) @ \(startLocation)-\(endLocation)")
 			
 			// Get all object tokens.
-			var tokens = UnsafeMutablePointer<CXToken>()
+			var tokens: UnsafeMutablePointer<CXToken>? = nil
 			var tokensCount = UInt32(0)
 			clang_tokenize(translationUnit, range, &tokens, &tokensCount)
-			for i: Int in 0..<Int(tokensCount) {
-				let tokenKindValue = clang_getTokenKind(tokens[i])
-				let tokenRange = clang_getTokenExtent(translationUnit, tokens[i])
-				let token = self.clangString(clang_getTokenSpelling(translationUnit, tokens[i]))
-				print("  \(tokenKindValue.rawValue)} \(token)")
-			}
+            
+			if let tokens = tokens {
+                for i: Int in 0..<Int(tokensCount) {
+                    let tokenKindValue = clang_getTokenKind(tokens[i])
+                    let tokenRange = clang_getTokenExtent(translationUnit, tokens[i])
+                    let token = self.clangString(clang_getTokenSpelling(translationUnit, tokens[i]))
+                    print("  \(tokenKindValue.rawValue)} \(token)")
+                }
+            }
 			clang_disposeTokens(translationUnit, tokens, tokensCount)
 			
 			// Recurse into all children.
@@ -96,9 +99,9 @@ class ObjectiveCParser: Task {
 	
 	// MARK: - Helper functions
 
-	private func sourceInfoFromLocation(location: CXSourceLocation) -> SourceInfo {
+	fileprivate func sourceInfoFromLocation(_ location: CXSourceLocation) -> SourceInfo {
 		// Get data from clang.
-		var file: CXFile = nil
+		var file: CXFile? = nil
 		var line: uint32 = 0
 		var column: uint32 = 0
 		clang_getFileLocation(location, &file, &line, &column, nil)
@@ -113,7 +116,7 @@ class ObjectiveCParser: Task {
 		return SourceInfo(filename: filename, line: Int(line), column: Int(column))
 	}
 	
-	private func clangString(source: CXString, dispose: Bool = true) -> String {
+	fileprivate func clangString(_ source: CXString, dispose: Bool = true) -> String {
 		// When you're done, dispose the string.
 		defer {
 			if dispose {
@@ -128,7 +131,7 @@ class ObjectiveCParser: Task {
 		
 		// If source cannot be converted, return empty string.
 		let cString = clang_getCString(source)
-		guard let string = String(UTF8String: cString) else {
+		guard let string = String(validatingUTF8: cString!) else {
 			return ""
 		}
 		
@@ -149,6 +152,6 @@ class ObjectiveCParser: Task {
 	
 	// MARK: - Internal properties
 	
-	private var parsePath: String!
+	fileprivate var parsePath: String!
 	
 }
