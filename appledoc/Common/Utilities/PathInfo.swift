@@ -31,7 +31,7 @@ class PathInfo: CustomStringConvertible {
 	let path: String
 	
 	/// Full path representation of given `path`.
-	lazy private(set) internal var fullPath: String = {
+	lazy fileprivate(set) internal var fullPath: String = {
 		return self.path.stringByStandardizingPath
 	}()
 }

@@ -9,49 +9,49 @@ import Foundation
 
 class Loader {
 	
-	class func path(filename: String, example: String) -> PathInfo {
+	class func path(_ filename: String, example: String) -> PathInfo {
 		// Get the path to the file.
 		let fullPath = pathString(filename)
 		
 		// Load the file into string.
-		let contents = try! String(contentsOfFile: fullPath, encoding: NSUTF8StringEncoding)
+		let contents = try! String(contentsOfFile: fullPath, encoding: String.Encoding.utf8)
 		
 		/// Search for the header.
 		let headerName = "### \(example)"
-		let headerRange = contents.rangeOfString(headerName)!
+		let headerRange = contents.range(of: headerName)!
 		
 		// Search for next header or end of file.
 		let exampleEndIndex: Int
-		let headerEndLocation = contents.startIndex.distanceTo(headerRange.endIndex)
+		let headerEndLocation = contents.characters.distance(from: contents.startIndex, to: headerRange.upperBound)
 		let searchRange = NSMakeRange(headerEndLocation, contents.characters.count - headerEndLocation)
-		if let match = headerRegex.firstMatchInString(contents, options: NSMatchingOptions(rawValue: 0), range: searchRange) {
+		if let match = headerRegex.firstMatch(in: contents, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: searchRange) {
 			exampleEndIndex = match.range.location
 		} else {
 			exampleEndIndex = contents.characters.count
 		}
 		
 		// Extract example string.
-		let exampleRange = Range<String.Index>(start: headerRange.endIndex, end: contents.startIndex.advancedBy(exampleEndIndex))
-		let value = contents.substringWithRange(exampleRange)
+		let exampleRange = (headerRange.upperBound ..< contents.characters.index(contents.startIndex, offsetBy: exampleEndIndex))
+		let value = contents.substring(with: exampleRange)
 		
 		// Prepare temporary path and save the example there.
-		let tempPath = NSTemporaryDirectory().stringByAppendingPathComponent("\(NSUUID().UUIDString).m")
-		try! value.writeToFile(tempPath, atomically: true, encoding: NSUTF8StringEncoding)
+		let tempPath = NSTemporaryDirectory().stringByAppendingPathComponent("\(UUID().uuidString).m")
+		try! value.write(toFile: tempPath, atomically: true, encoding: String.Encoding.utf8)
 		
 		return PathInfo(path: tempPath)
 	}
 	
-	class func path(filename: String) -> PathInfo {
+	class func path(_ filename: String) -> PathInfo {
 		let path = pathString(filename)
 		return PathInfo(path: path)
 	}
 	
-	private class func pathString(filename: String) -> String {
-		return NSBundle(forClass: Loader.self).pathForResource(filename.stringByDeletingPathExtension, ofType: filename.pathExtension)!
+	fileprivate class func pathString(_ filename: String) -> String {
+		return Bundle(for: Loader.self).path(forResource: filename.stringByDeletingPathExtension, ofType: filename.pathExtension)!
 	}
 	
-	private static var headerRegex = {
-		return try! NSRegularExpression(pattern: "^###.+$\\n?", options: NSRegularExpressionOptions.AnchorsMatchLines)
+	fileprivate static var headerRegex = {
+		return try! NSRegularExpression(pattern: "^###.+$\\n?", options: NSRegularExpression.Options.anchorsMatchLines)
 	}()
 	
 }

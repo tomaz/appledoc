@@ -2,29 +2,42 @@ def run(command)
   system(command) or raise "RAKE TASK FAILED: #{command}"
 end
 
+def has_xcodebuild
+  system "which xcodebuild >/dev/null"
+end
+
+def xcode_action
+  ENV["XCODE_ACTION"] || "build test"
+end
+
+namespace "podspec" do
+  desc "Run lint for podspec"
+  task :lint do
+    run "bundle exec pod lib lint"
+  end
+end
+
 namespace "test" do
   desc "Run unit tests for all iOS targets"
   task :ios do |t|
-    run "xcodebuild -workspace Quick.xcworkspace -scheme Quick-iOS -destination 'platform=iOS Simulator,name=iPhone 6' clean test"
+    run "xcodebuild -workspace Quick.xcworkspace -scheme Quick-iOS -destination 'platform=iOS Simulator,name=iPhone 6' clean #{xcode_action}"
   end
 
-  desc "Run unit tests for all OS X targets"
-  task :osx do |t|
-    run "xcodebuild -workspace Quick.xcworkspace -scheme Quick-OSX clean test"
+  desc "Run unit tests for all tvOS targets"
+  task :tvos do |t|
+    run "xcodebuild -workspace Quick.xcworkspace -scheme Quick-tvOS -destination 'platform=tvOS Simulator,name=Apple TV 1080p' clean #{xcode_action}"
   end
 
-  desc "Run unit tests for all iOS and OS X targets using xctool"
-  task xctool: %w[test:xctool:ios test:xctool:osx]
-  namespace :xctool do
-    desc "Run unit tests for all iOS targets using xctool"
-    task :ios do |t|
-      run "xctool -workspace Quick.xcworkspace -scheme Quick-iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6' clean test"
-    end
+  desc "Run unit tests for all macOS targets"
+  task :macos do |t|
+    run "xcodebuild -workspace Quick.xcworkspace -scheme Quick-macOS clean #{xcode_action}"
+  end
 
-    desc "Run unit tests for all OS X targets using xctool"
-    task :osx do |t|
-      run "xctool -workspace Quick.xcworkspace -scheme Quick-OSX clean test"
-    end
+  desc "Run unit tests for the current platform built by the Swift Package Manager"
+  task :swiftpm do |t|
+    run "mv Package.swift .Package.swift && cp .Package.test.swift Package.swift"
+    run "swift build --clean && swift build && swift test"
+    run "mv .Package.swift Package.swift"
   end
 end
 
@@ -48,5 +61,8 @@ namespace "templates" do
   end
 end
 
-task default: ["test:ios", "test:osx"]
-
+if has_xcodebuild then
+  task default: ["test:ios", "test:tvos", "test:macos"]
+else
+  task default: ["test:swiftpm"]
+end

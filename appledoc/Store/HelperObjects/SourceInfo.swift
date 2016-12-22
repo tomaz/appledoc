@@ -31,11 +31,11 @@ class SourceInfo: CustomStringConvertible {
 	// MARK: - Properties
 	
 	/// Full path and filename.
-	private(set) internal var filename: String
+	fileprivate(set) internal var filename: String
 	
 	/// Line number within the file.
-	private(set) internal var line: Int
+	fileprivate(set) internal var line: Int
 	
 	/// Column number within the line.
-	private(set) internal var column: Int
+	fileprivate(set) internal var column: Int
 }

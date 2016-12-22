@@ -12,7 +12,7 @@ The main responsibility of this class is to define and provide settings values f
 class Settings: GBSettings {
 	
 	override init() {
-		Settings.factoryDefaults.initializeFactoryDefaults()
+		Settings.factoryDefaults?.initializeFactoryDefaults()
 		super.init(name: "Settings", parent: Settings.projectDefaults)
 	}
 	
@@ -26,10 +26,10 @@ class Settings: GBSettings {
 		// TODO: Attempt to load from root of --templates option.
 		
 		// Attempt to load from ~/Library/Application Support/appledoc/appledoc.plist
-		if let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true).first {
+		if let applicationSupportPath = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first {
 			let appledocSupportPath = applicationSupportPath.stringByAppendingPathComponent("Appledoc")
 			let path = Settings.settingsFileNameForPath(appledocSupportPath)
-			if Settings.globalDefaults.loadSettingsFromFile(path) {
+			if ((Settings.globalDefaults?.loadSettingsFromFile(path)) != nil) {
 				gdebug("Using global setings at \(path)")
 				return
 			}
@@ -37,7 +37,7 @@ class Settings: GBSettings {
 		
 		// Attempt to load from ~/.appledoc.plist
 		let userRootPath = Settings.settingsFileNameForPath("~/")
-		if Settings.globalDefaults.loadSettingsFromFile(userRootPath) {
+		if (Settings.globalDefaults?.loadSettingsFromFile(userRootPath))! {
 			gdebug("Using global settings at \(userRootPath)")
 			return
 		}
@@ -48,7 +48,7 @@ class Settings: GBSettings {
 		for path in self.arguments {
 			let inputPath = path as! String
 			let settingsPath = Settings.settingsFileNameForPath(inputPath)
-			if Settings.projectDefaults.loadSettingsFromFile(settingsPath) {
+			if (Settings.projectDefaults?.loadSettingsFromFile(settingsPath))! {
 				gdebug("Using project settings at \(settingsPath)")
 				return
 			}
@@ -61,11 +61,11 @@ class Settings: GBSettings {
 
 extension Settings {
 	
-	private func initializeFactoryDefaults() {
+	fileprivate func initializeFactoryDefaults() {
 		loggingVerbosity = 3 // Use info logging verbosity by default
 	}
 	
-	private static let factoryDefaults = Settings(name: "Factory Defaults", parent: nil)
+	fileprivate static let factoryDefaults = Settings(name: "Factory Defaults", parent: nil)
 	
 }
 
@@ -73,13 +73,13 @@ extension Settings {
 
 extension Settings {
 	
-	private func loadSettingsFromFile(path: String) -> Bool {
+	fileprivate func loadSettingsFromFile(_ path: String) -> Bool {
 		// This function is just convenience wrapper over loadSettingsFromPlist - it converts try/catch into Bool result (we don't really care why loading failed outside the function, just interested if it succedded or not).
 		let standardizedPath = path.stringByStandardizingPath
 		
 		// Load settings from given file.
 		do {
-			try loadSettingsFromPlist(standardizedPath)
+			try load(fromPlist: standardizedPath)
 			return true
 		} catch {
 			gwarn("Failed loading settings from \(path)!")
@@ -88,12 +88,12 @@ extension Settings {
 		return false
 	}
 	
-	private class func settingsFileNameForPath(path: String) -> String {
+	fileprivate class func settingsFileNameForPath(_ path: String) -> String {
 		return path.stringByAppendingPathComponent("appledoc.plist")
 	}
 	
-	private static let globalDefaults = Settings(name: "Global Defaults", parent: Settings.factoryDefaults)
-	private static let projectDefaults = Settings(name: "Project Defaults", parent: Settings.globalDefaults)
+	fileprivate static let globalDefaults = Settings(name: "Global Defaults", parent: Settings.factoryDefaults)
+	fileprivate static let projectDefaults = Settings(name: "Project Defaults", parent: Settings.globalDefaults)
 
 }
 
@@ -102,22 +102,22 @@ extension Settings {
 extension Settings {
 	
 	var loggingVerbosity: Int {
-		get { return integerForKey(settingsGeneralLoggingVerbosityKey) }
+		get { return integer(forKey: settingsGeneralLoggingVerbosityKey) }
 		set { setInteger(newValue, forKey: settingsGeneralLoggingVerbosityKey) }
 	}
 	
 	var printValues: Bool {
-		get { return boolForKey(settingsGeneralValuesKey) }
+		get { return bool(forKey: settingsGeneralValuesKey) }
 		set { setBool(newValue, forKey: settingsGeneralValuesKey) }
 	}
 	
 	var printVersion: Bool {
-		get { return boolForKey(settingsGeneralVersionKey) }
+		get { return bool(forKey: settingsGeneralVersionKey) }
 		set { setBool(newValue, forKey: settingsGeneralVersionKey) }
 	}
 	
 	var printHelp: Bool {
-		get { return boolForKey(settingsGeneralPrintHelpKey) }
+		get { return bool(forKey: settingsGeneralPrintHelpKey) }
 		set { setBool(newValue, forKey: settingsGeneralPrintHelpKey) }
 	}
 	

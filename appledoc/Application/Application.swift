@@ -31,7 +31,7 @@ class Application {
 		}
 	}
 	
-	private func initializeApplication() throws {
+	fileprivate func initializeApplication() throws {
 		// Parse command line. Bail out in case of errors
 		try commandLineParser.run()
 		
@@ -45,7 +45,7 @@ class Application {
 	lazy var commandLineParser: CommandLineParser = {
 		let result = CommandLineParser()
 		result.registerOptions(self.options)
-		result.registerSettings(self.settings)
+		result.register(self.settings)
 		return result
 	}()
 	

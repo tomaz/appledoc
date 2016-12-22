@@ -6,12 +6,12 @@
 import Foundation
 
 enum LogVerbosity: Int {
-	case None
-	case Error
-	case Warning
-	case Info
-	case Verbose
-	case Debug
+	case none
+	case error
+	case warning
+	case info
+	case verbose
+	case debug
 }
 
 func >= (left: LogVerbosity, right: LogVerbosity) -> Bool {
@@ -22,45 +22,45 @@ class Logger {
 
 	static let sharedInstance = Logger()
 	
-	private init() {
-		self.timestampFormatter = NSDateFormatter()
+	fileprivate init() {
+		self.timestampFormatter = DateFormatter()
 		self.timestampFormatter.dateFormat = "HH:mm:ss.SSS"
 	}
 	
 	// MARK: - Initialization
 	
-	func initialize(settings: Settings) {
+	func initialize(_ settings: Settings) {
 		var verbosity = LogVerbosity(rawValue: settings.loggingVerbosity)!
 		
-		if NSProcessInfo.processInfo().environment["TESTING"] != nil {
-			verbosity = .None
+		if ProcessInfo.processInfo.environment["TESTING"] != nil {
+			verbosity = .none
 		}
 		
-		if verbosity >= LogVerbosity.Error {
+		if verbosity >= LogVerbosity.error {
 			Logger.error = LogChannel(name: "0")
 		}
 		
-		if verbosity >= LogVerbosity.Warning {
+		if verbosity >= LogVerbosity.warning {
 			Logger.warning = LogChannel(name: "1")
 		}
 		
-		if verbosity >= LogVerbosity.Info {
+		if verbosity >= LogVerbosity.info {
 			Logger.info = LogChannel(name: "2")
 		}
 		
-		if verbosity >= LogVerbosity.Verbose {
+		if verbosity >= LogVerbosity.verbose {
 			Logger.verbose = LogChannel(name: "3")
 		}
 		
-		if verbosity >= LogVerbosity.Debug {
+		if verbosity >= LogVerbosity.debug {
 			Logger.debug = LogChannel(name: "4")
 		}
 	}
 	
 	// MARK: - Properties
 
-	lazy var times = [NSDate]()
-	private var timestampFormatter: NSDateFormatter
+	lazy var times = [Date]()
+	fileprivate var timestampFormatter: DateFormatter
 
 	// MARK: - Channels
 	
@@ -77,40 +77,40 @@ class LogChannel {
 		self.name = name
 	}
 	
-	func message(message: String, function: String, filename: String, line: Int) {
+	func message(_ message: String, function: String, filename: String, line: Int) {
 		let logger = Logger.sharedInstance
-		let time = logger.timestampFormatter.stringFromDate(NSDate())
+		let time = logger.timestampFormatter.string(from: Date())
 		let file = (filename as NSString).lastPathComponent
 		write("\(time) [\(self.name)] \(message) | \(file):\(line)")
 	}
 	
-	func write(message: String) {
+	func write(_ message: String) {
 		print(message)
 	}
 	
-	private var name: String
+	fileprivate var name: String
 	
 }
 
 // MARK: - Logging functions
 
-func gerror(@autoclosure message: () -> String, function: String = __FUNCTION__, filename: String = __FILE__, line: Int = __LINE__) {
+func gerror(_ message: @autoclosure () -> String, function: String = #function, filename: String = #file, line: Int = #line) {
 	Logger.error?.message(message(), function: function, filename: filename, line: line)
 }
 
-func gwarn(@autoclosure message: () -> String, function: String = __FUNCTION__, filename: String = __FILE__, line: Int = __LINE__) {
+func gwarn(_ message: @autoclosure () -> String, function: String = #function, filename: String = #file, line: Int = #line) {
 	Logger.warning?.message(message(), function: function, filename: filename, line: line)
 }
 
-func ginfo(@autoclosure message: () -> String, function: String = __FUNCTION__, filename: String = __FILE__, line: Int = __LINE__) {
+func ginfo(_ message: @autoclosure () -> String, function: String = #function, filename: String = #file, line: Int = #line) {
 	Logger.info?.message(message(), function: function, filename: filename, line: line)
 }
 
-func gverbose(@autoclosure message: () -> String, function: String = __FUNCTION__, filename: String = __FILE__, line: Int = __LINE__) {
+func gverbose(_ message: @autoclosure () -> String, function: String = #function, filename: String = #file, line: Int = #line) {
 	Logger.verbose?.message(message(), function: function, filename: filename, line: line)
 }
 
-func gdebug(@autoclosure message: () -> String, function: String = __FUNCTION__, filename: String = __FILE__, line: Int = __LINE__) {
+func gdebug(_ message: @autoclosure () -> String, function: String = #function, filename: String = #file, line: Int = #line) {
 	Logger.debug?.message(message(), function: function, filename: filename, line: line)
 }
 
@@ -123,17 +123,17 @@ func gdelimit() {
 
 func gtaskstart() {
 	// Only logging on verbose...
-	Logger.sharedInstance.times.append(NSDate())
+	Logger.sharedInstance.times.append(Date())
 	Logger.verbose?.write("")
 	Logger.verbose?.write("============================================================")
 }
 
 func gtaskend() {
 	// Only logging on verbose...
-	let endTime = NSDate()
+	let endTime = Date()
 	if let startTime = Logger.sharedInstance.times.last {
 		Logger.sharedInstance.times.removeLast()
-		let difference = Int(endTime.timeIntervalSinceDate(startTime) * 1000.0)
+		let difference = Int(endTime.timeIntervalSince(startTime) * 1000.0)
 		Logger.verbose?.write("> \(difference)ms")
 	}
 }

@@ -5,8 +5,8 @@
 
 import Foundation
 
-enum Result: ErrorType {
+enum Result: Error {
 	
-	case Cancel
+	case cancel
 	
 }

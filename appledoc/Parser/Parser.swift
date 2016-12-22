@@ -29,8 +29,8 @@ class Parser: Task {
 	
 	// MARK: - Parsing handling
 	
-	private func parsePathOrFile(path: PathInfo) throws {
-		if NSFileManager.defaultManager().isPathDirectory(path.fullPath) {
+	fileprivate func parsePathOrFile(_ path: PathInfo) throws {
+		if FileManager.default.isPathDirectory(path.fullPath) {
 			gverbose("Scanning \(path.path)")
 			try parseFolder(path)
 		} else {
@@ -39,8 +39,8 @@ class Parser: Task {
 		}
 	}
 	
-	private func parseFolder(path: PathInfo) throws {
-		let subpathNames = try NSFileManager.defaultManager().contentsOfDirectoryAtPath(path.fullPath)
+	fileprivate func parseFolder(_ path: PathInfo) throws {
+		let subpathNames = try FileManager.default.contentsOfDirectory(atPath: path.fullPath)
 		for subpathName in subpathNames {
 			switch subpathName {
 			case ".": break
@@ -54,7 +54,7 @@ class Parser: Task {
 		}
 	}
 	
-	private func parseFile(path: PathInfo) throws {
+	fileprivate func parseFile(_ path: PathInfo) throws {
 		switch path.path.pathExtension {
 		case "h": try parseObjectiveCFromFile(path)
 		case "m": try parseObjectiveCFromFile(path)
@@ -63,7 +63,7 @@ class Parser: Task {
 		}
 	}
 	
-	private func parseObjectiveCFromFile(path: PathInfo) throws {
+	fileprivate func parseObjectiveCFromFile(_ path: PathInfo) throws {
 		gverbose("Parsing \(path) as Objective-C")
 		objectiveCParser.path = path
 		try objectiveCParser.run()

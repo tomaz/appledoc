@@ -1,19 +1,30 @@
-osx_image: xcode7
-language: objective-c
-
-before_install:
-  - git submodule update --init --recursive
-  # There is a bug in a formula resulting in update failing if run once, but not the second time
-  # See https://github.com/Homebrew/homebrew/issues/45616
-  - brew update || brew update
-  - brew outdated xctool || brew upgrade xctool
+osx_image: xcode8
+language: generic
+matrix:
+  include:
+    - os: osx
+      env:
+        - PLATFORM=macos
+        - XCODE_ACTION="build-for-testing test-without-building"
+    - os: osx
+      env:
+        - PLATFORM=ios
+        - XCODE_ACTION="build-for-testing test-without-building"
+    - os: osx
+      env:
+        - PLATFORM=tvos
+        - XCODE_ACTION="build-for-testing test-without-building"
+    - os: osx
+      sudo: required
+      env:
+        - PODSPEC=1
+    - os: linux
+      sudo: required
+      dist: trusty
+install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then ./script/travis-install-macos; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./script/travis-install-linux; fi
+  - if [[ "$PODSPEC" ]]; then rvm system; sudo gem install bundler; bundle install; fi
 script:
-  - rake test:ios
-  - rake test:osx
-  - rake test:xctool:ios
-  # Due to the `pending` specs using a `print` xctool fails generating the report,
-  # which in turn makes the tests fail.
-  # See https://github.com/facebook/xctool/issues/314#issuecomment-152988101 and comments
-  # for details.
-  # See https://circleci.com/gh/mokagio/Quick/12 for a proof that without `print` the test pass.
-  # - rake test:xctool:osx
+  - if [[ "$TRAVIS_OS_NAME" == "osx"   ]]; then ./script/travis-script-macos; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then ./script/travis-script-linux; fi
