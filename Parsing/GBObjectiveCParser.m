@@ -818,6 +818,12 @@
 		__block NSUInteger parenthesisDepth = 0;
 		NSMutableArray *methodArgs = [NSMutableArray array];
 		[self.tokenizer consumeTo:end usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
+            // If we receive Swift name declaration, ignore it for the quick fix.
+            if ([token matches:@"NS_SWIFT_NAME"]) {
+                *stop = YES;
+                return;
+            }
+            
 			if ([token matches:@"__attribute__"] || [token matches:@"DEPRECATED_ATTRIBUTE"]) {
 				parseAttribute = YES;
 				parenthesisDepth = 0;
