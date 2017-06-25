@@ -8,6 +8,6 @@ Pod::Spec.new do |s|
   s.homepage = 'https://github.com/Daij-Djan/DDMinizip'
   s.author = 'Dominik Pich'
 
-  s.source   = { :git => 'https://github.com/Coeur/DDMinizip.git' }
+  s.source   = { :git => 'https://github.com/Daij-Djan/DDMinizip.git' }
   s.source_files = 'src/*.{m,h}'
 end

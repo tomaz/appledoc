@@ -35,8 +35,8 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   DDMinizip:
-    :commit: 327dec4331f7e934aad8f89347ca4804b9cb5f2f
-    :git: https://github.com/Coeur/DDMinizip.git
+    :commit: 433d3c974191e76ba42dc9166d77bd77ef589c2d
+    :git: https://github.com/Daij-Djan/DDMinizip.git
   Minizip:
     :commit: 36089398a362a117105ebfcb3751a269c70ab3b7
     :git: https://github.com/nmoinvaz/minizip.git
@@ -45,7 +45,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 SPEC CHECKSUMS:
-  DDMinizip: ab9fe403696f180814dfcdbc337843aa57912cf2
+  DDMinizip: 83ed28588afe79b164907317610e3862ad494d75
   Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
   GHUnit: 07609b0386af75f20ce520277d1c24fd8cd1598e
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c

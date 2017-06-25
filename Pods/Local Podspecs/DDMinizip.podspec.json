@@ -7,7 +7,7 @@
   "homepage": "https://github.com/Daij-Djan/DDMinizip",
   "authors": "Dominik Pich",
   "source": {
-    "git": "https://github.com/Coeur/DDMinizip.git"
+    "git": "https://github.com/Daij-Djan/DDMinizip.git"
   },
   "source_files": "src/*.{m,h}",
   "platforms": {

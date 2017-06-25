@@ -11,11 +11,11 @@
 #include  "zip.h"
 
 typedef enum {
-	DDZippedFileInfoCompressionLevelDefault= -1,
-	DDZippedFileInfoCompressionLevelNone= 0,
-	DDZippedFileInfoCompressionLevelFastest= 1,
-	DDZippedFileInfoCompressionLevelBest= 9
-} DDZippedFileInfoCompressionLevel;	
+	DDZippedFileInfoCompressionLevelDefault = -1,
+	DDZippedFileInfoCompressionLevelNone = 0,
+	DDZippedFileInfoCompressionLevelFastest = 1,
+	DDZippedFileInfoCompressionLevelBest = 9
+} DDZippedFileInfoCompressionLevel;
 
 @interface DDZippedFileInfo : NSObject
 
@@ -37,5 +37,9 @@ typedef enum {
 +(NSDate*) dateWithMUDate:(struct tm)mu_date;
 +(struct tm) mzDateWithDate:(NSDate*)date;
 +(NSDate*) dateWithTimeIntervalSince1980:(NSTimeInterval)interval;
+
+// if compatibility is needed
+//typedef struct tm tm_unz;
+//typedef struct tm tm_zip;
 
 @end
