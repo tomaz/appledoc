@@ -4,7 +4,7 @@ PODS:
   - GRMustache (7.0.2):
     - JRSwizzle (~> 1.0)
   - JRSwizzle (1.0)
-  - Minizip/Core (1.1.0.2016.04.24)
+  - Minizip/Core (1.1.0.2017.06.09)
   - ParseKit (0.0.0.2010.4.29):
     - RegexKitLite (~> 4.0.1)
   - RegexKitLite (4.0.6)
@@ -13,7 +13,7 @@ DEPENDENCIES:
   - Discount (from `Specs/Discount.podspec`)
   - GHUnit (~> 0.5)
   - GRMustache (~> 7.0.2)
-  - Minizip/Core (from `Specs/Minizip.podspec`)
+  - Minizip/Core (from `https://github.com/nmoinvaz/minizip.git`)
   - ParseKit (from `Specs/ParseKit.podspec`)
   - RegexKitLite (from `https://github.com/inquisitiveSoft/RegexKitLite.git`)
 
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
   Discount:
     :podspec: Specs/Discount.podspec
   Minizip:
-    :podspec: Specs/Minizip.podspec
+    :git: https://github.com/nmoinvaz/minizip.git
   ParseKit:
     :podspec: Specs/ParseKit.podspec
   RegexKitLite:
@@ -29,21 +29,21 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Minizip:
-    :commit: 5f56dd81d94bd7028f7dc05d7d14112697c30241
+    :commit: 36089398a362a117105ebfcb3751a269c70ab3b7
     :git: https://github.com/nmoinvaz/minizip.git
   RegexKitLite:
-    :commit: 36f80a54abbb11db1200cb0d901f56c0f38d9451
+    :commit: 871fad38339785248c51ebe5ee8403f7e75d51c4
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 SPEC CHECKSUMS:
   Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
-  GHUnit: f1397fde79512acb1e38fe7375019bf74f80b0e7
+  GHUnit: '07609b0386af75f20ce520277d1c24fd8cd1598e'
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  Minizip: be754b29296e4bcfefdeae2e4ef91ec9dd35e54b
+  Minizip: b07fe5bbe74d026d3ec494168d1487cb41a17ce2
   ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: 17b4b9e8a135e38746246cb0d9783ba5ef73382e
+PODFILE CHECKSUM: 39d86ee946a0539568c5f633d71d3444e6cfeb8b
 
-COCOAPODS: 1.0.0.beta.8
+COCOAPODS: 1.2.1

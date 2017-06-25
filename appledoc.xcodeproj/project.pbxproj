@@ -458,7 +458,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		08FB7794FE84155DC02AAC07 /* appledoc */ = {
+		08FB7794FE84155DC02AAC07 = {
 			isa = PBXGroup;
 			children = (
 				D45D15E117D883C700B7976A /* CommentsFormattingStyle.markdown */,
@@ -939,14 +939,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 733EA12A122BDD110060CBDE /* Build configuration list for PBXNativeTarget "AppledocTests" */;
 			buildPhases = (
-				DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */,
+				DF3115CCC2D4D3C32EE5F33D /* [CP] Check Pods Manifest.lock */,
 				733EA121122BDD020060CBDE /* Resources */,
 				733EA122122BDD020060CBDE /* Sources */,
 				733EA123122BDD020060CBDE /* Frameworks */,
 				D818BACD15203A9E00B26451 /* CopyFiles */,
 				9E9653391791A3DA0086251B /* ShellScript */,
-				17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */,
-				0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */,
+				17452C58DBF86D78C505A804 /* [CP] Embed Pods Frameworks */,
+				0240AEAF513A8EEA39D95E47 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -961,12 +961,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
-				8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */,
+				8B30B0E4E4A07773AF166FB1 /* [CP] Check Pods Manifest.lock */,
 				B4D1FFE715FF60B7009736E2 /* ShellScript */,
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
 				B4D1FFF515FF637A009736E2 /* ShellScript */,
-				3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */,
+				3037AFD851D1C60D4B664697 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -997,7 +997,8 @@
 				French,
 				German,
 			);
-			mainGroup = 08FB7794FE84155DC02AAC07 /* appledoc */;
+			mainGroup = 08FB7794FE84155DC02AAC07;
+			productRefGroup = 1AB674ADFE9D54B511CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -1019,14 +1020,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */ = {
+		0240AEAF513A8EEA39D95E47 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1034,14 +1035,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */ = {
+		17452C58DBF86D78C505A804 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1049,14 +1050,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */ = {
+		3037AFD851D1C60D4B664697 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1064,19 +1065,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-appledoc/Pods-appledoc-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */ = {
+		8B30B0E4E4A07773AF166FB1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		9E9653391791A3DA0086251B /* ShellScript */ = {
@@ -1118,19 +1119,19 @@
 			shellPath = /bin/sh;
 			shellScript = "rm default_templates.zip";
 		};
-		DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */ = {
+		DF3115CCC2D4D3C32EE5F33D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "📦 Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
