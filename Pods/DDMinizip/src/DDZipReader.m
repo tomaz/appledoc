@@ -6,6 +6,7 @@
 #import "DDZipReader.h"
 #import "zlib.h"
 #import "zconf.h"
+#import <minishared.h>
 
 @implementation DDZipReader
 
@@ -13,7 +14,7 @@
 
 -(id) init
 {
-	if( (self=[super init]) != nil )
+	if( (self = [super init]) != nil )
 	{
 		_unzFile = NULL;
 	}
@@ -23,7 +24,6 @@
 -(void) dealloc
 {
 	[self closeZipFile];
-    [super dealloc];
 }
 
 #pragma mark - unzipping 
@@ -33,32 +33,29 @@
 	_unzFile = unzOpen( (const char*)[zipFile UTF8String] );
 	if( _unzFile )
 	{
-		unz_global_info  globalInfo = {0};
+		unz_global_info  globalInfo = {0, 0, 0};
 		unzGetGlobalInfo(_unzFile, &globalInfo );
-		/*if( ==UNZ_OK )
-		{
-			//Log(@"%d entries in the zip file",globalInfo.number_entry);
-		}
-		 */
 	}
-	return _unzFile!=NULL;
+	return _unzFile != NULL;
 }
 
 -(NSInteger) unzipFileTo:(NSString *)path flattenStructure:(BOOL)flatten
 {
+    NSLog(@"unzip %@", path);
+    
     NSInteger cFiles = 0;
 	BOOL success = YES;
 	int ret = unzGoToFirstFile( _unzFile );
 	unsigned char		buffer[4096] = {0};
 	NSFileManager* fman = [NSFileManager defaultManager];
-	if( ret!=UNZ_OK )
+	if( ret != UNZ_OK )
 	{
 		[self outputErrorMessage:@"Failed"];
 	}
 	
 	do{
 		ret = unzOpenCurrentFile( _unzFile );
-		if( ret!=UNZ_OK )
+		if( ret != UNZ_OK )
 		{
 			[self outputErrorMessage:@"Error occurs"];
 			success = NO;
@@ -66,9 +63,9 @@
 		}
 		// reading data and write to file
 		int read ;
-		unz_file_info	fileInfo ={0};
+		unz_file_info	fileInfo = {0};
 		ret = unzGetCurrentFileInfo(_unzFile, &fileInfo, NULL, 0, NULL, 0, NULL, 0);
-		if( ret!=UNZ_OK )
+		if( ret != UNZ_OK )
 		{
 			[self outputErrorMessage:@"Error occurs while getting file info"];
 			success = NO;
@@ -114,9 +111,9 @@
 		else
 			[fman createDirectoryAtPath:[fullPath stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil];
         
-        //test
-        DDZippedFileInfo *info = [[[DDZippedFileInfo alloc] initWithName:strPath andNativeInfo:fileInfo] autorelease];
-        NSLog(@"%@", info.date);
+//        //test
+//        DDZippedFileInfo *info = [[DDZippedFileInfo alloc] initWithName:strPath andNativeInfo:fileInfo];
+//        NSLog(@"%@", info.date);
         
               //ask delegate for overwrite
 		if( [fman fileExistsAtPath:fullPath] && !isDirectory )
@@ -138,7 +135,7 @@
 			{
 				fwrite(buffer, read, 1, fp );
 			}
-			else if( read<0 )
+			else if( read < 0 )
 			{
 				[self outputErrorMessage:@"Failed to reading zip file"];
 				break;
@@ -150,11 +147,13 @@
 		{
 			fclose( fp );
 			// set the orignal datetime property
-			if( fileInfo.dosDate!=0 )
+			if( fileInfo.dos_date != 0 )
 			{
-				NSDate* orgDate = [DDZippedFileInfo dateWithMUDate:fileInfo.tmu_date];
+                struct tm tmu_date;
+                dosdate_to_tm(fileInfo.dos_date, &tmu_date);
+				NSDate* orgDate = [DDZippedFileInfo dateWithMUDate:tmu_date];
 
-				NSDictionary* attr = @{NSFileModificationDate : orgDate}; //[[NSFileManager defaultManager] fileAttributesAtPath:fullPath traverseLink:YES];
+				NSDictionary* attr = [NSDictionary dictionaryWithObject:orgDate forKey:NSFileModificationDate]; //[[NSFileManager defaultManager] fileAttributesAtPath:fullPath traverseLink:YES];
 				if( attr )
 				{
 				//	[attr  setValue:orgDate forKey:NSFileCreationDate];
@@ -163,25 +162,23 @@
 						// cann't set attributes 
 						//Log(@"Failed to set attributes");
 					}
-					
 				}
 //				[orgDate release];
 				orgDate = nil;
 			}
             
             cFiles++;
-			
 		}
 		unzCloseCurrentFile( _unzFile );
 		ret = unzGoToNextFile( _unzFile );
-	}while( ret==UNZ_OK && UNZ_OK!=UNZ_END_OF_LIST_OF_FILE );
+	}while( ret == UNZ_OK && UNZ_OK != UNZ_END_OF_LIST_OF_FILE );
 	return success ? cFiles : -1;
 }
 
 -(BOOL) closeZipFile
 {
 	if( _unzFile ) {
-        BOOL br = unzClose( _unzFile )==UNZ_OK;
+        BOOL br = unzClose( _unzFile ) == UNZ_OK;
         _unzFile = NULL;
 		return br;
     }
@@ -191,21 +188,21 @@
 #pragma mark wrapper for delegate
 
 - (BOOL)shouldExtractFile:(NSString*)file {
-	if( _delegate && [_delegate respondsToSelector:@selector(zipArchive:shouldExtractFile:)] )
+	if( [_delegate respondsToSelector:@selector(zipArchive:shouldExtractFile:)] )
 		return [_delegate zipArchive:self shouldExtractFile:file];
 	return YES;
 }
 
 -(void) outputErrorMessage:(NSString*) msg
 {
-	if( _delegate && [_delegate respondsToSelector:@selector(zipArchive:errorMessage:)] )
+	if( [_delegate respondsToSelector:@selector(zipArchive:errorMessage:)] )
 		[_delegate zipArchive:self errorMessage:msg];
 }
 
 -(BOOL) shouldOverwrite:(NSString*)file withName:(NSString*)name andFileInfo:(unz_file_info)fileInfo
 {
-	if( _delegate && [_delegate respondsToSelector:@selector(zipArchive:shouldOverwriteFile:withZippedFile:)] ) {
-        DDZippedFileInfo *info = [[[DDZippedFileInfo alloc] initWithName:name andNativeInfo:fileInfo] autorelease];
+	if( [_delegate respondsToSelector:@selector(zipArchive:shouldOverwriteFile:withZippedFile:)] ) {
+        DDZippedFileInfo *info = [[DDZippedFileInfo alloc] initWithName:name andNativeInfo:fileInfo];    
 		return [_delegate zipArchive:self shouldOverwriteFile:file withZippedFile:info];
     }
 	return NO;

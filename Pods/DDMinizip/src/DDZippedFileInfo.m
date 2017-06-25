@@ -7,6 +7,7 @@
 //
 
 #import "DDZippedFileInfo.h"
+#import <minishared.h>
 
 @implementation DDZippedFileInfo	
 
@@ -18,8 +19,8 @@
 @synthesize date;
 @synthesize crc32;
 
-- (id) initWithName:(NSString*)aName andNativeInfo:(unz_file_info)info {
-    self=[super init];
+- (instancetype) initWithName:(NSString*)aName andNativeInfo:(unz_file_info)info {
+    self = [super init];
     if(self) {
         name = [aName copy];
         size = info.uncompressed_size;
@@ -43,7 +44,9 @@
         
         crypted = ((info.flag & 1) != 0);
         zippedSize = info.compressed_size;
-        date = [[self class] dateWithMUDate:info.tmu_date];
+        struct tm tmu_date;
+        dosdate_to_tm(info.dos_date, &tmu_date);
+        date = [[self class] dateWithMUDate:tmu_date];
         crc32 = info.crc;
     }
     return self;
@@ -52,32 +55,34 @@
 
 #pragma mark get NSDate object for zip
 
-+(NSDate*) dateWithMUDate:(tm_unz)mu_date
++(NSDate*) dateWithMUDate:(struct tm)mu_date
 {
-	NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
+	NSDateComponents *comps = [[NSDateComponents alloc] init];
     [comps setSecond:mu_date.tm_sec];
     [comps setMinute:mu_date.tm_min];
     [comps setHour:mu_date.tm_hour];
 	[comps setDay:mu_date.tm_mday];
 	[comps setMonth:mu_date.tm_mon];
     [comps setYear:mu_date.tm_year];
-    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+	NSCalendar *gregorian = [[NSCalendar alloc]
+							 initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDate *date = [gregorian dateFromComponents:comps];
 	return date;
 }
 
-+(tm_zip) mzDateWithDate:(NSDate*)date
++(struct tm) mzDateWithDate:(NSDate*)date
 {
-    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+	NSCalendar *gregorian = [[NSCalendar alloc]
+							 initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDateComponents *comps = [gregorian components:NSSecondCalendarUnit | NSMinuteCalendarUnit | NSHourCalendarUnit | NSDayCalendarUnit | NSMonthCalendarUnit | NSYearCalendarUnit fromDate:date];
-    tm_zip mu_date;
+    struct tm mu_date;
     mu_date.tm_sec = (uInt)comps.second;
     mu_date.tm_min = (uInt)comps.minute;
     mu_date.tm_hour = (uInt)comps.hour;
     mu_date.tm_mday = (uInt)comps.day;
     mu_date.tm_mon = (uInt)comps.month;
     mu_date.tm_year = (uInt)comps.year;
-        
+    
 	return mu_date;
 }
 
@@ -85,13 +90,16 @@
 
 +(NSDate*) dateWithTimeIntervalSince1980:(NSTimeInterval)interval
 {
-	NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
+	NSDateComponents *comps = [[NSDateComponents alloc] init];
 	[comps setDay:1];
 	[comps setMonth:1];
 	[comps setYear:1980];
-    NSCalendar *gregorian = [[[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar] autorelease];
+	NSCalendar *gregorian = [[NSCalendar alloc]
+							 initWithCalendarIdentifier:NSGregorianCalendar];
 	NSDate *date = [gregorian dateFromComponents:comps];
 	
+    //	[comps release];
+    //	[gregorian release];
 	return [date dateByAddingTimeInterval:interval];
 }
 

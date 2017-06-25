@@ -12,9 +12,9 @@
 
 -(id) init
 {
-	if( (self=[super init]) != nil )
+	if( (self = [super init]) != nil )
 	{
-		_zipFile = NULL ;
+		_zipFile = NULL;
 	}
 	return self;
 }
@@ -22,7 +22,6 @@
 -(void) dealloc
 {
 	[self closeZipFile];
-    [super dealloc];
 }
 
 #pragma mark - zipping
@@ -30,7 +29,9 @@
 -(BOOL) newZipFile:(NSString *)zipFile
 {
 	_zipFile = zipOpen( (const char*)[zipFile UTF8String], 0 );
-	return _zipFile != NULL;
+	if( !_zipFile ) 
+		return NO;
+	return YES;
 }
 
 -(BOOL) addFileToZip:(NSString *)file newname:(NSString *)newname
@@ -40,17 +41,19 @@
 	time_t current;
 	time( &current );
 	
-	zip_fileinfo zipInfo = {0};
-	zipInfo.dosDate = (unsigned long) current;
+	zip_fileinfo zipInfo = {0,0,0};
+	zipInfo.dos_date = (unsigned long) current;
 	
+    if(!newname)
+        newname = file;
+    
 	NSDictionary* attr = [[NSFileManager defaultManager] attributesOfItemAtPath:file error:nil];
 	if( attr )
 	{
-		NSDate* fileDate = (NSDate*) attr[NSFileModificationDate];
+		NSDate* fileDate = (NSDate*)[attr objectForKey:NSFileModificationDate];
 		if( fileDate )
 		{
-			zipInfo.dosDate = [fileDate timeIntervalSinceDate:[DDZippedFileInfo dateWithTimeIntervalSince1980:0]];
-            zipInfo.tmz_date = [DDZippedFileInfo mzDateWithDate:fileDate];
+			zipInfo.dos_date = [fileDate timeIntervalSinceDate:[DDZippedFileInfo dateWithTimeIntervalSince1980:0]];
 		}
 	}
 	
@@ -81,9 +84,9 @@
 
 -(BOOL) closeZipFile
 {
-	if( _zipFile==NULL )
+	if( _zipFile == NULL )
 		return NO;
-	BOOL ret = zipClose( _zipFile,NULL )==Z_OK;
+	BOOL ret =  zipClose( _zipFile,NULL ) == Z_OK ? YES : NO;
 	_zipFile = NULL;
 	return ret;
 }

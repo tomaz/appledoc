@@ -1,33 +1,42 @@
 PODS:
+  - DDMinizip (1.0.0.2017.06.25)
   - Discount (2.1.5a)
   - GHUnit (0.5.8)
   - GRMustache (7.0.2):
     - JRSwizzle (~> 1.0)
   - JRSwizzle (1.0)
-  - Minizip/Core (1.1.0.2017.06.09)
+  - Minizip/Core (1.1.0.2017.06.25)
+  - Minizip/minishared (1.1.0.2017.06.25):
+    - Minizip/Core
   - ParseKit (0.0.0.2010.4.29):
     - RegexKitLite (~> 4.0.1)
   - RegexKitLite (4.0.6)
 
 DEPENDENCIES:
+  - DDMinizip (from `Specs/DDMinizip.podspec`)
   - Discount (from `Specs/Discount.podspec`)
   - GHUnit (~> 0.5)
   - GRMustache (~> 7.0.2)
-  - Minizip/Core (from `https://github.com/nmoinvaz/minizip.git`)
+  - Minizip/minishared (from `https://raw.githubusercontent.com/Coeur/minizip/patch-2/Minizip.podspec`)
   - ParseKit (from `Specs/ParseKit.podspec`)
   - RegexKitLite (from `https://github.com/inquisitiveSoft/RegexKitLite.git`)
 
 EXTERNAL SOURCES:
+  DDMinizip:
+    :podspec: Specs/DDMinizip.podspec
   Discount:
     :podspec: Specs/Discount.podspec
   Minizip:
-    :git: https://github.com/nmoinvaz/minizip.git
+    :podspec: https://raw.githubusercontent.com/Coeur/minizip/patch-2/Minizip.podspec
   ParseKit:
     :podspec: Specs/ParseKit.podspec
   RegexKitLite:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 CHECKOUT OPTIONS:
+  DDMinizip:
+    :commit: 327dec4331f7e934aad8f89347ca4804b9cb5f2f
+    :git: https://github.com/Coeur/DDMinizip.git
   Minizip:
     :commit: 36089398a362a117105ebfcb3751a269c70ab3b7
     :git: https://github.com/nmoinvaz/minizip.git
@@ -36,14 +45,15 @@ CHECKOUT OPTIONS:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 SPEC CHECKSUMS:
+  DDMinizip: ab9fe403696f180814dfcdbc337843aa57912cf2
   Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
-  GHUnit: '07609b0386af75f20ce520277d1c24fd8cd1598e'
+  GHUnit: 07609b0386af75f20ce520277d1c24fd8cd1598e
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  Minizip: b07fe5bbe74d026d3ec494168d1487cb41a17ce2
+  Minizip: b7213b5711d7c8961326f15f6c22fc9947950dd8
   ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: 39d86ee946a0539568c5f633d71d3444e6cfeb8b
+PODFILE CHECKSUM: c997a2274aab9932fbee053872b3ce3c0a544050
 
-COCOAPODS: 1.2.1
+COCOAPODS: 1.3.0.beta.2

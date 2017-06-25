@@ -1,6 +1,6 @@
 {
   "name": "Minizip",
-  "version": "1.1.0.2017.06.09",
+  "version": "1.1.0.2017.06.25",
   "license": "zlib",
   "summary": "Minizip contrib in zlib with latest bug fixes that supports PKWARE disk spanning, AES encryption, and IO buffering",
   "description": "Minizip zlib contribution that includes:\n* AES encryption\n* I/O buffering\n* PKWARE disk spanning\nIt also has the latest bug fixes that having been found all over the internet including the minizip forum and zlib developer's mailing list.",
@@ -40,7 +40,7 @@
 
         ]
       },
-      "source_files": "minishared.{c.h}"
+      "source_files": "minishared.{c,h}"
     }
   ]
 }
