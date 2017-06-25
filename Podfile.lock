@@ -8,6 +8,7 @@ PODS:
   - Minizip/Core (1.1.0.2017.06.25)
   - Minizip/minishared (1.1.0.2017.06.25):
     - Minizip/Core
+  - OCMock (3.4)
   - ParseKit (0.0.0.2010.4.29):
     - RegexKitLite (~> 4.0.1)
   - RegexKitLite (4.0.6)
@@ -18,6 +19,7 @@ DEPENDENCIES:
   - GHUnit (~> 0.5)
   - GRMustache (~> 7.0.2)
   - Minizip/minishared (from `https://github.com/nmoinvaz/minizip.git`)
+  - OCMock (~> 3.4)
   - ParseKit (from `Specs/ParseKit.podspec`)
   - RegexKitLite (from `https://github.com/inquisitiveSoft/RegexKitLite.git`)
 
@@ -51,9 +53,10 @@ SPEC CHECKSUMS:
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
   Minizip: b7213b5711d7c8961326f15f6c22fc9947950dd8
+  OCMock: 35ae71d6a8fcc1b59434d561d1520b9dd4f15765
   ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: 3bf7dd84040e51795a900762c08dc66348abb070
+PODFILE CHECKSUM: 504b2e21b6ab7feca9cc228effa83eacae7055bb
 
 COCOAPODS: 1.3.0.beta.2

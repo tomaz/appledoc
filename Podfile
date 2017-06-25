@@ -13,6 +13,7 @@ end
 
 def tests_pods
     pod 'GHUnit', '~> 0.5'
+    pod 'OCMock', '~> 3.4'
 end
 
 target 'appledoc' do

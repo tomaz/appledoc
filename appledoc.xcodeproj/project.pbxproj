@@ -39,7 +39,6 @@
 		73397A2812A5070700EDC035 /* GBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73397A2712A5070700EDC035 /* GBTask.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
 		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
-		733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98B11FCC97100966C4A /* Cocoa.framework */; };
 		733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98911FCC97100966C4A /* AppKit.framework */; };
 		733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -184,7 +183,6 @@
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
-		D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 		DA77C691196BEB2C0018A48F /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA98B5911972151100059171 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
@@ -201,7 +199,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */,
 				D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -364,7 +361,6 @@
 		73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBClassData.h; sourceTree = "<group>"; };
 		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
 		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ClassParsingTesting.m"; sourceTree = "<group>"; };
-		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+GBToken.h"; sourceTree = "<group>"; };
 		73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+GBToken.m"; sourceTree = "<group>"; };
 		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
@@ -421,7 +417,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
-				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
 				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
 				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
@@ -860,7 +855,6 @@
 		73FC720411FD7FB200AAD0B9 /* Test Target Only */ = {
 			isa = PBXGroup;
 			children = (
-				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
 			name = "Test Target Only";
