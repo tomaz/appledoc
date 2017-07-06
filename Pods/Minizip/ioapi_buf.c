@@ -1,4 +1,4 @@
-/* ioapi_buf.h -- IO base function header for compress/uncompress .zip
+/* ioapi_buf.c -- IO base function header for compress/uncompress .zip
    files using zlib + zip or unzip API
 
    This version of ioapi is designed to buffer IO.
@@ -20,6 +20,10 @@
 #include "ioapi.h"
 
 #include "ioapi_buf.h"
+
+#ifndef IOBUF_BUFFERSIZE
+#  define IOBUF_BUFFERSIZE (UINT16_MAX)
+#endif 
 
 #if defined(_WIN32)
 #  include <conio.h>
@@ -51,18 +55,18 @@ _x < _y ? _x : _y; })
 #endif
 
 typedef struct ourstream_s {
-  char readBuffer[IOBUF_BUFFERSIZE];
-  uInt readBufferLength;
-  uInt readBufferPos;
-  uInt readBufferHits;
-  uInt readBufferMisses;
-  char writeBuffer[IOBUF_BUFFERSIZE];
-  uInt writeBufferLength;
-  uInt writeBufferPos;
-  uInt writeBufferHits;
-  uInt writeBufferMisses;
-  ZPOS64_T position;
-  voidpf stream;
+  char      readbuf[IOBUF_BUFFERSIZE];
+  uint32_t  readbuf_len;
+  uint32_t  readbuf_pos;
+  uint32_t  readbuf_hits;
+  uint32_t  readbuf_misses;
+  char      writebuf[IOBUF_BUFFERSIZE];
+  uint32_t  writebuf_len;
+  uint32_t  writebuf_pos;
+  uint32_t  writebuf_hits;
+  uint32_t  writebuf_misses;
+  uint64_t  position;
+  voidpf    stream;
 } ourstream_t;
 
 #if defined(IOBUF_VERBOSE)
@@ -81,11 +85,7 @@ void print_buf_internal(voidpf opaque, voidpf stream, char *format, ...)
     va_end(arglist);
 }
 
-voidpf fopen_buf_internal_func (opaque, stream, number_disk, mode)
-   voidpf opaque;
-   voidpf stream;
-   int number_disk;
-   int mode;
+voidpf fopen_buf_internal_func(voidpf opaque, voidpf stream, uint32_t number_disk, int mode)
 {
     ourstream_t *streamio = NULL;
     if (stream == NULL)
@@ -99,31 +99,21 @@ voidpf fopen_buf_internal_func (opaque, stream, number_disk, mode)
     return streamio;
 }
 
-voidpf ZCALLBACK fopen_buf_func (opaque, filename, mode)
-   voidpf opaque;
-   const char* filename;
-   int mode;
+voidpf ZCALLBACK fopen_buf_func(voidpf opaque, const char *filename, int mode)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     voidpf stream = bufio->filefunc.zopen_file(bufio->filefunc.opaque, filename, mode);
     return fopen_buf_internal_func(opaque, stream, 0, mode);
 }
 
-voidpf ZCALLBACK fopen64_buf_func (opaque, filename, mode)
-   voidpf opaque;
-   const char* filename;
-   int mode;
+voidpf ZCALLBACK fopen64_buf_func(voidpf opaque, const void *filename, int mode)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     voidpf stream = bufio->filefunc64.zopen64_file(bufio->filefunc64.opaque, filename, mode);
     return fopen_buf_internal_func(opaque, stream, 0, mode);
 }
 
-voidpf ZCALLBACK fopendisk_buf_func (opaque, stream_cd, number_disk, mode)
-   voidpf opaque;
-   voidpf stream_cd;
-   int number_disk;
-   int mode;
+voidpf ZCALLBACK fopendisk_buf_func(voidpf opaque, voidpf stream_cd, uint32_t number_disk, int mode)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream_cd;
@@ -131,11 +121,7 @@ voidpf ZCALLBACK fopendisk_buf_func (opaque, stream_cd, number_disk, mode)
     return fopen_buf_internal_func(opaque, stream, number_disk, mode);
 }
 
-voidpf ZCALLBACK fopendisk64_buf_func (opaque, stream_cd, number_disk, mode)
-   voidpf opaque;
-   voidpf stream_cd;
-   int number_disk;
-   int mode;
+voidpf ZCALLBACK fopendisk64_buf_func(voidpf opaque, voidpf stream_cd, uint32_t number_disk, int mode)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream_cd;
@@ -143,146 +129,135 @@ voidpf ZCALLBACK fopendisk64_buf_func (opaque, stream_cd, number_disk, mode)
     return fopen_buf_internal_func(opaque, stream, number_disk, mode);
 }
 
-long fflush_buf OF((voidpf opaque, voidpf stream));
-long fflush_buf (opaque, stream)
-   voidpf opaque;
-   voidpf stream;
+long fflush_buf(voidpf opaque, voidpf stream)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    uInt totalBytesWritten = 0;
-    uInt bytesToWrite = streamio->writeBufferLength;
-    uInt bytesLeftToWrite = streamio->writeBufferLength;
-    int bytesWritten = 0;
+    uint32_t total_bytes_to_write = 0;
+    uint32_t bytes_to_write = streamio->writebuf_len;
+    uint32_t bytes_left_to_write = streamio->writebuf_len;
+    long bytes_written = 0;
     
-    while (bytesLeftToWrite > 0)
+    while (bytes_left_to_write > 0)
     {
         if (bufio->filefunc64.zwrite_file != NULL)
-            bytesWritten = bufio->filefunc64.zwrite_file(bufio->filefunc64.opaque, streamio->stream, streamio->writeBuffer + (bytesToWrite - bytesLeftToWrite), bytesLeftToWrite);
+            bytes_written = bufio->filefunc64.zwrite_file(bufio->filefunc64.opaque, streamio->stream, streamio->writebuf + (bytes_to_write - bytes_left_to_write), bytes_left_to_write);
         else
-            bytesWritten = bufio->filefunc.zwrite_file(bufio->filefunc.opaque, streamio->stream, streamio->writeBuffer + (bytesToWrite - bytesLeftToWrite), bytesLeftToWrite);
+            bytes_written = bufio->filefunc.zwrite_file(bufio->filefunc.opaque, streamio->stream, streamio->writebuf + (bytes_to_write - bytes_left_to_write), bytes_left_to_write);
 
-        streamio->writeBufferMisses += 1;
+        streamio->writebuf_misses += 1;
 
-        print_buf(opaque, stream, "write flush [%d:%d len %d]\n", bytesToWrite, bytesLeftToWrite, streamio->writeBufferLength);
+        print_buf(opaque, stream, "write flush [%d:%d len %d]\n", bytes_to_write, bytes_left_to_write, streamio->writebuf_len);
 
-        if (bytesWritten < 0)
-            return bytesWritten;
+        if (bytes_written < 0)
+            return bytes_written;
 
-        totalBytesWritten += bytesWritten;
-        bytesLeftToWrite -= bytesWritten;
-        streamio->position += bytesWritten;
+        total_bytes_to_write += bytes_written;
+        bytes_left_to_write -= bytes_written;
+        streamio->position += bytes_written;
     }
-    streamio->writeBufferLength = 0;
-    streamio->writeBufferPos = 0;
-    return totalBytesWritten;
+    streamio->writebuf_len = 0;
+    streamio->writebuf_pos = 0;
+    return total_bytes_to_write;
 }
 
-uLong ZCALLBACK fread_buf_func (opaque, stream, buf, size)
-   voidpf opaque;
-   voidpf stream;
-   void* buf;
-   uLong size;
+uint32_t ZCALLBACK fread_buf_func(voidpf opaque, voidpf stream, void *buf, uint32_t size)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    uInt bytesToRead = 0;
-    uInt bufLength = 0;
-    uInt bytesToCopy = 0;
-    uInt bytesLeftToRead = size;
-    uInt bytesRead = -1;
+    uint32_t buf_len = 0;
+    uint32_t bytes_to_read = 0;
+    uint32_t bytes_to_copy = 0;
+    uint32_t bytes_left_to_read = size;
+    uint32_t bytes_read = 0;
 
     print_buf(opaque, stream, "read [size %ld pos %lld]\n", size, streamio->position);
 
-    if (streamio->writeBufferLength > 0)
+    if (streamio->writebuf_len > 0)
     {
         print_buf(opaque, stream, "switch from write to read, not yet supported [%lld]\n", streamio->position);
     }
 
-    while (bytesLeftToRead > 0)
+    while (bytes_left_to_read > 0)
     {
-        if ((streamio->readBufferLength == 0) || (streamio->readBufferPos == streamio->readBufferLength))
+        if ((streamio->readbuf_len == 0) || (streamio->readbuf_pos == streamio->readbuf_len))
         {
-            if (streamio->readBufferLength == IOBUF_BUFFERSIZE)
+            if (streamio->readbuf_len == IOBUF_BUFFERSIZE)
             {
-                streamio->readBufferPos = 0;
-                streamio->readBufferLength = 0;
+                streamio->readbuf_pos = 0;
+                streamio->readbuf_len = 0;
             }
 
-            bytesToRead = IOBUF_BUFFERSIZE -(streamio->readBufferLength - streamio->readBufferPos);
+            bytes_to_read = IOBUF_BUFFERSIZE - (streamio->readbuf_len - streamio->readbuf_pos);
 
             if (bufio->filefunc64.zread_file != NULL)
-                bytesRead = bufio->filefunc64.zread_file(bufio->filefunc64.opaque, streamio->stream, streamio->readBuffer + streamio->readBufferPos, bytesToRead);
+                bytes_read = bufio->filefunc64.zread_file(bufio->filefunc64.opaque, streamio->stream, streamio->readbuf + streamio->readbuf_pos, bytes_to_read);
             else
-                bytesRead = bufio->filefunc.zread_file(bufio->filefunc.opaque, streamio->stream, streamio->readBuffer + streamio->readBufferPos, bytesToRead);
+                bytes_read = bufio->filefunc.zread_file(bufio->filefunc.opaque, streamio->stream, streamio->readbuf + streamio->readbuf_pos, bytes_to_read);
 
-            streamio->readBufferMisses += 1;
-            streamio->readBufferLength += bytesRead;
-            streamio->position += bytesRead;
+            streamio->readbuf_misses += 1;
+            streamio->readbuf_len += bytes_read;
+            streamio->position += bytes_read;
 
-            print_buf(opaque, stream, "filled [read %d/%d buf %d:%d pos %lld]\n", bytesRead, bytesToRead, streamio->readBufferPos, streamio->readBufferLength, streamio->position);
+            print_buf(opaque, stream, "filled [read %d/%d buf %d:%d pos %lld]\n", bytes_read, bytes_to_read, streamio->readbuf_pos, streamio->readbuf_len, streamio->position);
 
-            if (bytesRead == 0)
+            if (bytes_read == 0)
                 break;
         }
 
-        if ((streamio->readBufferLength - streamio->readBufferPos) > 0)
+        if ((streamio->readbuf_len - streamio->readbuf_pos) > 0)
         {
-            bytesToCopy = min(bytesLeftToRead, (streamio->readBufferLength - streamio->readBufferPos));
-            memcpy((char *)buf + bufLength, streamio->readBuffer + streamio->readBufferPos, bytesToCopy);
+            bytes_to_copy = min(bytes_left_to_read, (uint32_t)(streamio->readbuf_len - streamio->readbuf_pos));
+            memcpy((char *)buf + buf_len, streamio->readbuf + streamio->readbuf_pos, bytes_to_copy);
 
-            bufLength += bytesToCopy;
-            bytesLeftToRead -= bytesToCopy;
+            buf_len += bytes_to_copy;
+            bytes_left_to_read -= bytes_to_copy;
 
-            streamio->readBufferHits += 1;
-            streamio->readBufferPos += bytesToCopy;
+            streamio->readbuf_hits += 1;
+            streamio->readbuf_pos += bytes_to_copy;
 
-            print_buf(opaque, stream, "emptied [copied %d remaining %d buf %d:%d pos %lld]\n", bytesToCopy, bytesLeftToRead, streamio->readBufferPos, streamio->readBufferLength, streamio->position);
+            print_buf(opaque, stream, "emptied [copied %d remaining %d buf %d:%d pos %lld]\n", bytes_to_copy, bytes_left_to_read, streamio->readbuf_pos, streamio->readbuf_len, streamio->position);
         }
     }
 
-    return size - bytesLeftToRead;
+    return size - bytes_left_to_read;
 }
 
-uLong ZCALLBACK fwrite_buf_func (opaque, stream, buf, size)
-   voidpf opaque;
-   voidpf stream;
-   const void* buf;
-   uLong size;
+uint32_t ZCALLBACK fwrite_buf_func(voidpf opaque, voidpf stream, const void *buf, uint32_t size)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    uInt bytesToWrite = size;
-    uInt bytesLeftToWrite = size;
-    uInt bytesToCopy = 0;
-    int retVal = 0;
+    uint32_t bytes_to_write = size;
+    uint32_t bytes_left_to_write = size;
+    uint32_t bytes_to_copy = 0;
+    int64_t ret = 0;
 
-    print_buf(opaque, stream, "write [size %ld len %d pos %lld]\n", size, streamio->writeBufferLength, streamio->position);
+    print_buf(opaque, stream, "write [size %ld len %d pos %lld]\n", size, streamio->writebuf_len, streamio->position);
 
-    if (streamio->readBufferLength > 0)
+    if (streamio->readbuf_len > 0)
     {
-        streamio->position -= streamio->readBufferLength;
-        streamio->position += streamio->readBufferPos;
+        streamio->position -= streamio->readbuf_len;
+        streamio->position += streamio->readbuf_pos;
 
-        streamio->readBufferLength = 0;
-        streamio->readBufferPos = 0;
+        streamio->readbuf_len = 0;
+        streamio->readbuf_pos = 0;
 
         print_buf(opaque, stream, "switch from read to write [%lld]\n", streamio->position);
 
         if (bufio->filefunc64.zseek64_file != NULL)
-            retVal = bufio->filefunc64.zseek64_file(bufio->filefunc64.opaque, streamio->stream, streamio->position, ZLIB_FILEFUNC_SEEK_SET);
+            ret = bufio->filefunc64.zseek64_file(bufio->filefunc64.opaque, streamio->stream, streamio->position, ZLIB_FILEFUNC_SEEK_SET);
         else
-            retVal = bufio->filefunc.zseek_file(bufio->filefunc.opaque, streamio->stream, (uLong)streamio->position, ZLIB_FILEFUNC_SEEK_SET);
+            ret = bufio->filefunc.zseek_file(bufio->filefunc.opaque, streamio->stream, (uint32_t)streamio->position, ZLIB_FILEFUNC_SEEK_SET);
 
-        if (retVal != 0)
-            return -1;
+        if (ret != 0)
+            return (uint32_t)-1;
     }
 
-    while (bytesLeftToWrite > 0)
+    while (bytes_left_to_write > 0)
     {
-        bytesToCopy = min(bytesLeftToWrite, (IOBUF_BUFFERSIZE - min(streamio->writeBufferLength, streamio->writeBufferPos)));
+        bytes_to_copy = min(bytes_left_to_write, (uint32_t)(IOBUF_BUFFERSIZE - min(streamio->writebuf_len, streamio->writebuf_pos)));
 
-        if (bytesToCopy == 0)
+        if (bytes_to_copy == 0)
         {
             if (fflush_buf(opaque, stream) <= 0)
                 return 0;
@@ -290,61 +265,50 @@ uLong ZCALLBACK fwrite_buf_func (opaque, stream, buf, size)
             continue;
         }
         
-        memcpy(streamio->writeBuffer + streamio->writeBufferPos, (char *)buf + (bytesToWrite - bytesLeftToWrite), bytesToCopy);
+        memcpy(streamio->writebuf + streamio->writebuf_pos, (char *)buf + (bytes_to_write - bytes_left_to_write), bytes_to_copy);
 
-        print_buf(opaque, stream, "write copy [remaining %d write %d:%d len %d]\n", bytesToCopy, bytesToWrite, bytesLeftToWrite, streamio->writeBufferLength);
+        print_buf(opaque, stream, "write copy [remaining %d write %d:%d len %d]\n", bytes_to_copy, bytes_to_write, bytes_left_to_write, streamio->writebuf_len);
 
-        bytesLeftToWrite -= bytesToCopy;
+        bytes_left_to_write -= bytes_to_copy;
 
-        streamio->writeBufferPos += bytesToCopy;
-        streamio->writeBufferHits += 1;
-        if (streamio->writeBufferPos > streamio->writeBufferLength)
-            streamio->writeBufferLength += streamio->writeBufferPos - streamio->writeBufferLength;
+        streamio->writebuf_pos += bytes_to_copy;
+        streamio->writebuf_hits += 1;
+        if (streamio->writebuf_pos > streamio->writebuf_len)
+            streamio->writebuf_len += streamio->writebuf_pos - streamio->writebuf_len;
     }
 
-    return size - bytesLeftToWrite;
+    return size - bytes_left_to_write;
 }
 
-ZPOS64_T ftell_buf_internal_func (opaque, stream, position)
-   voidpf opaque;
-   voidpf stream;
-   ZPOS64_T position;
+uint64_t ftell_buf_internal_func(voidpf opaque, voidpf stream, uint64_t position)
 {
     ourstream_t *streamio = (ourstream_t *)stream;
     streamio->position = position;
-    print_buf(opaque, stream, "tell [pos %llu readpos %d writepos %d err %d]\n", streamio->position, streamio->readBufferPos, streamio->writeBufferPos, errno);
-    if (streamio->readBufferLength > 0)
-        position -= (streamio->readBufferLength - streamio->readBufferPos);
-    if (streamio->writeBufferLength > 0)
-        position += streamio->writeBufferPos;
+    print_buf(opaque, stream, "tell [pos %llu readpos %d writepos %d err %d]\n", streamio->position, streamio->readbuf_pos, streamio->writebuf_pos, errno);
+    if (streamio->readbuf_len > 0)
+        position -= (streamio->readbuf_len - streamio->readbuf_pos);
+    if (streamio->writebuf_len > 0)
+        position += streamio->writebuf_pos;
     return position;
 }
 
-long ZCALLBACK ftell_buf_func (opaque, stream)
-   voidpf opaque;
-   voidpf stream;
+long ZCALLBACK ftell_buf_func(voidpf opaque, voidpf stream)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    ZPOS64_T position = bufio->filefunc.ztell_file(bufio->filefunc.opaque, streamio->stream);
+    uint64_t position = bufio->filefunc.ztell_file(bufio->filefunc.opaque, streamio->stream);
     return (long)ftell_buf_internal_func(opaque, stream, position);
 }
 
-ZPOS64_T ZCALLBACK ftell64_buf_func (opaque, stream)
-   voidpf opaque;
-   voidpf stream;
+uint64_t ZCALLBACK ftell64_buf_func(voidpf opaque, voidpf stream)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    ZPOS64_T position = bufio->filefunc64.ztell64_file(bufio->filefunc64.opaque, streamio->stream);
+    uint64_t position = bufio->filefunc64.ztell64_file(bufio->filefunc64.opaque, streamio->stream);
     return ftell_buf_internal_func(opaque, stream, position);
 }
 
-int fseek_buf_internal_func (opaque, stream, offset, origin)
-   voidpf opaque;
-   voidpf stream;
-   ZPOS64_T offset;
-   int origin;
+int fseek_buf_internal_func(voidpf opaque, voidpf stream, uint64_t offset, int origin)
 {
     ourstream_t *streamio = (ourstream_t *)stream;
 
@@ -354,17 +318,17 @@ int fseek_buf_internal_func (opaque, stream, offset, origin)
     {
         case ZLIB_FILEFUNC_SEEK_SET:
 
-            if (streamio->writeBufferLength > 0)
+            if (streamio->writebuf_len > 0)
             {
-                if ((offset >= streamio->position) && (offset <= streamio->position + streamio->writeBufferLength))
+                if ((offset >= streamio->position) && (offset <= streamio->position + streamio->writebuf_len))
                 {
-                    streamio->writeBufferPos = (uLong)(offset - streamio->position);
+                    streamio->writebuf_pos = (uint32_t)(offset - streamio->position);
                     return 0;
                 }
             }
-            if ((streamio->readBufferLength > 0) && (offset < streamio->position) && (offset >= streamio->position - streamio->readBufferLength))
+            if ((streamio->readbuf_len > 0) && (offset < streamio->position) && (offset >= streamio->position - streamio->readbuf_len))
             {
-                streamio->readBufferPos = (uLong)(offset - (streamio->position - streamio->readBufferLength));
+                streamio->readbuf_pos = (uint32_t)(offset - (streamio->position - streamio->readbuf_len));
                 return 0;
             }
             if (fflush_buf(opaque, stream) < 0)
@@ -374,24 +338,24 @@ int fseek_buf_internal_func (opaque, stream, offset, origin)
 
         case ZLIB_FILEFUNC_SEEK_CUR:
 
-            if (streamio->readBufferLength > 0)
+            if (streamio->readbuf_len > 0)
             {
-                if (offset <= (streamio->readBufferLength - streamio->readBufferPos))
+                if (offset <= (streamio->readbuf_len - streamio->readbuf_pos))
                 {
-                    streamio->readBufferPos += (uLong)offset;
+                    streamio->readbuf_pos += (uint32_t)offset;
                     return 0;
                 } 
-                offset -= (streamio->readBufferLength - streamio->readBufferPos);
+                offset -= (streamio->readbuf_len - streamio->readbuf_pos);
                 streamio->position += offset;
             }
-            if (streamio->writeBufferLength > 0)
+            if (streamio->writebuf_len > 0)
             {
-                if (offset <= (streamio->writeBufferLength - streamio->writeBufferPos))
+                if (offset <= (streamio->writebuf_len - streamio->writebuf_pos))
                 {
-                    streamio->writeBufferPos += (uLong)offset;
+                    streamio->writebuf_pos += (uint32_t)offset;
                     return 0;
                 }
-                offset -= (streamio->writeBufferLength - streamio->writeBufferPos);
+                //offset -= (streamio->writebuf_len - streamio->writebuf_pos);
             }
 
             if (fflush_buf(opaque, stream) < 0)
@@ -401,79 +365,67 @@ int fseek_buf_internal_func (opaque, stream, offset, origin)
 
         case ZLIB_FILEFUNC_SEEK_END:
 
-            if (streamio->writeBufferLength > 0)
+            if (streamio->writebuf_len > 0)
             {
-                streamio->writeBufferPos = streamio->writeBufferLength;
+                streamio->writebuf_pos = streamio->writebuf_len;
                 return 0;
             }
             break;
     }
 
-    streamio->readBufferLength = 0;
-    streamio->readBufferPos = 0;
-    streamio->writeBufferLength = 0;
-    streamio->writeBufferPos = 0;
+    streamio->readbuf_len = 0;
+    streamio->readbuf_pos = 0;
+    streamio->writebuf_len = 0;
+    streamio->writebuf_pos = 0;
     return 1;
 }
 
-long ZCALLBACK fseek_buf_func (opaque, stream, offset, origin)
-   voidpf opaque;
-   voidpf stream;
-   uLong offset;
-   int origin;
+long ZCALLBACK fseek_buf_func(voidpf opaque, voidpf stream, uint32_t offset, int origin)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    int retVal = -1;
+    long ret = -1;
     if (bufio->filefunc.zseek_file == NULL)
-        return retVal;
-    retVal = fseek_buf_internal_func(opaque, stream, offset, origin);
-    if (retVal == 1)
-        retVal = bufio->filefunc.zseek_file(bufio->filefunc.opaque, streamio->stream, offset, origin);
-    return retVal;
+        return ret;
+    ret = fseek_buf_internal_func(opaque, stream, offset, origin);
+    if (ret == 1)
+        ret = bufio->filefunc.zseek_file(bufio->filefunc.opaque, streamio->stream, offset, origin);
+    return ret;
 }
 
-long ZCALLBACK fseek64_buf_func (opaque, stream, offset, origin)
-   voidpf opaque;
-   voidpf stream;
-   ZPOS64_T offset;
-   int origin;
+long ZCALLBACK fseek64_buf_func(voidpf opaque, voidpf stream, uint64_t offset, int origin)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    int retVal = -1;
+    long ret = -1;
     if (bufio->filefunc64.zseek64_file == NULL)
-        return retVal;
-    retVal = fseek_buf_internal_func(opaque, stream, offset, origin);
-    if (retVal == 1)
-        retVal = bufio->filefunc64.zseek64_file(bufio->filefunc64.opaque, streamio->stream, offset, origin);
-    return retVal;
+        return ret;
+    ret = fseek_buf_internal_func(opaque, stream, offset, origin);
+    if (ret == 1)
+        ret = bufio->filefunc64.zseek64_file(bufio->filefunc64.opaque, streamio->stream, offset, origin);
+    return ret;
 }
 
-int ZCALLBACK fclose_buf_func (opaque, stream)
-   voidpf opaque;
-   voidpf stream;
+int ZCALLBACK fclose_buf_func(voidpf opaque, voidpf stream)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
-    int retVal = 0;
+    int ret = 0;
     fflush_buf(opaque, stream);
     print_buf(opaque, stream, "close\n");
-    if (streamio->readBufferHits + streamio->readBufferMisses > 0)
-        print_buf(opaque, stream, "read efficency %.02f%%\n", (streamio->readBufferHits / ((float)streamio->readBufferHits + streamio->readBufferMisses)) * 100);
-    if (streamio->writeBufferHits + streamio->writeBufferMisses > 0)
-        print_buf(opaque, stream, "write efficency %.02f%%\n", (streamio->writeBufferHits / ((float)streamio->writeBufferHits + streamio->writeBufferMisses)) * 100);
+    if (streamio->readbuf_hits + streamio->readbuf_misses > 0)
+        print_buf(opaque, stream, "read efficency %.02f%%\n", (streamio->readbuf_hits / ((float)streamio->readbuf_hits + streamio->readbuf_misses)) * 100);
+    if (streamio->writebuf_hits + streamio->writebuf_misses > 0)
+        print_buf(opaque, stream, "write efficency %.02f%%\n", (streamio->writebuf_hits / ((float)streamio->writebuf_hits + streamio->writebuf_misses)) * 100);
     if (bufio->filefunc64.zclose_file != NULL)
-        retVal = bufio->filefunc64.zclose_file(bufio->filefunc64.opaque, streamio->stream);
+        ret = bufio->filefunc64.zclose_file(bufio->filefunc64.opaque, streamio->stream);
     else 
-        retVal = bufio->filefunc.zclose_file(bufio->filefunc.opaque, streamio->stream);
+        ret = bufio->filefunc.zclose_file(bufio->filefunc.opaque, streamio->stream);
     free(streamio);
-    return retVal;
+    return ret;
 }
 
-int ZCALLBACK ferror_buf_func (opaque, stream)
-   voidpf opaque;
-   voidpf stream;
+int ZCALLBACK ferror_buf_func(voidpf opaque, voidpf stream)
 {
     ourbuffer_t *bufio = (ourbuffer_t *)opaque;
     ourstream_t *streamio = (ourstream_t *)stream;
@@ -482,10 +434,7 @@ int ZCALLBACK ferror_buf_func (opaque, stream)
     return bufio->filefunc.zerror_file(bufio->filefunc.opaque, streamio->stream);
 }
 
-
-void fill_buffer_filefunc (pzlib_filefunc_def, ourbuf)
-   zlib_filefunc_def* pzlib_filefunc_def;
-   ourbuffer_t *ourbuf;
+void fill_buffer_filefunc(zlib_filefunc_def *pzlib_filefunc_def, ourbuffer_t *ourbuf)
 {
     pzlib_filefunc_def->zopen_file = fopen_buf_func;
     pzlib_filefunc_def->zopendisk_file = fopendisk_buf_func;
@@ -498,9 +447,7 @@ void fill_buffer_filefunc (pzlib_filefunc_def, ourbuf)
     pzlib_filefunc_def->opaque = ourbuf;
 }
 
-void fill_buffer_filefunc64 (pzlib_filefunc_def, ourbuf)
-   zlib_filefunc64_def* pzlib_filefunc_def;
-   ourbuffer_t *ourbuf;
+void fill_buffer_filefunc64(zlib_filefunc64_def *pzlib_filefunc_def, ourbuffer_t *ourbuf)
 {
     pzlib_filefunc_def->zopen64_file = fopen64_buf_func;
     pzlib_filefunc_def->zopendisk64_file = fopendisk64_buf_func;

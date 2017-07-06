@@ -1,0 +1,19 @@
+{
+  "name": "DDMinizip",
+  "version": "1.0.0.2017.06.25",
+  "license": "libz",
+  "summary": "Based on code from acsolu@gmail.com, expanded and modified to work as a 'drop-in' static library for macOS and iOS",
+  "description": "Based on code from acsolu@gmail.com, expanded and modified to work as a 'drop-in' static library for macOS and iOS",
+  "homepage": "https://github.com/Daij-Djan/DDMinizip",
+  "authors": "Dominik Pich",
+  "source": {
+    "git": "https://github.com/Daij-Djan/DDMinizip.git"
+  },
+  "source_files": "src/*.{m,h}",
+  "platforms": {
+    "osx": null,
+    "ios": null,
+    "tvos": null,
+    "watchos": null
+  }
+}

@@ -55,6 +55,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <os/lock.h>
 
 
 #import "RegexKitLite.h"
@@ -186,7 +187,7 @@ typedef uint32_t RKLLookasideCache_t;
 #define RKL_EXCEPTION(e, f, ...)       [NSException exceptionWithName:(e) reason:rkl_stringFromClassAndMethod((self), (_cmd), (f), ##__VA_ARGS__) userInfo:NULL]
 #define RKL_RAISE_EXCEPTION(e, f, ...) [RKL_EXCEPTION(e, f, ##__VA_ARGS__) raise]
 
-#ifdef    NS_BLOCK_ASSERTIONS
+#ifdef NS_BLOCK_ASSERTIONS
 #define RKLCAbortAssert(c)
 #define RKLCDelayedAssert(c, e, g)
 #define RKL_UNUSED_ASSERTION_ARG RKL_ATTRIBUTES(unused)
@@ -217,8 +218,8 @@ RKL_STATIC_INLINE BOOL NSRangeInsideRange(NSRange cin, NSRange win) {
 #define NSMaxiumRange         ((NSRange){.location = 0UL,                    .length = NSUIntegerMax})
 
 // These values are used to help tickle improper usage.
-#define RKLIllegalRange       ((NSRange){.location = NSIntegerMax, .length = NSIntegerMax})
-#define RKLIllegalPointer     ((void *)0xBAD0C0DE)
+#define RKLIllegalRange ((NSRange){.location = NSIntegerMax, .length = NSIntegerMax})
+#define RKLIllegalPointer ((void *)0xBAD0C0DE)
 
 
 #pragma mark -
@@ -354,7 +355,7 @@ static RKLCachedRegex       rkl_cachedRegexes[_RKL_REGEX_CACHE_LINES];
 static RKLCachedRegex *rkl_lastCachedRegex;
 static RKLLRUCacheSet_t     rkl_cachedRegexCacheSets[_RKL_REGEX_LRU_CACHE_SETS] = { [0 ... (_RKL_REGEX_LRU_CACHE_SETS - 1UL)] = _RKL_LRU_CACHE_SET_INIT };
 static RKLLookasideCache_t  rkl_regexLookasideCache[_RKL_REGEX_LOOKASIDE_CACHE_SIZE] RKL_ALIGNED(64);
-static OSSpinLock           rkl_cacheSpinLock = OS_SPINLOCK_INIT;
+static os_unfair_lock       rkl_cacheSpinLock = OS_UNFAIR_LOCK_INIT;
 static const UniChar        rkl_emptyUniCharString[1];	// For safety, icu_regexes are 'set' to this when the string they were searched is cleared.
 static void * rkl_scratchBuffer[_RKL_SCRATCH_BUFFERS];	// Used to hold temporary allocations that are allocated via reallocf().
 
@@ -504,9 +505,9 @@ static void rkl_RegisterForLowMemoryNotifications(void) RKL_ATTRIBUTES(used);
 @implementation RKLLowMemoryWarningObserver
 
 + (void)lowMemoryWarning:(id)notification {
-	if(OSSpinLockTry(&rkl_cacheSpinLock)) {
+	if(os_unfair_lock_trylock(&rkl_cacheSpinLock)) {
 		rkl_clearStringCache();
-		OSSpinLockUnlock(&rkl_cacheSpinLock);
+        os_unfair_lock_unlock(&rkl_cacheSpinLock);
 	} else {
 		[[RKLLowMemoryWarningObserver class] performSelector:@selector(lowMemoryWarning:) withObject:notification afterDelay:(NSTimeInterval)0.1];
 	}
@@ -679,8 +680,6 @@ static RKLCachedRegex *rkl_getCachedRegex(NSString *regexString, RKLRegexOptions
 	CFHashCode      regexHash   = 0UL;
 	int32_t         status      = 0;
 	
-	RKLCDelayedAssert((rkl_cacheSpinLock != (OSSpinLock)0) && (regexString != NULL), exception, exitNow);
-	
 	// Fast path the common case where this regex is exactly the same one used last time.
 	// The pointer equality test is valid under these circumstances since the cachedRegex->regexString is an immutable copy.
 	// If the regexString argument is mutable, this test will fail, and we'll use the the slow path cache check below.
@@ -719,9 +718,9 @@ static RKLCachedRegex *rkl_getCachedRegex(NSString *regexString, RKLRegexOptions
 	cachedRegex->regexHash = regexHash;
 	cachedRegex->options   = options;
 	
-	CFIndex                                        regexStringU16Length = CFStringGetLength(cachedRegex->regexString); // In UTF16 code units.
-	UParseError                                    parseError           = (UParseError){-1, -1, {0}, {0}};
-	const UniChar *regexUniChar         = NULL;
+	CFIndex regexStringU16Length = CFStringGetLength(cachedRegex->regexString); // In UTF16 code units.
+	UParseError parseError = (UParseError){-1, -1, {0}, {0}};
+	const UniChar *regexUniChar = NULL;
 	
 	if(RKL_EXPECTED(regexStringU16Length >= (CFIndex)INT_MAX, 0L)) { *exception = [NSException exceptionWithName:NSRangeException reason:@"Regex string length exceeds INT_MAX" userInfo:NULL]; goto exitNow; }
 	
@@ -951,22 +950,22 @@ void rkl_debugCacheSpinLock(void) {
 
 static void rkl_cleanup_cacheSpinLockStatus(volatile NSUInteger *rkl_cacheSpinLockStatusPtr) {
 	static NSUInteger didPrintForcedUnlockWarning = 0UL, didPrintNotLockedWarning = 0UL;
-	NSUInteger        rkl_cacheSpinLockStatus     = *rkl_cacheSpinLockStatusPtr;
+	NSUInteger rkl_cacheSpinLockStatus = *rkl_cacheSpinLockStatusPtr;
 	
 	if(RKL_EXPECTED((rkl_cacheSpinLockStatus & RKLUnlockedCacheSpinLock) == 0UL, 0L) && RKL_EXPECTED((rkl_cacheSpinLockStatus & RKLLockedCacheSpinLock) != 0UL, 1L)) {
 		if(rkl_cacheSpinLock != (OSSpinLock)0) {
-			if(didPrintForcedUnlockWarning == 0UL) {
-		  didPrintForcedUnlockWarning = 1UL;
-		  NSLog(@"[RegexKitLite] Unusual condition detected: Recorded that rkl_cacheSpinLock was locked, but for some reason it was not unlocked.  Forcibly unlocking rkl_cacheSpinLock. Set a breakpoint at rkl_debugCacheSpinLock to debug. This warning is only printed once.");
-	  }
+            if(didPrintForcedUnlockWarning == 0UL) {
+                didPrintForcedUnlockWarning = 1UL;
+                NSLog(@"[RegexKitLite] Unusual condition detected: Recorded that rkl_cacheSpinLock was locked, but for some reason it was not unlocked.  Forcibly unlocking rkl_cacheSpinLock. Set a breakpoint at rkl_debugCacheSpinLock to debug. This warning is only printed once.");
+            }
 			
 			rkl_debugCacheSpinLock(); // Since this is an unusual condition, offer an attempt to catch it before we unlock.
 			OSSpinLockUnlock(&rkl_cacheSpinLock);
 		} else {
-			if(didPrintNotLockedWarning == 0UL) {
-		  didPrintNotLockedWarning = 1UL;
-		  NSLog(@"[RegexKitLite] Unusual condition detected: Recorded that rkl_cacheSpinLock was locked, but for some reason it was not unlocked, yet rkl_cacheSpinLock is currently not locked? Set a breakpoint at rkl_debugCacheSpinLock to debug. This warning is only printed once.");
-	  }
+            if(didPrintNotLockedWarning == 0UL) {
+                didPrintNotLockedWarning = 1UL;
+                NSLog(@"[RegexKitLite] Unusual condition detected: Recorded that rkl_cacheSpinLock was locked, but for some reason it was not unlocked, yet rkl_cacheSpinLock is currently not locked? Set a breakpoint at rkl_debugCacheSpinLock to debug. This warning is only printed once.");
+            }
 			
 			rkl_debugCacheSpinLock();
 		}
@@ -981,8 +980,8 @@ static void rkl_cleanup_cacheSpinLockStatus(volatile NSUInteger *rkl_cacheSpinLo
 #pragma mark Front end function that handles varargs and calls rkl_performRegexOp with the marshaled results
 
 static id rkl_performDictionaryVarArgsOp(id self, SEL _cmd, RKLRegexOp regexOp, NSString *regexString, RKLRegexOptions options, NSInteger capture, id matchString, NSRange *matchRange, NSString *replacementString, NSError **error, void *result, id firstKey, va_list varArgsList) {
-	id         captureKeys[64];
-	int        captureKeyIndexes[64];
+	id captureKeys[64];
+	int captureKeyIndexes[64];
 	NSUInteger captureKeysCount = 0UL;
 	
 	if(varArgsList != NULL) {
@@ -1031,7 +1030,7 @@ static id rkl_performRegexOp(id self, SEL _cmd, RKLRegexOp regexOp, NSString *re
 	
 	// IMPORTANT!   Once we have obtained the lock, code MUST exit via 'goto exitNow;' to unlock the lock!  NO EXCEPTIONS!
 	// ----------
-	OSSpinLockLock(&rkl_cacheSpinLock); // Grab the lock and get cache entry.
+    os_unfair_lock_lock(&rkl_cacheSpinLock); // Grab the lock and get cache entry.
 	rkl_cacheSpinLockStatus |= RKLLockedCacheSpinLock;
 	rkl_dtrace_incrementEventID();
 	
@@ -1113,7 +1112,7 @@ static id rkl_performRegexOp(id self, SEL _cmd, RKLRegexOp regexOp, NSString *re
 	
 	
 exitNow:
-	OSSpinLockUnlock(&rkl_cacheSpinLock);
+    os_unfair_lock_unlock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock; // Warning about rkl_cacheSpinLockStatus never being read can be safely ignored.
 	
 	if(RKL_EXPECTED(status > U_ZERO_ERROR, 0L) && RKL_EXPECTED(exception == NULL, 0L)) { exception = rkl_NSExceptionForRegex(regexString, options, NULL, status); } // If we had a problem, prepare an exception to be thrown.
@@ -1641,12 +1640,12 @@ static NSUInteger rkl_isRegexValid(id self, SEL _cmd, NSString *regex, RKLRegexO
 	if((error != NULL) && (*error != NULL)) { *error = NULL; }
 	if(RKL_EXPECTED(regex == NULL, 0L)) { RKL_RAISE_EXCEPTION(NSInvalidArgumentException, @"The regular expression argument is NULL."); }
 	
-	OSSpinLockLock(&rkl_cacheSpinLock);
+    os_unfair_lock_lock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLLockedCacheSpinLock;
 	rkl_dtrace_incrementEventID();
 	if(RKL_EXPECTED((cachedRegex = rkl_getCachedRegex(regex, options, error, &exception)) != NULL, 1L)) { gotCachedRegex = 1UL; captureCount = cachedRegex->captureCount; }
 	cachedRegex = NULL;
-	OSSpinLockUnlock(&rkl_cacheSpinLock);
+    os_unfair_lock_unlock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock; // Warning about rkl_cacheSpinLockStatus never being read can be safely ignored.
 	
 	if(captureCountPtr != NULL) { *captureCountPtr = captureCount; }
@@ -1657,7 +1656,6 @@ static NSUInteger rkl_isRegexValid(id self, SEL _cmd, NSString *regex, RKLRegexO
 #pragma mark Functions used for clearing and releasing resources for various internal data structures
 
 static void rkl_clearStringCache(void) {
-	RKLCAbortAssert(rkl_cacheSpinLock != (OSSpinLock)0);
 	rkl_lastCachedRegex = NULL;
 	NSUInteger x = 0UL;
 	for(x = 0UL; x < _RKL_SCRATCH_BUFFERS;    x++) { if(rkl_scratchBuffer[x] != NULL) { rkl_scratchBuffer[x] = rkl_free(&rkl_scratchBuffer[x]); }  }
@@ -1820,7 +1818,7 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 	
 	// IMPORTANT!   Once we have obtained the lock, code MUST exit via 'goto exitNow;' to unlock the lock!  NO EXCEPTIONS!
 	// ----------
-	OSSpinLockLock(&rkl_cacheSpinLock); // Grab the lock and get cache entry.
+    os_unfair_lock_lock(&rkl_cacheSpinLock); // Grab the lock and get cache entry.
 	rkl_cacheSpinLockStatus |= RKLLockedCacheSpinLock;
 	rkl_dtrace_incrementAndGetEventID(thisDTraceEventID);
 	
@@ -1838,7 +1836,7 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 	
 exitNow:
 	if((rkl_cacheSpinLockStatus & RKLLockedCacheSpinLock) != 0UL) { // In case we arrive at exitNow: without obtaining the rkl_cacheSpinLock.
-		OSSpinLockUnlock(&rkl_cacheSpinLock);
+        os_unfair_lock_unlock(&rkl_cacheSpinLock);
 		rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock; // Warning about rkl_cacheSpinLockStatus never being read can be safely ignored.
 	}
 	
@@ -1992,12 +1990,16 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 	
 	RKLCDelayedAssert((self != NULL) && (_cmd != NULL) && ((blockEnumerationOp == RKLBlockEnumerationMatchOp) ? (((regexOp == RKLCapturesArrayOp) || (regexOp == RKLSplitOp)) && (stringsAndRangesBlock != NULL) && (replaceStringsAndRangesBlock == NULL)) : 1) && ((blockEnumerationOp == RKLBlockEnumerationReplaceOp) ? ((regexOp == RKLCapturesArrayOp) && (stringsAndRangesBlock == NULL) && (replaceStringsAndRangesBlock != NULL)) : 1) , &exception, exitNow);
 	
-	if(RKL_EXPECTED((autoreleaseArray = rkl_CFAutorelease(CFArrayCreateMutable(NULL, 0L, &rkl_transferOwnershipArrayCallBacks))) == NULL, 0L))          { goto exitNow; } // Warning about potential leak of Core Foundation object can be safely ignored.
+    autoreleaseArray = rkl_CFAutorelease(CFArrayCreateMutable(NULL, 0L, &rkl_transferOwnershipArrayCallBacks));
+    
+	if(RKL_EXPECTED(autoreleaseArray == NULL, 0L)) { goto exitNow; } // Warning about potential leak of Core Foundation object can be safely ignored.
 	if(RKL_EXPECTED((blockEnumerationHelper = [[RKLBlockEnumerationHelper alloc] initWithRegex:regexString options:options string:matchString range:matchRange error:error]) == NULL, 0L)) { goto exitNow; } // Warning about potential leak of blockEnumerationHelper can be safely ignored.
 	if(autoreleaseArray != NULL) { CFArrayAppendValue((CFMutableArrayRef)autoreleaseArray, blockEnumerationHelper); autoreleaseReplaceRange.location++; } // We do not autorelease blockEnumerationHelper, but instead add it to autoreleaseArray.
 	
 	if(performStringReplacement == YES) {
-		if(RKL_EXPECTED((mutableReplacementString = [[NSMutableString alloc] init]) == NULL, 0L)) { goto exitNow; } // Warning about potential leak of mutableReplacementString can be safely ignored.
+        mutableReplacementString = [[NSMutableString alloc] init];
+        
+		if(RKL_EXPECTED(mutableReplacementString == NULL, 0L)) { goto exitNow; } // Warning about potential leak of mutableReplacementString can be safely ignored.
 		if(autoreleaseArray != NULL) { CFArrayAppendValue((CFMutableArrayRef)autoreleaseArray, mutableReplacementString); autoreleaseReplaceRange.location++; } // We do not autorelease mutableReplacementString, but instead add it to autoreleaseArray.
 	}
 	
@@ -2021,21 +2023,33 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 #ifdef NS_BLOCK_ASSERTIONS
 	{ // Initialize the padded capturedStrings and capturedRanges to values that should tickle a fault if they are ever used.
 		size_t idx = 0UL;
-		for(idx = captureCountBlockArgument; idx < capturedStringsCapacity; idx++) { capturedStrings[idx] = (NSString *)RKLIllegalPointer; }
-		for(idx = captureCountBlockArgument; idx < capturedRangesCapacity;  idx++) { capturedRanges[idx]  =             RKLIllegalRange;   }
+		for(idx = captureCountBlockArgument; idx < capturedStringsCapacity; idx++) {
+            capturedStrings[idx] = (NSString *)RKLIllegalPointer;
+        }
+        
+		for(idx = captureCountBlockArgument; idx < capturedRangesCapacity; idx++) {
+            capturedRanges[idx] = RKLIllegalRange;
+        }
 	}
 #else
 	{ // Initialize all of the capturedStrings and capturedRanges to values that should tickle a fault if they are ever used.
 		size_t idx = 0UL;
-		for(idx = 0UL; idx < capturedStringsCapacity; idx++) { capturedStrings[idx] = (NSString *)RKLIllegalPointer; }
-		for(idx = 0UL; idx < capturedRangesCapacity;  idx++) { capturedRanges[idx]  =             RKLIllegalRange;   }
+		for(idx = 0UL; idx < capturedStringsCapacity; idx++) {
+            capturedStrings[idx] = (NSString *)RKLIllegalPointer;
+        }
+        
+		for(idx = 0UL; idx < capturedRangesCapacity; idx++) {
+            capturedRanges[idx] = RKLIllegalRange;
+        }
 	}
 #endif
 	
 	if((enumerationOptions & RKLRegexEnumerationFastCapturedStringsXXX) != 0UL) {
 		RKLCDelayedAssert(((enumerationOptions & RKLRegexEnumerationCapturedStringsNotRequired) == 0UL), &exception, exitNow);
 		size_t idx = 0UL;
-		if((fastCapturedStrings = (CFMutableStringRef *)alloca(sizeof(NSString *) * capturedStringsCapacity)) == NULL) { goto exitNow; } // Space to hold the "fast" captured strings from a match.
+		if((fastCapturedStrings = (CFMutableStringRef *)alloca(sizeof(NSString *) * capturedStringsCapacity)) == NULL) {
+            goto exitNow;  // Space to hold the "fast" captured strings from a match.
+        }
 		
 		for(idx = 0UL; idx < (size_t)captureCountBlockArgument; idx++) {
 			if((fastCapturedStrings[idx] = CFStringCreateMutableWithExternalCharactersNoCopy(NULL, NULL, 0L, 0L, kCFAllocatorNull)) == NULL) { goto exitNow; }
@@ -2047,9 +2061,12 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 	RKLFindAll findAll = rkl_makeFindAll(capturedRanges, matchRange, (NSInteger)capturedRangesCapacity, (capturedRangesCapacity * sizeof(NSRange)), 0UL, &blockEnumerationHelper->scratchBuffer[0], &blockEnumerationHelper->scratchBuffer[1], &blockEnumerationHelper->scratchBuffer[2], &blockEnumerationHelper->scratchBuffer[3], &blockEnumerationHelper->scratchBuffer[4], 0L, 0L, 1L);
 	
 	NSString **capturedStringsBlockArgument = NULL; // capturedStringsBlockArgument is what we pass to the 'capturedStrings[]' argument of the users ^block.  Will pass NULL if the user doesn't want the captured strings created automatically.
-	if((enumerationOptions & RKLRegexEnumerationCapturedStringsNotRequired) == 0UL) { capturedStringsBlockArgument = capturedStrings; } // If the user wants the captured strings automatically created, set to capturedStrings.
+	if((enumerationOptions & RKLRegexEnumerationCapturedStringsNotRequired) == 0UL) {
+        capturedStringsBlockArgument = capturedStrings; // If the user wants the captured strings automatically created, set to capturedStrings.
+    }
 	
 	replacedCount = 0L;
+    
 	while(RKL_EXPECTED(rkl_findRanges(&blockEnumerationHelper->cachedRegex, regexOp, &findAll, &exception, &status) == NO, 1L) && RKL_EXPECTED(findAll.found > 0L, 1L) && RKL_EXPECTED(exception == NULL, 1L) && RKL_EXPECTED(status == U_ZERO_ERROR, 1L)) {
 		if(performStringReplacement == YES) {
 			NSUInteger lastMatchedMaxLocation = (lastMatchedRange.location + lastMatchedRange.length);
@@ -2062,8 +2079,10 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 		
 		NSInteger passCaptureCountBlockArgument = ((findAll.found == 0L) && (findAll.addedSplitRanges == 1L) && (maskedRegexOp == RKLSplitOp)) ? 1L : findAll.found, capturedStringsIdx = passCaptureCountBlockArgument;
 		RKLCDelayedHardAssert(passCaptureCountBlockArgument <= captureCountBlockArgument, &exception, exitNow);
-		if(capturedStringsBlockArgument != NULL) { // Only create the captured strings if the user has requested them.
-			BOOL hadError = NO;                      // Loop over all the strings rkl_findRanges found.  If rkl_CreateStringWithSubstring() returns NULL due to an error, set returnBool to NO, and break out of the for() loop.
+		if(capturedStringsBlockArgument != NULL) {
+            // Only create the captured strings if the user has requested them.
+            // Loop over all the strings rkl_findRanges found.  If rkl_CreateStringWithSubstring() returns NULL due to an error, set returnBool to NO, and break out of the for() loop.
+			BOOL hadError = NO;
 			
 			for(capturedStringsIdx = 0L; capturedStringsIdx < passCaptureCountBlockArgument; capturedStringsIdx++) {
 				RKLCDelayedHardAssert(capturedStringsIdx < captureCountBlockArgument, &exception, exitNow);
@@ -2075,19 +2094,28 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 				}
 			}
 			if(((enumerationOptions & RKLRegexEnumerationFastCapturedStringsXXX) == 0UL) && RKL_EXPECTED(autoreleaseArray != NULL, 1L)) { CFArrayReplaceValues((CFMutableArrayRef)autoreleaseArray, autoreleaseReplaceRange, (const void **)capturedStrings, capturedStringsIdx); autoreleaseReplaceRange.length = capturedStringsIdx; } // Add to autoreleaseArray all the strings the for() loop created.
-			if(RKL_EXPECTED(hadError == YES,  0L)) { goto exitNow; }           // hadError == YES will be set if rkl_CreateStringWithSubstring() returned NULL.
+			if(RKL_EXPECTED(hadError == YES,  0L)) {
+                goto exitNow; // hadError == YES will be set if rkl_CreateStringWithSubstring() returned NULL.
+            }
 		}
+        
 		// For safety, set any capturedRanges and capturedStrings up to captureCountBlockArgument + 1 to values that indicate that they are not valid.
 		// These values are chosen such that they should tickle any misuse by users.
 		// capturedStringsIdx is initialized to passCaptureCountBlockArgument, but if capturedStringsBlockArgument != NULL, it is reset to 0 by the loop that creates strings.
 		// If the loop that creates strings has an error, execution should transfer to exitNow and this will never get run.
 		// Again, this is for safety for users that do not check the passed block argument 'captureCount' and instead depend on something like [regex captureCount].
-		for(; capturedStringsIdx < captureCountBlockArgument + 1L; capturedStringsIdx++) { RKLCDelayedAssert((capturedStringsIdx < (NSInteger)capturedStringsCapacity) && (capturedStringsIdx < (NSInteger)capturedRangesCapacity), &exception, exitNow); capturedRanges[capturedStringsIdx] = RKLIllegalRange; capturedStrings[capturedStringsIdx] = (NSString *)RKLIllegalPointer; }
+		for(; capturedStringsIdx < captureCountBlockArgument + 1L; capturedStringsIdx++) {
+            RKLCDelayedAssert((capturedStringsIdx < (NSInteger)capturedStringsCapacity) && (capturedStringsIdx < (NSInteger)capturedRangesCapacity), &exception, exitNow);
+            capturedRanges[capturedStringsIdx] = RKLIllegalRange;
+            capturedStrings[capturedStringsIdx] = (NSString *)RKLIllegalPointer;
+        }
 		
 		RKLCDelayedAssert((passCaptureCountBlockArgument > 0L) && (NSMaxRange(capturedRanges[0]) <= stringU16Length) && (capturedRanges[0].location < NSIntegerMax) && (capturedRanges[0].length < NSIntegerMax), &exception, exitNow);
 		
 		switch(blockEnumerationOp) {
-			case RKLBlockEnumerationMatchOp: stringsAndRangesBlock(passCaptureCountBlockArgument, capturedStringsBlockArgument, capturedRanges, &shouldStop); break;
+			case RKLBlockEnumerationMatchOp:
+                stringsAndRangesBlock(passCaptureCountBlockArgument, capturedStringsBlockArgument, capturedRanges, &shouldStop);
+                break;
 				
 			case RKLBlockEnumerationReplaceOp: {
 				NSString *blockReturnedReplacementString = replaceStringsAndRangesBlock(passCaptureCountBlockArgument, capturedStringsBlockArgument, capturedRanges, &shouldStop);
@@ -2095,13 +2123,29 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 				if(RKL_EXPECTED(blockReturnedReplacementString != NULL, 1L)) {
 					CFStringAppend((CFMutableStringRef)mutableReplacementString, (CFStringRef)blockReturnedReplacementString);
 					BOOL shouldRelease = ((enumerationOptions & RKLRegexEnumerationReleaseStringReturnedByReplacementBlock) != 0UL) && (capturedStringsBlockArgument != NULL);
-					if(shouldRelease == YES) { NSInteger idx = 0L; for(idx = 0L; idx < passCaptureCountBlockArgument; idx++) { if(capturedStrings[idx] == blockReturnedReplacementString) { shouldRelease = NO; break; } } }
-					if(shouldRelease == YES) { [blockReturnedReplacementString release]; }
+                    
+					if(shouldRelease) {
+                        NSInteger idx = 0L;
+                        
+                        for(idx = 0L; idx < passCaptureCountBlockArgument; idx++) {
+                            if(capturedStrings[idx] == blockReturnedReplacementString) {
+                                shouldRelease = NO;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if(shouldRelease) {
+                        [blockReturnedReplacementString release];
+                    }
 				}
+                break;
 			}
-				break;
 				
-			default: exception = RKLCAssertDictionary(@"Unknown blockEnumerationOp code."); goto exitNow; break;
+			default:
+                exception = RKLCAssertDictionary(@"Unknown blockEnumerationOp code.");
+                goto exitNow;
+                break;
 		}
 		
 		replacedCount++;
@@ -2110,8 +2154,11 @@ static id rkl_performEnumerationUsingBlock(id self, SEL _cmd,
 		findAll.findInRange      = findAll.remainingRange; // Ask rkl_findRanges() to search the part of the string after the current match.
 		lastMatchedRange         = findAll.ranges[0];
 		
-		if(RKL_EXPECTED(shouldStop != NO, 0L)) { break; }
+		if(RKL_EXPECTED(shouldStop != NO, 0L)) {
+            break;
+        }
 	}
+    
 	errorFree = YES;
 	
 exitNow:
@@ -2136,16 +2183,39 @@ exitNow:
 #ifndef   NS_BLOCK_ASSERTIONS
 exitNow2:
 #endif // NS_BLOCK_ASSERTIONS
-	if(RKL_EXPECTED(autoreleaseArray != NULL, 1L)) { CFArrayRemoveAllValues((CFMutableArrayRef)autoreleaseArray); } // Causes blockEnumerationHelper to be released immediately, freeing all of its resources (such as a large UTF-16 conversion buffer).
-	if(RKL_EXPECTED(exception        != NULL, 0L)) { rkl_handleDelayedAssert(self, _cmd, exception);              } // If there is an exception, throw it at this point.
+    
+	if(RKL_EXPECTED(autoreleaseArray != NULL, 1L)) {
+        // Causes blockEnumerationHelper to be released immediately, freeing all of its resources (such as a large UTF-16 conversion buffer).
+        CFArrayRemoveAllValues((CFMutableArrayRef)autoreleaseArray);
+    }
+    
+	if(RKL_EXPECTED(exception        != NULL, 0L)) {
+        // If there is an exception, throw it at this point.
+        rkl_handleDelayedAssert(self, _cmd, exception);
+    }
+    
 	if(((errorFree == NO) || ((errorFree == YES) && (returnObject == NULL))) && (error != NULL) && (*error == NULL)) {
-		RKLUserInfoOptions  userInfoOptions = (RKLUserInfoSubjectRange | RKLUserInfoRegexEnumerationOptions);
-		NSString           *replacedString  = NULL;
-		if(blockEnumerationOp == RKLBlockEnumerationReplaceOp) { userInfoOptions |= RKLUserInfoReplacedCount; if(RKL_EXPECTED(errorFree == YES, 1L)) { replacedString = returnObject; } }
+		RKLUserInfoOptions userInfoOptions = (RKLUserInfoSubjectRange | RKLUserInfoRegexEnumerationOptions);
+		NSString *replacedString = NULL;
+        
+		if(blockEnumerationOp == RKLBlockEnumerationReplaceOp) {
+            userInfoOptions |= RKLUserInfoReplacedCount;
+            
+            if(RKL_EXPECTED(errorFree == YES, 1L)) {
+                replacedString = returnObject;
+            }
+        }
+        
 		*error = rkl_makeNSError(userInfoOptions, regexString, options, NULL, status, (blockEnumerationHelper != NULL) ? (blockEnumerationHelper->buffer.string != NULL) ? (NSString *)blockEnumerationHelper->buffer.string : matchString : matchString, matchRange, NULL, replacedString, replacedCount, enumerationOptions, @"An unexpected error occurred.");
 	}
-	if(replacedCountPtr != NULL) { *replacedCountPtr = replacedCount; }
-	if(errorFreePtr     != NULL) { *errorFreePtr     = errorFree;     }
+	if(replacedCountPtr != NULL) {
+        *replacedCountPtr = replacedCount;
+    }
+    
+	if(errorFreePtr != NULL) {
+        *errorFreePtr = errorFree;
+    }
+    
 	return(returnObject);
 } // The two warnings about potential leaks can be safely ignored.
 
@@ -2163,11 +2233,11 @@ exitNow2:
 + (void)RKL_METHOD_PREPEND(clearStringCache)
 {
 	volatile NSUInteger RKL_CLEANUP(rkl_cleanup_cacheSpinLockStatus) rkl_cacheSpinLockStatus = 0UL;
-	OSSpinLockLock(&rkl_cacheSpinLock);
+    os_unfair_lock_lock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLLockedCacheSpinLock;
 	rkl_clearStringCache();
-	OSSpinLockUnlock(&rkl_cacheSpinLock);
-	rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock; // Warning about rkl_cacheSpinLockStatus never being read can be safely ignored.
+	os_unfair_lock_unlock(&rkl_cacheSpinLock);
+	rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock;
 }
 
 #pragma mark -captureCount:
@@ -2248,7 +2318,7 @@ exitNow2:
 	CFIndex    selfLength = CFStringGetLength((CFStringRef)self);
 	CFHashCode selfHash   = CFHash((CFTypeRef)self);
 	
-	OSSpinLockLock(&rkl_cacheSpinLock);
+	os_unfair_lock_lock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLLockedCacheSpinLock;
 	rkl_dtrace_incrementEventID();
 	
@@ -2260,10 +2330,9 @@ exitNow2:
 	for(idx = 0UL; idx < _RKL_LRU_CACHE_SET_WAYS; idx++) { RKLBuffer *buffer = &rkl_lruFixedBuffer[idx];   if((buffer->string != NULL) && ((buffer->string == (CFStringRef)self) || ((buffer->length == selfLength) && (buffer->hash == selfHash)))) { rkl_clearBuffer(buffer, 0UL); } }
 	for(idx = 0UL; idx < _RKL_LRU_CACHE_SET_WAYS; idx++) { RKLBuffer *buffer = &rkl_lruDynamicBuffer[idx]; if((buffer->string != NULL) && ((buffer->string == (CFStringRef)self) || ((buffer->length == selfLength) && (buffer->hash == selfHash)))) { rkl_clearBuffer(buffer, 0UL); } }
 	
-	OSSpinLockUnlock(&rkl_cacheSpinLock);
+	os_unfair_lock_unlock(&rkl_cacheSpinLock);
 	rkl_cacheSpinLockStatus |= RKLUnlockedCacheSpinLock; // Warning about rkl_cacheSpinLockStatus never being read can be safely ignored.
-}
-
+} // Warning about potential leak can be safely ignored.
 #pragma mark -rangeOfRegex:
 
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex
@@ -2271,8 +2340,7 @@ exitNow2:
 	NSRange result = NSNotFoundRange, range = NSMaxiumRange;
 	rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, RKLNoOptions, 0L,      self, &range, NULL, NULL,  &result, 0UL, NULL, NULL);
 	return(result);
-}
-
+} // Warning about potential leak can be safely ignored.
 - (NSRange)RKL_METHOD_PREPEND(rangeOfRegex):(NSString *)regex capture:(NSInteger)capture
 {
 	NSRange result = NSNotFoundRange, range = NSMaxiumRange;
@@ -2315,56 +2383,60 @@ exitNow2:
 	NSRange matchedRange = NSNotFoundRange;
 	rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, RKLNoOptions,      0L,      self, &range, NULL, NULL,  &matchedRange, 0UL, NULL, NULL);
 	return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
-} // Warning about potential leak can be safely ignored.
+}
+
 
 - (NSString *)RKL_METHOD_PREPEND(stringByMatching):(NSString *)regex options:(RKLRegexOptions)options inRange:(NSRange)range capture:(NSInteger)capture error:(NSError **)error
 {
 	NSRange matchedRange = NSNotFoundRange;
-	rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, options,           capture, self, &range, NULL, error, &matchedRange, 0UL, NULL, NULL);
+	rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLRangeOp, regex, options, capture, self, &range, NULL, error, &matchedRange, 0UL, NULL, NULL);
 	return((matchedRange.location == (NSUInteger)NSNotFound) ? NULL : rkl_CFAutorelease(CFStringCreateWithSubstring(NULL, (CFStringRef)self, CFMakeRange(matchedRange.location, matchedRange.length)))); // Warning about potential leak can be safely ignored.
-} // Warning about potential leak can be safely ignored.
+}
+
 
 #pragma mark -stringByReplacingOccurrencesOfRegex:
 
 - (NSString *)RKL_METHOD_PREPEND(stringByReplacingOccurrencesOfRegex):(NSString *)regex withString:(NSString *)replacement
 {
 	NSRange searchRange = NSMaxiumRange;
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, RKLNoOptions, 0L, self, &searchRange, replacement, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, RKLNoOptions, 0L, self, &searchRange, replacement, NULL, NULL, 0UL, NULL, NULL));
 }
 
 - (NSString *)RKL_METHOD_PREPEND(stringByReplacingOccurrencesOfRegex):(NSString *)regex withString:(NSString *)replacement range:(NSRange)searchRange
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, RKLNoOptions, 0L, self, &searchRange, replacement, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, RKLNoOptions, 0L, self, &searchRange, replacement, NULL, NULL, 0UL, NULL, NULL));
 }
 
 - (NSString *)RKL_METHOD_PREPEND(stringByReplacingOccurrencesOfRegex):(NSString *)regex withString:(NSString *)replacement options:(RKLRegexOptions)options range:(NSRange)searchRange error:(NSError **)error
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, options,      0L, self, &searchRange, replacement, error, NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLReplaceOp, regex, options, 0L, self, &searchRange, replacement, error, NULL, 0UL, NULL, NULL));
 }
+
 
 #pragma mark -componentsMatchedByRegex:
 
 - (NSArray *)RKL_METHOD_PREPEND(componentsMatchedByRegex):(NSString *)regex
 {
 	NSRange searchRange = NSMaxiumRange;
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, 0L,      self, &searchRange, NULL, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, 0L, self, &searchRange, NULL, NULL, NULL, 0UL, NULL, NULL));
 }
 
 - (NSArray *)RKL_METHOD_PREPEND(componentsMatchedByRegex):(NSString *)regex capture:(NSInteger)capture
 {
 	NSRange searchRange = NSMaxiumRange;
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, capture, self, &searchRange, NULL, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, capture, self, &searchRange, NULL, NULL, NULL, 0UL, NULL, NULL));
 }
 
 - (NSArray *)RKL_METHOD_PREPEND(componentsMatchedByRegex):(NSString *)regex range:(NSRange)range
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, 0L,      self, &range,       NULL, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, RKLNoOptions, 0L, self, &range, NULL, NULL, NULL, 0UL, NULL, NULL));
 }
 
 - (NSArray *)RKL_METHOD_PREPEND(componentsMatchedByRegex):(NSString *)regex options:(RKLRegexOptions)options range:(NSRange)range capture:(NSInteger)capture error:(NSError **)error
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, options,      capture, self, &range,       NULL, error, NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLArrayOfStringsOp, regex, options, capture, self, &range, NULL, error, NULL, 0UL, NULL, NULL));
 }
+
 
 #pragma mark -captureComponentsMatchedByRegex:
 
@@ -2376,13 +2448,14 @@ exitNow2:
 
 - (NSArray *)RKL_METHOD_PREPEND(captureComponentsMatchedByRegex):(NSString *)regex range:(NSRange)range
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, RKLNoOptions, 0L, self, &range,       NULL, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, RKLNoOptions, 0L, self, &range, NULL, NULL,  NULL, 0UL, NULL, NULL));
 }
 
 - (NSArray *)RKL_METHOD_PREPEND(captureComponentsMatchedByRegex):(NSString *)regex options:(RKLRegexOptions)options range:(NSRange)range error:(NSError **)error
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, options,      0L, self, &range,       NULL, error, NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, options, 0L, self, &range, NULL, error, NULL, 0UL, NULL, NULL));
 }
+
 
 #pragma mark -arrayOfCaptureComponentsMatchedByRegex:
 
@@ -2394,13 +2467,14 @@ exitNow2:
 
 - (NSArray *)RKL_METHOD_PREPEND(arrayOfCaptureComponentsMatchedByRegex):(NSString *)regex range:(NSRange)range
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)(RKLArrayOfCapturesOp | RKLSubcapturesArray), regex, RKLNoOptions, 0L, self, &range,       NULL, NULL,  NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)(RKLArrayOfCapturesOp | RKLSubcapturesArray), regex, RKLNoOptions, 0L, self, &range, NULL, NULL,  NULL, 0UL, NULL, NULL));
 }
 
 - (NSArray *)RKL_METHOD_PREPEND(arrayOfCaptureComponentsMatchedByRegex):(NSString *)regex options:(RKLRegexOptions)options range:(NSRange)range error:(NSError **)error
 {
-	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)(RKLArrayOfCapturesOp | RKLSubcapturesArray), regex, options,      0L, self, &range,       NULL, error, NULL, 0UL, NULL, NULL));
+	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)(RKLArrayOfCapturesOp | RKLSubcapturesArray), regex, options, 0L, self, &range, NULL, error, NULL, 0UL, NULL, NULL));
 }
+
 
 #pragma mark -dictionaryByMatchingRegex:
 
@@ -2444,6 +2518,7 @@ exitNow2:
 {
 	return(rkl_performRegexOp(self, _cmd, (RKLRegexOp)RKLDictionaryOfCapturesOp, regex, options, 0L, self, &range, NULL, error, NULL, count, keys, captures));
 }
+
 
 #pragma mark -arrayOfDictionariesByMatchingRegex:
 
@@ -2580,8 +2655,12 @@ exitNow2:
 {
 	NSUInteger errorFree     = 0UL;
 	NSInteger replacedCount  = -1L;
-	NSString *replacedString = rkl_performEnumerationUsingBlock(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, RKLNoOptions, self, NSMaxiumRange, (RKLBlockEnumerationOp)RKLBlockEnumerationReplaceOp, 0UL,                &replacedCount, &errorFree, NULL,  NULL, block);
-	if((errorFree == YES) && (replacedCount > 0L)) { [self replaceCharactersInRange:NSMakeRange(0UL, [self length]) withString:replacedString]; }
+	NSString *replacedString = rkl_performEnumerationUsingBlock(self, _cmd, (RKLRegexOp)RKLCapturesArrayOp, regex, RKLNoOptions, self, NSMaxiumRange, (RKLBlockEnumerationOp)RKLBlockEnumerationReplaceOp, 0UL, &replacedCount, &errorFree, NULL,  NULL, block);
+	
+    if((errorFree == YES) && (replacedCount > 0L)) {
+        [self replaceCharactersInRange:NSMakeRange(0UL, [self length]) withString:replacedString];
+    }
+    
 	return(replacedCount);
 }
 
