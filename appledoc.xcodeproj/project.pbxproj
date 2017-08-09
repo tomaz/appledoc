@@ -39,6 +39,7 @@
 		73397A2812A5070700EDC035 /* GBTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 73397A2712A5070700EDC035 /* GBTask.m */; };
 		733E9FDB122BA9B00060CBDE /* GBCommentComponentsProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 733E9FDA122BA9B00060CBDE /* GBCommentComponentsProvider.m */; };
 		733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
+		733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98B11FCC97100966C4A /* Cocoa.framework */; };
 		733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73D8E98911FCC97100966C4A /* AppKit.framework */; };
 		733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
@@ -173,6 +174,12 @@
 		86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		9328C127BD1269A1A2447359 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9328CE2BEBC125BF215A96C1 /* Localizable.strings */; };
+		B4D1FFDD15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B4D1FFDF15FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B4D1FFE015FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B4D1FFE115FF5F05009736E2 /* DDZipWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE315FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFE515FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFD415FF5F05009736E2 /* DDXcodeProjectFile.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -183,6 +190,7 @@
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		D4B844F217A122A60012C1DC /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
+		D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */; };
 		D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */; };
 		DA77C691196BEB2C0018A48F /* dd_getopt_long-fbsd.m in Sources */ = {isa = PBXBuildFile; fileRef = DA77C690196BEB2C0018A48F /* dd_getopt_long-fbsd.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		DA98B5911972151100059171 /* GBTypedefBlockData.m in Sources */ = {isa = PBXBuildFile; fileRef = C56768101958403800E8E4C8 /* GBTypedefBlockData.m */; };
@@ -199,6 +207,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				D818BACF15203AA700B26451 /* OCMock.framework in CopyFiles */,
 				D818BAD015203AA700B26451 /* OCHamcrest.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +370,7 @@
 		73FC6E8511FCD93A00AAD0B9 /* GBClassData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBClassData.h; sourceTree = "<group>"; };
 		73FC6E8611FCD93A00AAD0B9 /* GBClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBClassData.m; sourceTree = "<group>"; };
 		73FC6EAB11FCDD6900AAD0B9 /* GBObjectiveCParser-ClassParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBObjectiveCParser-ClassParsingTesting.m"; sourceTree = "<group>"; };
+		73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		73FC701011FCEA7200AAD0B9 /* PKToken+GBToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PKToken+GBToken.h"; sourceTree = "<group>"; };
 		73FC701111FCEA7200AAD0B9 /* PKToken+GBToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "PKToken+GBToken.m"; sourceTree = "<group>"; };
 		73FC702611FCEB5300AAD0B9 /* GBTokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTokenizer.h; sourceTree = "<group>"; };
@@ -388,6 +398,12 @@
 		86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GObjectiveCParser-BlockParsingTesting.m"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		9328CE2BEBC125BF215A96C1 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Application/Localizable.strings; sourceTree = "<group>"; };
+		B4D1FFCA15FF5F05009736E2 /* DDZippedFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDZippedFileInfo.h; sourceTree = "<group>"; };
+		B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDZippedFileInfo.m; sourceTree = "<group>"; };
+		B4D1FFCC15FF5F05009736E2 /* DDZipReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDZipReader.h; sourceTree = "<group>"; };
+		B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDZipReader.m; sourceTree = "<group>"; };
+		B4D1FFCE15FF5F05009736E2 /* DDZipWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDZipWriter.h; sourceTree = "<group>"; };
+		B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDZipWriter.m; sourceTree = "<group>"; };
 		B4D1FFD115FF5F05009736E2 /* DDEmbeddedDataReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDEmbeddedDataReader.h; sourceTree = "<group>"; };
 		B4D1FFD215FF5F05009736E2 /* DDEmbeddedDataReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDEmbeddedDataReader.m; sourceTree = "<group>"; };
 		B4D1FFD315FF5F05009736E2 /* DDXcodeProjectFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDXcodeProjectFile.h; sourceTree = "<group>"; };
@@ -417,6 +433,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				733EA130122BDD7D0060CBDE /* OCHamcrest.framework in Frameworks */,
+				733EA131122BDD7E0060CBDE /* OCMock.framework in Frameworks */,
 				733EA132122BDD900060CBDE /* Cocoa.framework in Frameworks */,
 				733EA133122BDD900060CBDE /* AppKit.framework in Frameworks */,
 				733EA134122BDD910060CBDE /* Foundation.framework in Frameworks */,
@@ -641,6 +658,7 @@
 			children = (
 				73D54C9611F8D21000CCDDB0 /* CocoaLumberjack */,
 				73D54CD511F8D43D00CCDDB0 /* DDCli */,
+				B4D1FFBE15FF5F05009736E2 /* DDMinizip */,
 				B4D1FFD015FF5F05009736E2 /* DDUtils */,
 				735BCB48124EE91700FB6C4A /* Miscellaneous */,
 				C5996C98195B0E55007E9AAC /* SynthesizeSingleton.h */,
@@ -855,6 +873,7 @@
 		73FC720411FD7FB200AAD0B9 /* Test Target Only */ = {
 			isa = PBXGroup;
 			children = (
+				73FC6EDF11FCE01E00AAD0B9 /* OCMock.framework */,
 				73FC6E1E11FCD5E200AAD0B9 /* OCHamcrest.framework */,
 			);
 			name = "Test Target Only";
@@ -881,6 +900,27 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
+		B4D1FFBE15FF5F05009736E2 /* DDMinizip */ = {
+			isa = PBXGroup;
+			children = (
+				B4D1FFC915FF5F05009736E2 /* src */,
+			);
+			path = DDMinizip;
+			sourceTree = "<group>";
+		};
+		B4D1FFC915FF5F05009736E2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B4D1FFCA15FF5F05009736E2 /* DDZippedFileInfo.h */,
+				B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */,
+				B4D1FFCC15FF5F05009736E2 /* DDZipReader.h */,
+				B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */,
+				B4D1FFCE15FF5F05009736E2 /* DDZipWriter.h */,
+				B4D1FFCF15FF5F05009736E2 /* DDZipWriter.m */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		B4D1FFD015FF5F05009736E2 /* DDUtils */ = {
 			isa = PBXGroup;
 			children = (
@@ -899,14 +939,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 733EA12A122BDD110060CBDE /* Build configuration list for PBXNativeTarget "AppledocTests" */;
 			buildPhases = (
-				DF3115CCC2D4D3C32EE5F33D /* [CP] Check Pods Manifest.lock */,
+				DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */,
 				733EA121122BDD020060CBDE /* Resources */,
 				733EA122122BDD020060CBDE /* Sources */,
 				733EA123122BDD020060CBDE /* Frameworks */,
 				D818BACD15203A9E00B26451 /* CopyFiles */,
 				9E9653391791A3DA0086251B /* ShellScript */,
-				17452C58DBF86D78C505A804 /* [CP] Embed Pods Frameworks */,
-				0240AEAF513A8EEA39D95E47 /* [CP] Copy Pods Resources */,
+				17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */,
+				0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -921,12 +961,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1DEB927408733DD40010E9CD /* Build configuration list for PBXNativeTarget "appledoc" */;
 			buildPhases = (
-				8B30B0E4E4A07773AF166FB1 /* [CP] Check Pods Manifest.lock */,
+				8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */,
 				B4D1FFE715FF60B7009736E2 /* ShellScript */,
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
 				B4D1FFF515FF637A009736E2 /* ShellScript */,
-				3037AFD851D1C60D4B664697 /* [CP] Copy Pods Resources */,
+				3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -958,7 +998,6 @@
 				German,
 			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* appledoc */;
-			productRefGroup = 1AB674ADFE9D54B511CA2CBB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -980,34 +1019,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0240AEAF513A8EEA39D95E47 /* [CP] Copy Pods Resources */ = {
+		0240AEAF513A8EEA39D95E47 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-resources.sh",
-				"${PODS_ROOT}/GHUnit/Classes-MacOSX/UI/GHTestApp.xib",
-				"${PODS_ROOT}/GHUnit/Classes-MacOSX/UI/GHTestView.xib",
-				"${PODS_ROOT}/GHUnit/Classes-MacOSX/UI/GHTestWindow.xib",
 			);
-			name = "[CP] Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		17452C58DBF86D78C505A804 /* [CP] Embed Pods Frameworks */ = {
+		17452C58DBF86D78C505A804 /* 📦 Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "📦 Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1015,14 +1049,14 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AppledocTests/Pods-AppledocTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3037AFD851D1C60D4B664697 /* [CP] Copy Pods Resources */ = {
+		3037AFD851D1C60D4B664697 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "[CP] Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1030,22 +1064,19 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-appledoc/Pods-appledoc-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8B30B0E4E4A07773AF166FB1 /* [CP] Check Pods Manifest.lock */ = {
+		8B30B0E4E4A07773AF166FB1 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-appledoc-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		9E9653391791A3DA0086251B /* ShellScript */ = {
@@ -1087,22 +1118,19 @@
 			shellPath = /bin/sh;
 			shellScript = "rm default_templates.zip";
 		};
-		DF3115CCC2D4D3C32EE5F33D /* [CP] Check Pods Manifest.lock */ = {
+		DF3115CCC2D4D3C32EE5F33D /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AppledocTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1211,6 +1239,9 @@
 				73E1B7D4130BE72100E3D710 /* GBCommentsProcessor-RegistrationsTesting.m in Sources */,
 				73E1B7D6130BE7C000E3D710 /* GBCommentsProcessor-PreprocessingTesting.m in Sources */,
 				73E0CF46131047E700FAFEC0 /* GBCommentsProcessor-MarkdownTesting.m in Sources */,
+				B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */,
+				B4D1FFE015FF5F05009736E2 /* DDZipReader.m in Sources */,
+				B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */,
 				B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
 				7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */,
@@ -1282,6 +1313,9 @@
 				73AF4ECC130938F3001152DB /* GBCommentComponentsList.m in Sources */,
 				73FAC0F9130BCB6F00F22475 /* GBCommentArgument.m in Sources */,
 				73C4C8611377DFF70024FA77 /* GBExitCodes.m in Sources */,
+				B4D1FFDD15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */,
+				B4D1FFDF15FF5F05009736E2 /* DDZipReader.m in Sources */,
+				B4D1FFE115FF5F05009736E2 /* DDZipWriter.m in Sources */,
 				DA98B5911972151100059171 /* GBTypedefBlockData.m in Sources */,
 				B4D1FFE315FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE515FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
@@ -1363,24 +1397,15 @@
 		1DEB927908733DD40010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -1407,24 +1432,15 @@
 		1DEB927A08733DD40010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = RELEASE;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

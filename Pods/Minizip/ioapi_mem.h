@@ -25,24 +25,24 @@
 extern "C" {
 #endif
 
-voidpf   ZCALLBACK fopen_mem_func(voidpf opaque, const char* filename, int mode);
-voidpf   ZCALLBACK fopendisk_mem_func(voidpf opaque, voidpf stream, uint32_t number_disk, int mode);
-uint32_t ZCALLBACK fread_mem_func(voidpf opaque, voidpf stream, void* buf, uint32_t size);
-uint32_t ZCALLBACK fwrite_mem_func(voidpf opaque, voidpf stream, const void* buf, uint32_t size);
-long     ZCALLBACK ftell_mem_func(voidpf opaque, voidpf stream);
-long     ZCALLBACK fseek_mem_func(voidpf opaque, voidpf stream, uint32_t offset, int origin);
-int      ZCALLBACK fclose_mem_func(voidpf opaque, voidpf stream);
-int      ZCALLBACK ferror_mem_func(voidpf opaque, voidpf stream);
+voidpf ZCALLBACK fopen_mem_func OF((voidpf opaque,const char* filename,int mode));
+voidpf ZCALLBACK fopendisk_mem_func OF((voidpf opaque, voidpf stream, int number_disk, int mode));
+uLong ZCALLBACK fread_mem_func OF((voidpf opaque,voidpf stream,void* buf,uLong size));
+uLong ZCALLBACK fwrite_mem_func OF((voidpf opaque,voidpf stream,const void* buf,uLong size));
+long ZCALLBACK ftell_mem_func OF((voidpf opaque,voidpf stream));
+long ZCALLBACK fseek_mem_func OF((voidpf opaque,voidpf stream,uLong offset,int origin));
+int ZCALLBACK fclose_mem_func OF((voidpf opaque,voidpf stream));
+int ZCALLBACK ferror_mem_func OF((voidpf opaque,voidpf stream));
 
 typedef struct ourmemory_s {
-    char *base;          /* Base of the region of memory we're using */
-    uint32_t size;       /* Size of the region of memory we're using */
-    uint32_t limit;      /* Furthest we've written */
-    uint32_t cur_offset; /* Current offset in the area */
-    int grow;            /* Growable memory buffer */
+    char *base;       /* Base of the region of memory we're using */
+    uLong size;       /* Size of the region of memory we're using */
+    uLong limit;      /* Furthest we've written */
+    uLong cur_offset; /* Current offset in the area */
+    int grow;         /* Growable memory buffer */
 } ourmemory_t;
 
-void fill_memory_filefunc(zlib_filefunc_def* pzlib_filefunc_def, ourmemory_t *ourmem);
+void fill_memory_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def, ourmemory_t *ourmem));
 
 #ifdef __cplusplus
 }
