@@ -42,7 +42,7 @@ done
 echo "Building..."
 xcodebuild -workspace appledoc.xcworkspace -scheme appledoc -derivedDataPath /tmp -configuration Release install
 
-install -v /tmp/Build/Intermediates/ArchiveIntermediates/appledoc/InstallationBuildProductsLocation/usr/local/bin/appledoc "$BINARY_DIR"
+install -v /tmp/Build/Intermediates.noindex/ArchiveIntermediates/appledoc/InstallationBuildProductsLocation/usr/local/bin/appledoc "$BINARY_DIR"
 
 if [ "$INSTALL_TEMPLATES" == "YES" ]; then
     echo "Copying templates to $TEMPLATES_DIR"
