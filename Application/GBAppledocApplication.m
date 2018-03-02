@@ -36,6 +36,7 @@ static char *kGBArgCompanyIdentifier = "company-id";
 
 static char *kGBArgCleanOutput = "clean-output";
 static char *kGBArgCreateHTML = "create-html";
+static char *kGBArgCreateMarkdown = "create-markdown";
 static char *kGBArgCreateDocSet = "create-docset";
 static char *kGBArgFinalizeDocSet = "finalize-docset";
 static char *kGBArgInstallDocSet = "install-docset";
@@ -273,12 +274,15 @@ static char *kGBArgHelp = "help";
 		
 		{ kGBArgCleanOutput,												0,		DDGetoptNoArgument },
 		{ kGBArgCreateHTML,													'h',	DDGetoptNoArgument },
+        { kGBArgCreateMarkdown,                                             'm',    DDGetoptNoArgument },
+
 		{ kGBArgCreateDocSet,												'd',	DDGetoptNoArgument },
 		{ kGBArgFinalizeDocSet,												0,	DDGetoptNoArgument },
 		{ kGBArgInstallDocSet,												'n',	DDGetoptNoArgument },
 		{ kGBArgPublishDocSet,												'u',	DDGetoptNoArgument },
         { kGBArgHTMLAnchorFormat,                                           0,      DDGetoptRequiredArgument },
 		{ GBNoArg(kGBArgCreateHTML),										0,		DDGetoptNoArgument },
+        { GBNoArg(kGBArgCreateMarkdown),                                    0,      DDGetoptNoArgument },
 		{ GBNoArg(kGBArgCreateDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgInstallDocSet),										0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgPublishDocSet),										0,		DDGetoptNoArgument },
@@ -764,6 +768,9 @@ static char *kGBArgHelp = "help";
 		self.settings.publishDocSet = NO;
 	}
 }
+- (void)setCreateMarkdown:(BOOL)value {
+    self.settings.createMarkdown = value;
+}
 - (void)setCreateDocset:(BOOL)value {
 	self.settings.createDocSet = value;
 	if (value) {
@@ -956,6 +963,7 @@ static char *kGBArgHelp = "help";
     
     ddprintf(@"--%s = %@\n", kGBArgCleanOutput, PRINT_BOOL(self.settings.cleanupOutputPathBeforeRunning));
     ddprintf(@"--%s = %@\n", kGBArgCreateHTML, PRINT_BOOL(self.settings.createHTML));
+    ddprintf(@"--%s = %@\n", kGBArgCreateMarkdown, PRINT_BOOL(self.settings.createMarkdown));
     ddprintf(@"--%s = %@\n", kGBArgCreateDocSet, PRINT_BOOL(self.settings.createDocSet));
     ddprintf(@"--%s = %@\n", kGBArgInstallDocSet, PRINT_BOOL(self.settings.installDocSet));
     ddprintf(@"--%s = %@\n", kGBArgPublishDocSet, PRINT_BOOL(self.settings.publishDocSet));
@@ -1024,6 +1032,7 @@ static char *kGBArgHelp = "help";
 	ddprintf(@"\n");
 	ddprintf(@"OUTPUT GENERATION\n");
 	PRINT_USAGE(@"-h,", kGBArgCreateHTML, @"", @"[b] Create HTML");
+    PRINT_USAGE(@"-m,", kGBArgCreateMarkdown, @"", @"[b] Create markdown");
 	PRINT_USAGE(@"-d,", kGBArgCreateDocSet, @"", @"[b] Create documentation set");
 	PRINT_USAGE(@"-n,", kGBArgInstallDocSet, @"", @"[b] Install documentation set to Xcode");
 	PRINT_USAGE(@"-u,", kGBArgPublishDocSet, @"", @"[b] Prepare DocSet for publishing");
