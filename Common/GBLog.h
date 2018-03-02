@@ -82,7 +82,7 @@ void GBLogUpdateResult(NSInteger result);
 // in higher level log formats. The information is already verbose enough!
 #define GBLogExceptionLine(frmt,...) { ddprintf(frmt, ##__VA_ARGS__); ddprintf(@"\n"); }
 #define GBLogExceptionNoStack(exception,frmt,...) { \
-	if (frmt) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
+	if (frmt.length > 0) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
 	GBLogExceptionLine(@"%@: %@", [exception name], [exception reason]); \
 }
 #define GBLogException(exception,frmt,...) { \
@@ -93,7 +93,7 @@ void GBLogUpdateResult(NSInteger result);
 	} \
 }
 #define GBLogNSError(error,frmt,...) { \
-	if (frmt) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
+	if (frmt.length > 0) GBLogExceptionLine(frmt, ##__VA_ARGS__); \
 	if ([error localizedDescription]) GBLogExceptionLine(@"%@", [error localizedDescription]); \
 	if ([error localizedFailureReason]) GBLogExceptionLine(@"%@", [error localizedFailureReason]); \
 }
