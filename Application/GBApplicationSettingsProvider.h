@@ -675,6 +675,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
 /// @name Helper methods
 ///---------------------------------------------------------------------------------------
 
+
+- (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
+
+
 /** Replaces all occurences of placeholder strings in all related values of the receiver.
  
  This message should be sent once all the values have been set. It is a convenience method that prepares all values that can use placeholder strings. From this point on, the rest of the application can simply use properties to get final values instead of sending `stringByReplacingOccurencesOfPlaceholdersInString:` all the time.

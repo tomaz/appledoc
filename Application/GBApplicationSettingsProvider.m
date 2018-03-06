@@ -416,6 +416,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	return memberPath;
 }
 
+
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object {
 	return [self outputPathForObject:object withExtension:[self htmlExtension]];
 }

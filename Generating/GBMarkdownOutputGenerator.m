@@ -21,10 +21,8 @@
 - (BOOL)processProtocols:(NSError **)error;
 - (BOOL)processConstants:(NSError **)error;
 - (BOOL)processBlocks:(NSError **)error;
-- (NSString *)markdownOutputPathForObject:(GBModelBase *)object;
 - (NSString *)stringByCleaningHtml:(NSString *)string;
-//- (NSString *)htmlOutputPathForObject:(GBModelBase *)object;
-//@property (readonly) GBTemplateHandler *htmlObjectTemplate;
+- (NSString *)markdownOutputPathForObject:(GBModelBase *)object;
 @property (readonly) GBTemplateHandler *markdownTemplate;
 @property (readonly) GBHTMLTemplateVariablesProvider *variablesProvider;
     
@@ -51,11 +49,10 @@
         GBLogInfo(@"Generating output for class %@...", class);
         NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
-//        NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
-        NSString *path = [self htmlOutputPathForObject:class];
+        NSString *path = [self markdownOutputPathForObject:class];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-            GBLogWarn(@"Failed writing HTML for class %@ to '%@'!", class, path);
+            GBLogWarn(@"Failed writing markdown for class %@ to '%@'!", class, path);
             return NO;
         }
         GBLogDebug(@"Finished generating output for class %@.", class);
@@ -69,11 +66,10 @@
         GBLogInfo(@"Generating output for category %@...", category);
         NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
-//        NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
-        NSString *path = [self htmlOutputPathForObject:category];
+        NSString *path = [self markdownOutputPathForObject:category];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-            GBLogWarn(@"Failed writing HTML for category %@ to '%@'!", category, path);
+            GBLogWarn(@"Failed writing markdown for category %@ to '%@'!", category, path);
             return NO;
         }
         GBLogDebug(@"Finished generating output for category %@.", category);
@@ -87,11 +83,10 @@
         GBLogInfo(@"Generating output for protocol %@...", protocol);
         NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
-//        NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
-        NSString *path = [self htmlOutputPathForObject:protocol];
+        NSString *path = [self markdownOutputPathForObject:protocol];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-            GBLogWarn(@"Failed writing HTML for protocol %@ to '%@'!", protocol, path);
+            GBLogWarn(@"Failed writing markdown for protocol %@ to '%@'!", protocol, path);
             return NO;
         }
         GBLogDebug(@"Finished generating output for protocol %@.", protocol);
@@ -105,11 +100,10 @@
         GBLogInfo(@"Generating output for constant %@...", enumTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
-//        NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
-        NSString *path = [self htmlOutputPathForObject:enumTypedef];
+        NSString *path = [self markdownOutputPathForObject:enumTypedef];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-            GBLogWarn(@"Failed writing HTML for constant %@ to '%@'!", enumTypedef, path);
+            GBLogWarn(@"Failed writing markdown for constant %@ to '%@'!", enumTypedef, path);
             return NO;
         }
         GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
@@ -123,11 +117,10 @@
         GBLogInfo(@"Generating output for block %@...", blockTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
-//        NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
-        NSString *path = [self htmlOutputPathForObject:blockTypedef];
+        NSString *path = [self markdownOutputPathForObject:blockTypedef];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-            GBLogWarn(@"Failed writing HTML for block %@ to '%@'!", blockTypedef, path);
+            GBLogWarn(@"Failed writing markdown for block %@ to '%@'!", blockTypedef, path);
             return NO;
         }
         GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
@@ -150,15 +143,27 @@
 #pragma mark Helper methods
 
 - (NSString *)stringByCleaningHtml:(NSString *)string {
-    // Nothing to do at this point - as we're preserving all whitespace, we should be just fine with generated string. The method is still left as a placeholder for possible future handling.
+    // Remove excess whitespace
+    NSError *err;
+    NSRegularExpression *removeNewLinesRegx = [NSRegularExpression regularExpressionWithPattern:@"[\\n]{2,}" options:0 error:&err];
+    NSRegularExpression *removePTagRegx = [NSRegularExpression regularExpressionWithPattern:@"<p>|</p>" options:0 error:&err];
+    string = [removeNewLinesRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@"\n\n"];
+    string = [removePTagRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@""];
     return string;
 }
 
-- (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
-    // Returns file name including full path for HTML file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class. Note that we use the HTML reference to get us the actual path - we can't rely on template filename as it's the same for all objects...
-    NSString *inner = [self.settings htmlReferenceForObjectFromIndex:object];
+- (NSString *)markdownOutputPathForObject:(GBModelBase *)object {
+    // Returns file name including full path for markdown file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class.
+    NSString *inner = [self.settings outputPathForObject:object withExtension:@"md"];
     return [self.outputUserPath stringByAppendingPathComponent:inner];
 }
+
+//- (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
+//    // Returns file name including full path for m file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class. Note that we use the HTML reference to get us the actual path - we can't rely on template filename as it's the same for all objects...
+//    NSString *inner = [self.settings htmlReferenceForObjectFromIndex:object];
+//    //NSString *inner = [self.settings outputPathForObject:object withExtension:@"md"];
+//    return [self.outputUserPath stringByAppendingPathComponent:inner];
+//}
 
 //- (NSString *)htmlOutputPathForTemplateName:(NSString *)template {
 //    // Returns full path and actual file name corresponding to the given template.
@@ -166,6 +171,7 @@
 //    NSString *filename = [self.settings outputFilenameForTemplatePath:template];
 //    return [path stringByAppendingPathComponent:filename];
 //}
+
 
 - (GBHTMLTemplateVariablesProvider *)variablesProvider {
     static GBHTMLTemplateVariablesProvider *result = nil;
@@ -177,7 +183,7 @@
 }
 
 - (GBTemplateHandler *)markdownTemplate {
-    return self.templateFiles[@"markdown-template.html"];
+    return self.templateFiles[@"markdown-template.md"];
 }
 
 //- (GBTemplateHandler *)htmlObjectTemplate {
