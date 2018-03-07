@@ -158,20 +158,6 @@
     return [self.outputUserPath stringByAppendingPathComponent:inner];
 }
 
-//- (NSString *)htmlOutputPathForObject:(GBModelBase *)object {
-//    // Returns file name including full path for m file representing the given top-level object. This works for any top-level object: class, category or protocol. The path is automatically determined regarding to the object class. Note that we use the HTML reference to get us the actual path - we can't rely on template filename as it's the same for all objects...
-//    NSString *inner = [self.settings htmlReferenceForObjectFromIndex:object];
-//    //NSString *inner = [self.settings outputPathForObject:object withExtension:@"md"];
-//    return [self.outputUserPath stringByAppendingPathComponent:inner];
-//}
-
-//- (NSString *)htmlOutputPathForTemplateName:(NSString *)template {
-//    // Returns full path and actual file name corresponding to the given template.
-//    NSString *path = [self outputPathToTemplateEndingWith:template];
-//    NSString *filename = [self.settings outputFilenameForTemplatePath:template];
-//    return [path stringByAppendingPathComponent:filename];
-//}
-
 
 - (GBHTMLTemplateVariablesProvider *)variablesProvider {
     static GBHTMLTemplateVariablesProvider *result = nil;
@@ -185,10 +171,6 @@
 - (GBTemplateHandler *)markdownTemplate {
     return self.templateFiles[@"markdown-template.md"];
 }
-
-//- (GBTemplateHandler *)htmlObjectTemplate {
-//    return self.templateFiles[@"object-template.html"];
-//}
 
 
 #pragma mark Overriden methods
