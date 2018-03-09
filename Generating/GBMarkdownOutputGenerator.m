@@ -145,10 +145,14 @@
 - (NSString *)stringByCleaningHtml:(NSString *)string {
     // Remove excess whitespace
     NSError *err;
-    NSRegularExpression *removeNewLinesRegx = [NSRegularExpression regularExpressionWithPattern:@"[\\n]{2,}" options:0 error:&err];
-    NSRegularExpression *removePTagRegx = [NSRegularExpression regularExpressionWithPattern:@"<p>|</p>" options:0 error:&err];
-    string = [removeNewLinesRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@"\n\n"];
-    string = [removePTagRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@""];
+    NSRegularExpression *newLinesMatchRegx = [NSRegularExpression regularExpressionWithPattern:@"[\\n]{2,}" options:0 error:&err];
+    NSRegularExpression *paragraphMatchRegx = [NSRegularExpression regularExpressionWithPattern:@"<p>|</p>" options:0 error:&err];
+    NSRegularExpression *divMatchRegx = [NSRegularExpression regularExpressionWithPattern:@"<div(.*?)>" options:0 error:&err];
+    NSRegularExpression *divCloseMatchRegx = [NSRegularExpression regularExpressionWithPattern:@"<\\/div>" options:0 error:&err];
+    string = [newLinesMatchRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@"\n\n"];
+    string = [paragraphMatchRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@""];
+    string = [divMatchRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@"\n\n"];
+    string = [divCloseMatchRegx stringByReplacingMatchesInString:string options:0 range:NSMakeRange(0, string.length) withTemplate:@""];
     return string;
 }
 
