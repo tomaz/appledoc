@@ -63,12 +63,6 @@
             ReferencedContainer = "container:appledoc.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "--project-name &quot;NativoSDK&quot; --project-company &quot;Nativo&quot; --company-id com.nativo --templates  &quot;/Users/mmurray/Documents/appledoc/Templates/&quot; --output &quot;/Users/mmurray/Documents/appledoc/Nativo Docs/&quot; --logformat 1 --verbose 5 --exit-threshold 2 --ignore .m --explicit-crossref --no-warn-undocumented-object  --no-warn-undocumented-member --no-create-html --create-markdown --no-warn-empty-description  &quot;/Users/mmurray/Documents/Nativo/NativoSDK-iOS/NativoSDK-iOS-Workspace/NativoSDK-iOS/NativoSDK/Public&quot;"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
