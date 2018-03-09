@@ -58,7 +58,7 @@
 #### Definition
     typedef {{enumStyle}}({{enumPrimitive}}, {{nameOfEnum}} ) {   
         {{#constants}}
-        <a href="{{htmlLocalReference}}">{{name}}</a>{{#hasAssignedValue}} = {{assignedValue}}{{/hasAssignedValue}},  
+        {{name}}{{#hasAssignedValue}} = {{assignedValue}}{{/hasAssignedValue}},
         {{/constants}}
     };
 {{/constants}}
@@ -113,7 +113,7 @@ EndSection
 
 Section TaskTitle
 {{#hasMultipleSections}}
-###  {{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings.objectTasks.otherMethodsSectionName}}{{/sectionName}}
+### {{#sectionName}}{{.}}{{/sectionName}}{{^sectionName}}{{strings.objectTasks.otherMethodsSectionName}}{{/sectionName}}
 {{/hasMultipleSections}}
 {{^hasMultipleSections}}
 ### {{#sectionName}}{{.}}{{/sectionName}}
@@ -121,9 +121,7 @@ Section TaskTitle
 EndSection
 
 Section TaskMethod
-[{{>TaskSelector}}]({{htmlLocalReference}})
-{{#isProperty}}*{{strings.objectTasks.property}}*{{/isProperty}}  
-{{#isRequired}}*{{strings.objectTasks.requiredMethod}}*{{/isRequired}}  
+[{{>TaskSelector}}]({{htmlLocalReference}}) {{#isProperty}}*{{strings.objectTasks.property}}*{{/isProperty}} {{#isRequired}}*{{strings.objectTasks.requiredMethod}}*{{/isRequired}}  
 EndSection
 
 Section TaskSelector
