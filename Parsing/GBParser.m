@@ -65,7 +65,13 @@
 			
 			GBLogInfo(@"Parsing source code from '%@'...", path);
 			NSError *error = nil;
-			NSString *contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
+			NSString *contents = nil;
+			NSArray <NSNumber *>*encodings = @[@(NSUTF8StringEncoding), @(NSISOLatin1StringEncoding)];
+			for (NSNumber *encoding in encodings) {
+				error = nil;
+				contents = [NSString stringWithContentsOfFile:path encoding:[encoding unsignedIntegerValue] error:&error];
+				if (!error) break;
+			}
 			if (error) {
 				GBLogNSError(error, @"Failed reading contents of source file '%@'!", path);
 				return;
