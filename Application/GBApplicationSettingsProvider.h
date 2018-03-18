@@ -220,6 +220,16 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) BOOL createHTML;
 
+
+/** Indicates whether markdown files should be generated.
+ 
+ If `YES`, markdown files are generated in `outputPath` from parsed and processed data.
+ 
+ */
+@property (assign) BOOL createMarkdown;
+
+
+
 /** Specifies whether documentation set should be created from the HTML files.
  
  If `YES`, HTML files from html subdirectory in `outputPath` are moved to proper subdirectory within docset output files, then helper files are generated from parsed data. Documentation set files are also indexed. If `NO`, HTML files are left in the output path.
@@ -664,6 +674,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
 ///---------------------------------------------------------------------------------------
 /// @name Helper methods
 ///---------------------------------------------------------------------------------------
+
+
+- (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
+
 
 /** Replaces all occurences of placeholder strings in all related values of the receiver.
  

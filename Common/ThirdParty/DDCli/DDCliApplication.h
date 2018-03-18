@@ -143,7 +143,7 @@ int DDCliAppRunWithClass(Class delegateClass);
  * class is used as the delegate class, so be sure to only include a single
  * class that implements this protocol per application.
  */
-int DDCliAppRunWithDefaultClass();
+int DDCliAppRunWithDefaultClass(void);
 
 /** @} */
 

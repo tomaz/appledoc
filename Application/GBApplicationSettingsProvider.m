@@ -130,6 +130,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
         self.excludeOutputPaths = [NSMutableSet set];
 		
 		self.createHTML = YES;
+        self.createMarkdown = NO;
 		self.createDocSet = YES;
 		self.installDocSet = YES;
 		self.publishDocSet = NO;
@@ -414,6 +415,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	// From top-level object to one of it's members.
 	return memberPath;
 }
+
 
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object {
 	return [self outputPathForObject:object withExtension:[self htmlExtension]];
@@ -703,6 +705,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize embedAppledocBoldMarkersWhenProcessingMarkdown;
 
 @synthesize createHTML;
+@synthesize createMarkdown;
 @synthesize createDocSet;
 @synthesize installDocSet;
 @synthesize publishDocSet;
