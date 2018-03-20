@@ -39,7 +39,7 @@ void GHRunForInterval(CFTimeInterval interval) {
   NSArray *runLoopModes = @[(NSString *)kCFRunLoopDefaultMode, (NSString *)kCFRunLoopCommonModes];
   NSInteger runIndex = 0;
   while (CACurrentMediaTime() < runUntilTime) {
-    NSString *mode = [runLoopModes objectAtIndex:(runIndex++ % [runLoopModes count])];
+    NSString *mode = runLoopModes[(runIndex++ % [runLoopModes count])];
     @autoreleasepool {
       SInt32 runLoopStatus = CFRunLoopRunInMode((__bridge CFStringRef)mode, checkEveryInterval, false);
       if (!mode || (runLoopStatus == kCFRunLoopRunFinished)) {

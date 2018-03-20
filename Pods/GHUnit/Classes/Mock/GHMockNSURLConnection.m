@@ -70,7 +70,7 @@ NSString *const GHMockNSURLConnectionException = @"GHMockNSURLConnectionExceptio
   if (delay < 0) {
     [delegate_ connection:(NSURLConnection *)self didReceiveData:data];
   } else {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
       [delegate_ connection:(NSURLConnection *)self didReceiveData:data];
     });
   }
@@ -115,7 +115,7 @@ NSString *const GHMockNSURLConnectionException = @"GHMockNSURLConnectionExceptio
   if (delay < 0) {
     [delegate_ connection:(NSURLConnection *)self didReceiveResponse:response];
   } else {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
       [delegate_ connection:(NSURLConnection *)self didReceiveResponse:response];
     });
   }
@@ -125,7 +125,7 @@ NSString *const GHMockNSURLConnectionException = @"GHMockNSURLConnectionExceptio
   if (delay < 0) {
     [delegate_ connectionDidFinishLoading:(NSURLConnection *)self];
   } else {  
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
       [delegate_ connectionDidFinishLoading:(NSURLConnection *)self];
     });
   }
@@ -135,7 +135,7 @@ NSString *const GHMockNSURLConnectionException = @"GHMockNSURLConnectionExceptio
   if (delay < 0) {
     [delegate_ connection:(NSURLConnection *)self didFailWithError:error];
   } else {
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_current_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
       [delegate_ connection:(NSURLConnection *)self didFailWithError:error];
     });
   }

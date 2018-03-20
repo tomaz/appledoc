@@ -130,9 +130,9 @@ static GHTesting *gSharedInstance;
 }
 
 + (NSString *)descriptionForException:(NSException *)exception {
-  NSNumber *lineNumber = [[exception userInfo] objectForKey:GHTestLineNumberKey];
+  NSNumber *lineNumber = [exception userInfo][GHTestLineNumberKey];
   NSString *lineDescription = (lineNumber ? [lineNumber description] : @"Unknown");
-  NSString *filename = [[[[exception userInfo] objectForKey:GHTestFilenameKey] stringByStandardizingPath] stringByAbbreviatingWithTildeInPath];
+  NSString *filename = [[[exception userInfo][GHTestFilenameKey] stringByStandardizingPath] stringByAbbreviatingWithTildeInPath];
   NSString *filenameDescription = (filename ? filename : @"Unknown");
   
   return [NSString stringWithFormat:@"\n\tName: %@\n\tFile: %@\n\tLine: %@\n\tReason: %@\n\n%@", 
@@ -144,11 +144,11 @@ static GHTesting *gSharedInstance;
 }  
 
 + (NSString *)exceptionFilenameForTest:(id<GHTest>)test {
-  return [[[[[test exception] userInfo] objectForKey:GHTestFilenameKey] stringByStandardizingPath] stringByAbbreviatingWithTildeInPath];
+  return [[[[test exception] userInfo][GHTestFilenameKey] stringByStandardizingPath] stringByAbbreviatingWithTildeInPath];
 }
 
 + (NSInteger)exceptionLineNumberForTest:(id<GHTest>)test {
-  return [[[[test exception] userInfo] objectForKey:GHTestLineNumberKey] integerValue];
+  return [[[test exception] userInfo][GHTestLineNumberKey] integerValue];
 }
 
 

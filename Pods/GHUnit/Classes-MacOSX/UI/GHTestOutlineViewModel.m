@@ -18,7 +18,7 @@
 	if (!item) {
 		return [self root];
 	} else {
-		return [[item children] objectAtIndex:index];
+		return [item children][index];
 	}
 }
 
@@ -63,10 +63,8 @@
 		
 		if (self.isEditing) {
 			[cell setState:[item isSelected] ? NSOnState : NSOffState];
-			NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-																	textColor, NSForegroundColorAttributeName,
-																	[cell font],  NSFontAttributeName,
-																	nil];
+			NSDictionary *attributes = @{NSForegroundColorAttributeName: textColor,
+																	NSFontAttributeName: [cell font]};
 			
 			NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:[item name] attributes:attributes];
 			[cell setAttributedTitle:attributedString];
