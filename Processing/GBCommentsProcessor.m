@@ -49,6 +49,8 @@
         return [self.description isEqualToString:[object nameOfEnum]];
     else if ([object isKindOfClass:[GBTypedefBlockData class]])
         return [self.description isEqualToString:[object nameOfBlock]];
+    else if ([object isKindOfClass:[GBEnumConstantData class]])
+        return [self.description isEqualToString:[object name]];
 	else if ([object isKindOfClass:[GBDocumentData class]])
         return NO;
     else

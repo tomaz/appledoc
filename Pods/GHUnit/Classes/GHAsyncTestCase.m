@@ -76,14 +76,14 @@ typedef enum {
   waitForStatus_ = status;
   
   if (!_runLoopModes)
-    _runLoopModes = [NSArray arrayWithObjects:NSDefaultRunLoopMode, NSRunLoopCommonModes, nil];
+    _runLoopModes = @[NSDefaultRunLoopMode, NSRunLoopCommonModes];
 
   NSTimeInterval checkEveryInterval = 0.05;
   NSDate *runUntilDate = [NSDate dateWithTimeIntervalSinceNow:timeout];
   BOOL timedOut = NO;
   NSInteger runIndex = 0;
   while(notifiedStatus_ == kGHUnitWaitStatusUnknown) {
-    NSString *mode = [_runLoopModes objectAtIndex:(runIndex++ % [_runLoopModes count])];
+    NSString *mode = _runLoopModes[(runIndex++ % [_runLoopModes count])];
 
     [lock_ unlock];
     @autoreleasepool {
@@ -139,12 +139,12 @@ typedef enum {
 	NSDate *runUntilDate = [NSDate dateWithTimeIntervalSinceNow:interval];
   
 	if (!_runLoopModes)
-		_runLoopModes = [NSArray arrayWithObjects:NSDefaultRunLoopMode, NSRunLoopCommonModes, nil];
+		_runLoopModes = @[NSDefaultRunLoopMode, NSRunLoopCommonModes];
   
 	NSInteger runIndex = 0;
   
 	while ([runUntilDate compare:[NSDate dateWithTimeIntervalSinceNow:0]] == NSOrderedDescending) {
-		NSString *mode = [_runLoopModes objectAtIndex:(runIndex++ % [_runLoopModes count])];
+		NSString *mode = _runLoopModes[(runIndex++ % [_runLoopModes count])];
     
 		[lock_ unlock];
 		@autoreleasepool {

@@ -169,6 +169,9 @@
 		7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
 		7D11DEC617BA622B0027DC2D /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		7D11DEC717BA62420027DC2D /* GBEnumConstantProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844F117A122A50012C1DC /* GBEnumConstantProvider.m */; };
+		83C7018C2060AFBF009647D6 /* GBHTMLOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 425CC22D20488BEA0099B364 /* GBHTMLOutputGenerator.m */; };
+		83C7018D2060AFC8009647D6 /* GBHTMLTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 739AD62E1255D8CB00B642C3 /* GBHTMLTemplateVariablesProvider.m */; };
+		83C7018E2060AFD2009647D6 /* GBMarkdownOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 425CC23020488D630099B364 /* GBMarkdownOutputGenerator.m */; };
 		86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		9328C127BD1269A1A2447359 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9328CE2BEBC125BF215A96C1 /* Localizable.strings */; };
@@ -1048,7 +1051,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		9E9653391791A3DA0086251B /* ShellScript */ = {
@@ -1105,7 +1108,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1121,6 +1124,7 @@
 				736314A912ED7DB100852593 /* GBDocSetInstallGenerator.m in Sources */,
 				733EA139122BDE980060CBDE /* GHUnitTestMain.m in Sources */,
 				733EA13E122BDEBD0060CBDE /* GBAdoptedProtocolsProviderTesting.m in Sources */,
+				83C7018C2060AFBF009647D6 /* GBHTMLOutputGenerator.m in Sources */,
 				DA98B5941972151100059171 /* GBTypedefBlockArgument.m in Sources */,
 				733EA13F122BDEBE0060CBDE /* GBCategoryDataTesting.m in Sources */,
 				733EA140122BDEC10060CBDE /* GBClassDataTesting.m in Sources */,
@@ -1160,6 +1164,7 @@
 				733EA180122BE1720060CBDE /* GBLog.m in Sources */,
 				733EA181122BE1720060CBDE /* NSException+GBException.m in Sources */,
 				733EA182122BE1730060CBDE /* NSFileManager+GBFileManager.m in Sources */,
+				83C7018D2060AFC8009647D6 /* GBHTMLTemplateVariablesProvider.m in Sources */,
 				733EA183122BE1740060CBDE /* NSObject+GBObject.m in Sources */,
 				733EA184122BE1750060CBDE /* NSString+GBString.m in Sources */,
 				732E6CBE12DF03A2009DD6E0 /* NSArray+GBArray.m in Sources */,
@@ -1169,6 +1174,7 @@
 				733EA187122BE17B0060CBDE /* GBMethodArgument.m in Sources */,
 				733EA188122BE17B0060CBDE /* GBMethodData.m in Sources */,
 				733EA189122BE17C0060CBDE /* GBMethodsProvider.m in Sources */,
+				83C7018E2060AFD2009647D6 /* GBMarkdownOutputGenerator.m in Sources */,
 				733EA18A122BE17C0060CBDE /* GBModelBase.m in Sources */,
 				733EA18B122BE17D0060CBDE /* GBProtocolData.m in Sources */,
 				733EA18C122BE17E0060CBDE /* GBStore.m in Sources */,

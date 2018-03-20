@@ -49,7 +49,7 @@
 - (void)dealloc {
 	// Clear delegates
 	for(NSString *identifier in map_) 
-		[[map_ objectForKey:identifier] setDelegate:nil];
+		[map_[identifier] setDelegate:nil];
 	
   [runner_ cancel];
   runner_.delegate = nil;
@@ -63,17 +63,17 @@
 - (NSString *)statusString:(NSString *)prefix {
 	NSInteger totalRunCount = [suite_ stats].testCount - ([suite_ disabledCount] + [suite_ stats].cancelCount);
 	NSString *statusInterval = [NSString stringWithFormat:@"%@ %0.3fs (%0.3fs in test time)", (self.isRunning ? @"Running" : @"Took"), runner_.interval, [suite_ interval]];
-	return [NSString stringWithFormat:@"%@%@ %d/%d (%d failures)", prefix, statusInterval,
-					[suite_ stats].succeedCount, totalRunCount, [suite_ stats].failureCount];	
+	return [NSString stringWithFormat:@"%@%@ %@/%@ (%@ failures)", prefix, statusInterval,
+					@([suite_ stats].succeedCount), @(totalRunCount), @([suite_ stats].failureCount)];
 }
 
 - (void)registerNode:(GHTestNode *)node {
-	[map_ setObject:node forKey:node.identifier];
+	map_[node.identifier] = node;
 	node.delegate = self;
 }
 
 - (GHTestNode *)findTestNodeForTest:(id<GHTest>)test {
-	return [map_ objectForKey:[test identifier]];
+	return map_[[test identifier]];
 }
 
 - (GHTestNode *)findFailure {
@@ -96,7 +96,7 @@
 - (NSInteger)numberOfTestsInGroup:(NSInteger)group {
 	NSArray *children = [root_ children];
 	if ([children count] == 0) return 0;
-	GHTestNode *groupNode = [children objectAtIndex:group];
+	GHTestNode *groupNode = children[group];
 	return [[groupNode children] count];
 }
 
@@ -127,12 +127,12 @@
   if ([paths count] == 0) return nil;
   NSString *identifier = identifier_;
   if (!identifier) identifier = @"Tests";
-  return [[paths objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"GHUnit-%@.tests", identifier]];
+  return [paths[0] stringByAppendingPathComponent:[NSString stringWithFormat:@"GHUnit-%@.tests", identifier]];
 }
 
 - (void)_updateTestNodeWithDefaults:(GHTestNode *)node {
   id<GHTest> test = node.test;
-  id<GHTest> testDefault = [defaults_ objectForKey:test.identifier];
+  id<GHTest> testDefault = defaults_[test.identifier];
   if (testDefault) {    
     test.status = testDefault.status;
     test.interval = testDefault.interval;
@@ -146,7 +146,7 @@
 }
 
 - (void)_saveTestNodeToDefaults:(GHTestNode *)node {
-  [defaults_ setObject:node.test forKey:node.test.identifier];
+  defaults_[node.test.identifier] = node.test;
   for(GHTestNode *childNode in [node children])
     [self _saveTestNodeToDefaults:childNode];
 }
@@ -325,9 +325,9 @@
 	}
 
 	if (self.isGroupTest) {
-		NSString *statsString = [NSString stringWithFormat:@"%d/%d (%d failed)", 
-														 ([test_ stats].succeedCount+[test_ stats].failureCount), 
-														 [test_ stats].testCount, [test_ stats].failureCount];
+		NSString *statsString = [NSString stringWithFormat:@"%@/%@ (%@ failed)",
+														 @([test_ stats].succeedCount+[test_ stats].failureCount),
+														 @([test_ stats].testCount), @([test_ stats].failureCount)];
 		return [NSString stringWithFormat:@"%@ %@ %@", status, statsString, interval];
 	} else {
 		return [NSString stringWithFormat:@"%@ %@", status, interval];

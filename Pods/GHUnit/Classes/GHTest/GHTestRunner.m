@@ -252,22 +252,25 @@ operationQueue=operationQueue_;
 
 - (void)_notifyFinished {
   NSString *message = [NSString stringWithFormat:@"Test Suite '%@' finished.\n"
-                       "Executed %d of %d tests, with %d failures in %0.3f seconds (%d disabled).\n",
+                       "Executed %@ of %@ tests, with %@ failures in %0.3f seconds (%@ disabled).\n",
                        [test_ name], 
-                       ([test_ stats].succeedCount + [test_ stats].failureCount), 
-                       [test_ stats].testCount,
-                       [test_ stats].failureCount, 
+                       @([test_ stats].succeedCount + [test_ stats].failureCount),
+                       @([test_ stats].testCount),
+                       @([test_ stats].failureCount),
                        [test_ interval],
-                       [test_ disabledCount]];
+                       @([test_ disabledCount])];
   [self log:message];
   
   if ([test_ isKindOfClass:[GHTestGroup class]]) {
     GHTestGroup *testGroup = (GHTestGroup *)test_;
-    [self log:@"\nFailed tests:\n"];
-    for(id<GHTest> test in [testGroup failedTests]) {
-      [self log:[NSString stringWithFormat:@"\t%@\n", [test identifier]]];
+    NSArray *failedTests = [testGroup failedTests];
+    if ([failedTests count] > 0) {
+      [self log:@"\nFailed tests:\n"];
+      for(id<GHTest> test in failedTests) {
+        [self log:[NSString stringWithFormat:@"\t%@\n", [test identifier]]];
+      }
+      [self log:@"\n"];
     }
-    [self log:@"\n"];
   }
   
   if ([test_ isKindOfClass:[GHTestSuite class]]) {
@@ -281,7 +284,7 @@ operationQueue=operationQueue_;
       
       char *resultsDirStr = getenv("JUNIT_XML_DIR");
       if (resultsDirStr) {
-        resultsDir = [NSString stringWithUTF8String:resultsDirStr];
+        resultsDir = @(resultsDirStr);
       } else {
         NSString *tmpDir = NSTemporaryDirectory();
         resultsDir = [tmpDir stringByAppendingPathComponent:@"test-results"];

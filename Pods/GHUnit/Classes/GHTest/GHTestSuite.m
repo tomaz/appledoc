@@ -96,14 +96,14 @@ NSString *GHUnitTest = NULL;
   for(NSString *testFilter in testFilters) {
     NSArray *components = [testFilter componentsSeparatedByString:@"/"];
     if ([components count] == 2) {    
-      NSString *testCaseClassName = [components objectAtIndex:0];
+      NSString *testCaseClassName = components[0];
       Class testCaseClass = NSClassFromString(testCaseClassName);
       id testCase = [[testCaseClass alloc] init];
       if (!testCase) {
         NSLog(@"Couldn't find test: %@", testCaseClassName);
         continue;
       }
-      NSString *methodName = [components objectAtIndex:1];
+      NSString *methodName = components[1];
       GHTestGroup *group = [[GHTestGroup alloc] initWithTestCase:testCase selector:NSSelectorFromString(methodName) delegate:nil];
       [testSuite addTestGroup:group];
     } else {
@@ -123,7 +123,7 @@ NSString *GHUnitTest = NULL;
 + (GHTestSuite *)suiteFromEnv {
   const char* cTestFilter = getenv("TEST");
   if (cTestFilter) {
-    NSString *testFilter = [NSString stringWithUTF8String:cTestFilter];
+    NSString *testFilter = @(cTestFilter);
     return [GHTestSuite suiteWithTestFilter:testFilter];
   } else {  
     if (GHUnitTest != NULL) return [GHTestSuite suiteWithTestFilter:GHUnitTest];

@@ -1,19 +1,20 @@
-# GHUnit [![Build Status](https://travis-ci.org/gh-unit/gh-unit.png)](https://travis-ci.org/gh-unit/gh-unit)
+# GHUnit [![Maintained](https://img.shields.io/badge/Maintained-NO-red.svg)](https://github.com/gh-unit/gh-unit) [![Build Status](https://travis-ci.org/gh-unit/gh-unit.png)](https://travis-ci.org/gh-unit/gh-unit) [![Cocoa Pod](https://cocoapod-badges.herokuapp.com/v/GHUnit/badge.png)](http://gh-unit.github.io/gh-unit/) [![Cocoa Pod](https://cocoapod-badges.herokuapp.com/p/GHUnit/badge.png)](http://gh-unit.github.io/gh-unit/) [![License](https://img.shields.io/github/license/gh-unit/gh-unit.svg)](http://opensource.org/licenses/MIT)
+
+## GHUnit is deprecated and not actively maintained! Use `XCTest` instead.
 
 GHUnit is a test framework for Mac OS X and iOS.
 It can be used standalone or with other testing frameworks like SenTestingKit or GTM.
 
-## Moved repostitory
-GH-Unit is moved from gabriel/gh-unit to gh-unit/gh-unit.
+If you need support for asynchronous tests you might want to check out [GRUnit](https://github.com/gabriel/GRUnit) which is a recent fork of this project.
 
 ## Features
 
-- Run tests, breakpoint and interact directly with the XCode Debugger.
+- Run tests, breakpoint and interact directly with the Xcode Debugger.
 - Run from the command line or via a Makefile.
 - Run tests in parallel.
 - Allow testing of UI components.
 - Capture and display test metrics.
-- Search and filter tests by keywords. 
+- Search and filter tests by keywords.
 - View logging by test case.
 - Show stack traces and useful debugging information.
 - Include as a framework in your projects
@@ -21,25 +22,75 @@ GH-Unit is moved from gabriel/gh-unit to gh-unit/gh-unit.
 - Quickly approve and record view changes
 - View image diff to see where views have changed
 
-## Install (Cocoapods)
+## Install (iOS)
 
-Using [CocoaPods](http://cocoapods.org/):
+### Install the GHUnit gem
 
-### iOS
+```xml
+$ gem install ghunit
 ```
-target :Testtarget do
-	pod 'GHUnitIOS', '~> 0.5.7'`
+
+### Install the Tests target
+
+This will edit your ProjectName.xcodeproj file and create a Tests target, scheme, and a sample test file.
+
+```xml
+$ ghunit install -n ProjectName
+```
+
+### Add the Tests target to your Podfile
+
+Create a new file named `Podfile` in the directory that contains the your `.xcodeproj` file, or edit it if it already exists.
+
+```ruby
+# Podfile
+platform :ios, '6.0'
+
+target :Tests do
+	pod 'GHUnit', '~> 0.5.9'
 end
 ```
-### OSX
+
+Install your project's pods. CocoaPods will then download and configure the required libraries for your project:
+```xml
+$ pod install
 ```
-target :Testtarget do
-	pod 'GHUnitOSX', '~> 0.5.7'`
-end
+
+Note: If you don't have a Tests target in your project, you will get an error: "[!] Unable to find a target named Tests". If you named your test target something different, such as "ProjectTests" then the Podfile target line should look like: `target :ProjectTests do` instead.
+
+You should use the `.xcworkspace` file to work on your project:
+```xml
+$ open ProjectName.xcworkspace
 ```
+
+### Install Command Line
+
+```xml
+$ ghunit install_cli -n ProjectName
+```
+
+Install ios-sim using homebrew:
+
+```xml
+$ brew install ios-sim
+```
+
+Now you can run tests from the command line:
+
+```xml
+$ ghunit run -n ProjectName
+```
+
+### Add a test
+
+To generate a test in your test target with name SampleTest:
+
+```xml
+$ ghunit add -n ProjectName -f SampleTest
+```
+
 
 ## Install (From Source)
-Checkout gh-unit.
 
 ### iOS
 ```bash
@@ -56,26 +107,15 @@ Add the `GHUnit.framework` to your project
 
 ## Documentation
 
-- [How to install, create and run tests](http://gh-unit.github.io//gh-unit/docs/index.html)
+- [How to install, create and run tests](http://gh-unit.github.io/gh-unit/docs/index.html)
 - [Online documentation](http://gh-unit.github.io/gh-unit/)
 - [Google Group (Deprecated - Use Github Issues instead)](http://groups.google.com/group/ghunit)
 
-## Install (Docset)
+## iOS
 
-- Open Xcode, Preferences and select the Documentation tab.
-- Select the plus icon (bottom left) and specify: `http://gh-unit.github.io/gh-unit/publish/me.rel.GHUnit.atom`
-
+![GHUnit-IPhone-0.5.8](https://raw.github.com/gh-unit/gh-unit/master/Documentation/images/ios.png)
 
 ## Mac OS X
 
-![GHUnit-0.4.18](http://rel.me.s3.amazonaws.com/images/GHUnit-0.4.18.png)
+![GHUnit-0.5.8](https://raw.github.com/gh-unit/gh-unit/master/Documentation/images/macosx01.png)
 
-## iOS
-
-![GHUnit-IPhone-0.4.18](http://rel.me.s3.amazonaws.com/images/GHUnit-IPhone-0.4.18.png)
-
-![GHUnit-IPhone-0.4.34](https://johnboiles.s3.amazonaws.com/ghunittestview.png)
-
-![GHUnit-IPhone-0.4.34](https://johnboiles.s3.amazonaws.com/ghunitnewimage.png)
-
-![GHUnit-IPhone-0.4.34](https://johnboiles.s3.amazonaws.com/ghunitdiff.png)
