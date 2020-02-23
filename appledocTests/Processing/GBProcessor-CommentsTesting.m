@@ -219,7 +219,7 @@
 - (OCMockObject *)niceCommentMockExpectingRegisterParagraph {
     OCMockObject *result = [OCMockObject niceMockForClass:[GBComment class]];
     [[[result stub] andReturn:@"Paragraph"] stringValue];
-    //    [[result expect] registerParagraph:OCMOCK_ANY];
+//        [[result expect] registerParagraph:OCMOCK_ANY];
     return result;
 }
 

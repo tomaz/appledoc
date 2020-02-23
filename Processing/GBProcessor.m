@@ -243,7 +243,9 @@
 	}];
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.methodParameters count]];
 	[comment.methodParameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
-		parameters[parameter.argumentName] = parameter;
+        if (parameter != nil) {
+            parameters[parameter.argumentName] = parameter;
+        }
 	}];
 	
 	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
@@ -251,12 +253,15 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = parameters[name];
 		if (!parameter) {
-            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
+//            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
 //                GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
+            
+            
 		}
-		[sorted addObject:parameter];
-		[parameters removeObjectForKey:name];
+        
+        [sorted addObject:parameter];
+        [parameters removeObjectForKey:name];
 	}];
 	if ([parameters count] > 0) {
 		NSMutableString *description = [NSMutableString string];

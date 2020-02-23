@@ -62,7 +62,7 @@
     GBStore *store = [GBTestObjectsRegistry storeWithObjects:class, middle, superclass, nil];
     GBProcessor *processor = [self processorWithFind:YES];
     // execute
-    [processor processObjectsFromStore:store];
+    [processor processObjectsFromStore:store]; // TODO: FIXIT
     // verify
     XCTAssertEqualObjects(derived.comment, original.comment);
 }
