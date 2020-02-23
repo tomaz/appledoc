@@ -11,6 +11,7 @@
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 #import "GBProcessor.h"
+#import "GBLog.h"
 
 @interface GBProcessor ()
 
@@ -57,7 +58,7 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing processor with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -70,7 +71,7 @@
 
 - (void)processObjectsFromStore:(id)aStore {
 	NSParameterAssert(aStore != nil);
-//	GBLogVerbose(@"Processing parsed objects...");
+	GBLogVerbose(@"Processing parsed objects...");
 	self.currentContext = nil;
 	self.store = aStore;
 	[self setupKnownObjectsFromStore];
@@ -87,7 +88,7 @@
 	// No need to process ivars as they are not used for output. Note that we need to iterate over a copy of objects to prevent problems when removing undocumented ones!
 	NSArray *classes = [self.store.classes allObjects];
 	for (GBClassData *class in classes) {
-//		GBLogInfo(@"Processing class %@...", class);
+		GBLogInfo(@"Processing class %@...", class);
 		self.currentContext = class;
 		[self processMethodsFromProvider:class.methods];
 		if (![self removeUndocumentedObject:class]) {
@@ -95,14 +96,14 @@
 			[self validateCommentsForObjectAndMembers:class];
 			[self processHtmlReferencesForObject:class];
 		}
-//		GBLogDebug(@"Finished processing class %@.", class);
+		GBLogDebug(@"Finished processing class %@.", class);
 	}
 }
 
 - (void)processCategories {
 	NSArray *categories = [self.store.categories allObjects];
 	for (GBCategoryData *category in categories) {
-//		GBLogInfo(@"Processing category %@...", category);
+		GBLogInfo(@"Processing category %@...", category);
 		self.currentContext = category;
 		[self processMethodsFromProvider:category.methods];
 		if (![self removeUndocumentedObject:category]) {
@@ -110,14 +111,14 @@
 			[self validateCommentsForObjectAndMembers:category];
 			[self processHtmlReferencesForObject:category];
 		}
-//		GBLogDebug(@"Finished processing category %@.", category);
+		GBLogDebug(@"Finished processing category %@.", category);
 	}
 }
 
 - (void)processProtocols {
 	NSArray *protocols = [self.store.protocols allObjects];
 	for (GBProtocolData *protocol in protocols) {
-//		GBLogInfo(@"Processing protocol %@...", protocol);
+		GBLogInfo(@"Processing protocol %@...", protocol);
 		self.currentContext = protocol;
 		[self processMethodsFromProvider:protocol.methods];
 		if (![self removeUndocumentedObject:protocol]) {
@@ -125,14 +126,14 @@
 			[self validateCommentsForObjectAndMembers:protocol];
 			[self processHtmlReferencesForObject:protocol];
 		}
-//		GBLogDebug(@"Finished processing protocol %@.", protocol);
+		GBLogDebug(@"Finished processing protocol %@.", protocol);
 	}
 }
 
 - (void)processConstants {
 	NSArray *constants = [self.store.constants allObjects];
 	for (GBTypedefEnumData *enumData in constants) {
-//		GBLogInfo(@"Processing constants %@...", enumData);
+		GBLogInfo(@"Processing constants %@...", enumData);
 		self.currentContext = enumData;
 		[self processConstantsFromProvider:enumData.constants];
 		if (![self removeUndocumentedObject:enumData]) {
@@ -140,36 +141,36 @@
 			[self validateCommentsForObjectAndMembers:enumData];
 			[self processHtmlReferencesForObject:enumData];
 		}
-//		GBLogDebug(@"Finished processing constant %@.", enumData);
+		GBLogDebug(@"Finished processing constant %@.", enumData);
 	}
 }
 
 - (void)processBlocks {
     NSArray *blocks = [self.store.blocks allObjects];
     for (GBTypedefBlockData *blockData in blocks) {
-//        GBLogInfo(@"Processing blocks %@...", blockData);
+        GBLogInfo(@"Processing blocks %@...", blockData);
         self.currentContext = blockData;
         if (![self removeUndocumentedObject:blockData]) {
             [self processCommentForObject:blockData];
             [self validateCommentsForObjectAndMembers:blockData];
             [self processHtmlReferencesForObject:blockData];
         }
-//        GBLogDebug(@"Finished processing blocks %@.", blockData);
+        GBLogDebug(@"Finished processing blocks %@.", blockData);
     }
 }
 
 - (void)processDocuments {
 	for (GBDocumentData *document in self.store.documents) {
-//		GBLogInfo(@"Processing static document %@...", document);
+		GBLogInfo(@"Processing static document %@...", document);
 		self.currentContext = document;
 		[self processCommentForObject:document];
-//		GBLogDebug(@"Finished processing document %@.", document);
+		GBLogDebug(@"Finished processing document %@.", document);
 	}
 	for (GBDocumentData *document in self.store.customDocuments) {
-//		GBLogInfo(@"Processing custom document %@...", document);
+		GBLogInfo(@"Processing custom document %@...", document);
 		self.currentContext = document;
 		[self processCommentForObject:document];
-//		GBLogDebug(@"Finished processing custom document %@.", document);
+		GBLogDebug(@"Finished processing custom document %@.", document);
 	}
 }
 
@@ -178,22 +179,22 @@
 - (void)processMethodsFromProvider:(GBMethodsProvider *)provider {
 	NSArray *methods = [provider.methods copy];
 	for (GBMethodData *method in methods) {
-//		GBLogVerbose(@"Processing method %@...", method);
+		GBLogVerbose(@"Processing method %@...", method);
 		[self copyKnownDocumentationForMethod:method];
 		if (![self removeUndocumentedMember:method]) {
 			[self processCommentForObject:method];
 			[self processParametersFromComment:method.comment matchingMethod:method];
 			[self processHtmlReferencesForObject:method];
 		}
-//		GBLogDebug(@"Finished processing method %@.", method);
+		GBLogDebug(@"Finished processing method %@.", method);
 	}
 }
 
 - (void)processBlocksForObject:(NSArray *)blocks {
     for (GBTypedefBlockData *block in blocks) {
-//        GBLogVerbose(@"Processing block %@...", block);
+        GBLogVerbose(@"Processing block %@...", block);
         [self processCommentForObject:block];
-//        GBLogDebug(@"Finished processing method %@.", block);
+        GBLogDebug(@"Finished processing method %@.", block);
     }
 }
 
@@ -201,13 +202,13 @@
 - (void)processConstantsFromProvider:(GBEnumConstantProvider *)provider {
 	NSArray *constants = [provider.constants copy];
 	for (GBEnumConstantData *constant in constants) {
-//		GBLogVerbose(@"Processing constant %@...", constant);
+		GBLogVerbose(@"Processing constant %@...", constant);
 		
         //if (![self removeUndocumentedMember:method]) {
         [self processCommentForObject:constant];
         [self processHtmlReferencesForObject:constant];
 		//}
-//		GBLogDebug(@"Finished processing method %@.", constant);
+		GBLogDebug(@"Finished processing method %@.", constant);
 	}
 }
 
@@ -232,7 +233,7 @@
 - (void)processParametersFromComment:(GBComment *)comment matchingMethod:(GBMethodData *)method {
 	// This is where we validate comment parameters and sort them in proper order.
 	if (!comment || [comment.stringValue length] == 0 || comment.isCopied) return;
-//	GBLogDebug(@"Validating processed parameters...");
+	GBLogDebug(@"Validating processed parameters...");
 	
 	// Prepare names of all argument variables from the method and parameter descriptions from the comment. Note that we don't warn about issues here, we'll handle missing parameters while sorting and unkown parameters at the end.
 	NSMutableArray *names = [NSMutableArray arrayWithCapacity:[method.methodArguments count]];
@@ -253,6 +254,7 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = parameters[name];
 		if (!parameter) {
+            // TODO:
 //            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
 //                GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
@@ -270,6 +272,7 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
+        // TODO:
 //		if (method.includeInOutput) GBLogXWarn(comment.sourceInfo, @"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
@@ -290,7 +293,7 @@
 		while (class) {
 			GBMethodData *superMethod = [class.methods methodBySelector:method.methodSelector];
 			if (superMethod.comment) {
-//				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
+				GBLogVerbose(@"Copying documentation for %@ from superclass %@...", method, class);
 				superMethod.comment.originalContext = superMethod.parentObject;
 				method.comment = superMethod.comment;
 				return;
@@ -304,9 +307,9 @@
 	for (GBProtocolData *protocol in protocols.protocols) {
 		GBMethodData *protocolMethod = [protocol.methods methodBySelector:method.methodSelector];
 		if (protocolMethod.comment) {
-//			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
+			GBLogVerbose(@"Copying documentation for %@ from adopted protocol %@...", method, protocol);
 			if (protocolMethod.methodSection.sectionName && !method.methodSection.sectionName) {
-//				GBLogDebug(@"Copying section name %@ from %@...", protocolMethod.methodSection.sectionName, protocol);
+				GBLogDebug(@"Copying section name %@ from %@...", protocolMethod.methodSection.sectionName, protocol);
 				method.methodSection.sectionName = protocolMethod.methodSection.sectionName;
 			}
 			protocolMethod.comment.originalContext = protocolMethod.parentObject;
@@ -336,7 +339,7 @@
         
         // Remove the object if it only has uncommented methods.
         if (!hasCommentedMethods) {
-//            GBLogVerbose(@"Removing undocumented object %@...", object);
+            GBLogVerbose(@"Removing undocumented object %@...", object);
             [self.store unregisterTopLevelObject:object];
             return YES;
         }
@@ -351,7 +354,7 @@
 	if ([self isCommentValid:object.comment]) return NO;
 
 	// Remove the method and all empty sections to cleanup the object for output generation.
-//	GBLogVerbose(@"Removing undocumented method %@...", object);
+	GBLogVerbose(@"Removing undocumented method %@...", object);
 	GBMethodsProvider *provider = [(id<GBObjectDataProviding>)object.parentObject methods];
 	[provider unregisterMethod:object];
 	[provider unregisterEmptySections];	
@@ -362,7 +365,7 @@
 
 - (void)setupKnownObjectsFromStore {
 	// Setups links to superclasses and adopted protocols. This should be sent first so that the data is prepared for later processing.
-//	GBLogInfo(@"Checking for known superclasses and adopted protocols...");
+	GBLogInfo(@"Checking for known superclasses and adopted protocols...");
 	for (GBClassData *class in self.store.classes) {
 		[self setupSuperclassForClass:class];
 		[self setupAdoptedProtocolsFromProvider:class.adoptedProtocols];
@@ -380,7 +383,7 @@
 	if ([class.nameOfSuperclass length] == 0) return;
 	GBClassData *superclass = [self.store classWithName:class.nameOfSuperclass];
 	if (superclass) {
-//		GBLogDebug(@"Setting superclass link of %@ to %@...", class, superclass);
+		GBLogDebug(@"Setting superclass link of %@ to %@...", class, superclass);
 		class.superclass = superclass;
 	}
 }
@@ -391,7 +394,7 @@
 	for (GBProtocolData *adopted in [provider.protocols allObjects]) {
 		for (GBProtocolData *registered in registeredProtocols) {
 			if ([registered.nameOfProtocol isEqualToString:adopted.nameOfProtocol]) {
-//				GBLogDebug(@"Replacing %@ placeholder with known data from store...", registered);
+				GBLogDebug(@"Replacing %@ placeholder with known data from store...", registered);
 				[provider replaceProtocol:adopted withProtocol:registered];
 				break;
 			}
@@ -400,16 +403,16 @@
 }
 
 - (void)mergeKnownCategoriesFromStore {
-//	GBLogInfo(@"Merging known categories to classes...");
+	GBLogInfo(@"Merging known categories to classes...");
 	if (!self.settings.mergeCategoriesToClasses) return;
 	NSSet *categories = [self.store.categories copy];
 	for (GBCategoryData *category in categories) {
-//		GBLogVerbose(@"Checking %@ for merging...", category);
+		GBLogVerbose(@"Checking %@ for merging...", category);
 		
 		// Get the class and continue with next category if unknown class is extended.
 		GBClassData *class = [self.store classWithName:category.nameOfClass];
 		if (!class) {
-//			GBLogDebug(@"Category %@ extends unknown class %@, skipping merging.", category, category.nameOfClass);
+			GBLogDebug(@"Category %@ extends unknown class %@, skipping merging.", category, category.nameOfClass);
 			continue;
 		}
 		
@@ -419,7 +422,7 @@
         if ([category.methods.methods count] > 0) {
 			// If we should merge all section into a single section per category, create it now. Note that name is different whether this is category or extension.
 			if (!self.settings.keepMergedCategoriesSections) {
-//				GBLogDebug(@"Creating single section for methods merged from %@...", category);
+				GBLogDebug(@"Creating single section for methods merged from %@...", category);
 				NSString *key = category.isExtension ? @"mergedExtensionSectionTitle" :  @"mergedCategorySectionTitle";
 				NSString *template = self.settings.stringTemplates.objectPage[key];
 				NSString *name = category.isExtension ? template : [NSString stringWithFormat:template, category.nameOfCategory];
@@ -428,7 +431,7 @@
 			
 			// Merge all sections and all the methods, optionally create a separate section for each section from category.
 			for (GBMethodSectionData *section in category.methods.sections) {
-//				GBLogDebug(@"Merging section %@ from %@...", section, category);
+				GBLogDebug(@"Merging section %@ from %@...", section, category);
 				if (self.settings.keepMergedCategoriesSections) {
 					if (self.settings.prefixMergedCategoriesSectionsWithCategoryName && !category.isExtension) {
 						NSString *template = self.settings.stringTemplates.objectPage[@"mergedPrefixedCategorySectionTitle"];
@@ -440,7 +443,7 @@
 				}
 				
 				for (GBMethodData *method in section.methods) {
-//					GBLogDebug(@"Merging method %@ from %@...", method, category);
+					GBLogDebug(@"Merging method %@ from %@...", method, category);
 					[classMethodProvider registerMethod:method];
 				}
 			}
@@ -448,7 +451,7 @@
 		
 		// Append category comment to class.
 		if (self.settings.mergeCategoryCommentToClass && [category.comment.stringValue length] > 0) {
-//			GBLogDebug(@"Merging category %@ comment to class...", category);
+			GBLogDebug(@"Merging category %@ comment to class...", category);
 			if ([class.comment.stringValue length] > 0) {
 				class.comment.stringValue = [NSString stringWithFormat:@"%@\n%@", class.comment.stringValue, category.comment.stringValue];
 			} else {
@@ -469,6 +472,7 @@
     
 	// Checks if the object is commented and warns if not. This validates given object and all it's members comments! The reason for doing it together is due to the fact that we first process all members and then handle the object. At that point we can even remove the object if not documented. So we can't validate members before as we don't know whether they will be deleted together with their parent object too...
     if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) {
+        // TODO:
 //        GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
     }
 	
@@ -477,6 +481,7 @@
     {
         for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
             if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
+                // TODO:
 //                GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
             }
         }
@@ -488,6 +493,7 @@
         for(GBEnumConstantData *constant in ((GBTypedefEnumData *)object).constants.constants)
         {
             if (![self isCommentValid:constant.comment] && self.settings.warnOnUndocumentedMember) {
+                // TODO:
 //                GBLogXWarn(constant.prefferedSourceInfo, @"%@ is not documented!", constant);
             }
         }

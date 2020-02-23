@@ -13,6 +13,7 @@
 #import "GBComment.h"
 #import "GBTokenizer.h"
 #import "NSString+GBString.h"
+#import "GBLog.h"
 
 @interface GBTokenizer ()
 
@@ -59,7 +60,7 @@
 	NSParameterAssert(tokenizer != nil);
 	NSParameterAssert(aFilename != nil);
 	NSParameterAssert([aFilename length] > 0);
-//	GBLogDebug(@"Initializing tokenizer...");
+	GBLogDebug(@"Initializing tokenizer...");
 	self = [super init];
 	if (self) {
 		self.settings = theSettings;
@@ -411,7 +412,7 @@
 }
 
 - (void)resetComments {
-//	GBLogDebug(@"Resetting comments...");
+	GBLogDebug(@"Resetting comments...");
 	[self.lastCommentBuilder setString:@""];
 	[self.previousCommentBuilder setString:@""];
 }

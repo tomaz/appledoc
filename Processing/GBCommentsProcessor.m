@@ -13,6 +13,8 @@
 #import "GBCommentsProcessor.h"
 #import "GBCommentsProcessor+CodeBlockProcessing.h"
 #import "NSString+GBString.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBCrossRefData : NSObject
 
@@ -147,7 +149,7 @@ typedef NSUInteger GBProcessingFlag;
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing comments processor with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -169,7 +171,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSParameterAssert(aStore != nil);
 	if (comment.originalContext != nil && comment.originalContext != context) return;
 	if (comment.isProcessed) return;
-//	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
+	GBLogDebug(@"Processing %@ found in %@...", comment, comment.sourceInfo.filename);
 	self.reservedShortDescriptionData = nil;
 	self.currentComment = comment;
 	self.currentContext = context;
@@ -178,8 +180,9 @@ typedef NSUInteger GBProcessingFlag;
 //	NSUInteger line = comment.sourceInfo.lineNumber;
 	NSRange blockRange = NSMakeRange(0, 0);
 	NSRange shortRange = NSMakeRange(0, 0);
-//	GBLogDebug(@"- Comment has %lu lines.", [lines count]);
+	GBLogDebug(@"- Comment has %lu lines.", [lines count]);
 	while ([self findCommentBlockInLines:lines blockRange:&blockRange shortRange:&shortRange]) {
+        // TODO:
 //		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + blockRange.location, line + blockRange.location + blockRange.length);
 		[self processCommentBlockInLines:lines blockRange:blockRange shortRange:shortRange];
 		blockRange.location += blockRange.length;
@@ -242,7 +245,7 @@ typedef NSUInteger GBProcessingFlag;
 		if ([self processAvailabilityBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		
-		
+		// TODO:
 //		GBLogXWarn(self.currentSourceInfo, @"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
 	}
 		
@@ -277,7 +280,7 @@ typedef NSUInteger GBProcessingFlag;
 	
 	// Trim prefix if given.
 	if ([remove length] > 0) stringValue = [stringValue substringFromIndex:[remove length]];
-//	GBLogDebug(@"- Registering short description from %@...", [stringValue normalizedDescription]);
+	GBLogDebug(@"- Registering short description from %@...", [stringValue normalizedDescription]);
 	
 	// Convert to markdown and register everything.
 	GBCommentComponent *component = [self commentComponentByPreprocessingString:stringValue withFlags:0];
@@ -297,7 +300,7 @@ typedef NSUInteger GBProcessingFlag;
 	// If current comment doens't have short description assigned, this method registers it from registered data.
 	if (self.currentComment.shortDescription) return;
 	if (!self.reservedShortDescriptionData) return;
-//	GBLogDebug(@"- Registering reserved short description...");
+	GBLogDebug(@"- Registering reserved short description...");
 	NSArray *lines = self.reservedShortDescriptionData[@"lines"];
 	NSRange range = [self.reservedShortDescriptionData[@"range"] rangeValue];
 	NSString *remove = self.reservedShortDescriptionData[@"remove"];
@@ -313,7 +316,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = components[1];
 	NSString *description = components[2];
-//	GBLogDebug(@"- Registering note block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering note block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
@@ -331,7 +334,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = components[1];
 	NSString *description = components[2];
-//	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering warning block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
@@ -349,7 +352,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = components[1];
 	NSString *description = components[2];
-//	GBLogDebug(@"- Registering DEPRECATED block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering DEPRECATED block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
@@ -367,7 +370,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Get data from captures. Index 1 is directive, index 2 description text.
 	NSString *directive = components[1];
 	NSString *description = components[2];
-//	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering bug block %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self registerShortDescriptionFromLines:lines range:shortRange removePrefix:directive];
 	
 	// Convert to markdown and register everything. We always use the whole text for directive.
@@ -393,7 +396,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 	
-//	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering parameter %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the parameter to the comment.
@@ -419,7 +422,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 
-//	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering exception %@ description %@ at %@...", name, [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the exception to the comment.
@@ -444,7 +447,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 
-//	GBLogDebug(@"- Registering availability description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering availability description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
@@ -467,7 +470,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 	
-//	GBLogDebug(@"- Registering discussion description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering discussion description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
@@ -506,7 +509,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 	
-//	GBLogDebug(@"- Registering abstract description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering abstract description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
@@ -529,7 +532,7 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 
-//	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering return description %@ at %@...", [description normalizedDescription], self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Prepare object representation from the description and register the result to the comment.
@@ -552,12 +555,13 @@ typedef NSUInteger GBProcessingFlag;
 		prefix = @"";
 	}
 
-//	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
+	GBLogDebug(@"- Registering related symbol %@ at %@...", reference, self.currentSourceInfo);
 	[self reserveShortDescriptionFromLines:lines range:shortRange removePrefix:prefix];
 	
 	// Convert to markdown and register everything. We use strict links mode. If the link is note recognized, warn and exit.
 	NSString *markdown = [self stringByConvertingCrossReferencesInString:reference withFlags:GBProcessingFlagRelatedItem];
 	if ([markdown isEqualToString:reference]) {
+        // TODO:
 //		GBLogXWarn(self.currentSourceInfo, @"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
 		return YES;
 	}
@@ -589,7 +593,7 @@ typedef NSUInteger GBProcessingFlag;
 
 - (GBCommentComponent *)commentComponentByPreprocessingString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Preprocesses the given string to markdown representation, and returns a new GBCommentComponent registered with both values. Flags specify various processing directives that affect how processing is handled.
-//	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
+	GBLogDebug(@"- Registering text block %@ at %@...", [string normalizedDescription], self.currentSourceInfo);
 	GBCommentComponent *result = [self commentComponentWithStringValue:string];
 	result.markdownValue = [self stringByPreprocessingString:string withFlags:flags];
 	return result;
@@ -686,7 +690,7 @@ typedef NSUInteger GBProcessingFlag;
         BOOL isFencedCodeBlock = NO;
 		if ([componentMarker isEqualToString:@"*"]) {
 			if (self.settings.useSingleStarForBold) {
-//				GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+				GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 				markdownStartMarker = [NSString stringWithFormat:@"**%@", self.components.appledocBoldStartMarker];
 				markdownEndMarker = [NSString stringWithFormat:@"%@**", self.components.appledocBoldEndMarker];
 			} else {
@@ -694,29 +698,30 @@ typedef NSUInteger GBProcessingFlag;
 			}
 		}
 		else if ([componentMarker isEqualToString:@"_"]) {
-//			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			GBLogDebug(@"  - Found '%@' formatted as italics at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = @"_";
 		}
         else if ([componentMarker isEqualToString:@"```"]) {
-//            GBLogDebug(@"  - Found '%@' formatted as fenced code block at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+            GBLogDebug(@"  - Found '%@' formatted as fenced code block at %@...", [componentText normalizedDescription], self.currentSourceInfo);
             markdownStartMarker = @"```";
             isFencedCodeBlock = YES;
             linkFlags |= GBProcessingFlagEmbedMarkdownLink;
         }
 		else if ([componentMarker isEqualToString:@"`"]) {
-//			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			GBLogDebug(@"  - Found '%@' formatted as code at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = @"`";
 			linkFlags |= GBProcessingFlagEmbedMarkdownLink;
 		}
 		else if ([componentMarker isEqualToString:@"**"] || [componentMarker isEqualToString:@"__"] || [componentMarker isEqualToString:@"*_"] || [componentMarker isEqualToString:@"_*"]) {
-//			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			GBLogDebug(@"  - Found '%@' formatted as bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = componentMarker;
 		}
 		else if ([componentMarker isEqualToString:@"*__"] || [componentMarker isEqualToString:@"__*"] || [componentMarker isEqualToString:@"**_"] || [componentMarker isEqualToString:@"_**"] || [componentMarker isEqualToString:@"***"] || [componentMarker isEqualToString:@"___"]) {
-//			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
+			GBLogDebug(@"  - Found '%@' formatted as italics/bold at %@...", [componentText normalizedDescription], self.currentSourceInfo);
 			markdownStartMarker = componentMarker;
 		}
 		else if (self.settings.warnOnUnknownDirective) {
+            // TODO:
 //			GBLogXWarn(self.currentSourceInfo, @"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
 		}
 		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
@@ -750,7 +755,7 @@ typedef NSUInteger GBProcessingFlag;
 
 - (NSString *)stringByConvertingCrossReferencesInString:(NSString *)string withFlags:(GBProcessingFlag)flags {
 	// Preprocesses the given string and converts all cross references and URLs to Markdown style - [](). This is the high level method for cross references processing; it works by first detecting existing Markdown sytax links, then processing the string before and after them separately for "simple", Appledoc, cross references. Existing Markdown addresses are also processed for cross refs to registered entities. This is continues until end of string is reached.
-//	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
+	GBLogDebug(@"  - Converting cross references in '%@'...", [string normalizedDescription]);
 	NSMutableString *result = [NSMutableString stringWithCapacity:[string length]];
 	NSRange searchRange = NSMakeRange(0, [string length]);
 	self.lastReferencedObject = nil;
@@ -1117,6 +1122,7 @@ typedef NSUInteger GBProcessingFlag;
 		if (!referencedObject) {
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
+                // TODO:
 //				if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
 				result.range = [string rangeOfString:linkText options:0 range:searchRange];
 				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
@@ -1128,6 +1134,7 @@ typedef NSUInteger GBProcessingFlag;
 	// Ok, so we've found a reference to an object, now search for the member. If not found, warn and return. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedMember = [[referencedObject methods] methodBySelector:selector];
 	if (!referencedMember) {
+        // TODO:
 //		if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
 		result.range = [string rangeOfString:linkText options:0 range:searchRange];
 		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];

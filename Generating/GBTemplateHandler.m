@@ -10,7 +10,8 @@
 #import <GRMustache/GRMustache.h>
 #import "GBTemplateHandler.h"
 #import "NSString+GBString.h"
-//#import "GBLog.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 static NSString *kGBSectionKey = @"section";
 static NSString *kGBNameKey = @"name";
@@ -51,11 +52,11 @@ static NSString *kGBValueKey = @"value";
 #pragma mark Parsing handling
 
 - (BOOL)parseTemplateFromPath:(NSString *)path error:(NSError **)error {
-//	GBLogVerbose(@"Parsing template from %@...", path);
+	GBLogVerbose(@"Parsing template from %@...", path);
 	[self clearParsedValues];
 	NSString *template = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:error];
 	if (!template) {
-//		if (error) GBLogNSError(*error, @"Loading template %@ failed!", path);
+		if (error) GBLogNSError(*error, @"Loading template %@ failed!", path);
 		return NO;	
 	}
 	return [self parseTemplate:template error:error];
@@ -80,8 +81,8 @@ static NSString *kGBValueKey = @"value";
 		}
 		
 		// If the section is valid, log it.
-//		NSUInteger line = [self lineOfSectionData:sectionData withinTemplate:template];
-//		GBLogDebug(@"Found section template %@ at line %ld...", sectionData[kGBNameKey], line);
+		NSUInteger line = [self lineOfSectionData:sectionData withinTemplate:template];
+		GBLogDebug(@"Found section template %@ at line %ld...", sectionData[kGBNameKey], line);
 
 		// Get the range of the regex within the clean string and remove the substring from it.
 		NSString *section = sectionData[kGBSectionKey];
@@ -94,7 +95,7 @@ static NSString *kGBValueKey = @"value";
 	}
 	
 	// Prepare template string and warn if it's empty.
-//	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [_templateSections count]);
+	if ([clean length] == 0) GBLogWarn(@"Template contains empty string (with %ld template sections)!", [_templateSections count]);
 	_templateString = [clean copy];
 	
 	// Prepare template that will be used for rendering output.
@@ -110,15 +111,15 @@ static NSString *kGBValueKey = @"value";
 #pragma Rendering handling
 
 - (NSString *)renderObject:(id)object {
-//	GBLogVerbose(@"Rendering %@...", [[object description] normalizedDescription]);
+	GBLogVerbose(@"Rendering %@...", [[object description] normalizedDescription]);
 	if (!_template) {
-//		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
+		GBLogWarn(@"No template loaded or parsed, ignoring redering!");
 		return @"";
 	}
     NSError* error = nil;
     NSString* rendering = [_template renderObject:object error:&error];
     if (error) {
-//        GBLogWarn(@"Error occurred when rendering template: %@", [error localizedDescription]);
+        GBLogWarn(@"Error occurred when rendering template: %@", [error localizedDescription]);
     }
     return rendering;
 }
@@ -128,15 +129,15 @@ static NSString *kGBValueKey = @"value";
 - (BOOL)validateSectionData:(NSDictionary *)data withTemplate:(NSString *)template {
 	NSString *name = data[kGBNameKey];
 	if ([name length] == 0) {
-//		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
-//		GBLogWarn(@"Unnamed section found at line %ld, ignoring!", line);
+		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
+		GBLogWarn(@"Unnamed section found at line %ld, ignoring!", line);
 		return NO;
 	}
 
 	NSString *value = [data[kGBValueKey] stringByTrimmingWhitespace];
 	if ([value length] == 0) {
-//		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
-//		GBLogWarn(@"Empty section %@ found at line %ld, ignoring!", name, line);
+		NSUInteger line = [self lineOfSectionData:data withinTemplate:template];
+		GBLogWarn(@"Empty section %@ found at line %ld, ignoring!", name, line);
 		return NO;
 	}
 	
@@ -150,7 +151,7 @@ static NSString *kGBValueKey = @"value";
 }
 
 - (void)clearParsedValues {
-//	GBLogDebug(@"Clearing parsed values...");
+	GBLogDebug(@"Clearing parsed values...");
 	_template = nil;
 	_templateString = @"";
 	[_templateSections removeAllObjects];

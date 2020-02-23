@@ -15,6 +15,7 @@
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
 #import "NSString+GBString.h"
+#import "GBLog.h"
 
 @interface GBObjectiveCParser ()
 
@@ -80,7 +81,7 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing objective-c parser with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing objective-c parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -95,7 +96,7 @@
 	NSParameterAssert(filename != nil);
 	NSParameterAssert([filename length] > 0);
 	NSParameterAssert(aStore != nil);
-//	GBLogDebug(@"Parsing objective-c objects...");
+	GBLogDebug(@"Parsing objective-c objects...");
 	self.store = aStore;
 	self.tokenizer = [GBTokenizer tokenizerWithSource:[self tokenizerWithInputString:input] filename:filename settings:self.settings];
     self.includeInOutput = YES;
@@ -158,7 +159,7 @@
 	GBClassData *class = [GBClassData classDataWithName:className];
     class.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:class];
-//	GBLogDebug(@"Matched %@ class definition at line %lu.", className, class.prefferedSourceInfo.lineNumber);
+	GBLogDebug(@"Matched %@ class definition at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 	[self matchSuperclassForClass:class];
@@ -179,7 +180,7 @@
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
     category.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:category];
-//	GBLogVerbose(@"Matched %@(%@) category definition at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
+	GBLogVerbose(@"Matched %@(%@) category definition at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 	[self matchAdoptedProtocolForProvider:category.adoptedProtocols];
@@ -196,7 +197,7 @@
 	NSString *className = [[self.tokenizer lookahead:1] stringValue];
 	GBCategoryData *extension = [GBCategoryData categoryDataWithName:nil className:className];
     extension.includeInOutput = self.includeInOutput;
-//	GBLogVerbose(@"Matched %@() extension definition at line %lu.", className, extension.prefferedSourceInfo.lineNumber);
+	GBLogVerbose(@"Matched %@() extension definition at line %lu.", className, extension.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:extension];
 	[self registerLastCommentToObject:extension];
 	[self.tokenizer consume:4];
@@ -214,7 +215,7 @@
 	NSString *protocolName = [[self.tokenizer lookahead:1] stringValue];
 	GBProtocolData *protocol = [GBProtocolData protocolDataWithName:protocolName];
     protocol.includeInOutput = self.includeInOutput;
-//	GBLogVerbose(@"Matched %@ protocol definition at line %lu.", protocolName, protocol.prefferedSourceInfo.lineNumber);
+	GBLogVerbose(@"Matched %@ protocol definition at line %lu.", protocolName, protocol.prefferedSourceInfo.lineNumber);
 	[self registerSourceInfoFromCurrentTokenToObject:protocol];
 	[self registerLastCommentToObject:protocol];
 	[self.tokenizer consume:2];
@@ -230,7 +231,7 @@
 - (void)matchSuperclassForClass:(GBClassData *)class {
 	if (![[self.tokenizer currentToken] matches:@":"]) return;
 	class.nameOfSuperclass = [[self.tokenizer lookahead:1] stringValue];
-//	GBLogDebug(@"Matched superclass %@.", class.nameOfSuperclass);
+	GBLogDebug(@"Matched superclass %@.", class.nameOfSuperclass);
 	[self.tokenizer consume:2];
 }
 
@@ -238,7 +239,7 @@
 	[self.tokenizer consumeFrom:@"<" to:@">" usingBlock:^(PKToken *token, BOOL *consume, BOOL *stop) {
 		if ([token matches:@","]) return;
 		GBProtocolData *protocol = [[GBProtocolData alloc] initWithName:[token stringValue]];
-//		GBLogDebug(@"Matched adopted protocol %@.", protocol);
+		GBLogDebug(@"Matched adopted protocol %@.", protocol);
 		[provider registerProtocol:protocol];
 	}];
 }
@@ -319,7 +320,7 @@
 		// Register property.
 		GBMethodData *propertyData = [GBMethodData propertyDataWithAttributes:propertyAttributes components:propertyComponents];
 		[propertyData registerSourceInfo:filedata];
-//		GBLogDebug(@"Matched property definition %@ at line %lu.", propertyData, propertyData.prefferedSourceInfo.lineNumber);
+		GBLogDebug(@"Matched property definition %@ at line %lu.", propertyData, propertyData.prefferedSourceInfo.lineNumber);
 		[self registerComment:comment toObject:propertyData startingWith:startToken];
 		[propertyData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
@@ -343,7 +344,7 @@
 	GBClassData *class = [GBClassData classDataWithName:className];
     class.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:class];
-//	GBLogVerbose(@"Matched %@ class declaration at line %lu.", className, class.prefferedSourceInfo.lineNumber);
+	GBLogVerbose(@"Matched %@ class declaration at line %lu.", className, class.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:class];
 	[self.tokenizer consume:2];
 
@@ -361,7 +362,7 @@
 	GBCategoryData *category = [GBCategoryData categoryDataWithName:categoryName className:className];
     category.includeInOutput = self.includeInOutput;
 	[self registerSourceInfoFromCurrentTokenToObject:category];
-//	GBLogVerbose(@"Matched %@(%@) category declaration at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
+	GBLogVerbose(@"Matched %@(%@) category declaration at line %lu.", className, categoryName, category.prefferedSourceInfo.lineNumber);
 	[self registerLastCommentToObject:category];
 	[self.tokenizer consume:5];
 
@@ -481,7 +482,7 @@
         
         GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
         GBComment *lastComment = [tokenizer lastComment];
-//        GBLogVerbose(@"Matched %@ typedef block definition at line %lu.", blockName, startInfo.lineNumber);
+        GBLogVerbose(@"Matched %@ typedef block definition at line %lu.", blockName, startInfo.lineNumber);
 
         [self.tokenizer consume:2];
         
@@ -598,7 +599,7 @@
         
         GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
         GBComment *lastComment = [tokenizer lastComment];
-//        GBLogVerbose(@"Matched %@ typedef enum definition at line %lu.", typedefName, startInfo.lineNumber);
+        GBLogVerbose(@"Matched %@ typedef enum definition at line %lu.", typedefName, startInfo.lineNumber);
         
         GBTypedefEnumData *newEnum = [GBTypedefEnumData typedefEnumWithName:typedefName];
         newEnum.includeInOutput = self.includeInOutput;
@@ -677,6 +678,7 @@
         
         if(isRegularEnum && isCurlyBrace && self.settings.warnOnUnsupportedTypedefEnum)
         {
+            // TODO:
 //            GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
 //            GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
         }
@@ -912,7 +914,7 @@
 		// Create method instance and register it.
 		GBMethodData *methodData = [GBMethodData methodDataWithType:methodType result:methodResult arguments:methodArgs];
 		[methodData registerSourceInfo:filedata];		
-//		GBLogDebug(@"Matched method %@%@ at line %lu.", start, methodData, methodData.prefferedSourceInfo.lineNumber);
+		GBLogDebug(@"Matched method %@%@ at line %lu.", start, methodData, methodData.prefferedSourceInfo.lineNumber);
 		[self registerComment:comment toObject:methodData startingWith:startToken];
 		[methodData setIsRequired:required];
 		[provider registerSectionIfNameIsValid:sectionName];
@@ -933,21 +935,21 @@
 	if (startToken) {
 		GBComment *postfixComment = [self.tokenizer postfixCommentFrom:startToken];
 		if (comment && postfixComment) {
-//			GBLogInfo(@"Ignored postfix comment '%@' from '%@' in favour of '%@'",
-//			          [postfixComment.stringValue normalizedDescription],
-//			          object,
-//			          [comment.stringValue normalizedDescription]);
+			GBLogInfo(@"Ignored postfix comment '%@' from '%@' in favour of '%@'",
+			          [postfixComment.stringValue normalizedDescription],
+			          object,
+			          [comment.stringValue normalizedDescription]);
 		}
 		if (!comment && postfixComment) {
-//			GBLogDebug(@"Using postfix comment '%@' for '%@'",
-//			          [postfixComment.stringValue normalizedDescription],
-//			          object);
+			GBLogDebug(@"Using postfix comment '%@' for '%@'",
+			          [postfixComment.stringValue normalizedDescription],
+			          object);
 			comment = postfixComment;
 		}
 	}
 	[object setComment:comment];
 
-//	if (comment) GBLogDebug(@"Assigned comment '%@' to '%@'...", [comment.stringValue normalizedDescription], object);
+	if (comment) GBLogDebug(@"Assigned comment '%@' to '%@'...", [comment.stringValue normalizedDescription], object);
 }
 
 - (void)registerSourceInfoFromCurrentTokenToObject:(GBModelBase *)object {

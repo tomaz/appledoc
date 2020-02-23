@@ -14,6 +14,7 @@
 #import "GBDataObjects.h"
 #import "GBDocumentData.h"
 #import "GBHTMLTemplateVariablesProvider.h"
+#import "GBLog.h"
 
 #pragma mark -
 
@@ -94,7 +95,7 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing variables provider with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing variables provider with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;

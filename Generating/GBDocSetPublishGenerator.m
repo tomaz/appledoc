@@ -13,6 +13,9 @@
 #import "GBTemplateHandler.h"
 #import "GBDocSetPublishGenerator.h"
 #import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
+#import "NSString+GBString.h"
 
 @implementation GBDocSetPublishGenerator
 
@@ -20,7 +23,7 @@
 
 - (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
-//	GBLogInfo(@"Preparing DocSet for publishing...");
+	GBLogInfo(@"Preparing DocSet for publishing...");
 	
 	// Prepare for run.
 	if (![super generateOutputWithStore:store error:error]) return NO;
@@ -37,9 +40,9 @@
     if (!self.settings.installDocSet) {
         installedDocSetPath = [self.settings.outputPath stringByAppendingPathComponent:self.settings.docsetBundleFilename];
         installedDocSetPath = [installedDocSetPath stringByStandardizingPath];
-//        GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", inputDocSetPath, installedDocSetPath);
+        GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", inputDocSetPath, installedDocSetPath);
         if (![self copyOrMoveItemFromPath:inputDocSetPath toPath:installedDocSetPath error:error]) {
-//            GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", inputDocSetPath, installedDocSetPath);
+            GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", inputDocSetPath, installedDocSetPath);
             return  NO;
         }
     }
@@ -60,12 +63,12 @@
 
 	if ([url length] == 0) {
 		url = ([outputPaths count] > 0) ? outputPaths[0] : @"";
-//		GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", [outputPaths componentsJoinedByString:@", "]);
+		GBLogWarn(@"--docset-package-url is required for publishing DocSet; placeholder will be used in '%@'!", [outputPaths componentsJoinedByString:@", "]);
 	}
 	
 	// Create destination directory.
 	if (![self initializeDirectoryAtPath:outputDir preserve:@[atomName] error:error]) {
-//		GBLogWarn(@"Failed initializing DocSet publish directory '%@'!", outputDir);
+		GBLogWarn(@"Failed initializing DocSet publish directory '%@'!", outputDir);
 		return NO;
 	}
 	
@@ -95,8 +98,8 @@
         
         // Run the task.
         BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
-//            if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
-//            if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
+            if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
+            if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
         }];
         if (!result) {
             if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"docsetutil failed to package the documentation set!" reason:task.lastStandardError];
@@ -118,8 +121,8 @@
         
         // Run the task.
         BOOL result = [task runCommand:self.settings.xcrunPath arguments:args block:^(NSString *output, NSString *error) {
-//            if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
-//            if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
+            if (output) GBLogDebug(@"> %@", [output stringByTrimmingWhitespaceAndNewLine]);
+            if (error) GBLogError(@"!> %@", [error stringByTrimmingWhitespaceAndNewLine]);
         }];
         if (!result) {
             if (error) *error = [NSError errorWithCode:GBErrorDocSetUtilIndexingFailed description:@"tar failed to package the documentation set!" reason:task.lastStandardError];

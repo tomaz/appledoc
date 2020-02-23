@@ -13,6 +13,8 @@
 #import "GBTemplateHandler.h"
 #import "GBHTMLOutputGenerator.h"
 #import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBHTMLOutputGenerator ()
 
@@ -61,16 +63,16 @@
 - (BOOL)processClasses:(NSError **)error {
 	for (GBClassData *class in self.store.classes) {
         if (!class.includeInOutput) continue;
-//		GBLogInfo(@"Generating output for class %@...", class);
+		GBLogInfo(@"Generating output for class %@...", class);
 		NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:class];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML for class %@ to '%@'!", class, path);
+			GBLogWarn(@"Failed writing HTML for class %@ to '%@'!", class, path);
 			return NO;
 		}
-//		GBLogDebug(@"Finished generating output for class %@.", class);
+		GBLogDebug(@"Finished generating output for class %@.", class);
 	}
 	return YES;
 }
@@ -78,16 +80,16 @@
 - (BOOL)processCategories:(NSError **)error {
 	for (GBCategoryData *category in self.store.categories) {
         if (!category.includeInOutput) continue;
-//		GBLogInfo(@"Generating output for category %@...", category);
+		GBLogInfo(@"Generating output for category %@...", category);
 		NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:category];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML for category %@ to '%@'!", category, path);
+			GBLogWarn(@"Failed writing HTML for category %@ to '%@'!", category, path);
 			return NO;
 		}
-//		GBLogDebug(@"Finished generating output for category %@.", category);
+		GBLogDebug(@"Finished generating output for category %@.", category);
 	}
 	return YES;
 }
@@ -95,16 +97,16 @@
 - (BOOL)processProtocols:(NSError **)error {
 	for (GBProtocolData *protocol in self.store.protocols) {
         if (!protocol.includeInOutput) continue;
-//		GBLogInfo(@"Generating output for protocol %@...", protocol);
+		GBLogInfo(@"Generating output for protocol %@...", protocol);
 		NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:protocol];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML for protocol %@ to '%@'!", protocol, path);
+			GBLogWarn(@"Failed writing HTML for protocol %@ to '%@'!", protocol, path);
 			return NO;
 		}
-//		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
+		GBLogDebug(@"Finished generating output for protocol %@.", protocol);
 	}
 	return YES;
 }
@@ -112,16 +114,16 @@
 - (BOOL)processConstants:(NSError **)error {
 	for (GBTypedefEnumData *enumTypedef in self.store.constants) {
         if (!enumTypedef.includeInOutput) continue;
-//		GBLogInfo(@"Generating output for constant %@...", enumTypedef);
+		GBLogInfo(@"Generating output for constant %@...", enumTypedef);
 		NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
 		NSString *output = [self.htmlObjectTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:enumTypedef];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML for constant %@ to '%@'!", enumTypedef, path);
+			GBLogWarn(@"Failed writing HTML for constant %@ to '%@'!", enumTypedef, path);
 			return NO;
 		}
-//		GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
+		GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
 	}
 	return YES;
 }
@@ -129,16 +131,16 @@
 - (BOOL)processBlocks:(NSError **)error {
     for (GBTypedefBlockData *blockTypedef in self.store.blocks) {
         if (!blockTypedef.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for block %@...", blockTypedef);
+        GBLogInfo(@"Generating output for block %@...", blockTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
         NSString *output = [self.htmlObjectTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self htmlOutputPathForObject:blockTypedef];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing HTML for block %@ to '%@'!", blockTypedef, path);
+            GBLogWarn(@"Failed writing HTML for block %@ to '%@'!", blockTypedef, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
+        GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
     }
     return YES;
 }
@@ -148,7 +150,7 @@
 	NSString *docsUserPath = [self.outputUserPath stringByAppendingPathComponent:self.settings.htmlStaticDocumentsSubpath];
 	GBTemplateFilesHandler *handler = [[GBTemplateFilesHandler alloc] init];
 	for (NSString *path in self.settings.includePaths) {
-//		GBLogInfo(@"Copying static documents from '%@'...", path);
+		GBLogInfo(@"Copying static documents from '%@'...", path);
 		NSString *lastComponent = [path lastPathComponent];
 		NSString *installPath = [docsUserPath stringByAppendingPathComponent:lastComponent];
 		handler.templateUserPath = path;
@@ -158,49 +160,49 @@
 	
 	// Now process all documents.
 	for (GBDocumentData *document in self.store.documents) {
-//		GBLogInfo(@"Generating output for document %@...", document);
+		GBLogInfo(@"Generating output for document %@...", document);
 		NSDictionary *vars = [self.variablesProvider variablesForDocument:document withStore:self.store];
 		NSString *output = [self.htmlDocumentTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [self htmlOutputPathForObject:document];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML for document %@ to '%@'!", document, path);
+			GBLogWarn(@"Failed writing HTML for document %@ to '%@'!", document, path);
 			return NO;
 		}
-//		GBLogDebug(@"Finished generating output for document %@.", document);
+		GBLogDebug(@"Finished generating output for document %@.", document);
 	}
 	return YES;
 }
 
 - (BOOL)processIndex:(NSError **)error {
-//	GBLogInfo(@"Generating output for index...");
+	GBLogInfo(@"Generating output for index...");
 	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
 		NSString *output = [self.htmlIndexTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForIndex] stringByStandardizingPath];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML index to '%@'!", path);
+			GBLogWarn(@"Failed writing HTML index to '%@'!", path);
 			return NO;
 		}
 	}
-//	GBLogDebug(@"Finished generating output for index.");
+	GBLogDebug(@"Finished generating output for index.");
 	return YES;
 }
 
 - (BOOL)processHierarchy:(NSError **)error {
-//	GBLogInfo(@"Generating output for hierarchy...");
+	GBLogInfo(@"Generating output for hierarchy...");
 	if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
 		NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
 		NSString *output = [self.htmlHierarchyTemplate renderObject:vars];
 		NSString *cleaned = [self stringByCleaningHtml:output];
 		NSString *path = [[self htmlOutputPathForHierarchy] stringByStandardizingPath];
 		if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//			GBLogWarn(@"Failed writing HTML hierarchy to '%@'!", path);
+			GBLogWarn(@"Failed writing HTML hierarchy to '%@'!", path);
 			return NO;
 		}
 	}
-//	GBLogDebug(@"Finished generating output for hierarchy.");
+	GBLogDebug(@"Finished generating output for hierarchy.");
 	return YES;
 }
 
@@ -269,7 +271,7 @@
 - (GBHTMLTemplateVariablesProvider *)variablesProvider {
 	static GBHTMLTemplateVariablesProvider *result = nil;
 	if (!result) {
-//		GBLogDebug(@"Initializing variables provider...");
+		GBLogDebug(@"Initializing variables provider...");
 		result = [[GBHTMLTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
 	}
 	return result;

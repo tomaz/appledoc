@@ -17,6 +17,7 @@
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
 #import "NSException+GBException.h"
+#import "GBLog.h"
 
 @interface GBMethodData ()
 
@@ -379,17 +380,17 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-//	GBLogDebug(@"%@: Merging data from %@...", self, source);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	if (![self validateMergeWith:source]) return;
 
 	// Use argument var names from the method that has comment. If no method has comment, just keep deafult.
 	if ([source comment] && ![self comment]) {
-//		GBLogDebug(@"%@: Checking for difference due to comment status...", self);
+		GBLogDebug(@"%@: Checking for difference due to comment status...", self);
 		for (NSUInteger i=0; i<[self.methodArguments count]; i++) {
 			GBMethodArgument *ourArgument = [self methodArguments][i];
 			GBMethodArgument *otherArgument = [source methodArguments][i];
 			if (![ourArgument.argumentVar isEqualToString:otherArgument.argumentVar]) {
-//				GBLogDebug(@"%@: Changing %ld. argument var name from %@ to %@...", self, i+1, ourArgument.argumentVar, otherArgument.argumentVar);
+				GBLogDebug(@"%@: Changing %ld. argument var name from %@ to %@...", self, i+1, ourArgument.argumentVar, otherArgument.argumentVar);
 				ourArgument.argumentVar = otherArgument.argumentVar;
 			}
 		}

@@ -7,6 +7,7 @@
 //
 
 #import "GBIvarData.h"
+#import "GBLog.h"
 
 @implementation GBIvarData
 
@@ -33,7 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-//	GBLogDebug(@"%@: Merging data from %@...", self, source);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfIvar] isEqualToString:self.nameOfIvar]);
 	NSParameterAssert([[source ivarTypes] isEqualToArray:self.ivarTypes]);
 	[super mergeDataFromObject:source];

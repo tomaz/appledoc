@@ -186,6 +186,8 @@
 		C4BF3E59240222020012360C /* GBTemplateHandlerTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = C4BF3E58240222020012360C /* GBTemplateHandlerTesting.m */; };
 		C4BF3E5D2402292E0012360C /* GBTemplateVariablesProvider-CommonTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = C4BF3E5C2402292E0012360C /* GBTemplateVariablesProvider-CommonTesting.m */; };
 		C4BF3E6124022F7B0012360C /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = C4BF3E6024022F7B0012360C /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */; };
+		C4BF3E642402D29E0012360C /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = C4BF3E622402D29E0012360C /* GBLog.m */; };
+		C4BF3E652402D29E0012360C /* GBLog.m in Sources */ = {isa = PBXBuildFile; fileRef = C4BF3E622402D29E0012360C /* GBLog.m */; };
 		C8005C9D1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C8005C9C1B9E016400F91ECC /* GBCommentsProcessor+CodeBlockProcessing.m */; };
 		D4B844EC17A121040012C1DC /* GBTypedefEnumData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EB17A121030012C1DC /* GBTypedefEnumData.m */; };
 		D4B844EF17A122670012C1DC /* GBEnumConstantData.m in Sources */ = {isa = PBXBuildFile; fileRef = D4B844EE17A122650012C1DC /* GBEnumConstantData.m */; };
@@ -395,6 +397,8 @@
 		C4BF3E58240222020012360C /* GBTemplateHandlerTesting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GBTemplateHandlerTesting.m; sourceTree = "<group>"; };
 		C4BF3E5C2402292E0012360C /* GBTemplateVariablesProvider-CommonTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-CommonTesting.m"; sourceTree = "<group>"; };
 		C4BF3E6024022F7B0012360C /* GBTemplateVariablesProvider-ObjectSpecificationsTesting.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "GBTemplateVariablesProvider-ObjectSpecificationsTesting.m"; sourceTree = "<group>"; };
+		C4BF3E622402D29E0012360C /* GBLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBLog.m; sourceTree = "<group>"; };
+		C4BF3E632402D29E0012360C /* GBLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBLog.h; sourceTree = "<group>"; };
 		C567680F1958403800E8E4C8 /* GBTypedefBlockData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockData.h; sourceTree = "<group>"; };
 		C56768101958403800E8E4C8 /* GBTypedefBlockData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBTypedefBlockData.m; sourceTree = "<group>"; };
 		C5676812195840BD00E8E4C8 /* GBTypedefBlockArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBTypedefBlockArgument.h; sourceTree = "<group>"; };
@@ -579,6 +583,8 @@
 		73D54C9411F8D1CC00CCDDB0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				C4BF3E632402D29E0012360C /* GBLog.h */,
+				C4BF3E622402D29E0012360C /* GBLog.m */,
 				73397A2612A5070700EDC035 /* GBTask.h */,
 				73397A2712A5070700EDC035 /* GBTask.m */,
 				7340F02611FCC63100E712A4 /* NSObject+GBObject.h */,
@@ -1096,6 +1102,7 @@
 				C4BF3E02240153BE0012360C /* zip.c in Sources */,
 				73FC730811FDAACD00AAD0B9 /* GBIvarsProvider.m in Sources */,
 				C4BF3DEA240153970012360C /* DDZipWriter.m in Sources */,
+				C4BF3E642402D29E0012360C /* GBLog.m in Sources */,
 				73FC731311FDADD600AAD0B9 /* GBIvarData.m in Sources */,
 				73FC741111FE1FDF00AAD0B9 /* GBMethodsProvider.m in Sources */,
 				73FC741D11FE215E00AAD0B9 /* GBMethodData.m in Sources */,
@@ -1260,6 +1267,7 @@
 				C4BF3DDA2400E1430012360C /* GBDocSetInstallGenerator.m in Sources */,
 				C4BF3E3B2401CE920012360C /* GBObjectiveCParser-AdoptedProtocolsParsingTesting.m in Sources */,
 				C4BF3DBD2400E0D40012360C /* GBTypedefEnumData.m in Sources */,
+				C4BF3E652402D29E0012360C /* GBLog.m in Sources */,
 				C4BF3E5624021B610012360C /* GBCommentsProcessor-MarkdownTesting.m in Sources */,
 				C4BF3E59240222020012360C /* GBTemplateHandlerTesting.m in Sources */,
 			);
@@ -1464,6 +1472,7 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = appledocTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
@@ -1503,6 +1512,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "$(PROJECT_DIR)";
 				INFOPLIST_FILE = appledocTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;

@@ -10,6 +10,8 @@
 #import "GBStore.h"
 #import "GBTask.h"
 #import "GBDocSetFinalizeGenerator.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 #pragma mark -
 
@@ -19,7 +21,7 @@
 
 - (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
-//	GBLogInfo(@"Finalizing DocSet...");
+	GBLogInfo(@"Finalizing DocSet...");
 	
 	// Prepare for run.
 	if (![super generateOutputWithStore:store error:error]) return NO;
@@ -31,13 +33,13 @@
 	NSString *destPath = [destUserPath stringByStandardizingPath];
 	
 	// Create destination directory and move files to it.
-//	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
+	GBLogVerbose(@"Moving DocSet files from '%@' to '%@'...", sourceUserPath, destUserPath);
 	if (![self initializeDirectoryAtPath:destUserPath error:error]) {
-//		GBLogWarn(@"Failed initializing DocSet installation directory '%@'!", destUserPath);
+		GBLogWarn(@"Failed initializing DocSet installation directory '%@'!", destUserPath);
 		return NO;
 	}
 	if (![self copyOrMoveItemFromPath:sourcePath toPath:destPath error:error]) {
-//		GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", sourceUserPath, destUserPath);
+		GBLogWarn(@"Failed moving DocSet files from '%@' to '%@'!", sourceUserPath, destUserPath);
 		return NO;
 	}
 

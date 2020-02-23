@@ -13,6 +13,8 @@
 #import "GBParser.h"
 #import "NSObject+GBObject.h"
 #import "NSFileManager+GBFileManager.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBParser ()
 
@@ -44,7 +46,7 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing parser with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -58,14 +60,14 @@
 - (void)parseObjectsFromPaths:(NSArray *)paths toStore:(id)aStore {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(aStore != nil);
-//	GBLogVerbose(@"Parsing objects from %lu paths...", [paths count]);
+	GBLogVerbose(@"Parsing objects from %lu paths...", [paths count]);
 	self.store = aStore;
 	self.numberOfParsedFiles = 0;
 	for (NSString *input in paths) {
 		[self parsePath:input usingBlock:^(NSString *path) {
 			if (![self isSourceCodeFile:path]) return;	
 			
-//			GBLogInfo(@"Parsing source code from '%@'...", path);
+			GBLogInfo(@"Parsing source code from '%@'...", path);
 			NSError *error = nil;
 			NSString *contents = nil;
 			NSArray <NSNumber *>*encodings = @[@(NSUTF8StringEncoding), @(NSISOLatin1StringEncoding)];
@@ -75,7 +77,7 @@
 				if (!error) break;
 			}
 			if (error) {
-//				GBLogNSError(error, @"Failed reading contents of source file '%@'!", path);
+				GBLogNSError(error, @"Failed reading contents of source file '%@'!", path);
 				return;
 			}
 			
@@ -83,27 +85,27 @@
 			self.numberOfParsedFiles++;
 		}];
 	}
-//	GBLogVerbose(@"Parsed %lu source files.", self.numberOfParsedFiles);
+	GBLogVerbose(@"Parsed %lu source files.", self.numberOfParsedFiles);
 }
 
 - (void)parseDocumentsFromPaths:(NSArray *)paths toStore:(id)aStore {
 	NSParameterAssert(paths != nil);
 	NSParameterAssert(aStore != nil);
-//	GBLogVerbose(@"Parsing static documents from %lu paths...", (unsigned long) [paths count]);
+	GBLogVerbose(@"Parsing static documents from %lu paths...", (unsigned long) [paths count]);
 	self.store = aStore;
 	self.numberOfParsedDocuments = 0;
 	for (NSString *input in paths) {
 		[self parsePath:input usingBlock:^(NSString *path) {
 			if (![self isDocumentFile:path]) return;
 			
-//			GBLogInfo(@"Parsing static document from '%@'...", path);
+			GBLogInfo(@"Parsing static document from '%@'...", path);
 			NSError *error = nil;
 			NSString *contents = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
 			if (error) {
-//				GBLogNSError(error, @"Failed reading contents of static document '%@'...", path);
+				GBLogNSError(error, @"Failed reading contents of static document '%@'...", path);
 				return;
 			}		
-//			if ([contents length] == 0) GBLogWarn(@"Empty static document found at '%@'!", path);
+			if ([contents length] == 0) GBLogWarn(@"Empty static document found at '%@'!", path);
 			
 			GBDocumentData *document = [GBDocumentData documentDataWithContents:contents path:path];
 			document.basePathOfDocument = [input stringByStandardizingPath];
@@ -112,7 +114,7 @@
 			self.numberOfParsedDocuments++;
 		}];
 	}
-//	GBLogVerbose(@"Parsed %lu static document files.", self.numberOfParsedDocuments);
+	GBLogVerbose(@"Parsed %lu static document files.", self.numberOfParsedDocuments);
 }
 
 - (void)parseCustomDocumentFromPath:(NSString *)path outputSubpath:(NSString *)subpath key:(id)key toStore:(id)aStore {
@@ -120,16 +122,16 @@
 	NSParameterAssert(key != nil);
 	NSParameterAssert(aStore != nil);
 	self.store = aStore;
-//	GBLogInfo(@"Parsing custom document from '%@'...", path);
+	GBLogInfo(@"Parsing custom document from '%@'...", path);
 
 	NSError *error = nil;
 	NSString *contents = [NSString stringWithContentsOfFile:[path stringByStandardizingPath] encoding:NSUTF8StringEncoding error:&error];
 	if (error) {
-//		GBLogNSError(error, @"Failed reading contents of custom document '%@'...", path);
+		GBLogNSError(error, @"Failed reading contents of custom document '%@'...", path);
 		return;
 	}		
 	if ([contents length] == 0) {
-//		GBLogWarn(@"Empty custom document found at '%@'!", path);
+		GBLogWarn(@"Empty custom document found at '%@'!", path);
 		return;
 	}
 	
@@ -142,7 +144,7 @@
 #pragma mark Parsing helpers
 
 - (void)parsePath:(NSString *)input usingBlock:(void (^)(NSString *path))block {
-//	GBLogDebug(@"Parsing '%@'...", input);
+	GBLogDebug(@"Parsing '%@'...", input);
 	NSString *standardized = [input stringByStandardizingPath];
 	if ([self.fileManager isPathDirectory:[standardized stringByStandardizingPath]])
 		[self parseDirectory:standardized usingBlock:block];
@@ -151,11 +153,11 @@
 }
 
 - (void)parseDirectory:(NSString *)input usingBlock:(void (^)(NSString *path))block {
-//	GBLogDebug(@"Parsing path '%@'...", input);
+	GBLogDebug(@"Parsing path '%@'...", input);
 	
 	// Skip directory if found in --ignore paths.
 	if ([self isPathIgnored:input]) {
-//		GBLogNormal(@"Ignoring path '%@'...", input);
+		GBLogNormal(@"Ignoring path '%@'...", input);
 		return;
 	}
 
@@ -163,7 +165,7 @@
 	NSError *error = nil;
 	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:input error:&error];
 	if (error) {
-//		GBLogNSError(error, @"Failed fetching contents of '%@'!", input);
+		GBLogNSError(error, @"Failed fetching contents of '%@'!", input);
 		return;
 	}
 	
@@ -185,11 +187,11 @@
 }
 
 - (void)parseFile:(NSString *)input usingBlock:(void (^)(NSString *path))block {
-//	GBLogDebug(@"Parsing file '%@'...", input);
+	GBLogDebug(@"Parsing file '%@'...", input);
 
 	// Skip file if found in --ignore paths.
 	if ([self isPathIgnored:input]) {
-//		GBLogNormal(@"Ignoring file '%@'...", input);
+		GBLogNormal(@"Ignoring file '%@'...", input);
 		return;
 	}
 	

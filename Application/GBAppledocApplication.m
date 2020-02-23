@@ -19,13 +19,11 @@
 #import "DDEmbeddedDataReader.h"
 #import "DDZipReader.h"
 #import "GBExitCodes.h"
-//#import "GBLog.h"
+#import "GBLog.h"
 #import "NSObject+GBObject.h"
 #import "NSException+GBException.h"
 #import "NSString+GBString.h"
 #import "NSError+GBError.h"
-
-//extern NSInteger kGBLogBasedResult;
 
 static char *kGBArgInputPath = "input";
 static char *kGBArgOutputPath = "output";
@@ -193,53 +191,53 @@ static char *kGBArgHelp = "help";
 	[self validateSettingsAndArguments:inputs];
 	[self.settings replaceAllOccurencesOfPlaceholderStringsInSettingsValues];
 	if (self.printSettings) [self printSettingsAndArguments:inputs];
-//	kGBLogBasedResult = GBEXIT_SUCCESS;
+	kGBLogBasedResult = GBEXIT_SUCCESS;
 
 	@try {
 		[self initializeLoggingSystem];
 		[self deleteContentsOfOutputPath];
 		
-//		GBLogNormal(@"Initializing...");
+		GBLogNormal(@"Initializing...");
 		GBStore *store = [[GBStore alloc] init];
-//		GBAbsoluteTime startTime = GetCurrentTime();
+		GBAbsoluteTime startTime = GetCurrentTime();
 		
-//		GBLogNormal(@"Parsing source files...");
+		GBLogNormal(@"Parsing source files...");
 		GBParser *parser = [GBParser parserWithSettingsProvider:self.settings];
 		[parser parseObjectsFromPaths:inputs toStore:store];
 		[parser parseDocumentsFromPaths:[self.settings.includePaths allObjects] toStore:store];
 		[parser parseCustomDocumentFromPath:self.settings.indexDescriptionPath outputSubpath:@"" key:kGBCustomDocumentIndexDescKey toStore:store];
-//		GBAbsoluteTime parseTime = GetCurrentTime();
-//		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
-//		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
+		GBAbsoluteTime parseTime = GetCurrentTime();
+		NSUInteger timeForParsing = SubtractTime(parseTime, startTime) * 1000.0;
+		GBLogInfo(@"Finished parsing in %ldms.\n", timeForParsing);
 		
-//		GBLogNormal(@"Processing parsed data...");
+		GBLogNormal(@"Processing parsed data...");
 		GBProcessor *processor = [GBProcessor processorWithSettingsProvider:self.settings];
 		[processor processObjectsFromStore:store];
-//		GBAbsoluteTime processTime = GetCurrentTime();
-//		NSUInteger timeForProcessing = SubtractTime(processTime, parseTime) * 1000.0;
-//		GBLogInfo(@"Finished processing in %ldms.\n", timeForProcessing);
+		GBAbsoluteTime processTime = GetCurrentTime();
+		NSUInteger timeForProcessing = SubtractTime(processTime, parseTime) * 1000.0;
+		GBLogInfo(@"Finished processing in %ldms.\n", timeForProcessing);
 		
-//		GBLogNormal(@"Generating output...");
+		GBLogNormal(@"Generating output...");
 		GBGenerator *generator = [GBGenerator generatorWithSettingsProvider:self.settings];
 		[generator generateOutputFromStore:store];
-//		GBAbsoluteTime generateTime = GetCurrentTime();
-//		NSUInteger timeForGeneration = SubtractTime(generateTime, processTime) * 1000.0;
-//		GBLogInfo(@"Finished generating in %ldms.\n", timeForGeneration);
+		GBAbsoluteTime generateTime = GetCurrentTime();
+		NSUInteger timeForGeneration = SubtractTime(generateTime, processTime) * 1000.0;
+		GBLogInfo(@"Finished generating in %ldms.\n", timeForGeneration);
 		
-//		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;
-//		GBLogNormal(@"Finished in %ldms.", timeForEverything);
-//		GBLogInfo(@"Parsing:    %ldms (%ld%%)", timeForParsing, timeForParsing * 100 / timeForEverything);
-//		GBLogInfo(@"Processing: %ldms (%ld%%)", timeForProcessing, timeForProcessing * 100 / timeForEverything);
-//		GBLogInfo(@"Generating: %ldms (%ld%%)", timeForGeneration, timeForGeneration * 100 / timeForEverything);
+		NSUInteger timeForEverything = timeForParsing + timeForProcessing + timeForGeneration;
+		GBLogNormal(@"Finished in %ldms.", timeForEverything);
+		GBLogInfo(@"Parsing:    %ldms (%ld%%)", timeForParsing, timeForParsing * 100 / timeForEverything);
+		GBLogInfo(@"Processing: %ldms (%ld%%)", timeForProcessing, timeForProcessing * 100 / timeForEverything);
+		GBLogInfo(@"Generating: %ldms (%ld%%)", timeForGeneration, timeForGeneration * 100 / timeForEverything);
 	}
 	@catch (NSException *e) {
-//		GBLogException(e, @"Oops, something went wrong...");
+		GBLogException(e, @"Oops, something went wrong...");
 		return GBEXIT_ASSERT_GENERIC;
 	}
 	
-//	int result = (kGBLogBasedResult >= self.settings.exitCodeThreshold) ? kGBLogBasedResult : 0;
-//	GBLogDebug(@"Exiting with result %d (reported result was %ld - higher than %d)...", result, kGBLogBasedResult, self.settings.exitCodeThreshold);
-	return GBEXIT_ASSERT_GENERIC;
+	int result = (kGBLogBasedResult >= self.settings.exitCodeThreshold) ? kGBLogBasedResult : 0;
+	GBLogDebug(@"Exiting with result %d (reported result was %ld - higher than %d)...", result, kGBLogBasedResult, self.settings.exitCodeThreshold);
+	return result;
 }
 
 - (void)application:(DDCliApplication *)app willParseOptions:(DDGetoptLongParser *)optionParser {
@@ -362,10 +360,10 @@ static char *kGBArgHelp = "help";
 #pragma mark Application handling
 
 - (void)initializeLoggingSystem {
-//	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
-//	[[GBConsoleLogger sharedInstance] setLogFormatter:formatter];
-//	[DDLog addLogger:[GBConsoleLogger sharedInstance]];
-//	[GBLog setLogLevelFromVerbose:self.verbose];
+	id formatter = [GBLog logFormatterForLogFormat:self.logformat];
+	[[GBConsoleLogger sharedInstance] setLogFormatter:formatter];
+	[DDLog addLogger:[GBConsoleLogger sharedInstance]];
+	[GBLog setLogLevelFromVerbose:self.verbose];
 }
 
 - (void)deleteContentsOfOutputPath {
@@ -376,18 +374,18 @@ static char *kGBArgHelp = "help";
 	NSString *standardizedOutput = [outputPath stringByStandardizingPath];
 	NSError *error = nil;
 	
-//	GBLogInfo(@"Deleting contents of output path '%@'...", outputPath);
+	GBLogInfo(@"Deleting contents of output path '%@'...", outputPath);
 	NSArray *contents = [self.fileManager contentsOfDirectoryAtPath:standardizedOutput error:&error];
 	if (error) {
-//		GBLogNSError(error, @"Failed enumerating contents of output path '%@'!, for cleaning up!", outputPath);
+		GBLogNSError(error, @"Failed enumerating contents of output path '%@'!, for cleaning up!", outputPath);
 		return;
 	}
 	
 	for (NSString *subpath in contents) {
-//		GBLogDebug(@"- Deleting '%@'...", subpath);
+		GBLogDebug(@"- Deleting '%@'...", subpath);
 		NSString *filename = [standardizedOutput stringByAppendingPathComponent:subpath];
 		if (![self.fileManager removeItemAtPath:filename error:&error] && error) {
-//			GBLogNSError(error, @"Failed removing '%@' while cleaning up output!", filename);
+			GBLogNSError(error, @"Failed removing '%@' while cleaning up output!", filename);
 		}
 	}
 }

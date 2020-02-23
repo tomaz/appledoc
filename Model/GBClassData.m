@@ -8,6 +8,7 @@
 
 #import "GBDataObjects.h"
 #import "GBClassData.h"
+#import "GBLog.h"
 
 @implementation GBClassData
 
@@ -19,7 +20,7 @@
 
 - (id)initWithName:(NSString *)name {
 	NSParameterAssert(name != nil && [name length] > 0);
-//	GBLogDebug(@"Initializing class with name %@...", name);
+	GBLogDebug(@"Initializing class with name %@...", name);
 	self = [super init];
 	if (self) {
 		_className = [name copy];
@@ -34,7 +35,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-//	GBLogDebug(@"%@: Merging data from %@...", self, source);
+	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	[super mergeDataFromObject:source];
 	
@@ -44,6 +45,7 @@
 	if (![self nameOfSuperclass]) {
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
 	} else if (sourceClass.nameOfSuperclass && ![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
+        // TODO:
 //		GBLogXWarn(self.prefferedSourceInfo, @"%@: Merged class's %@ superclass is different from current!", self, sourceClass);
 	}
 	

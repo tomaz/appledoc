@@ -13,6 +13,8 @@
 #import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"
 #import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBMarkdownOutputGenerator ()
     
@@ -47,16 +49,16 @@
 - (BOOL)processClasses:(NSError **)error {
     for (GBClassData *class in self.store.classes) {
         if (!class.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for class %@...", class);
+        GBLogInfo(@"Generating output for class %@...", class);
         NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self markdownOutputPathForObject:class];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing markdown for class %@ to '%@'!", class, path);
+            GBLogWarn(@"Failed writing markdown for class %@ to '%@'!", class, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for class %@.", class);
+        GBLogDebug(@"Finished generating output for class %@.", class);
     }
     return YES;
 }
@@ -64,16 +66,16 @@
 - (BOOL)processCategories:(NSError **)error {
     for (GBCategoryData *category in self.store.categories) {
         if (!category.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for category %@...", category);
+        GBLogInfo(@"Generating output for category %@...", category);
         NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self markdownOutputPathForObject:category];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing markdown for category %@ to '%@'!", category, path);
+            GBLogWarn(@"Failed writing markdown for category %@ to '%@'!", category, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for category %@.", category);
+        GBLogDebug(@"Finished generating output for category %@.", category);
     }
     return YES;
 }
@@ -81,16 +83,16 @@
 - (BOOL)processProtocols:(NSError **)error {
     for (GBProtocolData *protocol in self.store.protocols) {
         if (!protocol.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for protocol %@...", protocol);
+        GBLogInfo(@"Generating output for protocol %@...", protocol);
         NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self markdownOutputPathForObject:protocol];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing markdown for protocol %@ to '%@'!", protocol, path);
+            GBLogWarn(@"Failed writing markdown for protocol %@ to '%@'!", protocol, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for protocol %@.", protocol);
+        GBLogDebug(@"Finished generating output for protocol %@.", protocol);
     }
     return YES;
 }
@@ -98,16 +100,16 @@
 - (BOOL)processConstants:(NSError **)error {
     for (GBTypedefEnumData *enumTypedef in self.store.constants) {
         if (!enumTypedef.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for constant %@...", enumTypedef);
+        GBLogInfo(@"Generating output for constant %@...", enumTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self markdownOutputPathForObject:enumTypedef];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing markdown for constant %@ to '%@'!", enumTypedef, path);
+            GBLogWarn(@"Failed writing markdown for constant %@ to '%@'!", enumTypedef, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
+        GBLogDebug(@"Finished generating output for constant %@.", enumTypedef);
     }
     return YES;
 }
@@ -115,16 +117,16 @@
 - (BOOL)processBlocks:(NSError **)error {
     for (GBTypedefBlockData *blockTypedef in self.store.blocks) {
         if (!blockTypedef.includeInOutput) continue;
-//        GBLogInfo(@"Generating output for block %@...", blockTypedef);
+        GBLogInfo(@"Generating output for block %@...", blockTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
         NSString *output = [self.markdownTemplate renderObject:vars];
         NSString *cleaned = [self stringByCleaningHtml:output];
         NSString *path = [self markdownOutputPathForObject:blockTypedef];
         if (![self writeString:cleaned toFile:[path stringByStandardizingPath] error:error]) {
-//            GBLogWarn(@"Failed writing markdown for block %@ to '%@'!", blockTypedef, path);
+            GBLogWarn(@"Failed writing markdown for block %@ to '%@'!", blockTypedef, path);
             return NO;
         }
-//        GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
+        GBLogDebug(@"Finished generating output for block %@.", blockTypedef);
     }
     return YES;
 }
@@ -167,7 +169,7 @@
 - (GBHTMLTemplateVariablesProvider *)variablesProvider {
     static GBHTMLTemplateVariablesProvider *result = nil;
     if (!result) {
-//        GBLogDebug(@"Initializing variables provider...");
+        GBLogDebug(@"Initializing variables provider...");
         result = [[GBHTMLTemplateVariablesProvider alloc] initWithSettingsProvider:self.settings];
     }
     return result;

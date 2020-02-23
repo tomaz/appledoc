@@ -15,6 +15,7 @@
 #import "GBDocSetPublishGenerator.h"
 #import "GBMarkdownOutputGenerator.h"
 #import "GBGenerator.h"
+#import "GBLog.h"
 
 @interface GBGenerator ()
 
@@ -38,7 +39,7 @@
 
 - (id)initWithSettingsProvider:(id)settingsProvider {
 	NSParameterAssert(settingsProvider != nil);
-//	GBLogDebug(@"Initializing generator with settings provider %@...", settingsProvider);
+	GBLogDebug(@"Initializing generator with settings provider %@...", settingsProvider);
 	self = [super init];
 	if (self) {
 		self.settings = settingsProvider;
@@ -50,14 +51,14 @@
 
 - (void)generateOutputFromStore:(id)aStore {
 	NSParameterAssert(aStore != nil);
-//	GBLogInfo(@"Generating output from parsed objects...");
+	GBLogInfo(@"Generating output from parsed objects...");
 	[self setupGeneratorStepsWithStore:aStore];
 	[self runGeneratorStepsWithStore:aStore];
 }
 
 - (void)setupGeneratorStepsWithStore:(id)store {
 	// Setups all output generators. The order of these is crucial as they are invoked in the order added to the list. This forms a dependency where each next generator can use
-//	GBLogDebug(@"Initializing generation steps...");
+	GBLogDebug(@"Initializing generation steps...");
     if (self.settings.createMarkdown) {
         [self.outputGenerators addObject:[GBMarkdownOutputGenerator generatorWithSettingsProvider:self.settings]];
     }
@@ -74,10 +75,10 @@
 }
 
 - (void)runGeneratorStepsWithStore:(id)aStore {
-//	GBLogDebug(@"Running generation steps...");
+	GBLogDebug(@"Running generation steps...");
 	NSUInteger stepsCount = [self.outputGenerators count];
 	if (stepsCount == 0) {
-//		GBLogNormal(@"No generation step defined, ending.");
+		GBLogNormal(@"No generation step defined, ending.");
 		return;
 	}
 	
@@ -85,15 +86,15 @@
 	[self.outputGenerators enumerateObjectsUsingBlock:^(GBOutputGenerator *generator, NSUInteger idx, BOOL *stop) {		
 		NSError *error = nil;
 		NSUInteger index = idx + 1;
-//		GBLogVerbose(@"Generation step %ld/%ld: Running %@...", index, stepsCount, [generator className]);
+		GBLogVerbose(@"Generation step %ld/%ld: Running %@...", index, stepsCount, [generator className]);
 		generator.previousGenerator = previous;
 		if (![generator copyTemplateFilesToOutputPath:&error]) {
-//			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed copying template files to output, aborting!", index, stepsCount, [generator className]);
+			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed copying template files to output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;
 		}
 		if (![generator generateOutputWithStore:aStore error:&error]) {
-//			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed generating output, aborting!", index, stepsCount, [generator className]);
+			GBLogNSError(error, @"Generation step %ld/%ld failed: %@ failed generating output, aborting!", index, stepsCount, [generator className]);
 			*stop = YES;
 			return;
 		}
@@ -106,7 +107,7 @@
 - (NSMutableArray *)outputGenerators {
 	static NSMutableArray *result = nil;
 	if (!result) {
-//		GBLogDebug(@"Initializing output generators array...");
+		GBLogDebug(@"Initializing output generators array...");
 		result = [[NSMutableArray alloc] init];
 	}
 	return result;

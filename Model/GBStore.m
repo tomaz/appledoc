@@ -9,6 +9,8 @@
 #import "GBDataObjects.h"
 #import "GBStore.h"
 #import "SynthesizeSingleton.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @implementation GBStore
 
@@ -83,7 +85,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 - (void)registerClass:(GBClassData *)class {
 	NSParameterAssert(class != nil);
-//	GBLogDebug(@"Registering class %@...", class);
+	GBLogDebug(@"Registering class %@...", class);
 	if ([_classes containsObject:class]) return;
 	GBClassData *existingClass = _classesByName[class.nameOfClass];
 	if (existingClass) {
@@ -96,7 +98,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 - (void)registerCategory:(GBCategoryData *)category {
 	NSParameterAssert(category != nil);
-//	GBLogDebug(@"Registering category %@...", category);
+	GBLogDebug(@"Registering category %@...", category);
 	if ([_categories containsObject:category]) return;
 	NSString *categoryID = [NSString stringWithFormat:@"%@(%@)", category.nameOfClass, category.nameOfCategory ? category.nameOfCategory : @""];
 	GBCategoryData *existingCategory = _categoriesByName[categoryID];
@@ -110,7 +112,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 - (void)registerProtocol:(GBProtocolData *)protocol {
 	NSParameterAssert(protocol != nil);
-//	GBLogDebug(@"Registering class %@...", protocol);
+	GBLogDebug(@"Registering class %@...", protocol);
 	if ([_protocols containsObject:protocol]) return;
 	GBProtocolData *existingProtocol = _protocolsByName[protocol.nameOfProtocol];
 	if (existingProtocol) {
@@ -124,11 +126,11 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 -(void)registerTypedefEnum:(GBTypedefEnumData *)typedefEnum
 {
     NSParameterAssert(typedefEnum != nil);
-//	GBLogDebug(@"Registering typedef enum %@...", typedefEnum);
+	GBLogDebug(@"Registering typedef enum %@...", typedefEnum);
 	if ([_typedefEnums containsObject:typedefEnum]) return;
 	GBProtocolData *existingTypedef = _typedefEnumsByName[typedefEnum.nameOfEnum];
 	if (existingTypedef) {
-//        GBLogWarn(@"Ignoring typedef enum %@, already defined.", typedefEnum);
+        GBLogWarn(@"Ignoring typedef enum %@, already defined.", typedefEnum);
         return;
     }
 
@@ -139,11 +141,11 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 -(void)registerTypedefBlock:(GBTypedefBlockData *)typedefBlock
 {
     NSParameterAssert(typedefBlock != nil);
-//    GBLogDebug(@"Registering typedef block %@...", typedefBlock);
+    GBLogDebug(@"Registering typedef block %@...", typedefBlock);
     if ([_typedefBlocks containsObject:typedefBlock]) return;
     GBProtocolData *existingTypedef = _typedefBlocksByName[typedefBlock.nameOfBlock];
     if (existingTypedef) {
-//        GBLogWarn(@"Ignoring typedef block %@, already defined.", typedefBlock);
+        GBLogWarn(@"Ignoring typedef block %@, already defined.", typedefBlock);
         return;
     }
     
@@ -154,12 +156,12 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 - (void)registerDocument:(GBDocumentData *)document {
 	NSParameterAssert(document != nil);
-//	GBLogDebug(@"Registering document %@...", document);
+	GBLogDebug(@"Registering document %@...", document);
 	if ([_documents containsObject:document]) return;
 	NSString *name = [document.nameOfDocument stringByDeletingPathExtension];
 	GBDocumentData *existingDocument = _documentsByName[name];
     if (existingDocument) {
-//        GBLogWarn(@"Ignoring document %@, already defined.", document);
+        GBLogWarn(@"Ignoring document %@, already defined.", document);
         return;
     }
 
@@ -170,7 +172,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBStore, sharedStore);
 
 - (void)registerCustomDocument:(GBDocumentData *)document withKey:(id)key {
 	NSParameterAssert(document != nil);
-//	GBLogDebug(@"Registering custom document %@...", document);
+	GBLogDebug(@"Registering custom document %@...", document);
 	[_customDocuments addObject:document];
 	_customDocumentsByKey[key] = document;
 }
