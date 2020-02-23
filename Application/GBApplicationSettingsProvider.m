@@ -12,7 +12,8 @@
 #import <RegexKitLite/RegexKitLite.h>
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
-//#import "GBLog.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 #import "SynthesizeSingleton.h"
 
@@ -251,7 +252,7 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 		int size = mkd_document(document, &html);
 		
 		if (size <= 0) {
-//			GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown description]);
+			GBLogWarn(@"Failed converting markdown '%@' to HTML!", [markdown description]);
 		} else {
 			result = [NSString stringWithCString:html encoding:NSUTF8StringEncoding];
 			if(!result)
