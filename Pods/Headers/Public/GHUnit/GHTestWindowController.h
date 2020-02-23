@@ -1,1 +1,0 @@
-../../../GHUnit/Classes-MacOSX/UI/GHTestWindowController.h

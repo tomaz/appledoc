@@ -26,7 +26,7 @@
 
 - (id)initWithParentObject:(id)parent {
     NSParameterAssert(parent != nil);
-    GBLogDebug(@"Initializing methods provider for %@...", parent);
+//    GBLogDebug(@"Initializing methods provider for %@...", parent);
     self = [super init];
     if (self) {
         _parent = parent;
@@ -45,7 +45,7 @@
 #pragma mark Registration methods
 
 - (GBMethodSectionData *)registerSectionWithName:(NSString *)name {
-	GBLogDebug(@"%@: Registering section %@...", _parent, name ? name : @"default");
+//	GBLogDebug(@"%@: Registering section %@...", _parent, name ? name : @"default");
 	GBMethodSectionData *section = [[GBMethodSectionData alloc] init];
 	section.sectionName = name;
 	_registeringSection = section;
@@ -63,7 +63,7 @@
 }
 
 - (void)unregisterEmptySections {
-	GBLogDebug(@"Unregistering empty sections...");
+//	GBLogDebug(@"Unregistering empty sections...");
 	for (NSUInteger i=0; i<[_sections count]; i++) {
 		GBMethodSectionData *section = _sections[i];
 		if ([section.methods count] == 0) {
@@ -76,7 +76,7 @@
 - (void)registerMethod:(GBMethodData *)method {
 	// Note that we allow adding several methods with the same selector as long as the type is different (i.e. class and instance methods). In such case, methodBySelector will preffer instance method or property to class method! Note that this could be implemented more inteligently by prefixing selectors with some char or similar and then handling that within methodBySelector: and prefer instance/property in there. However at the time being current code seems sufficient and simpler, so let's stick with it for a while...
 	NSParameterAssert(method != nil);
-	GBLogDebug(@"%@: Registering method %@...", _parent, method);
+//	GBLogDebug(@"%@: Registering method %@...", _parent, method);
 	if ([_methods containsObject:method]) return;
 	GBMethodData *existingMethod = _methodsBySelectors[method.methodSelector];
 	if (existingMethod && existingMethod.methodType == method.methodType) {
@@ -170,7 +170,7 @@
 - (void)mergeDataFromMethodsProvider:(GBMethodsProvider *)source {
 	// If a method with the same selector is found while merging from source, we should check if the type also matches. If so, we can merge the data from the source's method. However if the type doesn't match, we should ignore the method alltogether (ussually this is due to custom property implementation). We should probably deal with this scenario more inteligently, but it seems it works...
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging methods from %@...", _parent, source->_parent);
+//	GBLogDebug(@"%@: Merging methods from %@...", _parent, source->_parent);
 	
 	// First merge all existing methods regardless of section and prepare the list of all new methods.
 	NSMutableArray *newMethods = [NSMutableArray array];

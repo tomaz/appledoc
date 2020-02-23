@@ -19,7 +19,7 @@
 
 - (id)initWithName:(NSString *)name className:(NSString *)className {
 	NSParameterAssert(className && [className length] > 0);
-	GBLogDebug(@"Initializing %@%@ for class %@...", name ? @"category " : @"extension", name ? name : @"", className);
+//	GBLogDebug(@"Initializing %@%@ for class %@...", name ? @"category " : @"extension", name ? name : @"", className);
 	self = [super init];
 	if (self) {
 		_categoryName = name ? [name copy] : nil;
@@ -34,7 +34,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging data from %@...", self, source);
+//	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfClass] isEqualToString:self.nameOfClass]);
 	NSParameterAssert([source nameOfCategory] == self.nameOfCategory || [[source nameOfCategory] isEqualToString:self.nameOfCategory]); // allow nil for extensions!
 	[super mergeDataFromObject:source];

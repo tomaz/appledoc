@@ -8,6 +8,8 @@
 
 #import "GBTemplateHandler.h"
 #import "GBTemplateFilesHandler.h"
+//#import "GBLog.h"
+#import "NSObject+GBObject.h"
 
 @interface GBTemplateFilesHandler ()
 
@@ -42,13 +44,13 @@
 	NSString *destUserPath = self.outputUserPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
 	NSString *destPath = [destUserPath stringByStandardizingPath];	
-	GBLogVerbose(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);	
+//	GBLogVerbose(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);
 	
 	// Remove destination path if it exists. Exit if we fail.
 	if ([self.fileManager fileExistsAtPath:destPath]) {
-		GBLogDebug(@"Removing output at '%@'...", destUserPath);
+//		GBLogDebug(@"Removing output at '%@'...", destUserPath);
 		if (![self.fileManager removeItemAtPath:destPath error:error]) {
-			GBLogWarn(@"Failed removing output files at '%@'!", destUserPath);
+//			GBLogWarn(@"Failed removing output files at '%@'!", destUserPath);
 			return NO;	
 		}
 	}
@@ -56,39 +58,39 @@
 	// Create directory hierarchy minus the last one. This is necessary if more than one component is missing at destination path; copyItemAtPath:toPath:error would fail in such case. Note that we can't create the last directory as mentioned method request is that the destination doesn't exist!
 	NSString *createDestPath = [destPath stringByDeletingLastPathComponent];
 	if (![self.fileManager createDirectoryAtPath:createDestPath withIntermediateDirectories:YES attributes:nil error:error]) {
-		GBLogWarn(@"Failed creating directory '%@'!", createDestPath);
+//		GBLogWarn(@"Failed creating directory '%@'!", createDestPath);
 		return NO;
 	}
 	
 	// If there's no source file, there also no need to copy anything, so exit. In fact, copying would probably just result in errors.
 	if (![self.fileManager fileExistsAtPath:sourcePath]) {
-		GBLogDebug(@"No template file found at '%@', no need to copy.", sourceUserPath);
+//		GBLogDebug(@"No template file found at '%@', no need to copy.", sourceUserPath);
 		return YES;
 	}
 	
 	// Copy the whole source directory over to output. Exit if we fail.
-	GBLogDebug(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);
+//	GBLogDebug(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);
 	if (![self.fileManager copyItemAtPath:sourcePath toPath:destPath error:error]) {
-		GBLogWarn(@"Failed copying templates from '%@' to '%@'!", sourceUserPath, destUserPath);
+//		GBLogWarn(@"Failed copying templates from '%@' to '%@'!", sourceUserPath, destUserPath);
 		return NO;
 	}
 	
 	// Remove all ignored files and special template items from output. First enumerate all files. If this fails, report success; this step is only used to verscleanup the destination, we should still have valid output if these files are kept there. Note that we need to test for existing file before removing as it could happen file's parent dir was removed already in previous iterations so the file or subdir doesn't exist anymore - see https://github.com/tomaz/appledoc/issues#issue/59 for details.
-	GBLogDebug(@"Removing temporary files from '%@'...", destUserPath);
+//	GBLogDebug(@"Removing temporary files from '%@'...", destUserPath);
 	NSArray *items = [self.fileManager subpathsOfDirectoryAtPath:destPath error:error];
 	if (!items) {
-		GBLogWarn(@"Failed enumerating template files at '%@'!", destUserPath);
+//		GBLogWarn(@"Failed enumerating template files at '%@'!", destUserPath);
 		return YES;
 	}	
 	for (NSString *path in items) {
 		BOOL delete = NO;
 		if ([self isPathRepresentingIgnoredFile:path]) {
-			GBLogDebug(@"Removing ignored file '%@' from output...", path);
+//			GBLogDebug(@"Removing ignored file '%@' from output...", path);
 			delete = YES;
 		} else if ([self isPathRepresentingTemplateFile:path]) {
 			GBTemplateHandler *handler = [self templateHandlerFromTemplateFile:path error:error];
 			if (!handler) return NO;
-			GBLogDebug(@"Removing template file '%@' from output...", path);
+//			GBLogDebug(@"Removing template file '%@' from output...", path);
 			self.templateFiles[path] = handler;
 			delete = YES;
 		}
@@ -96,7 +98,7 @@
 		if (delete) {
 			NSString *fullpath = [destPath stringByAppendingPathComponent:path];
 			if ([self.fileManager fileExistsAtPath:fullpath] && ![self.fileManager removeItemAtPath:fullpath error:error]) {
-				GBLogWarn(@"Can't clean leftover '%@' from '%@'.", path, destUserPath);
+//				GBLogWarn(@"Can't clean leftover '%@' from '%@'.", path, destUserPath);
 			}
 		}
 	}
@@ -124,10 +126,10 @@
 
 - (GBTemplateHandler *)templateHandlerFromTemplateFile:(NSString *)filename error:(NSError **)error {
 	NSString *path = [[self templateUserPath] stringByAppendingPathComponent:filename];
-	GBLogDebug(@"Creating template handler for template file '%@'...", path);
+//	GBLogDebug(@"Creating template handler for template file '%@'...", path);
 	GBTemplateHandler *result = [GBTemplateHandler handler];
 	if (![result parseTemplateFromPath:[path stringByStandardizingPath] error:error]) {
-		GBLogWarn(@"Failed parsing template '%@'!", filename);
+//		GBLogWarn(@"Failed parsing template '%@'!", filename);
 		return nil;
 	}
 	return result;

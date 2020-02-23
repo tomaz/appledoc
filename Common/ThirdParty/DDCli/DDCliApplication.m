@@ -53,17 +53,17 @@ DDCliApplication * DDCliApp = nil;
         return nil;
     
     NSProcessInfo * processInfo = [NSProcessInfo processInfo];
-    _name = [[processInfo processName] retain];
+    _name = [[processInfo processName] copy];
     
     return self;
 }
 
-- (void)dealloc
-{
-    [_name release];
-    
-    [super dealloc];
-}
+//- (void)dealloc
+//{
+//    [_name release];
+//
+//    [super dealloc];
+//}
 
 - (NSString *)name;
 {
@@ -130,7 +130,7 @@ DDCliApplication * DDCliApp = nil;
         return [self runWithDelegate:delegateInstance arguments:nil];
     }
     @finally {
-        [delegateInstance release];
+//        [delegateInstance release];
     }
     
 }
@@ -165,13 +165,19 @@ DDCliApplication * DDCliApp = nil;
 
 int DDCliAppRunWithClass(Class delegateClass)
 {
-    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    
-    // Initialize singleton/global
-    DDCliApplication * app = [DDCliApplication sharedApplication];
-    int result = [app runWithClass: delegateClass];
-
-    [pool drain];
+    int result;
+    @autoreleasepool {
+        // Initialize singleton/global
+        DDCliApplication * app = [DDCliApplication sharedApplication];
+        result = [app runWithClass: delegateClass];
+    }
+//    NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+//
+//    // Initialize singleton/global
+//    DDCliApplication * app = [DDCliApplication sharedApplication];
+//    int result = [app runWithClass: delegateClass];
+//
+//    [pool drain];
     
     return result;
 }

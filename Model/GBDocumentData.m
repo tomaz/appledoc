@@ -9,6 +9,7 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBDocumentData.h"
+#import "NSString+GBString.h"
 
 @implementation GBDocumentData
 
@@ -26,7 +27,7 @@
 
 - (id)initWithContents:(NSString *)contents path:(NSString *)path {
     NSParameterAssert(contents != nil);
-    GBLogDebug(@"Initializing document with contents %@...", [contents normalizedDescription]);
+//    GBLogDebug(@"Initializing document with contents %@...", [contents normalizedDescription]);
     self = [super init];
     if (self) {
         GBSourceInfo *info = [GBSourceInfo infoWithFilename:path lineNumber:1];

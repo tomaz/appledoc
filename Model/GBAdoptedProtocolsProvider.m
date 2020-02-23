@@ -8,6 +8,7 @@
 
 #import "GBProtocolData.h"
 #import "GBAdoptedProtocolsProvider.h"
+#import "NSException+GBException.h"
 
 @implementation GBAdoptedProtocolsProvider
 
@@ -15,7 +16,7 @@
 
 - (id)initWithParentObject:(id)parent {
 	NSParameterAssert(parent != nil);
-	GBLogDebug(@"Initializing adopted protocols provider for %@...", parent);
+//	GBLogDebug(@"Initializing adopted protocols provider for %@...", parent);
 	self = [super init];
 	if (self) {
 		_parent = parent;
@@ -34,7 +35,7 @@
 
 - (void)registerProtocol:(GBProtocolData *)protocol {
 	NSParameterAssert(protocol != nil);
-	GBLogDebug(@"%@: Registering protocol %@...", _parent, protocol);
+//	GBLogDebug(@"%@: Registering protocol %@...", _parent, protocol);
 	if ([_protocols containsObject:protocol]) return;
 	GBProtocolData *existingProtocol = _protocolsByName[protocol.nameOfProtocol];
 	if (existingProtocol) {
@@ -49,7 +50,7 @@
 
 - (void)mergeDataFromProtocolsProvider:(GBAdoptedProtocolsProvider *)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging adopted protocols from %@...", _parent, source->_parent);
+//	GBLogDebug(@"%@: Merging adopted protocols from %@...", _parent, source->_parent);
 	for (GBProtocolData *sourceProtocol in source.protocols) {
 		GBProtocolData *existingProtocol = _protocolsByName[sourceProtocol.nameOfProtocol];
 		if (existingProtocol) {

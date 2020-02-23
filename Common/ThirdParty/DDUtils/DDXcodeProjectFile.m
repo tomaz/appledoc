@@ -70,23 +70,41 @@
 }
 
 + (id)xcodeProjectFileWithPath:(NSString*)path error:(NSError**)pError {
-    id file = [[[[self class] alloc] initWithPath:path] autorelease];
-    if(file) {
-        if([file parse:pError]) {
-            return file;
+    @autoreleasepool {
+        id file = [[[self class] alloc] initWithPath:path];
+        if(file) {
+            if([file parse:pError]) {
+                return file;
+            }
         }
+        return nil;
     }
-    return nil;
+//    id file = [[[[self class] alloc] initWithPath:path] autorelease];
+//    if(file) {
+//        if([file parse:pError]) {
+//            return file;
+//        }
+//    }
+//    return nil;
 }
 
 + (id)xcodeProjectFileWithDictionary:(NSDictionary*)dict error:(NSError**)pError {
-    id file = [[[[self class] alloc] initWithDictionary:dict] autorelease];
-    if(file) {
-        if([file parse:pError]) {
-            return file;
+    @autoreleasepool {
+        id file = [[[self class] alloc] initWithDictionary:dict];
+        if(file) {
+            if([file parse:pError]) {
+                return file;
+            }
         }
+        return nil;
     }
-    return nil;
+//    id file = [[[[self class] alloc] initWithDictionary:dict] autorelease];
+//    if(file) {
+//        if([file parse:pError]) {
+//            return file;
+//        }
+//    }
+//    return nil;
 }
 
 #pragma mark - main parse
@@ -224,9 +242,14 @@
 
 - (NSError*)parsePBXFileReference:(NSDictionary*)dict {
     if(!dict[@"lastKnownFileType"] && dict[@"explicitFileType"]) {
-        NSMutableDictionary *mdict = [[dict mutableCopy] autorelease];
-        mdict[@"lastKnownFileType"] = dict[@"explicitFileType"];
-        dict = mdict;
+        @autoreleasepool {
+            NSMutableDictionary *mdict = [dict mutableCopy];
+            mdict[@"lastKnownFileType"] = dict[@"explicitFileType"];
+            dict = mdict;
+        }
+//        NSMutableDictionary *mdict = [[dict mutableCopy] autorelease];
+//        mdict[@"lastKnownFileType"] = dict[@"explicitFileType"];
+//        dict = mdict;
     }
     
     if(!dict[@"path"] || !dict[@"lastKnownFileType"]) {

@@ -12,7 +12,7 @@
 
 - (id)initWithParentObject:(id)parent {
     NSParameterAssert(parent != nil);
-    GBLogDebug(@"Initializing enumConstant provider for %@...", parent);
+//    GBLogDebug(@"Initializing enumConstant provider for %@...", parent);
     self = [super init];
     if (self) {
         _parent = parent;

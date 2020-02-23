@@ -7,20 +7,14 @@ def default_pods
     # Discount '2.1.5a' with configure and make
     pod 'Discount', :podspec => 'Specs/Discount.podspec'
     pod 'GRMustache', '~> 7.0.2'
-    pod 'Minizip/minishared', :git => 'https://github.com/nmoinvaz/minizip.git'
-    pod 'DDMinizip', :podspec => 'Specs/DDMinizip.podspec'
-end
-
-def tests_pods
-    pod 'GHUnit', '~> 0.5'
-    pod 'OCMock', '~> 3.4'
+    pod 'CocoaLumberjack'
 end
 
 target 'appledoc' do
     default_pods
 end
 
-target 'AppledocTests' do
+target 'appledocTests' do
     default_pods
-    tests_pods
+    pod 'OCMock', '~> 3.4'
 end

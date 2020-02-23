@@ -10,6 +10,7 @@
 #import "DDTTYLogger.h"
 #import "DDFileLogger.h"
 #import "DDCliUtil.h"
+#import "GBExitCodes.h"
 
 // Undefine defaults
 
@@ -52,7 +53,10 @@ void GBLogUpdateResult(NSInteger result);
 #define LOG_FLAG_NORMAL		(1 << 3) // 0...0001000
 #define LOG_FLAG_INFO		(1 << 4) // 0...0010000
 #define LOG_FLAG_VERBOSE    (1 << 5) // 0...0100000
+#ifdef LOG_FLAG_DEBUG
+#undef LOG_FLAG_DEBUG
 #define LOG_FLAG_DEBUG		(1 << 6) // 0...1000000
+#endif
 
 #define LOG_LEVEL_FATAL		(LOG_FLAG_FATAL)						// 0...0000001
 #define LOG_LEVEL_ERROR		(LOG_FLAG_ERROR   | LOG_LEVEL_FATAL)	// 0...0000011
@@ -60,7 +64,10 @@ void GBLogUpdateResult(NSInteger result);
 #define LOG_LEVEL_NORMAL	(LOG_FLAG_NORMAL  | LOG_LEVEL_WARN)		// 0...0001111
 #define LOG_LEVEL_INFO		(LOG_FLAG_INFO    | LOG_LEVEL_NORMAL)	// 0...0011111
 #define LOG_LEVEL_VERBOSE	(LOG_FLAG_VERBOSE | LOG_LEVEL_INFO)		// 0...0111111
+#ifdef LOG_LEVEL_DEBUG
+#undef LOG_LEVEL_DEBUG
 #define LOG_LEVEL_DEBUG		(LOG_FLAG_DEBUG   | LOG_LEVEL_VERBOSE)	// 0...1111111
+#endif
 
 #define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
 

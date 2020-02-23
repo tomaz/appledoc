@@ -28,7 +28,7 @@
 
 - (void)registerComponent:(id)component {
 	NSParameterAssert(component != nil);
-	GBLogDebug(@"Registering component %@...", component);
+//	GBLogDebug(@"Registering component %@...", component);
 	[_components addObject:component];
 }
 

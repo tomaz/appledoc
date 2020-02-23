@@ -10,6 +10,7 @@
 #import "GBStore.h"
 #import "GBTask.h"
 #import "GBDocSetInstallGenerator.h"
+#import "NSError+GBError.h"
 
 @interface GBDocSetInstallGenerator ()
 - (void)touchInstallMessageFile;
@@ -23,7 +24,7 @@
 
 - (BOOL)generateOutputWithStore:(id)store error:(NSError **)error {
 	NSParameterAssert(self.previousGenerator != nil);
-	GBLogInfo(@"Installing DocSet...");
+//	GBLogInfo(@"Installing DocSet...%@", @"");
 	
 	// Prepare for run.
 	if (![super generateOutputWithStore:store error:error]) return NO;
@@ -36,7 +37,7 @@
 	[self touchInstallMessageFile];
 	
 	// Prepare AppleScript for loading the documentation into the Xcode.
-	GBLogVerbose(@"Installing DocSet to Xcode...");
+//	GBLogVerbose(@"Installing DocSet to Xcode...%@", @"");
 	NSMutableString* installScript  = [NSMutableString string];
 	[installScript appendString:@"tell application \"Xcode\"\n"];
 	[installScript appendFormat:@"\tload documentation set with path \"%@\"\n", sourcePath];
@@ -63,7 +64,7 @@
 	[message appendFormat:@"Time: %@", [NSDate date]];
 	NSError *error = nil;
 	[message writeToFile:[filename stringByStandardizingPath] atomically:NO encoding:NSUTF8StringEncoding error:&error];
-	if (error) GBLogNSError(error, @"Failed writing docset installed message file at '%@'!", filename);
+//	if (error) GBLogNSError(error, @"Failed writing docset installed message file at '%@'!", filename);
 }
 
 #pragma mark Overriden methods

@@ -19,7 +19,7 @@
 
 - (id)initWithName:(NSString *)name {
 	NSParameterAssert(name != nil && [name length] > 0);
-	GBLogDebug(@"Initializing protocol with name %@...", name);
+//	GBLogDebug(@"Initializing protocol with name %@...", name);
 	self = [super init];
 	if (self) {
 		_protocolName = [name copy];
@@ -33,7 +33,7 @@
 
 - (void)mergeDataFromObject:(id)source {
 	if (!source || source == self) return;
-	GBLogDebug(@"%@: Merging data from %@...", self, source);
+//	GBLogDebug(@"%@: Merging data from %@...", self, source);
 	NSParameterAssert([[source nameOfProtocol] isEqualToString:self.nameOfProtocol]);
 	[super mergeDataFromObject:source];
 	GBProtocolData *sourceProtocol = (GBProtocolData *)source;

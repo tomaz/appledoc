@@ -162,20 +162,20 @@ static NSString *GBLogLevel(DDLogMessage *msg) {
 
 @implementation GBLogFormatXcodeFormatter
 - (NSString *)formatLogMessage:(DDLogMessage *)m {
-	if (m->originalFilename) {
-		NSString *level = nil;
-		switch (m->logFlag) {
-			case LOG_FLAG_FATAL:	level = @"fatal"; break;
-			case LOG_FLAG_ERROR:	level = @"error"; break;
-			case LOG_FLAG_WARN:		level = @"warning"; break;
-			case LOG_FLAG_NORMAL:	level = @"normal"; break;
-			case LOG_FLAG_INFO:		level = @"info"; break;
-			case LOG_FLAG_VERBOSE:	level = @"verbose"; break;
-			case LOG_FLAG_DEBUG:	level = @"debug"; break;
-			default:				level = @"unknown"; break;
-		}
-		return [NSString stringWithFormat:@"%@:%lu: %@: %@", m->originalFilename, m->originalLine, level, GBLogMessage(m)];
-	}
+//	if (m->originalFilename) {
+//		NSString *level = nil;
+//		switch (m->logFlag) {
+//			case LOG_FLAG_FATAL:	level = @"fatal"; break;
+//			case LOG_FLAG_ERROR:	level = @"error"; break;
+//			case LOG_FLAG_WARN:		level = @"warning"; break;
+//			case LOG_FLAG_NORMAL:	level = @"normal"; break;
+//			case LOG_FLAG_INFO:		level = @"info"; break;
+//			case LOG_FLAG_VERBOSE:	level = @"verbose"; break;
+//			case LOG_FLAG_DEBUG:	level = @"debug"; break;
+//			default:				level = @"unknown"; break;
+//		}
+//		return [NSString stringWithFormat:@"%@:%lu: %@: %@", m->originalFilename, m->originalLine, level, GBLogMessage(m)];
+//	}
 	return GBLogMessage(m);
 }
 @end

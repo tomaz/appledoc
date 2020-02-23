@@ -53,7 +53,7 @@
 	NSMutableString *commandLine = [NSMutableString string];
 	for (id argument in arguments) [commandLine appendFormat:@" %@", argument];
 	self.lastCommandLine = [NSString stringWithFormat:@"%@%@", command, commandLine];
-	GBLogDebug(@"Running command '%@'", self.lastCommandLine);
+//	GBLogDebug(@"Running command '%@'", self.lastCommandLine);
 	
 	// Prepare deviation pipes so that we can extract the data from the task. If requested, prepare everything for continuous updating.
 	NSPipe *stdOutPipe = [NSPipe pipe];
