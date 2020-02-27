@@ -9,6 +9,8 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBDocumentData.h"
+#import "NSString+GBString.h"
+#import "GBLog.h"
 
 @implementation GBDocumentData
 

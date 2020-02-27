@@ -10,6 +10,8 @@
 #import "GBStore.h"
 #import "GBTask.h"
 #import "GBDocSetFinalizeGenerator.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 #pragma mark -
 

@@ -11,6 +11,8 @@
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 #import "GBProcessor.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBProcessor ()
 
@@ -243,7 +245,9 @@
 	}];
 	NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:[comment.methodParameters count]];
 	[comment.methodParameters enumerateObjectsUsingBlock:^(GBCommentArgument *parameter, NSUInteger idx, BOOL *stop) {
-		parameters[parameter.argumentName] = parameter;
+        if (parameter != nil) {
+            parameters[parameter.argumentName] = parameter;
+        }
 	}];
 	
 	// Sort the parameters in the same order as in the method. Warn if any parameter is not found. Also warn if there are more parameters in the comment than the method defines. Note that we still add these descriptions to the end of the sorted list!
@@ -251,12 +255,16 @@
 	[names enumerateObjectsUsingBlock:^(NSString *name, NSUInteger idx, BOOL *stop) {
 		GBCommentArgument *parameter = parameters[name];
 		if (!parameter) {
+            // TODO:
             if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
-                GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
+                GBLogWarn(@"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
+            
+            
 		}
-		[sorted addObject:parameter];
-		[parameters removeObjectForKey:name];
+        
+        [sorted addObject:parameter];
+        [parameters removeObjectForKey:name];
 	}];
 	if ([parameters count] > 0) {
 		NSMutableString *description = [NSMutableString string];
@@ -265,7 +273,9 @@
 			[description appendString:parameter.argumentName];
 			[sorted addObject:parameter];
 		}];
-		if (method.includeInOutput) GBLogXWarn(comment.sourceInfo, @"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+        // TODO:
+		if (method.includeInOutput)
+            GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
@@ -464,7 +474,8 @@
     
 	// Checks if the object is commented and warns if not. This validates given object and all it's members comments! The reason for doing it together is due to the fact that we first process all members and then handle the object. At that point we can even remove the object if not documented. So we can't validate members before as we don't know whether they will be deleted together with their parent object too...
     if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) {
-        GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
+        // TODO:
+        GBLogWarn(@"%@ is not documented!", object);
     }
 	
 	// Handle methods.
@@ -472,7 +483,8 @@
     {
         for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
             if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
-                GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
+                // TODO:
+                GBLogWarn(@"%@ is not documented!", method);
             }
         }
         
@@ -483,7 +495,8 @@
         for(GBEnumConstantData *constant in ((GBTypedefEnumData *)object).constants.constants)
         {
             if (![self isCommentValid:constant.comment] && self.settings.warnOnUndocumentedMember) {
-                GBLogXWarn(constant.prefferedSourceInfo, @"%@ is not documented!", constant);
+                // TODO:
+                GBLogWarn(@"%@ is not documented!", constant);
             }
         }
     }

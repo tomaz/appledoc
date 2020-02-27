@@ -12,6 +12,8 @@
 #import "GBSourceInfo.h"
 #import "GBComment.h"
 #import "GBTokenizer.h"
+#import "NSString+GBString.h"
+#import "GBLog.h"
 
 @interface GBTokenizer ()
 

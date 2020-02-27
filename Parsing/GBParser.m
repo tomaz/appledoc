@@ -11,6 +11,10 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBObjectiveCParser.h"
 #import "GBParser.h"
+#import "NSObject+GBObject.h"
+#import "NSFileManager+GBFileManager.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBParser ()
 

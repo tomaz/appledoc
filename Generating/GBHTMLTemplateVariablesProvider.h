@@ -7,6 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GBCategoryData.h"
+#import "GBProtocolData.h"
+#import "GBTypedefEnumData.h"
+#import "GBDocumentData.h"
+#import "GBTypedefBlockData.h"
 
 @class GBClassData;
 

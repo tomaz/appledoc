@@ -12,6 +12,9 @@
 #import "GBDataObjects.h"
 #import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"
+#import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBMarkdownOutputGenerator ()
     

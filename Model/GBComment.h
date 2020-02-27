@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GBSourceInfo.h"
 
-@class GBSourceInfo;
 @class GBCommentComponent;
 @class GBCommentComponentsList;
 

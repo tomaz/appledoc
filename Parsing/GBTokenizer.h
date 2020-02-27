@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <ParseKit/ParseKit.h>
 
+#import "GBComment.h"
+
 @class GBSourceInfo;
-@class GBComment;
+//@class GBComment;
 
 /** Provides common methods for tokenizing input source strings.
  

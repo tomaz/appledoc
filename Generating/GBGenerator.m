@@ -15,6 +15,7 @@
 #import "GBDocSetPublishGenerator.h"
 #import "GBMarkdownOutputGenerator.h"
 #import "GBGenerator.h"
+#import "GBLog.h"
 
 @interface GBGenerator ()
 

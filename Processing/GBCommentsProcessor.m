@@ -12,6 +12,9 @@
 #import "GBDataObjects.h"
 #import "GBCommentsProcessor.h"
 #import "GBCommentsProcessor+CodeBlockProcessing.h"
+#import "NSString+GBString.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBCrossRefData : NSObject
 
@@ -174,12 +177,13 @@ typedef NSUInteger GBProcessingFlag;
 	self.currentContext = context;
 	self.store = aStore;	
 	NSArray *lines = [comment.stringValue arrayOfLines];
-	NSUInteger line = comment.sourceInfo.lineNumber;
+//	NSUInteger line = comment.sourceInfo.lineNumber;
 	NSRange blockRange = NSMakeRange(0, 0);
 	NSRange shortRange = NSMakeRange(0, 0);
 	GBLogDebug(@"- Comment has %lu lines.", [lines count]);
 	while ([self findCommentBlockInLines:lines blockRange:&blockRange shortRange:&shortRange]) {
-		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + blockRange.location, line + blockRange.location + blockRange.length);
+        // TODO:
+//		GBLogDebug(@"- Found comment block in lines %lu..%lu...", line + blockRange.location, line + blockRange.location + blockRange.length);
 		[self processCommentBlockInLines:lines blockRange:blockRange shortRange:shortRange];
 		blockRange.location += blockRange.length;
 	}
@@ -241,8 +245,8 @@ typedef NSUInteger GBProcessingFlag;
 		if ([self processAvailabilityBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		
-		
-		GBLogXWarn(self.currentSourceInfo, @"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
+		// TODO:
+        GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
 	}
 		
 	// Handle short description and update block range if we're not repeating first paragraph.
@@ -557,7 +561,8 @@ typedef NSUInteger GBProcessingFlag;
 	// Convert to markdown and register everything. We use strict links mode. If the link is note recognized, warn and exit.
 	NSString *markdown = [self stringByConvertingCrossReferencesInString:reference withFlags:GBProcessingFlagRelatedItem];
 	if ([markdown isEqualToString:reference]) {
-		GBLogXWarn(self.currentSourceInfo, @"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
+        // TODO:
+		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
 		return YES;
 	}
 	
@@ -716,7 +721,8 @@ typedef NSUInteger GBProcessingFlag;
 			markdownStartMarker = componentMarker;
 		}
 		else if (self.settings.warnOnUnknownDirective) {
-			GBLogXWarn(self.currentSourceInfo, @"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
+            // TODO:
+			GBLogWarn(@"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
 		}
 		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
 		
@@ -1116,7 +1122,9 @@ typedef NSUInteger GBProcessingFlag;
 		if (!referencedObject) {
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
-				if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
+                // TODO:
+				if (self.settings.warnOnInvalidCrossReference)
+                    GBLogWarn(@"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
 				result.range = [string rangeOfString:linkText options:0 range:searchRange];
 				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 				return result;
@@ -1127,7 +1135,9 @@ typedef NSUInteger GBProcessingFlag;
 	// Ok, so we've found a reference to an object, now search for the member. If not found, warn and return. Note that we mark the result so that we won't be searching the range for other links.
 	id referencedMember = [[referencedObject methods] methodBySelector:selector];
 	if (!referencedMember) {
-		if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
+        // TODO:
+		if (self.settings.warnOnInvalidCrossReference)
+            GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
 		result.range = [string rangeOfString:linkText options:0 range:searchRange];
 		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 		return result;

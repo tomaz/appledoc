@@ -12,6 +12,9 @@
 #import "GBHTMLTemplateVariablesProvider.h"
 #import "GBTemplateHandler.h"
 #import "GBHTMLOutputGenerator.h"
+#import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBHTMLOutputGenerator ()
 

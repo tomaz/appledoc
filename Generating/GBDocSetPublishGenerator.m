@@ -12,6 +12,10 @@
 #import "GBDataObjects.h"
 #import "GBTemplateHandler.h"
 #import "GBDocSetPublishGenerator.h"
+#import "NSError+GBError.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
+#import "NSString+GBString.h"
 
 @implementation GBDocSetPublishGenerator
 
