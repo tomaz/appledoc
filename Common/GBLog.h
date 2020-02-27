@@ -68,7 +68,21 @@ void GBLogUpdateResult(NSInteger result);
 #define LOG_LEVEL_DEBUG        (LOG_FLAG_DEBUG   | LOG_LEVEL_VERBOSE)    // 0...1111111
 #endif
 
-#define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) LOG_MAYBE(YES, lvl, flg, 0, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+#define  SYNC_LOG_OBJC_MAYBE(lvl, flg, frmt, ...) GBLOG_MAYBE(YES, lvl, flg, 0, __PRETTY_FUNCTION__, frmt, ##__VA_ARGS__)
+
+#define GBLOG_MAYBE(async, lvl, flg, ctx, fnct, frmt, ...) \
+do { if(lvl & flg) GBLOG_MACRO(async, lvl, flg, ctx, nil, fnct, frmt, ##__VA_ARGS__); } while(0)
+
+#define GBLOG_MACRO(isAsynchronous, lvl, flg, ctx, atag, fnct, frmt, ...) \
+        [DDLog log:isAsynchronous                                       \
+             level:lvl                                                  \
+              flag:flg                                                  \
+           context:ctx                                                  \
+              file:nil                                             \
+          function:fnct                                                 \
+              line:__LINE__                                             \
+               tag:atag                                                 \
+            format:(frmt), ##__VA_ARGS__]
 
 #define GBLogFatal(frmt, ...)    { GBLogUpdateResult(GBEXIT_LOG_FATAL); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_FATAL, frmt, ##__VA_ARGS__); }
 #define GBLogError(frmt, ...)    { GBLogUpdateResult(GBEXIT_LOG_ERROR); SYNC_LOG_OBJC_MAYBE(kGBLogLevel, LOG_FLAG_ERROR, frmt, ##__VA_ARGS__); }

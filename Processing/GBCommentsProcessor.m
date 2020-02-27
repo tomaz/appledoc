@@ -246,7 +246,7 @@ typedef NSUInteger GBProcessingFlag;
 		if ([self processRelatedBlockInString:string lines:lines blockRange:blockRange shortRange:shortRange]) return;
 		
 		// TODO:
-//		GBLogXWarn(self.currentSourceInfo, @"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
+        GBLogWarn(@"Unknown directive block %@ encountered at %@, processing as standard text!", [[lines firstObject] normalizedDescription], self.currentSourceInfo);
 	}
 		
 	// Handle short description and update block range if we're not repeating first paragraph.
@@ -562,7 +562,7 @@ typedef NSUInteger GBProcessingFlag;
 	NSString *markdown = [self stringByConvertingCrossReferencesInString:reference withFlags:GBProcessingFlagRelatedItem];
 	if ([markdown isEqualToString:reference]) {
         // TODO:
-//		GBLogXWarn(self.currentSourceInfo, @"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
+		GBLogWarn(@"Unknown cross reference %@ found at %@!", reference, self.currentSourceInfo);
 		return YES;
 	}
 	
@@ -722,7 +722,7 @@ typedef NSUInteger GBProcessingFlag;
 		}
 		else if (self.settings.warnOnUnknownDirective) {
             // TODO:
-//			GBLogXWarn(self.currentSourceInfo, @"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
+			GBLogWarn(@"Unknown format marker %@ detected at %@!", componentMarker, self.currentSourceInfo);
 		}
 		if (!markdownEndMarker) markdownEndMarker = markdownStartMarker;
 		
@@ -1123,7 +1123,8 @@ typedef NSUInteger GBProcessingFlag;
 			referencedObject = [self.store protocolWithName:objectName];
 			if (!referencedObject) {
                 // TODO:
-//				if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
+				if (self.settings.warnOnInvalidCrossReference)
+                    GBLogWarn(@"Invalid %@ reference found near %@, unknown object : %@ !", linkText, self.currentSourceInfo, objectName);
 				result.range = [string rangeOfString:linkText options:0 range:searchRange];
 				result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 				return result;
@@ -1135,7 +1136,8 @@ typedef NSUInteger GBProcessingFlag;
 	id referencedMember = [[referencedObject methods] methodBySelector:selector];
 	if (!referencedMember) {
         // TODO:
-//		if (self.settings.warnOnInvalidCrossReference) GBLogXWarn(self.currentSourceInfo, @"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
+		if (self.settings.warnOnInvalidCrossReference)
+            GBLogWarn(@"Invalid %@ reference found near %@, unknown method!", linkText, self.currentSourceInfo);
 		result.range = [string rangeOfString:linkText options:0 range:searchRange];
 		result.markdown = [NSString stringWithFormat:@"[%@ %@]", objectName, selector];
 		return result;

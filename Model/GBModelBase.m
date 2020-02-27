@@ -50,7 +50,7 @@
 	GBComment *theComment = [(GBModelBase *)source comment];
 	if (self.comment && theComment) {
         // TODO:
-//		GBLogXInfo(self.prefferedSourceInfo, @"%@: Comment found in %@ and %@", self, self.comment.sourceInfo, theComment.sourceInfo);
+		GBLogInfo(@"%@: Comment found in %@ and %@", self, self.comment.sourceInfo, theComment.sourceInfo);
 		return;
 	}
 	if (!self.comment && theComment) self.comment = theComment;

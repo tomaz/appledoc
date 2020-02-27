@@ -12,6 +12,7 @@
 #import "GBCommentsProcessor.h"
 #import "GBProcessor.h"
 #import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBProcessor ()
 
@@ -255,8 +256,8 @@
 		GBCommentArgument *parameter = parameters[name];
 		if (!parameter) {
             // TODO:
-//            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
-//                GBLogXWarn(comment.sourceInfo, @"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
+            if (self.settings.warnOnMissingMethodArgument && method.includeInOutput)
+                GBLogWarn(@"%@: Description for parameter '%@' missing for %@!", comment.sourceInfo, name, method);
 			return;
             
             
@@ -273,7 +274,8 @@
 			[sorted addObject:parameter];
 		}];
         // TODO:
-//		if (method.includeInOutput) GBLogXWarn(comment.sourceInfo, @"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
+		if (method.includeInOutput)
+            GBLogWarn(@"%@: %ld unknown parameter descriptions (%@) found for %@", comment.sourceInfo, [parameters count], description, method);
 	}
 	
 	// Finaly re-register parameters to the comment if necessary (no need if there's only one parameter).
@@ -473,7 +475,7 @@
 	// Checks if the object is commented and warns if not. This validates given object and all it's members comments! The reason for doing it together is due to the fact that we first process all members and then handle the object. At that point we can even remove the object if not documented. So we can't validate members before as we don't know whether they will be deleted together with their parent object too...
     if (![self isCommentValid:object.comment] && self.settings.warnOnUndocumentedObject) {
         // TODO:
-//        GBLogXWarn(object.prefferedSourceInfo, @"%@ is not documented!", object);
+        GBLogWarn(@"%@ is not documented!", object);
     }
 	
 	// Handle methods.
@@ -482,7 +484,7 @@
         for (GBMethodData *method in [[(id<GBObjectDataProviding>)object methods] methods]) {
             if (![self isCommentValid:method.comment] && self.settings.warnOnUndocumentedMember) {
                 // TODO:
-//                GBLogXWarn(method.prefferedSourceInfo, @"%@ is not documented!", method);
+                GBLogWarn(@"%@ is not documented!", method);
             }
         }
         
@@ -494,7 +496,7 @@
         {
             if (![self isCommentValid:constant.comment] && self.settings.warnOnUndocumentedMember) {
                 // TODO:
-//                GBLogXWarn(constant.prefferedSourceInfo, @"%@ is not documented!", constant);
+                GBLogWarn(@"%@ is not documented!", constant);
             }
         }
     }

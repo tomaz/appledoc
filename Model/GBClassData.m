@@ -9,6 +9,7 @@
 #import "GBDataObjects.h"
 #import "GBClassData.h"
 #import "GBLog.h"
+#import "GBExitCodes.h"
 
 @implementation GBClassData
 
@@ -46,7 +47,7 @@
 		self.nameOfSuperclass = sourceClass.nameOfSuperclass;
 	} else if (sourceClass.nameOfSuperclass && ![self.nameOfSuperclass isEqualToString:sourceClass.nameOfSuperclass]) {
         // TODO:
-//		GBLogXWarn(self.prefferedSourceInfo, @"%@: Merged class's %@ superclass is different from current!", self, sourceClass);
+        GBLogWarn(@"%@: Merged class's %@ superclass is different from current!", self, sourceClass);
 	}
 	
 	// Forward merging request to components.
