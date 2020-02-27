@@ -14,6 +14,9 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBDataObjects.h"
 #import "GBObjectiveCParser.h"
+#import "NSString+GBString.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBObjectiveCParser ()
 
@@ -676,8 +679,9 @@
         
         if(isRegularEnum && isCurlyBrace && self.settings.warnOnUnsupportedTypedefEnum)
         {
+            // TODO:
             GBSourceInfo *startInfo = [tokenizer sourceInfoForCurrentToken];
-            GBLogXWarn(startInfo, @"unsupported typedef enum at %@!", startInfo);
+            GBLogWarn(@"unsupported typedef enum at %@!", startInfo);
         }
     }
     return NO;

@@ -7,6 +7,7 @@
 //
 
 #import "GBCommentComponentsList.h"
+#import "GBLog.h"
 
 @implementation GBCommentComponentsList
 

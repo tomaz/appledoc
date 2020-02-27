@@ -8,6 +8,7 @@
 
 #import "GBDataObjects.h"
 #import "GBCategoryData.h"
+#import "GBLog.h"
 
 @implementation GBCategoryData
 

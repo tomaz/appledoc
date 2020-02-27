@@ -8,6 +8,8 @@
 
 #import "GBProtocolData.h"
 #import "GBAdoptedProtocolsProvider.h"
+#import "NSException+GBException.h"
+#import "GBLog.h"
 
 @implementation GBAdoptedProtocolsProvider
 

@@ -8,6 +8,7 @@
 
 #import "GBDataObjects.h"
 #import "GBComment.h"
+#import "NSString+GBString.h"
 
 @implementation GBComment
 

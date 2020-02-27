@@ -21,7 +21,6 @@
 @class OCPartialMockObject;
 
 
-BOOL OCMIsClassType(const char *objCType);
 BOOL OCMIsBlockType(const char *objCType);
 BOOL OCMIsObjectType(const char *objCType);
 const char *OCMTypeWithoutQualifiers(const char *objCType);

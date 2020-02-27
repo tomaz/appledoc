@@ -95,7 +95,13 @@
         [recorder setMockObject:self];
         return (id)[recorder init];
     }
-    
+
+	// skip initialisation when init is called again, which can happen when stubbing alloc/init
+    if(stubs != nil)
+    {
+        return self;
+    }
+
 	// no [super init], we're inheriting from NSProxy
 	expectationOrderMatters = NO;
 	stubs = [[NSMutableArray alloc] init];
@@ -372,8 +378,12 @@
             [stubs removeObject:stub];
         }
     }
-    [stub handleInvocation:anInvocation];
-    [stub release];
+
+    @try {
+        [stub handleInvocation:anInvocation];
+    } @finally {
+        [stub release];
+    }
 
     return YES;
 }

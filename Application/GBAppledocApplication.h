@@ -21,4 +21,6 @@
  */
 @interface GBAppledocApplication : NSObject <DDCliApplicationDelegate>
 
+- (NSString *)standardizeCurrentDirectoryForPath:(NSString *)path;
+
 @end

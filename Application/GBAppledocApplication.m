@@ -18,6 +18,12 @@
 #import "DDXcodeProjectFile.h"
 #import "DDEmbeddedDataReader.h"
 #import "DDZipReader.h"
+#import "GBExitCodes.h"
+#import "GBLog.h"
+#import "NSObject+GBObject.h"
+#import "NSException+GBException.h"
+#import "NSString+GBString.h"
+#import "NSError+GBError.h"
 
 static char *kGBArgInputPath = "input";
 static char *kGBArgOutputPath = "output";

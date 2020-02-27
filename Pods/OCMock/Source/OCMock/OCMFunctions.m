@@ -48,15 +48,10 @@ static BOOL OCMIsUnqualifiedClassType(const char *unqualifiedObjCType)
     return (strcmp(unqualifiedObjCType, @encode(Class)) == 0);
 }
 
-BOOL OCMIsClassType(const char *objCType)
-{
-    return OCMIsUnqualifiedClassType(OCMTypeWithoutQualifiers(objCType));
-}
-
 
 static BOOL OCMIsUnqualifiedBlockType(const char *unqualifiedObjCType)
 {
-    char blockType[] = @encode(void(^)());
+    char blockType[] = @encode(void(^)(void));
     if(strcmp(unqualifiedObjCType, blockType) == 0)
         return YES;
 
@@ -118,6 +113,57 @@ CFNumberType OCMNumberTypeForObjCType(const char *objcType)
     }
 }
 
+
+static BOOL ParseStructType(const char *type, const char **typeEnd, const char **typeNameEnd, const char **typeEqualSign)
+{
+  if (type[0] != '{' && type[0] != '(')
+      return NO;
+
+  *typeNameEnd = NULL;
+  *typeEqualSign = NULL;
+
+  const char endChar = type[0] == '{' ? '}' : ')';
+  for (const char* ptr = type + 1; *ptr; ++ptr) {
+      switch (*ptr) {
+          case '(':
+          case '{':
+          {
+              const char *subTypeEnd;
+              const char *subTypeNameEnd;
+              const char *subTypeEqualSign;
+              if (!ParseStructType(ptr, &subTypeEnd, &subTypeNameEnd, &subTypeEqualSign))
+                  return NO;
+              ptr = subTypeEnd;
+              break;
+          }
+          case '=':
+          {
+              if (!*typeEqualSign) {
+                  *typeNameEnd = ptr;
+                  *typeEqualSign = ptr;
+              }
+              break;
+          }
+          case ')':
+          case '}':
+          {
+              if (*ptr == endChar) {
+                  *typeEnd = ptr;
+                  if (!*typeNameEnd)
+                      *typeNameEnd = ptr;
+                  return YES;
+              }
+              break;
+          }
+          default:
+              break;
+      }
+  }
+
+  return NO;
+}
+
+
 /*
  * Sometimes an external type is an opaque struct (which will have an @encode of "{structName}"
  * or "{structName=}") but the actual method return type, or property type, will know the contents
@@ -145,27 +191,32 @@ static BOOL OCMEqualTypesAllowingOpaqueStructsInternal(const char *type1, const 
         {
             if (type2[0] != type1[0])
                 return NO;
-            char endChar = type1[0] == '{'? '}' : ')';
 
-            const char *type1End = strchr(type1, endChar);
-            const char *type2End = strchr(type2, endChar);
-            const char *type1Equals = strchr(type1, '=');
-            const char *type2Equals = strchr(type2, '=');
+            const char *type1End;
+            const char *type1NameEnd;
+            const char *type1EqualSign;
+            if (!ParseStructType(type1, &type1End, &type1NameEnd, &type1EqualSign))
+                return NO;
+
+            const char *type2End;
+            const char *type2NameEnd;
+            const char *type2EqualSign;
+            if (!ParseStructType(type2, &type2End, &type2NameEnd, &type2EqualSign))
+                return NO;
 
             /* Opaque types either don't have an equals sign (just the name and the end brace), or
              * empty content after the equals sign.
              * We want that to compare the same as a type of the same name but with the content.
              */
-            BOOL type1Opaque = (type1Equals == NULL || (type1End < type1Equals) || type1Equals[1] == endChar);
-            BOOL type2Opaque = (type2Equals == NULL || (type2End < type2Equals) || type2Equals[1] == endChar);
-            const char *type1NameEnd = (type1Equals == NULL || (type1End < type1Equals)) ? type1End : type1Equals;
-            const char *type2NameEnd = (type2Equals == NULL || (type2End < type2Equals)) ? type2End : type2Equals;
+            BOOL type1Opaque = (type1EqualSign == NULL || type1EqualSign + 1 == type1End);
+            BOOL type2Opaque = (type2EqualSign == NULL || type2EqualSign + 2 == type2End);
             intptr_t type1NameLen = type1NameEnd - type1;
             intptr_t type2NameLen = type2NameEnd - type2;
 
             /* If the names are not equal and neither of the names is a question mark, return NO */
             if ((type1NameLen != type2NameLen || strncmp(type1, type2, type1NameLen)) &&
-                !((type1NameLen == 2) && (type1[1] == '?')) && !((type2NameLen == 2) && (type2[1] == '?')))
+                !((type1NameLen == 2) && (type1[1] == '?')) && !((type2NameLen == 2) && (type2[1] == '?')) &&
+                !(type1NameLen == 1 || type2NameLen == 1))
                 return NO;
 
             /* If the same name, and at least one is opaque, that is close enough. */
@@ -173,14 +224,32 @@ static BOOL OCMEqualTypesAllowingOpaqueStructsInternal(const char *type1, const 
                 return YES;
 
             /* Otherwise, compare all the elements.  Use NSGetSizeAndAlignment to walk through the struct elements. */
-            type1 = type1Equals + 1;
-            type2 = type2Equals + 1;
-            while (type1[0] != endChar && type1[0] != '\0')
+            type1 = type1EqualSign + 1;
+            type2 = type2EqualSign + 1;
+            while (type1 != type1End && *type1)
             {
                 if (!OCMEqualTypesAllowingOpaqueStructs(type1, type2))
                     return NO;
-                type1 = NSGetSizeAndAlignment(type1, NULL, NULL);
-                type2 = NSGetSizeAndAlignment(type2, NULL, NULL);
+
+                if (*type1 != '{' && *type1 != '(') {
+                    type1 = NSGetSizeAndAlignment(type1, NULL, NULL);
+                    type2 = NSGetSizeAndAlignment(type2, NULL, NULL);
+                } else {
+                    const char *subType1End;
+                    const char *subType1NameEnd;
+                    const char *subType1EqualSign;
+                    if (!ParseStructType(type1, &subType1End, &subType1NameEnd, &subType1EqualSign))
+                        return NO;
+
+                    const char *subType2End;
+                    const char *subType2NameEnd;
+                    const char *subType2EqualSign;
+                    if (!ParseStructType(type2, &subType2End, &subType2NameEnd, &subType2EqualSign))
+                        return NO;
+
+                    type1 = subType1End + 1;
+                    type2 = subType2End + 1;
+                }
             }
             return YES;
         }

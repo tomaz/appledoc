@@ -1,62 +1,55 @@
 PODS:
-  - DDMinizip (1.0.0.2017.06.25)
+  - CocoaLumberjack (1.9.1):
+    - CocoaLumberjack/Extensions (= 1.9.1)
+  - CocoaLumberjack/Core (1.9.1)
+  - CocoaLumberjack/Extensions (1.9.1):
+    - CocoaLumberjack/Core
   - Discount (2.1.5a)
-  - GHUnit (0.5.8)
   - GRMustache (7.0.2):
     - JRSwizzle (~> 1.0)
   - JRSwizzle (1.0)
-  - Minizip/Core (1.1.0.2017.06.25)
-  - Minizip/minishared (1.1.0.2017.06.25):
-    - Minizip/Core
-  - OCMock (3.4)
+  - OCMock (3.4.2)
   - ParseKit (0.0.0.2010.4.29):
     - RegexKitLite (~> 4.0.1)
   - RegexKitLite (4.0.6)
 
 DEPENDENCIES:
-  - DDMinizip (from `Specs/DDMinizip.podspec`)
+  - CocoaLumberjack
   - Discount (from `Specs/Discount.podspec`)
-  - GHUnit (~> 0.5)
   - GRMustache (~> 7.0.2)
-  - Minizip/minishared (from `https://github.com/nmoinvaz/minizip.git`)
   - OCMock (~> 3.4)
   - ParseKit (from `Specs/ParseKit.podspec`)
   - RegexKitLite (from `https://github.com/inquisitiveSoft/RegexKitLite.git`)
 
+SPEC REPOS:
+  trunk:
+    - CocoaLumberjack
+    - GRMustache
+    - JRSwizzle
+    - OCMock
+
 EXTERNAL SOURCES:
-  DDMinizip:
-    :podspec: Specs/DDMinizip.podspec
   Discount:
     :podspec: Specs/Discount.podspec
-  Minizip:
-    :git: https://github.com/nmoinvaz/minizip.git
   ParseKit:
     :podspec: Specs/ParseKit.podspec
   RegexKitLite:
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 CHECKOUT OPTIONS:
-  DDMinizip:
-    :commit: 433d3c974191e76ba42dc9166d77bd77ef589c2d
-    :git: https://github.com/Daij-Djan/DDMinizip.git
-  Minizip:
-    :commit: c6d04f9c642a730a4d5a295b811ec884b4fe3ba2
-    :git: https://github.com/nmoinvaz/minizip.git
   RegexKitLite:
     :commit: 871fad38339785248c51ebe5ee8403f7e75d51c4
     :git: https://github.com/inquisitiveSoft/RegexKitLite.git
 
 SPEC CHECKSUMS:
-  DDMinizip: 83ed28588afe79b164907317610e3862ad494d75
+  CocoaLumberjack: e9b828e64142be63c1c130517b33aa5e235d2413
   Discount: 2a100efef8ec69e3c59a9ab5a20cdec3d179e93c
-  GHUnit: 07609b0386af75f20ce520277d1c24fd8cd1598e
   GRMustache: a724bfb0ac23c8f88a6388df9c7d73bc26e7005c
   JRSwizzle: dd5ead5d913a0f29e7f558200165849f006bb1e3
-  Minizip: b7213b5711d7c8961326f15f6c22fc9947950dd8
-  OCMock: 35ae71d6a8fcc1b59434d561d1520b9dd4f15765
+  OCMock: ebe9ee1dca7fbed0ff9193ac0b3e2d8862ea56f6
   ParseKit: 92f20b0017e23dd3c418e648169a13b8aa26bc24
   RegexKitLite: 185a6b9d126b14e3e1f4df7570a50a3b3e27a036
 
-PODFILE CHECKSUM: 504b2e21b6ab7feca9cc228effa83eacae7055bb
+PODFILE CHECKSUM: f44a670774a47c345a0ee6e6c7d36dddcc706c80
 
-COCOAPODS: 1.3.0.beta.2
+COCOAPODS: 1.8.4

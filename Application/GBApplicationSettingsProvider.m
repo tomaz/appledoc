@@ -13,6 +13,7 @@
 #import "GBDataObjects.h"
 #import "GBApplicationSettingsProvider.h"
 #import "GBLog.h"
+#import "GBExitCodes.h"
 
 #import "SynthesizeSingleton.h"
 

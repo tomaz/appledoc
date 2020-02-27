@@ -14,6 +14,7 @@
 #import "GBDataObjects.h"
 #import "GBDocumentData.h"
 #import "GBHTMLTemplateVariablesProvider.h"
+#import "GBLog.h"
 
 #pragma mark -
 

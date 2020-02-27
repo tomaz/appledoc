@@ -16,6 +16,8 @@
 
 #import "GBStore.h"
 #import "GBApplicationSettingsProvider.h"
+#import "NSException+GBException.h"
+#import "GBLog.h"
 
 @interface GBMethodData ()
 

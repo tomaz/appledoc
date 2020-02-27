@@ -9,6 +9,9 @@
 #import <RegexKitLite/RegexKitLite.h>
 #import <GRMustache/GRMustache.h>
 #import "GBTemplateHandler.h"
+#import "NSString+GBString.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 static NSString *kGBSectionKey = @"section";
 static NSString *kGBNameKey = @"name";

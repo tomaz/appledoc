@@ -8,6 +8,9 @@
 
 #import "GBTemplateHandler.h"
 #import "GBTemplateFilesHandler.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
+#import "NSObject+GBObject.h"
 
 @interface GBTemplateFilesHandler ()
 
@@ -42,7 +45,7 @@
 	NSString *destUserPath = self.outputUserPath;
 	NSString *sourcePath = [sourceUserPath stringByStandardizingPath];
 	NSString *destPath = [destUserPath stringByStandardizingPath];	
-	GBLogVerbose(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);	
+	GBLogVerbose(@"Copying template files from '%@' to '%@'...", sourceUserPath, destUserPath);
 	
 	// Remove destination path if it exists. Exit if we fail.
 	if ([self.fileManager fileExistsAtPath:destPath]) {

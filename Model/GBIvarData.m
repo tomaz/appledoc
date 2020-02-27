@@ -7,6 +7,7 @@
 //
 
 #import "GBIvarData.h"
+#import "GBLog.h"
 
 @implementation GBIvarData
 

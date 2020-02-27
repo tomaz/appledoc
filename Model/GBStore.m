@@ -9,6 +9,8 @@
 #import "GBDataObjects.h"
 #import "GBStore.h"
 #import "SynthesizeSingleton.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @implementation GBStore
 

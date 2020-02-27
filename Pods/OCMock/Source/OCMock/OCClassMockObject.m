@@ -63,18 +63,13 @@
         const char *createdSubclassName = object_getClassName(mockedClass);
         Class createdSubclass = objc_lookUpClass(createdSubclassName);
 
-        [self restoreMetaClass];
+        OCMSetAssociatedMockForClass(nil, mockedClass);
+        object_setClass(mockedClass, originalMetaClass);
+        originalMetaClass = nil;
 
         objc_disposeClassPair(createdSubclass);
     }
     [super stopMocking];
-}
-
-- (void)restoreMetaClass
-{
-    OCMSetAssociatedMockForClass(nil, mockedClass);
-    object_setClass(mockedClass, originalMetaClass);
-    originalMetaClass = nil;
 }
 
 - (void)addStub:(OCMInvocationStub *)aStub
@@ -92,11 +87,15 @@
     /* the runtime and OCMock depend on string and array; we don't intercept methods on them to avoid endless loops */
     if([[mockedClass class] isSubclassOfClass:[NSString class]] || [[mockedClass class] isSubclassOfClass:[NSArray class]])
         return;
+    
+    /* trying to replace class methods on NSManagedObject and subclasses of it doesn't work; see #339 */
+    if([mockedClass isSubclassOfClass:objc_getClass("NSManagedObject")])
+        return;
 
     /* if there is another mock for this exact class, stop it */
     id otherMock = OCMGetAssociatedMockForClass(mockedClass, NO);
     if(otherMock != nil)
-        [otherMock restoreMetaClass];
+        [otherMock stopMocking];
 
     OCMSetAssociatedMockForClass(self, mockedClass);
 
@@ -117,7 +116,6 @@
     Method myForwardMethod = class_getInstanceMethod([self mockObjectClass], @selector(forwardInvocationForClassObject:));
     IMP myForwardIMP = method_getImplementation(myForwardMethod);
     class_addMethod(newMetaClass, @selector(forwardInvocation:), myForwardIMP, method_getTypeEncoding(myForwardMethod));
-
 
     /* adding forwarder for most class methods (instance methods on meta class) to allow for verify after run */
     NSArray *methodBlackList = @[@"class", @"forwardingTargetForSelector:", @"methodSignatureForSelector:", @"forwardInvocation:", @"isBlock",
@@ -230,11 +228,11 @@
 
 #pragma mark  -
 
-/**
+/*
  taken from:
  `class-dump -f isNS /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.0.sdk/System/Library/Frameworks/CoreFoundation.framework`
  
- @interface NSObject (__NSIsKinds)
+ @ interface NSObject (__NSIsKinds)
  - (_Bool)isNSValue__;
  - (_Bool)isNSTimeZone__;
  - (_Bool)isNSString__;

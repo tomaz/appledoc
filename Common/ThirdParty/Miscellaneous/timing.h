@@ -63,6 +63,8 @@
 #ifndef __TIMING_H__
 #define __TIMING_H__
 
+#import <Foundation/Foundation.h>
+
 #include <mach/mach_time.h>
 #include <unistd.h>
 

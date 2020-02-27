@@ -10,6 +10,9 @@
 #import "GBApplicationSettingsProvider.h"
 #import "GBTemplateHandler.h"
 #import "GBOutputGenerator.h"
+#import "NSObject+GBObject.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
 
 @interface GBOutputGenerator ()
 
