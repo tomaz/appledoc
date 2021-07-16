@@ -1,4 +1,4 @@
-#Appledoc comments formatting style
+# Appledoc comments formatting style
 
 Appledoc extracts documentation from specially formatted comments, giving you freedom to choose which comments will be parsed and which not. To make porting old documentation simpler, it allows you to use either doxygen or headerdoc style comments.
 
@@ -35,12 +35,12 @@ appledoc also handles single line comments that start with three slashes. Two or
 /// over multiple lines
 ```
 
-#Laying out comments
+# Laying out comments
 
 Appledoc has been designed to keep comments in source code as readable as possible. In order to achieve this, it uses [Markdown](http://daringfireball.net/projects/markdown/)-like syntax. Specifically, it uses [Discount](http://www.pell.portland.or.us/~orc/Code/discount/) library for processing Markdown, which supports a set of extensions to original Markdown; check the [link](http://www.pell.portland.or.us/~orc/Code/discount/) for more details. Furthermore, it extracts as much information from the comment surrounding context which allows you to focus on documenting entities, instead of polluting comments with tagging which class or method a comment belongs to.
 
 
-##Paragraphs
+## Paragraphs
 
 Paragraphs are simply any number of consecutive rows of text separated by one or more empty (or tab and space only) lines:
 
@@ -55,7 +55,7 @@ And another paragraph.
     
 The first paragraph of the comment is automatically used as short description and remaining as long description or discussion. You can change default behavior via command line switches.
 
-##Unordered lists
+## Unordered lists
 
 Unordered lists use -, + or * markers in front of each item:
 
@@ -79,7 +79,7 @@ The list must be delimited from surrounding paragraphs by empty lines at the top
     
 Note that you can combine ordered and unordered lists when nesting.
 
-##Ordered lists
+## Ordered lists
 
 Ordered lists use a number followed by a dot as a marker in front of each item:
 
@@ -90,7 +90,7 @@ Ordered lists use a number followed by a dot as a marker in front of each item:
 
 Numbers don't need to be consecutive, you can even use the same number for all items; appledoc will simply number the items by their order. All rules for unordered lists also apply for ordered lists: separation with empty lines, nesting etc., so it won't be repeated here.
 
-##Examples and code blocks
+## Examples and code blocks
 
 If you want to mark a block of text as an example, simply prefix each line with a tab or 4 (or more) spaces. Appledoc will automatically convert consecutive blocks of prefixed lines into a single code block. Similar to lists and other paragraph blocks, example section needs to be delimited from preceding and following paragraph with an empty line:
 
@@ -103,7 +103,7 @@ Normal paragraph text
 Next paragraph.
 ```
 	
-##Important information blocks
+## Important information blocks
 
 You mark a paragraph as important by prefixing it's first line with @warning directive. For example, this is how you can achieve effect Apple uses for these blocks:
 
@@ -113,16 +113,16 @@ You mark a paragraph as important by prefixing it's first line with @warning dir
 
 *Important*: All text after `@warning` directive, up to next `"@"` directive will become part of the block - currently it's not possible to terminate warning block manually and continue with normal paragraphs! This allows you nesting lists and multiple paragraphs, but may come as surprise when not expected. Therefore it's recommended to use warning blocks at the end of "normal" paragraphs (and as any "@" directive will end previous block or paragraph, you can put them above method directives). Something to keep in mind!
 
-##Bug information blocks
+## Bug information blocks
 
 If you'd like to make a paragraph even more emphasized than a `@warning`, you can use `@bug` directive. It works just like `@warning`, so see description there for details. Not so much used, but may come handy under certain circumstances.
 
-#Formatting text
+# Formatting text
 
 Appledoc has been designed to keep comments in source code as readable as possible. In order to achieve this, it uses [Markdown](http://daringfireball.net/projects/markdown/)-like syntax. Specifically, it uses [Discount](http://www.pell.portland.or.us/~orc/Code/discount/) library for processing Markdown, which supports a set of extensions to original Markdown; check the [link](http://www.pell.portland.or.us/~orc/Code/discount/) for more details. Furthermore, it extracts as much information from the comment surrounding context which allows you to focus on documenting entities, instead of polluting comments with tagging which class or method a comment belongs to.
 
 
-##Emphasis
+## Emphasis
 
 Text can be emphasized with the following syntax:
 
@@ -134,25 +134,25 @@ You can include the marker itself in the middle of the text, so this \*some * te
 
 Note: you can also use standard Markdown formatting: \*\*text\*\* or \_\_text\_\_ for **bold** and \*\*\*text\*\*\* or \_\_\_text\_\_\_ for ***emphasized strong***.
 
-##Code spans
+## Code spans
 
 As you're documenting source code, chance is you might want to format text as code. Any text wrapped within backtick quotes (\`text\`) is converted into `code span`. Note that you can't nest emphasis within code spans!
 
-##Headers and the rest
+## Headers and the rest
 
 Appledoc supports full Markdown, therefore you can include headers, line breaks, block quotes, horizontal rules etc. However, there's rarely a need for many of these features and using them may result in odd looking documentation. If you need any of these, go experiment and see if you like results or not.
 
 
-#Links and cross references
+# Links and cross references
 
 You can easily link to any other documented entity or URL. Note that there are command line options that change how links are parsed, examples below assume you're using default settings.
 
 
-##Links to web pages and other URLs
+## Links to web pages and other URLs
 
 Any valid URL address starting with `http://`, `https://`, `ftp://`, `file://` or `mailto:` is automatically converted to a link in generated HTML.
 
-##Links to classes, categories and protocols
+## Links to classes, categories and protocols
 
 Any word that matches known class, category or protocol name is automatically converted to cross reference link to that object. Assuming complete documentation contains class GBClass, it's extension GBClass(), category NSError(GBError) and protocol GBProtocol, the following text will automatically convert text:
 
@@ -165,7 +165,7 @@ into something like:
 
 This text contains links to: class [GBClass](http://), it's extension [GBClass()](http://), category [NSError(GBError)](http://) and protocol [GBProtocol](http://).
 
-##Links to local members
+## Links to local members
 
 Any word that matches method or property selector name of "current" class, category or protocol is automatically converted to cross reference link to that member. Assuming current object contains method runWithValue:afterDelay: and property value, the following text:
 
@@ -179,7 +179,7 @@ will automatically convert to something like:
 
 This text contains links to: method [runWithValue:afterDelay:](http://) and property [value](http://).
 
-##Links to remote members
+## Links to remote members
 
 Creating cross reference links to members of other classes, categories or protocols requires a bit more effort as you need to state the class and the method, but still follows the same principle. Assuming complete documentation contains class GBClass which has method runWithValue:afterDelay: and property value, the following text:
 
@@ -193,7 +193,7 @@ will convert to something like:
 
 This text contains links to: method [[GBClass runWithValue:afterDelay:](http://)] and property [[GBClass value](http://)]
 
-##Custom link descriptions
+## Custom link descriptions
 
 As appledoc parses Markdown links for known objects, you can take advantage of link descriptions and even reference-type links to add that fine touch to generated documentation. For example:
 
@@ -215,7 +215,7 @@ For more info check [this page](http://), also take a look at [this class](http:
 For referring to common object multiple times, use this [class](http://). And [repeat again](http://).
 
 
-#Methods and properties description
+# Methods and properties description
 
 For methods and properties you may want to document their parameters, results or exceptions they may raise. To do that, there are a number of "@" directives you can use:
 
@@ -226,7 +226,7 @@ For methods and properties you may want to document their parameters, results or
 *Note*: All of the text following the directive, up to the next directive is considered as part of the directive description. This allows you to include multiple paragraphs, unordered or ordered lists, warnings, bugs and the rest, but may come as surprise if not expected! To compensate, it's recommended to enter all these directives at the bottom of the comment text. In fact, because of this, all directives are formatted so that you enter the description as the last directive "parameter".
 
 
-#Various bits and pieces
+# Various bits and pieces
 
 - **Generating related links**: `@see <name>` or `@sa <name>`. Although you can provide cross reference links anywhere within the paragraph text, as described above, you need to use @see directives to provide related context links for documentation sets. The name should follow cross reference guidelines described above.
 
