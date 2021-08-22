@@ -7,6 +7,7 @@
 //
 
 #import "GBTask.h"
+#import "GBLog.h"
 
 @interface GBTask ()
 

@@ -8,6 +8,7 @@
 
 #import "GBDataObjects.h"
 #import "GBProtocolData.h"
+#import "GBLog.h"
 
 @implementation GBProtocolData
 

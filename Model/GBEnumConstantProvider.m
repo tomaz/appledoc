@@ -7,6 +7,7 @@
 //
 
 #import "GBEnumConstantProvider.h"
+#import "GBLog.h"
 
 @implementation GBEnumConstantProvider
 

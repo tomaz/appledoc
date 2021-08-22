@@ -1,1 +1,0 @@
-../../../GHUnit/Classes/Mock/GHMockNSURLConnection.h

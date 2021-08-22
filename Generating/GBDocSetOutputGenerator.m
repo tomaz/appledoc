@@ -13,6 +13,12 @@
 #import "GBDataObjects.h"
 #import "GBTemplateHandler.h"
 #import "GBDocSetOutputGenerator.h"
+#import "NSError+GBError.h"
+#import "NSObject+GBObject.h"
+#import "NSException+GBException.h"
+#import "GBLog.h"
+#import "GBExitCodes.h"
+#import "NSString+GBString.h"
 
 typedef NS_ENUM(NSUInteger, GBDocSetNavigationTreeIconKind)
 {

@@ -9,6 +9,7 @@
 #import "GBComment.h"
 #import "GBSourceInfo.h"
 #import "GBModelBase.h"
+#import "GBLog.h"
 
 @implementation GBModelBase
 
@@ -48,7 +49,8 @@
 	// Merge comment.
 	GBComment *theComment = [(GBModelBase *)source comment];
 	if (self.comment && theComment) {
-		GBLogXInfo(self.prefferedSourceInfo, @"%@: Comment found in %@ and %@", self, self.comment.sourceInfo, theComment.sourceInfo);
+        // TODO:
+		GBLogInfo(@"%@: Comment found in %@ and %@", self, self.comment.sourceInfo, theComment.sourceInfo);
 		return;
 	}
 	if (!self.comment && theComment) self.comment = theComment;

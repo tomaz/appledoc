@@ -1,1 +1,0 @@
-../../../GHUnit/Classes/GHTest/GHTestRunner.h
