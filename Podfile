@@ -7,7 +7,7 @@ def default_pods
     # Discount '2.1.5a' with configure and make
     pod 'Discount', :podspec => 'Specs/Discount.podspec'
     pod 'GRMustache', '~> 7.0.2'
-    pod 'Minizip/minishared', :git => 'https://github.com/nmoinvaz/minizip.git'
+    pod 'Minizip/minishared', :git => 'https://github.com/nmoinvaz/minizip.git', :commit => 'c6d04f9c642a730a4d5a295b811ec884b4fe3ba2'
     pod 'DDMinizip', :podspec => 'Specs/DDMinizip.podspec'
 end
 

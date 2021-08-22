@@ -39,10 +39,10 @@
 - (void)testNodeDidChange:(GHTestNode *)node;
 @end
 
-typedef enum {
+typedef NS_ENUM(NSInteger, GHTestNodeFilter) {
   GHTestNodeFilterNone = 0,
   GHTestNodeFilterFailed = 1
-} GHTestNodeFilter;
+};
 
 /*!
  Test view model for use in a tree view.
