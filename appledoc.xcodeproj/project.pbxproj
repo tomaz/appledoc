@@ -1072,6 +1072,7 @@
 			inputPaths = (
 			);
 			outputPaths = (
+				"$(PROJECT_DIR)/default_templates.zip",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
