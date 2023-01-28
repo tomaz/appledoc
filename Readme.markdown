@@ -51,6 +51,16 @@ It compiles appledoc and installs its binary to /usr/local/bin and templates (if
 
 Homebrew does not install templates by default.
 
+Installing on M1 hardware
+=============
+
+To install on Apple computers running on M1 silicon, you'll need to use Rosetta. Setup instructions here: https://apple.stackexchange.com/a/428769. Then, do the following:
+* Install [macPort](https://www.macports.org/install.php)
+* Open a Rosetta-enabled terminal
+* In terminal, run: `sudo port install appledoc`
+
+Note: this means that `appledoc` will only run when Rosetta is enabled. It won't run natively on M1, in other words.
+
 Using appledoc
 ==============
 
